@@ -1,0 +1,103 @@
+﻿<!--main content start-->
+<section id="main-content">
+    <section class="wrapper site-min-height">
+        <!-- page start-->
+        <div class="row">
+            <div class="col-lg-12">
+                <section class="panel">
+                    <header class="panel-heading">
+                        Add Product Item
+                    </header>
+                    <div class="panel-body">
+                        <form role="form">
+                            <div class="form-group">
+                                <label for="selectcategory">Category</label>
+                                <select id="selectcategory" class="form-control m-bot15" style="width:350px;">
+                                    <option>Option 1</option>
+                                    <option>Option 2</option>
+                                    <option>Option 3</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="selectproduct">Product</label>
+                                <select id="selectproduct" class="form-control m-bot15" style="width:350px;">
+                                    <option>Product 1</option>
+                                    <option>Product 2</option>
+                                    <option>Product 3</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="selectsubproduct">Sub Product</label>
+                                <select id="selectsubproduct" class="form-control m-bot15" style="width:350px;">
+                                    <option>Sub Product 1</option>
+                                    <option>Sub Product 2</option>
+                                    <option>Sub Product 3</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="txtItemName">Item Name</label>
+                                <input type="text" class="form-control" id="txtItemName" style="width:350px;" placeholder="Enter Item Name">
+                            </div>
+                            <div class="form-group">
+                                <label for="txtmrpprice">MRP Price</label>
+                                <input type="number" class="form-control" id="txtmrpprice" style="width:200px;" placeholder="Enter MRP Price">
+                            </div>
+                            <div class="form-group">
+                                <label for="txtdistriprice">Distributor Price</label>
+                                <input type="number" class="form-control" id="txtdistriprice" style="width:200px;" placeholder="Enter Distributor Price">
+                            </div>
+                            <div class="form-group">
+                                <label for="txtsaleprice">Sale Price</label>
+                                <input type="number" class="form-control" id="txtsaleprice" style="width:200px;" placeholder="Enter Sale Price">
+                            </div>
+                            <div class="form-group">
+                                <label for="txtGst">GST %</label>
+                                <input type="number" class="form-control" id="txtGst" style="width:200px;" placeholder="Enter GST %">
+                            </div>
+                            <div class="form-group">
+                                <label for="txtIGst">IGST %</label>
+                                <input type="number" class="form-control" id="txtIGst" style="width:200px;" placeholder="Enter IGST %">
+                            </div>
+                            <div class="form-group">
+                                <label for="txtCess">Cess %</label>
+                                <input type="number" class="form-control" id="txtCess" style="width:200px;" placeholder="Enter Cess %">
+                            </div>
+                            <div class="form-group">
+                                <label for="txtsku">Item Number(SKU)</label>
+                                <input type="text" class="form-control" id="txtsku" style="width:200px;" placeholder="Enter Item Number(SKU)">
+                            </div>
+                            <div class="form-group">
+                                <label for="txtdescription">Description</label>
+                                <textarea id="txtdescription" class="form-control" style="width:350px;height:150px"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="flMainImage">Main Image</label>
+                                <input type="file" id="flMainImage">
+                            </div>
+                            <div class="form-group">
+                                <label for="flgallaryImage">Gallary Images</label>
+                                <input type="file" multiple id="flgallaryImage">
+                            </div>
+                            <div class="form-group">
+                                <label for="txtNotification">Notification</label>
+                                <textarea id="txtNotification" class="form-control" style="width:350px;"></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-info">Submit</button>
+                        </form>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <!-- page end-->
+    </section>
+</section>
+<!--main content end-->
+@*<script type="text/javascript" language="javascript" src="~/Areas/Admin/Content/assets/advanced-datatable/media/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" src="~/Areas/Admin/Content/assets/data-tables/DT_bootstrap.js"></script>
+    <script type="text/javascript" charset="utf-8">
+        $(document).ready(function(){
+          $('#example').dataTable( {
+                      "aaSorting": [[ 4, "desc" ]]
+                  });
+        });
+    </script>*@

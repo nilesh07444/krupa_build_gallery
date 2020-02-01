@@ -1,0 +1,846 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="krupagallarydbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Tbl_AdminRoles">
+          <Key>
+            <PropertyRef Name="PK_Id" />
+          </Key>
+          <Property Name="PK_Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RoleName" Type="nvarchar" MaxLength="150" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="IsDelete" Type="bit" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="UpdatedBy" Type="bigint" />
+          <Property Name="UpdatedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Tbl_AdminUsers">
+          <Key>
+            <PropertyRef Name="Pk_AdminUserId" />
+          </Key>
+          <Property Name="Pk_AdminUserId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="350" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="250" />
+          <Property Name="UserName" Type="nvarchar" MaxLength="150" />
+          <Property Name="Email" Type="nvarchar" MaxLength="350" />
+          <Property Name="Password" Type="nvarchar" MaxLength="150" />
+          <Property Name="MobileNo" Type="nvarchar" MaxLength="20" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="IsDeleted" Type="bit" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="UpdatedBy" Type="bigint" />
+          <Property Name="UpdatedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Tbl_Categories">
+          <Key>
+            <PropertyRef Name="PK_CategoryId" />
+          </Key>
+          <Property Name="PK_CategoryId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CategoryName" Type="nvarchar" MaxLength="450" />
+          <Property Name="CategoryImage" Type="nvarchar" MaxLength="450" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="UpdatedBy" Type="bigint" />
+          <Property Name="UpdatedDate" Type="datetime" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="IsDelete" Type="bit" />
+        </EntityType>
+        <EntityType Name="Tbl_ClientOtherDetails">
+          <Key>
+            <PropertyRef Name="Pk_ClientOtherDetailsId" />
+          </Key>
+          <Property Name="Pk_ClientOtherDetailsId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ClientUserId" Type="bigint" />
+          <Property Name="Addharcardno" Type="nvarchar" MaxLength="50" />
+          <Property Name="Pancardno" Type="nvarchar" MaxLength="50" />
+          <Property Name="GSTno" Type="nvarchar" MaxLength="50" />
+          <Property Name="Photo" Type="nvarchar" MaxLength="250" />
+          <Property Name="City" Type="nvarchar" MaxLength="150" />
+          <Property Name="State" Type="nvarchar" MaxLength="150" />
+          <Property Name="Address" Type="nvarchar" MaxLength="250" />
+          <Property Name="ShipCity" Type="nvarchar" MaxLength="150" />
+          <Property Name="ShipState" Type="nvarchar" MaxLength="100" />
+          <Property Name="ShipAddress" Type="nvarchar" MaxLength="250" />
+          <Property Name="CreditAmt" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="AmountDue" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="IsDelete" Type="bit" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="UpdatedBy" Type="bigint" />
+          <Property Name="UpdatedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Tbl_ClientRoles">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RoleName" Type="nvarchar" MaxLength="150" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="IsDeleted" Type="bit" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="UpdatedBy" Type="bigint" />
+          <Property Name="UpdatedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Tbl_ClientUsers">
+          <Key>
+            <PropertyRef Name="Pk_ClientUserId" />
+          </Key>
+          <Property Name="Pk_ClientUserId" Type="bigint" Nullable="false" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="250" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="250" />
+          <Property Name="Email" Type="nvarchar" MaxLength="150" />
+          <Property Name="MobileNo" Type="nvarchar" MaxLength="50" />
+          <Property Name="UserName" Type="nvarchar" MaxLength="50" />
+          <Property Name="Password" Type="nvarchar" MaxLength="150" />
+          <Property Name="ClientRoleId" Type="bigint" />
+          <Property Name="CompanyName" Type="nvarchar" MaxLength="150" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="IsDelete" Type="bit" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="UpdatedBy" Type="bigint" />
+          <Property Name="UpdatedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Tbl_ItemStocks">
+          <Key>
+            <PropertyRef Name="Pk_StockId" />
+          </Key>
+          <Property Name="Pk_StockId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Fk_ProductId" Type="bigint" />
+          <Property Name="Fk_CategoryId" Type="bigint" />
+          <Property Name="Fk_SubProductId" Type="bigint" />
+          <Property Name="Fk_ProductItemId" Type="bigint" />
+          <Property Name="Qty" Type="bigint" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="IsDelete" Type="bit" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="UpdatedBy" Type="bigint" />
+          <Property Name="UpdatedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Tbl_Offers">
+          <Key>
+            <PropertyRef Name="Pk_Offer_Id" />
+          </Key>
+          <Property Name="Pk_Offer_Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="OfferName" Type="nvarchar" MaxLength="350" />
+          <Property Name="Fk_ProductId" Type="bigint" />
+          <Property Name="Fk_CategoryId" Type="bigint" />
+          <Property Name="Fk_SubproductId" Type="bigint" />
+          <Property Name="Fk_ProductItemId" Type="bigint" />
+          <Property Name="OfferPrice" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="StartDate" Type="datetime" />
+          <Property Name="EndDate" Type="datetime" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="IsDelete" Type="bit" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="UpdatedBy" Type="bigint" />
+          <Property Name="UpdatedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Tbl_OrderItemDetails">
+          <Key>
+            <PropertyRef Name="Pk_OrderDetail_Id" />
+          </Key>
+          <Property Name="Pk_OrderDetail_Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Fk_OrderId" Type="bigint" />
+          <Property Name="Fk_ProductItemId" Type="bigint" />
+          <Property Name="Qty" Type="bigint" />
+          <Property Name="Price" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="ItemName" Type="nvarchar" MaxLength="250" />
+          <Property Name="Sku" Type="nvarchar" MaxLength="50" />
+          <Property Name="GSTAmt" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="IGSTAmt" Type="numeric" Precision="18" Scale="2" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="IsDelete" Type="bit" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="UpdatedBy" Type="bigint" />
+          <Property Name="UpdatedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Tbl_Orders">
+          <Key>
+            <PropertyRef Name="Pk_Order_Id" />
+          </Key>
+          <Property Name="Pk_Order_Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Fk_ClientUserId" Type="bigint" />
+          <Property Name="OrderAmount" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="OrderShipCity" Type="nvarchar" MaxLength="100" />
+          <Property Name="OrderShipState" Type="nvarchar" MaxLength="100" />
+          <Property Name="OrderShipAddress" Type="nvarchar" MaxLength="250" Nullable="false" />
+          <Property Name="OrderShipPincode" Type="nvarchar" MaxLength="10" />
+          <Property Name="OrderShipClientName" Type="nvarchar" MaxLength="150" />
+          <Property Name="OrderShipClientPhone" Type="nvarchar" MaxLength="50" />
+          <Property Name="OrderStatusId" Type="bigint" />
+          <Property Name="PaymentType" Type="nvarchar" MaxLength="150" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="IsDelete" Type="bit" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="UpdatedBy" Type="bigint" />
+          <Property Name="UpdatedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Tbl_ProductItemImages">
+          <Key>
+            <PropertyRef Name="Pk_ItemImage_Id" />
+          </Key>
+          <Property Name="Pk_ItemImage_Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Fk_ProductItem_Id" Type="bigint" />
+          <Property Name="ItemImage" Type="nvarchar" MaxLength="450" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="IsDelete" Type="bit" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="UpdatedBy" Type="bigint" />
+          <Property Name="UpdatedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Tbl_ProductItems">
+          <Key>
+            <PropertyRef Name="Pk_ProductItem_Id" />
+          </Key>
+          <Property Name="Pk_ProductItem_Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Fk_SubProductId" Type="bigint" />
+          <Property Name="Fk_ProductId" Type="bigint" />
+          <Property Name="Fk_CategoryId" Type="bigint" />
+          <Property Name="ProductItemName" Type="nvarchar" MaxLength="650" />
+          <Property Name="MRPPrice" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="DistributorPrice" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="SalePrice" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="GST" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="IGST" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="Cess" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="ItemDescription" Type="nvarchar(max)" />
+          <Property Name="MainImage" Type="nvarchar" MaxLength="350" />
+          <Property Name="Notification" Type="nvarchar(max)" />
+          <Property Name="Sku" Type="nvarchar" MaxLength="50" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="IsDelete" Type="bit" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="UpdatedBy" Type="bigint" />
+          <Property Name="UpdatedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Tbl_Products">
+          <Key>
+            <PropertyRef Name="PK_Product_Id" />
+          </Key>
+          <Property Name="PK_Product_Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProductName" Type="nvarchar" MaxLength="450" />
+          <Property Name="Fk_CategoryId" Type="bigint" />
+          <Property Name="ProductImage" Type="nvarchar" MaxLength="450" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="UpdatedBy" Type="bigint" />
+          <Property Name="UpdatedDate" Type="datetime" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="IsDelete" Type="bit" />
+        </EntityType>
+        <EntityType Name="Tbl_SubProducts">
+          <Key>
+            <PropertyRef Name="Pk_SubProduct_Id" />
+          </Key>
+          <Property Name="Pk_SubProduct_Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SubProductName" Type="nvarchar" MaxLength="450" />
+          <Property Name="Fk_ProductId" Type="bigint" />
+          <Property Name="Fk_CategoryId" Type="bigint" />
+          <Property Name="SubProductImage" Type="nvarchar" MaxLength="350" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="IsDelete" Type="bit" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="UpdatedBy" Type="bigint" />
+          <Property Name="UpdatedDate" Type="datetime" />
+        </EntityType>
+        <EntityContainer Name="krupagallarydbModelStoreContainer">
+          <EntitySet Name="Tbl_AdminRoles" EntityType="Self.Tbl_AdminRoles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tbl_AdminUsers" EntityType="Self.Tbl_AdminUsers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tbl_Categories" EntityType="Self.Tbl_Categories" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tbl_ClientOtherDetails" EntityType="Self.Tbl_ClientOtherDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tbl_ClientRoles" EntityType="Self.Tbl_ClientRoles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tbl_ClientUsers" EntityType="Self.Tbl_ClientUsers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tbl_ItemStocks" EntityType="Self.Tbl_ItemStocks" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tbl_Offers" EntityType="Self.Tbl_Offers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tbl_OrderItemDetails" EntityType="Self.Tbl_OrderItemDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tbl_Orders" EntityType="Self.Tbl_Orders" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tbl_ProductItemImages" EntityType="Self.Tbl_ProductItemImages" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tbl_ProductItems" EntityType="Self.Tbl_ProductItems" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tbl_Products" EntityType="Self.Tbl_Products" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Tbl_SubProducts" EntityType="Self.Tbl_SubProducts" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="krupagallarydbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Tbl_AdminRoles">
+          <Key>
+            <PropertyRef Name="PK_Id" />
+          </Key>
+          <Property Name="PK_Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RoleName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="IsDelete" Type="Boolean" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="Int64" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="Tbl_AdminUsers">
+          <Key>
+            <PropertyRef Name="Pk_AdminUserId" />
+          </Key>
+          <Property Name="Pk_AdminUserId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FirstName" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="UserName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="MobileNo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="Int64" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="Tbl_Categories">
+          <Key>
+            <PropertyRef Name="PK_CategoryId" />
+          </Key>
+          <Property Name="PK_CategoryId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CategoryName" Type="String" MaxLength="450" FixedLength="false" Unicode="true" />
+          <Property Name="CategoryImage" Type="String" MaxLength="450" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="Int64" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="IsDelete" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="Tbl_ClientOtherDetails">
+          <Key>
+            <PropertyRef Name="Pk_ClientOtherDetailsId" />
+          </Key>
+          <Property Name="Pk_ClientOtherDetailsId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ClientUserId" Type="Int64" />
+          <Property Name="Addharcardno" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Pancardno" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="GSTno" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Photo" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="City" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="State" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="Address" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="ShipCity" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="ShipState" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ShipAddress" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="CreditAmt" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="AmountDue" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="IsDelete" Type="Boolean" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="Int64" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="Tbl_ClientRoles">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RoleName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="Int64" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="Tbl_ClientUsers">
+          <Key>
+            <PropertyRef Name="Pk_ClientUserId" />
+          </Key>
+          <Property Name="Pk_ClientUserId" Type="Int64" Nullable="false" />
+          <Property Name="FirstName" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="MobileNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="ClientRoleId" Type="Int64" />
+          <Property Name="CompanyName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="IsDelete" Type="Boolean" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="Int64" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="Tbl_ItemStocks">
+          <Key>
+            <PropertyRef Name="Pk_StockId" />
+          </Key>
+          <Property Name="Pk_StockId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Fk_ProductId" Type="Int64" />
+          <Property Name="Fk_CategoryId" Type="Int64" />
+          <Property Name="Fk_SubProductId" Type="Int64" />
+          <Property Name="Fk_ProductItemId" Type="Int64" />
+          <Property Name="Qty" Type="Int64" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="IsDelete" Type="Boolean" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="Int64" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="Tbl_Offers">
+          <Key>
+            <PropertyRef Name="Pk_Offer_Id" />
+          </Key>
+          <Property Name="Pk_Offer_Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OfferName" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="Fk_ProductId" Type="Int64" />
+          <Property Name="Fk_CategoryId" Type="Int64" />
+          <Property Name="Fk_SubproductId" Type="Int64" />
+          <Property Name="Fk_ProductItemId" Type="Int64" />
+          <Property Name="OfferPrice" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="StartDate" Type="DateTime" Precision="3" />
+          <Property Name="EndDate" Type="DateTime" Precision="3" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="IsDelete" Type="Boolean" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="Int64" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="Tbl_OrderItemDetails">
+          <Key>
+            <PropertyRef Name="Pk_OrderDetail_Id" />
+          </Key>
+          <Property Name="Pk_OrderDetail_Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Fk_OrderId" Type="Int64" />
+          <Property Name="Fk_ProductItemId" Type="Int64" />
+          <Property Name="Qty" Type="Int64" />
+          <Property Name="Price" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="ItemName" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Sku" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="GSTAmt" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="IGSTAmt" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="IsDelete" Type="Boolean" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="Int64" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="Tbl_Orders">
+          <Key>
+            <PropertyRef Name="Pk_Order_Id" />
+          </Key>
+          <Property Name="Pk_Order_Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Fk_ClientUserId" Type="Int64" />
+          <Property Name="OrderAmount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="OrderShipCity" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="OrderShipState" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="OrderShipAddress" Type="String" MaxLength="250" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="OrderShipPincode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="OrderShipClientName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="OrderShipClientPhone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="OrderStatusId" Type="Int64" />
+          <Property Name="PaymentType" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="IsDelete" Type="Boolean" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="Int64" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="Tbl_ProductItemImages">
+          <Key>
+            <PropertyRef Name="Pk_ItemImage_Id" />
+          </Key>
+          <Property Name="Pk_ItemImage_Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Fk_ProductItem_Id" Type="Int64" />
+          <Property Name="ItemImage" Type="String" MaxLength="450" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="IsDelete" Type="Boolean" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="Int64" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="Tbl_ProductItems">
+          <Key>
+            <PropertyRef Name="Pk_ProductItem_Id" />
+          </Key>
+          <Property Name="Pk_ProductItem_Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Fk_SubProductId" Type="Int64" />
+          <Property Name="Fk_ProductId" Type="Int64" />
+          <Property Name="Fk_CategoryId" Type="Int64" />
+          <Property Name="ProductItemName" Type="String" MaxLength="650" FixedLength="false" Unicode="true" />
+          <Property Name="MRPPrice" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="DistributorPrice" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="SalePrice" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="GST" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="IGST" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="Cess" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="MainImage" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="Notification" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Sku" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="IsDelete" Type="Boolean" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="Int64" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <Property Name="ItemDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Tbl_Products">
+          <Key>
+            <PropertyRef Name="PK_Product_Id" />
+          </Key>
+          <Property Name="PK_Product_Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductName" Type="String" MaxLength="450" FixedLength="false" Unicode="true" />
+          <Property Name="Fk_CategoryId" Type="Int64" />
+          <Property Name="ProductImage" Type="String" MaxLength="450" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="Int64" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="IsDelete" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="Tbl_SubProducts">
+          <Key>
+            <PropertyRef Name="Pk_SubProduct_Id" />
+          </Key>
+          <Property Name="Pk_SubProduct_Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SubProductName" Type="String" MaxLength="450" FixedLength="false" Unicode="true" />
+          <Property Name="Fk_ProductId" Type="Int64" />
+          <Property Name="Fk_CategoryId" Type="Int64" />
+          <Property Name="SubProductImage" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="IsDelete" Type="Boolean" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="Int64" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityContainer Name="krupagallarydbEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Tbl_AdminRoles" EntityType="Self.Tbl_AdminRoles" />
+          <EntitySet Name="Tbl_AdminUsers" EntityType="Self.Tbl_AdminUsers" />
+          <EntitySet Name="Tbl_Categories" EntityType="Self.Tbl_Categories" />
+          <EntitySet Name="Tbl_ClientOtherDetails" EntityType="Self.Tbl_ClientOtherDetails" />
+          <EntitySet Name="Tbl_ClientRoles" EntityType="Self.Tbl_ClientRoles" />
+          <EntitySet Name="Tbl_ClientUsers" EntityType="Self.Tbl_ClientUsers" />
+          <EntitySet Name="Tbl_ItemStocks" EntityType="Self.Tbl_ItemStocks" />
+          <EntitySet Name="Tbl_Offers" EntityType="Self.Tbl_Offers" />
+          <EntitySet Name="Tbl_OrderItemDetails" EntityType="Self.Tbl_OrderItemDetails" />
+          <EntitySet Name="Tbl_Orders" EntityType="Self.Tbl_Orders" />
+          <EntitySet Name="Tbl_ProductItemImages" EntityType="Self.Tbl_ProductItemImages" />
+          <EntitySet Name="Tbl_ProductItems" EntityType="Self.Tbl_ProductItems" />
+          <EntitySet Name="Tbl_Products" EntityType="Self.Tbl_Products" />
+          <EntitySet Name="Tbl_SubProducts" EntityType="Self.Tbl_SubProducts" />
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="krupagallarydbModelStoreContainer" CdmEntityContainer="krupagallarydbEntities">
+          <EntitySetMapping Name="Tbl_AdminRoles">
+            <EntityTypeMapping TypeName="krupagallarydbModel.Tbl_AdminRoles">
+              <MappingFragment StoreEntitySet="Tbl_AdminRoles">
+                <ScalarProperty Name="PK_Id" ColumnName="PK_Id" />
+                <ScalarProperty Name="RoleName" ColumnName="RoleName" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tbl_AdminUsers">
+            <EntityTypeMapping TypeName="krupagallarydbModel.Tbl_AdminUsers">
+              <MappingFragment StoreEntitySet="Tbl_AdminUsers">
+                <ScalarProperty Name="Pk_AdminUserId" ColumnName="Pk_AdminUserId" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="MobileNo" ColumnName="MobileNo" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tbl_Categories">
+            <EntityTypeMapping TypeName="krupagallarydbModel.Tbl_Categories">
+              <MappingFragment StoreEntitySet="Tbl_Categories">
+                <ScalarProperty Name="PK_CategoryId" ColumnName="PK_CategoryId" />
+                <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
+                <ScalarProperty Name="CategoryImage" ColumnName="CategoryImage" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tbl_ClientOtherDetails">
+            <EntityTypeMapping TypeName="krupagallarydbModel.Tbl_ClientOtherDetails">
+              <MappingFragment StoreEntitySet="Tbl_ClientOtherDetails">
+                <ScalarProperty Name="Pk_ClientOtherDetailsId" ColumnName="Pk_ClientOtherDetailsId" />
+                <ScalarProperty Name="ClientUserId" ColumnName="ClientUserId" />
+                <ScalarProperty Name="Addharcardno" ColumnName="Addharcardno" />
+                <ScalarProperty Name="Pancardno" ColumnName="Pancardno" />
+                <ScalarProperty Name="GSTno" ColumnName="GSTno" />
+                <ScalarProperty Name="Photo" ColumnName="Photo" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="ShipCity" ColumnName="ShipCity" />
+                <ScalarProperty Name="ShipState" ColumnName="ShipState" />
+                <ScalarProperty Name="ShipAddress" ColumnName="ShipAddress" />
+                <ScalarProperty Name="CreditAmt" ColumnName="CreditAmt" />
+                <ScalarProperty Name="AmountDue" ColumnName="AmountDue" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tbl_ClientRoles">
+            <EntityTypeMapping TypeName="krupagallarydbModel.Tbl_ClientRoles">
+              <MappingFragment StoreEntitySet="Tbl_ClientRoles">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="RoleName" ColumnName="RoleName" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tbl_ClientUsers">
+            <EntityTypeMapping TypeName="krupagallarydbModel.Tbl_ClientUsers">
+              <MappingFragment StoreEntitySet="Tbl_ClientUsers">
+                <ScalarProperty Name="Pk_ClientUserId" ColumnName="Pk_ClientUserId" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="MobileNo" ColumnName="MobileNo" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="ClientRoleId" ColumnName="ClientRoleId" />
+                <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tbl_ItemStocks">
+            <EntityTypeMapping TypeName="krupagallarydbModel.Tbl_ItemStocks">
+              <MappingFragment StoreEntitySet="Tbl_ItemStocks">
+                <ScalarProperty Name="Pk_StockId" ColumnName="Pk_StockId" />
+                <ScalarProperty Name="Fk_ProductId" ColumnName="Fk_ProductId" />
+                <ScalarProperty Name="Fk_CategoryId" ColumnName="Fk_CategoryId" />
+                <ScalarProperty Name="Fk_SubProductId" ColumnName="Fk_SubProductId" />
+                <ScalarProperty Name="Fk_ProductItemId" ColumnName="Fk_ProductItemId" />
+                <ScalarProperty Name="Qty" ColumnName="Qty" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tbl_Offers">
+            <EntityTypeMapping TypeName="krupagallarydbModel.Tbl_Offers">
+              <MappingFragment StoreEntitySet="Tbl_Offers">
+                <ScalarProperty Name="Pk_Offer_Id" ColumnName="Pk_Offer_Id" />
+                <ScalarProperty Name="OfferName" ColumnName="OfferName" />
+                <ScalarProperty Name="Fk_ProductId" ColumnName="Fk_ProductId" />
+                <ScalarProperty Name="Fk_CategoryId" ColumnName="Fk_CategoryId" />
+                <ScalarProperty Name="Fk_SubproductId" ColumnName="Fk_SubproductId" />
+                <ScalarProperty Name="Fk_ProductItemId" ColumnName="Fk_ProductItemId" />
+                <ScalarProperty Name="OfferPrice" ColumnName="OfferPrice" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tbl_OrderItemDetails">
+            <EntityTypeMapping TypeName="krupagallarydbModel.Tbl_OrderItemDetails">
+              <MappingFragment StoreEntitySet="Tbl_OrderItemDetails">
+                <ScalarProperty Name="Pk_OrderDetail_Id" ColumnName="Pk_OrderDetail_Id" />
+                <ScalarProperty Name="Fk_OrderId" ColumnName="Fk_OrderId" />
+                <ScalarProperty Name="Fk_ProductItemId" ColumnName="Fk_ProductItemId" />
+                <ScalarProperty Name="Qty" ColumnName="Qty" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="ItemName" ColumnName="ItemName" />
+                <ScalarProperty Name="Sku" ColumnName="Sku" />
+                <ScalarProperty Name="GSTAmt" ColumnName="GSTAmt" />
+                <ScalarProperty Name="IGSTAmt" ColumnName="IGSTAmt" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tbl_Orders">
+            <EntityTypeMapping TypeName="krupagallarydbModel.Tbl_Orders">
+              <MappingFragment StoreEntitySet="Tbl_Orders">
+                <ScalarProperty Name="Pk_Order_Id" ColumnName="Pk_Order_Id" />
+                <ScalarProperty Name="Fk_ClientUserId" ColumnName="Fk_ClientUserId" />
+                <ScalarProperty Name="OrderAmount" ColumnName="OrderAmount" />
+                <ScalarProperty Name="OrderShipCity" ColumnName="OrderShipCity" />
+                <ScalarProperty Name="OrderShipState" ColumnName="OrderShipState" />
+                <ScalarProperty Name="OrderShipAddress" ColumnName="OrderShipAddress" />
+                <ScalarProperty Name="OrderShipPincode" ColumnName="OrderShipPincode" />
+                <ScalarProperty Name="OrderShipClientName" ColumnName="OrderShipClientName" />
+                <ScalarProperty Name="OrderShipClientPhone" ColumnName="OrderShipClientPhone" />
+                <ScalarProperty Name="OrderStatusId" ColumnName="OrderStatusId" />
+                <ScalarProperty Name="PaymentType" ColumnName="PaymentType" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tbl_ProductItemImages">
+            <EntityTypeMapping TypeName="krupagallarydbModel.Tbl_ProductItemImages">
+              <MappingFragment StoreEntitySet="Tbl_ProductItemImages">
+                <ScalarProperty Name="Pk_ItemImage_Id" ColumnName="Pk_ItemImage_Id" />
+                <ScalarProperty Name="Fk_ProductItem_Id" ColumnName="Fk_ProductItem_Id" />
+                <ScalarProperty Name="ItemImage" ColumnName="ItemImage" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tbl_ProductItems">
+            <EntityTypeMapping TypeName="krupagallarydbModel.Tbl_ProductItems">
+              <MappingFragment StoreEntitySet="Tbl_ProductItems">
+                <ScalarProperty Name="ItemDescription" ColumnName="ItemDescription" />
+                <ScalarProperty Name="Pk_ProductItem_Id" ColumnName="Pk_ProductItem_Id" />
+                <ScalarProperty Name="Fk_SubProductId" ColumnName="Fk_SubProductId" />
+                <ScalarProperty Name="Fk_ProductId" ColumnName="Fk_ProductId" />
+                <ScalarProperty Name="Fk_CategoryId" ColumnName="Fk_CategoryId" />
+                <ScalarProperty Name="ProductItemName" ColumnName="ProductItemName" />
+                <ScalarProperty Name="MRPPrice" ColumnName="MRPPrice" />
+                <ScalarProperty Name="DistributorPrice" ColumnName="DistributorPrice" />
+                <ScalarProperty Name="SalePrice" ColumnName="SalePrice" />
+                <ScalarProperty Name="GST" ColumnName="GST" />
+                <ScalarProperty Name="IGST" ColumnName="IGST" />
+                <ScalarProperty Name="Cess" ColumnName="Cess" />
+                <ScalarProperty Name="MainImage" ColumnName="MainImage" />
+                <ScalarProperty Name="Notification" ColumnName="Notification" />
+                <ScalarProperty Name="Sku" ColumnName="Sku" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tbl_Products">
+            <EntityTypeMapping TypeName="krupagallarydbModel.Tbl_Products">
+              <MappingFragment StoreEntitySet="Tbl_Products">
+                <ScalarProperty Name="PK_Product_Id" ColumnName="PK_Product_Id" />
+                <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+                <ScalarProperty Name="Fk_CategoryId" ColumnName="Fk_CategoryId" />
+                <ScalarProperty Name="ProductImage" ColumnName="ProductImage" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Tbl_SubProducts">
+            <EntityTypeMapping TypeName="krupagallarydbModel.Tbl_SubProducts">
+              <MappingFragment StoreEntitySet="Tbl_SubProducts">
+                <ScalarProperty Name="Pk_SubProduct_Id" ColumnName="Pk_SubProduct_Id" />
+                <ScalarProperty Name="SubProductName" ColumnName="SubProductName" />
+                <ScalarProperty Name="Fk_ProductId" ColumnName="Fk_ProductId" />
+                <ScalarProperty Name="Fk_CategoryId" ColumnName="Fk_CategoryId" />
+                <ScalarProperty Name="SubProductImage" ColumnName="SubProductImage" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="true" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
