@@ -137,7 +137,9 @@
     <Compile Include="Areas\Admin\Controllers\ProductItemController.cs" />
     <Compile Include="Areas\Admin\Controllers\StockController.cs" />
     <Compile Include="Areas\Admin\Controllers\SubProductController.cs" />
-    <Compile Include="Areas\Admin\Models\clsAdminSession.cs" />
+    <Compile Include="Filters\CustomAuthorize.cs" />
+    <Compile Include="Helper\ErrorMessage.cs" />
+    <Compile Include="Model\clsAdminSession.cs" />
     <Compile Include="Areas\Client\ClientAreaRegistration.cs" />
     <Compile Include="Areas\Client\Controllers\HomePageController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -145,64 +147,65 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Model\clsCommon.cs" />
-    <Compile Include="Model\KrupaGallary.Context.cs">
+    <Compile Include="Model\KrupaGallery.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>KrupaGallary.Context.tt</DependentUpon>
+      <DependentUpon>KrupaGallery.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="Model\KrupaGallary.cs">
+    <Compile Include="Model\KrupaGallery.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>KrupaGallary.tt</DependentUpon>
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
-    <Compile Include="Model\KrupaGallary.Designer.cs">
+    <Compile Include="Model\KrupaGallery.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>KrupaGallary.edmx</DependentUpon>
+      <DependentUpon>KrupaGallery.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Model\Tbl_AdminRoles.cs">
-      <DependentUpon>KrupaGallary.tt</DependentUpon>
+    <Compile Include="Model\tbl_AdminRoles.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
-    <Compile Include="Model\Tbl_AdminUsers.cs">
-      <DependentUpon>KrupaGallary.tt</DependentUpon>
+    <Compile Include="Model\tbl_AdminUsers.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
-    <Compile Include="Model\Tbl_Categories.cs">
-      <DependentUpon>KrupaGallary.tt</DependentUpon>
+    <Compile Include="Model\tbl_Categories.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
-    <Compile Include="Model\Tbl_ClientOtherDetails.cs">
-      <DependentUpon>KrupaGallary.tt</DependentUpon>
+    <Compile Include="Model\tbl_ClientOtherDetails.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
-    <Compile Include="Model\Tbl_ClientRoles.cs">
-      <DependentUpon>KrupaGallary.tt</DependentUpon>
+    <Compile Include="Model\tbl_ClientRoles.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
-    <Compile Include="Model\Tbl_ClientUsers.cs">
-      <DependentUpon>KrupaGallary.tt</DependentUpon>
+    <Compile Include="Model\tbl_ClientUsers.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
-    <Compile Include="Model\Tbl_ItemStocks.cs">
-      <DependentUpon>KrupaGallary.tt</DependentUpon>
+    <Compile Include="Model\tbl_ItemStocks.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
-    <Compile Include="Model\Tbl_Offers.cs">
-      <DependentUpon>KrupaGallary.tt</DependentUpon>
+    <Compile Include="Model\tbl_Offers.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
-    <Compile Include="Model\Tbl_OrderItemDetails.cs">
-      <DependentUpon>KrupaGallary.tt</DependentUpon>
+    <Compile Include="Model\tbl_OrderItemDetails.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
-    <Compile Include="Model\Tbl_Orders.cs">
-      <DependentUpon>KrupaGallary.tt</DependentUpon>
+    <Compile Include="Model\tbl_Orders.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
-    <Compile Include="Model\Tbl_ProductItemImages.cs">
-      <DependentUpon>KrupaGallary.tt</DependentUpon>
+    <Compile Include="Model\tbl_ProductItemImages.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
-    <Compile Include="Model\Tbl_ProductItems.cs">
-      <DependentUpon>KrupaGallary.tt</DependentUpon>
+    <Compile Include="Model\tbl_ProductItems.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
-    <Compile Include="Model\Tbl_Products.cs">
-      <DependentUpon>KrupaGallary.tt</DependentUpon>
+    <Compile Include="Model\tbl_Products.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
-    <Compile Include="Model\Tbl_SubProducts.cs">
-      <DependentUpon>KrupaGallary.tt</DependentUpon>
+    <Compile Include="Model\tbl_SubProducts.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModel\CategoryVM.cs" />
     <Compile Include="ViewModel\LoginVM.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -2000,15 +2003,17 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <Content Include="Model\KrupaGallary.Context.tt">
+    <Content Include="Images\default_image.png" />
+    <Content Include="Images\default_user_image.png" />
+    <Content Include="Model\KrupaGallery.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>KrupaGallary.Context.cs</LastGenOutput>
-      <DependentUpon>KrupaGallary.edmx</DependentUpon>
+      <DependentUpon>KrupaGallery.edmx</DependentUpon>
+      <LastGenOutput>KrupaGallery.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="Model\KrupaGallary.tt">
+    <Content Include="Model\KrupaGallery.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>KrupaGallary.edmx</DependentUpon>
-      <LastGenOutput>KrupaGallary.cs</LastGenOutput>
+      <DependentUpon>KrupaGallery.edmx</DependentUpon>
+      <LastGenOutput>KrupaGallery.cs</LastGenOutput>
     </Content>
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -2277,15 +2282,7 @@
     <Content Include="Areas\Admin\Content\img\file-search\.DS_Store" />
     <Content Include="Areas\Admin\Content\img\gallery\.DS_Store" />
     <Content Include="Areas\Admin\Views\Login\Index.cshtml" />
-    <EntityDeploy Include="Model\KrupaGallary.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>KrupaGallary.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Model\KrupaGallary.edmx.diagram">
-      <DependentUpon>KrupaGallary.edmx</DependentUpon>
-    </Content>
     <Content Include="Areas\Admin\Views\Category\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\Category\AddCategory.cshtml" />
     <Content Include="Areas\Admin\Views\Product\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Product\AddProduct.cshtml" />
     <Content Include="Areas\Admin\Views\SubProduct\Index.cshtml" />
@@ -2294,6 +2291,15 @@
     <Content Include="Areas\Admin\Views\Stock\Index.cshtml" />
     <Content Include="Areas\Admin\Views\SubProduct\AddSubProduct.cshtml" />
     <Content Include="Areas\Admin\Views\Stock\AddStock.cshtml" />
+    <EntityDeploy Include="Model\KrupaGallery.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>KrupaGallery.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <Content Include="Model\KrupaGallery.edmx.diagram">
+      <DependentUpon>KrupaGallery.edmx</DependentUpon>
+    </Content>
+    <Content Include="Areas\Admin\Views\Category\Add.cshtml" />
+    <Content Include="Areas\Admin\Views\Category\Edit.cshtml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -2324,10 +2330,17 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Admin\Content\assets\jquery-file-upload\server\php\files\thumbnail\" />
+    <Folder Include="Areas\Admin\Models\" />
     <Folder Include="Areas\Admin\Views\AdminUser\" />
     <Folder Include="Areas\Admin\Views\ClientUser\" />
     <Folder Include="Areas\Admin\Views\Offer\" />
     <Folder Include="Areas\Client\Models\" />
+    <Folder Include="Images\AdminUserMedia\" />
+    <Folder Include="Images\CategoryMedia\" />
+    <Folder Include="Images\ClientUser\" />
+    <Folder Include="Images\ProductItemMedia\" />
+    <Folder Include="Images\ProductMedia\" />
+    <Folder Include="Images\SubProductMedia\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

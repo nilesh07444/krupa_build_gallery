@@ -12,21 +12,22 @@ namespace KrupaBuildGallery.Model
     using System;
     using System.Collections.Generic;
     
-    public partial class Tbl_ClientUsers
+    public partial class tbl_ClientUsers
     {
-        public long Pk_ClientUserId { get; set; }
+        public long ClientUserId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string Email { get; set; }
-        public string MobileNo { get; set; }
         public string UserName { get; set; }
+        public string Email { get; set; }
         public string Password { get; set; }
-        public Nullable<long> ClientRoleId { get; set; }
+        public string MobileNo { get; set; }
+        public long ClientRoleId { get; set; }
         public string CompanyName { get; set; }
-        public Nullable<bool> IsActive { get; set; }
-        public Nullable<bool> IsDelete { get; set; }
+        public string ProfilePicture { get; set; }
+        public bool IsActive { get; set; }
+        public bool IsDelete { get; set; }
         public Nullable<long> CreatedBy { get; set; }
-        public Nullable<System.DateTime> CreatedDate { get; set; }
+        public System.DateTime CreatedDate { get; set; }
         public Nullable<long> UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDate { get; set; }
     }

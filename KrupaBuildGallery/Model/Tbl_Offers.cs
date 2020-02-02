@@ -12,21 +12,21 @@ namespace KrupaBuildGallery.Model
     using System;
     using System.Collections.Generic;
     
-    public partial class Tbl_Offers
+    public partial class tbl_Offers
     {
-        public long Pk_Offer_Id { get; set; }
+        public long OfferId { get; set; }
         public string OfferName { get; set; }
-        public Nullable<long> Fk_ProductId { get; set; }
-        public Nullable<long> Fk_CategoryId { get; set; }
-        public Nullable<long> Fk_SubproductId { get; set; }
-        public Nullable<long> Fk_ProductItemId { get; set; }
-        public Nullable<decimal> OfferPrice { get; set; }
-        public Nullable<System.DateTime> StartDate { get; set; }
-        public Nullable<System.DateTime> EndDate { get; set; }
-        public Nullable<bool> IsActive { get; set; }
-        public Nullable<bool> IsDelete { get; set; }
+        public long CategoryId { get; set; }
+        public long ProductId { get; set; }
+        public Nullable<long> SubproductId { get; set; }
+        public long ProductItemId { get; set; }
+        public decimal OfferPrice { get; set; }
+        public System.DateTime StartDate { get; set; }
+        public System.DateTime EndDate { get; set; }
+        public bool IsActive { get; set; }
+        public bool IsDelete { get; set; }
         public Nullable<long> CreatedBy { get; set; }
-        public Nullable<System.DateTime> CreatedDate { get; set; }
+        public System.DateTime CreatedDate { get; set; }
         public Nullable<long> UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDate { get; set; }
     }

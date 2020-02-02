@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace KrupaBuildGallery.Areas.Admin.Models
+namespace KrupaBuildGallery.Model
 {
     public class clsAdminSession
     {
  
-        public static int UserID
+        public static long UserID
         {
             get
             {

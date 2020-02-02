@@ -12,18 +12,18 @@ namespace KrupaBuildGallery.Model
     using System;
     using System.Collections.Generic;
     
-    public partial class Tbl_ItemStocks
+    public partial class tbl_ItemStocks
     {
-        public long Pk_StockId { get; set; }
-        public Nullable<long> Fk_ProductId { get; set; }
-        public Nullable<long> Fk_CategoryId { get; set; }
-        public Nullable<long> Fk_SubProductId { get; set; }
-        public Nullable<long> Fk_ProductItemId { get; set; }
-        public Nullable<long> Qty { get; set; }
-        public Nullable<bool> IsActive { get; set; }
-        public Nullable<bool> IsDelete { get; set; }
+        public long StockId { get; set; }
+        public long CategoryId { get; set; }
+        public long ProductId { get; set; }
+        public Nullable<long> SubProductId { get; set; }
+        public long ProductItemId { get; set; }
+        public long Qty { get; set; }
+        public bool IsActive { get; set; }
+        public bool IsDelete { get; set; }
         public Nullable<long> CreatedBy { get; set; }
-        public Nullable<System.DateTime> CreatedDate { get; set; }
+        public System.DateTime CreatedDate { get; set; }
         public Nullable<long> UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDate { get; set; }
     }

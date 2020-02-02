@@ -12,14 +12,14 @@ namespace KrupaBuildGallery.Model
     using System;
     using System.Collections.Generic;
     
-    public partial class Tbl_ClientRoles
+    public partial class tbl_ClientRoles
     {
-        public long Id { get; set; }
-        public string RoleName { get; set; }
-        public Nullable<bool> IsActive { get; set; }
-        public Nullable<bool> IsDeleted { get; set; }
+        public long ClientRoleId { get; set; }
+        public string ClientRoleName { get; set; }
+        public bool IsActive { get; set; }
+        public bool IsDeleted { get; set; }
         public Nullable<long> CreatedBy { get; set; }
-        public Nullable<System.DateTime> CreatedDate { get; set; }
+        public System.DateTime CreatedDate { get; set; }
         public Nullable<long> UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDate { get; set; }
     }

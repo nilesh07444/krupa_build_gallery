@@ -1,12 +1,13 @@
-﻿<!DOCTYPE html>
+﻿@using KrupaBuildGallery.Model;
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="Mosaddek">
-    <meta name="keyword" content="FlatLab, Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
-    <link rel="shortcut icon" href="img/favicon.png">
+    <meta name="keyword" content="Krupa Build Gallery">
+    @*<link rel="shortcut icon" href="img/favicon.png">*@
 
     <title>Krupa Build Gallery</title>
 
@@ -43,20 +44,27 @@
                 <div class="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
             </div>
             <!--logo start-->
-            <a href="index.html" class="logo"><span> Krupa Build Gallery</span></a>
+            <a href="/admin/dashboard" class="logo"><span> Krupa Build Gallery</span></a>
             <!--logo end-->
-             
+
             <div class="top-nav ">
                 <!--search & user info start-->
                 <ul class="nav pull-right top-menu">
-                    <li>
-                        <input type="text" class="form-control search" placeholder="Search">
-                    </li>
+                    @*<li>
+                            <input type="text" class="form-control search" placeholder="Search">
+                        </li>*@
                     <!-- user login dropdown start-->
                     <li class="dropdown">
                         <a data-toggle="dropdown" class="dropdown-toggle" href="#">
-                            <img alt="" src="img/avatar1_small.jpg">
-                            <span class="username">Jhon Doue</span>
+                            @if (clsAdminSession.ImagePath != "")
+                            {
+                                <img style="width: 30px; height: 30px;" alt="" src="~/Images/UserPhoto/@clsAdminSession.ImagePath">
+                            }
+                            else
+                            {
+                                <img style="width: 30px; height: 30px;" alt="" src="~/Images/default_user_image.png">
+                            }
+                            <span class="username">@clsAdminSession.UserName</span>
                             <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu extended logout">
@@ -64,7 +72,7 @@
                             <li><a href="#"><i class=" fa fa-suitcase"></i>Profile</a></li>
                             <li><a href="#"><i class="fa fa-cog"></i> Settings</a></li>
                             <li><a href="#"><i class="fa fa-bell-o"></i> Notification</a></li>
-                            <li><a href="login.html"><i class="fa fa-key"></i> Log Out</a></li>
+                            <li><a href="/admin/login/signout"><i class="fa fa-key"></i> Log Out</a></li>
                         </ul>
                     </li>
                     <!-- user login dropdown end -->
@@ -79,54 +87,54 @@
                 <!-- sidebar menu start-->
                 <ul class="sidebar-menu" id="nav-accordion">
                     <li>
-                        <a class="active" href="index.html">
+                        <a class="active" href="/admin/dashboard">
                             <i class="fa fa-dashboard"></i>
                             <span>Dashboard</span>
                         </a>
                     </li>
 
                     <li class="sub-menu">
-                        <a href="javascript:;">
+                        <a class="clsMain @(ViewBag.Title == "Category" ? "active" : "")" href="javascript:;">
                             <i class="fa fa-laptop"></i>
-                            <span>Categories</span>
+                            <span>Category</span>
                         </a>
                         <ul class="sub">
-                            <li><a href="/Admin/Category/Add">Add Category</a></li>
-                            <li><a href="/Admin/Category">Categories List</a></li>
+                            <li><a href="/admin/category/add">Add Category</a></li>
+                            <li><a href="/admin/category">Categories List</a></li>
                         </ul>
                     </li>
                     <li class="sub-menu">
-                        <a href="javascript:;">
+                        <a class="clsMain @(ViewBag.Title == "Product" ? "active" : "")" href="javascript:;">
                             <i class="fa fa-laptop"></i>
                             <span>Products</span>
                         </a>
                         <ul class="sub">
-                            <li><a href="/Admin/Product/Add">Add Product</a></li>
-                            <li><a href="/Admin/Product">Products List</a></li>
+                            <li><a href="/admin/product/add">Add Product</a></li>
+                            <li><a href="/admin/product">Products List</a></li>
                         </ul>
                     </li>
                     <li class="sub-menu">
-                        <a href="javascript:;">
+                        <a class="clsMain @(ViewBag.Title == "SubProduct" ? "active" : "")" href="javascript:;">
                             <i class="fa fa-laptop"></i>
                             <span>Sub Products</span>
                         </a>
                         <ul class="sub">
-                            <li><a href="/Admin/SubProduct/Add">Add Sub Product</a></li>
-                            <li><a href="/Admin/SubProduct">Sub Products List</a></li>
+                            <li><a href="/admin/subproduct/add">Add Sub Product</a></li>
+                            <li><a href="/admin/subproduct">Sub Products List</a></li>
                         </ul>
                     </li>
                     <li class="sub-menu">
-                        <a href="javascript:;">
+                        <a class="clsMain @(ViewBag.Title == "ProductItem" ? "active" : "")" href="javascript:;">
                             <i class="fa fa-laptop"></i>
                             <span>Product Items</span>
                         </a>
                         <ul class="sub">
-                            <li><a href="/Admin/ProductItem/Add">Add Product Item</a></li>
-                            <li><a href="/Admin/ProductItem">Product Items List</a></li>
+                            <li><a href="/admin/productitem/add">Add Product Item</a></li>
+                            <li><a href="/admin/productitem">Product Items List</a></li>
                         </ul>
                     </li>
                     <li class="sub-menu">
-                        <a href="javascript:;">
+                        <a class="clsMain @(ViewBag.Title == "Stock" ? "active" : "")" href="javascript:;">
                             <i class="fa fa-laptop"></i>
                             <span>Stocks</span>
                         </a>
@@ -136,7 +144,7 @@
                         </ul>
                     </li>
                     <li class="sub-menu">
-                        <a href="javascript:;">
+                        <a class="clsMain @(ViewBag.Title == "Order" ? "active" : "")" href="javascript:;">
                             <i class="fa fa-laptop"></i>
                             <span>Orders</span>
                         </a>
@@ -145,7 +153,7 @@
                         </ul>
                     </li>
                     <li class="sub-menu">
-                        <a href="javascript:;">
+                        <a class="clsMain @(ViewBag.Title == "Offer" ? "active" : "")" href="javascript:;">
                             <i class="fa fa-laptop"></i>
                             <span>Offers</span>
                         </a>
@@ -154,8 +162,9 @@
                             <li><a href="horizontal_menu.html">Offers List</a></li>
                         </ul>
                     </li>
-                    <li class="sub-menu">
-                        <a href="javascript:;">
+
+                    @*<li class="sub-menu">
+                        <a class="clsMain @(ViewBag.Title == "AdminUser" ? "active" : "")" href="javascript:;">
                             <i class="fa fa-laptop"></i>
                             <span>Admin Users</span>
                         </a>
@@ -163,11 +172,12 @@
                             <li><a href="boxed_page.html">Add Admin User</a></li>
                             <li><a href="horizontal_menu.html">Admin Users List</a></li>
                         </ul>
-                    </li>
+                    </li>*@
+
                     <li class="sub-menu">
-                        <a href="javascript:;">
+                        <a class="clsMain @(ViewBag.Title == "ClientUser" ? "active" : "")" href="javascript:;">
                             <i class="fa fa-laptop"></i>
-                            <span>Customer and Distributor</span>
+                            <span>Users</span>
                         </a>
                         <ul class="sub">
                             <li><a href="horizontal_menu.html">Distributor List</a></li>
@@ -194,7 +204,17 @@
         <!--footer end-->
     </section>
 
-    <!-- js placed at the end of the document so the pages load faster -->   
+    <!-- js placed at the end of the document so the pages load faster -->
+    <script src="~/Areas/Admin/Content/js/jquery.js"></script>
+    <script src="~/Areas/Admin/Content/js/jquery-1.8.3.min.js"></script>
+    @section Scripts {
+        @Scripts.Render("~/bundles/jqueryval")
+    }
+    <script src="~/Areas/Admin/Content/js/bootstrap.min.js"></script>
+
+    <script src="~/Areas/Admin/Content/assets/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
+    <script src="~/Areas/Admin/Content/assets/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>
+
     <script class="include" type="text/javascript" src="~/Areas/Admin/Content/js/jquery.dcjqaccordion.2.7.js"></script>
     <script src="~/Areas/Admin/Content/js/jquery.scrollTo.min.js"></script>
     <script src="~/Areas/Admin/Content/js/jquery.nicescroll.js" type="text/javascript"></script>
@@ -202,6 +222,7 @@
     <script src="~/Areas/Admin/Content/assets/jquery-easy-pie-chart/jquery.easy-pie-chart.js"></script>
     <script src="~/Areas/Admin/Content/js/owl.carousel.js"></script>
     <script src="~/Areas/Admin/Content/js/jquery.customSelect.min.js"></script>
+    <script src="~/Areas/Admin/Content/assets/bootstrap-fileupload/bootstrap-fileupload.js"></script>
     <script src="~/Areas/Admin/Content/js/respond.min.js"></script>
 
     <!--common script for all pages-->
@@ -212,26 +233,67 @@
     <script src="~/Areas/Admin/Content/js/easy-pie-chart.js"></script>
     <script src="~/Areas/Admin/Content/js/count.js"></script>
 
+    <!--datatable scripts-->
+    <script type="text/javascript" language="javascript" src="~/Areas/Admin/Content/assets/advanced-datatable/media/js/jquery.dataTables.js"></script>
+    <script type="text/javascript" src="~/Areas/Admin/Content/assets/data-tables/DT_bootstrap.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-sweetalert/1.0.1/sweetalert.min.js"></script>
+    <script src="~/Scripts/jquery.blockUI.js"></script>
     <script>
 
-      //owl carousel
+        //owl carousel
 
-      $(document).ready(function() {
-          $("#owl-demo").owlCarousel({
-              navigation : true,
-              slideSpeed : 300,
-              paginationSpeed : 400,
-              singleItem : true,
-			  autoPlay:true
+        $(document).ready(function () {
+            $("#owl-demo").owlCarousel({
+                navigation: true,
+                slideSpeed: 300,
+                paginationSpeed: 400,
+                singleItem: true,
+                autoPlay: true
 
-          });
-      });
+            });
+        });
 
-      //custom select box
+        //custom select box
 
-      $(function(){
-          $('select.styled').customSelect();
-      });
+        $(function () {
+            $('select.styled').customSelect();
+        });
+
+        function showErrorMsg(message, divId) {
+            var htmlData = "";
+            htmlData += "<div class='dvError alert alert-block alert-danger fade in'>" + message + "</div>"
+            jQuery("#" + divId).html(htmlData);
+            $('.dvError').fadeOut(5000, function () { $(this).remove(); });
+        }
+        function showSuccessMsg(message, divId) {
+            var htmlData = "";
+            htmlData += "<div class='dvSuccess alert alert-success alert-block fade in'><h4><i class='fa fa-ok-sign'></i>Success!</h4><p>" + message + "</p></div>";
+            jQuery("#" + divId).html(htmlData);
+            $('.dvSuccess').fadeOut(5000, function () { $(this).remove(); });
+        }
+
+        jQuery('.default-date-picker').datepicker({
+            format: 'dd/mm/yyyy'
+        });
+
+        jQuery(document).on("click", "ul.sidebar-menu li a:not(.clsMain)", function () {
+            jQuery.blockUI({ message: "<h4>Please Wait...</h4>" });
+        });
+
+        jQuery("#btnSubmit").click(function (event) {
+            //event.preventDefault();
+            if (jQuery("form").valid()) {
+                jQuery.blockUI({ message: "<h4>Please Wait...</h4>" });
+            }
+        });
+
+        function StartLoading() {
+            jQuery.blockUI({ message: "<h4>Please Wait...</h4>" });
+        }
+
+        function StopLoading() {
+            jQuery.unblockUI();
+        }
 
     </script>
 

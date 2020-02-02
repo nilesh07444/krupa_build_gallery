@@ -12,28 +12,28 @@ namespace KrupaBuildGallery.Model
     using System;
     using System.Collections.Generic;
     
-    public partial class Tbl_ProductItems
+    public partial class tbl_ProductItems
     {
-        public long Pk_ProductItem_Id { get; set; }
-        public Nullable<long> Fk_SubProductId { get; set; }
-        public Nullable<long> Fk_ProductId { get; set; }
-        public Nullable<long> Fk_CategoryId { get; set; }
-        public string ProductItemName { get; set; }
-        public Nullable<decimal> MRPPrice { get; set; }
-        public Nullable<decimal> DistributorPrice { get; set; }
-        public Nullable<decimal> SalePrice { get; set; }
-        public Nullable<decimal> GST { get; set; }
-        public Nullable<decimal> IGST { get; set; }
+        public long ProductItemId { get; set; }
+        public long CategoryId { get; set; }
+        public long ProductId { get; set; }
+        public Nullable<long> SubProductId { get; set; }
+        public string ItemName { get; set; }
+        public string ItemDescription { get; set; }
+        public decimal MRPPrice { get; set; }
+        public decimal DistributorPrice { get; set; }
+        public decimal CustomerPrice { get; set; }
+        public decimal GST_Per { get; set; }
+        public decimal IGST_Per { get; set; }
         public Nullable<decimal> Cess { get; set; }
         public string MainImage { get; set; }
         public string Notification { get; set; }
         public string Sku { get; set; }
-        public Nullable<bool> IsActive { get; set; }
-        public Nullable<bool> IsDelete { get; set; }
+        public bool IsActive { get; set; }
+        public bool IsDelete { get; set; }
         public Nullable<long> CreatedBy { get; set; }
-        public Nullable<System.DateTime> CreatedDate { get; set; }
+        public System.DateTime CreatedDate { get; set; }
         public Nullable<long> UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDate { get; set; }
-        public string ItemDescription { get; set; }
     }
 }

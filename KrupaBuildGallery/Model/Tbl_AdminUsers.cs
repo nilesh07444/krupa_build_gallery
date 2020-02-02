@@ -12,19 +12,21 @@ namespace KrupaBuildGallery.Model
     using System;
     using System.Collections.Generic;
     
-    public partial class Tbl_AdminUsers
+    public partial class tbl_AdminUsers
     {
-        public long Pk_AdminUserId { get; set; }
+        public long AdminUserId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string UserName { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
         public string MobileNo { get; set; }
-        public Nullable<bool> IsActive { get; set; }
-        public Nullable<bool> IsDeleted { get; set; }
+        public int AdminRoleId { get; set; }
+        public string ProfilePicture { get; set; }
+        public bool IsActive { get; set; }
+        public bool IsDeleted { get; set; }
         public Nullable<long> CreatedBy { get; set; }
-        public Nullable<System.DateTime> CreatedDate { get; set; }
+        public System.DateTime CreatedDate { get; set; }
         public Nullable<long> UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDate { get; set; }
     }

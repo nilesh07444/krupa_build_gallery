@@ -12,15 +12,15 @@ namespace KrupaBuildGallery.Model
     using System;
     using System.Collections.Generic;
     
-    public partial class Tbl_ProductItemImages
+    public partial class tbl_ProductItemImages
     {
-        public long Pk_ItemImage_Id { get; set; }
-        public Nullable<long> Fk_ProductItem_Id { get; set; }
+        public long ProductItemImageId { get; set; }
+        public long ProductItemId { get; set; }
         public string ItemImage { get; set; }
-        public Nullable<bool> IsActive { get; set; }
-        public Nullable<bool> IsDelete { get; set; }
+        public bool IsActive { get; set; }
+        public bool IsDelete { get; set; }
         public Nullable<long> CreatedBy { get; set; }
-        public Nullable<System.DateTime> CreatedDate { get; set; }
+        public System.DateTime CreatedDate { get; set; }
         public Nullable<long> UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDate { get; set; }
     }
