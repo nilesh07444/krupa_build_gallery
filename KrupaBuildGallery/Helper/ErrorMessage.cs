@@ -10,7 +10,7 @@ namespace KrupaBuildGallery.Helper
         // Admin Portal Messages
         public static string CategoryNameExists = "Category Name is already exist";
         public static string SubProductNameExists = "Sub Product Name is already exist";
-        public static string SubCategoryNameExists = "Sub Category Name is already exist";
+        public static string ProductNameExists = "Product Name is already exist";
         public static string ItemNameExists = "Item Name is already exist";
 
         // Client Portal Messages

@@ -8,18 +8,10 @@ using System.Web.Mvc;
 namespace KrupaBuildGallery.Areas.Admin.Controllers
 {
     [CustomAuthorize]
-    public class SubProductController : Controller
+    public class DistributorController : Controller
     {
-        // GET: Admin/SubProduct
+        // GET: Admin/Distributor
         public ActionResult Index()
-        {
-            return View();
-        }
-        public ActionResult Add()
-        {
-            return View();
-        }
-        public ActionResult Edit(int id)
         {
             return View();
         }

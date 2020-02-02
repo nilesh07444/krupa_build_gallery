@@ -17,11 +17,11 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         }
         public ActionResult Add()
         {
-            return View("~/Areas/Admin/Views/ProductItem/AddProductItem.cshtml");
+            return View();
         }
         public ActionResult Edit(int id)
         {
-            return View("~/Areas/Admin/Views/ProductItem/AddProductItem.cshtml");
+            return View();
         }
     }
 }

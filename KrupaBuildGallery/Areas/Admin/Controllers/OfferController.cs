@@ -15,5 +15,10 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         {
             return View();
         }
+
+        public ActionResult Add()
+        {
+            return View();
+        }
     }
 }

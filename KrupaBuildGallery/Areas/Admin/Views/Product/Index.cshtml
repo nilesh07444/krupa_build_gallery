@@ -1,4 +1,11 @@
-﻿<!--main content start-->
+﻿@using KrupaBuildGallery.ViewModel
+@model List<ProductVM>
+@{
+    ViewBag.Title = "Product";
+
+    int counter = 1;
+}
+<!--main content start-->
 <section id="main-content">
     <section class="wrapper site-min-height">
         <!-- page start-->
@@ -10,55 +17,33 @@
                     </header>
                     <div class="panel-body">
                         <div class="adv-table">
-                            <table class="display table table-bordered table-striped" id="example">
+                            <table class="display table table-bordered table-striped" id="tblProductList">
                                 <thead>
                                     <tr>
+                                        <th>#</th>
                                         <th>Product Name</th>
                                         <th>Category Name</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr class="gradeX">
-                                        <td>Category1</td>
-                                        <td>Product1</td>
-                                        <td>
-                                            <button class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></button>
-                                            <button class="btn btn-danger btn-xs"><i class="fa fa-trash-o "></i></button>
-                                        </td>
-                                    </tr>
-                                    <tr class="gradeX">
-                                        <td>Category2</td>
-                                        <td>Product2</td>
-                                        <td>
-                                            <button class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></button>
-                                            <button class="btn btn-danger btn-xs"><i class="fa fa-trash-o "></i></button>
-                                        </td>
-                                    </tr>
-                                    <tr class="gradeX">
-                                        <td>Category3</td>
-                                        <td>Product3</td>
-                                        <td>
-                                            <button class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></button>
-                                            <button class="btn btn-danger btn-xs"><i class="fa fa-trash-o "></i></button>
-                                        </td>
-                                    </tr>
-                                    <tr class="gradeX">
-                                        <td>Category4</td>
-                                        <td>Product4</td>
-                                        <td>
-                                            <button class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></button>
-                                            <button class="btn btn-danger btn-xs"><i class="fa fa-trash-o "></i></button>
-                                        </td>
-                                    </tr>
+                                    @if (Model != null && Model.Count > 0)
+                                    {
+                                        foreach (ProductVM product in Model)
+                                        {
+                                            <tr class="gradeX">
+                                                <td>@counter.</td>
+                                                <td>@product.ProductName</td>
+                                                <td>@product.CategoryName</td>
+                                                <td>
+                                                    <a href="/admin/category/edit/@product.ProductId" class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></a>
+                                                    <button onclick="fnDeleteProduct('@product.ProductId')" class="btn btn-danger btn-xs"><i class="fa fa-trash-o "></i></button>
+                                                </td>
+                                            </tr>
+                                            counter++;
+                                        }
+                                    }
                                 </tbody>
-                                <tfoot>
-                                    <tr>
-                                        <th>Product Name</th>
-                                        <th>Category Name</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </tfoot>
                             </table>
                         </div>
                     </div>
@@ -69,12 +54,84 @@
     </section>
 </section>
 <!--main content end-->
-<script type="text/javascript" language="javascript" src="~/Areas/Admin/Content/assets/advanced-datatable/media/js/jquery.dataTables.js"></script>
-<script type="text/javascript" src="~/Areas/Admin/Content/assets/data-tables/DT_bootstrap.js"></script>
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteProductModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title">Delete Confirm</h4>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete ?
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="hdnDeleteProduct" />
+                <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+                <button id="btnDeleteProduct" class="btn btn-danger" type="button">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Delete modal -->
+
+<script src="~/Areas/Admin/Content/js/jquery.js"></script>
+
 <script type="text/javascript" charset="utf-8">
-    $(document).ready(function(){
-      $('#example').dataTable( {
-                  "aaSorting": [[ 4, "desc" ]]
-              });
+    jQuery(document).ready(function () {
+        StartLoading();
+        jQuery('html, body').animate({ scrollTop: 0 }, 1000);
+
+        jQuery('#tblProductList').dataTable({
+            "aaSorting": [],
+            "aoColumnDefs": [
+                {
+                    'bSortable': false,
+                    'aTargets': [0,2]
+                }]
+        });
     });
+
+    jQuery(window).on("load", function () {
+        StopLoading();
+    });
+
+    jQuery(document).on("click", "#btnDeleteProduct", function () {
+
+        var Product_Id = jQuery("#hdnDeleteProduct").val();
+        if (Product_Id != "" && Product_Id != null) {
+            $('#deleteProductModal').modal('hide');
+            $.blockUI({ message: "<h4>Please Wait...</h4>" });
+            var URL = '@Url.Action("DeleteProduct", "Product")';
+            $.ajax({
+                type: 'POST',
+                async: true,
+                url: URL + "?ProductId=" + Product_Id,
+                success: function (result) {
+                    if (result == "success") {
+                        alert("Product deleted successfully");
+                        window.location.reload();
+                    }
+                    else if (result == "notfound") {
+                        alert("Product Not Found");
+                    }
+                    else {
+                        alert("Something went wrong. Please try again");
+                    }
+
+                    $.unblockUI();
+                },
+                error: function (resultData) {
+                    console.log("error");
+                    $.unblockUI();
+                }
+            });
+        }
+    });
+
+    function fnDeleteProduct(Product_id) {
+        jQuery("#hdnDeleteProduct").val(Product_id);
+        $('#deleteProductModal').modal('show');
+        }
+
 </script>

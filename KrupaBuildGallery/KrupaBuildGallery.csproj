@@ -129,10 +129,12 @@
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminUserController.cs" />
     <Compile Include="Areas\Admin\Controllers\CategoryController.cs" />
-    <Compile Include="Areas\Admin\Controllers\ClientUserController.cs" />
+    <Compile Include="Areas\Admin\Controllers\CustomerController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
+    <Compile Include="Areas\Admin\Controllers\DistributorController.cs" />
     <Compile Include="Areas\Admin\Controllers\LoginController.cs" />
     <Compile Include="Areas\Admin\Controllers\OfferController.cs" />
+    <Compile Include="Areas\Admin\Controllers\OrderController.cs" />
     <Compile Include="Areas\Admin\Controllers\ProductController.cs" />
     <Compile Include="Areas\Admin\Controllers\ProductItemController.cs" />
     <Compile Include="Areas\Admin\Controllers\StockController.cs" />
@@ -207,6 +209,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModel\CategoryVM.cs" />
     <Compile Include="ViewModel\LoginVM.cs" />
+    <Compile Include="ViewModel\ProductVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\Admin\Content\assets\advanced-datatable\docs\34cdb56b2c.html" />
@@ -2284,13 +2287,13 @@
     <Content Include="Areas\Admin\Views\Login\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Category\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Product\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\Product\AddProduct.cshtml" />
+    <Content Include="Areas\Admin\Views\Product\Add.cshtml" />
     <Content Include="Areas\Admin\Views\SubProduct\Index.cshtml" />
     <Content Include="Areas\Admin\Views\ProductItem\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\ProductItem\AddProductItem.cshtml" />
+    <Content Include="Areas\Admin\Views\ProductItem\Add.cshtml" />
     <Content Include="Areas\Admin\Views\Stock\Index.cshtml" />
-    <Content Include="Areas\Admin\Views\SubProduct\AddSubProduct.cshtml" />
-    <Content Include="Areas\Admin\Views\Stock\AddStock.cshtml" />
+    <Content Include="Areas\Admin\Views\SubProduct\Add.cshtml" />
+    <Content Include="Areas\Admin\Views\Stock\Add.cshtml" />
     <EntityDeploy Include="Model\KrupaGallery.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>KrupaGallery.Designer.cs</LastGenOutput>
@@ -2300,6 +2303,14 @@
     </Content>
     <Content Include="Areas\Admin\Views\Category\Add.cshtml" />
     <Content Include="Areas\Admin\Views\Category\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Offer\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Offer\Add.cshtml" />
+    <Content Include="Areas\Admin\Views\Customer\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Distributor\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Order\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Order\Detail.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminUser\ChangePassword.cshtml" />
+    <Content Include="Areas\Admin\Views\Product\Edit.cshtml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -2331,9 +2342,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Admin\Content\assets\jquery-file-upload\server\php\files\thumbnail\" />
     <Folder Include="Areas\Admin\Models\" />
-    <Folder Include="Areas\Admin\Views\AdminUser\" />
     <Folder Include="Areas\Admin\Views\ClientUser\" />
-    <Folder Include="Areas\Admin\Views\Offer\" />
     <Folder Include="Areas\Client\Models\" />
     <Folder Include="Images\AdminUserMedia\" />
     <Folder Include="Images\CategoryMedia\" />

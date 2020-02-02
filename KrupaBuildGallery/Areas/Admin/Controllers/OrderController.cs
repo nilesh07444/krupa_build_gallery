@@ -8,10 +8,15 @@ using System.Web.Mvc;
 namespace KrupaBuildGallery.Areas.Admin.Controllers
 {
     [CustomAuthorize]
-    public class ClientUserController : Controller
+    public class OrderController : Controller
     {
-        // GET: Admin/ClientUser
+        // GET: Admin/Order
         public ActionResult Index()
+        {
+            return View();
+        }
+
+        public ActionResult Detail(int Id)
         {
             return View();
         }

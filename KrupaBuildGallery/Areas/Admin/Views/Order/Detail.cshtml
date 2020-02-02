@@ -1,0 +1,195 @@
+﻿<style>
+    .label-wrapper {
+        display: table;
+        float: right;
+        min-height: 28px;
+    }
+
+    .form-horizontal .form-group {
+        margin-right: -15px;
+        margin-left: -15px;
+    }
+
+    .form-horizontal .label-wrapper .control-label {
+        display: table-cell;
+        font-weight: bold;
+    }
+    .form-text-row {
+        padding-top: 6px;
+    }
+    @@media(max-width: 992px) {
+        .form-horizontal .label-wrapper {
+            float: none;
+            margin-bottom: 3px;
+            margin-top: 5px
+        }
+    }
+</style>
+<section id="main-content">
+    <section class="wrapper site-min-height">
+        <!-- page start-->
+        <div class="row">
+            <div class="col-lg-12">
+                <section class="panel">
+                    <header class="panel-heading">
+                        Order Detail
+                    </header>
+                    <div class="panel-body form-horizontal">
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Order #</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">4</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Created On</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">2-Feb-2020 6:20:09 AM</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Customer</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">kbs shah - kbs@@gmail.com</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Order Status</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">Processing</div>
+                                <button type="button" name="" id="cancelorder" class="btn bg-red" style="margin-right: 3px;">
+                                    Cancel order
+                                </button>
+                                <button type="submit" name="btnChangeOrderStatus" id="btnChangeOrderStatus" class="btn btn-primary" style="display: inline-block;">
+                                    Change status
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Payment Method</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">Credit Used</div>
+                            </div>
+                        </div>
+                        <div class="form-group" style="border-bottom: 1px solid #eff2f7;">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Order Total Amount</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">2500</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Shipping Address</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row"></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Name</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">Nil Patel</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Phone</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">998988888</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Address</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">M G Road</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">City</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">Anand</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">State</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">Gujarat</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <!-- page end-->
+        <div class="row">
+            <div class="col-lg-12">
+                <section class="panel">
+                    <header class="panel-heading">
+                        Order Items
+                    </header>
+                    <div class="panel-body">
+                        <div class="adv-table">
+                            <table class="display table table-bordered table-striped" id="tblCategoryList">
+                                <thead>
+                                    <tr>
+                                        <th>Picture</th>
+                                        <th>Product Item Name</th>
+                                        <th>Sku</th>
+                                        <th>Price</th>
+                                        <th>Quantity</th>
+                                        <th>GST</th>
+                                        <th>IGST</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><img src="\Areas\Admin\Content\img\product-list\pro-thumb-3.jpg" class="clsimgproduct" /></td>
+                                        <td>Item1</td>
+                                        <td>ITM112</td>
+                                        <td>500</td>
+                                        <td>5</td>
+                                        <td>20</td>
+                                        <td>25</td>
+                                        <td>2500</td>
+                                    </tr>
+                                    <tr>
+                                        <td><img src="\Areas\Admin\Content\img\product-list\pro-thumb-3.jpg" class="clsimgproduct" /></td>
+                                        <td>Item2</td>
+                                        <td>ITM1123</td>
+                                        <td>400</td>
+                                        <td>3</td>
+                                        <td>20</td>
+                                        <td>25</td>
+                                        <td>1200</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+</section>
+</section>

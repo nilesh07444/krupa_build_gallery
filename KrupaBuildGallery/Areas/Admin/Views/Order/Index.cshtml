@@ -1,0 +1,124 @@
+﻿<style>
+    .clsimgproduct {
+        height: 80px;
+        width: 80px;
+    }
+</style>
+<!--main content start-->
+<section id="main-content">
+    <section class="wrapper site-min-height">
+        <!-- page start-->
+        <div class="row">
+            <div class="col-lg-12">
+                <section class="panel">
+                    <header class="panel-heading">
+                        Orders
+                    </header>
+                    <div class="panel-body">
+                        <div class="adv-table">
+                            <table class="display table table-bordered table-striped" id="example">
+                                <thead>
+                                    <tr>
+                                        <th>Order #</th>
+                                        <th>Customer/Distributor Name</th>
+                                        <th>Order Ship City</th>
+                                        <th>Order Ship State</th>
+                                        <th>Order Date</th>
+                                        <th>Order Amount</th>
+                                        <th>Order Status</th>
+                                        <th>Payment Type</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="gradeX">
+                                        <td>1</td>
+                                        <td>Kbs shahh Shhs</td>
+                                        <td>Anand</td>
+                                        <td>Gujarat</td>
+                                        <td>02-Feb-2020</td>
+                                        <td>500</td>
+                                        <td><span class="label label-info label-mini">Shipped</span></td>
+                                        <td>Credit</td>
+                                        <td>
+                                            <a href="/admin/order/detail/1" class="btn btn-primary btn-xs"><i class="fa fa-eye"></i></a>
+                                            <button class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></button>
+                                            <button class="btn btn-danger btn-xs"><i class="fa fa-trash-o "></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr class="gradeX">
+                                        <td>2</td>
+                                        <td>Kbs shahh Shhs</td>
+                                        <td>Anand</td>
+                                        <td>Gujarat</td>
+                                        <td>02-Feb-2020</td>
+                                        <td>500</td>
+                                        <td><span class="label label-danger label-mini">Shipped</span></td>
+                                        <td>Credit</td>
+                                        <td>
+                                            <a href="/admin/order/detail/1" class="btn btn-primary btn-xs"><i class="fa fa-eye"></i></a>
+                                            <button class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></button>
+                                            <button class="btn btn-danger btn-xs"><i class="fa fa-trash-o "></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr class="gradeX">
+                                        <td>3</td>
+                                        <td>Kbs shahh Shhs</td>
+                                        <td>Anand</td>
+                                        <td>Gujarat</td>
+                                        <td>02-Feb-2020</td>
+                                        <td>500</td>
+                                        <td><span class="label label-warning label-mini">Shipped</span></td>
+                                        <td>Credit</td>
+                                        <td>
+                                            <a href="/admin/order/detail/1" class="btn btn-primary btn-xs"><i class="fa fa-eye"></i></a>
+                                            <button class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></button>
+                                            <button class="btn btn-danger btn-xs"><i class="fa fa-trash-o "></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr class="gradeX">
+                                        <td>4</td>
+                                        <td>Kbs shahh Shhs</td>
+                                        <td>Anand</td>
+                                        <td>Gujarat</td>
+                                        <td>02-Feb-2020</td>
+                                        <td>500</td>
+                                        <td><span class="label label-success label-mini">Shipped</span></td>
+                                        <td>Credit</td>
+                                        <td>
+                                            <a href="/admin/order/detail/1" class="btn btn-primary btn-xs"><i class="fa fa-eye"></i></a>
+                                            <button class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></button>
+                                            <button class="btn btn-danger btn-xs"><i class="fa fa-trash-o "></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <th>Order #</th>
+                                        <th>Customer/Distributor Name</th>
+                                        <th>Order Ship City</th>
+                                        <th>Order Ship State</th>
+                                        <th>Order Date</th>
+                                        <th>Order Amount</th>
+                                        <th>Order Status</th>
+                                        <th>Payment Type</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </div>
+        <!-- page end-->
+    </section>
+</section>
+<!--main content end-->
+<script type="text/javascript" charset="utf-8">
+    $(document).ready(function(){
+      $('#example').dataTable( {
+                  "aaSorting": [[ 4, "desc" ]]
+              });
+    });
+</script>
