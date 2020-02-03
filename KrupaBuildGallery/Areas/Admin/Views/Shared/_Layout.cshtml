@@ -31,9 +31,9 @@
       <script src="~/Areas/Admin/Content/js/html5shiv.js"></script>
       <script src="~/Areas/Admin/Content/js/respond.min.js"></script>
     <![endif]-->
-    <script src="~/Areas/Admin/Content/js/jquery.js"></script>
+    @*<script src="~/Areas/Admin/Content/js/jquery.js"></script>
     <script src="~/Areas/Admin/Content/js/jquery-1.8.3.min.js"></script>
-    <script src="~/Areas/Admin/Content/js/bootstrap.min.js"></script>
+    <script src="~/Areas/Admin/Content/js/bootstrap.min.js"></script>*@
 </head>
 
 <body>
@@ -70,9 +70,8 @@
                         </a>
                         <ul class="dropdown-menu extended logout">
                             <div class="log-arrow-up"></div>
-                            <li><a href="#"><i class=" fa fa-suitcase"></i>Profile</a></li>
-                            <li><a href="#"><i class="fa fa-cog"></i> Settings</a></li>
-                            <li><a href="#"><i class="fa fa-bell-o"></i> Notification</a></li>
+                            <li><a href="/admin/myprofile"><i class=" fa fa-suitcase"></i>Profile</a></li> 
+                            <li><a href="/admin/adminuser/changepassword"><i class="fa fa-cog"></i> Change Password</a></li>
                             <li><a href="/admin/login/signout"><i class="fa fa-key"></i> Log Out</a></li>
                         </ul>
                     </li>

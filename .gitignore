@@ -4,7 +4,5 @@ KrupaBuildGallery/*.pdb
 KrupaBuildGallery/*.xdt
 KrupaBuildGallery/bin
 KrupaBuildGallery/obj
-packages
-
-/.vs/KrupaBuildGallery/DesignTimeBuild/.dtbcache
-.vs/KrupaBuildGallery/v16/Server/sqlite3/*.lock
+packages 
+.vs/* 

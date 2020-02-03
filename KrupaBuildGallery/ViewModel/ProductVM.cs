@@ -10,12 +10,13 @@ namespace KrupaBuildGallery.ViewModel
     public class ProductVM
     {
         public long ProductId { get; set; }
-        public string CategoryId { get; set; }
-        public string CategoryName { get; set; }
-        public List<SelectListItem> CategoryList { get; set; }
+        public long CategoryId { get; set; } 
         [Required]
         public string ProductName { get; set; }
         public bool IsActive { get; set; }
         public string ProductImage { get; set; }
+
+        public string CategoryName { get; set; }
+        public List<SelectListItem> CategoryList { get; set; }
     }
 }

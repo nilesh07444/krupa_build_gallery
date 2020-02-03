@@ -19,7 +19,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         {
             _db = new krupagallarydbEntities();
         }
-        // GET: Admin/Product
+         
         public ActionResult Index()
         {
             List<ProductVM> lstProducts = new List<ProductVM>();
@@ -28,13 +28,13 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
                 lstProducts = (from p in _db.tbl_Products
                                join c in _db.tbl_Categories on p.CategoryId  equals c.CategoryId
-                               where !c.IsDelete
+                               where !p.IsDelete
                                select new ProductVM
                                {
                                    ProductId = p.Product_Id,
                                    CategoryName = c.CategoryName,
                                    ProductImage = p.ProductImage,
-                                   CategoryId = SqlFunctions.StringConvert((double)c.CategoryId),
+                                   CategoryId = c.CategoryId,
                                    ProductName = p.ProductName,
                                    IsActive = c.IsActive
                                }).OrderByDescending(x => x.ProductId).ToList();
@@ -59,6 +59,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         .ToList();
             return View(objProduct);
         }
+
         public ActionResult Edit(int Id)
         {
             ProductVM objProduct = new ProductVM();
@@ -69,18 +70,20 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                where c.Product_Id == Id
                                select new ProductVM
                                {
-                                   CategoryId = SqlFunctions.StringConvert((double)c.CategoryId),
+                                   CategoryId = c.CategoryId,
                                    ProductId = c.Product_Id,
                                    ProductName = c.ProductName,
                                    ProductImage = c.ProductImage,
                                    IsActive = c.IsActive
                                }).FirstOrDefault();
+
                 objProduct.CategoryList = _db.tbl_Categories.Where(x => x.IsActive == true && x.IsDelete == false)
-                         .Select(o => new SelectListItem { Value = o.CategoryId.ToString(), Text = o.CategoryName })
+                         .Select(o => new SelectListItem { Value = SqlFunctions.StringConvert((double)o.CategoryId).Trim(), Text = o.CategoryName })
                          .ToList();
             }
             catch (Exception ex)
             {
+                string ErrorMessage = ex.Message.ToString();
             }
 
             return View(objProduct);
@@ -124,6 +127,10 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             {
                 string ErrorMessage = ex.Message.ToString();
             }
+
+            productVM.CategoryList = _db.tbl_Categories.Where(x => x.IsActive == true && x.IsDelete == false)
+                         .Select(o => new SelectListItem { Value = o.CategoryId.ToString(), Text = o.CategoryName })
+                         .ToList();
 
             return View(productVM);
         }
@@ -195,6 +202,10 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             {
                 string ErrorMessage = ex.Message.ToString();
             }
+
+            productVM.CategoryList = _db.tbl_Categories.Where(x => x.IsActive == true && x.IsDelete == false)
+                         .Select(o => new SelectListItem { Value = o.CategoryId.ToString(), Text = o.CategoryName })
+                         .ToList();
 
             return View(productVM);
         }
