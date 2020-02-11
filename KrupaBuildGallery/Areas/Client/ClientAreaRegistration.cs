@@ -16,9 +16,16 @@ namespace KrupaBuildGallery.Areas.Client
         {
             context.MapRoute(
                 "Client_default",
-                "Client/{controller}/{action}/{id}",
+                "{controller}/{action}/{id}",
                 new { action = "Index", id = UrlParameter.Optional }
-            );
+            ); 
+
+            //context.MapRoute(
+            //    "Admin_aboutus",
+            //    "aboutus",
+            //    new { controller = "AboutUs", action = "Index", id = UrlParameter.Optional }
+            //);
+
         }
     }
 }

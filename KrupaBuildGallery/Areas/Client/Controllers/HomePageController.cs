@@ -7,8 +7,7 @@ using System.Web.Mvc;
 namespace KrupaBuildGallery.Areas.Client.Controllers
 {
     public class HomePageController : Controller
-    {
-        // GET: Client/HomePage
+    {        
         public ActionResult Index()
         {
             return View();
