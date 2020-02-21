@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -39,7 +40,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             {
                 string ErrorMessage = ex.Message.ToString();
             }
-            
+
             return View(lstCategory);
         }
 
@@ -49,7 +50,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Add(CategoryVM categoryVM)
+        public ActionResult Add(CategoryVM categoryVM, HttpPostedFileBase CategoryImageFile)
         {
             try
             {
@@ -66,8 +67,21 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         return View(categoryVM);
                     }
 
+                    string fileName = string.Empty;
+                    string path = Server.MapPath("~/Images/CategoryMedia/");
+                    if (CategoryImageFile != null)
+                    {
+                        fileName = Guid.NewGuid() + "-" + Path.GetFileName(CategoryImageFile.FileName);
+                        CategoryImageFile.SaveAs(path + fileName);
+                    }
+                    else
+                    {
+                        fileName = categoryVM.CategoryImage;
+                    }
+
                     tbl_Categories objCategory = new tbl_Categories();
                     objCategory.CategoryName = categoryVM.CategoryName;
+                    objCategory.CategoryImage = fileName;
 
                     objCategory.IsActive = true;
                     objCategory.IsDelete = false;
@@ -102,7 +116,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                {
                                    CategoryId = c.CategoryId,
                                    CategoryName = c.CategoryName,
-                                   CategoryImage = c.CategoryName,
+                                   CategoryImage = c.CategoryImage,
                                    IsActive = c.IsActive
                                }).FirstOrDefault();
             }
@@ -115,7 +129,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit(CategoryVM categoryVM)
+        public ActionResult Edit(CategoryVM categoryVM, HttpPostedFileBase CategoryImageFile)
         {
             try
             {
@@ -133,7 +147,21 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     }
 
                     tbl_Categories objCategory = _db.tbl_Categories.Where(x => x.CategoryId == categoryVM.CategoryId).FirstOrDefault();
+
+                    string fileName = string.Empty;
+                    string path = Server.MapPath("~/Images/CategoryMedia/");
+                    if (CategoryImageFile != null)
+                    {
+                        fileName = Guid.NewGuid() + "-" + Path.GetFileName(CategoryImageFile.FileName);
+                        CategoryImageFile.SaveAs(path + fileName);
+                    }
+                    else
+                    {
+                        fileName = objCategory.CategoryImage;
+                    }
+                     
                     objCategory.CategoryName = categoryVM.CategoryName;
+                    objCategory.CategoryImage = fileName;
 
                     objCategory.UpdatedBy = LoggedInUserId;
                     objCategory.UpdatedDate = DateTime.UtcNow;
