@@ -21,7 +21,7 @@
                 </div>
                 <div class="col-lg-6">
                     <ol class="breadcrumb pull-right">
-                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li> 
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
                         <li class="breadcrumb-item active">Sub Product List</li>
                     </ol>
                 </div>
@@ -39,11 +39,13 @@
                 <table class="display" id="basic-1">
                     <thead>
                         <tr>
-                            <th>#</th>
-                            <th>Category Name</th>
-                            <th>Product Name</th>
+                            <th width="10%;">#</th>
+                            <th width="15%;">Image</th>
                             <th>Sub Product Name</th>
-                            <th>Actions</th>
+                            <th>Product Name</th>
+                            <th>Category Name</th>
+                            <th width="15%;">Active</th>
+                            <th width="15%;">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -54,9 +56,28 @@
                             {
                                 <tr class="gradeX">
                                     <td>@counter.</td>
-                                    <td>@product.CategoryName</td>
-                                    <td>@product.ProductName</td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(product.SubProductImage))
+                                        {
+                                            if (File.Exists(Server.MapPath("~/Images/SubProductMedia/" + product.SubProductImage)))
+                                            {
+                                                <img src="~/Images/SubProductMedia/@product.SubProductImage" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                            }
+                                            else
+                                            {
+                                                <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                        }
+
+                                    </td>
                                     <td>@product.SubProductName</td>
+                                    <td>@product.ProductName</td>
+                                    <td>@product.CategoryName</td>
+                                    <td>Active</td>
                                     <td>
                                         <a href="/admin/subproduct/edit/@product.SubProductId"><i class="fa fa-edit mr-2 font-success"></i></a>
                                         <a href="javascript:void(0);" onclick="fnDeleteSubProduct('@product.SubProductId')"><i class="fa fa-trash font-danger"></i></a>
@@ -74,7 +95,6 @@
     <!-- Container-fluid Ends-->
 
 </div>
-
 
 <!-- Delete Modal -->
 <div class="modal fade" id="deleteSubProductModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">

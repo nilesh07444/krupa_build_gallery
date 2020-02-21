@@ -55,44 +55,36 @@
                             foreach (KrupaBuildGallery.ViewModel.OrderVM objorder in Model)
                             {
                                 string stauscolor = "badge-secondary";
-                                if(objorder.OrderStatusId == 1)
+                                if (objorder.OrderStatusId == 1)
                                 {
-                                     stauscolor = "badge-danger";
+                                    stauscolor = "badge-danger";
                                 }
-                                else if(objorder.OrderStatusId == 2)
+                                else if (objorder.OrderStatusId == 2)
                                 {
-                                     stauscolor = "badge-success";
+                                    stauscolor = "badge-success";
                                 }
-                                else if(objorder.OrderStatusId == 3)
+                                else if (objorder.OrderStatusId == 3)
                                 {
-                                     stauscolor = "badge-warning";
+                                    stauscolor = "badge-warning";
                                 }
-                        <tr class="gradeX">
-                            <td>@counter.</td>
-                            <td>@objorder.ClientUserName</td>
-                            <td>@objorder.OrderShipCity</td>
-                            <td>@objorder.OrderShipState</td>
-                            <td>@objorder.OrderDate.ToString("MMM dd,yyyy")</td>
-                            <td>₹ @Math.Round(objorder.OrderAmount, 2)</td>
-                            <td><span class="badge @stauscolor">@objorder.OrderStatus</span></td>
-                            <td>@objorder.PaymentType</td>
-                            <td>
-                                <a href="/admin/order/detail/@objorder.OrderId"><i class="fa fa-eye font-success"></i></a>
-                                <a href="javascript:void(0);" onclick="fnDeleteOrder('@objorder.OrderId')"><i class="fa fa-trash font-danger"></i></a>
-                            </td>
-                        </tr>
+                                <tr class="gradeX">
+                                    <td>@counter.</td>
+                                    <td>@objorder.ClientUserName</td>
+                                    <td>@objorder.OrderShipCity</td>
+                                    <td>@objorder.OrderShipState</td>
+                                    <td>@objorder.OrderDate.ToString("MMM dd,yyyy")</td>
+                                    <td>₹ @Math.Round(objorder.OrderAmount, 2)</td>
+                                    <td><span class="badge @stauscolor">@objorder.OrderStatus</span></td>
+                                    <td>@objorder.PaymentType</td>
+                                    <td>
+                                        <a href="/admin/order/detail/@objorder.OrderId"><i class="fa fa-eye font-success"></i></a>
+                                        <a href="javascript:void(0);" onclick="fnDeleteOrder('@objorder.OrderId')"><i class="fa fa-trash font-danger"></i></a>
+                                    </td>
+                                </tr>
                                 counter++;
                             }
-                        }
-                        else
-                        {
-                          <tr class="gradeX">
-                              <td colspan="9">
-                                  No Orders....
-                              </td>
-                          </tr>
-                        }
-                </tbody>
+                        } 
+                    </tbody>
                 </table>
             </div>
         </div>

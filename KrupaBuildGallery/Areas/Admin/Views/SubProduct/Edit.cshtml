@@ -61,7 +61,20 @@
                                 @Html.ValidationMessageFor(model => model.SubProductName, "", new { @class = "text-danger" })
                             </div>
 
-                            @Html.HiddenFor(x=>x.SubProductId)
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.SubProductImageFile, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.TextBoxFor(model => model.SubProductImageFile, new { type = "file", @class = "form-control col-md-8" })
+                                @Html.ValidationMessageFor(model => model.SubProductImageFile, "", new { @class = "text-danger" })
+                            </div>
+
+                            if (!string.IsNullOrEmpty(Model.SubProductImage))
+                            {
+                                <div class="form-group row">
+                                    <p><a target="_blank" href="~/Images/SubProductMedia/@Model.SubProductImage"> Click here to view image </a></p>
+                                </div>
+                            }
+
+                            @Html.HiddenFor(x => x.SubProductId)
                             <button type="submit" class="btn btn-primary">Submit</button>
                             <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
                         }

@@ -31,7 +31,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                {
                                    CategoryId = c.CategoryId,
                                    CategoryName = c.CategoryName,
-                                   CategoryImage = c.CategoryName,
+                                   CategoryImage = c.CategoryImage,
                                    IsActive = c.IsActive
                                }).OrderByDescending(x => x.CategoryId).ToList();
 

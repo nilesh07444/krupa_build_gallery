@@ -5,6 +5,7 @@ using KrupaBuildGallery.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Data.Objects.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -84,7 +85,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Add(ProductVM productVM)
+        public ActionResult Add(ProductVM productVM, HttpPostedFileBase ProductImageFile)
         {
             try
             {
@@ -101,8 +102,22 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         return View(productVM);
                     }
 
+                    string fileName = string.Empty;
+                    string path = Server.MapPath("~/Images/ProductMedia/");
+                    if (ProductImageFile != null)
+                    {
+                        fileName = Guid.NewGuid() + "-" + Path.GetFileName(ProductImageFile.FileName);
+                        ProductImageFile.SaveAs(path + fileName);
+                    }
+                    else
+                    {
+                        fileName = productVM.ProductImage;
+                    }
+
+
                     tbl_Products objProducts = new tbl_Products();
                     objProducts.ProductName = productVM.ProductName;
+                    objProducts.ProductImage = fileName;
                     objProducts.CategoryId = Convert.ToInt64(productVM.CategoryId);
                     objProducts.IsActive = true;
                     objProducts.IsDelete = false;
@@ -162,7 +177,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit(ProductVM productVM)
+        public ActionResult Edit(ProductVM productVM, HttpPostedFileBase ProductImageFile)
         {
             try
             {
@@ -180,7 +195,21 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     }
 
                     tbl_Products objProducts = _db.tbl_Products.Where(x => x.Product_Id == productVM.ProductId).FirstOrDefault();
+
+                    string fileName = string.Empty;
+                    string path = Server.MapPath("~/Images/ProductMedia/");
+                    if (ProductImageFile != null)
+                    {
+                        fileName = Guid.NewGuid() + "-" + Path.GetFileName(ProductImageFile.FileName);
+                        ProductImageFile.SaveAs(path + fileName);
+                    }
+                    else
+                    {
+                        fileName = objProducts.ProductImage;
+                    }
+
                     objProducts.ProductName = productVM.ProductName;
+                    objProducts.ProductImage = fileName;
                     objProducts.CategoryId = Convert.ToInt64(productVM.CategoryId);
                     objProducts.UpdatedBy = LoggedInUserId;
                     objProducts.UpdatedDate = DateTime.UtcNow;

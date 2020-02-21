@@ -21,16 +21,14 @@
                 </div>
                 <div class="col-lg-6">
                     <ol class="breadcrumb pull-right">
-                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
-                        <li class="breadcrumb-item">Product</li>
-                        <li class="breadcrumb-item active">Product List</li>
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li> 
+                        <li class="breadcrumb-item active">Product</li>
                     </ol>
                 </div>
             </div>
         </div>
     </div>
     <!-- Container-fluid Ends-->
-
     <!-- Container-fluid starts-->
     <div class="container-fluid">
         <div class="card">
@@ -41,10 +39,12 @@
                 <table class="display" id="basic-1">
                     <thead>
                         <tr>
-                            <th>#</th>
+                            <th width="10%;">#</th>
+                            <th width="15%;">Product Image</th>
                             <th>Product Name</th>
                             <th>Category Name</th>
-                            <th>Actions</th>
+                            <th width="15%;">Active</th>
+                            <th width="15%;">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -55,8 +55,27 @@
                             {
                                 <tr class="gradeX">
                                     <td>@counter.</td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(product.ProductImage))
+                                        {
+                                            if (File.Exists(Server.MapPath("~/Images/ProductMedia/" + product.ProductImage)))
+                                            {
+                                                <img src="~/Images/ProductMedia/@product.ProductImage" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                            }
+                                            else
+                                            {
+                                                <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                        }
+
+                                    </td>
                                     <td>@product.ProductName</td>
                                     <td>@product.CategoryName</td>
+                                    <td>Active</td>
                                     <td>
                                         <a href="/admin/product/edit/@product.ProductId"><i class="fa fa-edit mr-2 font-success"></i></a>
                                         <a href="javascript:void(0);" onclick="fnDeleteProduct('@product.ProductId')"><i class="fa fa-trash font-danger"></i></a>

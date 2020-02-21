@@ -20,8 +20,10 @@ namespace KrupaBuildGallery
         [Display(Name = "Sub Product Name")]
         public string SubProductName { get; set; }
         public bool IsActive { get; set; }
-        public string ProductImage { get; set; } 
+        public string SubProductImage { get; set; } 
         public string CategoryName { get; set; }
+        [Display(Name = "Sub Product Image")]
+        public HttpPostedFileBase SubProductImageFile { get; set; }
         public string ProductName { get; set; }
         public List<SelectListItem> CategoryList { get; set; }
         public List<SelectListItem> ProductList { get; set; }
