@@ -1,46 +1,79 @@
-﻿@using KrupaBuildGallery.ViewModel
-@model ProductVM
+﻿@model ProductVM
 
 @{
     ViewBag.Title = "Product";
 }
-<!--main content start-->
-<section id="main-content">
-    <section class="wrapper site-min-height">
-        <!-- page start-->
-        <div class="row">
-            <div class="col-lg-12">
-                <section class="panel">
-                    <header class="panel-heading">
-                        Add Product
-                    </header>
-                    <div class="panel-body">
-                        <div class="col-lg-12">
-                            @using (Html.BeginForm("Add", "Product", FormMethod.Post, new { @id = "ProductFormId", @class = "cmxform form-horizontal", enctype = "multipart/form-data", role = "form" }))
-                            {
-                                @Html.AntiForgeryToken()
-                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                                <div class="form-group">
-                                    @Html.LabelFor(model => model.CategoryName, htmlAttributes: new { @class = "" })
-                                    @Html.DropDownListFor(model => model.CategoryId, new SelectList(Model.CategoryList, "Value", "Text"), "- Select Category -", new { @class = "form-control", style = "width:350px;" })
-                                    @Html.ValidationMessageFor(model => model.CategoryId, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="form-group">
-                                    @Html.LabelFor(model => model.ProductName, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.ProductName, new { htmlAttributes = new { @class = "form-control", style = "width:350px;", @placeholder = "Enter Product Name", maxlength = "200" } })
-                                    @Html.ValidationMessageFor(model => model.ProductName, "", new { @class = "text-danger" })
-                                </div>
-                                <div>
-                                    <button id="btnSubmit" class="btn btn-info" type="submit">Submit</button>
-                                    <a href="/admin/product/" class="btn btn-default">Cancel</a>
-                                </div>
-                            }
-                        </div>
-                        </div>
-                </section>
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col">
+                    <div class="page-header-left">
+                        <h3>
+                            Add Product
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="/admin/product">Product</a></li>
+                        <li class="breadcrumb-item active">Add Product</li>
+                    </ol>
+                </div>
             </div>
         </div>
-        <!-- page end-->
-    </section>
-</section>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Add Product</h5>
+                    </div>
+                    <div class="card-body">
+                        @using (Html.BeginForm("Add", "Product", FormMethod.Post, new { @id = "CategoryFormId", @class = "needs-validation", enctype = "multipart/form-data", role = "form" }))
+                        {
+
+                            @Html.AntiForgeryToken()
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.CategoryId, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.DropDownListFor(model => model.CategoryId, new SelectList(Model.CategoryList, "Value", "Text"), "- Select Category -", new { @class = "form-control col-md-8", style = "" })
+                                @Html.ValidationMessageFor(model => model.CategoryId, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.ProductName, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.EditorFor(model => model.ProductName, new { htmlAttributes = new { @class = "form-control col-md-8", style = "width:350px;", @placeholder = "Enter Product Name", maxlength = "200" } })
+                                @Html.ValidationMessageFor(model => model.ProductName, "", new { @class = "text-danger" })
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+</div>
+
+<script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+<script>
+
+    $(document).on("click", "#btnCancel", function () {
+        window.location.href = "/admin/product";
+    });
+</script>

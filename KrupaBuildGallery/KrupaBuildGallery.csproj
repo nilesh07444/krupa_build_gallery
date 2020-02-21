@@ -219,6 +219,7 @@
     <Compile Include="ViewModel\CategoryVM.cs" />
     <Compile Include="ViewModel\LoginVM.cs" />
     <Compile Include="ViewModel\ProductVM.cs" />
+    <Compile Include="ViewModel\SubProductVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\assets\css\admin.css" />
@@ -968,6 +969,7 @@
     <Content Include="Content\assets\images\coming-soon.jpg" />
     <Content Include="Content\assets\images\dashboard\boy-2.png" />
     <Content Include="Content\assets\images\dashboard\designer.jpg" />
+    <Content Include="Content\assets\images\dashboard\fav.ico" />
     <Content Include="Content\assets\images\dashboard\favicon.png" />
     <Content Include="Content\assets\images\dashboard\login-bg.png" />
     <Content Include="Content\assets\images\dashboard\man.png" />
@@ -2024,6 +2026,7 @@
     <Content Include="Content\assets\images\logos\7.png" />
     <Content Include="Content\assets\images\logos\8.png" />
     <Content Include="Content\assets\images\logos\9.png" />
+    <Content Include="Content\assets\images\logos\krupalogo.jpeg" />
     <Content Include="Content\assets\images\lookbook.jpg" />
     <Content Include="Content\assets\images\lookbook2.jpg" />
     <Content Include="Content\assets\images\main-banner-bg.jpg" />
@@ -3689,6 +3692,8 @@
     <Content Include="Areas\Client\Views\Cart\Index.cshtml" />
     <Content Include="Areas\Client\Views\Checkout\Index.cshtml" />
     <Content Include="Areas\Client\Views\Faq\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\SubProduct\Edit.cshtml" />
+    <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />

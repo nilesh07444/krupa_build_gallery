@@ -7,10 +7,9 @@ using System.Web.Mvc;
 
 namespace KrupaBuildGallery.Areas.Admin.Controllers
 {
-    [CustomAuthorize]
+    //[CustomAuthorize]
     public class DashboardController : Controller
     {
-        // GET: Admin/Dashboard
         public ActionResult Index()
         {
             return View();

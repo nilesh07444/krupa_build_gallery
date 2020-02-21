@@ -5,62 +5,83 @@
 
     int counter = 1;
 }
-<!--main content start-->
-<section id="main-content">
-    <section class="wrapper site-min-height">
-        <!-- page start-->
-        <div class="row">
-            <div class="col-lg-12">
-                <section class="panel">
-                    <header class="panel-heading">
-                        Products
-                    </header>
-                    <div class="panel-body">
-                        <div class="adv-table">
-                            <table class="display table table-bordered table-striped" id="tblProductList">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Product Name</th>
-                                        <th>Category Name</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if (Model != null && Model.Count > 0)
-                                    {
-                                        foreach (ProductVM product in Model)
-                                        {
-                                            <tr class="gradeX">
-                                                <td>@counter.</td>
-                                                <td>@product.ProductName</td>
-                                                <td>@product.CategoryName</td>
-                                                <td>
-                                                    <a href="/admin/product/edit/@product.ProductId" class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></a>
-                                                    <button onclick="fnDeleteProduct('@product.ProductId')" class="btn btn-danger btn-xs"><i class="fa fa-trash-o "></i></button>
-                                                </td>
-                                            </tr>
-                                            counter++;
-                                        }
-                                    }
-                                </tbody>
-                            </table>
-                        </div>
+
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="page-header-left">
+                        <h3>
+                            Product List
+                        </h3>
                     </div>
-                </section>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Product</li>
+                        <li class="breadcrumb-item active">Product List</li>
+                    </ol>
+                </div>
             </div>
         </div>
-        <!-- page end-->
-    </section>
-</section>
-<!--main content end-->
+    </div>
+    <!-- Container-fluid Ends-->
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h5>Product List</h5>
+            </div>
+            <div class="card-body vendor-table">
+                <table class="display" id="basic-1">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Product Name</th>
+                            <th>Category Name</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            foreach (ProductVM product in Model)
+                            {
+                                <tr class="gradeX">
+                                    <td>@counter.</td>
+                                    <td>@product.ProductName</td>
+                                    <td>@product.CategoryName</td>
+                                    <td>
+                                        <a href="/admin/product/edit/@product.ProductId"><i class="fa fa-edit mr-2 font-success"></i></a>
+                                        <a href="javascript:void(0);" onclick="fnDeleteProduct('@product.ProductId')"><i class="fa fa-trash font-danger"></i></a>
+                                    </td>
+                                </tr>
+                                counter++;
+                            }
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+</div>
+
 <!-- Delete Modal -->
 <div class="modal fade" id="deleteProductModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h4 class="modal-title">Delete Confirm</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             </div>
             <div class="modal-body">
                 Are you sure you want to delete ?
@@ -68,28 +89,20 @@
             <div class="modal-footer">
                 <input type="hidden" id="hdnDeleteProduct" />
                 <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
-                <button id="btnDeleteProduct" class="btn btn-danger" type="button">Delete</button>
+                <button id="btnDeleteProduct" class="btn btn-primary" type="button">Delete</button>
             </div>
         </div>
     </div>
 </div>
 <!-- Delete modal -->
 
-<script src="~/Areas/Admin/Content/js/jquery.js"></script>
+<script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>
+
 
 <script type="text/javascript" charset="utf-8">
     jQuery(document).ready(function () {
         StartLoading();
         jQuery('html, body').animate({ scrollTop: 0 }, 1000);
-
-        jQuery('#tblProductList').dataTable({
-            "aaSorting": [],
-            "aoColumnDefs": [
-                {
-                    'bSortable': false,
-                    'aTargets': [0,2]
-                }]
-        });
     });
 
     jQuery(window).on("load", function () {

@@ -19,7 +19,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         {
             _db = new krupagallarydbEntities();
         }
-         
+
         public ActionResult Index()
         {
             List<ProductVM> lstProducts = new List<ProductVM>();
@@ -27,7 +27,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             {
 
                 lstProducts = (from p in _db.tbl_Products
-                               join c in _db.tbl_Categories on p.CategoryId  equals c.CategoryId
+                               join c in _db.tbl_Categories on p.CategoryId equals c.CategoryId
                                where !p.IsDelete
                                select new ProductVM
                                {
@@ -47,16 +47,13 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             return View(lstProducts);
         }
+
         public ActionResult Add()
         {
             ProductVM objProduct = new ProductVM();
-            objProduct.CategoryList = _db.tbl_Categories.Where(x => x.IsActive == true && x.IsDelete == false)
-                        .Select(o => new SelectListItem 
-                        { 
-                            Value = SqlFunctions.StringConvert((double)o.CategoryId), 
-                            Text = o.CategoryName 
-                        }).OrderBy(o => o.Text)
-                        .ToList();
+
+            objProduct.CategoryList = GetCategoryList();
+
             return View(objProduct);
         }
 
@@ -67,19 +64,18 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             try
             {
                 objProduct = (from c in _db.tbl_Products
-                               where c.Product_Id == Id
-                               select new ProductVM
-                               {
-                                   CategoryId = c.CategoryId,
-                                   ProductId = c.Product_Id,
-                                   ProductName = c.ProductName,
-                                   ProductImage = c.ProductImage,
-                                   IsActive = c.IsActive
-                               }).FirstOrDefault();
+                              where c.Product_Id == Id
+                              select new ProductVM
+                              {
+                                  CategoryId = c.CategoryId,
+                                  ProductId = c.Product_Id,
+                                  ProductName = c.ProductName,
+                                  ProductImage = c.ProductImage,
+                                  IsActive = c.IsActive
+                              }).FirstOrDefault();
 
-                objProduct.CategoryList = _db.tbl_Categories.Where(x => x.IsActive == true && x.IsDelete == false)
-                         .Select(o => new SelectListItem { Value = SqlFunctions.StringConvert((double)o.CategoryId).Trim(), Text = o.CategoryName })
-                         .ToList();
+                objProduct.CategoryList = GetCategoryList();
+
             }
             catch (Exception ex)
             {
@@ -128,9 +124,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 string ErrorMessage = ex.Message.ToString();
             }
 
-            productVM.CategoryList = _db.tbl_Categories.Where(x => x.IsActive == true && x.IsDelete == false)
-                         .Select(o => new SelectListItem { Value = o.CategoryId.ToString(), Text = o.CategoryName })
-                         .ToList();
+            productVM.CategoryList = GetCategoryList();
 
             return View(productVM);
         }
@@ -203,11 +197,19 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 string ErrorMessage = ex.Message.ToString();
             }
 
-            productVM.CategoryList = _db.tbl_Categories.Where(x => x.IsActive == true && x.IsDelete == false)
-                         .Select(o => new SelectListItem { Value = o.CategoryId.ToString(), Text = o.CategoryName })
-                         .ToList();
+            productVM.CategoryList = GetCategoryList();
 
             return View(productVM);
         }
+
+        private List<SelectListItem> GetCategoryList()
+        {
+            var CategoryList = _db.tbl_Categories.Where(x => x.IsActive == true && x.IsDelete == false)
+                         .Select(o => new SelectListItem { Value = SqlFunctions.StringConvert((double)o.CategoryId).Trim(), Text = o.CategoryName })
+                         .OrderBy(x => x.Text).ToList();
+
+            return CategoryList;
+        }
+
     }
 }
