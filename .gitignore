@@ -6,3 +6,4 @@ KrupaBuildGallery/bin
 KrupaBuildGallery/obj
 packages 
 .vs/* 
+/.vs
