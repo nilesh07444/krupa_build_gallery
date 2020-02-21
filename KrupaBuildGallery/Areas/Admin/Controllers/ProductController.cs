@@ -25,7 +25,6 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             List<ProductVM> lstProducts = new List<ProductVM>();
             try
             {
-
                 lstProducts = (from p in _db.tbl_Products
                                join c in _db.tbl_Categories on p.CategoryId equals c.CategoryId
                                where !p.IsDelete
@@ -44,7 +43,6 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             {
                 string ErrorMessage = ex.Message.ToString();
             }
-
             return View(lstProducts);
         }
 
