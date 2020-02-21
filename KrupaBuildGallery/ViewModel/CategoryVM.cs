@@ -14,5 +14,7 @@ namespace KrupaBuildGallery
         public string CategoryName { get; set; }
         public bool IsActive { get; set; }
         public string CategoryImage { get; set; }
+        [Display(Name = "Category Image")]
+        public HttpPostedFileBase CategoryImageFile { get; set; }
     }
 }
