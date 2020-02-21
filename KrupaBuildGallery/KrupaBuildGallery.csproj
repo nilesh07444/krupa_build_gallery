@@ -129,6 +129,7 @@
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminUserController.cs" />
     <Compile Include="Areas\Admin\Controllers\CategoryController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ContactUsMessageController.cs" />
     <Compile Include="Areas\Admin\Controllers\CustomerController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Admin\Controllers\DistributorController.cs" />
@@ -191,6 +192,12 @@
     <Compile Include="Model\tbl_ClientUsers.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\tbl_ContactFormData.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_DistributorRequestDetails.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\tbl_ItemStocks.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
@@ -217,6 +224,9 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModel\CategoryVM.cs" />
+    <Compile Include="ViewModel\ClientUserVM.cs" />
+    <Compile Include="ViewModel\ContactUsMessageVM.cs" />
+    <Compile Include="ViewModel\DistributorRequestVM.cs" />
     <Compile Include="ViewModel\LoginVM.cs" />
     <Compile Include="ViewModel\OrderItemsVM.cs" />
     <Compile Include="ViewModel\OrderVM.cs" />
@@ -3695,6 +3705,7 @@
     <Content Include="Areas\Client\Views\Checkout\Index.cshtml" />
     <Content Include="Areas\Client\Views\Faq\Index.cshtml" />
     <Content Include="Areas\Admin\Views\SubProduct\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\ContactUsMessage\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />

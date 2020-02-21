@@ -1,5 +1,9 @@
-﻿
+﻿@model List<KrupaBuildGallery.ViewModel.DistributorRequestVM>
+@{
+    ViewBag.Title = "Distributor Requests";
 
+    int counter = 1;
+}
 <div class="page-body">
 
     <!-- Container-fluid starts-->
@@ -17,7 +21,7 @@
                     <ol class="breadcrumb pull-right">
                         <li class="breadcrumb-item"><a href="/"><i data-feather="home"></i></a></li>
                         <li class="breadcrumb-item">Distributor</li>
-                        <li class="breadcrumb-item active">Distributor List</li>
+                        <li class="breadcrumb-item active">Distributor Request List</li>
                     </ol>
                 </div>
             </div>
@@ -28,43 +32,46 @@
     <div class="container-fluid">
         <div class="card">
             <div class="card-header">
-                <h5>Distributor List</h5>
+                <h5>Distributor Request List</h5>
             </div>
             <div class="card-body vendor-table">
                 <table class="display" id="basic-1">
                     <thead>
-                        <tr>
-                            <th>Vendor</th>
-                            <th>Products</th>
-                            <th>Store Name</th>
-                            <th>Create Date</th>
-                            <th>Wallet Balance</th>
-                            <th>Revenue</th>
-                            <th>Action</th>
+                        <tr>           
+                            <th></th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Email</th>
+                            <th>Mobile No.</th>                        
+                            <th>City</th>
+                            <th>State</th>
+                            <th>Company</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-
-                        <tr>
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            foreach (KrupaBuildGallery.ViewModel.DistributorRequestVM objreq in Model)
+                            {
+                        <tr class="gradeX">
+                            <td>@counter.</td>
+                            <td>@objreq.FirstName</td>
+                            <td>@objreq.LastName</td>
+                            <td>@objreq.Email</td>
+                            <td>@objreq.MobileNo</td>
+                            <td>@objreq.City</td>
+                            <td>@objreq.State</td>
+                            <td>@objreq.CompanyName</td>
                             <td>
-                                <div class="d-flex vendor-list">
-                                    <img src="~/Content/assets/images/team/1.jpg" alt="" class="img-fluid img-40 rounded-circle blur-up lazyloaded">
-                                    <span>Paige Turner</span>
-                                </div>
-                            </td>
-                            <td>4680</td>
-                            <td>Finhigh</td>
-                            <td>11/7/18</td>
-                            <td>$87616</td>
-                            <td>$947611</td>
-                            <td>
-                                <div>
-                                    <i class="fa fa-edit mr-2 font-success"></i>
-                                    <i class="fa fa-trash font-danger"></i>
-                                </div>
+                                <a href="javascript:void(0);"><i class="fa fa-eye font-success"></i></a>
+                                <a href="javascript:void(0);"><i class="fa fa-trash font-danger"></i></a>
                             </td>
                         </tr>
+                                counter++;
+                            }
 
+                        }                     
                     </tbody>
                 </table>
             </div>

@@ -1,0 +1,80 @@
+﻿@model List<KrupaBuildGallery.ViewModel.ContactUsMessageVM>
+@{
+    ViewBag.Title = "Contact Us Messages";
+
+    int counter = 1;
+}
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="page-header-left">
+                        <h3>
+                            Contact Us Message List
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">ContactUs Message</li>
+                        <li class="breadcrumb-item active">ContactUs Message List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h5>ContactUs Message List</h5>
+            </div>
+            <div class="card-body vendor-table">
+                <table class="display" id="basic-1">
+                    <thead>
+                        <tr>
+                            <th style="width:50px !important;"></th>                            
+                            <th>Name</th>                            
+                            <th>Email</th>
+                            <th>Mobile No.</th>
+                            <th>Message</th>
+                            <th>From App/Web</th>
+                            <th>Message Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            foreach (KrupaBuildGallery.ViewModel.ContactUsMessageVM objcontact in Model)
+                            {
+                                <tr class="gradeX">
+                                    <td style="width:50px !important;">@counter.</td>
+                                    <td>@objcontact.Name</td>
+                                    <td>@objcontact.Email</td>
+                                    <td>@objcontact.MobileNumber</td>
+                                    <td>@objcontact.Message</td>
+                                    <td>@objcontact.FromWhere</td>
+                                    <td>@objcontact.MessageDate.ToString("MMM dd,yyyy")</td>                                    
+                                    <td>                                        
+                                        <a href="javascript:void(0);"><i class="fa fa-trash font-danger"></i></a>
+                                    </td>
+                                </tr>
+                                counter++;
+                            }
+
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+</div>
+
