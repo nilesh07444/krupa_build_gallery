@@ -1,5 +1,9 @@
-﻿
+﻿@model List<KrupaBuildGallery.ViewModel.OrderVM>
+@{
+    ViewBag.Title = "Orders";
 
+    int counter = 1;
+}
 <div class="page-body">
 
     <!-- Container-fluid starts-->
@@ -34,38 +38,61 @@
                 <table class="display" id="basic-1">
                     <thead>
                         <tr>
-                            <th>Vendor</th>
-                            <th>Products</th>
-                            <th>Store Name</th>
-                            <th>Create Date</th>
-                            <th>Wallet Balance</th>
-                            <th>Revenue</th>
-                            <th>Action</th>
+                            <th>Order #</th>
+                            <th>Customer/Distributor Name</th>
+                            <th>Order Ship City</th>
+                            <th>Order Ship State</th>
+                            <th>Order Date</th>
+                            <th>Order Amount</th>
+                            <th>Order Status</th>
+                            <th>Payment Type</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-
-                        <tr>
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            foreach (KrupaBuildGallery.ViewModel.OrderVM objorder in Model)
+                            {
+                                string stauscolor = "badge-secondary";
+                                if(objorder.OrderStatusId == 1)
+                                {
+                                     stauscolor = "badge-danger";
+                                }
+                                else if(objorder.OrderStatusId == 2)
+                                {
+                                     stauscolor = "badge-success";
+                                }
+                                else if(objorder.OrderStatusId == 3)
+                                {
+                                     stauscolor = "badge-warning";
+                                }
+                        <tr class="gradeX">
+                            <td>@counter.</td>
+                            <td>@objorder.ClientUserName</td>
+                            <td>@objorder.OrderShipCity</td>
+                            <td>@objorder.OrderShipState</td>
+                            <td>@objorder.OrderDate.ToString("MMM dd,yyyy")</td>
+                            <td>₹ @Math.Round(objorder.OrderAmount, 2)</td>
+                            <td><span class="badge @stauscolor">@objorder.OrderStatus</span></td>
+                            <td>@objorder.PaymentType</td>
                             <td>
-                                <div class="d-flex vendor-list">
-                                    <img src="~/Content/assets/images/team/1.jpg" alt="" class="img-fluid img-40 rounded-circle blur-up lazyloaded">
-                                    <span>Paige Turner</span>
-                                </div>
-                            </td>
-                            <td>4680</td>
-                            <td>Finhigh</td>
-                            <td>11/7/18</td>
-                            <td>$87616</td>
-                            <td>$947611</td>
-                            <td>
-                                <div>
-                                    <i class="fa fa-edit mr-2 font-success"></i>
-                                    <i class="fa fa-trash font-danger"></i>
-                                </div>
+                                <a href="/admin/order/detail/@objorder.OrderId"><i class="fa fa-eye font-success"></i></a>
+                                <a href="javascript:void(0);" onclick="fnDeleteOrder('@objorder.OrderId')"><i class="fa fa-trash font-danger"></i></a>
                             </td>
                         </tr>
-
-                    </tbody>
+                                counter++;
+                            }
+                        }
+                        else
+                        {
+                          <tr class="gradeX">
+                              <td colspan="9">
+                                  No Orders....
+                              </td>
+                          </tr>
+                        }
+                </tbody>
                 </table>
             </div>
         </div>

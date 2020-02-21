@@ -1,4 +1,5 @@
-﻿<style>
+﻿@model  KrupaBuildGallery.ViewModel.OrderVM
+<style>
     .label-wrapper {
         display: table;
         float: right;
@@ -10,13 +11,28 @@
         margin-left: -15px;
     }
 
+        .form-horizontal .form-group:before {
+            content: " ";
+            display: table
+        }
+
+        .form-horizontal .form-group:after {
+            clear: both !important
+        }
+
     .form-horizontal .label-wrapper .control-label {
         display: table-cell;
         font-weight: bold;
     }
+
     .form-text-row {
-        padding-top: 6px;
+        /*padding-top: 6px;*/
     }
+
+    .col-md-3 {
+        float: left;
+    }
+
     @@media(max-width: 992px) {
         .form-horizontal .label-wrapper {
             float: none;
@@ -25,22 +41,45 @@
         }
     }
 </style>
-<section id="main-content">
-    <section class="wrapper site-min-height">
-        <!-- page start-->
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col">
+                    <div class="page-header-left">
+                        <h3>
+                            Order Detail
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="/admin/category">Order</a></li>
+                        <li class="breadcrumb-item active">Order Detail</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
         <div class="row">
-            <div class="col-lg-12">
-                <section class="panel">
-                    <header class="panel-heading">
-                        Order Detail
-                    </header>
-                    <div class="panel-body form-horizontal">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Order Detail</h5>
+                    </div>
+                    <div class="card-body form-horizontal">
                         <div class="form-group">
                             <div class="col-md-3">
                                 <div class="label-wrapper"><label class="control-label">Order #</label></div>
                             </div>
                             <div class="col-md-9">
-                                <div class="form-text-row">4</div>
+                                <div class="form-text-row">@Model.OrderId</div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -48,7 +87,7 @@
                                 <div class="label-wrapper"><label class="control-label">Created On</label></div>
                             </div>
                             <div class="col-md-9">
-                                <div class="form-text-row">2-Feb-2020 6:20:09 AM</div>
+                                <div class="form-text-row">@Model.OrderDate.ToString("MMM dd,yyyy hh:mm:ss")</div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -56,7 +95,7 @@
                                 <div class="label-wrapper"><label class="control-label">Customer</label></div>
                             </div>
                             <div class="col-md-9">
-                                <div class="form-text-row">kbs shah - kbs@@gmail.com</div>
+                                <div class="form-text-row">@Model.ClientUserName</div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -64,7 +103,7 @@
                                 <div class="label-wrapper"><label class="control-label">Order Status</label></div>
                             </div>
                             <div class="col-md-9">
-                                <div class="form-text-row">Processing</div>
+                                <div class="form-text-row">@Model.OrderStatus</div>
                                 <button type="button" name="" id="cancelorder" class="btn bg-red" style="margin-right: 3px;">
                                     Cancel order
                                 </button>
@@ -78,7 +117,7 @@
                                 <div class="label-wrapper"><label class="control-label">Payment Method</label></div>
                             </div>
                             <div class="col-md-9">
-                                <div class="form-text-row">Credit Used</div>
+                                <div class="form-text-row">@Model.PaymentType</div>
                             </div>
                         </div>
                         <div class="form-group" style="border-bottom: 1px solid #eff2f7;">
@@ -86,7 +125,7 @@
                                 <div class="label-wrapper"><label class="control-label">Order Total Amount</label></div>
                             </div>
                             <div class="col-md-9">
-                                <div class="form-text-row">2500</div>
+                                <div class="form-text-row">₹ @Model.OrderAmount</div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -97,12 +136,13 @@
                                 <div class="form-text-row"></div>
                             </div>
                         </div>
+                        <br/>
                         <div class="form-group">
                             <div class="col-md-3">
                                 <div class="label-wrapper"><label class="control-label">Name</label></div>
                             </div>
                             <div class="col-md-9">
-                                <div class="form-text-row">Nil Patel</div>
+                                <div class="form-text-row">@Model.OrderShipClientName</div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -110,7 +150,7 @@
                                 <div class="label-wrapper"><label class="control-label">Phone</label></div>
                             </div>
                             <div class="col-md-9">
-                                <div class="form-text-row">998988888</div>
+                                <div class="form-text-row">@Model.OrderShipClientPhone</div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -118,7 +158,7 @@
                                 <div class="label-wrapper"><label class="control-label">Address</label></div>
                             </div>
                             <div class="col-md-9">
-                                <div class="form-text-row">M G Road</div>
+                                <div class="form-text-row">@Model.OrderShipAddress</div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -126,7 +166,7 @@
                                 <div class="label-wrapper"><label class="control-label">City</label></div>
                             </div>
                             <div class="col-md-9">
-                                <div class="form-text-row">Anand</div>
+                                <div class="form-text-row">@Model.OrderShipCity</div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -134,23 +174,16 @@
                                 <div class="label-wrapper"><label class="control-label">State</label></div>
                             </div>
                             <div class="col-md-9">
-                                <div class="form-text-row">Gujarat</div>
+                                <div class="form-text-row">@Model.OrderShipState</div>
                             </div>
                         </div>
                     </div>
-                </section>
-            </div>
-        </div>
-        <!-- page end-->
-        <div class="row">
-            <div class="col-lg-12">
-                <section class="panel">
-                    <header class="panel-heading">
-                        Order Items
-                    </header>
-                    <div class="panel-body">
-                        <div class="adv-table">
-                            <table class="display table table-bordered table-striped" id="tblCategoryList">
+                    <div class="card-header">
+                        <h5>Order Items</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-body vendor-table">
+                            <table class="display" id="basic-1">
                                 <thead>
                                     <tr>
                                         <th>Picture</th>
@@ -164,32 +197,31 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr>
-                                        <td><img src="\Areas\Admin\Content\img\product-list\pro-thumb-3.jpg" class="clsimgproduct" /></td>
-                                        <td>Item1</td>
-                                        <td>ITM112</td>
-                                        <td>500</td>
-                                        <td>5</td>
-                                        <td>20</td>
-                                        <td>25</td>
-                                        <td>2500</td>
-                                    </tr>
-                                    <tr>
-                                        <td><img src="\Areas\Admin\Content\img\product-list\pro-thumb-3.jpg" class="clsimgproduct" /></td>
-                                        <td>Item2</td>
-                                        <td>ITM1123</td>
-                                        <td>400</td>
-                                        <td>3</td>
-                                        <td>20</td>
-                                        <td>25</td>
-                                        <td>1200</td>
-                                    </tr>
+                                    @if (Model.OrderItems != null && Model.OrderItems.Count > 0)
+                                    {
+                                        foreach (KrupaBuildGallery.ViewModel.OrderItemsVM objorderItem in Model.OrderItems)
+                                        {
+                                            <tr>
+                                                <td><img src="\Areas\Admin\Content\img\product-list\pro-thumb-3.jpg" class="clsimgproduct" /></td>
+                                                <td>@objorderItem.ItemName</td>
+                                                <td>@objorderItem.Sku</td>
+                                                <td>₹ @Math.Round(objorderItem.Price,2)</td>
+                                                <td>@objorderItem.Qty</td>
+                                                <td>₹ @objorderItem.GSTAmt</td>
+                                                <td>₹ @objorderItem.IGSTAmt</td>
+                                                <td>₹ @Math.Round((objorderItem.Price * objorderItem.Qty),2)</td>
+                                            </tr>
+                                        }
+                                    }                              
+
                                 </tbody>
                             </table>
                         </div>
                     </div>
-                </section>
+                </div>
             </div>
         </div>
-</section>
-</section>
+    </div>
+    <!-- Container-fluid Ends-->
+
+</div>
