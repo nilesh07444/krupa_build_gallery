@@ -30,7 +30,6 @@
         </div>
     </div>
     <!-- Container-fluid Ends-->
-
     <!-- Container-fluid starts-->
     <div class="container-fluid">
         <div class="card">
@@ -41,9 +40,11 @@
                 <table class="display" id="basic-1">
                     <thead>
                         <tr>
-                            <th>#</th>
+                            <th width="10%;">#</th>
+                            <th width="15%;">Category Image</th>
                             <th>Category Name</th>
-                            <th>Action</th>
+                            <th width="15%;">Active</th>
+                            <th width="15%;">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -54,7 +55,26 @@
                             {
                                 <tr class="gradeX">
                                     <td>@counter.</td>
-                                    <td>@category.CategoryImage</td>
+                                    <td> 
+                                        @if (!string.IsNullOrEmpty(category.CategoryImage))
+                                        {
+                                            if (File.Exists(Server.MapPath("~/Images/CategoryMedia/" + category.CategoryImage)))
+                                            { 
+                                                <img src="~/Images/CategoryMedia/@category.CategoryImage" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                            }
+                                            else
+                                            {
+                                                <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                        }
+
+                                    </td>
+                                    <td>@category.CategoryName</td>
+                                    <td>Active</td>
                                     <td>
                                         <a href="/admin/category/edit/@category.CategoryId"><i class="fa fa-edit mr-2 font-success"></i></a>
                                         <a href="javascript:void(0);" onclick="fnDeleteCategory('@category.CategoryId')"><i class="fa fa-trash font-danger"></i></a>
@@ -99,7 +119,7 @@
 
     jQuery(document).ready(function () {
         StartLoading()
-        jQuery('html, body').animate({ scrollTop: 0 }, 1000); 
+        jQuery('html, body').animate({ scrollTop: 0 }, 1000);
     });
 
     function fnDeleteCategory(cat_id) {

@@ -55,6 +55,12 @@
                                 @Html.ValidationMessageFor(model => model.ProductName, "", new { @class = "text-danger" })
                             </div>
 
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.ProductImageFile, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.TextBoxFor(model => model.ProductImageFile, new { type = "file", @class = "form-control col-md-8" })
+                                @Html.ValidationMessageFor(model => model.ProductImageFile, "", new { @class = "text-danger" })
+                            </div>
+
                             <button type="submit" class="btn btn-primary">Submit</button>
                             <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
                         }

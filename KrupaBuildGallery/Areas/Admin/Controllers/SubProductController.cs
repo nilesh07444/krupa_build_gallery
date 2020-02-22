@@ -4,6 +4,7 @@ using KrupaBuildGallery.Model;
 using System;
 using System.Collections.Generic;
 using System.Data.Objects.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -18,6 +19,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         {
             _db = new krupagallarydbEntities();
         }
+
         public ActionResult Index()
         {
             List<SubProductVM> lstSubProducts = new List<SubProductVM>();
@@ -34,7 +36,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                       SubProductName = s.SubProductName,
                                       ProductId = p.Product_Id,
                                       CategoryName = c.CategoryName,
-                                      ProductImage = p.ProductImage,
+                                      SubProductImage = s.SubProductImage,
                                       CategoryId = c.CategoryId,
                                       ProductName = p.ProductName,
                                       IsActive = c.IsActive
@@ -48,6 +50,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             return View(lstSubProducts);
         }
+
         public ActionResult Add()
         {
             SubProductVM objSubProduct = new SubProductVM();
@@ -59,7 +62,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Add(SubProductVM subcategoryVM)
+        public ActionResult Add(SubProductVM subcategoryVM, HttpPostedFileBase SubProductImageFile)
         {
             try
             {
@@ -79,10 +82,23 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     }
                     else
                     {
+                        string fileName = string.Empty;
+                        string path = Server.MapPath("~/Images/SubProductMedia/");
+                        if (SubProductImageFile != null)
+                        {
+                            fileName = Guid.NewGuid() + "-" + Path.GetFileName(SubProductImageFile.FileName);
+                            SubProductImageFile.SaveAs(path + fileName);
+                        }
+                        else
+                        {
+                            fileName = subcategoryVM.SubProductImage;
+                        }
+
                         tbl_SubProducts objSubCategory = new tbl_SubProducts();
                         objSubCategory.CategoryId = subcategoryVM.CategoryId;
                         objSubCategory.ProductId = subcategoryVM.ProductId;
                         objSubCategory.SubProductName = subcategoryVM.SubProductName;
+                        objSubCategory.SubProductImage = fileName;
 
                         objSubCategory.IsActive = true;
                         objSubCategory.IsDelete = false;
@@ -121,7 +137,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                               SubProductId = s.SubProductId,
                                               CategoryId = s.CategoryId,
                                               ProductId = s.ProductId,
-                                              SubProductName = s.SubProductName
+                                              SubProductName = s.SubProductName,
+                                              SubProductImage = s.SubProductImage
                                           }).FirstOrDefault();
 
             subcategoryVM.CategoryList = GetCategoryList();
@@ -133,7 +150,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit(SubProductVM subcategoryVM)
+        public ActionResult Edit(SubProductVM subcategoryVM, HttpPostedFileBase SubProductImageFile)
         {
             try
             {
@@ -154,9 +171,23 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     else
                     {
                         tbl_SubProducts objSubCategory = _db.tbl_SubProducts.Where(x => x.SubProductId == subcategoryVM.SubProductId).FirstOrDefault();
+
+                        string fileName = string.Empty;
+                        string path = Server.MapPath("~/Images/SubProductMedia/");
+                        if (SubProductImageFile != null)
+                        {
+                            fileName = Guid.NewGuid() + "-" + Path.GetFileName(SubProductImageFile.FileName);
+                            SubProductImageFile.SaveAs(path + fileName);
+                        }
+                        else
+                        {
+                            fileName = objSubCategory.SubProductImage;
+                        }
+
                         objSubCategory.CategoryId = subcategoryVM.CategoryId;
                         objSubCategory.ProductId = subcategoryVM.ProductId;
                         objSubCategory.SubProductName = subcategoryVM.SubProductName;
+                        objSubCategory.SubProductImage = fileName;
 
                         objSubCategory.UpdatedBy = LoggedInUserId;
                         objSubCategory.UpdatedDate = DateTime.UtcNow;
@@ -212,8 +243,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             return ReturnMessage;
         }
-
-
+         
         private List<SelectListItem> GetCategoryList()
         {
             var CategoryList = _db.tbl_Categories.Where(x => x.IsActive && !x.IsDelete)

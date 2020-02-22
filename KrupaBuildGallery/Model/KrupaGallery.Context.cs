@@ -31,6 +31,8 @@ namespace KrupaBuildGallery.Model
         public DbSet<tbl_ClientOtherDetails> tbl_ClientOtherDetails { get; set; }
         public DbSet<tbl_ClientRoles> tbl_ClientRoles { get; set; }
         public DbSet<tbl_ClientUsers> tbl_ClientUsers { get; set; }
+        public DbSet<tbl_ContactFormData> tbl_ContactFormData { get; set; }
+        public DbSet<tbl_DistributorRequestDetails> tbl_DistributorRequestDetails { get; set; }
         public DbSet<tbl_ItemStocks> tbl_ItemStocks { get; set; }
         public DbSet<tbl_Offers> tbl_Offers { get; set; }
         public DbSet<tbl_OrderItemDetails> tbl_OrderItemDetails { get; set; }
@@ -39,8 +41,6 @@ namespace KrupaBuildGallery.Model
         public DbSet<tbl_ProductItems> tbl_ProductItems { get; set; }
         public DbSet<tbl_Products> tbl_Products { get; set; }
         public DbSet<tbl_SubProducts> tbl_SubProducts { get; set; }
-        public DbSet<tbl_ContactFormData> tbl_ContactFormData { get; set; }
-        public DbSet<tbl_DistributorRequestDetails> tbl_DistributorRequestDetails { get; set; }
         public DbSet<tbl_PaymentHistory> tbl_PaymentHistory { get; set; }
     }
 }
