@@ -222,6 +222,20 @@
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="UpdatedBy" Type="bigint" />
           <Property Name="UpdatedDate" Type="datetime" />
+          <Property Name="AmountDue" Type="decimal" Precision="18" Scale="2" />
+        </EntityType>
+        <EntityType Name="tbl_PaymentHistory">
+          <Key>
+            <PropertyRef Name="PaymentHistory_Id" />
+          </Key>
+          <Property Name="PaymentHistory_Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AmountPaid" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="AmountDue" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="DateOfPayment" Type="datetime" Nullable="false" />
+          <Property Name="OrderId" Type="bigint" Nullable="false" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="PaymentBy" Type="nvarchar" MaxLength="250" />
         </EntityType>
         <EntityType Name="tbl_ProductItemImages">
           <Key>
@@ -307,6 +321,7 @@
           <EntitySet Name="tbl_Offers" EntityType="Self.tbl_Offers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_OrderItemDetails" EntityType="Self.tbl_OrderItemDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Orders" EntityType="Self.tbl_Orders" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_PaymentHistory" EntityType="Self.tbl_PaymentHistory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ProductItemImages" EntityType="Self.tbl_ProductItemImages" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ProductItems" EntityType="Self.tbl_ProductItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Products" EntityType="Self.tbl_Products" Schema="dbo" store:Type="Tables" />
@@ -499,6 +514,7 @@
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="UpdatedBy" Type="Int64" />
           <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <Property Name="AmountDue" Type="Decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="tbl_ProductItemImages">
           <Key>
@@ -588,6 +604,7 @@
           <EntitySet Name="tbl_SubProducts" EntityType="Self.tbl_SubProducts" />
           <EntitySet Name="tbl_ContactFormData" EntityType="krupagallarydbModel.tbl_ContactFormData" />
           <EntitySet Name="tbl_DistributorRequestDetails" EntityType="krupagallarydbModel.tbl_DistributorRequestDetails" />
+          <EntitySet Name="tbl_PaymentHistory" EntityType="krupagallarydbModel.tbl_PaymentHistory" />
         </EntityContainer>
         <EntityType Name="tbl_ContactFormData">
           <Key>
@@ -622,6 +639,19 @@
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="Int64" />
+        </EntityType>
+        <EntityType Name="tbl_PaymentHistory">
+          <Key>
+            <PropertyRef Name="PaymentHistory_Id" />
+          </Key>
+          <Property Name="PaymentHistory_Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AmountPaid" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="AmountDue" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="DateOfPayment" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="OrderId" Type="Int64" Nullable="false" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="PaymentBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -803,6 +833,7 @@
           <EntitySetMapping Name="tbl_Orders">
             <EntityTypeMapping TypeName="krupagallarydbModel.tbl_Orders">
               <MappingFragment StoreEntitySet="tbl_Orders">
+                <ScalarProperty Name="AmountDue" ColumnName="AmountDue" />
                 <ScalarProperty Name="OrderId" ColumnName="OrderId" />
                 <ScalarProperty Name="ClientUserId" ColumnName="ClientUserId" />
                 <ScalarProperty Name="OrderAmount" ColumnName="OrderAmount" />
@@ -931,6 +962,20 @@
                 <ScalarProperty Name="LastName" ColumnName="LastName" />
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
                 <ScalarProperty Name="DistributorRequestId" ColumnName="DistributorRequestId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_PaymentHistory">
+            <EntityTypeMapping TypeName="krupagallarydbModel.tbl_PaymentHistory">
+              <MappingFragment StoreEntitySet="tbl_PaymentHistory">
+                <ScalarProperty Name="PaymentBy" ColumnName="PaymentBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
+                <ScalarProperty Name="DateOfPayment" ColumnName="DateOfPayment" />
+                <ScalarProperty Name="AmountDue" ColumnName="AmountDue" />
+                <ScalarProperty Name="AmountPaid" ColumnName="AmountPaid" />
+                <ScalarProperty Name="PaymentHistory_Id" ColumnName="PaymentHistory_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

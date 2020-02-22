@@ -21,6 +21,7 @@
         <EntityTypeShape EntityType="krupagallarydbModel.tbl_SubProducts" Width="1.5" PointX="4.75" PointY="10.75" IsExpanded="true" />
         <EntityTypeShape EntityType="krupagallarydbModel.tbl_ContactFormData" Width="1.5" PointX="7.375" PointY="10.75" />
         <EntityTypeShape EntityType="krupagallarydbModel.tbl_DistributorRequestDetails" Width="1.5" PointX="9.375" PointY="10.75" />
+        <EntityTypeShape EntityType="krupagallarydbModel.tbl_PaymentHistory" Width="1.5" PointX="11.375" PointY="8.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

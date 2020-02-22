@@ -41,5 +41,6 @@ namespace KrupaBuildGallery.Model
         public DbSet<tbl_SubProducts> tbl_SubProducts { get; set; }
         public DbSet<tbl_ContactFormData> tbl_ContactFormData { get; set; }
         public DbSet<tbl_DistributorRequestDetails> tbl_DistributorRequestDetails { get; set; }
+        public DbSet<tbl_PaymentHistory> tbl_PaymentHistory { get; set; }
     }
 }

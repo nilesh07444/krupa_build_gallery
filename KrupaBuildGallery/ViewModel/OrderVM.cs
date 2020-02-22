@@ -22,5 +22,6 @@ namespace KrupaBuildGallery.ViewModel
         public DateTime OrderDate { get; set; }
         public List<OrderItemsVM> OrderItems { get; set; }
         public string OrderStatus { get; set; }
+        public decimal OrderAmountDue { get; set; }
     }
 }

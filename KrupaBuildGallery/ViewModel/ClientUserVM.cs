@@ -22,7 +22,8 @@ namespace KrupaBuildGallery.ViewModel
         public string State { get; set; }
         public string AddharCardNo { get; set; }        
         public string PanCardNo { get; set; }
-        public string GSTNo { get; set; }                
+        public string GSTNo { get; set; }                  
+        public List<OrderVM> OrderList { get; set; }
 
     }
 }
