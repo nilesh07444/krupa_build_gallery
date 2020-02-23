@@ -4,92 +4,106 @@
 
     int counter = 1;
 }
-<div class="page-body">
+    <div class="page-body">
 
-    <!-- Container-fluid starts-->
-    <div class="container-fluid">
-        <div class="page-header">
-            <div class="row">
-                <div class="col-lg-6">
-                    <div class="page-header-left">
-                        <h3>
-                            Order List
-                        </h3>
+        <!-- Container-fluid starts-->
+        <div class="container-fluid">
+            <div class="page-header">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="page-header-left">
+                            <h3>
+                                Order List
+                            </h3>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <ol class="breadcrumb pull-right">
+                            <li class="breadcrumb-item"><a href="/"><i data-feather="home"></i></a></li>
+                            <li class="breadcrumb-item">Order</li>
+                            <li class="breadcrumb-item active">Order List</li>
+                        </ol>
                     </div>
                 </div>
-                <div class="col-lg-6">
-                    <ol class="breadcrumb pull-right">
-                        <li class="breadcrumb-item"><a href="/"><i data-feather="home"></i></a></li>
-                        <li class="breadcrumb-item">Order</li>
-                        <li class="breadcrumb-item active">Order List</li>
-                    </ol>
+            </div>
+        </div>
+        <!-- Container-fluid Ends-->
+        <!-- Container-fluid starts-->
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Order List</h5>
+                </div>
+                <div class="card-body vendor-table">
+                    <table class="display" id="basic-1">
+                        <thead>
+                            <tr>
+                                <th>Order #</th>
+                                <th>Customer/Distributor Name</th>
+                                <th>Order Ship City</th>
+                                <th>Order Ship State</th>
+                                <th>Order Date</th>
+                                <th>Order Amount</th>
+                                <th>Order Status</th>
+                                <th>Payment Type</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.Count > 0)
+                            {
+                                foreach (KrupaBuildGallery.ViewModel.OrderVM objorder in Model)
+                                {
+                                    string stauscolor = "badge-secondary";
+                                    if (objorder.OrderStatusId == 1)
+                                    {
+                                        stauscolor = "badge-danger";
+                                    }
+                                    else if (objorder.OrderStatusId == 2)
+                                    {
+                                        stauscolor = "badge-success";
+                                    }
+                                    else if (objorder.OrderStatusId == 3)
+                                    {
+                                        stauscolor = "badge-warning";
+                                    }
+                                    <tr class="gradeX">
+                                        <td>@counter.</td>
+                                        <td>@objorder.ClientUserName</td>
+                                        <td>@objorder.OrderShipCity</td>
+                                        <td>@objorder.OrderShipState</td>
+                                        <td>@objorder.OrderDate.ToString("MMM dd,yyyy")</td>
+                                        <td>₹ @Math.Round(objorder.OrderAmount, 2)</td>
+                                        <td><span class="badge @stauscolor">@objorder.OrderStatus</span></td>
+                                        <td>@objorder.PaymentType</td>
+                                        <td>
+                                            <a href="/admin/order/detail/@objorder.OrderId"><i class="fa fa-eye font-success"></i></a>
+                                            <a href="javascript:void(0);" onclick="invoiceprint('@objorder.OrderId');" title="Print Invoice"><i class="fa fa-file font-success"></i></a>
+                                            <a href="javascript:void(0);" onclick="fnDeleteOrder('@objorder.OrderId')"><i class="fa fa-trash font-danger"></i></a>
+                                        </td>
+                                    </tr>
+                                    counter++;
+                                }
+                            }
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- Container-fluid Ends-->
-    <!-- Container-fluid starts-->
-    <div class="container-fluid">
-        <div class="card">
-            <div class="card-header">
-                <h5>Order List</h5>
-            </div>
-            <div class="card-body vendor-table">
-                <table class="display" id="basic-1">
-                    <thead>
-                        <tr>
-                            <th>Order #</th>
-                            <th>Customer/Distributor Name</th>
-                            <th>Order Ship City</th>
-                            <th>Order Ship State</th>
-                            <th>Order Date</th>
-                            <th>Order Amount</th>
-                            <th>Order Status</th>
-                            <th>Payment Type</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (Model != null && Model.Count > 0)
-                        {
-                            foreach (KrupaBuildGallery.ViewModel.OrderVM objorder in Model)
-                            {
-                                string stauscolor = "badge-secondary";
-                                if (objorder.OrderStatusId == 1)
-                                {
-                                    stauscolor = "badge-danger";
-                                }
-                                else if (objorder.OrderStatusId == 2)
-                                {
-                                    stauscolor = "badge-success";
-                                }
-                                else if (objorder.OrderStatusId == 3)
-                                {
-                                    stauscolor = "badge-warning";
-                                }
-                                <tr class="gradeX">
-                                    <td>@counter.</td>
-                                    <td>@objorder.ClientUserName</td>
-                                    <td>@objorder.OrderShipCity</td>
-                                    <td>@objorder.OrderShipState</td>
-                                    <td>@objorder.OrderDate.ToString("MMM dd,yyyy")</td>
-                                    <td>₹ @Math.Round(objorder.OrderAmount, 2)</td>
-                                    <td><span class="badge @stauscolor">@objorder.OrderStatus</span></td>
-                                    <td>@objorder.PaymentType</td>
-                                    <td>
-                                        <a href="/admin/order/detail/@objorder.OrderId"><i class="fa fa-eye font-success"></i></a>
-                                        <a href="javascript:void(0);" onclick="fnDeleteOrder('@objorder.OrderId')"><i class="fa fa-trash font-danger"></i></a>
-                                    </td>
-                                </tr>
-                                counter++;
-                            }
-                        } 
-                    </tbody>
-                </table>
-            </div>
+        <!-- Container-fluid Ends-->
+        <div style="display: none;" id="dvPrint">
         </div>
     </div>
-    <!-- Container-fluid Ends-->
 
-</div>
-
+<script>
+     function invoiceprint(orderid) {
+          $("#dvPrint").load('/admin/Distributor/PrintInvoice?OrderId='+orderid, function () {                    
+             w = window.open();
+            w.document.write($("#dvPrint").html());
+               setTimeout(function () {
+                   w.print();
+            w.close();
+               },100);
+        });
+    }
+</script>

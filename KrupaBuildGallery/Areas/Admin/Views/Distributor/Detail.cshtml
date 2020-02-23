@@ -105,7 +105,7 @@
                             <div class="col-md-9">
                                 <div class="form-text-row">@Model.MobileNo</div>
                             </div>
-                        </div>                        
+                        </div>
                         <div class="form-group">
                             <div class="col-md-3">
                                 <div class="label-wrapper"><label class="control-label">Address</label></div>
@@ -121,7 +121,7 @@
                             <div class="col-md-9">
                                 <div class="form-text-row"></div>
                             </div>
-                        </div>                                                   
+                        </div>
                     </div>
                     <div class="card-header">
                         <h5>Order List</h5>
@@ -146,27 +146,28 @@
                                         foreach (KrupaBuildGallery.ViewModel.OrderVM objorder in Model.OrderList)
                                         {
                                             string stauscolor = "badge-secondary";
-                                if(objorder.OrderStatusId == 1)
-                                {
-                                     stauscolor = "badge-danger";
-                                }
-                                else if(objorder.OrderStatusId == 2)
-                                {
-                                     stauscolor = "badge-success";
-                                }
-                                else if(objorder.OrderStatusId == 3)
-                                {
-                                     stauscolor = "badge-warning";
-                                }
+                                            if (objorder.OrderStatusId == 1)
+                                            {
+                                                stauscolor = "badge-danger";
+                                            }
+                                            else if (objorder.OrderStatusId == 2)
+                                            {
+                                                stauscolor = "badge-success";
+                                            }
+                                            else if (objorder.OrderStatusId == 3)
+                                            {
+                                                stauscolor = "badge-warning";
+                                            }
                                             <tr>
                                                 <td>@objorder.OrderId</td>
                                                 <td>@objorder.OrderDate.ToString("MMM dd,yyyyy")</td>
                                                 <td>₹ @Math.Round(objorder.OrderAmount, 2)</td>
                                                 <td><span class="badge @stauscolor">@objorder.OrderStatus</span></td>
                                                 <td>@objorder.PaymentType</td>
-                                                <td>₹ @objorder.OrderAmountDue</td>      
+                                                <td>₹ @objorder.OrderAmountDue</td>
                                                 <td>
-                                                    <a href="/admin/distributor/paymentdetail/@objorder.OrderId"><i class="fa fa-money font-success"></i></a>
+                                                    <a href="javascript:void(0);" onclick="invoiceprint('@objorder.OrderId');" title="Print Invoice"><i class="fa fa-file font-success"></i></a>
+                                                    <a href="/admin/distributor/paymentdetail/@objorder.OrderId" title="Payment Details"><i class="fa fa-money font-success"></i></a>
                                                 </td>
                                             </tr>
                                         }
@@ -181,5 +182,18 @@
         </div>
     </div>
     <!-- Container-fluid Ends-->
-
+    <div style="display: none;" id="dvPrint">
+    </div>
 </div>
+<script>  
+    function invoiceprint(orderid) {
+          $("#dvPrint").load('/admin/Distributor/PrintInvoice?OrderId='+orderid, function () {                    
+             w = window.open();
+            w.document.write($("#dvPrint").html());
+               setTimeout(function () {
+                   w.print();
+            w.close();
+               },100);
+        });
+    }
+</script>

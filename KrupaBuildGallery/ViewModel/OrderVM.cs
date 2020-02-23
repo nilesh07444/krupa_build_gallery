@@ -23,5 +23,8 @@ namespace KrupaBuildGallery.ViewModel
         public List<OrderItemsVM> OrderItems { get; set; }
         public string OrderStatus { get; set; }
         public decimal OrderAmountDue { get; set; }
+        public string ClientAddress { get; set; }
+        public string ClientMobileNo { get; set; }
+        public string ClientEmail { get; set; }
     }
 }

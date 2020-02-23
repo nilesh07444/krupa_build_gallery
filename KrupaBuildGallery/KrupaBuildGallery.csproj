@@ -48,6 +48,14 @@
     <Reference Include="EntityFramework, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
+    <Reference Include="itextsharp, Version=5.5.13.1, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="itextsharp.xmlworker, Version=5.5.13.1, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\itextsharp.xmlworker.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -3703,6 +3711,8 @@
     <Content Include="Areas\Client\Views\Faq\Index.cshtml" />
     <Content Include="Areas\Admin\Views\SubProduct\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\ContactUsMessage\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Distributor\Detail.cshtml" />
+    <Content Include="Areas\Admin\Views\Distributor\PaymentDetail.cshtml" />
     <EntityDeploy Include="Model\KrupaGallery.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>KrupaGallery.Designer.cs</LastGenOutput>
@@ -3710,8 +3720,6 @@
     <Content Include="Model\KrupaGallery.edmx.diagram">
       <DependentUpon>KrupaGallery.edmx</DependentUpon>
     </Content>
-    <Content Include="Areas\Admin\Views\Distributor\Detail.cshtml" />
-    <Content Include="Areas\Admin\Views\Distributor\PaymentDetail.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />

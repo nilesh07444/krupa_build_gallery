@@ -37,10 +37,10 @@ namespace KrupaBuildGallery.Model
         public DbSet<tbl_Offers> tbl_Offers { get; set; }
         public DbSet<tbl_OrderItemDetails> tbl_OrderItemDetails { get; set; }
         public DbSet<tbl_Orders> tbl_Orders { get; set; }
+        public DbSet<tbl_PaymentHistory> tbl_PaymentHistory { get; set; }
         public DbSet<tbl_ProductItemImages> tbl_ProductItemImages { get; set; }
         public DbSet<tbl_ProductItems> tbl_ProductItems { get; set; }
         public DbSet<tbl_Products> tbl_Products { get; set; }
         public DbSet<tbl_SubProducts> tbl_SubProducts { get; set; }
-        public DbSet<tbl_PaymentHistory> tbl_PaymentHistory { get; set; }
     }
 }

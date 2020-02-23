@@ -10,6 +10,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 {
     public class LoginController : Controller
     {
+         
         private readonly krupagallarydbEntities _db;
         public LoginController()
         {
