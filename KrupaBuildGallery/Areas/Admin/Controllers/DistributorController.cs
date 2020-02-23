@@ -449,7 +449,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         srBuild.Append("<td class=\"text-center\">" + SGSTAmt + "</td>");
                         srBuild.Append("<td class=\"text-center\">" +Math.Round(FinalPrice,2) + "</td>");
                         srBuild.Append("</tr>");
-                        
+                        cntsrNo = cntsrNo + 1;
+
+
                     }
                 }
                 ItemHtmls = srBuild.ToString();
