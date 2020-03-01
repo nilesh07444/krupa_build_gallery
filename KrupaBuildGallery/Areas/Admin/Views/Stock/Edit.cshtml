@@ -1,0 +1,194 @@
+﻿@model ItemStockVM
+
+@{
+    ViewBag.Title = "EditStock";
+}
+
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col">
+                    <div class="page-header-left">
+                        <h3>
+                            Edit Stock
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="/admin/stock">Stock</a></li>
+                        <li class="breadcrumb-item active">Edit Stock</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Edit Stock</h5>
+                    </div>
+                    <div class="card-body">
+                        @using (Html.BeginForm("Edit", "Stock", FormMethod.Post, new { @id = "ProductStockFormId", @class = "needs-validation", enctype = "multipart/form-data", role = "form" }))
+                        {
+
+                            @Html.AntiForgeryToken()
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.CategoryId, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.DropDownListFor(model => model.CategoryId, new SelectList(Model.CategoryList, "Value", "Text"), "- Select Category -", new { @class = "form-control col-md-8", style = "" })
+                                @Html.ValidationMessageFor(model => model.CategoryId, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.ProductId, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.DropDownListFor(model => model.ProductId, new SelectList(Model.ProductList, "Value", "Text"), "- Select Product -", new { @class = "form-control col-md-8", style = "" })
+                                @Html.ValidationMessageFor(model => model.ProductId, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.SubProductId, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.DropDownListFor(model => model.SubProductId, new SelectList(Model.SubProductList, "Value", "Text"), "- Select SubProduct -", new { @class = "form-control col-md-8", style = "" })
+                                @Html.ValidationMessageFor(model => model.SubProductId, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.ProductItemId, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.DropDownListFor(model => model.ProductItemId, new SelectList(Model.ProductItemList, "Value", "Text"), "- Select Item -", new { @class = "form-control col-md-8", style = "" })
+                                @Html.ValidationMessageFor(model => model.ProductItemId, "", new { @class = "text-danger" })
+                            </div>
+                           
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.Quantity, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.EditorFor(model => model.Quantity, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Quantity", maxlength = "200" } })
+                                @Html.ValidationMessageFor(model => model.Quantity, "", new { @class = "text-danger" })
+                            </div>
+
+                            @Html.HiddenFor(x => x.StockId)
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+</div>
+
+<script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+<script>
+
+    $(document).on("click", "#btnCancel", function () {
+        window.location.href = "/admin/stock";
+    });
+
+    jQuery(document).on("change", "#CategoryId", function () {
+
+        var CategoryId = jQuery("#CategoryId option:selected").val();
+
+        if (CategoryId != "" && CategoryId != null) {
+
+            var URL = '@Url.Action("GetProductListByCategoryId", "SubProduct")';
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: URL + "/" + CategoryId,
+                success: function (result) {
+                    var htmlData = "<option value='0'>-Select Product-</option>";
+                    if (result && result.length > 0) {
+                        result.forEach(element => {
+                           htmlData += "<option value='"+ element.Value +"'> "+ element.Text +" </option>";
+                        });
+                    }
+                    $("#ProductId").html(htmlData);
+                },
+                error: function (error) {
+                }
+            });
+        }
+        else {
+            var htmlData = "<option value='0'>- Select Product -</option>";
+            $("#ProductId").html(htmlData);
+
+            var htmlSubData = "<option value='0'>- Select Sub Product -</option>";
+            $("#SubProductId").html(htmlSubData);
+        }
+
+    });
+
+    jQuery(document).on("change", "#ProductId", function () {
+
+        var ProductId = jQuery("#ProductId option:selected").val();
+
+        if (ProductId != "" && ProductId != null) {
+
+            var URL = '@Url.Action("GetSubProductListByProductId", "SubProduct")';
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: URL + "/" + ProductId,
+                success: function (result) {
+                    var htmlData = "<option value='0'>-Select SubProduct-</option>";
+                    if (result && result.length > 0) {
+                        result.forEach(element => {
+                           htmlData += "<option value='"+ element.Value +"'> "+ element.Text +" </option>";
+                        });
+                    }
+                    $("#SubProductId").html(htmlData);
+                },
+                error: function (error) {
+                }
+            });
+        }
+        else {
+            var htmlSubData = "<option value='0'>- Select Sub Product -</option>";
+            $("#SubProductId").html(htmlSubData);
+        }
+    });
+    jQuery(document).on("change", "#ProductId,#SubProductId", function () {
+
+        var ProductId = jQuery("#ProductId option:selected").val();
+        var SubProductId = jQuery("#SubProductId option:selected").val();
+
+        if ((ProductId != "" && ProductId != null) || (SubProductId != "" && SubProductId != null)) {
+            StartLoading();
+            var URL = '@Url.Action("GetItemList", "Stock")';
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: URL + "?ProductId=" + ProductId + "&SubProductId=" + SubProductId,
+                success: function (result) {
+                    var htmlData = "<option value='0'>-Select Product Item-</option>";
+                    if (result && result.length > 0) {
+                        result.forEach(element => {
+                            htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
+                        });
+                    }
+                    $("#ProductItemId").html(htmlData);
+                    StopLoading();
+                },
+                error: function (error) {
+                    $.unblockUI();
+                }
+            });
+        }
+       else {
+            var htmlSubData = "<option value='0'>- Select Product Item -</option>";
+            $("#ProductItemId").html(htmlSubData);
+        }
+    });
+</script>
+

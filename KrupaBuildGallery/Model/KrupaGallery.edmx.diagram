@@ -41,6 +41,7 @@
         <EntityTypeShape EntityType="KrupaGallery.tbl_Products" Width="1.5" PointX="8.75" PointY="10.75" IsExpanded="true" />
         <EntityTypeShape EntityType="KrupaGallery.tbl_SubProducts" Width="1.5" PointX="10.75" PointY="9.75" IsExpanded="true" />
       </Diagram>
+        <EntityTypeShape EntityType="krupagallarydbModel.tbl_Cart" Width="1.5" PointX="3.1031157779987506" PointY="24.435806539112612" />
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

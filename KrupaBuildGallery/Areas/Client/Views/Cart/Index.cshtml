@@ -1,6 +1,9 @@
-﻿
+﻿@using KrupaBuildGallery.Model;
+@model List<CartVM>
 @{
-    ViewBag.Title = "Cart"; 
+    ViewBag.Title = "Cart";
+    int counter = 1;
+    decimal CartTotal = 0;
 }
 
 
@@ -33,6 +36,7 @@
                 <table class="table cart-table table-responsive-xs">
                     <thead>
                         <tr class="table-head">
+                            <th></th>
                             <th scope="col">image</th>
                             <th scope="col">product name</th>
                             <th scope="col">price</th>
@@ -42,121 +46,69 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>
-                                <a href="#"><img src="~/Content/assets/images/pro3/1.jpg" alt=""></a>
-                            </td>
-                            <td>
-                                <a href="#">cotton shirt</a>
-                                <div class="mobile-cart-content row">
-                                    <div class="col-xs-3">
-                                        <div class="qty-box">
-                                            <div class="input-group">
-                                                <input type="text" name="quantity" class="form-control input-number" value="1">
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            foreach (CartVM item in Model)
+                            {
+                                decimal ItemTotal = Convert.ToDecimal(item.Qty * item.Price);
+                                CartTotal = CartTotal + ItemTotal;
+                                <tr>
+                                    <td>@counter</td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(item.ItemImage))
+                                        {
+                                            if (File.Exists(Server.MapPath("~/Images/ProductItemMedia/" + item.ItemImage)))
+                                            {
+                                                <img src="~/Images/ProductItemMedia/@item.ItemImage" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                            }
+                                            else
+                                            {
+                                                <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                        }
+                                    </td>
+                                    <td>
+                                        <a href="#">@item.ItemName</a>
+                                        <div class="mobile-cart-content row">
+                                            <div class="col-xs-3">
+                                                <div class="qty-box">
+                                                    <div class="input-group">
+                                                        <input type="text" name="quantity" class="form-control input-number" value="@item.Qty">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <h2 class="td-color">@item.Price</h2>
+                                            </div>
+                                            <div class="col-xs-3">
+                                                <h2 class="td-color"><a href="javascript:void(0);" onclick="removecart('@item.CartId');" class="icon"><i class="ti-close"></i></a></h2>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-xs-3">
-                                        <h2 class="td-color">$63.00</h2>
-                                    </div>
-                                    <div class="col-xs-3">
-                                        <h2 class="td-color"><a href="#" class="icon"><i class="ti-close"></i></a></h2>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <h2>$63.00</h2>
-                            </td>
-                            <td>
-                                <div class="qty-box">
-                                    <div class="input-group">
-                                        <input type="number" name="quantity" class="form-control input-number" value="1">
-                                    </div>
-                                </div>
-                            </td>
-                            <td><a href="#" class="icon"><i class="ti-close"></i></a></td>
-                            <td>
-                                <h2 class="td-color">$4539.00</h2>
-                            </td>
-                        </tr>
-                    </tbody>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <a href="#"><img src="~/Content/assets/images/pro3/1.jpg" alt=""></a>
-                            </td>
-                            <td>
-                                <a href="#">cotton shirt</a>
-                                <div class="mobile-cart-content row">
-                                    <div class="col-xs-3">
+                                    </td>
+                                    <td>
+                                        <h2>@item.Price</h2>
+                                    </td>
+                                    <td>
                                         <div class="qty-box">
                                             <div class="input-group">
-                                                <input type="number" name="quantity" class="form-control input-number" value="1">
+                                                <input type="number" name="quantity" class="form-control input-number" value="@item.Qty">
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-xs-3">
-                                        <h2 class="td-color">$63.00</h2>
-                                    </div>
-                                    <div class="col-xs-3">
-                                        <h2 class="td-color"><a href="#" class="icon"><i class="ti-close"></i></a></h2>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <h2>$63.00</h2>
-                            </td>
-                            <td>
-                                <div class="qty-box">
-                                    <div class="input-group">
-                                        <input type="number" name="quantity" class="form-control input-number" value="1">
-                                    </div>
-                                </div>
-                            </td>
-                            <td><a href="#" class="icon"><i class="ti-close"></i></a></td>
-                            <td>
-                                <h2 class="td-color">$4539.00</h2>
-                            </td>
-                        </tr>
-                    </tbody>
-                    <tbody>
-                        <tr>
-                            <td>
-                                <a href="#"><img src="~/Content/assets/images/pro3/1.jpg" alt=""></a>
-                            </td>
-                            <td>
-                                <a href="#">cotton shirt</a>
-                                <div class="mobile-cart-content row">
-                                    <div class="col-xs-3">
-                                        <div class="qty-box">
-                                            <div class="input-group">
-                                                <input type="number" name="quantity" class="form-control input-number" value="1">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-xs-3">
-                                        <h2 class="td-color">$63.00</h2>
-                                    </div>
-                                    <div class="col-xs-3">
-                                        <h2 class="td-color"><a href="#" class="icon"><i class="ti-close"></i></a></h2>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <h2>$63.00</h2>
-                            </td>
-                            <td>
-                                <div class="qty-box">
-                                    <div class="input-group">
-                                        <input type="number" name="quantity" class="form-control input-number" value="1">
-                                    </div>
-                                </div>
-                            </td>
-                            <td><a href="#" class="icon"><i class="ti-close"></i></a></td>
-                            <td>
-                                <h2 class="td-color">$4539.00</h2>
-                            </td>
-                        </tr>
+                                    </td>
+                                    <td><a href="javascript:void(0);" class="icon" onclick="removecart('@item.CartId');"><i class="ti-close"></i></a></td>
+                                    <td>
+                                        <h2 class="td-color">@ItemTotal</h2>
+                                    </td>
+                                </tr>
+                                counter = counter + 1;
+                            }
+
+                        }
+
                     </tbody>
                 </table>
                 <table class="table cart-table table-responsive-md">
@@ -164,7 +116,7 @@
                         <tr>
                             <td>total price :</td>
                             <td>
-                                <h2>$6935.00</h2>
+                                <h2>@CartTotal</h2>
                             </td>
                         </tr>
                     </tfoot>
@@ -173,8 +125,26 @@
         </div>
         <div class="row cart-buttons">
             <div class="col-6"><a href="#" class="btn btn-solid">continue shopping</a></div>
-            <div class="col-6"><a href="#" class="btn btn-solid">check out</a></div>
+            <div class="col-6"><a href="/checkout" class="btn btn-solid">check out</a></div>
         </div>
     </div>
 </section>
 <!--section end-->
+<script>
+    function removecart(CartItemId) {
+        var URL = '/Client/Cart/Removecartitem';
+        jQuery.ajax({
+            type: 'POST',
+            async: true,
+            url: URL + "?CartItemId=" + CartItemId,
+            success: function (result) {
+                alert("Item removed successfully..");
+                location.reload();
+            },
+            error: function (resultData) {
+                console.log("error");
+
+            }
+        });
+    }
+</script>

@@ -32,5 +32,8 @@ namespace KrupaBuildGallery.Model
         public Nullable<long> UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDate { get; set; }
         public Nullable<decimal> AmountDue { get; set; }
+        public string RazorpayOrderId { get; set; }
+        public string RazorpayPaymentId { get; set; }
+        public string RazorSignature { get; set; }
     }
 }

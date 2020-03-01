@@ -1,0 +1,34 @@
+﻿
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+    var options = {
+        "key": "rzp_test_DMsPlGIBp3SSnI", // Enter the Key ID generated from the Dashboard
+        "amount": "@ViewBag.Amount", // Amount is in currency subunits. Default currency is INR. Hence, 50000 means 50000 paise or ₹500.
+        "currency": "INR",
+        "name": "Krupa Build Gallery",
+        "description": "@ViewBag.Description",
+        "image": "https://razorpay.com/favicon.png",
+        "order_id": "@ViewBag.OrderId",// Replace this with the order_id created using Orders API (https://razorpay.com/docs/api/orders).
+        "handler": function (response) {
+            debugger;
+            PlaceOrder(response.razorpay_payment_id, response.razorpay_order_id, response.razorpay_signature);
+        },
+        "prefill": {
+            "name": "Krutik Shah1",
+            "email": "krutik.shah1310@gmail.com",
+            "contact": "7016232958"
+        },
+        "notes": {
+            "address": "note value"
+        },
+        "theme": {
+            "color": "#F37254"
+        }
+    };    
+    document.getElementById('rzp-placeorder').onclick = function (e) {
+        var rzp1 = new Razorpay(options);
+        rzp1.open();
+        e.preventDefault();
+    }
+</script>
