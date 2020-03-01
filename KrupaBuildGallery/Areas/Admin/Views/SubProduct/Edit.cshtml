@@ -110,7 +110,7 @@
                 async: true,
                 url: URL + "/" + CategoryId,
                 success: function (result) {
-                    var htmlData = "<option>-Select Product-</option>";
+                    var htmlData = "<option>- Select Product -</option>";
                     if (result && result.length > 0) {
                         result.forEach(element => {
                            htmlData += "<option value='"+ element.Value +"'> "+ element.Text +" </option>";
@@ -123,6 +123,10 @@
                     //StopLoading();
                 }
             });
+        }
+        else {
+            var htmlData = "<option>- Select Product -</option>";
+            $("#ProductId").html(htmlData);
         }
     });
 

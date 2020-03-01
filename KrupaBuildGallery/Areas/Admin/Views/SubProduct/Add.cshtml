@@ -95,26 +95,30 @@
 
         if (CategoryId != "" && CategoryId != null) {
 
-            StartLoading();
+            //StartLoading();
             var URL = '@Url.Action("GetProductListByCategoryId", "SubProduct")';
             $.ajax({
                 type: 'GET',
                 async: true,
                 url: URL + "/" + CategoryId,
                 success: function (result) {
-                    var htmlData = "<option>-Select Product-</option>";
+                    var htmlData = "<option>- Select Product -</option>";
                     if (result && result.length > 0) {
                         result.forEach(element => {
-                           htmlData += "<option value='"+ element.Value +"'> "+ element.Text +" </option>";
+                            htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
                         });
                     }
                     $("#ProductId").html(htmlData);
-                    StopLoading();
+                    //StopLoading();
                 },
                 error: function (error) {
-                    $.unblockUI();
+                    //StopLoading();
                 }
             });
+        }
+        else {
+            var htmlData = "<option>- Select Product -</option>";
+            $("#ProductId").html(htmlData);
         }
     });
 

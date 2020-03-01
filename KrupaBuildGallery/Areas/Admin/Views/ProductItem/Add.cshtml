@@ -148,27 +148,30 @@
         var CategoryId = jQuery("#CategoryId option:selected").val();
 
         if (CategoryId != "" && CategoryId != null) {
-
-            //StartLoading();
             var URL = '@Url.Action("GetProductListByCategoryId", "SubProduct")';
             $.ajax({
                 type: 'GET',
                 async: true,
                 url: URL + "/" + CategoryId,
                 success: function (result) {
-                    var htmlData = "<option>-Select Product-</option>";
+                    var htmlData = "<option value='0'>- Select Product -</option>";
                     if (result && result.length > 0) {
                         result.forEach(element => {
-                           htmlData += "<option value='"+ element.Value +"'> "+ element.Text +" </option>";
+                            htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
                         });
                     }
                     $("#ProductId").html(htmlData);
-                    //StopLoading();
                 },
                 error: function (error) {
-                    $.unblockUI();
                 }
             });
+        }
+        else {
+            var htmlData = "<option>- Select Product -</option>";
+            $("#ProductId").html(htmlData);
+
+            var htmlSubData = "<option value='0'>- Select Sub Product -</option>";
+            $("#SubProductId").html(htmlSubData);
         }
     });
 
@@ -178,26 +181,27 @@
 
         if (ProductId != "" && ProductId != null) {
 
-            //StartLoading();
             var URL = '@Url.Action("GetSubProductListByProductId", "SubProduct")';
             $.ajax({
                 type: 'GET',
                 async: true,
                 url: URL + "/" + ProductId,
                 success: function (result) {
-                    var htmlData = "<option>-Select SubProduct-</option>";
+                    var htmlData = "<option value='0'>- Select SubProduct -</option>";
                     if (result && result.length > 0) {
                         result.forEach(element => {
-                           htmlData += "<option value='"+ element.Value +"'> "+ element.Text +" </option>";
+                            htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
                         });
                     }
                     $("#SubProductId").html(htmlData);
-                    //StopLoading();
                 },
                 error: function (error) {
-                    $.unblockUI();
                 }
             });
+        }
+        else {
+            var htmlSubData = "<option value='0'>- Select Sub Product -</option>";
+            $("#SubProductId").html(htmlSubData);
         }
     });
 
