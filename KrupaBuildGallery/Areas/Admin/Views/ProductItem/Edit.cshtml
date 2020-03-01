@@ -65,7 +65,15 @@
                                 @Html.LabelFor(model => model.ItemMainImageFile, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.TextBoxFor(model => model.ItemMainImageFile, new { type = "file", @class = "form-control col-md-8" })
                                 @Html.ValidationMessageFor(model => model.ItemMainImageFile, "", new { @class = "text-danger" })
+
                             </div>
+
+                            if (!string.IsNullOrEmpty(Model.MainImage))
+                            {
+                                <div class="form-group row">
+                                    <p><a target="_blank" href="~/Images/ProductItemMedia/@Model.MainImage"> Click here to view image </a></p>
+                                </div>
+                            }
 
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.ItemName, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
@@ -121,7 +129,7 @@
                                 @Html.ValidationMessageFor(model => model.Notification, "", new { @class = "text-danger" })
                             </div>
 
-                            @Html.HiddenFor(x=>x.ProductItemId)
+                            @Html.HiddenFor(x => x.ProductItemId)
                             <button type="submit" class="btn btn-primary">Submit</button>
                             <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
                         }

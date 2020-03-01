@@ -262,5 +262,15 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return Json(CategoryList, JsonRequestBehavior.AllowGet);
         }
 
+        public JsonResult GetSubProductListByProductId(double Id)
+        {
+            var CategoryList = _db.tbl_SubProducts.Where(x => x.ProductId == Id && x.IsActive && !x.IsDelete)
+                         .Select(o => new SelectListItem { Value = SqlFunctions.StringConvert((double)o.SubProductId).Trim(), Text = o.SubProductName })
+                         .OrderBy(x => x.Text).ToList();
+
+            return Json(CategoryList, JsonRequestBehavior.AllowGet);
+        }
+
+
     }
 }

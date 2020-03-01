@@ -161,6 +161,59 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         }
 
         [HttpPost]
+        public ActionResult Edit(ProductItemVM productItemVM, HttpPostedFileBase ItemMainImageFile)
+        {
+            try
+            {
+                IEnumerable<ModelError> allErrors = ModelState.Values.SelectMany(v => v.Errors);
+                if (ModelState.IsValid)
+                {
+                    tbl_ProductItems objProductItem = _db.tbl_ProductItems.Where(x => x.ProductItemId == productItemVM.ProductItemId).FirstOrDefault();
+
+                    long LoggedInUserId = Int64.Parse(clsAdminSession.UserID.ToString());
+
+                    string fileName = string.Empty;
+                    string path = Server.MapPath("~/Images/ProductItemMedia/");
+                    if (ItemMainImageFile != null)
+                    {
+                        fileName = Guid.NewGuid() + "-" + Path.GetFileName(ItemMainImageFile.FileName);
+                        ItemMainImageFile.SaveAs(path + fileName);
+                    }
+                    else
+                    {
+                        fileName = objProductItem.MainImage;
+                    }
+                     
+                    objProductItem.CategoryId = productItemVM.CategoryId;
+                    objProductItem.ProductId = productItemVM.ProductId;
+                    objProductItem.SubProductId = productItemVM.SubProductId;
+                    objProductItem.ItemName = productItemVM.ItemName;
+                    objProductItem.ItemDescription = productItemVM.ItemDescription;
+                    objProductItem.Sku = productItemVM.Sku;
+                    objProductItem.MRPPrice = productItemVM.MRPPrice;
+                    objProductItem.CustomerPrice = productItemVM.CustomerPrice;
+                    objProductItem.DistributorPrice = productItemVM.DistributorPrice;
+                    objProductItem.GST_Per = productItemVM.GST_Per;
+                    objProductItem.IGST_Per = productItemVM.IGST_Per;
+                    objProductItem.Notification = productItemVM.Notification;
+                    objProductItem.MainImage = fileName; 
+                    objProductItem.UpdatedBy = LoggedInUserId;
+                    objProductItem.UpdatedDate = DateTime.UtcNow; 
+                    _db.SaveChanges();
+
+                    return RedirectToAction("Index");
+
+                }
+            }
+            catch (Exception ex)
+            {
+                string ErrorMessage = ex.Message.ToString();
+            }
+
+            return View(productItemVM);
+        }
+         
+        [HttpPost]
         public string DeleteProductItem(long ProductItemId)
         {
             string ReturnMessage = "";
@@ -193,8 +246,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             return ReturnMessage;
         }
-         
-        private List<SelectListItem> GetCategoryList()
+
+        public List<SelectListItem> GetCategoryList()
         {
             var CategoryList = _db.tbl_Categories.Where(x => x.IsActive && !x.IsDelete)
                          .Select(o => new SelectListItem { Value = SqlFunctions.StringConvert((double)o.CategoryId).Trim(), Text = o.CategoryName })
@@ -203,7 +256,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return CategoryList;
         }
 
-        private List<SelectListItem> GetProductListByCategoryId(long Id)
+        public List<SelectListItem> GetProductListByCategoryId(long Id)
         {
             var ProductList = _db.tbl_Products.Where(x => x.IsActive && !x.IsDelete && x.CategoryId == Id)
                          .Select(o => new SelectListItem { Value = SqlFunctions.StringConvert((double)o.Product_Id).Trim(), Text = o.ProductName })
@@ -212,7 +265,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return ProductList;
         }
 
-        private List<SelectListItem> GetSubProductListByProductId(long Id)
+        public List<SelectListItem> GetSubProductListByProductId(long Id)
         {
             var ProductList = _db.tbl_SubProducts.Where(x => x.IsActive && !x.IsDelete && x.ProductId == Id)
                          .Select(o => new SelectListItem { Value = SqlFunctions.StringConvert((double)o.SubProductId).Trim(), Text = o.SubProductName })
