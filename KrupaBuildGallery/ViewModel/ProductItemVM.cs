@@ -46,7 +46,8 @@ namespace KrupaBuildGallery
         public bool IsActive { get; set; }
         [Display(Name = "Item Main Image")]
         public HttpPostedFileBase ItemMainImageFile { get; set; }
-
+        [Display(Name = "Popular Product Item")]
+        public bool IsPopularProduct { get; set; }
         public List<SelectListItem> CategoryList { get; set; }
         public List<SelectListItem> ProductList { get; set; }
         public List<SelectListItem> SubProductList { get; set; }

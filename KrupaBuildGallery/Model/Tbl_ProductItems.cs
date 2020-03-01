@@ -29,6 +29,7 @@ namespace KrupaBuildGallery.Model
         public string MainImage { get; set; }
         public string Notification { get; set; }
         public string Sku { get; set; }
+        public bool IsPopularProduct { get; set; }
         public bool IsActive { get; set; }
         public bool IsDelete { get; set; }
         public Nullable<long> CreatedBy { get; set; }

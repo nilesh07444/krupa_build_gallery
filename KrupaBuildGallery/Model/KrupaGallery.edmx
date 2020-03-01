@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="krupagallarydbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="krupagallarydbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="tbl_AdminRoles">
           <Key>
             <PropertyRef Name="AdminRoleId" />
@@ -37,6 +37,17 @@
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="UpdatedBy" Type="bigint" />
           <Property Name="UpdatedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="tbl_Cart">
+          <Key>
+            <PropertyRef Name="Cart_Id" />
+          </Key>
+          <Property Name="Cart_Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CartItemId" Type="bigint" />
+          <Property Name="CartItemQty" Type="bigint" />
+          <Property Name="CartSessionId" Type="nvarchar" MaxLength="500" />
+          <Property Name="ClientUserId" Type="bigint" />
+          <Property Name="CreatedDate" Type="datetime" />
         </EntityType>
         <EntityType Name="tbl_Categories">
           <Key>
@@ -223,6 +234,9 @@
           <Property Name="UpdatedBy" Type="bigint" />
           <Property Name="UpdatedDate" Type="datetime" />
           <Property Name="AmountDue" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="RazorpayOrderId" Type="nvarchar" MaxLength="300" />
+          <Property Name="RazorpayPaymentId" Type="nvarchar" MaxLength="300" />
+          <Property Name="RazorSignature" Type="nvarchar" MaxLength="300" />
         </EntityType>
         <EntityType Name="tbl_PaymentHistory">
           <Key>
@@ -270,6 +284,7 @@
           <Property Name="MainImage" Type="nvarchar" MaxLength="350" />
           <Property Name="Notification" Type="nvarchar" MaxLength="200" />
           <Property Name="Sku" Type="nvarchar" MaxLength="50" />
+          <Property Name="IsPopularProduct" Type="bit" Nullable="false" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
           <Property Name="IsDelete" Type="bit" Nullable="false" />
           <Property Name="CreatedBy" Type="bigint" />
@@ -311,6 +326,7 @@
         <EntityContainer Name="krupagallarydbModelStoreContainer">
           <EntitySet Name="tbl_AdminRoles" EntityType="Self.tbl_AdminRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_AdminUsers" EntityType="Self.tbl_AdminUsers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Cart" EntityType="Self.tbl_Cart" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Categories" EntityType="Self.tbl_Categories" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ClientOtherDetails" EntityType="Self.tbl_ClientOtherDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ClientRoles" EntityType="Self.tbl_ClientRoles" Schema="dbo" store:Type="Tables" />
@@ -327,8 +343,7 @@
           <EntitySet Name="tbl_Products" EntityType="Self.tbl_Products" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_SubProducts" EntityType="Self.tbl_SubProducts" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="krupagallarydbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -550,6 +565,9 @@
           <Property Name="UpdatedBy" Type="Int64" />
           <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
           <Property Name="AmountDue" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="RazorpayOrderId" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="RazorpayPaymentId" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="RazorSignature" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_PaymentHistory">
           <Key>
@@ -571,32 +589,6 @@
           <Property Name="ProductItemImageId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="ProductItemId" Type="Int64" Nullable="false" />
           <Property Name="ItemImage" Type="String" MaxLength="450" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="IsActive" Type="Boolean" Nullable="false" />
-          <Property Name="IsDelete" Type="Boolean" Nullable="false" />
-          <Property Name="CreatedBy" Type="Int64" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="UpdatedBy" Type="Int64" />
-          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
-        </EntityType>
-        <EntityType Name="tbl_ProductItems">
-          <Key>
-            <PropertyRef Name="ProductItemId" />
-          </Key>
-          <Property Name="ProductItemId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="CategoryId" Type="Int64" Nullable="false" />
-          <Property Name="ProductId" Type="Int64" Nullable="false" />
-          <Property Name="SubProductId" Type="Int64" />
-          <Property Name="ItemName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="ItemDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="MRPPrice" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="DistributorPrice" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="CustomerPrice" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="GST_Per" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="IGST_Per" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
-          <Property Name="Cess" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="MainImage" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
-          <Property Name="Notification" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="Sku" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
           <Property Name="IsDelete" Type="Boolean" Nullable="false" />
           <Property Name="CreatedBy" Type="Int64" />
@@ -650,10 +642,49 @@
           <EntitySet Name="tbl_Orders" EntityType="Self.tbl_Orders" />
           <EntitySet Name="tbl_PaymentHistory" EntityType="Self.tbl_PaymentHistory" />
           <EntitySet Name="tbl_ProductItemImages" EntityType="Self.tbl_ProductItemImages" />
-          <EntitySet Name="tbl_ProductItems" EntityType="Self.tbl_ProductItems" />
           <EntitySet Name="tbl_Products" EntityType="Self.tbl_Products" />
           <EntitySet Name="tbl_SubProducts" EntityType="Self.tbl_SubProducts" />
+          <EntitySet Name="tbl_Cart" EntityType="krupagallarydbModel.tbl_Cart" />
+          <EntitySet Name="tbl_ProductItems" EntityType="krupagallarydbModel.tbl_ProductItems" />
         </EntityContainer>
+        <EntityType Name="tbl_Cart">
+          <Key>
+            <PropertyRef Name="Cart_Id" />
+          </Key>
+          <Property Name="Cart_Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CartItemId" Type="Int64" />
+          <Property Name="CartItemQty" Type="Int64" />
+          <Property Name="CartSessionId" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="ClientUserId" Type="Int64" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="tbl_ProductItems">
+          <Key>
+            <PropertyRef Name="ProductItemId" />
+          </Key>
+          <Property Name="ProductItemId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CategoryId" Type="Int64" Nullable="false" />
+          <Property Name="ProductId" Type="Int64" Nullable="false" />
+          <Property Name="SubProductId" Type="Int64" />
+          <Property Name="ItemName" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="ItemDescription" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="MRPPrice" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="DistributorPrice" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="CustomerPrice" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="GST_Per" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="IGST_Per" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="Cess" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="MainImage" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="Notification" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Sku" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IsPopularProduct" Type="Boolean" Nullable="false" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="IsDelete" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdatedBy" Type="Int64" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -870,6 +901,9 @@
           <EntitySetMapping Name="tbl_Orders">
             <EntityTypeMapping TypeName="krupagallarydbModel.tbl_Orders">
               <MappingFragment StoreEntitySet="tbl_Orders">
+                <ScalarProperty Name="RazorSignature" ColumnName="RazorSignature" />
+                <ScalarProperty Name="RazorpayPaymentId" ColumnName="RazorpayPaymentId" />
+                <ScalarProperty Name="RazorpayOrderId" ColumnName="RazorpayOrderId" />
                 <ScalarProperty Name="OrderId" ColumnName="OrderId" />
                 <ScalarProperty Name="ClientUserId" ColumnName="ClientUserId" />
                 <ScalarProperty Name="OrderAmount" ColumnName="OrderAmount" />
@@ -920,33 +954,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="tbl_ProductItems">
-            <EntityTypeMapping TypeName="krupagallarydbModel.tbl_ProductItems">
-              <MappingFragment StoreEntitySet="tbl_ProductItems">
-                <ScalarProperty Name="ProductItemId" ColumnName="ProductItemId" />
-                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
-                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
-                <ScalarProperty Name="SubProductId" ColumnName="SubProductId" />
-                <ScalarProperty Name="ItemName" ColumnName="ItemName" />
-                <ScalarProperty Name="ItemDescription" ColumnName="ItemDescription" />
-                <ScalarProperty Name="MRPPrice" ColumnName="MRPPrice" />
-                <ScalarProperty Name="DistributorPrice" ColumnName="DistributorPrice" />
-                <ScalarProperty Name="CustomerPrice" ColumnName="CustomerPrice" />
-                <ScalarProperty Name="GST_Per" ColumnName="GST_Per" />
-                <ScalarProperty Name="IGST_Per" ColumnName="IGST_Per" />
-                <ScalarProperty Name="Cess" ColumnName="Cess" />
-                <ScalarProperty Name="MainImage" ColumnName="MainImage" />
-                <ScalarProperty Name="Notification" ColumnName="Notification" />
-                <ScalarProperty Name="Sku" ColumnName="Sku" />
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="tbl_Products">
             <EntityTypeMapping TypeName="krupagallarydbModel.tbl_Products">
               <MappingFragment StoreEntitySet="tbl_Products">
@@ -977,6 +984,46 @@
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
                 <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Cart">
+            <EntityTypeMapping TypeName="krupagallarydbModel.tbl_Cart">
+              <MappingFragment StoreEntitySet="tbl_Cart">
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ClientUserId" ColumnName="ClientUserId" />
+                <ScalarProperty Name="CartSessionId" ColumnName="CartSessionId" />
+                <ScalarProperty Name="CartItemQty" ColumnName="CartItemQty" />
+                <ScalarProperty Name="CartItemId" ColumnName="CartItemId" />
+                <ScalarProperty Name="Cart_Id" ColumnName="Cart_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_ProductItems">
+            <EntityTypeMapping TypeName="krupagallarydbModel.tbl_ProductItems">
+              <MappingFragment StoreEntitySet="tbl_ProductItems">
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="IsPopularProduct" ColumnName="IsPopularProduct" />
+                <ScalarProperty Name="Sku" ColumnName="Sku" />
+                <ScalarProperty Name="Notification" ColumnName="Notification" />
+                <ScalarProperty Name="MainImage" ColumnName="MainImage" />
+                <ScalarProperty Name="Cess" ColumnName="Cess" />
+                <ScalarProperty Name="IGST_Per" ColumnName="IGST_Per" />
+                <ScalarProperty Name="GST_Per" ColumnName="GST_Per" />
+                <ScalarProperty Name="CustomerPrice" ColumnName="CustomerPrice" />
+                <ScalarProperty Name="DistributorPrice" ColumnName="DistributorPrice" />
+                <ScalarProperty Name="MRPPrice" ColumnName="MRPPrice" />
+                <ScalarProperty Name="ItemDescription" ColumnName="ItemDescription" />
+                <ScalarProperty Name="ItemName" ColumnName="ItemName" />
+                <ScalarProperty Name="SubProductId" ColumnName="SubProductId" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+                <ScalarProperty Name="ProductItemId" ColumnName="ProductItemId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

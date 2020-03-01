@@ -105,6 +105,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     objProductItem.IGST_Per = productItemVM.IGST_Per;
                     objProductItem.Notification = productItemVM.Notification;
                     objProductItem.MainImage = fileName;
+                    objProductItem.IsPopularProduct = productItemVM.IsPopularProduct;
 
                     objProductItem.IsActive = true;
                     objProductItem.IsDelete = false;
@@ -149,6 +150,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                   GST_Per = i.GST_Per,
                                   IGST_Per = i.IGST_Per,
                                   Notification = i.Notification,
+                                  IsPopularProduct = i.IsPopularProduct,
                                   Sku = i.Sku,
                                   IsActive = i.IsActive
                               }).FirstOrDefault();
@@ -196,7 +198,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     objProductItem.GST_Per = productItemVM.GST_Per;
                     objProductItem.IGST_Per = productItemVM.IGST_Per;
                     objProductItem.Notification = productItemVM.Notification;
-                    objProductItem.MainImage = fileName; 
+                    objProductItem.MainImage = fileName;
+                    objProductItem.IsPopularProduct = productItemVM.IsPopularProduct;
+
                     objProductItem.UpdatedBy = LoggedInUserId;
                     objProductItem.UpdatedDate = DateTime.UtcNow; 
                     _db.SaveChanges();
@@ -273,7 +277,6 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             return ProductList;
         }
-
 
     }
 }
