@@ -253,6 +253,7 @@
     <Compile Include="ViewModel\PaymentHistoryVM.cs" />
     <Compile Include="ViewModel\ProductItemVM.cs" />
     <Compile Include="ViewModel\ProductVM.cs" />
+    <Compile Include="ViewModel\CategoryInfo.cs" />
     <Compile Include="ViewModel\SubProductVM.cs" />
   </ItemGroup>
   <ItemGroup>

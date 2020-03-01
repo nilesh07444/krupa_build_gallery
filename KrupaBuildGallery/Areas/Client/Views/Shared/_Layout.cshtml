@@ -1,4 +1,34 @@
-﻿<!DOCTYPE html>
+﻿@using KrupaBuildGallery.Model;
+
+
+@{
+    krupagallarydbEntities _db = new krupagallarydbEntities();
+
+    List<CategoryInfo> lstSideMenu = _db.tbl_Categories.Where(x => x.IsActive && !x.IsDelete).ToList().Select(c => new CategoryInfo
+    {
+        CategoryId = c.CategoryId,
+        CategoryName = c.CategoryName,
+        CategoryImage = c.CategoryImage,
+        ProductInfo = _db.tbl_Products.Where(a => a.CategoryId == c.CategoryId && a.IsActive && !a.IsDelete).Select(l => new ProductInfo
+        {
+            ProductId = l.Product_Id,
+            ProductName = l.ProductName,
+            ProductImage = l.ProductImage,
+
+            SubProductInfo = _db.tbl_SubProducts.Where(a => a.CategoryId == c.CategoryId && a.IsActive && !a.IsDelete).Select(m => new SubProductInfo
+            {
+                SubProductId = m.SubProductId,
+                SubProductName = m.SubProductName,
+                SubProductImage = m.SubProductImage
+            })
+
+        }).ToList()
+    }).ToList();
+
+}
+
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -86,140 +116,41 @@
                                             <div class="sidebar-back text-left"><i class="fa fa-angle-left pr-2" aria-hidden="true"></i> Back</div>
                                         </div>
                                         <ul id="sub-menu" class="sm pixelstrap sm-vertical">
-                                            <li>
-                                                <a href="#">clothing</a>
-                                                <ul class="mega-menu clothing-menu">
+
+                                            @if (lstSideMenu != null && lstSideMenu.Count > 0)
+                                            {
+
+                                                foreach (CategoryInfo category in lstSideMenu)
+                                                {
                                                     <li>
-                                                        <div class="row m-0">
-                                                            <div class="col-xl-4">
-                                                                <div class="link-section">
-                                                                    <h5>women's fashion</h5>
-                                                                    <ul>
-                                                                        <li><a href="#">dresses</a></li>
-                                                                        <li><a href="#">skirts</a></li>
-                                                                        <li><a href="#">westarn wear</a></li>
-                                                                        <li><a href="#">ethic wear</a></li>
-                                                                        <li><a href="#">sport wear</a></li>
-                                                                    </ul>
-                                                                    <h5>men's fashion</h5>
-                                                                    <ul>
-                                                                        <li><a href="#">sports wear</a></li>
-                                                                        <li><a href="#">western wear</a></li>
-                                                                        <li><a href="#">ethic wear</a></li>
-                                                                    </ul>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-xl-4">
-                                                                <div class="link-section">
-                                                                    <h5>accessories</h5>
-                                                                    <ul>
-                                                                        <li><a href="#">fashion jewellery</a></li>
-                                                                        <li><a href="#">caps and hats</a></li>
-                                                                        <li><a href="#">precious jewellery</a></li>
-                                                                        <li><a href="#">necklaces</a></li>
-                                                                        <li><a href="#">earrings</a></li>
-                                                                        <li><a href="#">wrist wear</a></li>
-                                                                        <li><a href="#">ties</a></li>
-                                                                        <li><a href="#">cufflinks</a></li>
-                                                                        <li><a href="#">pockets squares</a></li>
-                                                                    </ul>
-                                                                </div>
-                                                            </div>
-                                                            <div class="col-xl-4">
-                                                                <a href="#" class="mega-menu-banner"><img src="~/Content/assets/images/mega-menu/fashion.jpg" alt="" class="img-fluid blur-up lazyload"></a>
-                                                            </div>
-                                                        </div>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                            <li>
-                                                <a href="#">bags</a>
-                                                <ul>
-                                                    <li><a href="#">shopper bags</a></li>
-                                                    <li><a href="#">laptop bags</a></li>
-                                                    <li><a href="#">clutches</a></li>
-                                                    <li>
-                                                        <a href="#">purses</a>
-                                                        <ul>
-                                                            <li><a href="#">purses</a></li>
-                                                            <li><a href="#">wallets</a></li>
-                                                            <li><a href="#">leathers</a></li>
-                                                            <li><a href="#">satchels</a></li>
-                                                        </ul>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                            <li>
-                                                <a href="#">footwear</a>
-                                                <ul>
-                                                    <li><a href="#">sport shoes</a></li>
-                                                    <li><a href="#">formal shoes</a></li>
-                                                    <li><a href="#">casual shoes</a></li>
-                                                </ul>
-                                            </li>
-                                            <li><a href="#">watches</a></li>
-                                            <li>
-                                                <a href="#">Accessories</a>
-                                                <ul>
-                                                    <li><a href="#">fashion jewellery</a></li>
-                                                    <li><a href="#">caps and hats</a></li>
-                                                    <li><a href="#">precious jewellery</a></li>
-                                                    <li>
-                                                        <a href="#">more..</a>
-                                                        <ul>
-                                                            <li><a href="#">necklaces</a></li>
-                                                            <li><a href="#">earrings</a></li>
-                                                            <li><a href="#">wrist wear</a></li>
-                                                            <li>
-                                                                <a href="#">accessories</a>
-                                                                <ul>
-                                                                    <li><a href="#">ties</a></li>
-                                                                    <li><a href="#">cufflinks</a></li>
-                                                                    <li><a href="#">pockets squares</a></li>
-                                                                    <li><a href="#">helmets</a></li>
-                                                                    <li><a href="#">scarves</a></li>
+                                                        <a href="javascript:void(0);">@category.CategoryName</a>
+                                                        @if (category.ProductInfo != null)
+                                                        {
+                                                            <ul>
+                                                                @foreach (ProductInfo product in category.ProductInfo)
+                                                                {
                                                                     <li>
-                                                                        <a href="#">more...</a>
+                                                                        <a href="javascript:void(0);">@product.ProductName</a>
                                                                         <ul>
-                                                                            <li><a href="#">accessory gift sets</a></li>
-                                                                            <li><a href="#">travel accessories</a></li>
-                                                                            <li><a href="#">phone cases</a></li>
+                                                                            @foreach (SubProductInfo subproduct in product.SubProductInfo)
+                                                                            {
+                                                                                <li><a href="javascript:void(0);">@subproduct.SubProductName</a></li>
+                                                                            }
                                                                         </ul>
                                                                     </li>
-                                                                </ul>
-                                                            </li>
-                                                            <li><a href="#">belts & more</a></li>
-                                                            <li><a href="#">wearable</a></li>
-                                                        </ul>
+                                                                }
+                                                            </ul>
+                                                        }
                                                     </li>
-                                                </ul>
-                                            </li>
-                                            <li><a href="#">house of design</a></li>
-                                            <li>
-                                                <a href="#">beauty & personal care</a>
-                                                <ul>
-                                                    <li><a href="#">makeup</a></li>
-                                                    <li><a href="#">skincare</a></li>
-                                                    <li><a href="#">premium beaty</a></li>
-                                                    <li>
-                                                        <a href="#">more</a>
-                                                        <ul>
-                                                            <li><a href="#">fragrances</a></li>
-                                                            <li><a href="#">luxury beauty</a></li>
-                                                            <li><a href="#">hair care</a></li>
-                                                            <li><a href="#">tools & brushes</a></li>
-                                                        </ul>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                            <li><a href="#">home & decor</a></li>
-                                            <li><a href="#">kitchen</a></li>
+                                                }
+                                            }
+
                                         </ul>
                                     </nav>
                                 </div>
                             </div>
                             <div class="brand-logo">
-                                <a href="index.html"><img src="~/Content/assets/images/icon/logo.png" class="img-fluid blur-up lazyload" alt=""></a>
+                                <a href="/"><img src="~/Content/assets/images/icon/logo.png" class="img-fluid blur-up lazyload" alt=""></a>
                             </div>
                         </div>
                         <div class="menu-right pull-right">
@@ -231,22 +162,34 @@
                                             <div class="mobile-back text-right">Back<i class="fa fa-angle-right pl-2" aria-hidden="true"></i></div>
                                         </li>
                                         <li>
-                                            <a href="#">Home</a>
+                                            <a href="/">Home</a>
                                         </li>
 
-                                        <li>
-                                            <a href="#">product</a>
-                                            <ul>
-                                                <li>
-                                                    <a href="#">sidebar</a>
-                                                    <ul>
-                                                        <li><a href="product-page.html">left sidebar</a></li>
-                                                        <li><a href="product-page(right-sidebar).html">right sidebar</a></li>
-                                                        <li><a href="product-page(no-sidebar).html">no sidebar</a></li>
-                                                    </ul>
-                                                </li> 
-                                            </ul>
-                                        </li>
+                                        @if (lstSideMenu != null && lstSideMenu.Count > 0)
+                                        {
+                                            <li>
+                                                <a href="javascript:void(0);">Product</a>
+                                                <ul>
+                                                    @foreach (CategoryInfo category in lstSideMenu)
+                                                    {
+                                                        <li>
+                                                            <a href="javascript:void(0);">@category.CategoryName</a>
+                                                            @if (category.ProductInfo != null)
+                                                            {
+                                                                <ul>
+                                                                    @foreach (ProductInfo product in category.ProductInfo)
+                                                                    {
+                                                                        <li><a href="javascript:void(0);">@product.ProductName</a></li>
+                                                                    }
+                                                                </ul>
+                                                            }
+                                                        </li>
+
+                                                    }
+                                                </ul>
+                                            </li>
+
+                                        }
 
                                         <li>
                                             <a href="/aboutus">About us</a>
@@ -259,7 +202,7 @@
                                         <li>
                                             <a href="/faq">FAQ</a>
                                         </li>
-                                         
+
                                     </ul>
                                 </nav>
                             </div>
@@ -287,7 +230,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </li> 
+                                        </li>
                                         <li class="onhover-div mobile-cart">
                                             <div><img src="~/Content/assets/images/icon/cart.png" class="img-fluid blur-up lazyload" alt=""> <i class="ti-shopping-cart"></i></div>
                                             <ul class="show-div shopping-cart">
@@ -376,14 +319,14 @@
                         </div>
                         <div class="footer-contant">
                             <div class="footer-logo"><img src="~/Content/assets/images/icon/logo.png" alt=""></div>
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,</p>
+                            <p>Krupa Build Gallery in Godhra has a wide range of products and services to cater to the varied requirements of their customers. The staff at this establishment are courteous and prompt at providing any assistance.</p>
                             <div class="footer-social">
                                 <ul>
-                                    <li><a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
-                                    <li><a href="#"><i class="fa fa-google-plus" aria-hidden="true"></i></a></li>
-                                    <li><a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
-                                    <li><a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
-                                    <li><a href="#"><i class="fa fa-rss" aria-hidden="true"></i></a></li>
+                                    <li><a target="_blank" href="https://facebook.com/"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+                                    <li><a target="_blank" href="https://google.com/"><i class="fa fa-google-plus" aria-hidden="true"></i></a></li>
+                                    <li><a target="_blank" href="https://twitter.com/"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+                                    <li><a target="_blank" href="https://instagram.com/"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
+                                    <li><a target="_blank" href="https://rss.com/"><i class="fa fa-rss" aria-hidden="true"></i></a></li>
                                 </ul>
                             </div>
                         </div>
@@ -427,10 +370,10 @@
                             </div>
                             <div class="footer-contant">
                                 <ul class="contact-list">
-                                    <li><i class="fa fa-map-marker"></i>Krupa Build Gallery Demo Store, Demo store India 345-659</li>
-                                    <li><i class="fa fa-phone"></i>Call Us: 123-456-7898</li>
-                                    <li><i class="fa fa-envelope-o"></i>Email Us: <a href="#">Support@Fiot.com</a></li>
-                                    <li><i class="fa fa-fax"></i>Fax: 123456</li>
+                                    <li><i class="fa fa-map-marker"></i>Krupa Build Gallery, Nr. Vasupujia Society, Gadukpur Chokdi, Bamroli Road, Godhra. </li>
+                                    <li><i class="fa fa-phone"></i>Call Us: 9824643334</li>
+                                    <li><i class="fa fa-envelope-o"></i>Email Us: <a href="#">info@krupagallery.com</a></li>
+                                    <li><i class="fa fa-fax"></i>Fax: 9824643334</li>
                                 </ul>
                             </div>
                         </div>
@@ -443,7 +386,7 @@
                 <div class="row">
                     <div class="col-xl-6 col-md-6 col-sm-12">
                         <div class="footer-end">
-                            <p><i class="fa fa-copyright" aria-hidden="true"></i> 2017-18 themeforest powered by pixelstrap</p>
+                            <p><i class="fa fa-copyright" aria-hidden="true"></i> 2020 Krupa Build Gallery</p>
                         </div>
                     </div>
                     <div class="col-xl-6 col-md-6 col-sm-12">
@@ -550,7 +493,6 @@
         </div>
     </div>
     <!-- Quick-view modal popup end-->
- 
     <!-- exit modal popup start-->
     <div class="modal fade bd-example-modal-lg theme-modal exit-modal" id="exit_popup" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
@@ -586,7 +528,6 @@
         </div>
     </div>
     <!-- Add to cart modal popup end-->
-      
   
 
     <!-- fly cart ui jquery-->

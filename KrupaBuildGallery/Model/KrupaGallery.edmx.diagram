@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="d3e5888e16234a598970c790e3a31fcf" Name="Diagram1" ZoomLevel="82">
+      <Diagram DiagramId="d3e5888e16234a598970c790e3a31fcf" Name="Diagram1" ZoomLevel="70">
         <EntityTypeShape EntityType="krupagallarydbModel.tbl_AdminRoles" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="krupagallarydbModel.tbl_AdminUsers" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="krupagallarydbModel.tbl_Categories" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
@@ -19,7 +19,6 @@
         <EntityTypeShape EntityType="krupagallarydbModel.tbl_Orders" Width="1.5" PointX="2.75" PointY="10.75" IsExpanded="true" />
         <EntityTypeShape EntityType="krupagallarydbModel.tbl_PaymentHistory" Width="1.5" PointX="4.75" PointY="10.75" IsExpanded="true" />
         <EntityTypeShape EntityType="krupagallarydbModel.tbl_ProductItemImages" Width="1.5" PointX="10.75" PointY="5.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="krupagallarydbModel.tbl_ProductItems" Width="1.5" PointX="6.75" PointY="10.75" IsExpanded="true" />
         <EntityTypeShape EntityType="krupagallarydbModel.tbl_Products" Width="1.5" PointX="8.75" PointY="10.75" IsExpanded="true" />
         <EntityTypeShape EntityType="krupagallarydbModel.tbl_SubProducts" Width="1.5" PointX="10.75" PointY="9.75" IsExpanded="true" />
       <Diagram DiagramId="33230f7b65604416bb691416454f8c21" Name="Diagram1">
@@ -41,7 +40,8 @@
         <EntityTypeShape EntityType="KrupaGallery.tbl_Products" Width="1.5" PointX="8.75" PointY="10.75" IsExpanded="true" />
         <EntityTypeShape EntityType="KrupaGallery.tbl_SubProducts" Width="1.5" PointX="10.75" PointY="9.75" IsExpanded="true" />
       </Diagram>
-        <EntityTypeShape EntityType="krupagallarydbModel.tbl_Cart" Width="1.5" PointX="3.1031157779987506" PointY="24.435806539112612" />
+        <EntityTypeShape EntityType="krupagallarydbModel.tbl_Cart" Width="1.5" PointX="6.125" PointY="13.875" />
+        <EntityTypeShape EntityType="krupagallarydbModel.tbl_ProductItems" Width="1.5" PointX="0.91349229072848914" PointY="23.661409836104795" />
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>
