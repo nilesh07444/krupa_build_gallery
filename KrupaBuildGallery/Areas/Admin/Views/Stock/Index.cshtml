@@ -1,4 +1,10 @@
-﻿
+﻿@using KrupaBuildGallery.Model;
+@model List<ItemStockVM>
+@{
+    ViewBag.Title = "Stocks";
+
+    int counter = 1;
+}
 <div class="page-body">
 
     <!-- Container-fluid starts-->
@@ -33,37 +39,35 @@
                 <table class="display" id="basic-1">
                     <thead>
                         <tr>
-                            <th>Vendor</th>
-                            <th>Stocks</th>
-                            <th>Store Name</th>
-                            <th>Create Date</th>
-                            <th>Wallet Balance</th>
-                            <th>Revenue</th>
-                            <th>Action</th>
+                            <th style="width:5% !important;"></th>
+                            <th>Category Name</th>
+                            <th>Product Name</th>
+                            <th>Sub Product Name</th>
+                            <th>Item Name</th>
+                            <th>Qty</th>
+                            <th style="width:10% !important;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-
-                        <tr>
-                            <td>
-                                <div class="d-flex vendor-list">
-                                    <img src="~/Content/assets/images/team/1.jpg" alt="" class="img-fluid img-40 rounded-circle blur-up lazyloaded">
-                                    <span>Paige Turner</span>
-                                </div>
-                            </td>
-                            <td>4680</td>
-                            <td>Finhigh</td>
-                            <td>11/7/18</td>
-                            <td>$87616</td>
-                            <td>$947611</td>
-                            <td>
-                                <div>
-                                    <i class="fa fa-edit mr-2 font-success"></i>
-                                    <i class="fa fa-trash font-danger"></i>
-                                </div>
-                            </td>
-                        </tr>
-
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            foreach (ItemStockVM item in Model)
+                            {
+                                <tr class="gradeX">
+                                    <td style="width:5% !important;">@counter.</td>
+                                    <td>@item.CategoryName</td>
+                                    <td>@item.ProductName</td>
+                                    <td>@item.SubProductName</td>
+                                    <td>@item.ProductItemName</td>
+                                    <td>@item.Quantity</td>                                    
+                                    <td style="width:10% !important;">
+                                        <a href="/admin/stock/edit/@item.StockId"><i class="fa fa-edit mr-2 font-success"></i></a>
+                                        <a href="javascript:void(0);" onclick="fnDeleteStock('@item.StockId')"><i class="fa fa-trash font-danger"></i></a>
+                                    </td>
+                                </tr>
+                                counter++;
+                            }
+                        }
                     </tbody>
                 </table>
             </div>
@@ -73,3 +77,74 @@
 
 </div>
 
+<!-- Delete Modal -->
+<div class="modal fade open" id="deleteProductStockModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete Confirm</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete ?
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="hdnDeleteStockItem" />
+                <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
+                <button id="btnDeleteStockItem" class="btn btn-primary" type="button">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Delete modal -->
+<script>
+
+    jQuery(document).ready(function () {
+        StartLoading()
+        jQuery('html, body').animate({ scrollTop: 0 }, 1000);
+    });
+
+    function fnDeleteStock(item_id) {
+        jQuery("#hdnDeleteStockItem").val(item_id);
+        jQuery('#deleteProductStockModal').modal('show');
+    }
+
+    jQuery(window).on("load", function () {
+        StopLoading();
+    });
+
+    jQuery(document).on("click", "#btnDeleteStockItem", function () {
+
+        var stockId = jQuery("#hdnDeleteStockItem").val();
+        if (stockId != "" && stockId != null) {
+            $('#deleteProductStockModal').modal('hide');
+
+            StartLoading();
+
+            var URL = '@Url.Action("DeleteStock", "Stock")';
+            $.ajax({
+                type: 'POST',
+                async: true,
+                url: URL + "?StockId=" + stockId,
+                success: function (result) {
+                    if (result == "success") {
+                        alert("Stock deleted successfully");
+                        window.location.reload();
+                    }
+                    else if (result == "notfound") {
+                        alert("Stock Not Found");
+                    }
+                    else {
+                        alert("Something went wrong. Please try again");
+                    }
+
+                   StopLoading();
+                },
+                error: function (resultData) {
+                    StopLoading();
+                }
+            });
+        }
+    });
+
+</script>

@@ -238,6 +238,7 @@
     <Compile Include="ViewModel\ClientUserVM.cs" />
     <Compile Include="ViewModel\ContactUsMessageVM.cs" />
     <Compile Include="ViewModel\DistributorRequestVM.cs" />
+    <Compile Include="ViewModel\ItemStockVM.cs" />
     <Compile Include="ViewModel\LoginVM.cs" />
     <Compile Include="ViewModel\OrderItemsVM.cs" />
     <Compile Include="ViewModel\OrderVM.cs" />
@@ -3722,6 +3723,7 @@
       <DependentUpon>KrupaGallery.edmx</DependentUpon>
     </Content>
     <Content Include="Areas\Admin\Views\ProductItem\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Stock\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />

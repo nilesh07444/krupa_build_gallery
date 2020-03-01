@@ -1,67 +1,188 @@
-﻿<!--main content start-->
-<section id="main-content">
-    <section class="wrapper site-min-height">
-        <!-- page start-->
-        <div class="row">
-            <div class="col-lg-12">
-                <section class="panel">
-                    <header class="panel-heading">
-                        Add Item Stock
-                    </header>
-                    <div class="panel-body">
-                        <form role="form">
-                            <div class="form-group">
-                                <label for="selectcategory">Category</label>
-                                <select id="selectcategory" class="form-control m-bot15" style="width:350px;">
-                                    <option>Option 1</option>
-                                    <option>Option 2</option>
-                                    <option>Option 3</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="selectproduct">Product</label>
-                                <select id="selectproduct" class="form-control m-bot15" style="width:350px;">
-                                    <option>Product 1</option>
-                                    <option>Product 2</option>
-                                    <option>Product 3</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="selectsubproduct">Sub Product</label>
-                                <select id="selectsubproduct" class="form-control m-bot15" style="width:350px;">
-                                    <option>Sub Product 1</option>
-                                    <option>Sub Product 2</option>
-                                    <option>Sub Product 3</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="selectsubproduct">Item</label>
-                                <select id="selectsubproduct" class="form-control m-bot15" style="width:350px;">
-                                    <option>Item 1</option>
-                                    <option>Item 2</option>
-                                    <option>Item 3</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label for="txtQty">Qty</label>
-                                <input type="number" class="form-control" id="txtQty" style="width:200px;" placeholder="Enter Qty">
-                            </div>                          
-                            <button type="submit" class="btn btn-info">Submit</button>
-                        </form>
+﻿@model ItemStockVM
+@{
+    ViewBag.Title = "AddProductItemStock";
+}
+
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col">
+                    <div class="page-header-left">
+                        <h3>
+                            Add Stock
+                        </h3>
                     </div>
-                </section>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="/admin/stock">Stock</a></li>
+                        <li class="breadcrumb-item active">Add Stock</li>
+                    </ol>
+                </div>
             </div>
         </div>
-        <!-- page end-->
-    </section>
-</section>
-<!--main content end-->
-@*<script type="text/javascript" language="javascript" src="~/Areas/Admin/Content/assets/advanced-datatable/media/js/jquery.dataTables.js"></script>
-    <script type="text/javascript" src="~/Areas/Admin/Content/assets/data-tables/DT_bootstrap.js"></script>
-    <script type="text/javascript" charset="utf-8">
-        $(document).ready(function(){
-          $('#example').dataTable( {
-                      "aaSorting": [[ 4, "desc" ]]
-                  });
-        });
-    </script>*@
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Add Product Item</h5>
+                    </div>
+                    <div class="card-body">
+                        @using (Html.BeginForm("Add", "Stock", FormMethod.Post, new { @id = "ProductItemStockFormId", @class = "needs-validation", enctype = "multipart/form-data", role = "form" }))
+                        {
+
+                            @Html.AntiForgeryToken()
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.CategoryId, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.DropDownListFor(model => model.CategoryId, new SelectList(Model.CategoryList, "Value", "Text"), "- Select Category -", new { @class = "form-control col-md-8", style = "" })
+                                @Html.ValidationMessageFor(model => model.CategoryId, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.ProductId, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.DropDownListFor(model => model.ProductId, new SelectList(Model.ProductList, "Value", "Text"), "- Select Product -", new { @class = "form-control col-md-8", style = "" })
+                                @Html.ValidationMessageFor(model => model.ProductId, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.SubProductId, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.DropDownListFor(model => model.SubProductId, new SelectList(Model.SubProductList, "Value", "Text"), "- Select SubProduct -", new { @class = "form-control col-md-8", style = "" })
+                                @Html.ValidationMessageFor(model => model.SubProductId, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.ProductItemId, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.DropDownListFor(model => model.ProductItemId, new SelectList(Model.ProductItemList, "Value", "Text"), "- Select Product Item -", new { @class = "form-control col-md-8", style = "" })
+                                @Html.ValidationMessageFor(model => model.ProductItemId, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.Quantity, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.EditorFor(model => model.Quantity, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter MRP Price", maxlength = "200" } })
+                                @Html.ValidationMessageFor(model => model.Quantity, "", new { @class = "text-danger" })
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+</div>
+
+<script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+<script>
+
+    $(document).on("click", "#btnCancel", function () {
+        window.location.href = "/admin/stock";
+    });
+
+    jQuery(document).on("change", "#CategoryId", function () {
+
+        var CategoryId = jQuery("#CategoryId option:selected").val();
+
+        if (CategoryId != "" && CategoryId != null) {
+             
+            var URL = '@Url.Action("GetProductListByCategoryId", "SubProduct")';
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: URL + "/" + CategoryId,
+                success: function (result) {
+                    var htmlData = "<option value='0'>-Select Product-</option>";
+                    if (result && result.length > 0) {
+                        result.forEach(element => {
+                            htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
+                        });
+                    }
+                    $("#ProductId").html(htmlData); 
+                },
+                error: function (error) { 
+                }
+            });
+        }
+       else {
+             var htmlSubData = "<option value='0'>- Select Product -</option>";
+            $("#ProductId").html(htmlSubData);
+        }
+    });
+
+    jQuery(document).on("change", "#ProductId", function () {
+
+        var ProductId = jQuery("#ProductId option:selected").val();
+
+        if (ProductId != "" && ProductId != null) {
+             
+            var URL = '@Url.Action("GetSubProductListByProductId", "SubProduct")';
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: URL + "/" + ProductId,
+                success: function (result) {
+                    var htmlData = "<option value='0'>-Select SubProduct-</option>";
+                    if (result && result.length > 0) {
+                        result.forEach(element => {
+                            htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
+                        });
+                    }
+                    $("#SubProductId").html(htmlData); 
+                },
+                error: function (error) { 
+                }
+            });
+        }
+        else {
+             var htmlSubData = "<option value='0'>- Select SubProduct -</option>";
+            $("#SubProductId").html(htmlSubData);
+        }
+    });
+
+    jQuery(document).on("change", "#ProductId,#SubProductId", function () {
+
+        var ProductId = jQuery("#ProductId option:selected").val();
+        var SubProductId = jQuery("#SubProductId option:selected").val();
+
+        if ((ProductId != "" && ProductId != null) || (SubProductId != "" && SubProductId != null)) { 
+            var URL = '@Url.Action("GetItemList", "Stock")';
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: URL + "?ProductId=" + ProductId + "&SubProductId=" + SubProductId,
+                success: function (result) {
+                    var htmlData = "<option value='0'>-Select Product Item-</option>";
+                    if (result && result.length > 0) {
+                        result.forEach(element => {
+                            htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
+                        });
+                    }
+                    $("#ProductItemId").html(htmlData); 
+                },
+                error: function (error) { 
+                }
+            });
+        }
+       else {
+            var htmlSubData = "<option value='0'>- Select Product Item -</option>";
+            $("#ProductItemId").html(htmlSubData);
+        }
+    });
+
+</script>
+
