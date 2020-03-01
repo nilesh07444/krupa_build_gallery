@@ -91,7 +91,7 @@
                                 <label class="col-xl-3 col-md-4" for="AmountPaid">Amount to Pay</label>
                                 <input class="form-control col-md-8 text-box single-line" id="AmountPaid" maxlength="15" name="AmountPaid" placeholder="Enter Amount to Pay" style="width:350px;" type="number" value="">
                                 <span class="field-validation-valid text-danger" id="errormsgamountpaid"></span>
-                            </div>                            
+                            </div>
                             <div class="form-group row">
                                 <label class="col-xl-3 col-md-4" for="PymtRecievedDate">Payment Received Date</label>
                                 <input class="form-control col-md-8 text-box single-line" id="PymtRecievedDate" maxlength="200" name="PymtRecievedDate" placeholder="" style="width:350px;" type="text" value="@DateTime.Now.ToString("MM/dd/yyyy")">
@@ -127,7 +127,7 @@
                                                 <td>₹ @Math.Round(objpaymnt.AmountPaid, 2)</td>
                                                 <td>₹ @Math.Round(objpaymnt.AmountDue, 2)</td>
                                                 <td>
-                                                    <a href="javascript:void(0)"><i class="fa fa-print font-success"></i></a>
+                                                    <a href="javascript:void(0)" onclick="printReceipt('@objpaymnt.PaymentHistoryId')"><i class="fa fa-print font-success"></i></a>
                                                 </td>
                                             </tr>
                                         }
@@ -142,7 +142,8 @@
         </div>
     </div>
     <!-- Container-fluid Ends-->
-
+    <div style="display: none;" id="dvPrint">
+    </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.css" />
@@ -189,5 +190,17 @@
 
     function cancelpyment() {
         $("#AmountPaid").val("");
+    }
+
+    function printReceipt(paymmentid) {
+           $("#dvPrint").load('/admin/Distributor/GenerateReceipt?PaymentId='+paymmentid, function () {                    
+            w = window.open();
+            w.document.write($("#dvPrint").html());               
+               setTimeout(function () {
+                   w.print();
+                   w.close();
+               },50);
+            
+        });
     }
 </script>
