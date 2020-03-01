@@ -1,4 +1,12 @@
-﻿
+﻿@using KrupaBuildGallery.Model;
+@model List<ProductItemVM>
+
+@{
+    ViewBag.Title = "ProductItem";
+
+    int counter = 1;
+}
+
 <div class="page-body">
 
     <!-- Container-fluid starts-->
@@ -33,36 +41,61 @@
                 <table class="display" id="basic-1">
                     <thead>
                         <tr>
-                            <th>Vendor</th>
-                            <th>Product Items</th>
-                            <th>Store Name</th>
-                            <th>Create Date</th>
-                            <th>Wallet Balance</th>
-                            <th>Revenue</th>
-                            <th>Action</th>
+                            <th width="5%;">#</th>
+                            <th width="10%;">Image</th>
+                            <th>Category</th>
+                            <th>Product</th>
+                            <th>Sub Product</th>
+                            <th>Item Name</th>
+                            <th>MRP Price</th>
+                            <th>Customer Price</th>
+                            <th>Dist. Price</th>
+                            <th width="5%;">Active</th>
+                            <th width="10%;">Action</th>
                         </tr>
                     </thead>
                     <tbody>
 
-                        <tr>
-                            <td>
-                                <div class="d-flex vendor-list">
-                                    <img src="~/Content/assets/images/team/1.jpg" alt="" class="img-fluid img-40 rounded-circle blur-up lazyloaded">
-                                    <span>Paige Turner</span>
-                                </div>
-                            </td>
-                            <td>4680</td>
-                            <td>Finhigh</td>
-                            <td>11/7/18</td>
-                            <td>$87616</td>
-                            <td>$947611</td>
-                            <td>
-                                <div>
-                                    <i class="fa fa-edit mr-2 font-success"></i>
-                                    <i class="fa fa-trash font-danger"></i>
-                                </div>
-                            </td>
-                        </tr>
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            foreach (ProductItemVM item in Model)
+                            {
+                                <tr class="gradeX">
+                                    <td>@counter.</td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(item.MainImage))
+                                        {
+                                            if (File.Exists(Server.MapPath("~/Images/ProductItemMedia/" + item.MainImage)))
+                                            {
+                                                <img src="~/Images/ProductItemMedia/@item.MainImage" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                            }
+                                            else
+                                            {
+                                                <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                        }
+
+                                    </td>
+                                    <td>@item.CategoryName</td>
+                                    <td>@item.ProductName</td>
+                                    <td>@item.SubProductName</td>
+                                    <td>@item.ItemName</td>
+                                    <td>@item.MRPPrice</td>
+                                    <td>@item.CustomerPrice</td>
+                                    <td>@item.DistributorPrice</td>
+                                    <td>Active</td>
+                                    <td>
+                                        <a href="/admin/productitem/edit/@item.ProductItemId"><i class="fa fa-edit mr-2 font-success"></i></a>
+                                        <a href="javascript:void(0);" onclick="fnDeleteProductItem('@item.ProductItemId')"><i class="fa fa-trash font-danger"></i></a>
+                                    </td>
+                                </tr>
+                                counter++;
+                            }
+                        }
 
                     </tbody>
                 </table>
@@ -73,3 +106,77 @@
 
 </div>
 
+
+<!-- Delete Modal -->
+<div class="modal fade open" id="deleteProductItemModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete Confirm</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete ?
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="hdnDeleteProductItem" />
+                <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
+                <button id="btnDeleteProductItem" class="btn btn-primary" type="button">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Delete modal -->
+
+@*<script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>*@
+<script>
+
+    jQuery(document).ready(function () {
+        StartLoading()
+        jQuery('html, body').animate({ scrollTop: 0 }, 1000);
+    });
+
+    function fnDeleteProductItem(item_id) {
+        jQuery("#hdnDeleteProductItem").val(item_id);
+        jQuery('#deleteProductItemModal').modal('show');
+    }
+
+    jQuery(window).on("load", function () {
+        StopLoading();
+    });
+
+    jQuery(document).on("click", "#btnDeleteProductItem", function () {
+
+        var ProductItem_id = jQuery("#hdnDeleteProductItem").val();
+        if (ProductItem_id != "" && ProductItem_id != null) {
+            $('#deleteProductItemModal').modal('hide');
+
+            StartLoading();
+
+            var URL = '@Url.Action("DeleteProductItem", "ProductItem")';
+            $.ajax({
+                type: 'POST',
+                async: true,
+                url: URL + "?ProductItemId=" + ProductItem_id,
+                success: function (result) {
+                    if (result == "success") {
+                        alert("ProductItem deleted successfully");
+                        window.location.reload();
+                    }
+                    else if (result == "notfound") {
+                        alert("ProductItem Not Found");
+                    }
+                    else {
+                        alert("Something went wrong. Please try again");
+                    }
+
+                   StopLoading();
+                },
+                error: function (resultData) {
+                    StopLoading();
+                }
+            });
+        }
+    });
+
+</script>

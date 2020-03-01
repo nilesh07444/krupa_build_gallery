@@ -55,11 +55,11 @@
                             {
                                 <tr class="gradeX">
                                     <td>@counter.</td>
-                                    <td> 
+                                    <td>
                                         @if (!string.IsNullOrEmpty(category.CategoryImage))
                                         {
                                             if (File.Exists(Server.MapPath("~/Images/CategoryMedia/" + category.CategoryImage)))
-                                            { 
+                                            {
                                                 <img src="~/Images/CategoryMedia/@category.CategoryImage" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
                                             }
                                             else
@@ -114,7 +114,8 @@
 </div>
 <!-- Delete modal -->
 
-<script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>
+@*<script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>*@ 
+
 <script>
 
     jQuery(document).ready(function () {

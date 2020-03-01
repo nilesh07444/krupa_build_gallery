@@ -234,6 +234,7 @@
     <Compile Include="ViewModel\OrderItemsVM.cs" />
     <Compile Include="ViewModel\OrderVM.cs" />
     <Compile Include="ViewModel\PaymentHistoryVM.cs" />
+    <Compile Include="ViewModel\ProductItemVM.cs" />
     <Compile Include="ViewModel\ProductVM.cs" />
     <Compile Include="ViewModel\SubProductVM.cs" />
   </ItemGroup>
@@ -3703,6 +3704,8 @@
     <Content Include="Areas\Client\Views\Faq\Index.cshtml" />
     <Content Include="Areas\Admin\Views\SubProduct\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\ContactUsMessage\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Distributor\Detail.cshtml" />
+    <Content Include="Areas\Admin\Views\Distributor\PaymentDetail.cshtml" />
     <EntityDeploy Include="Model\KrupaGallery.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>KrupaGallery.Designer.cs</LastGenOutput>
@@ -3710,8 +3713,7 @@
     <Content Include="Model\KrupaGallery.edmx.diagram">
       <DependentUpon>KrupaGallery.edmx</DependentUpon>
     </Content>
-    <Content Include="Areas\Admin\Views\Distributor\Detail.cshtml" />
-    <Content Include="Areas\Admin\Views\Distributor\PaymentDetail.cshtml" />
+    <Content Include="Areas\Admin\Views\ProductItem\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />

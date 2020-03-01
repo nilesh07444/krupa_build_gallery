@@ -1,7 +1,7 @@
 ﻿@model ProductItemVM
 
 @{
-    ViewBag.Title = "AddProductItem";
+    ViewBag.Title = "EditProductItem";
 }
 
 <div class="page-body">
@@ -13,7 +13,7 @@
                 <div class="col">
                     <div class="page-header-left">
                         <h3>
-                            Add Product Item
+                            Edit Product Item
                         </h3>
                     </div>
                 </div>
@@ -21,7 +21,7 @@
                     <ol class="breadcrumb pull-right">
                         <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
                         <li class="breadcrumb-item"><a href="/admin/productitem">Product Item</a></li>
-                        <li class="breadcrumb-item active">Add Product Item</li>
+                        <li class="breadcrumb-item active">Edit Product Item</li>
                     </ol>
                 </div>
             </div>
@@ -34,10 +34,10 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5>Add Product Item</h5>
+                        <h5>Edit Product Item</h5>
                     </div>
                     <div class="card-body">
-                        @using (Html.BeginForm("Add", "ProductItem", FormMethod.Post, new { @id = "ProductItemFormId", @class = "needs-validation", enctype = "multipart/form-data", role = "form" }))
+                        @using (Html.BeginForm("Edit", "ProductItem", FormMethod.Post, new { @id = "ProductItemFormId", @class = "needs-validation", enctype = "multipart/form-data", role = "form" }))
                         {
 
                             @Html.AntiForgeryToken()
@@ -121,6 +121,7 @@
                                 @Html.ValidationMessageFor(model => model.Notification, "", new { @class = "text-danger" })
                             </div>
 
+                            @Html.HiddenFor(x=>x.ProductItemId)
                             <button type="submit" class="btn btn-primary">Submit</button>
                             <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
                         }

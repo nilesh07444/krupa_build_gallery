@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="krupagalleryModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+      <Schema Namespace="krupagallarydbModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="tbl_AdminRoles">
           <Key>
             <PropertyRef Name="AdminRoleId" />
@@ -308,7 +308,7 @@
           <Property Name="UpdatedBy" Type="bigint" />
           <Property Name="UpdatedDate" Type="datetime" />
         </EntityType>
-        <EntityContainer Name="krupagalleryModelStoreContainer">
+        <EntityContainer Name="krupagallarydbModelStoreContainer">
           <EntitySet Name="tbl_AdminRoles" EntityType="Self.tbl_AdminRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_AdminUsers" EntityType="Self.tbl_AdminUsers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Categories" EntityType="Self.tbl_Categories" Schema="dbo" store:Type="Tables" />
@@ -331,7 +331,7 @@
     </edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
-      <Schema Namespace="krupagalleryModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+      <Schema Namespace="krupagallarydbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityType Name="tbl_AdminRoles">
           <Key>
             <PropertyRef Name="AdminRoleId" />
@@ -551,6 +551,19 @@
           <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
           <Property Name="AmountDue" Type="Decimal" Precision="18" Scale="2" />
         </EntityType>
+        <EntityType Name="tbl_PaymentHistory">
+          <Key>
+            <PropertyRef Name="PaymentHistory_Id" />
+          </Key>
+          <Property Name="PaymentHistory_Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AmountPaid" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="AmountDue" Type="Decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="DateOfPayment" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="OrderId" Type="Int64" Nullable="false" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="PaymentBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+        </EntityType>
         <EntityType Name="tbl_ProductItemImages">
           <Key>
             <PropertyRef Name="ProductItemImageId" />
@@ -635,33 +648,20 @@
           <EntitySet Name="tbl_Offers" EntityType="Self.tbl_Offers" />
           <EntitySet Name="tbl_OrderItemDetails" EntityType="Self.tbl_OrderItemDetails" />
           <EntitySet Name="tbl_Orders" EntityType="Self.tbl_Orders" />
+          <EntitySet Name="tbl_PaymentHistory" EntityType="Self.tbl_PaymentHistory" />
           <EntitySet Name="tbl_ProductItemImages" EntityType="Self.tbl_ProductItemImages" />
           <EntitySet Name="tbl_ProductItems" EntityType="Self.tbl_ProductItems" />
           <EntitySet Name="tbl_Products" EntityType="Self.tbl_Products" />
           <EntitySet Name="tbl_SubProducts" EntityType="Self.tbl_SubProducts" />
-          <EntitySet Name="tbl_PaymentHistory" EntityType="krupagallarydbModel.tbl_PaymentHistory" />
         </EntityContainer>
-        <EntityType Name="tbl_PaymentHistory">
-          <Key>
-            <PropertyRef Name="PaymentHistory_Id" />
-          </Key>
-          <Property Name="PaymentHistory_Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="AmountPaid" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
-          <Property Name="AmountDue" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
-          <Property Name="DateOfPayment" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="OrderId" Type="Int64" Nullable="false" />
-          <Property Name="CreatedBy" Type="Int64" />
-          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
-          <Property Name="PaymentBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="krupagalleryModelStoreContainer" CdmEntityContainer="krupagallarydbEntities">
+        <EntityContainerMapping StorageEntityContainer="krupagallarydbModelStoreContainer" CdmEntityContainer="krupagallarydbEntities">
           <EntitySetMapping Name="tbl_AdminRoles">
-            <EntityTypeMapping TypeName="krupagalleryModel.tbl_AdminRoles">
+            <EntityTypeMapping TypeName="krupagallarydbModel.tbl_AdminRoles">
               <MappingFragment StoreEntitySet="tbl_AdminRoles">
                 <ScalarProperty Name="AdminRoleId" ColumnName="AdminRoleId" />
                 <ScalarProperty Name="AdminRoleName" ColumnName="AdminRoleName" />
@@ -675,7 +675,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tbl_AdminUsers">
-            <EntityTypeMapping TypeName="krupagalleryModel.tbl_AdminUsers">
+            <EntityTypeMapping TypeName="krupagallarydbModel.tbl_AdminUsers">
               <MappingFragment StoreEntitySet="tbl_AdminUsers">
                 <ScalarProperty Name="AdminUserId" ColumnName="AdminUserId" />
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
@@ -696,7 +696,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tbl_Categories">
-            <EntityTypeMapping TypeName="krupagalleryModel.tbl_Categories">
+            <EntityTypeMapping TypeName="krupagallarydbModel.tbl_Categories">
               <MappingFragment StoreEntitySet="tbl_Categories">
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
                 <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
@@ -711,7 +711,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tbl_ClientOtherDetails">
-            <EntityTypeMapping TypeName="krupagalleryModel.tbl_ClientOtherDetails">
+            <EntityTypeMapping TypeName="krupagallarydbModel.tbl_ClientOtherDetails">
               <MappingFragment StoreEntitySet="tbl_ClientOtherDetails">
                 <ScalarProperty Name="ClientOtherDetailsId" ColumnName="ClientOtherDetailsId" />
                 <ScalarProperty Name="ClientUserId" ColumnName="ClientUserId" />
@@ -736,7 +736,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tbl_ClientRoles">
-            <EntityTypeMapping TypeName="krupagalleryModel.tbl_ClientRoles">
+            <EntityTypeMapping TypeName="krupagallarydbModel.tbl_ClientRoles">
               <MappingFragment StoreEntitySet="tbl_ClientRoles">
                 <ScalarProperty Name="ClientRoleId" ColumnName="ClientRoleId" />
                 <ScalarProperty Name="ClientRoleName" ColumnName="ClientRoleName" />
@@ -750,7 +750,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tbl_ClientUsers">
-            <EntityTypeMapping TypeName="krupagalleryModel.tbl_ClientUsers">
+            <EntityTypeMapping TypeName="krupagallarydbModel.tbl_ClientUsers">
               <MappingFragment StoreEntitySet="tbl_ClientUsers">
                 <ScalarProperty Name="ClientUserId" ColumnName="ClientUserId" />
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
@@ -772,7 +772,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tbl_ContactFormData">
-            <EntityTypeMapping TypeName="krupagalleryModel.tbl_ContactFormData">
+            <EntityTypeMapping TypeName="krupagallarydbModel.tbl_ContactFormData">
               <MappingFragment StoreEntitySet="tbl_ContactFormData">
                 <ScalarProperty Name="ContactForm_Id" ColumnName="ContactForm_Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
@@ -787,7 +787,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tbl_DistributorRequestDetails">
-            <EntityTypeMapping TypeName="krupagalleryModel.tbl_DistributorRequestDetails">
+            <EntityTypeMapping TypeName="krupagallarydbModel.tbl_DistributorRequestDetails">
               <MappingFragment StoreEntitySet="tbl_DistributorRequestDetails">
                 <ScalarProperty Name="DistributorRequestId" ColumnName="DistributorRequestId" />
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
@@ -808,7 +808,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tbl_ItemStocks">
-            <EntityTypeMapping TypeName="krupagalleryModel.tbl_ItemStocks">
+            <EntityTypeMapping TypeName="krupagallarydbModel.tbl_ItemStocks">
               <MappingFragment StoreEntitySet="tbl_ItemStocks">
                 <ScalarProperty Name="StockId" ColumnName="StockId" />
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
@@ -826,7 +826,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tbl_Offers">
-            <EntityTypeMapping TypeName="krupagalleryModel.tbl_Offers">
+            <EntityTypeMapping TypeName="krupagallarydbModel.tbl_Offers">
               <MappingFragment StoreEntitySet="tbl_Offers">
                 <ScalarProperty Name="OfferId" ColumnName="OfferId" />
                 <ScalarProperty Name="OfferName" ColumnName="OfferName" />
@@ -847,7 +847,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tbl_OrderItemDetails">
-            <EntityTypeMapping TypeName="krupagalleryModel.tbl_OrderItemDetails">
+            <EntityTypeMapping TypeName="krupagallarydbModel.tbl_OrderItemDetails">
               <MappingFragment StoreEntitySet="tbl_OrderItemDetails">
                 <ScalarProperty Name="OrderDetailId" ColumnName="OrderDetailId" />
                 <ScalarProperty Name="OrderId" ColumnName="OrderId" />
@@ -868,9 +868,8 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tbl_Orders">
-            <EntityTypeMapping TypeName="krupagalleryModel.tbl_Orders">
+            <EntityTypeMapping TypeName="krupagallarydbModel.tbl_Orders">
               <MappingFragment StoreEntitySet="tbl_Orders">
-                <ScalarProperty Name="AmountDue" ColumnName="AmountDue" />
                 <ScalarProperty Name="OrderId" ColumnName="OrderId" />
                 <ScalarProperty Name="ClientUserId" ColumnName="ClientUserId" />
                 <ScalarProperty Name="OrderAmount" ColumnName="OrderAmount" />
@@ -888,11 +887,26 @@
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
                 <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="AmountDue" ColumnName="AmountDue" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_PaymentHistory">
+            <EntityTypeMapping TypeName="krupagallarydbModel.tbl_PaymentHistory">
+              <MappingFragment StoreEntitySet="tbl_PaymentHistory">
+                <ScalarProperty Name="PaymentHistory_Id" ColumnName="PaymentHistory_Id" />
+                <ScalarProperty Name="AmountPaid" ColumnName="AmountPaid" />
+                <ScalarProperty Name="AmountDue" ColumnName="AmountDue" />
+                <ScalarProperty Name="DateOfPayment" ColumnName="DateOfPayment" />
+                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="PaymentBy" ColumnName="PaymentBy" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tbl_ProductItemImages">
-            <EntityTypeMapping TypeName="krupagalleryModel.tbl_ProductItemImages">
+            <EntityTypeMapping TypeName="krupagallarydbModel.tbl_ProductItemImages">
               <MappingFragment StoreEntitySet="tbl_ProductItemImages">
                 <ScalarProperty Name="ProductItemImageId" ColumnName="ProductItemImageId" />
                 <ScalarProperty Name="ProductItemId" ColumnName="ProductItemId" />
@@ -907,7 +921,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tbl_ProductItems">
-            <EntityTypeMapping TypeName="krupagalleryModel.tbl_ProductItems">
+            <EntityTypeMapping TypeName="krupagallarydbModel.tbl_ProductItems">
               <MappingFragment StoreEntitySet="tbl_ProductItems">
                 <ScalarProperty Name="ProductItemId" ColumnName="ProductItemId" />
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
@@ -934,7 +948,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tbl_Products">
-            <EntityTypeMapping TypeName="krupagalleryModel.tbl_Products">
+            <EntityTypeMapping TypeName="krupagallarydbModel.tbl_Products">
               <MappingFragment StoreEntitySet="tbl_Products">
                 <ScalarProperty Name="Product_Id" ColumnName="Product_Id" />
                 <ScalarProperty Name="ProductName" ColumnName="ProductName" />
@@ -950,7 +964,7 @@
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="tbl_SubProducts">
-            <EntityTypeMapping TypeName="krupagalleryModel.tbl_SubProducts">
+            <EntityTypeMapping TypeName="krupagallarydbModel.tbl_SubProducts">
               <MappingFragment StoreEntitySet="tbl_SubProducts">
                 <ScalarProperty Name="SubProductId" ColumnName="SubProductId" />
                 <ScalarProperty Name="SubProductName" ColumnName="SubProductName" />
@@ -963,20 +977,6 @@
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
                 <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="tbl_PaymentHistory">
-            <EntityTypeMapping TypeName="krupagallarydbModel.tbl_PaymentHistory">
-              <MappingFragment StoreEntitySet="tbl_PaymentHistory">
-                <ScalarProperty Name="PaymentBy" ColumnName="PaymentBy" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
-                <ScalarProperty Name="DateOfPayment" ColumnName="DateOfPayment" />
-                <ScalarProperty Name="AmountDue" ColumnName="AmountDue" />
-                <ScalarProperty Name="AmountPaid" ColumnName="AmountPaid" />
-                <ScalarProperty Name="PaymentHistory_Id" ColumnName="PaymentHistory_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
