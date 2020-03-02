@@ -15,6 +15,6 @@ namespace KrupaBuildGallery
         public string shipcity { get; set; }
         public string shipstate { get; set; }
         public string shippincode { get; set; }
-        public decimal Orderamout { get; set; }
+        public string Orderamount { get; set; }
     }
 }

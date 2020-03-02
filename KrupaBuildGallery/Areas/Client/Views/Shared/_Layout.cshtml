@@ -528,8 +528,6 @@
         </div>
     </div>
     <!-- Add to cart modal popup end-->
-  
-
     <!-- fly cart ui jquery-->
     <script src="~/Content/assets/js/jquery-ui.min.js"></script>
 
@@ -573,7 +571,19 @@
             document.getElementById("search-overlay").style.display = "none";
         }
     </script>
+    <script src="~/Scripts/jquery.blockUI.js"></script>
 
+    <script>
+
+        function StartLoading() {
+            jQuery.blockUI({ message: "<h4>Please Wait...</h4>" });
+        }
+
+        function StopLoading() {
+            jQuery.unblockUI();
+        }
+
+    </script>
 </body>
 
 </html>

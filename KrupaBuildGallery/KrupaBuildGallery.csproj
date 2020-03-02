@@ -3734,6 +3734,7 @@
     <Content Include="Areas\Admin\Views\ProductItem\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Stock\Edit.cshtml" />
     <Content Include="Areas\Client\Views\Checkout\_RazorPayPayment.cshtml" />
+    <Content Include="Areas\Client\Views\Checkout\OrderSuccess.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />

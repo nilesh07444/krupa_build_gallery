@@ -17,19 +17,33 @@
 }
 
 function PlaceOrder(razorpay_payment_id, razorpay_order_id, razorpay_signature) {
-    var URL = '/Checkout/PlaceOrder';
+    var URL = '/Client/Checkout/PlaceOrder';
     var formId = $("#frmcheckout");
+    var data = $("#frmcheckout").serializeArray();
+    data.push({ name: 'razorpay_payment_id', value: razorpay_payment_id });
+    data.push({ name: 'razorpay_order_id', value: razorpay_order_id });
+    data.push({ name: 'razorpay_signature', value: razorpay_signature });
     jQuery.ajax({
         type: 'POST',
         async: true,
         url: URL,
-        data: formId.serialize() + "&razorpay_payment_id=" + razorpay_payment_id + "&razorpay_order_id=" + razorpay_order_id + "&razorpay_signature=" + razorpay_signature,
+        dataType: 'json',
+        data: data,
         success: function (result) {
-          
-        },
+            if (result.indexOf("Success") >= 0) {
+                var arryy = result.split('^');
+                location.href = location.origin + "/client/checkout/ordersuccess?Id=" + arryy[1];
+            }
+            else {
+                alert(result);
+                location.href = location.origin + "/checkout";
+                StopLoading();
+            }
+            
+        }, 
         error: function (resultData) {
             console.log("error");
-
+            StopLoading();
         }
     });
 }

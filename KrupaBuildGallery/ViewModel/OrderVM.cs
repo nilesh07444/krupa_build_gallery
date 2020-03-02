@@ -26,5 +26,7 @@ namespace KrupaBuildGallery.ViewModel
         public string ClientAddress { get; set; }
         public string ClientMobileNo { get; set; }
         public string ClientEmail { get; set; }
+        public string RazorpayOrderId { get; set; }
+
     }
 }

@@ -11,7 +11,7 @@
         "image": "https://razorpay.com/favicon.png",
         "order_id": "@ViewBag.OrderId",// Replace this with the order_id created using Orders API (https://razorpay.com/docs/api/orders).
         "handler": function (response) {
-            debugger;
+            StartLoading();            
             PlaceOrder(response.razorpay_payment_id, response.razorpay_order_id, response.razorpay_signature);
         },
         "prefill": {

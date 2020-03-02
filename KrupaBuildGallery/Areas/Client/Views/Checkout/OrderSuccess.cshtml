@@ -1,0 +1,116 @@
+﻿@model  KrupaBuildGallery.ViewModel.OrderVM
+    @{ 
+        decimal CartTotal = 0;
+    }
+<!-- thank-you section start -->
+<section class="section-b-space light-layout">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="success-text">
+                    <i class="fa fa-check-circle" aria-hidden="true"></i>
+                    <h2>thank you</h2>
+                    <p>Payment is successfully processsed and your order is on the way</p>
+                    <p>Transaction ID:@Model.RazorpayOrderId</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Section ends -->
+<!-- order-detail section start -->
+<section class="section-b-space">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="product-order">
+                    <h3>your order details</h3>
+                    @if (Model.OrderItems != null && Model.OrderItems.Count > 0)
+                    {
+                        foreach (KrupaBuildGallery.ViewModel.OrderItemsVM item in Model.OrderItems)
+                        {
+                            decimal ItemTotal = Convert.ToDecimal(item.Qty * item.Price);
+                            CartTotal = CartTotal + ItemTotal;
+                            <div class="row product-order-detail">
+                                <div class="col-3">
+                                    @if (!string.IsNullOrEmpty(item.ItemImg))
+                                    {
+                                        if (File.Exists(Server.MapPath("~/Images/ProductItemMedia/" + item.ItemImg)))
+                                        {
+                                            <img src="~/Images/ProductItemMedia/@item.ItemImg" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                        }
+                                        else
+                                        {
+                                            <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                    }                                  
+                                </div>
+                                <div class="col-3 order_detail">
+                                    <div>
+                                        <h4>product name</h4>
+                                        <h5>@item.ItemName</h5>
+                                    </div>
+                                </div>
+                                <div class="col-3 order_detail">
+                                    <div>
+                                        <h4>quantity</h4>
+                                        <h5>@item.Qty</h5>
+                                    </div>
+                                </div>
+                                <div class="col-3 order_detail">
+                                    <div>
+                                        <h4>price</h4>
+                                        <h5>@ItemTotal</h5>
+                                    </div>
+                                </div>
+                            </div>                           
+                        }
+
+                    }               
+                    <div class="total-sec">
+                        <ul>
+                            <li>subtotal <span>@CartTotal</span></li>                                                        
+                        </ul>
+                    </div>
+                    <div class="final-total">
+                        <h3>total <span>@CartTotal</span></h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="row order-success-sec">
+                    <div class="col-sm-6">
+                        <h4>summery</h4>
+                        <ul class="order-detail">
+                            <li>order ID: @Model.OrderId</li>
+                            <li>Order Date: @Model.OrderDate.ToString("dd-MMM-yyyy") </li>
+                            <li>Order Total: @Model.OrderAmount</li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-6">
+                        <h4>shipping address</h4>
+                        <ul class="order-detail">
+                            <li>@Model.OrderShipClientName</li>
+                            <li>@Model.OrderShipAddress</li>
+                            <li>@Model.OrderShipCity - @Model.OrderPincode</li>
+                            <li>Contact No. @Model.OrderShipClientPhone</li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-12 payment-mode">
+                        <h4>payment method</h4>
+                        <p>@Model.PaymentType</p>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="delivery-sec">                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Section ends -->

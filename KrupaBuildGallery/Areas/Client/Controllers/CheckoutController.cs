@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using KrupaBuildGallery.Model;
+using KrupaBuildGallery.ViewModel;
 using Razorpay.Api;
 namespace KrupaBuildGallery.Areas.Client.Controllers
 {
@@ -78,13 +79,57 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             return View();
         }
 
-        public ActionResult OrderSuccess(int Id)
+        public ActionResult OrderSuccess(string Id)
         {
-            return View();
+            string orderid = clsCommon.DecryptString(Id.ToString());
+            long OrderID64 = Convert.ToInt64(orderid);
+            OrderVM objOrder = new OrderVM();
+            objOrder = (from p in _db.tbl_Orders
+                        join c in _db.tbl_ClientUsers on p.ClientUserId equals c.ClientUserId
+                        where p.OrderId == OrderID64
+                        select new OrderVM
+                        {
+                            OrderId = p.OrderId,
+                            ClientUserName = c.FirstName + " " + c.LastName,
+                            ClientUserId = p.ClientUserId,
+                            OrderAmount = p.OrderAmount,
+                            OrderShipCity = p.OrderShipCity,
+                            OrderShipState = p.OrderShipState,
+                            OrderShipAddress = p.OrderShipAddress,
+                            OrderPincode = p.OrderShipPincode,
+                            OrderShipClientName = p.OrderShipClientName,
+                            OrderShipClientPhone = p.OrderShipClientPhone,
+                            OrderStatusId = p.OrderStatusId,
+                            PaymentType = p.PaymentType,
+                            RazorpayOrderId = p.RazorpayOrderId,
+                            OrderDate = p.CreatedDate
+                        }).OrderByDescending(x => x.OrderDate).FirstOrDefault();
+            if (objOrder != null)
+            {
+             //   objOrder.OrderStatus = GetOrderStatus(objOrder.OrderStatusId);
+                List<OrderItemsVM> lstOrderItms = (from p in _db.tbl_OrderItemDetails
+                                                   join c in _db.tbl_ProductItems on p.ProductItemId equals c.ProductItemId
+                                                   where p.OrderId == OrderID64
+                                                   select new OrderItemsVM
+                                                   {
+                                                       OrderId = p.OrderId.Value,
+                                                       OrderItemId = p.OrderDetailId,
+                                                       ProductItemId = p.ProductItemId.Value,
+                                                       ItemName = p.ItemName,
+                                                       Qty = p.Qty.Value,
+                                                       Price = p.Price.Value,
+                                                       Sku = p.Sku,
+                                                       GSTAmt = p.GSTAmt.Value,
+                                                       IGSTAmt = p.IGSTAmt.Value,
+                                                       ItemImg = c.MainImage
+                                                   }).OrderByDescending(x => x.OrderItemId).ToList();
+                objOrder.OrderItems = lstOrderItms;
+            }
+            return View(objOrder);
         }
 
         public PartialViewResult CreateRazorPaymentOrder(decimal Amount,string description)
-        {
+        {            
             Dictionary<string, object> input = new Dictionary<string, object>();
             input.Add("amount", Amount * 100); // this amount should be same as transaction amount
             input.Add("currency", "INR");
@@ -104,7 +149,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         }
 
         [HttpPost]
-        public string PlaceOrder(CheckoutVM objCheckout,string razorpay_payment_id,string razorpay_order_id,string razorpay_signature)
+        public JsonResult PlaceOrder(CheckoutVM objCheckout,string razorpay_payment_id,string razorpay_order_id,string razorpay_signature)
         {
             string ReturnMessage = "";
             long clientusrid = Convert.ToInt64(Session["ClientUserId"]);
@@ -113,7 +158,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 Razorpay.Api.Payment objpymn = new Razorpay.Api.Payment().Fetch(razorpay_payment_id);
                 if(objpymn != null)
                 {                    
-                    if(objpymn["status"] != null && Convert.ToString(objpymn["status"]) == "Captured")
+                    if(objpymn["status"] != null && Convert.ToString(objpymn["status"]) == "captured")
                     {
                       List<CartVM> lstCartItems = (from crt in _db.tbl_Cart
                                         join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
@@ -148,7 +193,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         }
                         tbl_Orders objOrder = new tbl_Orders();
                         objOrder.ClientUserId = clientusrid;
-                        objOrder.OrderAmount = objCheckout.Orderamout;
+                        objOrder.OrderAmount = Convert.ToDecimal(objCheckout.Orderamount);
                         objOrder.OrderShipCity = objCheckout.shipcity;
                         objOrder.OrderShipAddress = objCheckout.shipaddress;
                         objOrder.OrderShipState = objCheckout.shipstate;
@@ -175,6 +220,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 tbl_OrderItemDetails objOrderItem = new tbl_OrderItemDetails();
                                 objOrderItem.OrderId = objOrder.OrderId;
                                 objOrderItem.ProductItemId = objCart.ItemId;
+                                objOrderItem.ItemName = objCart.ItemName;
+                                objOrderItem.IGSTAmt = 0;
                                 objOrderItem.Qty = objCart.Qty;
                                 objOrderItem.Price = objCart.Price;
                                 objOrderItem.Sku = objCart.ItemSku;
@@ -199,8 +246,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             _db.SaveChanges();
                         }
 
-
-                        ReturnMessage = "Success";
+                        string orderid = clsCommon.EncryptString(objOrder.OrderId.ToString());
+                        ReturnMessage = "Success^"+ orderid;
                     }
                     else
                     {
@@ -219,7 +266,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 ReturnMessage = "exception";
             }
 
-            return ReturnMessage;
+            return Json(ReturnMessage);
         }
     }
 }
