@@ -39,6 +39,24 @@ namespace KrupaBuildGallery.Areas.Client
             );
 
             context.MapRoute(
+                "Admin_Login",
+                "login",
+                new { controller = "Login", action = "Index", id = UrlParameter.Optional }
+            );
+
+            context.MapRoute(
+                "Admin_Register",
+                "register",
+                new { controller = "Register", action = "Index", id = UrlParameter.Optional }
+            );
+
+            context.MapRoute(
+                "Admin_DistributorRequest",
+                "distributorrequest",
+                new { controller = "DistributorRequest", action = "Index", id = UrlParameter.Optional }
+            );
+             
+            context.MapRoute(
                 "Admin_Cart",
                 "cart",
                 new { controller = "Cart", action = "Index", id = UrlParameter.Optional }

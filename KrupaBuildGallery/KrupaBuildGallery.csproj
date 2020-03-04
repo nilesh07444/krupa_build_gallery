@@ -156,9 +156,12 @@
     <Compile Include="Areas\Client\Controllers\CartController.cs" />
     <Compile Include="Areas\Client\Controllers\CheckoutController.cs" />
     <Compile Include="Areas\Client\Controllers\ContactUsController.cs" />
+    <Compile Include="Areas\Client\Controllers\DistributorRequestController.cs" />
     <Compile Include="Areas\Client\Controllers\FaqController.cs" />
+    <Compile Include="Areas\Client\Controllers\LoginController.cs" />
     <Compile Include="Areas\Client\Controllers\OrdersController.cs" />
     <Compile Include="Areas\Client\Controllers\PrivacyPolicyController.cs" />
+    <Compile Include="Areas\Client\Controllers\RegisterController.cs" />
     <Compile Include="Areas\Client\Controllers\WishlistController.cs" />
     <Compile Include="Filters\CustomAuthorize.cs" />
     <Compile Include="Helper\ErrorMessage.cs" />
@@ -3736,6 +3739,9 @@
     <Content Include="Areas\Client\Views\Checkout\_RazorPayPayment.cshtml" />
     <Content Include="Areas\Client\Views\Checkout\OrderSuccess.cshtml" />
     <Content Include="Areas\Client\Views\Cart\_CartItemsTop.cshtml" />
+    <Content Include="Areas\Client\Views\Login\Index.cshtml" />
+    <Content Include="Areas\Client\Views\Register\Index.cshtml" />
+    <Content Include="Areas\Client\Views\DistributorRequest\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />
