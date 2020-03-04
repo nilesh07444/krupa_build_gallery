@@ -243,5 +243,62 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             return ReturnMessage;
         }
         
+        public ActionResult CartItemsListTop()
+        {
+            List<CartVM> lstCartItems = new List<CartVM>();
+            try
+            {
+                Session["ClientUserId"] = 1;
+                string GuidNew = Guid.NewGuid().ToString();
+                string cookiesessionval = "";
+                if (Request.Cookies["sessionkeyval"] != null)
+                {
+                    cookiesessionval = Request.Cookies["sessionkeyval"].Value;
+                }
+                else
+                {
+                    cookiesessionval = GuidNew;
+                    Response.Cookies["sessionkeyval"].Value = GuidNew;
+                    Response.Cookies["sessionkeyval"].Expires = DateTime.Now.AddDays(30);
+                }
+                if (Session["ClientUserId"] != null)
+                {
+                    long ClientUserId = Convert.ToInt64(Session["ClientUserId"]);
+                    lstCartItems = (from crt in _db.tbl_Cart
+                                    join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
+                                    where crt.ClientUserId == ClientUserId
+                                    select new CartVM
+                                    {
+                                        CartId = crt.Cart_Id,
+                                        ItemName = i.ItemName,
+                                        ItemId = i.ProductItemId,
+                                        Price = i.CustomerPrice,
+                                        ItemImage = i.MainImage,
+                                        Qty = crt.CartItemQty.Value
+                                    }).OrderByDescending(x => x.CartId).ToList();
+                }
+                else
+                {
+                    lstCartItems = (from crt in _db.tbl_Cart
+                                    join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
+                                    where crt.CartSessionId == cookiesessionval
+                                    select new CartVM
+                                    {
+                                        CartId = crt.Cart_Id,
+                                        ItemName = i.ItemName,
+                                        ItemId = i.ProductItemId,
+                                        Price = i.CustomerPrice,
+                                        ItemImage = i.MainImage,
+                                        Qty = crt.CartItemQty.Value
+                                    }).OrderByDescending(x => x.CartId).ToList();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                string ErrorMessage = ex.Message.ToString();
+            }
+            return PartialView("~/Areas/Client/Views/Cart/_CartItemsTop.cshtml", lstCartItems);
+        }
     }
 }

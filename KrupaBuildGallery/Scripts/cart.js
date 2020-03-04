@@ -8,6 +8,20 @@
             if (result == "notfound") {
                alert("Product Not Found");
             }         
+            $.ajax({
+                url: '/Client/Cart/CartItemsListTop',
+                type: "post",
+                dataType: "html",
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    //success
+                    $("#ulCartitems").html(data); //populate the tab content.
+
+                },
+                error: function (e) {
+                    alert("error");
+                }
+            });
         },
         error: function (resultData) {
             console.log("error");
