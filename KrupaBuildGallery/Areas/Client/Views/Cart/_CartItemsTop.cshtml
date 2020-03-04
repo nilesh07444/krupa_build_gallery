@@ -1,0 +1,93 @@
+﻿@{
+    Layout = null;
+}
+@using KrupaBuildGallery.Model;
+@model List<CartVM>
+@{
+    ViewBag.Title = "Cart";
+    int counter = 1;
+    decimal CartTotal = 0;
+}
+@if (Model != null && Model.Count > 0)
+{
+
+    foreach (CartVM item in Model)
+    {
+        decimal ItemTotal = Convert.ToDecimal(item.Qty * item.Price);
+        CartTotal = CartTotal + ItemTotal;
+        <li>
+            <div class="media">
+                <a href="#">
+                    @if (!string.IsNullOrEmpty(item.ItemImage))
+                    {
+                        if (File.Exists(Server.MapPath("~/Images/ProductItemMedia/" + item.ItemImage)))
+                        {
+                            <img src="~/Images/ProductItemMedia/@item.ItemImage" alt="" class="mr-3" style="width: 40px; height:40px;" />
+                        }
+                        else
+                        {
+                            <img src="~/Images/default_image.png" alt="" class="mr-3" style="width: 40px; height: 40px;" />
+                        }
+                    }
+                    else
+                    {
+                        <img src="~/Images/default_image.png" alt="" class="mr-3" style="width: 40px; height: 40px;" />
+                    }
+                </a>
+                <div class="media-body">
+                    <a href="#">
+                        <h4>@item.ItemName</h4>
+                    </a>
+                    <h4><span>@item.Qty x $ @item.Price</span></h4>
+                </div>
+            </div>
+            <div class="close-circle"><a href="javascript:void(0);" onclick="removecart('@item.CartId',this);" ><i class="fa fa-times" aria-hidden="true"></i></a></div>
+        </li>
+    }
+    <li>
+        <div class="total">
+            <h5>subtotal : <span>@CartTotal</span></h5>
+        </div>
+    </li>
+    <li>
+        <div class="buttons"><a href="/cart" class="view-cart">view cart</a> <a href="/checkout" class="checkout">checkout</a></div>
+    </li>
+}
+else
+{
+    <li>
+        Cart is Empty
+    </li>
+}
+
+<script>
+    function removecart(CartItemId,objthis) {
+        var URL = '/Client/Cart/Removecartitem';
+        jQuery.ajax({
+            type: 'POST',
+            async: true,
+            url: URL + "?CartItemId=" + CartItemId,
+            success: function (result) {
+                alert("Item removed successfully..");
+                  $.ajax({
+                url: '@Url.Action("CartItemsListTop", "Cart")',
+                type: "post",
+                dataType: "html",
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    //success
+                    $("#ulCartitems").html(data); //populate the tab content.
+
+                },
+                error: function () {
+                    alert("error");
+                }
+            });
+            },
+            error: function (resultData) {
+                console.log("error");
+
+            }
+        });
+    }
+</script>
