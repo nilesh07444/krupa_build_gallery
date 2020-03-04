@@ -43,87 +43,115 @@
                             @Html.AntiForgeryToken()
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                            <div class="form-group row">
-                                @Html.LabelFor(model => model.CategoryId, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
-                                @Html.DropDownListFor(model => model.CategoryId, new SelectList(Model.CategoryList, "Value", "Text"), "- Select Category -", new { @class = "form-control col-md-8", style = "" })
-                                @Html.ValidationMessageFor(model => model.CategoryId, "", new { @class = "text-danger" })
-                            </div>
+                        <div class="form-group row">
+                            @Html.LabelFor(model => model.CategoryId, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                            @Html.DropDownListFor(model => model.CategoryId, new SelectList(Model.CategoryList, "Value", "Text"), "- Select Category -", new { @class = "form-control col-md-8", style = "" })
+
+                            <lable class="col-xl-3 col-md-4"></lable>
+                            @Html.ValidationMessageFor(model => model.CategoryId, "", new { @class = "text-danger" })
+                        </div>
 
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.ProductId, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.DropDownListFor(model => model.ProductId, new SelectList(Model.ProductList, "Value", "Text"), "- Select Product -", new { @class = "form-control col-md-8", style = "" })
+                                
+                                <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.ProductId, "", new { @class = "text-danger" })
                             </div>
 
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.SubProductId, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.DropDownListFor(model => model.SubProductId, new SelectList(Model.SubProductList, "Value", "Text"), "- Select SubProduct -", new { @class = "form-control col-md-8", style = "" })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.SubProductId, "", new { @class = "text-danger" })
                             </div>
 
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.ItemMainImageFile, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.TextBoxFor(model => model.ItemMainImageFile, new { type = "file", @class = "form-control col-md-8" })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.ItemMainImageFile, "", new { @class = "text-danger" })
                             </div>
 
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.ItemName, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.EditorFor(model => model.ItemName, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Item Name", maxlength = "200" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.ItemName, "", new { @class = "text-danger" })
                             </div>
 
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.ItemDescription, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.EditorFor(model => model.ItemDescription, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Item Description", maxlength = "200" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.ItemDescription, "", new { @class = "text-danger" })
                             </div>
 
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.Sku, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.EditorFor(model => model.Sku, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Sku", maxlength = "200" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.Sku, "", new { @class = "text-danger" })
                             </div>
 
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.MRPPrice, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.EditorFor(model => model.MRPPrice, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter MRP Price", maxlength = "200" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.MRPPrice, "", new { @class = "text-danger" })
                             </div>
 
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.CustomerPrice, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.EditorFor(model => model.CustomerPrice, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Customer Price", maxlength = "200" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.CustomerPrice, "", new { @class = "text-danger" })
                             </div>
 
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.DistributorPrice, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.EditorFor(model => model.DistributorPrice, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Distributor Price", maxlength = "200" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.DistributorPrice, "", new { @class = "text-danger" })
                             </div>
 
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.GST_Per, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.EditorFor(model => model.GST_Per, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter GST Percentage", maxlength = "200" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.GST_Per, "", new { @class = "text-danger" })
                             </div>
 
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.IGST_Per, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.EditorFor(model => model.IGST_Per, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter IGST Percentage", maxlength = "200" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.IGST_Per, "", new { @class = "text-danger" })
                             </div>
 
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.Notification, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.EditorFor(model => model.Notification, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Notification Text", maxlength = "200" } })
+                                
+                                <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.Notification, "", new { @class = "text-danger" })
                             </div>
 
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.IsPopularProduct, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.CheckBoxFor(model => model.IsPopularProduct, new { htmlAttributes = new { @class = "form-control col-md-8" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.IsPopularProduct, "", new { @class = "text-danger" })
                             </div>
 

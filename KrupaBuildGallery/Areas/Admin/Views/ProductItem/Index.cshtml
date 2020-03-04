@@ -37,6 +37,11 @@
                 <h5>Product Item List</h5>
             </div>
             <div class="card-body vendor-table">
+
+                <div class="btn-popup pull-right">
+                    <button type="button" class="btn btn-primary" id="btnAdd">Add Product Item</button>
+                </div>
+
                 <table class="display" id="basic-1">
                     <thead>
                         <tr>
@@ -129,6 +134,10 @@
 
 @*<script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>*@
 <script>
+
+    $(document).on("click", "#btnAdd", function () {
+        window.location.href = "/admin/productitem/add";
+    });
 
     jQuery(document).ready(function () {
         StartLoading()

@@ -36,6 +36,11 @@
                 <h5>Stock List</h5>
             </div>
             <div class="card-body vendor-table">
+
+                <div class="btn-popup pull-right">
+                    <button type="button" class="btn btn-primary" id="btnAdd">Add Stock</button>
+                </div>
+
                 <table class="display" id="basic-1">
                     <thead>
                         <tr>
@@ -59,7 +64,7 @@
                                     <td>@item.ProductName</td>
                                     <td>@item.SubProductName</td>
                                     <td>@item.ProductItemName</td>
-                                    <td>@item.Quantity</td>                                    
+                                    <td>@item.Quantity</td>
                                     <td style="width:10% !important;">
                                         <a href="/admin/stock/edit/@item.StockId"><i class="fa fa-edit mr-2 font-success"></i></a>
                                         <a href="javascript:void(0);" onclick="fnDeleteStock('@item.StockId')"><i class="fa fa-trash font-danger"></i></a>
@@ -98,6 +103,10 @@
 </div>
 <!-- Delete modal -->
 <script>
+
+     $(document).on("click", "#btnAdd", function () {
+        window.location.href = "/admin/stock/add";
+     });
 
     jQuery(document).ready(function () {
         StartLoading()

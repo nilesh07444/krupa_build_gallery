@@ -43,27 +43,35 @@
                             @Html.AntiForgeryToken()
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                            <div class="form-group row">
-                                @Html.LabelFor(model => model.CategoryId, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
-                                @Html.DropDownListFor(model => model.CategoryId, new SelectList(Model.CategoryList, "Value", "Text"), "- Select Category -", new { @class = "form-control col-md-8", style = "" })
-                                @Html.ValidationMessageFor(model => model.CategoryId, "", new { @class = "text-danger" })
-                            </div>
+                        <div class="form-group row">
+                            @Html.LabelFor(model => model.CategoryId, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                            @Html.DropDownListFor(model => model.CategoryId, new SelectList(Model.CategoryList, "Value", "Text"), "- Select Category -", new { @class = "form-control col-md-8", style = "" })
+
+                            <lable class="col-xl-3 col-md-4"></lable>
+                            @Html.ValidationMessageFor(model => model.CategoryId, "", new { @class = "text-danger" })
+                        </div>
 
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.ProductId, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.DropDownListFor(model => model.ProductId, new SelectList(Model.ProductList, "Value", "Text"), "- Select Product -", new { @class = "form-control col-md-8", style = "" })
+                                
+                                <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.ProductId, "", new { @class = "text-danger" })
                             </div>
 
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.SubProductName, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.EditorFor(model => model.SubProductName, new { htmlAttributes = new { @class = "form-control col-md-8", style = "width:350px;", @placeholder = "Enter Sub Product Name", maxlength = "200" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.SubProductName, "", new { @class = "text-danger" })
                             </div>
 
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.SubProductImageFile, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.TextBoxFor(model => model.SubProductImageFile, new { type = "file", @class = "form-control col-md-8" })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.SubProductImageFile, "", new { @class = "text-danger" })
                             </div>
 

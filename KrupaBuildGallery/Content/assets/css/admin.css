@@ -1,4 +1,4 @@
-@charset "UTF-8";
+﻿@charset "UTF-8";
 /*-----------------------------------------------------------------------------------
 
     Template Name:Multikart
@@ -14921,7 +14921,8 @@ ul.notification-dropdown.onhover-show-div {
       .page-wrapper .page-body-wrapper .page-sidebar .sidebar-menu .sidebar-submenu > li.active > a {
         color: #313131; }
         .page-wrapper .page-body-wrapper .page-sidebar .sidebar-menu .sidebar-submenu > li.active > a.active {
-          color: #ff8084; }
+          /*color: #ff8084;*/  
+        }
   .page-wrapper .page-body-wrapper .page-sidebar ~ .page-body {
     margin-left: 255px;
     -webkit-transition: 0.3s;

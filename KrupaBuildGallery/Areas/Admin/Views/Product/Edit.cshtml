@@ -47,18 +47,24 @@
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.CategoryId, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.DropDownList("CategoryId", new SelectList(Model.CategoryList, "Value", "Text"), "- Select Category -", new { @class = "form-control col-md-8", style = "" })
+                                
+                                <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.CategoryId, "", new { @class = "text-danger" })
                             </div>
 
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.ProductName, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.EditorFor(model => model.ProductName, new { htmlAttributes = new { @class = "form-control col-md-8", style = "width:350px;", @placeholder = "Enter Product Name", maxlength = "200" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.ProductName, "", new { @class = "text-danger" })
                             </div>
 
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.ProductImageFile, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.TextBoxFor(model => model.ProductImageFile, new { type = "file", @class = "form-control col-md-8" })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.ProductImageFile, "", new { @class = "text-danger" })
                             </div>
 

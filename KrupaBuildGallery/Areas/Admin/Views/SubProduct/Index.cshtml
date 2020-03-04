@@ -36,6 +36,11 @@
                 <h5>Sub Product List</h5>
             </div>
             <div class="card-body vendor-table">
+
+                <div class="btn-popup pull-right">
+                    <button type="button" class="btn btn-primary" id="btnAdd">Add Sub Product</button>
+                </div>
+
                 <table class="display" id="basic-1">
                     <thead>
                         <tr>
@@ -119,6 +124,10 @@
 
 @*<script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>*@
 <script type="text/javascript" charset="utf-8">
+
+    $(document).on("click", "#btnAdd", function () {
+        window.location.href = "/admin/subproduct/add";
+    });
 
     jQuery(document).ready(function () {
         StartLoading();
