@@ -1,4 +1,9 @@
-﻿<!-- breadcrumb start -->
+﻿<style>
+    .register-page .theme-card .theme-form input {
+        margin-bottom: 13px;
+    }
+</style>
+<!-- breadcrumb start -->
 <div class="breadcrumb-section">
     <div class="container">
         <div class="row">
@@ -26,31 +31,80 @@
             <div class="col-lg-12">
                 <h3>create account</h3>
                 <div class="theme-card">
-                    <form class="theme-form">
-                        <div class="form-row">
-                            <div class="col-md-6">
-                                <label for="email">First Name</label>
-                                <input type="text" class="form-control" id="fname" placeholder="First Name" required="">
+                    @using (Html.BeginForm("CreateAccount", "Register", FormMethod.Post, new { ID = "theFormId", @class = "theme-form", onsubmit = "return checkregister();" }))
+                    {                        
+                            <div class="form-row">
+                                <div class="col-md-6">
+                                    <label for="fname">First Name *</label>
+                                    <input type="text" class="form-control" id="fname" value="@TempData["firstnm"]" name="fname" placeholder="First Name" required />
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="lname">Last Name *</label>
+                                    <input type="text" class="form-control" id="lname" name="lname" value="@TempData["lastnm"]" placeholder="Last Name" required />
+                                </div>
                             </div>
-                            <div class="col-md-6">
-                                <label for="review">Last Name</label>
-                                <input type="password" class="form-control" id="lname" placeholder="Last Name" required="">
+                            <div class="form-row">
+                                <div class="col-md-6">
+                                    <label for="mobileno">Mobile No. *</label>
+                                    <input type="number" class="form-control" id="mobileno" name="mobileno" value="@TempData["mobileno"]" placeholder="Mobile No." required />
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="email">Email *</label>
+                                    <input type="text" class="form-control" id="email" value="@TempData["email"]" name="email" placeholder="Email" required />
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-row">
-                            <div class="col-md-6">
-                                <label for="email">email</label>
-                                <input type="text" class="form-control" id="email" placeholder="Email" required="">
-                            </div>
-                            <div class="col-md-6">
-                                <label for="review">Password</label>
-                                <input type="password" class="form-control" id="review" placeholder="Enter your password" required="">
-                            </div><a href="#" class="btn btn-solid">create Account</a>
-                        </div>
-                    </form>
-                </div>
+                            <div class="form-row">
+                                <div class="col-md-6">
+                                    <label for="password">Password *</label>
+                                    <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required />
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="confirmpassword">Confirm Password *</label>
+                                    <input type="password" class="form-control" id="confirmpassword" name="confirmpassword" placeholder="Enter your confirm password" required />
+                                </div>
+                                <input type="submit" value="Create Account" class="btn btn-solid" />                                
+                            </div>                     
+                    }
+                    </div>
             </div>
         </div>
     </div>
 </section>
 <!--Section ends-->
+@if(TempData["RegisterError"] != null)
+{    
+<script>
+    setTimeout(function(){
+    alert('@TempData["RegisterError"]');
+    }, 1000);
+    
+</script>
+}
+
+<script>
+    function checkregister() {
+        if (!ValidateEmail($("#email").val())) {
+            alert("You have entered an invalid email address!")
+            return false;
+        }
+        else if ($("#password").val() != $("#confirmpassword").val()) {
+            alert("Password and Confirm Pasword not match!")
+            return false;
+        }
+        else {
+             StartLoading();
+                return true;
+        }
+        
+    }
+
+ function ValidateEmail(mail) 
+{
+    if (/^\w+([\.-]?\w+)*@@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+</script>

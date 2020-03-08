@@ -91,9 +91,19 @@
                             <li class="onhover-dropdown mobile-account">
                                 <i class="fa fa-user" aria-hidden="true"></i> My Account
                                 <ul class="onhover-show-div">
-                                    <li><a href="/login" data-lng="en">Login</a></li>
-                                    <li><a href="/register" data-lng="en">Register</a></li>
-                                    <li><a href="/login/signout" data-lng="es">Logout</a></li>
+                                    @if (clsClientSession.UserID == 0)
+                                    {
+                                        <li><a href="/login" data-lng="en">Login</a></li>
+                                        <li><a href="/register" data-lng="en">Register</a></li>
+
+                                    }
+                                    else
+                                    {
+                                        <li><a href="/client/orders" data-lng="es">My Orders</a></li>
+                                        <li><a href="/client/wishlist" data-lng="es">Wishlist</a></li>
+                                        <li><a href="/client/login/signout" data-lng="es">Logout</a></li>
+                                    }
+
                                 </ul>
                             </li>
                         </ul>
@@ -124,18 +134,18 @@
                                                 foreach (CategoryInfo category in lstSideMenu)
                                                 {
                                                     <li>
-                                                        <a href="javascript:void(0);">@category.CategoryName</a>
+                                                        <a href="/client/products/bycategory/@category.CategoryId">@category.CategoryName</a>
                                                         @if (category.ProductInfo != null)
                                                         {
                                                             <ul>
                                                                 @foreach (ProductInfo product in category.ProductInfo)
                                                                 {
                                                                     <li>
-                                                                        <a href="javascript:void(0);">@product.ProductName</a>
+                                                                        <a href="/client/products/Byproduct/@product.ProductId">@product.ProductName</a>
                                                                         <ul>
                                                                             @foreach (SubProductInfo subproduct in product.SubProductInfo)
                                                                             {
-                                                                                <li><a href="javascript:void(0);">@subproduct.SubProductName</a></li>
+                                                                                <li><a href="/client/products/Bysubproduct/@subproduct.SubProductId">@subproduct.SubProductName</a></li>
                                                                             }
                                                                         </ul>
                                                                     </li>
@@ -174,13 +184,13 @@
                                                     @foreach (CategoryInfo category in lstSideMenu)
                                                     {
                                                         <li>
-                                                            <a href="javascript:void(0);">@category.CategoryName</a>
+                                                            <a href="/client/products/bycategory/@category.CategoryId">@category.CategoryName</a>
                                                             @if (category.ProductInfo != null)
                                                             {
                                                                 <ul>
                                                                     @foreach (ProductInfo product in category.ProductInfo)
                                                                     {
-                                                                        <li><a href="javascript:void(0);">@product.ProductName</a></li>
+                                                                        <li><a href="/client/products/Byproduct/@product.ProductId">@product.ProductName</a></li>
                                                                     }
                                                                 </ul>
                                                             }

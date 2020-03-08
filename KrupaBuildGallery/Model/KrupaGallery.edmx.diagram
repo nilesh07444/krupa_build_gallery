@@ -42,6 +42,7 @@
       </Diagram>
         <EntityTypeShape EntityType="krupagallarydbModel.tbl_Cart" Width="1.5" PointX="6.125" PointY="13.875" />
         <EntityTypeShape EntityType="krupagallarydbModel.tbl_ProductItems" Width="1.5" PointX="0.91349229072848914" PointY="23.661409836104795" />
+        <EntityTypeShape EntityType="krupagallarydbModel.tbl_WishList" Width="1.5" PointX="10.414562064416037" PointY="21.764856870176668" />
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

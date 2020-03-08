@@ -323,6 +323,15 @@
           <Property Name="UpdatedBy" Type="bigint" />
           <Property Name="UpdatedDate" Type="datetime" />
         </EntityType>
+        <EntityType Name="tbl_WishList">
+          <Key>
+            <PropertyRef Name="PK_WishListId" />
+          </Key>
+          <Property Name="PK_WishListId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ItemId" Type="bigint" />
+          <Property Name="ClientUserId" Type="bigint" />
+          <Property Name="CreatedDate" Type="datetime" />
+        </EntityType>
         <EntityContainer Name="krupagallarydbModelStoreContainer">
           <EntitySet Name="tbl_AdminRoles" EntityType="Self.tbl_AdminRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_AdminUsers" EntityType="Self.tbl_AdminUsers" Schema="dbo" store:Type="Tables" />
@@ -342,6 +351,7 @@
           <EntitySet Name="tbl_ProductItems" EntityType="Self.tbl_ProductItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Products" EntityType="Self.tbl_Products" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_SubProducts" EntityType="Self.tbl_SubProducts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_WishList" EntityType="Self.tbl_WishList" Schema="dbo" store:Type="Tables" />
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
@@ -646,6 +656,7 @@
           <EntitySet Name="tbl_SubProducts" EntityType="Self.tbl_SubProducts" />
           <EntitySet Name="tbl_Cart" EntityType="krupagallarydbModel.tbl_Cart" />
           <EntitySet Name="tbl_ProductItems" EntityType="krupagallarydbModel.tbl_ProductItems" />
+          <EntitySet Name="tbl_WishList" EntityType="krupagallarydbModel.tbl_WishList" />
         </EntityContainer>
         <EntityType Name="tbl_Cart">
           <Key>
@@ -684,6 +695,15 @@
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="UpdatedBy" Type="Int64" />
           <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="tbl_WishList">
+          <Key>
+            <PropertyRef Name="PK_WishListId" />
+          </Key>
+          <Property Name="PK_WishListId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ItemId" Type="Int64" />
+          <Property Name="ClientUserId" Type="Int64" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -1024,6 +1044,16 @@
                 <ScalarProperty Name="ProductId" ColumnName="ProductId" />
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
                 <ScalarProperty Name="ProductItemId" ColumnName="ProductItemId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_WishList">
+            <EntityTypeMapping TypeName="krupagallarydbModel.tbl_WishList">
+              <MappingFragment StoreEntitySet="tbl_WishList">
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ClientUserId" ColumnName="ClientUserId" />
+                <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+                <ScalarProperty Name="PK_WishListId" ColumnName="PK_WishListId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

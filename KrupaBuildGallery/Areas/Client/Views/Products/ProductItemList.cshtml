@@ -1,0 +1,177 @@
+﻿@using KrupaBuildGallery.Model;
+@model List<ProductItemVM>
+<style>
+    .wishlistcls {
+        color: #ff4c3b !important;
+    }
+</style>
+<div class="breadcrumb-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="page-title">
+                    <h2>@ViewBag.Name</h2>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <nav aria-label="breadcrumb" class="theme-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">Product</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">@ViewBag.Name</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<section class="p-t-0 j-box ratio_square">
+    <div class="collection-wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="collection-content col">
+                    <div class="page-main-content">
+                        <div class="row">
+                            @if (Model != null && Model.Count > 0)
+                            {
+                                <div class="col-sm-12">
+                                    <h4 style="margin-top:10px;">Sort by </h4>
+                                    <select id="selectsortitems" class="form-control" style="width:300px;" onchange="sortproductitems();">
+                                        <option value="1">Price: Low to High</option>
+                                        <option value="2">Price: High to Low</option>
+                                        <option value="3">Name: A - Z</option>
+                                        <option value="4">Name: Z - A</option>
+                                        <option value="5">Star Rating</option>
+                                    </select>
+                                    <div class="collection-product-wrapper">
+                                        <div class="product-wrapper-grid">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="theme-tab">
+                                                        <div class="tab-content-cls">
+                                                            <div id="tab-4" class="tab-content active default" style="display: block;">
+                                                                <div class=" no-slider row">
+                                                                    @if (Model != null && Model.Count > 0)
+                                                                    {
+                                                                        foreach (ProductItemVM item in Model)
+                                                                        {
+                                                                            string imgpath = "";
+                                                                            string clswishlist = "";
+                                                                            if (!string.IsNullOrEmpty(item.MainImage))
+                                                                            {
+                                                                                if (File.Exists(Server.MapPath("~/Images/ProductItemMedia/" + item.MainImage)))
+                                                                                {
+                                                                                    imgpath = "/Images/ProductItemMedia/" + item.MainImage;
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    imgpath = "/Images/default_image.png";
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                imgpath = "/Images/default_image.png";
+                                                                            }
+                                                                            if (item.IsWishListItem)
+                                                                            {
+                                                                                clswishlist = "wishlistcls";
+                                                                            }
+                                                                            <div class="product-box" style="width: 100%; display: inline-block;">
+                                                                                <div class="img-wrapper">
+                                                                                    <!-- front image -->
+                                                                                    <div class="front">
+                                                                                        <a href="/client/products/detail/@item.ProductItemId" class="bg-size blur-up lazyloaded" style="background-image: url(@imgpath); background-size: cover; background-position: center center; display: block;" tabindex="0"><img src="@imgpath" class="img-fluid blur-up lazyload bg-img" alt="" style="display: none;"></a>
+                                                                                    </div>
+                                                                                    <div class="cart-info cart-wrap">
+                                                                                        <button data-toggle="modal" data-target="#addtocart" title="Add to cart" tabindex="0" style="cursor:pointer;" onclick="AddtoCartfunc(@item.ProductItemId, 1);"><i class="ti-shopping-cart"></i></button>
+                                                                                        @if (clsClientSession.UserID > 0)
+                                                                                        {
+                                                                                            <a href="javascript:void(0)" title="Add to Wishlist" tabindex="0" onclick="addremovewishlist('@item.ProductItemId');"><i class="fa fa-heart @clswishlist" aria-hidden="true"></i></a>
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            <a href="javascript:void(0)" title="Add to Wishlist" tabindex="0" onclick="alert('Please login for add item to wishlist');"><i class="fa fa-heart @clswishlist" aria-hidden="true"></i></a>
+                                                                                        }
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="product-detail" style="height:100%;">
+                                                                                    <div class="rating">
+                                                                                        <i class="fa fa-star"></i>
+                                                                                        <i class="fa fa-star"></i>
+                                                                                        <i class="fa fa-star"></i>
+                                                                                        <i class="fa fa-star"></i>
+                                                                                        <i class="fa fa-star"></i>
+                                                                                    </div>
+                                                                                    <a href="/client/products/detail/@item.ProductItemId" tabindex="0">
+                                                                                        <h6>@item.ItemName</h6>
+                                                                                    </a>
+                                                                                    @if (clsClientSession.UserID == 0 || (clsClientSession.UserID > 0 && clsClientSession.RoleID == 1))
+                                                                                    {
+                                                                                        <h4>₹ @item.CustomerPrice</h4>
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <h4>₹ @item.DistributorPrice</h4>
+                                                                                    }
+
+                                                                                </div>
+                                                                            </div>
+                                                                        }
+
+                                                                    }
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br />
+                                        <div class="product-pagination" style="display:none;">
+                                            <div class="theme-paggination-block">
+                                                <div class="row">
+                                                    <div class="col-xl-6 col-md-6 col-sm-12">
+                                                        <nav aria-label="Page navigation">
+                                                            <ul class="pagination">
+                                                                <li class="page-item"><a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true"><i class="fa fa-chevron-left" aria-hidden="true"></i></span> <span class="sr-only">Previous</span></a></li>
+                                                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                                                <li class="page-item"><a class="page-link" href="#" aria-label="Next"><span aria-hidden="true"><i class="fa fa-chevron-right" aria-hidden="true"></i></span> <span class="sr-only">Next</span></a></li>
+                                                            </ul>
+                                                        </nav>
+                                                    </div>
+                                                    <div class="col-xl-6 col-md-6 col-sm-12">
+                                                        <div class="product-search-count-bottom">
+                                                            <h5>Showing Products 1-24 of 10 Result</h5>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                        <div style="height:250px;width: 100%;">
+                            <h4 style="margin-top:80px;margin-left: 40%;">No Product Items....</h4>
+                        </div>
+                            }
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    $(document).ready(function () {
+        $("#selectsortitems").val("@ViewBag.SortBy");
+    });
+    function sortproductitems() {
+        var pagefrom = '@ViewBag.FromPage';
+        var sortid = $("#selectsortitems").val();
+        location.href = location.origin + "/" + pagefrom + "&sortby="+sortid;       
+    }
+</script>

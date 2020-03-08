@@ -41,7 +41,7 @@
                     <h4><span>@item.Qty x $ @item.Price</span></h4>
                 </div>
             </div>
-            <div class="close-circle"><a href="javascript:void(0);" onclick="removecart('@item.CartId',this);" ><i class="fa fa-times" aria-hidden="true"></i></a></div>
+            <div class="close-circle"><a href="javascript:void(0);" onclick="removecartfromtop('@item.CartId',this);" ><i class="fa fa-times" aria-hidden="true"></i></a></div>
         </li>
     }
     <li>
@@ -61,7 +61,7 @@ else
 }
 
 <script>
-    function removecart(CartItemId,objthis) {
+    function removecartfromtop(CartItemId,objthis) {
         var URL = '/Client/Cart/Removecartitem';
         jQuery.ajax({
             type: 'POST',

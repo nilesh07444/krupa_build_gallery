@@ -161,6 +161,7 @@
     <Compile Include="Areas\Client\Controllers\LoginController.cs" />
     <Compile Include="Areas\Client\Controllers\OrdersController.cs" />
     <Compile Include="Areas\Client\Controllers\PrivacyPolicyController.cs" />
+    <Compile Include="Areas\Client\Controllers\ProductsController.cs" />
     <Compile Include="Areas\Client\Controllers\RegisterController.cs" />
     <Compile Include="Areas\Client\Controllers\WishlistController.cs" />
     <Compile Include="Filters\CustomAuthorize.cs" />
@@ -172,6 +173,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Model\clsClientSession.cs" />
     <Compile Include="Model\clsCommon.cs" />
     <Compile Include="Model\KrupaGallery.Context.cs">
       <AutoGen>True</AutoGen>
@@ -240,6 +242,9 @@
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\tbl_SubProducts.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_WishList.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -3742,6 +3747,10 @@
     <Content Include="Areas\Client\Views\Login\Index.cshtml" />
     <Content Include="Areas\Client\Views\Register\Index.cshtml" />
     <Content Include="Areas\Client\Views\DistributorRequest\Index.cshtml" />
+    <Content Include="Areas\Client\Views\Orders\Index.cshtml" />
+    <Content Include="Areas\Client\Views\Orders\OrderDetails.cshtml" />
+    <Content Include="Areas\Client\Views\Products\ProductItemList.cshtml" />
+    <Content Include="Areas\Client\Views\Products\_ProductListItemsData.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />
@@ -3776,7 +3785,6 @@
     <Folder Include="Areas\Admin\Models\" />
     <Folder Include="Areas\Admin\Views\ClientUser\" />
     <Folder Include="Areas\Client\Models\" />
-    <Folder Include="Areas\Client\Views\Orders\" />
     <Folder Include="Areas\Client\Views\PrivacyPolicy\" />
     <Folder Include="Areas\Client\Views\Wishlist\" />
     <Folder Include="Images\AdminUserMedia\" />

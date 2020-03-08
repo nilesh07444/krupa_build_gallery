@@ -55,6 +55,7 @@ namespace KrupaBuildGallery
         public string CategoryName { get; set; }
         public string ProductName { get; set; }
         public string SubProductName { get; set; }
+        public bool IsWishListItem { get; set; }
 
     }
 }

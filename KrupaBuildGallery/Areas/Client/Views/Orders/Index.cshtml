@@ -1,0 +1,85 @@
+﻿@model List<KrupaBuildGallery.ViewModel.OrderVM>
+<!-- breadcrumb start -->
+<div class="breadcrumb-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="page-title">
+                    <h2>My Orders</h2>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <nav aria-label="breadcrumb" class="theme-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                        <li class="breadcrumb-item active">my orders</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- breadcrumb End -->
+<!--section start-->
+<section class="section-b-space">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12" style="overflow-x:auto;">
+                @if (Model != null && Model.Count > 0)
+                {
+                    <table class="table cart-table table-responsive-xs">
+                        <thead>
+                            <tr class="table-head">
+                                <th scope="col">Order No.</th>
+                                <th scope="col">Order Date</th>
+                                <th scope="col">Order Amount</th>
+                                <th scope="col">Order Status</th>
+                                <th scope="col">Payment Type</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.Count > 0)
+                            {
+                                foreach (KrupaBuildGallery.ViewModel.OrderVM objorder in Model)
+                                {
+                                    string stauscolor = "badge-secondary";
+                                    if (objorder.OrderStatusId == 1)
+                                    {
+                                        stauscolor = "badge-danger";
+                                    }
+                                    else if (objorder.OrderStatusId == 2)
+                                    {
+                                        stauscolor = "badge-success";
+                                    }
+                                    else if (objorder.OrderStatusId == 3)
+                                    {
+                                        stauscolor = "badge-warning";
+                                    }
+                                    <tr>
+                                        <td># @objorder.OrderId</td>
+                                        <td>@objorder.OrderDate.ToString("MMM dd,yyyy")</td>
+                                        <td>₹ @Math.Round(objorder.OrderAmount, 2)</td>
+                                        <td><span class="badge @stauscolor">@objorder.OrderStatus</span></td>
+                                        <td>@objorder.PaymentType</td>
+                                        <td> <a href="/client/orders/orderdetails/@objorder.OrderId"><i class="fa fa-eye font-success"></i></a></td>
+                                    </tr>
+                                }
+
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <h2>No Order Found</h2>
+                    <h3>Looks like you haven't made your order yet</h3>
+                }
+                </div>
+          </div>
+            <div class="row wishlist-buttons">
+                <div class="col-12"><a href="/Client/HomePage" class="btn btn-solid">continue shopping</a></div>
+            </div>
+        </div>
+    </section>
+    <!--section end-->

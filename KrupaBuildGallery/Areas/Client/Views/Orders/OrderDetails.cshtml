@@ -1,0 +1,241 @@
+﻿@model  KrupaBuildGallery.ViewModel.OrderVM
+<style>
+    .label-wrapper {
+        display: table;
+        float: right;
+        min-height: 28px;
+    }
+
+    .form-horizontal .form-group {
+        margin-right: -15px;
+        margin-left: -15px;
+    }
+
+        .form-horizontal .form-group:before {
+            content: " ";
+            display: table
+        }
+
+        .form-horizontal .form-group:after {
+            clear: both !important
+        }
+
+    .form-horizontal .label-wrapper .control-label {
+        display: table-cell;
+        font-weight: bold;
+    }
+
+    .form-text-row {
+        /*padding-top: 6px;*/
+    }
+
+    .col-md-3 {
+        float: left;
+    }
+
+    @@media(max-width: 992px) {
+        .form-horizontal .label-wrapper {
+            float: none;
+            margin-bottom: 3px;
+            margin-top: 5px
+        }
+    }
+</style>
+<!-- breadcrumb start -->
+<div class="breadcrumb-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="page-title">
+                    <h2>Order Detail</h2>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <nav aria-label="breadcrumb" class="theme-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                        <li class="breadcrumb-item active">Order Detail</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- breadcrumb End -->
+<!--section start-->
+<section class="section-b-space">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Order Detail</h5>
+                    </div>
+                    <div class="card-body form-horizontal">
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Order #</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@Model.OrderId</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Created On</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@Model.OrderDate.ToString("MMM dd,yyyy hh:mm:ss")</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Customer</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@Model.ClientUserName</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Order Status</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@Model.OrderStatus</div>
+                                @if (Model.OrderStatusId != 2)
+                                {
+                                    <button type="button" name="" id="cancelorder" class="btn bg-red" style="margin-right: 3px;">
+                                        Cancel order
+                                    </button>
+                                }
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Payment Method</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@Model.PaymentType</div>
+                            </div>
+                        </div>
+                        <div class="form-group" style="border-bottom: 1px solid #eff2f7;">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Order Total Amount</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">₹ @Model.OrderAmount</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Shipping Address</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row"></div>
+                            </div>
+                        </div>
+                        <br />
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Name</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@Model.OrderShipClientName</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Phone</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@Model.OrderShipClientPhone</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Address</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@Model.OrderShipAddress</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">City</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@Model.OrderShipCity</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">State</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@Model.OrderShipState</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-header">
+                        <h5>Order Items</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-body vendor-table" style="overflow-x:auto;">
+                            <table class="table cart-table table-responsive-xs">
+                                <thead >
+                                    <tr class="table-head">
+                                        <th>Picture</th>
+                                        <th>Product Item Name</th>
+                                        <th>Sku</th>
+                                        <th>Price</th>
+                                        <th>Quantity</th>
+                                        <th>GST</th>
+                                        <th>IGST</th>
+                                        <th>Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model.OrderItems != null && Model.OrderItems.Count > 0)
+                                    {
+                                        foreach (KrupaBuildGallery.ViewModel.OrderItemsVM objorderItem in Model.OrderItems)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @if (!string.IsNullOrEmpty(objorderItem.ItemImg))
+                                                    {
+                                                        if (File.Exists(Server.MapPath("~/Images/ProductItemMedia/" + objorderItem.ItemImg)))
+                                                        {
+                                                            <img src="~/Images/ProductItemMedia/@objorderItem.ItemImg" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                                        }
+                                                        else
+                                                        {
+                                                            <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                                    }
+                                                </td>
+                                                <td>@objorderItem.ItemName</td>
+                                                <td>@objorderItem.Sku</td>
+                                                <td>₹ @Math.Round(objorderItem.Price, 2)</td>
+                                                <td>@objorderItem.Qty</td>
+                                                <td>₹ @objorderItem.GSTAmt</td>
+                                                <td>₹ @objorderItem.IGSTAmt</td>
+                                                <td>₹ @Math.Round((objorderItem.Price * objorderItem.Qty), 2)</td>
+                                            </tr>
+                                        }
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!--section end-->

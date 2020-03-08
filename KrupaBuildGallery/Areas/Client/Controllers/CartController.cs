@@ -300,5 +300,44 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             }
             return PartialView("~/Areas/Client/Views/Cart/_CartItemsTop.cshtml", lstCartItems);
         }
+
+        [HttpPost]
+        public string UpdateCart(string CartItems)
+        {
+            string ReturnMessage = "";
+
+            try
+            {
+                if(!string.IsNullOrEmpty(CartItems))
+                {
+                   string[] arrycrtitems =  CartItems.Split('|');
+                   if(arrycrtitems != null && arrycrtitems.Count() > 0)
+                   {
+                        foreach(string str in arrycrtitems)
+                        {
+                           string[] arrstr = str.Split('^');
+                            if(arrstr != null && arrstr.Count() > 0)
+                            {
+                                long cartids = Convert.ToInt64(arrstr[0]);
+                                if (!string.IsNullOrEmpty(arrstr[1].ToString()))
+                                {
+                                    var objCart = _db.tbl_Cart.Where(o => o.Cart_Id == cartids).FirstOrDefault();
+                                    objCart.CartItemQty = Convert.ToInt32(arrstr[1]);
+                                    _db.SaveChanges();
+                                }
+                            }
+                        }
+                   }
+                }           
+                ReturnMessage = "Success";
+            }
+            catch (Exception ex)
+            {
+                string msg = ex.Message.ToString();
+                ReturnMessage = "exception";
+            }
+
+            return ReturnMessage;
+        }
     }
 }

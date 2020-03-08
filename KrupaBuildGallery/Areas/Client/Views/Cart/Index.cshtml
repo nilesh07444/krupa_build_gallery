@@ -54,7 +54,7 @@
                                 {
                                     decimal ItemTotal = Convert.ToDecimal(item.Qty * item.Price);
                                     CartTotal = CartTotal + ItemTotal;
-                                    <tr>
+                                    <tr class="trcart" data-trid="@item.CartId" >
                                      
                                         <td>
                                             @if (!string.IsNullOrEmpty(item.ItemImage))
@@ -136,7 +136,7 @@
             @if (Model != null && Model.Count > 0)
             {
                 <div class="col-6"><a href="#" class="btn btn-solid">continue shopping</a></div>
-                <div class="col-6"><a href="/checkout" class="btn btn-solid">check out</a></div>
+                <div class="col-6"><a href="javascript:void(0);" onclick="UpdateCart();" class="btn btn-solid" style="margin-right:10px;">Update Cart</a><a href="/checkout" class="btn btn-solid">check out</a></div>
 
             }
         </div>
@@ -152,6 +152,31 @@
             url: URL + "?CartItemId=" + CartItemId,
             success: function (result) {
                 alert("Item removed successfully..");
+                location.reload();
+            },
+            error: function (resultData) {
+                console.log("error");
+
+            }
+        });
+    }
+
+    function UpdateCart() {
+        var strcart = "";
+        var arrycart = new Array();
+        $(".trcart").each(function () {
+            var crtId = $(this).attr("data-trid");
+            var qty = $(this).find("input[name=quantity]:visible").val();
+            arrycart.push(crtId + "^" + qty);
+        })
+        strcart = arrycart.join("|");
+          var URL = '/Client/Cart/UpdateCart';
+        jQuery.ajax({
+            type: 'POST',
+            async: true,
+            url: URL + "?CartItems=" + strcart,
+            success: function (result) {
+                
                 location.reload();
             },
             error: function (resultData) {
