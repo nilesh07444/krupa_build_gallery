@@ -79,9 +79,9 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         decimal amountdue = 0;
                         if(objclientothr.AmountDue != null)
                         {
-                            amountdue = objclientothr.AmountDue.Value;
-                            creditlimitreminng = objclientothr.CreditLimitAmt.Value - amountdue;
+                            amountdue = objclientothr.AmountDue.Value;                            
                         }
+                        creditlimitreminng = objclientothr.CreditLimitAmt.Value - amountdue;
                     }
                 }
 
@@ -224,8 +224,9 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         if(objotherdetails.AmountDue != null)
                         {
                             amtdue = objotherdetails.AmountDue.Value;
-                            objotherdetails.AmountDue = amtdue + Convert.ToDecimal(objCheckout.Orderamount);
+                            
                         }
+                        objotherdetails.AmountDue = amtdue + Convert.ToDecimal(objCheckout.Orderamount);
                     }
                     _db.SaveChanges();
 

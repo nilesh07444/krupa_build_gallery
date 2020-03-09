@@ -158,6 +158,7 @@
     <Compile Include="Areas\Client\Controllers\ContactUsController.cs" />
     <Compile Include="Areas\Client\Controllers\DistributorRequestController.cs" />
     <Compile Include="Areas\Client\Controllers\FaqController.cs" />
+    <Compile Include="Areas\Client\Controllers\ForgotPasswordController.cs" />
     <Compile Include="Areas\Client\Controllers\LoginController.cs" />
     <Compile Include="Areas\Client\Controllers\OrdersController.cs" />
     <Compile Include="Areas\Client\Controllers\PrivacyPolicyController.cs" />
@@ -3754,6 +3755,7 @@
     <Content Include="Areas\Client\Views\Products\_ProductListItemsData.cshtml" />
     <Content Include="Areas\Client\Views\Wishlist\Index.cshtml" />
     <Content Include="Areas\Client\Views\Products\Detail.cshtml" />
+    <Content Include="Areas\Client\Views\ForgotPassword\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />
