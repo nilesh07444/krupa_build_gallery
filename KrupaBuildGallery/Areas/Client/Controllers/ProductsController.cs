@@ -280,5 +280,82 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             }
         }
 
+        [HttpPost]
+        public string AddRemoveWishList(int ItemId)
+        {
+            string ReturnMessage = "";
+
+            try
+            {
+                if(clsClientSession.UserID > 0)
+                {
+                    long UserId = clsClientSession.UserID;
+                    tbl_WishList objWish =_db.tbl_WishList.Where(o => o.ItemId == ItemId && o.ClientUserId == UserId).FirstOrDefault();
+                    if(objWish != null)
+                    {
+                        _db.tbl_WishList.Remove(objWish);
+                        _db.SaveChanges();
+                    }
+                    else
+                    {
+                        objWish = new tbl_WishList();
+                        objWish.ClientUserId = UserId;
+                        objWish.ItemId = ItemId;
+                        objWish.CreatedDate = DateTime.Now;
+                        _db.tbl_WishList.Add(objWish);
+                        _db.SaveChanges();
+                    }
+                }
+              
+                ReturnMessage = "Success";
+            }
+            catch (Exception ex)
+            {
+                string msg = ex.Message.ToString();
+                ReturnMessage = "exception";
+            }
+
+            return ReturnMessage;
+        }
+        public ActionResult Detail (int Id)
+        {
+            long UserId = clsClientSession.UserID;
+            long ProdItem = Convert.ToInt64(Id);
+            ProductItemVM objProductItem = new ProductItemVM();
+            List<string> lstimages = _db.tbl_ProductItemImages.Where(o => o.ProductItemId == ProdItem).Select(o => o.ItemImage).ToList();
+            objProductItem = (from i in _db.tbl_ProductItems
+                              where i.ProductItemId == Id
+                              select new ProductItemVM
+                              {
+                                  ProductItemId = i.ProductItemId,
+                                  CategoryId = i.CategoryId,
+                                  ProductId = i.ProductId,
+                                  SubProductId = i.SubProductId,
+                                  ItemName = i.ItemName,
+                                  ItemDescription = i.ItemDescription,
+                                  MainImage = i.MainImage,
+                                  MRPPrice = i.MRPPrice,
+                                  CustomerPrice = i.CustomerPrice,
+                                  DistributorPrice = i.DistributorPrice,
+                                  GST_Per = i.GST_Per,
+                                  IGST_Per = i.IGST_Per,
+                                  Notification = i.Notification,
+                                  IsPopularProduct = i.IsPopularProduct,
+                                  Sku = i.Sku,
+                                  OtherImages = lstimages,
+                                  IsActive = i.IsActive                                  
+                              }).FirstOrDefault();
+            if (clsClientSession.UserID != 0)
+            {                
+               var objWishlist =  _db.tbl_WishList.Where(o => o.ClientUserId == UserId && o.ItemId == ProdItem).FirstOrDefault();
+                objProductItem.IsWishListItem = false;
+                if (objWishlist != null)
+                {
+                    objProductItem.IsWishListItem = true;
+                }                
+            }
+            return View(objProductItem);
+        }
+
     }
 }

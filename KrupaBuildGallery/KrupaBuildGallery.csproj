@@ -263,6 +263,7 @@
     <Compile Include="ViewModel\ProductVM.cs" />
     <Compile Include="ViewModel\CategoryInfo.cs" />
     <Compile Include="ViewModel\SubProductVM.cs" />
+    <Compile Include="ViewModel\WishListVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\assets\css\admin.css" />
@@ -3751,6 +3752,8 @@
     <Content Include="Areas\Client\Views\Orders\OrderDetails.cshtml" />
     <Content Include="Areas\Client\Views\Products\ProductItemList.cshtml" />
     <Content Include="Areas\Client\Views\Products\_ProductListItemsData.cshtml" />
+    <Content Include="Areas\Client\Views\Wishlist\Index.cshtml" />
+    <Content Include="Areas\Client\Views\Products\Detail.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />
@@ -3786,7 +3789,6 @@
     <Folder Include="Areas\Admin\Views\ClientUser\" />
     <Folder Include="Areas\Client\Models\" />
     <Folder Include="Areas\Client\Views\PrivacyPolicy\" />
-    <Folder Include="Areas\Client\Views\Wishlist\" />
     <Folder Include="Images\AdminUserMedia\" />
     <Folder Include="Images\CategoryMedia\" />
     <Folder Include="Images\ClientUser\" />

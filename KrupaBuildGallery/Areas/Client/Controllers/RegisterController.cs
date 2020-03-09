@@ -15,12 +15,14 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             _db = new krupagallarydbEntities();
         }
         // GET: Client/Register
-        public ActionResult Index()
+        public ActionResult Index(string referer = "")
         {
+            ViewBag.Referer = referer;
             return View();
         }
         public ActionResult CreateAccount(FormCollection frm)
-        {        
+        {
+            string referer = frm["hdnReferer"];
             try
             {
                 string email = frm["email"].ToString();
@@ -28,6 +30,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 string lastnm = frm["lname"].ToString();
                 string mobileno = frm["mobileno"].ToString();
                 string password = frm["password"].ToString();
+              
                 tbl_ClientUsers objClientUsr = _db.tbl_ClientUsers.Where(o => o.Email.ToLower() == email.ToLower()).FirstOrDefault();
                 if(objClientUsr != null)
                 {
@@ -36,7 +39,14 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     TempData["firstnm"] = firstnm;
                     TempData["lastnm"] = lastnm;
                     TempData["mobileno"] = mobileno;
-                    return RedirectToAction("Index", "Register", new { area = "Client" });
+                    if (!string.IsNullOrEmpty(referer))
+                    {
+                        return RedirectToAction("Index", "Register", new { area = "Client", });
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index", "Register", new { area = "Client", referer = referer });
+                    }                  
                 }
                 else
                 {
@@ -72,17 +82,108 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     clsClientSession.LastName = objClientUsr.LastName;
                     clsClientSession.ImagePath = objClientUsr.ProfilePicture;
                     clsClientSession.Email = objClientUsr.Email;
-                    return RedirectToAction("Index", "HomePage", new { area = "Client" });
+                    UpdatCarts();
+                    if (!string.IsNullOrEmpty(referer))
+                    {
+                        return RedirectToAction("Index", "Checkout", new { area = "Client" });
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index", "HomePage", new { area = "Client" });
+                    }                  
                 }
             }
             catch (Exception ex)
             {
                 string ErrorMessage = ex.Message.ToString();
-                TempData["LoginError"] = ErrorMessage;
+                TempData["RegisterError"] = ErrorMessage;
             }
 
-            return RedirectToAction("Index", "Login", new { area = "Client" });
+            if (!string.IsNullOrEmpty(referer))
+            {
+                return RedirectToAction("Index", "Register", new { area = "Client", });
+            }
+            else
+            {
+                return RedirectToAction("Index", "Register", new { area = "Client", referer = referer });
+            }
 
+        }
+
+        public void UpdatCarts()
+        {
+
+            string GuidNew = Guid.NewGuid().ToString();
+            string cookiesessionval = "";
+            if (Request.Cookies["sessionkeyval"] != null)
+            {
+                cookiesessionval = Request.Cookies["sessionkeyval"].Value;
+            }
+            else
+            {
+                Response.Cookies["sessionkeyval"].Value = GuidNew;
+                Response.Cookies["sessionkeyval"].Expires = DateTime.Now.AddDays(30);
+            }
+            if (clsClientSession.UserID > 0)
+            {
+                if (string.IsNullOrEmpty(cookiesessionval))
+                {
+                    cookiesessionval = GuidNew;
+                }
+                long clientusrid = Convert.ToInt64(clsClientSession.UserID);
+                var cartlist = _db.tbl_Cart.Where(o => o.ClientUserId == clientusrid).ToList();
+                if (cartlist != null && cartlist.Count() > 0)
+                {
+                    string sessioncrtid = cartlist.FirstOrDefault().CartSessionId;
+                    Response.Cookies["sessionkeyval"].Value = sessioncrtid;
+                    Response.Cookies["sessionkeyval"].Expires = DateTime.Now.AddDays(30);
+                    var cartlistsessions = _db.tbl_Cart.Where(o => o.CartSessionId == cookiesessionval).ToList();
+                    if (cartlistsessions != null && cartlistsessions.Count() > 0)
+                    {
+                        foreach (var obj in cartlistsessions)
+                        {
+                            var objcrtsession = cartlist.Where(o => o.CartItemId == obj.CartItemId).FirstOrDefault();
+                            if (objcrtsession != null)
+                            {
+                                objcrtsession.CartItemQty = objcrtsession.CartItemQty + obj.CartItemQty;
+                                _db.tbl_Cart.Remove(obj);
+                            }
+                            else
+                            {
+                                var crtobj1 = new tbl_Cart();
+                                crtobj1.CartItemId = obj.CartItemId;
+                                crtobj1.CartItemQty = obj.CartItemQty;
+                                crtobj1.CartSessionId = sessioncrtid;
+                                crtobj1.ClientUserId = clientusrid;
+                                crtobj1.CreatedDate = DateTime.Now;
+                                _db.tbl_Cart.Add(crtobj1);
+                                _db.tbl_Cart.Remove(obj);
+                            }
+                            _db.SaveChanges();
+                        }
+                    }
+                }
+                else
+                {
+                    var cartlistsessions = _db.tbl_Cart.Where(o => o.CartSessionId == cookiesessionval).ToList();
+                    Response.Cookies["sessionkeyval"].Value = GuidNew;
+                    Response.Cookies["sessionkeyval"].Expires = DateTime.Now.AddDays(30);
+                    foreach (var obj in cartlistsessions)
+                    {
+                        var objcrtsession = cartlist.Where(o => o.CartItemId == obj.CartItemId).FirstOrDefault();
+                        var crtobj1 = new tbl_Cart();
+                        crtobj1.CartItemId = obj.CartItemId;
+                        crtobj1.CartItemQty = obj.CartItemQty;
+                        crtobj1.CartSessionId = GuidNew;
+                        crtobj1.ClientUserId = clientusrid;
+                        crtobj1.CreatedDate = DateTime.Now;
+                        _db.tbl_Cart.Add(crtobj1);
+                        _db.tbl_Cart.Remove(obj);
+                        _db.SaveChanges();
+                    }
+                }
+
+            }
         }
     }
 }

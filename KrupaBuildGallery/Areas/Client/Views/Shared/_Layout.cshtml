@@ -87,7 +87,15 @@
                     </div>
                     <div class="col-lg-6 text-right">
                         <ul class="header-dropdown">
-                            <li class="mobile-wishlist"><a href="#"><i class="fa fa-heart" aria-hidden="true"></i></a></li>
+                            @if (clsClientSession.UserID == 0)
+                            {
+                                <li class="mobile-wishlist"><a href="javascript:void(0);" onclick="alert('Please login to see wishlist items');"><i class="fa fa-heart" aria-hidden="true"></i></a></li>
+                            }
+                            else
+                            {
+                                <li class="mobile-wishlist"><a href="/client/wishlist"><i class="fa fa-heart" aria-hidden="true"></i></a></li>
+                            }
+
                             <li class="onhover-dropdown mobile-account">
                                 <i class="fa fa-user" aria-hidden="true"></i> My Account
                                 <ul class="onhover-show-div">
@@ -100,7 +108,7 @@
                                     else
                                     {
                                         <li><a href="/client/orders" data-lng="es">My Orders</a></li>
-                                        <li><a href="/client/wishlist" data-lng="es">Wishlist</a></li>
+
                                         <li><a href="/client/login/signout" data-lng="es">Logout</a></li>
                                     }
 

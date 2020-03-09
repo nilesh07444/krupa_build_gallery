@@ -419,39 +419,7 @@
                 }
             }
         ]
-    });
-
-    $('.product-4').slick({
-        infinite: true,
-        speed: 300,
-        slidesToShow: 4,
-        slidesToScroll: 4,
-        autoplay: true,
-        autoplaySpeed: 3000,
-        responsive: [
-            {
-                breakpoint: 1200,
-                settings: {
-                    slidesToShow: 3,
-                    slidesToScroll: 3
-                }
-            },
-            {
-                breakpoint: 991,
-                settings: {
-                    slidesToShow:2,
-                    slidesToScroll: 2
-                }
-            },
-            {
-                breakpoint: 420,
-                settings: {
-                    slidesToShow: 1,
-                    slidesToScroll: 1
-                }
-            }
-        ]
-    });
+    });   
 
     $('.tools-product-4').slick({
         infinite: true,
@@ -1173,7 +1141,7 @@
     /*=====================
      18.Add to cart
      ==========================*/
-    $('.product-box button .ti-shopping-cart').on('click', function () {
+    $('.product-box button .ti-shopping-cart1').on('click', function () {
         $.notify({
             icon: 'fa fa-check',
             title: 'Success!',

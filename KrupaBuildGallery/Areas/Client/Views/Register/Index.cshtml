@@ -62,7 +62,8 @@
                                     <label for="confirmpassword">Confirm Password *</label>
                                     <input type="password" class="form-control" id="confirmpassword" name="confirmpassword" placeholder="Enter your confirm password" required />
                                 </div>
-                                <input type="submit" value="Create Account" class="btn btn-solid" />                                
+                                <input type="hidden" name="hdnReferer" value="@ViewBag.Referer" />
+                                <input type="submit" value="Create Account" class="btn btn-solid" />
                             </div>                     
                     }
                     </div>

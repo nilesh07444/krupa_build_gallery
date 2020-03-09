@@ -21,8 +21,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             List<CartVM> lstCartItems = new List<CartVM>();
 
             try
-            {
-                Session["ClientUserId"] = 1;
+            {          
                 string GuidNew = Guid.NewGuid().ToString();
                 string cookiesessionval = "";
                 if (Request.Cookies["sessionkeyval"] != null)
@@ -35,9 +34,9 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     Response.Cookies["sessionkeyval"].Value = GuidNew;
                     Response.Cookies["sessionkeyval"].Expires = DateTime.Now.AddDays(30);
                 }
-                if (Session["ClientUserId"] != null)
+                if (clsClientSession.UserID > 0)
                 {
-                    long ClientUserId = Convert.ToInt64(Session["ClientUserId"]);
+                    long ClientUserId = Convert.ToInt64(clsClientSession.UserID);
                     lstCartItems = (from crt in _db.tbl_Cart
                                  join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
                                  where crt.ClientUserId == ClientUserId
@@ -83,7 +82,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
 
             try
             {
-                Session["ClientUserId"] = 1;
+                
                 string GuidNew = Guid.NewGuid().ToString();
                 string cookiesessionval = "";
                 if (Request.Cookies["sessionkeyval"] != null)
@@ -95,7 +94,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     Response.Cookies["sessionkeyval"].Value = GuidNew;
                     Response.Cookies["sessionkeyval"].Expires = DateTime.Now.AddDays(30);                    
                 }
-                if (Session["ClientUserId"] == null)
+                if (clsClientSession.UserID == 0)
                 {
                     var cartlist = _db.tbl_Cart.Where(o => o.CartSessionId == cookiesessionval).ToList();
                     if(cartlist != null && cartlist.Count() > 0)
@@ -117,11 +116,22 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                        }
                         _db.SaveChanges();
                     }
+                    else
+                    {
+                        tbl_Cart crtobj = new tbl_Cart();
+                        crtobj.CartItemId = ItemId;
+                        crtobj.CartItemQty = Qty;
+                        crtobj.CartSessionId = cookiesessionval;
+                        crtobj.ClientUserId = 0;
+                        crtobj.CreatedDate = DateTime.Now;
+                        _db.tbl_Cart.Add(crtobj);
+                        _db.SaveChanges();
+                    }
                   
                 }
                 else
                 {
-                    long clientusrid = Convert.ToInt64(Session["ClientUserId"]);
+                    long clientusrid = Convert.ToInt64(clsClientSession.UserID);
                     var cartlist = _db.tbl_Cart.Where(o => o.ClientUserId == clientusrid).ToList();
                     if(cartlist != null && cartlist.Count() > 0)
                     {
@@ -167,7 +177,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
 
         public void UpdatCarts()
         {
-            Session["ClientUserId"] = 1;
+            
             string GuidNew = Guid.NewGuid().ToString();
             string cookiesessionval = "";
             if (Request.Cookies["sessionkeyval"] != null)
@@ -179,13 +189,13 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 Response.Cookies["sessionkeyval"].Value = GuidNew;
                 Response.Cookies["sessionkeyval"].Expires = DateTime.Now.AddDays(30);
             }
-            if (Session["ClientUserId"] != null)
+            if (clsClientSession.UserID > 0)
             {
                 if(string.IsNullOrEmpty(cookiesessionval))
                 {
                     cookiesessionval = GuidNew;
                 }
-                long clientusrid = Convert.ToInt64(Session["ClientUserId"]);
+                long clientusrid = Convert.ToInt64(clsClientSession.UserID);
                 var cartlist = _db.tbl_Cart.Where(o => o.ClientUserId == clientusrid).ToList();             
                 if (cartlist != null && cartlist.Count() > 0)
                 {
@@ -248,7 +258,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             List<CartVM> lstCartItems = new List<CartVM>();
             try
             {
-                Session["ClientUserId"] = 1;
+                
                 string GuidNew = Guid.NewGuid().ToString();
                 string cookiesessionval = "";
                 if (Request.Cookies["sessionkeyval"] != null)
@@ -261,9 +271,9 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     Response.Cookies["sessionkeyval"].Value = GuidNew;
                     Response.Cookies["sessionkeyval"].Expires = DateTime.Now.AddDays(30);
                 }
-                if (Session["ClientUserId"] != null)
+                if (clsClientSession.UserID > 0)
                 {
-                    long ClientUserId = Convert.ToInt64(Session["ClientUserId"]);
+                    long ClientUserId = Convert.ToInt64(clsClientSession.UserID);
                     lstCartItems = (from crt in _db.tbl_Cart
                                     join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
                                     where crt.ClientUserId == ClientUserId

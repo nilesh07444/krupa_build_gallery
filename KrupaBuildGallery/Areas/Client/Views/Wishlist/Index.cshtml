@@ -1,0 +1,143 @@
+﻿@using KrupaBuildGallery.Model;
+@model List<WishListVM>
+    <style>
+        .clswishlist tbody tr td a {
+            color: #777777;
+            font-weight: 400;
+            font-size: 14px;
+            text-transform: capitalize;
+            margin-bottom: 0;
+        }
+        .clswishlist thead th {
+            border-bottom-width: 1px;
+            font-weight: 900;
+            color: #222222;
+            text-transform: uppercase;
+            font-size: 14px;
+            border-top: 0;
+            text-align: center;
+            padding: 0 0.75rem 0.75rem 0.75rem;
+        }
+        .clswishlist tbody tr td {
+            min-width: 210px;
+            vertical-align: middle;
+            color: #777777;
+            border-top: 0;
+            border-bottom: 1px solid #eeeeee;
+            text-align: center;
+        }
+            .clswishlist tbody tr td h2 {
+                font-size: 24px;
+                color: #222222;
+                font-weight: 400;
+            }
+    </style>
+<div class="breadcrumb-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="page-title">
+                    <h2>wishlist</h2>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <nav aria-label="breadcrumb" class="theme-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                        <li class="breadcrumb-item active">wishlist</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<section class="section-b-space">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12" style="overflow-x:auto;">
+                @if (Model != null && Model.Count > 0)
+                {
+                    <table class="table cart-table table-responsive-xs clswishlist">
+                        <thead>
+                            <tr class="table-head">
+                                <th scope="col">image</th>
+                                <th scope="col">product name</th>
+                                <th scope="col">price</th>
+                                <th scope="col">action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (WishListVM item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        <a href="#">
+                                            @if (!string.IsNullOrEmpty(item.ItemImage))
+                                            {
+                                                if (File.Exists(Server.MapPath("~/Images/ProductItemMedia/" + item.ItemImage)))
+                                                {
+                                                    <img src="~/Images/ProductItemMedia/@item.ItemImage" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                                }
+                                                else
+                                                {
+                                                    <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                            }
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="#">@item.ItemName</a>
+                                    </td>
+                                    <td>
+                                        <h2>@item.Price</h2>
+                                    </td>
+                                    <td><a href="javascript:void(0)" class="icon mr-3"><i class="ti-close" onclick="removewishlistitem('@item.WishListId');"></i> </a><a href="javascript:void(0);" class="cart" onclick="AddtoCartfunc('@item.ItemId', 1);"><i class="ti-shopping-cart"></i></a></td>
+                                </tr>
+                            }
+                        </tbody>
+
+                    </table>
+
+                }
+                else
+                {
+                    <p>Your wishlist is currently empty.</p>
+                    <a href="/Client/HomePage" class="btn btn-solid">continue shopping</a>
+                }
+
+
+            </div>
+        </div>
+        @if (Model != null && Model.Count > 0)
+        {
+            <div class="row wishlist-buttons">
+                <div class="col-12"><a href="/Client/HomePage" class="btn btn-solid" style="float:right;">continue shopping</a></div>
+            </div>
+        }
+        </div>
+        
+</section>
+<script>
+    function removewishlistitem(wishlistitemid) {
+          var URL = '/Client/Wishlist/RemoveWishlistitem';
+        jQuery.ajax({
+            type: 'POST',
+            async: true,
+            url: URL + "?WishlistId=" + wishlistitemid,
+            success: function (result) {
+                alert("Wishlist Item removed successfully..");
+                location.reload();
+            },
+            error: function (resultData) {
+                console.log("error");
+
+            }
+        });
+    }
+
+
+</script>

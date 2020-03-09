@@ -1,0 +1,227 @@
+﻿@using KrupaBuildGallery.Model;
+@model  ProductItemVM
+@{
+    string clswishlist = "";
+    if (Model.IsWishListItem)
+    {
+        clswishlist = "wishlistcls";
+    }
+}
+<style>
+    .wishlistcls {
+        color: #ff4c3b !important;
+    }
+</style>
+<!-- breadcrumb start -->
+<div class="breadcrumb-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="page-title">
+                    <h2>product</h2>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <nav aria-label="breadcrumb" class="theme-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">product</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- breadcrumb End -->
+<!-- section start -->
+<section>
+    <div class="collection-wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="product-slick">
+                        @if (Model.OtherImages != null && Model.OtherImages.Count() > 0)
+                        {
+                            foreach (string imgstr in Model.OtherImages)
+                            {
+                                string imgpath = "";
+                                if (!string.IsNullOrEmpty(imgstr))
+                                {
+                                    if (File.Exists(Server.MapPath("~/Images/ProductItemMedia/" + imgstr)))
+                                    {
+                                        imgpath = "/Images/ProductItemMedia/" + imgstr;
+                                    }
+                                    else
+                                    {
+                                        imgpath = "/Images/default_image.png";
+                                    }
+                                }
+                                else
+                                {
+                                    imgpath = "/Images/default_image.png";
+                                }
+                                <div><img src="@imgpath" alt="" class="img-fluid blur-up lazyload image_zoom_cls-0"></div>
+                            }
+                        }
+                    </div>
+                    <div class="row">
+                        <div class="col-12 p-0">
+                            <div class="slider-nav">
+                                @if (Model.OtherImages != null && Model.OtherImages.Count() > 0)
+                                {
+                                    foreach (string imgstr in Model.OtherImages)
+                                    {
+                                        string imgpath = "";
+                                        if (!string.IsNullOrEmpty(imgstr))
+                                        {
+                                            if (File.Exists(Server.MapPath("~/Images/ProductItemMedia/" + imgstr)))
+                                            {
+                                                imgpath = "/Images/ProductItemMedia/" + imgstr;
+                                            }
+                                            else
+                                            {
+                                                imgpath = "/Images/default_image.png";
+                                            }
+                                        }
+                                        else
+                                        {
+                                            imgpath = "/Images/default_image.png";
+                                        }
+                                        <div><img src="@imgpath" alt="" class="img-fluid blur-up lazyload"></div>
+                                    }
+                                }
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 rtl-text">
+                    <div class="product-right">
+                        <h2>@Model.ItemName</h2>
+                        @*<h4><del>$459.00</del><span>55% off</span></h4>*@
+                        @if (clsClientSession.UserID == 0 || (clsClientSession.UserID > 0 && clsClientSession.RoleID == 1))
+                        {
+                            <h3>₹ @Model.CustomerPrice</h3>
+                        }
+                        else
+                        {
+                            <h3>₹ @Model.DistributorPrice</h3>
+                        }
+                        <div class="product-description border-product">
+                            <h6 class="product-title">quantity</h6>
+                            <div class="qty-box">
+                                <div class="input-group">
+                                    <span class="input-group-prepend"><button type="button" class="btn quantity-left-minus" data-type="minus" data-field=""><i class="ti-angle-left"></i></button> </span>
+                                    <input type="text" name="quantity" id="txtqty" class="form-control input-number" value="1"> <span class="input-group-prepend"><button type="button" class="btn quantity-right-plus" data-type="plus" data-field=""><i class="ti-angle-right"></i></button></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-buttons"><a href="javascript:void(0);" data-toggle="modal" data-target="#addtocart" class="btn btn-solid" onclick="addtocrt('@Model.ProductItemId');">add to cart</a> <a href="/cart" class="btn btn-solid">buy now</a></div>
+                        <div class="border-product">
+                            <h6 class="product-title">product details</h6>
+                            <p>@Model.ItemDescription</p>
+                        </div>
+                        <div class="border-product">
+                            <h6 class="product-title">share it</h6>
+                            <div class="product-icon">
+                                <ul class="product-social">
+                                    <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                                    <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+                                    <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                                    <li><a href="#"><i class="fa fa-instagram"></i></a></li>
+                                    <li><a href="#"><i class="fa fa-rss"></i></a></li>
+                                </ul>
+                                <form class="d-inline-block">
+                                    @if (clsClientSession.UserID > 0)
+                                    {
+                                        <a href="javascript:void(0);" style="color: buttontext;" class="wishlist-btn" onclick="addremovewishlist('@Model.ProductItemId',this);"><i class="fa fa-heart @clswishlist"></i><span class="title-font">Add To WishList</span></a>
+                                    }
+                                    else
+                                    {
+                                        <a href="javascript:void(0);" style="color: buttontext;" class="wishlist-btn" onclick="alert('Please login for add item to wishlist');"><i class="fa fa-heart @clswishlist"></i><span class="title-font">Add To WishList</span></a>
+                                        
+                                    }
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+        </div>
+    </div>
+</section>
+<!-- Section ends -->
+<!-- product-tab starts -->
+<!-- product-tab ends -->
+<script>
+    function addtocrt(itmid) {
+        var qtyy = $("#txtqty").val();
+        AddtoCartfunc(itmid, qtyy);
+    }
+
+
+    function addremovewishlist(itemid, objthis) {
+        var URL = '/Client/Products/AddRemoveWishList';
+        jQuery.ajax({
+            type: 'POST',
+            async: true,
+            url: URL + "?ItemId=" + itemid,
+            success: function (result) {
+                if (result == "Success") {
+                    if ($(objthis).find('.fa-heart').hasClass("wishlistcls")) {
+                        $(objthis).find('.fa-heart').removeClass("wishlistcls");
+                        msgsuccess('Item Successfully removed from wishlist');
+                    }
+                    else {
+                        $(objthis).find('.fa-heart').addClass("wishlistcls");
+                        msgsuccess('Item Successfully added in wishlist');
+                    }
+                }
+            },
+            error: function (resultData) {
+                console.log("error");
+
+            }
+        });
+    }
+    function msgsuccess(msg) {
+        $.notify({
+            icon: 'fa fa-check',
+            title: 'Success!',
+            message: msg
+        }, {
+            element: 'body',
+            position: null,
+            type: "info",
+            allow_dismiss: true,
+            newest_on_top: false,
+            showProgressbar: true,
+            placement: {
+                from: "top",
+                align: "right"
+            },
+            offset: 20,
+            spacing: 10,
+            z_index: 1031,
+            delay: 5000,
+            animate: {
+                enter: 'animated fadeInDown',
+                exit: 'animated fadeOutUp'
+            },
+            icon_type: 'class',
+            template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
+                '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+                '<span data-notify="icon"></span> ' +
+                '<span data-notify="title">{1}</span> ' +
+                '<span data-notify="message">{2}</span>' +
+                '<div class="progress" data-notify="progressbar">' +
+                '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
+                '</div>' +
+                '<a href="{3}" target="{4}" data-notify="url"></a>' +
+                '</div>'
+        });
+    }
+
+</script>

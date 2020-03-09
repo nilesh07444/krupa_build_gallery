@@ -18,7 +18,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         }
 
         public ActionResult Index()
-        {
+        {            
             return View();
         }
 

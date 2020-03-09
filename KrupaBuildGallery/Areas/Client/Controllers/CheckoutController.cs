@@ -18,8 +18,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         // GET: Client/Checkout
         public ActionResult Index()
         {
-            List<CartVM> lstCartItems = new List<CartVM>();
-            Session["ClientUserId"] = 1;
+            List<CartVM> lstCartItems = new List<CartVM>();          
             try
             {
               
@@ -38,9 +37,9 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     Response.Cookies["sessionkeyval"].Value = GuidNew;
                     Response.Cookies["sessionkeyval"].Expires = DateTime.Now.AddDays(30);
                 }
-                if (Session["ClientUserId"] != null)
+                if (clsClientSession.UserID > 0)
                 {
-                    long ClientUserId = Convert.ToInt64(Session["ClientUserId"]);
+                    long ClientUserId = Convert.ToInt64(clsClientSession.UserID);
                     lstCartItems = (from crt in _db.tbl_Cart
                                     join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
                                     where crt.ClientUserId == ClientUserId
@@ -69,6 +68,24 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                         Qty = crt.CartItemQty.Value
                                     }).OrderByDescending(x => x.CartId).ToList();
                 }
+
+                decimal creditlimitreminng = 0;
+                if (clsClientSession.UserID > 0 && clsClientSession.RoleID == 2)
+                {
+                    long UserID = clsClientSession.UserID;
+                    tbl_ClientOtherDetails objclientothr = _db.tbl_ClientOtherDetails.Where(o => o.ClientUserId == UserID).FirstOrDefault();
+                    if(objclientothr != null && objclientothr.CreditLimitAmt != null && objclientothr.CreditLimitAmt > 0)
+                    {
+                        decimal amountdue = 0;
+                        if(objclientothr.AmountDue != null)
+                        {
+                            amountdue = objclientothr.AmountDue.Value;
+                            creditlimitreminng = objclientothr.CreditLimitAmt.Value - amountdue;
+                        }
+                    }
+                }
+
+                ViewBag.CreditRemaining = creditlimitreminng;
 
             }
             catch (Exception ex)
@@ -152,113 +169,210 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         public JsonResult PlaceOrder(CheckoutVM objCheckout,string razorpay_payment_id,string razorpay_order_id,string razorpay_signature)
         {
             string ReturnMessage = "";
-            long clientusrid = Convert.ToInt64(Session["ClientUserId"]);
+            long clientusrid = clsClientSession.UserID;
             try
             {
-                Razorpay.Api.Payment objpymn = new Razorpay.Api.Payment().Fetch(razorpay_payment_id);
-                if(objpymn != null)
-                {                    
-                    if(objpymn["status"] != null && Convert.ToString(objpymn["status"]) == "captured")
-                    {
-                      List<CartVM> lstCartItems = (from crt in _db.tbl_Cart
-                                        join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
-                                        where crt.ClientUserId == clientusrid
-                                        select new CartVM
-                                        {
-                                            CartId = crt.Cart_Id,
-                                            ItemName = i.ItemName,
-                                            ItemId = i.ProductItemId,
-                                            Price = i.CustomerPrice,
-                                            ItemImage = i.MainImage,
-                                            Qty = crt.CartItemQty.Value,
-                                            ItemSku = i.Sku,
-                                            GSTPer = i.GST_Per,
-                                            IGSTPer = i.IGST_Per
-                                        }).OrderByDescending(x => x.CartId).ToList();
-                       // List<tbl_Cart> lstCarts = _db.tbl_Cart.Where(o => o.ClientUserId == clientusrid).ToList();
-                        string paymentmethod = objpymn["method"];
-                        string paymentdetails = "";
-                        if(paymentmethod == "upi")
-                        {
-                            paymentdetails = objpymn["vpa"];
-                        }
-                        else if(paymentmethod == "card")
-                        {
-                            string cardid = objpymn["cardid"];
-                            Razorpay.Api.Card objcard = new Razorpay.Api.Card().Fetch(cardid);
-                            if(objcard != null)
-                            {
-                                paymentdetails = objcard["network"] + " ****"+ objcard["last4"];
-                            }
-                        }
-                        tbl_Orders objOrder = new tbl_Orders();
-                        objOrder.ClientUserId = clientusrid;
-                        objOrder.OrderAmount = Convert.ToDecimal(objCheckout.Orderamount);
-                        objOrder.OrderShipCity = objCheckout.shipcity;
-                        objOrder.OrderShipAddress = objCheckout.shipaddress;
-                        objOrder.OrderShipState = objCheckout.shipstate;
-                        objOrder.OrderShipClientName = objCheckout.shipfirstname + " " + objCheckout.shiplastname;
-                        objOrder.OrderShipClientPhone = objCheckout.shipphone;
-                        objOrder.OrderStatusId = Convert.ToInt64(OrderStatus.Processing);
-                        objOrder.PaymentType = paymentmethod;
-                        objOrder.IsActive = true;
-                        objOrder.IsDelete = false;
-                        objOrder.CreatedBy = clientusrid;
-                        objOrder.CreatedDate = DateTime.Now;
-                        objOrder.UpdatedBy = clientusrid; 
-                        objOrder.UpdatedDate = DateTime.Now;
-                        objOrder.AmountDue = 0;
-                        objOrder.RazorpayOrderId = razorpay_order_id;
-                        objOrder.RazorpayPaymentId = razorpay_payment_id;
-                        objOrder.RazorSignature = razorpay_signature;
-                        _db.tbl_Orders.Add(objOrder);
-                        _db.SaveChanges();
-                        if(lstCartItems != null && lstCartItems.Count() > 0)
-                        {
-                            foreach(var objCart in lstCartItems)
-                            {
-                                tbl_OrderItemDetails objOrderItem = new tbl_OrderItemDetails();
-                                objOrderItem.OrderId = objOrder.OrderId;
-                                objOrderItem.ProductItemId = objCart.ItemId;
-                                objOrderItem.ItemName = objCart.ItemName;
-                                objOrderItem.IGSTAmt = 0;
-                                objOrderItem.Qty = objCart.Qty;
-                                objOrderItem.Price = objCart.Price;
-                                objOrderItem.Sku = objCart.ItemSku;
-                                objOrderItem.IsActive = true;
-                                objOrderItem.IsDelete = false;
-                                objOrderItem.CreatedBy = clientusrid;
-                                objOrderItem.CreatedDate = DateTime.Now;
-                                objOrderItem.UpdatedBy = clientusrid;
-                                objOrderItem.UpdatedDate = DateTime.Now;
-                                decimal InclusiveGST = Math.Round(Convert.ToDecimal(objOrderItem.Price) - Convert.ToDecimal(objOrderItem.Price) * (100 / (100 + objCart.GSTPer)), 2);
-                                decimal PreGSTPrice = Math.Round(Convert.ToDecimal(objOrderItem.Price) - InclusiveGST, 2);
-                                decimal basicTotalPrice = Math.Round(Convert.ToDecimal(PreGSTPrice * objOrderItem.Qty), 2);
-                                decimal SGST = Math.Round(Convert.ToDecimal(objCart.GSTPer / 2), 2);
-                                decimal CGST = Math.Round(Convert.ToDecimal(objCart.GSTPer / 2), 2);
-                                decimal SGSTAmt = Math.Round((basicTotalPrice * SGST) / 100, 2);
-                                decimal CGSTAmt = Math.Round((basicTotalPrice * CGST) / 100, 2);
-                                objOrderItem.GSTAmt = SGSTAmt + CGSTAmt;
-                                _db.tbl_OrderItemDetails.Add(objOrderItem);
-                                var objCartforremove = _db.tbl_Cart.Where(o => o.Cart_Id == objCart.CartId).FirstOrDefault();
-                                _db.tbl_Cart.Remove(objCartforremove);
-                            }
-                            _db.SaveChanges();
-                        }
+                if(razorpay_payment_id == "ByCredit")
+                {
+                    List<CartVM> lstCartItems = (from crt in _db.tbl_Cart
+                                                 join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
+                                                 where crt.ClientUserId == clientusrid
+                                                 select new CartVM
+                                                 {
+                                                     CartId = crt.Cart_Id,
+                                                     ItemName = i.ItemName,
+                                                     ItemId = i.ProductItemId,
+                                                     Price = i.CustomerPrice,
+                                                     ItemImage = i.MainImage,
+                                                     Qty = crt.CartItemQty.Value,
+                                                     ItemSku = i.Sku,
+                                                     GSTPer = i.GST_Per,
+                                                     IGSTPer = i.IGST_Per
+                                                 }).OrderByDescending(x => x.CartId).ToList();
+                    // List<tbl_Cart> lstCarts = _db.tbl_Cart.Where(o => o.ClientUserId == clientusrid).ToList();
+                    string paymentmethod = "ByCredit";
+                    string paymentdetails = "";
+                   
+                    tbl_Orders objOrder = new tbl_Orders();
+                    objOrder.ClientUserId = clientusrid;
+                    objOrder.OrderAmount = Convert.ToDecimal(objCheckout.Orderamount);
+                    objOrder.OrderShipCity = objCheckout.shipcity;
+                    objOrder.OrderShipAddress = objCheckout.shipaddress;
+                    objOrder.OrderShipState = objCheckout.shipstate;
+                    objOrder.OrderShipClientName = objCheckout.shipfirstname + " " + objCheckout.shiplastname;
+                    objOrder.OrderShipClientPhone = objCheckout.shipphone;
+                    objOrder.OrderStatusId = Convert.ToInt64(OrderStatus.Processing);
+                    objOrder.PaymentType = paymentmethod;
+                    objOrder.IsActive = true;
+                    objOrder.IsDelete = false;
+                    objOrder.CreatedBy = clientusrid;
+                    objOrder.CreatedDate = DateTime.Now;
+                    objOrder.UpdatedBy = clientusrid;
+                    objOrder.UpdatedDate = DateTime.Now;
+                    objOrder.AmountDue = Convert.ToDecimal(objCheckout.Orderamount); 
+                    objOrder.RazorpayOrderId = razorpay_order_id;
+                    objOrder.RazorpayPaymentId = "";
+                    objOrder.RazorSignature = "";
+                    _db.tbl_Orders.Add(objOrder);
+                    _db.SaveChanges();
+                    objOrder.RazorpayOrderId = objOrder.OrderId.ToString();
 
-                        string orderid = clsCommon.EncryptString(objOrder.OrderId.ToString());
-                        ReturnMessage = "Success^"+ orderid;
-                    }
-                    else
+                    var objotherdetails = _db.tbl_ClientOtherDetails.Where(o => o.ClientUserId == clientusrid).FirstOrDefault();
+                    if(objotherdetails != null)
                     {
-                        ReturnMessage = "Payment " + objpymn["status"];
+                        decimal amtdue = 0;
+                        if(objotherdetails.AmountDue != null)
+                        {
+                            amtdue = objotherdetails.AmountDue.Value;
+                            objotherdetails.AmountDue = amtdue + Convert.ToDecimal(objCheckout.Orderamount);
+                        }
                     }
+                    _db.SaveChanges();
+
+                    if (lstCartItems != null && lstCartItems.Count() > 0)
+                    {
+                        foreach (var objCart in lstCartItems)
+                        {
+                            tbl_OrderItemDetails objOrderItem = new tbl_OrderItemDetails();
+                            objOrderItem.OrderId = objOrder.OrderId;
+                            objOrderItem.ProductItemId = objCart.ItemId;
+                            objOrderItem.ItemName = objCart.ItemName;
+                            objOrderItem.IGSTAmt = 0;
+                            objOrderItem.Qty = objCart.Qty;
+                            objOrderItem.Price = objCart.Price;
+                            objOrderItem.Sku = objCart.ItemSku;
+                            objOrderItem.IsActive = true;
+                            objOrderItem.IsDelete = false;
+                            objOrderItem.CreatedBy = clientusrid;
+                            objOrderItem.CreatedDate = DateTime.Now;
+                            objOrderItem.UpdatedBy = clientusrid;
+                            objOrderItem.UpdatedDate = DateTime.Now;
+                            decimal InclusiveGST = Math.Round(Convert.ToDecimal(objOrderItem.Price) - Convert.ToDecimal(objOrderItem.Price) * (100 / (100 + objCart.GSTPer)), 2);
+                            decimal PreGSTPrice = Math.Round(Convert.ToDecimal(objOrderItem.Price) - InclusiveGST, 2);
+                            decimal basicTotalPrice = Math.Round(Convert.ToDecimal(PreGSTPrice * objOrderItem.Qty), 2);
+                            decimal SGST = Math.Round(Convert.ToDecimal(objCart.GSTPer / 2), 2);
+                            decimal CGST = Math.Round(Convert.ToDecimal(objCart.GSTPer / 2), 2);
+                            decimal SGSTAmt = Math.Round((basicTotalPrice * SGST) / 100, 2);
+                            decimal CGSTAmt = Math.Round((basicTotalPrice * CGST) / 100, 2);
+                            objOrderItem.GSTAmt = SGSTAmt + CGSTAmt;
+                            _db.tbl_OrderItemDetails.Add(objOrderItem);
+                            var objCartforremove = _db.tbl_Cart.Where(o => o.Cart_Id == objCart.CartId).FirstOrDefault();
+                            _db.tbl_Cart.Remove(objCartforremove);
+                        }
+                        _db.SaveChanges();
+                    }
+
+                    string orderid = clsCommon.EncryptString(objOrder.OrderId.ToString());
+                    ReturnMessage = "Success^" + orderid;
                 }
                 else
                 {
-                    ReturnMessage = "Payment Failed";
+                    Razorpay.Api.Payment objpymn = new Razorpay.Api.Payment().Fetch(razorpay_payment_id);
+                    if (objpymn != null)
+                    {
+                        if (objpymn["status"] != null && Convert.ToString(objpymn["status"]) == "captured")
+                        {
+                            List<CartVM> lstCartItems = (from crt in _db.tbl_Cart
+                                                         join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
+                                                         where crt.ClientUserId == clientusrid
+                                                         select new CartVM
+                                                         {
+                                                             CartId = crt.Cart_Id,
+                                                             ItemName = i.ItemName,
+                                                             ItemId = i.ProductItemId,
+                                                             Price = i.CustomerPrice,
+                                                             ItemImage = i.MainImage,
+                                                             Qty = crt.CartItemQty.Value,
+                                                             ItemSku = i.Sku,
+                                                             GSTPer = i.GST_Per,
+                                                             IGSTPer = i.IGST_Per
+                                                         }).OrderByDescending(x => x.CartId).ToList();
+                            // List<tbl_Cart> lstCarts = _db.tbl_Cart.Where(o => o.ClientUserId == clientusrid).ToList();
+                            string paymentmethod = objpymn["method"];
+                            string paymentdetails = "";
+                            if (paymentmethod == "upi")
+                            {
+                                paymentdetails = objpymn["vpa"];
+                            }
+                            else if (paymentmethod == "card")
+                            {
+                                string cardid = objpymn["cardid"];
+                                Razorpay.Api.Card objcard = new Razorpay.Api.Card().Fetch(cardid);
+                                if (objcard != null)
+                                {
+                                    paymentdetails = objcard["network"] + " ****" + objcard["last4"];
+                                }
+                            }
+                            tbl_Orders objOrder = new tbl_Orders();
+                            objOrder.ClientUserId = clientusrid;
+                            objOrder.OrderAmount = Convert.ToDecimal(objCheckout.Orderamount);
+                            objOrder.OrderShipCity = objCheckout.shipcity;
+                            objOrder.OrderShipAddress = objCheckout.shipaddress;
+                            objOrder.OrderShipState = objCheckout.shipstate;
+                            objOrder.OrderShipClientName = objCheckout.shipfirstname + " " + objCheckout.shiplastname;
+                            objOrder.OrderShipClientPhone = objCheckout.shipphone;
+                            objOrder.OrderStatusId = Convert.ToInt64(OrderStatus.Processing);
+                            objOrder.PaymentType = paymentmethod;
+                            objOrder.IsActive = true;
+                            objOrder.IsDelete = false;
+                            objOrder.CreatedBy = clientusrid;
+                            objOrder.CreatedDate = DateTime.Now;
+                            objOrder.UpdatedBy = clientusrid;
+                            objOrder.UpdatedDate = DateTime.Now;
+                            objOrder.AmountDue = 0;
+                            objOrder.RazorpayOrderId = razorpay_order_id;
+                            objOrder.RazorpayPaymentId = razorpay_payment_id;
+                            objOrder.RazorSignature = razorpay_signature;
+                            _db.tbl_Orders.Add(objOrder);
+                            _db.SaveChanges();
+                            if (lstCartItems != null && lstCartItems.Count() > 0)
+                            {
+                                foreach (var objCart in lstCartItems)
+                                {
+                                    tbl_OrderItemDetails objOrderItem = new tbl_OrderItemDetails();
+                                    objOrderItem.OrderId = objOrder.OrderId;
+                                    objOrderItem.ProductItemId = objCart.ItemId;
+                                    objOrderItem.ItemName = objCart.ItemName;
+                                    objOrderItem.IGSTAmt = 0;
+                                    objOrderItem.Qty = objCart.Qty;
+                                    objOrderItem.Price = objCart.Price;
+                                    objOrderItem.Sku = objCart.ItemSku;
+                                    objOrderItem.IsActive = true;
+                                    objOrderItem.IsDelete = false;
+                                    objOrderItem.CreatedBy = clientusrid;
+                                    objOrderItem.CreatedDate = DateTime.Now;
+                                    objOrderItem.UpdatedBy = clientusrid;
+                                    objOrderItem.UpdatedDate = DateTime.Now;
+                                    decimal InclusiveGST = Math.Round(Convert.ToDecimal(objOrderItem.Price) - Convert.ToDecimal(objOrderItem.Price) * (100 / (100 + objCart.GSTPer)), 2);
+                                    decimal PreGSTPrice = Math.Round(Convert.ToDecimal(objOrderItem.Price) - InclusiveGST, 2);
+                                    decimal basicTotalPrice = Math.Round(Convert.ToDecimal(PreGSTPrice * objOrderItem.Qty), 2);
+                                    decimal SGST = Math.Round(Convert.ToDecimal(objCart.GSTPer / 2), 2);
+                                    decimal CGST = Math.Round(Convert.ToDecimal(objCart.GSTPer / 2), 2);
+                                    decimal SGSTAmt = Math.Round((basicTotalPrice * SGST) / 100, 2);
+                                    decimal CGSTAmt = Math.Round((basicTotalPrice * CGST) / 100, 2);
+                                    objOrderItem.GSTAmt = SGSTAmt + CGSTAmt;
+                                    _db.tbl_OrderItemDetails.Add(objOrderItem);
+                                    var objCartforremove = _db.tbl_Cart.Where(o => o.Cart_Id == objCart.CartId).FirstOrDefault();
+                                    _db.tbl_Cart.Remove(objCartforremove);
+                                }
+                                _db.SaveChanges();
+                            }
+
+                            string orderid = clsCommon.EncryptString(objOrder.OrderId.ToString());
+                            ReturnMessage = "Success^" + orderid;
+                        }
+                        else
+                        {
+                            ReturnMessage = "Payment " + objpymn["status"];
+                        }
+                    }
+                    else
+                    {
+                        ReturnMessage = "Payment Failed";
+                    }
+
                 }
-               
+
             }
             catch (Exception ex)
             {

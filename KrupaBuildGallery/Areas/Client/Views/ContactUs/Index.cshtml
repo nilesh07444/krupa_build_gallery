@@ -1,8 +1,8 @@
-﻿
+﻿@using KrupaBuildGallery.Model;
 @{
-    ViewBag.Title = "Contact us"; 
+    ViewBag.Title = "Contact us";
 }
- 
+
 <!-- breadcrumb start -->
 <div class="breadcrumb-section">
     <div class="container">
@@ -60,7 +60,7 @@
                                 <h6>Address</h6>
                             </div>
                             <div class="media-body">
-                                <p>Info@Krupagallery.Com</p> 
+                                <p>Info@Krupagallery.Com</p>
                             </div>
                         </li>
                         <li>
@@ -69,7 +69,7 @@
                                 <h6>Fax</h6>
                             </div>
                             <div class="media-body">
-                                <p>9824643334</p> 
+                                <p>9824643334</p>
                             </div>
                         </li>
                     </ul>
@@ -78,35 +78,74 @@
         </div>
         <div class="row">
             <div class="col-sm-12">
-                <form class="theme-form">
-                    <div class="form-row">
-                        <div class="col-md-6">
-                            <label for="name">First Name</label>
-                            <input type="text" class="form-control" id="name" placeholder="Enter First Name" required="">
+                @using (Html.BeginForm("SendContactUsMessage", "ContactUs", FormMethod.Post, new { ID = "theFormId", @class = "theme-form", onsubmit = "return checkdetails();" }))
+                {
+                    <form class="theme-form">
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <label for="firstname">First Name *</label>
+                                <input type="text" class="form-control" id="firstname" name="firstname" placeholder="Enter First Name" value="@clsClientSession.FirstName" required="">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="lastname">Last Name *</label>
+                                <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Enter Last Name" value="@clsClientSession.LastName" required="">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="phonenumber">Phone number *</label>
+                                <input type="text" class="form-control" id="phonenumber" name="phonenumber" placeholder="Enter Phone number" required="">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="email">Email *</label>
+                                <input type="email" class="form-control" id="email" placeholder="Enter Email" name="email" value="@clsClientSession.Email" required="">
+                            </div>
+                            <div class="col-md-12">
+                                <label for="txtmessage">Write Your Message *</label>
+                                <textarea class="form-control" placeholder="Write Your Message" id="txtmessage" name="txtmessage" rows="6"></textarea>
+                            </div>
+                            <div class="col-md-12">
+                                <button class="btn btn-solid" type="submit">Send Your Message</button>
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <label for="email">Last Name</label>
-                            <input type="text" class="form-control" id="last-name" placeholder="Enter Last Name" required="">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="review">Phone number</label>
-                            <input type="text" class="form-control" id="review" placeholder="Enter Phone number" required="">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="email">Email</label>
-                            <input type="text" class="form-control" id="email" placeholder="Enter Email" required="">
-                        </div>
-                        <div class="col-md-12">
-                            <label for="review">Write Your Message</label>
-                            <textarea class="form-control" placeholder="Write Your Message" id="exampleFormControlTextarea1" rows="6"></textarea>
-                        </div>
-                        <div class="col-md-12">
-                            <button class="btn btn-solid" type="submit">Send Your Message</button>
-                        </div>
-                    </div>
-                </form>
+                    </form>
+                }
             </div>
         </div>
     </div>
 </section>
 <!--Section ends-->
+@if (TempData["Message"] != null)
+{
+    <script>
+    setTimeout(function(){
+    alert('@TempData["Message"]');
+    }, 1000);
+
+    </script>
+}
+<script>
+
+    function checkdetails() {
+        if (!ValidateEmail($("#email").val())) {
+            alert("You have entered an invalid email address!")
+            return false;
+        }
+        else if ($("#txtmessage").val().trim() == "") {
+            alert("Please enter message");
+            return false;
+        }
+        else {
+            StartLoading();
+            return true;
+        }
+
+    }
+
+    function ValidateEmail(mail) {
+        if (/^\w+([\.-]?\w+)*@@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+</script>

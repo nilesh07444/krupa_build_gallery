@@ -1,4 +1,4 @@
-﻿
+﻿@using KrupaBuildGallery.Model;
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <script>
@@ -11,13 +11,13 @@
         "image": "https://razorpay.com/favicon.png",
         "order_id": "@ViewBag.OrderId",// Replace this with the order_id created using Orders API (https://razorpay.com/docs/api/orders).
         "handler": function (response) {
-            StartLoading();            
+            StartLoading();
             PlaceOrder(response.razorpay_payment_id, response.razorpay_order_id, response.razorpay_signature);
         },
         "prefill": {
-            "name": "Krutik Shah1",
-            "email": "krutik.shah1310@gmail.com",
-            "contact": "7016232958"
+            "name": "@clsClientSession.FirstName @clsClientSession.LastName",
+            "email": "@clsClientSession.Email",
+            "contact": ""
         },
         "notes": {
             "address": "note value"
@@ -25,10 +25,59 @@
         "theme": {
             "color": "#F37254"
         }
-    };    
-    document.getElementById('rzp-placeorder').onclick = function (e) {
-        var rzp1 = new Razorpay(options);
-        rzp1.open();
-        e.preventDefault();
+    };
+
+    if ($("#rzp-placeorder").length > 0) {
+        $(document).on('click', '#rzp-placeorder', function (e) {
+            $(".errorcls").html("");
+            var flg = true;
+            //$("input[name=shipfirstname]").siblings('.errorcls')
+            if ($("input[name=shipfirstname]").val() == "") {
+                $("input[name=shipfirstname]").siblings('.errorcls').html("First Name is Required");
+                flg = false;
+            }
+            if ($("input[name=shiplastname]").val() == "") {
+                $("input[name=shiplastname]").siblings('.errorcls').html("Last Name is Required");
+                flg = false;
+            }
+            if ($("input[name=shipphone]").val() == "") {
+                $("input[name=shipphone]").siblings('.errorcls').html("Phone number is Required");
+                flg = false;
+            }
+            if ($("input[name=shipaddress]").val() == "") {
+                $("input[name=shipaddress]").siblings('.errorcls').html("Address is Required");
+                flg = false;
+            }
+            if ($("input[name=shipstate]").val() == "") {
+                $("input[name=shipstate]").siblings('.errorcls').html("State is Required");
+                flg = false;
+            }
+            if ($("input[name=shipcity]").val() == "") {
+                $("input[name=shipcity]").siblings('.errorcls').html("City is Required");
+                flg = false;
+            }
+            if ($("input[name=shippincode]").val() == "") {
+                $("input[name=shippincode]").siblings('.errorcls').html("Postal Code is Required");
+                flg = false;
+            }
+            if ($("input[name=payment-group]:checked").length == 0) {
+                alert("Please select payment method");
+                  flg = false;
+            }
+
+            if (flg == true) {
+                if ($("input[name=payment-group]:checked").val() == "ByOther") {
+                    var rzp1 = new Razorpay(options);
+                    rzp1.open();
+                    e.preventDefault();
+                }
+                else {
+                     StartLoading();
+                     PlaceOrder("ByCredit","","");
+                }
+            }
+        });
     }
+
+
 </script>
