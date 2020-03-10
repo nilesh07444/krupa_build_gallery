@@ -326,6 +326,17 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             objOrder.RazorSignature = razorpay_signature;
                             _db.tbl_Orders.Add(objOrder);
                             _db.SaveChanges();
+                            tbl_PaymentHistory objPyment = new tbl_PaymentHistory();
+                            objPyment.OrderId = objOrder.OrderId; 
+                            objPyment.PaymentBy = paymentmethod;
+                            objPyment.AmountDue = Convert.ToDecimal(objCheckout.Orderamount);
+                            objPyment.AmountPaid = Convert.ToDecimal(objCheckout.Orderamount);
+                            objPyment.DateOfPayment = DateTime.Now; 
+                            objPyment.CreatedBy = clientusrid;
+                            objPyment.CreatedDate = DateTime.Now;
+                            _db.tbl_PaymentHistory.Add(objPyment);
+                            _db.SaveChanges();
+
                             if (lstCartItems != null && lstCartItems.Count() > 0)
                             {
                                 foreach (var objCart in lstCartItems)

@@ -96,7 +96,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             }
 
             ViewBag.SortBy = sortby;
-            ViewBag.FromPage = "client/products/bycategory?Id=" + CategoryId;
+            ViewBag.FromPage = "/products/bycategory?Id=" + CategoryId;
 
             // _db.tbl_ProductItems.Where(o => o.CategoryId == CategoryId).L();
             return View("/Areas/Client/Views/Products/ProductItemList.cshtml", lstProductItem);
@@ -179,7 +179,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             }
 
             ViewBag.SortBy = sortby;
-            ViewBag.FromPage = "client/products/Bysubproduct?Id=" + SubproductId;
+            ViewBag.FromPage = "products/Bysubproduct?Id=" + SubproductId;
 
             // _db.tbl_ProductItems.Where(o => o.CategoryId == CategoryId).L();
             return View("/Areas/Client/Views/Products/ProductItemList.cshtml", lstProductItem);
@@ -262,7 +262,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             }
 
             ViewBag.SortBy = sortby;
-            ViewBag.FromPage = "client/products/Byproduct?Id=" + productid;
+            ViewBag.FromPage = "products/Byproduct?Id=" + productid;
 
             // _db.tbl_ProductItems.Where(o => o.CategoryId == CategoryId).L();
             return View("/Areas/Client/Views/Products/ProductItemList.cshtml", lstProductItem);

@@ -87,6 +87,19 @@ namespace KrupaBuildGallery.Model
                 HttpContext.Current.Session["ImagePath"] = value;
             }
         }
+        public static string MobileNumber
+        {
+            get
+            {
+                return HttpContext.Current.Session["MobileNumber"] != null ? Convert.ToString(HttpContext.Current.Session["MobileNumber"]) : string.Empty;
+            }
+            set
+            {
+                HttpContext.Current.Session["MobileNumber"] = value;
+            }
+        }
+
+
         public static string UserName
         {
             get

@@ -106,6 +106,12 @@ namespace KrupaBuildGallery.Areas.Client
                 new { controller = "Orders", action = "Index", id = UrlParameter.Optional }
             );
 
+            context.MapRoute(
+               "ClientLogout",
+               "login/signout",
+               new { controller = "login", action = "signout", id = UrlParameter.Optional }
+           );
+
         }
     }
 }
