@@ -111,11 +111,12 @@
                                                                                     </a>
                                                                                     @if (clsClientSession.UserID == 0 || (clsClientSession.UserID > 0 && clsClientSession.RoleID == 1))
                                                                                     {
-                                                                                        <h4>₹ @item.CustomerPrice</h4>
+                                                                                        <h4>₹ @item.CustomerPrice <del>₹ @item.MRPPrice</del></h4>
+                                                                                       
                                                                                     }
                                                                                     else
                                                                                     {
-                                                                                        <h4>₹ @item.DistributorPrice</h4>
+                                                                                        <h4>₹ @item.DistributorPrice <del>₹ @item.MRPPrice</del></h4>                                                                                      
                                                                                     }
 
                                                                                 </div>

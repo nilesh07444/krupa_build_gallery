@@ -127,11 +127,11 @@
                                     </a>
                                     @if (clsClientSession.UserID == 0 || (clsClientSession.UserID > 0 && clsClientSession.RoleID == 1))
                                     {
-                                        <h4>₹ @objItem.CustomerPrice</h4>
+                                        <h4>₹ @objItem.CustomerPrice <del>₹ @objItem.MRPPrice</del></h4>                                     
                                     }
                                     else
                                     {
-                                        <h4>₹ @objItem.DistributorPrice</h4>
+                                        <h4>₹ @objItem.DistributorPrice <del>₹ @objItem.MRPPrice</del></h4>                                     
                                     }
                                 </div>
                             </div>
@@ -219,11 +219,11 @@
                                     </a>
                                     @if (clsClientSession.UserID == 0 || (clsClientSession.UserID > 0 && clsClientSession.RoleID == 1))
                                     {
-                                        <h4>₹ @objItem.CustomerPrice</h4>
+                                        <h4>₹ @objItem.CustomerPrice <del>₹ @objItem.MRPPrice</del></h4>
                                     }
                                     else
                                     {
-                                        <h4>₹ @objItem.DistributorPrice</h4>
+                                        <h4>₹ @objItem.DistributorPrice <del>₹ @objItem.MRPPrice</del></h4> 
                                     }
                                 </div>
                             </div>

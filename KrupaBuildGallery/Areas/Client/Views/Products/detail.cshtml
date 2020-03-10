@@ -105,11 +105,11 @@
                         @*<h4><del>$459.00</del><span>55% off</span></h4>*@
                         @if (clsClientSession.UserID == 0 || (clsClientSession.UserID > 0 && clsClientSession.RoleID == 1))
                         {
-                            <h3>₹ @Model.CustomerPrice</h3>
+                            <h4>₹ @Model.CustomerPrice <del>₹ @Model.MRPPrice</del></h4>
                         }
                         else
                         {
-                            <h3>₹ @Model.DistributorPrice</h3>
+                            <h4>₹ @Model.DistributorPrice <del>₹ @Model.MRPPrice</del></h4>                           
                         }
                         <div class="product-description border-product">
                             <h6 class="product-title">quantity</h6>
@@ -143,7 +143,7 @@
                                     else
                                     {
                                         <a href="javascript:void(0);" style="color: buttontext;" class="wishlist-btn" onclick="alert('Please login for add item to wishlist');"><i class="fa fa-heart @clswishlist"></i><span class="title-font">Add To WishList</span></a>
-                                        
+
                                     }
 
                                 </form>
