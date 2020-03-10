@@ -86,6 +86,12 @@ namespace KrupaBuildGallery.Areas.Client
                 new { controller = "PrivacyPolicy", action = "Index", id = UrlParameter.Optional }
             );
 
+            context.MapRoute(
+                "Client_TermsCondition",
+                "termscondition",
+                new { controller = "TermsCondition", action = "Index", id = UrlParameter.Optional }
+            );
+
             // Product Urls 
 
             context.MapRoute(

@@ -207,6 +207,7 @@
     <Compile Include="Areas\Client\Controllers\PrivacyPolicyController.cs" />
     <Compile Include="Areas\Client\Controllers\ProductsController.cs" />
     <Compile Include="Areas\Client\Controllers\RegisterController.cs" />
+    <Compile Include="Areas\Client\Controllers\TermsConditionController.cs" />
     <Compile Include="Areas\Client\Controllers\WishlistController.cs" />
     <Compile Include="Areas\WebAPI\Controllers\CategoryController.cs" />
     <Compile Include="Areas\WebAPI\WebAPIAreaRegistration.cs" />
@@ -3805,6 +3806,8 @@
     <Content Include="Areas\Client\Views\Products\Detail.cshtml" />
     <Content Include="Areas\Client\Views\ForgotPassword\Index.cshtml" />
     <Content Include="Areas\WebAPI\Views\web.config" />
+    <Content Include="Areas\Client\Views\PrivacyPolicy\Index.cshtml" />
+    <Content Include="Areas\Client\Views\TermsCondition\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />
@@ -3839,7 +3842,6 @@
     <Folder Include="Areas\Admin\Models\" />
     <Folder Include="Areas\Admin\Views\ClientUser\" />
     <Folder Include="Areas\Client\Models\" />
-    <Folder Include="Areas\Client\Views\PrivacyPolicy\" />
     <Folder Include="Areas\WebAPI\Models\" />
     <Folder Include="Areas\WebAPI\Views\Category\" />
     <Folder Include="Areas\WebAPI\Views\Shared\" />
