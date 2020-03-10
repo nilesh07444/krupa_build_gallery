@@ -40,11 +40,11 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         TempData["LoginError"] = "Your Account is not active. Please contact administrator.";
                         if (!string.IsNullOrEmpty(referer))
                         {
-                            return RedirectToAction("Index", "Login", new { area = "Client", });
+                            return RedirectToAction("Index", "Login");
                         }
                         else
                         {
-                            return RedirectToAction("Index", "Login", new { area = "Client", referer = referer });
+                            return RedirectToAction("Index", "Login", new {referer = referer });
                         }
                     }
 
@@ -55,14 +55,15 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     clsClientSession.LastName = data.LastName;
                     clsClientSession.ImagePath = data.ProfilePicture;
                     clsClientSession.Email = data.Email;
+                    clsClientSession.MobileNumber = data.MobileNo;
                     UpdatCarts();
                     if(!string.IsNullOrEmpty(referer))
                     {
-                        return RedirectToAction("Index", "Checkout", new { area = "Client" });
+                        return RedirectToAction("Index", "Checkout");
                     }
                     else
                     {
-                        return RedirectToAction("Index", "HomePage", new { area = "Client" });
+                        return RedirectToAction("Index", "HomePage");
                     }
                    
                 }
@@ -71,11 +72,11 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     TempData["LoginError"] = "Invalid username or password";
                     if (!string.IsNullOrEmpty(referer))
                     {
-                        return RedirectToAction("Index", "Login", new { area = "Client", });
+                        return RedirectToAction("Index", "Login");
                     }
                     else
                     {
-                        return RedirectToAction("Index", "Login", new { area = "Client", referer = referer });
+                        return RedirectToAction("Index", "Login", new { referer = referer });
                     }
                 }
             }
@@ -86,11 +87,11 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             }
             if (!string.IsNullOrEmpty(referer))
             {
-                return RedirectToAction("Index", "Login", new { area = "Client", });
+                return RedirectToAction("Index", "Login");
             }
             else
             {
-                return RedirectToAction("Index", "Login", new { area = "Client", referer = referer });
+                return RedirectToAction("Index", "Login", new {referer = referer });
             }
 
         }
@@ -108,7 +109,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             string GuidNew = Guid.NewGuid().ToString();
             Response.Cookies["sessionkeyval"].Value = GuidNew;
             Response.Cookies["sessionkeyval"].Expires = DateTime.Now.AddDays(30);           
-            return RedirectToAction("Index", "HomePage", new { area = "Client" });
+            return RedirectToAction("Index", "HomePage");
         }
 
         public void UpdatCarts()
