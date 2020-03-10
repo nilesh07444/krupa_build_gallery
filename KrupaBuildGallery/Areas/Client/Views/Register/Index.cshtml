@@ -1,4 +1,9 @@
-﻿<style>
+﻿
+@{
+    ViewBag.Title = "Register";
+}
+
+<style>
     .register-page .theme-card .theme-form input {
         margin-bottom: 13px;
     }
@@ -32,54 +37,54 @@
                 <h3>create account</h3>
                 <div class="theme-card">
                     @using (Html.BeginForm("CreateAccount", "Register", FormMethod.Post, new { ID = "theFormId", @class = "theme-form", onsubmit = "return checkregister();" }))
-                    {                        
-                            <div class="form-row">
-                                <div class="col-md-6">
-                                    <label for="fname">First Name *</label>
-                                    <input type="text" class="form-control" id="fname" value="@TempData["firstnm"]" name="fname" placeholder="First Name" required />
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="lname">Last Name *</label>
-                                    <input type="text" class="form-control" id="lname" name="lname" value="@TempData["lastnm"]" placeholder="Last Name" required />
-                                </div>
+                    {
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <label for="fname">First Name *</label>
+                                <input type="text" class="form-control" id="fname" value="@TempData["firstnm"]" name="fname" placeholder="First Name" required />
                             </div>
-                            <div class="form-row">
-                                <div class="col-md-6">
-                                    <label for="mobileno">Mobile No. *</label>
-                                    <input type="number" class="form-control" id="mobileno" name="mobileno" value="@TempData["mobileno"]" placeholder="Mobile No." required />
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="email">Email *</label>
-                                    <input type="text" class="form-control" id="email" value="@TempData["email"]" name="email" placeholder="Email" required />
-                                </div>
+                            <div class="col-md-6">
+                                <label for="lname">Last Name *</label>
+                                <input type="text" class="form-control" id="lname" name="lname" value="@TempData["lastnm"]" placeholder="Last Name" required />
                             </div>
-                            <div class="form-row">
-                                <div class="col-md-6">
-                                    <label for="password">Password *</label>
-                                    <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required />
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="confirmpassword">Confirm Password *</label>
-                                    <input type="password" class="form-control" id="confirmpassword" name="confirmpassword" placeholder="Enter your confirm password" required />
-                                </div>
-                                <input type="hidden" name="hdnReferer" value="@ViewBag.Referer" />
-                                <input type="submit" value="Create Account" class="btn btn-solid" />
-                            </div>                     
+                        </div>
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <label for="mobileno">Mobile No. *</label>
+                                <input type="number" class="form-control" id="mobileno" name="mobileno" value="@TempData["mobileno"]" placeholder="Mobile No." required />
+                            </div>
+                            <div class="col-md-6">
+                                <label for="email">Email *</label>
+                                <input type="text" class="form-control" id="email" value="@TempData["email"]" name="email" placeholder="Email" required />
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <label for="password">Password *</label>
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required />
+                            </div>
+                            <div class="col-md-6">
+                                <label for="confirmpassword">Confirm Password *</label>
+                                <input type="password" class="form-control" id="confirmpassword" name="confirmpassword" placeholder="Enter your confirm password" required />
+                            </div>
+                            <input type="hidden" name="hdnReferer" value="@ViewBag.Referer" />
+                            <input type="submit" value="Create Account" class="btn btn-solid" />
+                        </div>
                     }
-                    </div>
+                </div>
             </div>
         </div>
     </div>
 </section>
 <!--Section ends-->
-@if(TempData["RegisterError"] != null)
-{    
-<script>
+@if (TempData["RegisterError"] != null)
+{
+    <script>
     setTimeout(function(){
     alert('@TempData["RegisterError"]');
     }, 1000);
-    
-</script>
+
+    </script>
 }
 
 <script>
@@ -96,10 +101,10 @@
              StartLoading();
                 return true;
         }
-        
+
     }
 
- function ValidateEmail(mail) 
+ function ValidateEmail(mail)
 {
     if (/^\w+([\.-]?\w+)*@@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
         return true;

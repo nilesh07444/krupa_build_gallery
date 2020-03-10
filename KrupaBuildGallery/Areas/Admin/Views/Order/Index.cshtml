@@ -39,9 +39,7 @@
                         <thead>
                             <tr>
                                 <th>Order #</th>
-                                <th>Customer/Distributor Name</th>
-                                <th>Order Ship City</th>
-                                <th>Order Ship State</th>
+                                <th>Customer/Distributor Name</th> 
                                 <th>Order Date</th>
                                 <th>Order Amount</th>
                                 <th>Order Status</th>
@@ -69,10 +67,8 @@
                                     }
                                     <tr class="gradeX">
                                         <td>@counter.</td>
-                                        <td>@objorder.ClientUserName</td>
-                                        <td>@objorder.OrderShipCity</td>
-                                        <td>@objorder.OrderShipState</td>
-                                        <td>@objorder.OrderDate.ToString("MMM dd,yyyy")</td>
+                                        <td>@objorder.ClientUserName</td> 
+                                        <td>@objorder.OrderDate.ToString("dd/MM/yyyy")</td>
                                         <td>₹ @Math.Round(objorder.OrderAmount, 2)</td>
                                         <td><span class="badge @stauscolor">@objorder.OrderStatus</span></td>
                                         <td>@objorder.PaymentType</td>

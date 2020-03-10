@@ -1,4 +1,9 @@
-﻿<!-- breadcrumb start -->
+﻿
+@{
+    ViewBag.Title = "Login";
+}
+
+<!-- breadcrumb start -->
 <div class="breadcrumb-section">
     <div class="container">
         <div class="row">
@@ -47,7 +52,7 @@
                         <br />
                         <input type="hidden" name="hdnReferer" value="@ViewBag.Referer" />
                         <input type="submit" value="Login" class="btn btn-solid" />
-                        
+
                     }
                 </div>
             </div>
@@ -72,10 +77,10 @@
 <script>
       function Login() {
           if ($("#email").val().trim() == "" || $("#password").val().trim() == "") {
-              $(".errorcls").html("Email and Password must be required!!");                
+              $(".errorcls").html("Email and Password must be required!!");
                 return false;
             }
-          else {            
+          else {
                StartLoading();
                 return true;
             }

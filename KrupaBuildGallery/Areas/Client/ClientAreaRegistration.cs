@@ -21,77 +21,85 @@ namespace KrupaBuildGallery.Areas.Client
             );
 
             context.MapRoute(
-                "Admin_HomePage",
+                "Client_HomePage",
                 "home",
                 new { controller = "HomePage", action = "Index", id = UrlParameter.Optional }
             );
 
             context.MapRoute(
-                "Admin_AboutUs",
+                "Client_AboutUs",
                 "aboutus",
                 new { controller = "AboutUs", action = "Index", id = UrlParameter.Optional }
             );
 
             context.MapRoute(
-                "Admin_ContactUs",
+                "Client_ContactUs",
                 "contactus",
                 new { controller = "ContactUs", action = "Index", id = UrlParameter.Optional }
             );
 
             context.MapRoute(
-                "Admin_Login",
+                "Client_Login",
                 "login",
                 new { controller = "Login", action = "Index", id = UrlParameter.Optional }
             );
 
             context.MapRoute(
-                "Admin_Register",
+                "Client_Register",
                 "register",
                 new { controller = "Register", action = "Index", id = UrlParameter.Optional }
             );
 
             context.MapRoute(
-                "Admin_DistributorRequest",
+                "Client_DistributorRequest",
                 "distributorrequest",
                 new { controller = "DistributorRequest", action = "Index", id = UrlParameter.Optional }
             );
              
             context.MapRoute(
-                "Admin_Cart",
+                "Client_Cart",
                 "cart",
                 new { controller = "Cart", action = "Index", id = UrlParameter.Optional }
             );
 
             context.MapRoute(
-                "Admin_Checkout",
+                "Client_Checkout",
                 "checkout",
                 new { controller = "Checkout", action = "Index", id = UrlParameter.Optional }
             );
 
             context.MapRoute(
-                "Admin_Faq",
+                "Client_Faq",
                 "faq",
                 new { controller = "Faq", action = "Index", id = UrlParameter.Optional }
             );
 
             context.MapRoute(
-                "Admin_Wishlist",
+                "Client_Wishlist",
                 "wishlist",
                 new { controller = "Wishlist", action = "Index", id = UrlParameter.Optional }
             );
-
+             
             context.MapRoute(
-                "Admin_Orders",
-                "orders",
-                new { controller = "Orders", action = "Index", id = UrlParameter.Optional }
-            );
-
-            context.MapRoute(
-                "Admin_Privacy",
+                "Client_Privacy",
                 "privacy",
                 new { controller = "PrivacyPolicy", action = "Index", id = UrlParameter.Optional }
             );
-              
+
+            // Product Urls 
+
+            context.MapRoute(
+                "Client_Products_ByFilter",
+                "products/{action}/{id}",
+                new { Controller = "Products", action = "Index", id = UrlParameter.Optional }
+            );
+
+            context.MapRoute(
+                "Client_Orders",
+                "orders/{action}/{id}",
+                new { controller = "Orders", action = "Index", id = UrlParameter.Optional }
+            );
+
         }
     }
 }

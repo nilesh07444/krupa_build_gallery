@@ -1,4 +1,4 @@
-﻿
+﻿@model DashboardCountVM
 @{
     ViewBag.Title = "Dashboard";
 }
@@ -38,7 +38,7 @@
                             </div>
                             <div class="media-body col-8">
                                 <span class="m-0">Orders</span>
-                                <h3 class="mb-0"><span class="counter">6659</span></h3>
+                                <h3 class="mb-0"><span class="counter">@Model.TotalOrders</span></h3>
                             </div>
                         </div>
                     </div>
@@ -53,7 +53,7 @@
                             </div>
                             <div class="media-body col-8">
                                 <span class="m-0">Product Items</span>
-                                <h3 class="mb-0"><span class="counter">9856</span></h3>
+                                <h3 class="mb-0"><span class="counter">@Model.TotalProductItems</span></h3>
                             </div>
                         </div>
                     </div>
@@ -68,7 +68,7 @@
                             </div>
                             <div class="media-body col-8">
                                 <span class="m-0">Distrubutors</span>
-                                <h3 class="mb-0"><span class="counter">50</span></h3>
+                                <h3 class="mb-0"><span class="counter">@Model.TotalDistributors</span></h3>
                             </div>
                         </div>
                     </div>
@@ -83,7 +83,7 @@
                             </div>
                             <div class="media-body col-8">
                                 <span class="m-0">Customers</span>
-                                <h3 class="mb-0"> <span class="counter">200</span></h3>
+                                <h3 class="mb-0"> <span class="counter">@Model.TotalCustomers</span></h3>
                             </div>
                         </div>
                     </div>

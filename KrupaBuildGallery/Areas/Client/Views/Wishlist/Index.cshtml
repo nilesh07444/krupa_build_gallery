@@ -1,37 +1,45 @@
 ﻿@using KrupaBuildGallery.Model;
 @model List<WishListVM>
-    <style>
-        .clswishlist tbody tr td a {
-            color: #777777;
-            font-weight: 400;
-            font-size: 14px;
-            text-transform: capitalize;
-            margin-bottom: 0;
-        }
-        .clswishlist thead th {
-            border-bottom-width: 1px;
-            font-weight: 900;
+
+@{ 
+    ViewBag.Title = "Wishlist";
+}
+
+<style>
+    .clswishlist tbody tr td a {
+        color: #777777;
+        font-weight: 400;
+        font-size: 14px;
+        text-transform: capitalize;
+        margin-bottom: 0;
+    }
+
+    .clswishlist thead th {
+        border-bottom-width: 1px;
+        font-weight: 900;
+        color: #222222;
+        text-transform: uppercase;
+        font-size: 14px;
+        border-top: 0;
+        text-align: center;
+        padding: 0 0.75rem 0.75rem 0.75rem;
+    }
+
+    .clswishlist tbody tr td {
+        min-width: 210px;
+        vertical-align: middle;
+        color: #777777;
+        border-top: 0;
+        border-bottom: 1px solid #eeeeee;
+        text-align: center;
+    }
+
+        .clswishlist tbody tr td h2 {
+            font-size: 24px;
             color: #222222;
-            text-transform: uppercase;
-            font-size: 14px;
-            border-top: 0;
-            text-align: center;
-            padding: 0 0.75rem 0.75rem 0.75rem;
+            font-weight: 400;
         }
-        .clswishlist tbody tr td {
-            min-width: 210px;
-            vertical-align: middle;
-            color: #777777;
-            border-top: 0;
-            border-bottom: 1px solid #eeeeee;
-            text-align: center;
-        }
-            .clswishlist tbody tr td h2 {
-                font-size: 24px;
-                color: #222222;
-                font-weight: 400;
-            }
-    </style>
+</style>
 <div class="breadcrumb-section">
     <div class="container">
         <div class="row">
@@ -43,7 +51,7 @@
             <div class="col-sm-6">
                 <nav aria-label="breadcrumb" class="theme-breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
                         <li class="breadcrumb-item active">wishlist</li>
                     </ol>
                 </nav>
@@ -105,8 +113,11 @@
                 }
                 else
                 {
-                    <p>Your wishlist is currently empty.</p>
-                    <a href="/Client/HomePage" class="btn btn-solid">continue shopping</a>
+                    <div style="text-align:center;">
+                        <h3>Empty Wishlist</h3>
+                        <p>You have no items in your wishlist. Start adding!</p>
+                        <a href="/" class="btn btn-solid">continue shopping</a>
+                    </div>
                 }
 
 
@@ -115,15 +126,15 @@
         @if (Model != null && Model.Count > 0)
         {
             <div class="row wishlist-buttons">
-                <div class="col-12"><a href="/Client/HomePage" class="btn btn-solid" style="float:right;">continue shopping</a></div>
+                <div class="col-12"><a href="/" class="btn btn-solid" style="float:right;">continue shopping</a></div>
             </div>
         }
-        </div>
-        
+    </div>
+
 </section>
 <script>
     function removewishlistitem(wishlistitemid) {
-          var URL = '/Client/Wishlist/RemoveWishlistitem';
+        var URL = '/Client/Wishlist/RemoveWishlistitem';
         jQuery.ajax({
             type: 'POST',
             async: true,

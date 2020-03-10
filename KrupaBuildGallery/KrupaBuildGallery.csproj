@@ -211,6 +211,7 @@
     <Compile Include="Areas\WebAPI\Controllers\CategoryController.cs" />
     <Compile Include="Areas\WebAPI\WebAPIAreaRegistration.cs" />
     <Compile Include="Filters\CustomAuthorize.cs" />
+    <Compile Include="Helper\Enums.cs" />
     <Compile Include="Helper\ErrorMessage.cs" />
     <Compile Include="Helper\ResponseDataModel.cs" />
     <Compile Include="Model\clsAdminSession.cs" />
@@ -300,6 +301,7 @@
     <Compile Include="ViewModel\CheckoutVM.cs" />
     <Compile Include="ViewModel\ClientUserVM.cs" />
     <Compile Include="ViewModel\ContactUsMessageVM.cs" />
+    <Compile Include="ViewModel\DashboardCountVM.cs" />
     <Compile Include="ViewModel\DistributorRequestVM.cs" />
     <Compile Include="ViewModel\ItemStockVM.cs" />
     <Compile Include="ViewModel\LoginVM.cs" />

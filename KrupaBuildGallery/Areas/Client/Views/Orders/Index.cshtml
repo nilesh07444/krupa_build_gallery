@@ -1,4 +1,9 @@
 ﻿@model List<KrupaBuildGallery.ViewModel.OrderVM>
+
+@{
+    ViewBag.Title = "My Orders";
+}
+
 <!-- breadcrumb start -->
 <div class="breadcrumb-section">
     <div class="container">
@@ -11,7 +16,7 @@
             <div class="col-sm-6">
                 <nav aria-label="breadcrumb" class="theme-breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
                         <li class="breadcrumb-item active">my orders</li>
                     </ol>
                 </nav>
@@ -62,7 +67,7 @@
                                         <td>₹ @Math.Round(objorder.OrderAmount, 2)</td>
                                         <td><span class="badge @stauscolor">@objorder.OrderStatus</span></td>
                                         <td>@objorder.PaymentType</td>
-                                        <td> <a href="/client/orders/orderdetails/@objorder.OrderId"><i class="fa fa-eye font-success"></i></a></td>
+                                        <td> <a href="/orders/orderdetails/@objorder.OrderId"><i class="fa fa-eye font-success"></i></a></td>
                                     </tr>
                                 }
 
@@ -75,11 +80,11 @@
                     <h2>No Order Found</h2>
                     <h3>Looks like you haven't made your order yet</h3>
                 }
-                </div>
-          </div>
-            <div class="row wishlist-buttons">
-                <div class="col-12"><a href="/Client/HomePage" class="btn btn-solid">continue shopping</a></div>
             </div>
         </div>
-    </section>
-    <!--section end-->
+        <div class="row wishlist-buttons">
+            <div class="col-12"><a href="/" class="btn btn-solid">continue shopping</a></div>
+        </div>
+    </div>
+</section>
+<!--section end-->

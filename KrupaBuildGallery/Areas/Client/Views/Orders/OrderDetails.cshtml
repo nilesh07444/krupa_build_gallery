@@ -1,4 +1,9 @@
 ﻿@model  KrupaBuildGallery.ViewModel.OrderVM
+
+@{
+    ViewBag.Title = "Order Detail";
+}
+
 <style>
     .label-wrapper {
         display: table;
@@ -53,7 +58,7 @@
             <div class="col-sm-6">
                 <nav aria-label="breadcrumb" class="theme-breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                        <li class="breadcrumb-item"><a href="/orders">Order</a></li>
                         <li class="breadcrumb-item active">Order Detail</li>
                     </ol>
                 </nav>
@@ -183,7 +188,7 @@
                     <div class="card-body">
                         <div class="card-body vendor-table" style="overflow-x:auto;">
                             <table class="table cart-table table-responsive-xs">
-                                <thead >
+                                <thead>
                                     <tr class="table-head">
                                         <th>Picture</th>
                                         <th>Product Item Name</th>

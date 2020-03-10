@@ -1,5 +1,10 @@
 ﻿@using KrupaBuildGallery.Model;
 @model List<ProductItemVM>
+
+@{ 
+    ViewBag.Title = "Product List";
+}
+
 <style>
     .wishlistcls {
         color: #ff4c3b !important;
@@ -16,7 +21,7 @@
             <div class="col-sm-6">
                 <nav aria-label="breadcrumb" class="theme-breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.html">Product</a></li>
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
                         <li class="breadcrumb-item active" aria-current="page">@ViewBag.Name</li>
                     </ol>
                 </nav>

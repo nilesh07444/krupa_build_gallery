@@ -890,7 +890,7 @@
                                             @if (TempData["LoginError"] != null)
                                             {
 
-                                                <div class="alert alert-block alert-danger fade show">
+                                                <div class="alert alert-block alert-danger fade show" style="margin-top: 10px;">
                                                     <button data-dismiss="alert" class="close close-sm" type="button">
                                                         <i class="fa fa-times"></i>
                                                     </button>
@@ -925,25 +925,10 @@
     <!-- Bootstrap js-->
     <script src="~/Content/assets/js/popper.min.js"></script>
     <script src="~/Content/assets/js/bootstrap.js"></script>
-
-    <!-- feather icon js-->
-    <script src="~/Content/assets/js/icons/feather-icon/feather.min.js"></script>
-    <script src="~/Content/assets/js/icons/feather-icon/feather-icon.js"></script>
-
+     
     <!-- Sidebar jquery-->
     <script src="~/Content/assets/js/sidebar-menu.js"></script>
     <script src="~/Content/assets/js/slick.js"></script>
-
-    <!-- Jsgrid js-->
-    <script src="~/Content/assets/js/jsgrid/jsgrid.min.js"></script>
-    <script src="~/Content/assets/js/jsgrid/griddata-invoice.js"></script>
-    <script src="~/Content/assets/js/jsgrid/jsgrid-invoice.js"></script>
-
-    <!-- lazyload js-->
-    <script src="~/Content/assets/js/lazysizes.min.js"></script>
-
-    <!--right sidebar js-->
-    <script src="~/Content/assets/js/chat-menu.js"></script>
 
     <!--script admin-->
     <script src="~/Content/assets/js/admin-script.js"></script>
@@ -957,7 +942,7 @@
         });
 
         jQuery(document).ready(function () {
-            jQuery.blockUI({ message: "<h4>Please Wait...</h4>" });
+            //jQuery.blockUI({ message: "<h4>Please Wait...</h4>" });
             jQuery("#cmdSubmit").click(function (event) {
                 //event.preventDefault();
                 if (jQuery("form").valid()) {
