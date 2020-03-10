@@ -68,22 +68,22 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             try
             {
 
-                lstDistriRequest = (from cu in _db.tbl_DistributorRequestDetails                                  
-                                 where !cu.IsDelete.Value
-                                 select new DistributorRequestVM
-                                 {
-                                     DistributorRequestId = cu.DistributorRequestId,
-                                     FirstName = cu.FirstName,
-                                     LastName = cu.LastName,                                     
-                                     Email = cu.Email,                                     
-                                     CompanyName = cu.CompanyName,                                     
-                                     MobileNo = cu.MobileNo,                                     
-                                     City = cu.City,
-                                     State = cu.State,
-                                     AddharCardNo = cu.AddharcardNo,
-                                     PanCardNo = cu.PanCardNo,
-                                     GSTNo = cu.GSTNo
-                                 }).OrderBy(x => x.FirstName).ToList();
+                lstDistriRequest = (from cu in _db.tbl_DistributorRequestDetails
+                                    where !cu.IsDelete.Value
+                                    select new DistributorRequestVM
+                                    {
+                                        DistributorRequestId = cu.DistributorRequestId,
+                                        FirstName = cu.FirstName,
+                                        LastName = cu.LastName,
+                                        Email = cu.Email,
+                                        CompanyName = cu.CompanyName,
+                                        MobileNo = cu.MobileNo,
+                                        City = cu.City,
+                                        State = cu.State,
+                                        AddharCardNo = cu.AddharcardNo,
+                                        PanCardNo = cu.PanCardNo,
+                                        GSTNo = cu.GSTNo
+                                    }).OrderBy(x => x.FirstName).ToList();
 
             }
             catch (Exception ex)
@@ -97,47 +97,47 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         public ActionResult Detail(long Id)
         {
             ClientUserVM objClientUserVM = (from cu in _db.tbl_ClientUsers
-                             join co in _db.tbl_ClientOtherDetails on cu.ClientUserId equals co.ClientUserId
-                             where !cu.IsDelete && cu.ClientUserId == Id
-                             select new ClientUserVM
-                             {
-                                 ClientUserId = cu.ClientUserId,
-                                 FirstName = cu.FirstName,
-                                 LastName = cu.LastName,
-                                 UserName = cu.UserName,
-                                 Email = cu.Email,
-                                 Password = cu.Password,
-                                 RoleId = cu.ClientRoleId,
-                                 CompanyName = cu.CompanyName,
-                                 ProfilePic = cu.ProfilePicture,
-                                 MobileNo = cu.MobileNo,
-                                 IsActive = cu.IsActive,
-                                 City = co.City,
-                                 State = co.State,
-                                 AddharCardNo = co.Addharcardno,
-                                 PanCardNo = co.Pancardno,
-                                 GSTNo = co.GSTno == "" ?"N/A":co.GSTno
-                             }).FirstOrDefault();
+                                            join co in _db.tbl_ClientOtherDetails on cu.ClientUserId equals co.ClientUserId
+                                            where !cu.IsDelete && cu.ClientUserId == Id
+                                            select new ClientUserVM
+                                            {
+                                                ClientUserId = cu.ClientUserId,
+                                                FirstName = cu.FirstName,
+                                                LastName = cu.LastName,
+                                                UserName = cu.UserName,
+                                                Email = cu.Email,
+                                                Password = cu.Password,
+                                                RoleId = cu.ClientRoleId,
+                                                CompanyName = cu.CompanyName,
+                                                ProfilePic = cu.ProfilePicture,
+                                                MobileNo = cu.MobileNo,
+                                                IsActive = cu.IsActive,
+                                                City = co.City,
+                                                State = co.State,
+                                                AddharCardNo = co.Addharcardno,
+                                                PanCardNo = co.Pancardno,
+                                                GSTNo = co.GSTno == "" ? "N/A" : co.GSTno
+                                            }).FirstOrDefault();
 
             List<OrderVM> lstOrders = new List<OrderVM>();
-            lstOrders = (from p in _db.tbl_Orders                        
-                        where p.ClientUserId == Id
-                        select new OrderVM
-                        {
-                            OrderId = p.OrderId,                            
-                            ClientUserId = p.ClientUserId,
-                            OrderAmount = p.OrderAmount,
-                            OrderShipCity = p.OrderShipCity,
-                            OrderShipState = p.OrderShipState,
-                            OrderShipAddress = p.OrderShipAddress,
-                            OrderPincode = p.OrderShipPincode,
-                            OrderShipClientName = p.OrderShipClientName,
-                            OrderShipClientPhone = p.OrderShipClientPhone,
-                            OrderStatusId = p.OrderStatusId,
-                            OrderAmountDue = p.AmountDue.Value,
-                            PaymentType = p.PaymentType,
-                            OrderDate = p.CreatedDate
-                        }).OrderByDescending(x => x.OrderDate).ToList();
+            lstOrders = (from p in _db.tbl_Orders
+                         where p.ClientUserId == Id
+                         select new OrderVM
+                         {
+                             OrderId = p.OrderId,
+                             ClientUserId = p.ClientUserId,
+                             OrderAmount = p.OrderAmount,
+                             OrderShipCity = p.OrderShipCity,
+                             OrderShipState = p.OrderShipState,
+                             OrderShipAddress = p.OrderShipAddress,
+                             OrderPincode = p.OrderShipPincode,
+                             OrderShipClientName = p.OrderShipClientName,
+                             OrderShipClientPhone = p.OrderShipClientPhone,
+                             OrderStatusId = p.OrderStatusId,
+                             OrderAmountDue = p.AmountDue.Value,
+                             PaymentType = p.PaymentType,
+                             OrderDate = p.CreatedDate
+                         }).OrderByDescending(x => x.OrderDate).ToList();
             if (lstOrders != null && lstOrders.Count() > 0)
             {
                 lstOrders.ForEach(x => x.OrderStatus = GetOrderStatus(x.OrderStatusId));
@@ -164,7 +164,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             //                                       }).OrderByDescending(x => x.OrderItemId).ToList();
             //    objOrder.OrderItems = lstOrderItms;
             //}
-            return View(objClientUserVM);            
+            return View(objClientUserVM);
         }
 
         public string GetOrderStatus(long orderstatusid)
@@ -176,20 +176,20 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         {
             List<PaymentHistoryVM> lstPaymentHist = new List<PaymentHistoryVM>();
             lstPaymentHist = (from p in _db.tbl_PaymentHistory
-                        join o in _db.tbl_Orders on p.OrderId equals o.OrderId
-                        where p.OrderId == Id
-                        select new PaymentHistoryVM
-                        {
-                            OrderId = p.OrderId,
-                            AmountDue = p.AmountDue,
-                            OrderTotalAmout = o.OrderAmount,
-                            AmountPaid = p.AmountPaid,
-                            PaymentDate = p.DateOfPayment,
-                            PaymentHistoryId = p.PaymentHistory_Id,
-                            Paymentthrough = p.PaymentBy,
-                            CurrentAmountDue = o.AmountDue.Value
-                        }).OrderBy(x => x.PaymentDate).ToList();
-           ViewData["orderobj"] =_db.tbl_Orders.Where(o => o.OrderId == Id).FirstOrDefault();
+                              join o in _db.tbl_Orders on p.OrderId equals o.OrderId
+                              where p.OrderId == Id
+                              select new PaymentHistoryVM
+                              {
+                                  OrderId = p.OrderId,
+                                  AmountDue = p.AmountDue,
+                                  OrderTotalAmout = o.OrderAmount,
+                                  AmountPaid = p.AmountPaid,
+                                  PaymentDate = p.DateOfPayment,
+                                  PaymentHistoryId = p.PaymentHistory_Id,
+                                  Paymentthrough = p.PaymentBy,
+                                  CurrentAmountDue = o.AmountDue.Value
+                              }).OrderBy(x => x.PaymentDate).ToList();
+            ViewData["orderobj"] = _db.tbl_Orders.Where(o => o.OrderId == Id).FirstOrDefault();
             return View(lstPaymentHist);
         }
 
@@ -226,17 +226,17 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             _db.tbl_PaymentHistory.Add(objPyment);
             _db.SaveChanges();
 
-            var objOrder =_db.tbl_Orders.Where(o => o.OrderId == OrderId).FirstOrDefault();
-            if(objOrder != null)
+            var objOrder = _db.tbl_Orders.Where(o => o.OrderId == OrderId).FirstOrDefault();
+            if (objOrder != null)
             {
                 objOrder.AmountDue = AmountDue - AmountPaid;
                 long ClientUserId = objOrder.ClientUserId;
-                tbl_ClientOtherDetails objtbl_ClientOtherDetails =_db.tbl_ClientOtherDetails.Where(o => o.ClientUserId == ClientUserId).FirstOrDefault();
+                tbl_ClientOtherDetails objtbl_ClientOtherDetails = _db.tbl_ClientOtherDetails.Where(o => o.ClientUserId == ClientUserId).FirstOrDefault();
                 objtbl_ClientOtherDetails.AmountDue = objtbl_ClientOtherDetails.AmountDue - AmountPaid;
                 _db.SaveChanges();
             }
             return "Success";
-        }                 
+        }
         public string GenerateReceipt(long PaymentId)
         {
             tbl_PaymentHistory objPymt = _db.tbl_PaymentHistory.Where(o => o.PaymentHistory_Id == PaymentId).FirstOrDefault();
@@ -246,32 +246,32 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 StreamReader sr;
                 string file = Server.MapPath("~/ReceiptLatest.html");
                 string htmldata = "";
-                
+
                 FileInfo fi = new FileInfo(file);
                 sr = System.IO.File.OpenText(file);
                 htmldata += sr.ReadToEnd();
                 string ReceiptNo = "R-" + objPymt.PaymentHistory_Id;
                 string DateOfReceipt = objPymt.DateOfPayment.ToString("dd-MM-yyyy");
                 var objOrder = (from p in _db.tbl_Orders
-                             join c in _db.tbl_ClientUsers on p.ClientUserId equals c.ClientUserId
-                             where p.OrderId == objPymt.OrderId
-                             select new OrderVM
-                             {
-                                 OrderId = p.OrderId,
-                                 ClientUserName = c.FirstName + " " + c.LastName,
-                                 ClientUserId = p.ClientUserId,
-                                 OrderAmount = p.OrderAmount,
-                                 OrderShipCity = p.OrderShipCity,
-                                 OrderShipState = p.OrderShipState,
-                                 OrderShipAddress = p.OrderShipAddress,
-                                 OrderPincode = p.OrderShipPincode,
-                                 OrderShipClientName = p.OrderShipClientName,
-                                 OrderShipClientPhone = p.OrderShipClientPhone,
-                                 OrderStatusId = p.OrderStatusId,
-                                 PaymentType = p.PaymentType,
-                                 OrderAmountDue = p.AmountDue.Value,
-                                 OrderDate = p.CreatedDate
-                             }).OrderByDescending(x => x.OrderDate).FirstOrDefault();
+                                join c in _db.tbl_ClientUsers on p.ClientUserId equals c.ClientUserId
+                                where p.OrderId == objPymt.OrderId
+                                select new OrderVM
+                                {
+                                    OrderId = p.OrderId,
+                                    ClientUserName = c.FirstName + " " + c.LastName,
+                                    ClientUserId = p.ClientUserId,
+                                    OrderAmount = p.OrderAmount,
+                                    OrderShipCity = p.OrderShipCity,
+                                    OrderShipState = p.OrderShipState,
+                                    OrderShipAddress = p.OrderShipAddress,
+                                    OrderPincode = p.OrderShipPincode,
+                                    OrderShipClientName = p.OrderShipClientName,
+                                    OrderShipClientPhone = p.OrderShipClientPhone,
+                                    OrderStatusId = p.OrderStatusId,
+                                    PaymentType = p.PaymentType,
+                                    OrderAmountDue = p.AmountDue.Value,
+                                    OrderDate = p.CreatedDate
+                                }).OrderByDescending(x => x.OrderDate).FirstOrDefault();
                 string ClientUserName = objOrder.ClientUserName;
                 string AmountWords = ConvertNumbertoWords(Convert.ToInt64(objPymt.AmountPaid));
                 string PaymentBy = objPymt.PaymentBy;
@@ -374,7 +374,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             OrderId = p.OrderId,
                             ClientUserName = c.FirstName + " " + c.LastName,
                             ClientUserId = p.ClientUserId,
-                            ClientAddress = u.Address +", "+u.City,
+                            ClientAddress = u.Address + ", " + u.City,
                             ClientEmail = c.Email,
                             ClientMobileNo = c.MobileNo,
                             OrderAmount = p.OrderAmount,
@@ -406,7 +406,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                                        GSTAmt = p.GSTAmt.Value,
                                                        IGSTAmt = p.IGSTAmt.Value,
                                                        ItemImg = c.MainImage,
-                                                       GST_Per = c.GST_Per                                                       
+                                                       GST_Per = c.GST_Per
                                                    }).OrderByDescending(x => x.OrderItemId).ToList();
                 objOrder.OrderItems = lstOrderItms;
                 string file = Server.MapPath("~/Invoice.html");
@@ -422,32 +422,32 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 string ItemHtmls = "";
                 decimal TotalFinal = 0;
                 StringBuilder srBuild = new StringBuilder();
-                if(lstOrderItms != null && lstOrderItms.Count() > 0)
+                if (lstOrderItms != null && lstOrderItms.Count() > 0)
                 {
                     int cntsrNo = 1;
-                 
-                    foreach(var objItem in lstOrderItms)
+
+                    foreach (var objItem in lstOrderItms)
                     {
-                        decimal InclusiveGST = Math.Round(objItem.Price - objItem.Price * (100 / (100 + objItem.GST_Per)),2);
-                        decimal PreGSTPrice =  Math.Round(objItem.Price - InclusiveGST,2);
-                        decimal basicTotalPrice = Math.Round(PreGSTPrice * objItem.Qty,2);
-                        decimal SGST = Math.Round(Convert.ToDecimal(objItem.GST_Per / 2),2);
+                        decimal InclusiveGST = Math.Round(objItem.Price - objItem.Price * (100 / (100 + objItem.GST_Per)), 2);
+                        decimal PreGSTPrice = Math.Round(objItem.Price - InclusiveGST, 2);
+                        decimal basicTotalPrice = Math.Round(PreGSTPrice * objItem.Qty, 2);
+                        decimal SGST = Math.Round(Convert.ToDecimal(objItem.GST_Per / 2), 2);
                         decimal CGST = Math.Round(Convert.ToDecimal(objItem.GST_Per / 2), 2);
-                        decimal SGSTAmt = Math.Round((basicTotalPrice * SGST) / 100,2);
-                        decimal CGSTAmt = Math.Round((basicTotalPrice * CGST) / 100,2);
-                        decimal FinalPrice = Math.Round(basicTotalPrice + SGSTAmt + CGSTAmt,2);
+                        decimal SGSTAmt = Math.Round((basicTotalPrice * SGST) / 100, 2);
+                        decimal CGSTAmt = Math.Round((basicTotalPrice * CGST) / 100, 2);
+                        decimal FinalPrice = Math.Round(basicTotalPrice + SGSTAmt + CGSTAmt, 2);
                         TotalFinal = TotalFinal + FinalPrice;
                         srBuild.Append("<tr>");
-                        srBuild.Append("<td>"+ cntsrNo + "</td>");
-                        srBuild.Append("<td>"+objItem.ItemName+"</td>");
-                        srBuild.Append("<td class=\"text-center\">"+objItem.Qty+"</td>");
-                        srBuild.Append("<td class=\"text-center\">"+ PreGSTPrice + "</td>");
+                        srBuild.Append("<td>" + cntsrNo + "</td>");
+                        srBuild.Append("<td>" + objItem.ItemName + "</td>");
+                        srBuild.Append("<td class=\"text-center\">" + objItem.Qty + "</td>");
+                        srBuild.Append("<td class=\"text-center\">" + PreGSTPrice + "</td>");
                         srBuild.Append("<td class=\"text-center\">" + basicTotalPrice + "</td>");
                         srBuild.Append("<td class=\"text-center\">" + CGST + "</td>");
                         srBuild.Append("<td class=\"text-center\">" + CGSTAmt + "</td>");
                         srBuild.Append("<td class=\"text-center\">" + SGST + "</td>");
                         srBuild.Append("<td class=\"text-center\">" + SGSTAmt + "</td>");
-                        srBuild.Append("<td class=\"text-center\">" +Math.Round(FinalPrice,2) + "</td>");
+                        srBuild.Append("<td class=\"text-center\">" + Math.Round(FinalPrice, 2) + "</td>");
                         srBuild.Append("</tr>");
                         cntsrNo = cntsrNo + 1;
 
@@ -455,12 +455,42 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     }
                 }
                 ItemHtmls = srBuild.ToString();
-                newhtmldata = htmldata.Replace("--INVOICENO--", InvoiceNo).Replace("--INVOICEDATE--", DateOfInvoice).Replace("--ORDERNO--", orderNo).Replace("--CLIENTUSERNAME--", ClientUserName).Replace("--CLIENTUSERADDRESS--", objOrder.ClientAddress).Replace("--CLIENTUSEREMAIL--", objOrder.ClientEmail).Replace("--CLIENTUSERMOBILE--", objOrder.ClientMobileNo).Replace("--ITEMLIST--",ItemHtmls).Replace("--TOTAL--",Math.Round(TotalFinal,2).ToString());
+                newhtmldata = htmldata.Replace("--INVOICENO--", InvoiceNo).Replace("--INVOICEDATE--", DateOfInvoice).Replace("--ORDERNO--", orderNo).Replace("--CLIENTUSERNAME--", ClientUserName).Replace("--CLIENTUSERADDRESS--", objOrder.ClientAddress).Replace("--CLIENTUSEREMAIL--", objOrder.ClientEmail).Replace("--CLIENTUSERMOBILE--", objOrder.ClientMobileNo).Replace("--ITEMLIST--", ItemHtmls).Replace("--TOTAL--", Math.Round(TotalFinal, 2).ToString());
 
             }
-          
+
             return newhtmldata;
             //return "Receipt_" + objPymt.PaymentHistory_Id+".pdf";
+        }
+
+        public ActionResult RequestDetail(int Id)
+        {
+            DistributorRequestVM objDistReq = new DistributorRequestVM();
+            try
+            {
+                 objDistReq = (from cu in _db.tbl_DistributorRequestDetails
+                                                   where !cu.IsDelete.Value
+                                                   select new DistributorRequestVM
+                                                   {
+                                                       DistributorRequestId = cu.DistributorRequestId,
+                                                       FirstName = cu.FirstName,
+                                                       LastName = cu.LastName,
+                                                       Email = cu.Email,
+                                                       CompanyName = cu.CompanyName,
+                                                       MobileNo = cu.MobileNo,
+                                                       City = cu.City,
+                                                       State = cu.State,
+                                                       AddharCardNo = cu.AddharcardNo,
+                                                       PanCardNo = cu.PanCardNo,
+                                                       GSTNo = cu.GSTNo
+                                                   }).FirstOrDefault();
+
+            }
+            catch (Exception ex)
+            {
+                string ErrorMessage = ex.Message.ToString();
+            }
+            return View(objDistReq);
         }
     }
 }

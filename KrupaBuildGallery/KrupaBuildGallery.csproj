@@ -3805,6 +3805,7 @@
     <Content Include="Areas\Client\Views\Products\Detail.cshtml" />
     <Content Include="Areas\Client\Views\ForgotPassword\Index.cshtml" />
     <Content Include="Areas\WebAPI\Views\web.config" />
+    <Content Include="Areas\Admin\Views\Distributor\RequestDetail.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />
