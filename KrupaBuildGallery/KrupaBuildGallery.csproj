@@ -1734,6 +1734,7 @@
     <Content Include="Content\assets\images\icon\logo\f5.png" />
     <Content Include="Content\assets\images\icon\magnifying-glass.png" />
     <Content Include="Content\assets\images\icon\mastercard.png" />
+    <Content Include="Content\assets\images\icon\newlogo.jpeg" />
     <Content Include="Content\assets\images\icon\paypal.png" />
     <Content Include="Content\assets\images\icon\phone.png" />
     <Content Include="Content\assets\images\icon\quick-view.png" />
