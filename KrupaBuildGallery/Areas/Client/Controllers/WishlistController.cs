@@ -27,7 +27,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 WishListId = wshl.PK_WishListId,
                                 ItemName = i.ItemName,
                                 ItemId = i.ProductItemId,
-                                Price = i.CustomerPrice,
+                                Price = clsClientSession.RoleID == 1 ? i.CustomerPrice : i.DistributorPrice,
                                 ItemImage = i.MainImage                                
                             }).OrderByDescending(x => x.WishListId).ToList();
             return View(lstWishItems);

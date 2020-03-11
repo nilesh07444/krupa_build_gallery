@@ -203,7 +203,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                       //join s in _db.tbl_SubProducts on i.SubProductId equals s.SubProductId into outerJoinSubProduct
                                       //from s in outerJoinSubProduct.DefaultIfEmpty()
                                       //where !i.IsDelete && !c.IsDelete && !p.IsDelete
-                                  where !i.IsDelete && i.IsActive == true && i.SubProductId == productid
+                                  where !i.IsDelete && i.IsActive == true && i.ProductId == productid
                                   select new ProductItemVM
                                   {
                                       ProductItemId = i.ProductItemId,
