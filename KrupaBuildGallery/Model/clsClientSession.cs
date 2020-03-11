@@ -12,44 +12,44 @@ namespace KrupaBuildGallery.Model
         {
             get
             {
-                return HttpContext.Current.Session["UserID"] != null ? Int32.Parse(Convert.ToString(HttpContext.Current.Session["UserID"])) : 0;
+                return HttpContext.Current.Session["ClientUserID"] != null ? Int32.Parse(Convert.ToString(HttpContext.Current.Session["ClientUserID"])) : 0;
             }
             set
             {
-                HttpContext.Current.Session["UserID"] = value;
+                HttpContext.Current.Session["ClientUserID"] = value;
             }
         }
         public static int RoleID
         {
             get
             {
-                return HttpContext.Current.Session["RoleID"] != null ? Int32.Parse(Convert.ToString(HttpContext.Current.Session["RoleID"])) : 0;
+                return HttpContext.Current.Session["ClientRoleID"] != null ? Int32.Parse(Convert.ToString(HttpContext.Current.Session["ClientRoleID"])) : 0;
             }
             set
             {
-                HttpContext.Current.Session["RoleID"] = value;
+                HttpContext.Current.Session["ClientRoleID"] = value;
             }
         }
         public static String SessionID
         {
             get
             {
-                return HttpContext.Current.Session["SessionID"] != null ? Convert.ToString(HttpContext.Current.Session["SessionID"]) : String.Empty;
+                return HttpContext.Current.Session["ClientSessionID"] != null ? Convert.ToString(HttpContext.Current.Session["ClientSessionID"]) : String.Empty;
             }
             set
             {
-                HttpContext.Current.Session["SessionID"] = value;
+                HttpContext.Current.Session["ClientSessionID"] = value;
             }
         }
         public static String RoleName
         {
             get
             {
-                return HttpContext.Current.Session["RoleName"] != null ? Convert.ToString(HttpContext.Current.Session["RoleName"]) : String.Empty;
+                return HttpContext.Current.Session["ClientRoleName"] != null ? Convert.ToString(HttpContext.Current.Session["ClientRoleName"]) : String.Empty;
             }
             set
             {
-                HttpContext.Current.Session["RoleName"] = value;
+                HttpContext.Current.Session["ClientRoleName"] = value;
             }
         }
 
@@ -57,11 +57,11 @@ namespace KrupaBuildGallery.Model
         {
             get
             {
-                return HttpContext.Current.Session["Email"] != null ? Convert.ToString(HttpContext.Current.Session["Email"]) : String.Empty;
+                return HttpContext.Current.Session["ClientEmail"] != null ? Convert.ToString(HttpContext.Current.Session["ClientEmail"]) : String.Empty;
             }
             set
             {
-                HttpContext.Current.Session["Email"] = value;
+                HttpContext.Current.Session["ClientEmail"] = value;
             }
         }
 
@@ -69,33 +69,33 @@ namespace KrupaBuildGallery.Model
         {
             get
             {
-                return HttpContext.Current.Session["FirmName"] != null ? Convert.ToString(HttpContext.Current.Session["FirmName"]) : String.Empty;
+                return HttpContext.Current.Session["ClientFirmName"] != null ? Convert.ToString(HttpContext.Current.Session["ClientFirmName"]) : String.Empty;
             }
             set
             {
-                HttpContext.Current.Session["FirmName"] = value;
+                HttpContext.Current.Session["ClientFirmName"] = value;
             }
         }
         public static string ImagePath
         {
             get
             {
-                return HttpContext.Current.Session["ImagePath"] != null ? Convert.ToString(HttpContext.Current.Session["ImagePath"]) : string.Empty;
+                return HttpContext.Current.Session["ClientImagePath"] != null ? Convert.ToString(HttpContext.Current.Session["ClientImagePath"]) : string.Empty;
             }
             set
             {
-                HttpContext.Current.Session["ImagePath"] = value;
+                HttpContext.Current.Session["ClientImagePath"] = value;
             }
         }
         public static string MobileNumber
         {
             get
             {
-                return HttpContext.Current.Session["MobileNumber"] != null ? Convert.ToString(HttpContext.Current.Session["MobileNumber"]) : string.Empty;
+                return HttpContext.Current.Session["ClientMobileNumber"] != null ? Convert.ToString(HttpContext.Current.Session["ClientMobileNumber"]) : string.Empty;
             }
             set
             {
-                HttpContext.Current.Session["MobileNumber"] = value;
+                HttpContext.Current.Session["ClientMobileNumber"] = value;
             }
         }
 
@@ -104,11 +104,11 @@ namespace KrupaBuildGallery.Model
         {
             get
             {
-                return HttpContext.Current.Session["UserName"] != null ? Convert.ToString(HttpContext.Current.Session["UserName"]) : string.Empty;
+                return HttpContext.Current.Session["ClientUserName"] != null ? Convert.ToString(HttpContext.Current.Session["ClientUserName"]) : string.Empty;
             }
             set
             {
-                HttpContext.Current.Session["UserName"] = value;
+                HttpContext.Current.Session["ClientUserName"] = value;
             }
         }
 
@@ -116,11 +116,11 @@ namespace KrupaBuildGallery.Model
         {
             get
             {
-                return HttpContext.Current.Session["FirstName"] != null ? Convert.ToString(HttpContext.Current.Session["FirstName"]) : string.Empty;
+                return HttpContext.Current.Session["ClientFirstName"] != null ? Convert.ToString(HttpContext.Current.Session["ClientFirstName"]) : string.Empty;
             }
             set
             {
-                HttpContext.Current.Session["FirstName"] = value;
+                HttpContext.Current.Session["ClientFirstName"] = value;
             }
         }
 
@@ -128,11 +128,11 @@ namespace KrupaBuildGallery.Model
         {
             get
             {
-                return HttpContext.Current.Session["LastName"] != null ? Convert.ToString(HttpContext.Current.Session["LastName"]) : string.Empty;
+                return HttpContext.Current.Session["ClientLastName"] != null ? Convert.ToString(HttpContext.Current.Session["ClientLastName"]) : string.Empty;
             }
             set
             {
-                HttpContext.Current.Session["LastName"] = value;
+                HttpContext.Current.Session["ClientLastName"] = value;
             }
         }
     }

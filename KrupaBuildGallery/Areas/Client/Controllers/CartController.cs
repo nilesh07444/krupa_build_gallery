@@ -45,7 +45,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                      CartId = crt.Cart_Id,
                                      ItemName = i.ItemName,
                                      ItemId = i.ProductItemId,
-                                     Price = i.CustomerPrice,                                     
+                                     Price = clsClientSession.RoleID == 1 ? i.CustomerPrice : i.DistributorPrice,                                     
                                      ItemImage = i.MainImage,
                                      Qty = crt.CartItemQty.Value                                    
                                  }).OrderByDescending(x => x.CartId).ToList();
@@ -282,7 +282,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                         CartId = crt.Cart_Id,
                                         ItemName = i.ItemName,
                                         ItemId = i.ProductItemId,
-                                        Price = i.CustomerPrice,
+                                        Price = clsClientSession.RoleID == 1 ? i.CustomerPrice : i.DistributorPrice,
                                         ItemImage = i.MainImage,
                                         Qty = crt.CartItemQty.Value
                                     }).OrderByDescending(x => x.CartId).ToList();

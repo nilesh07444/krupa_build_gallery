@@ -120,7 +120,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="product-buttons"><a href="javascript:void(0);" data-toggle="modal" data-target="#addtocart" class="btn btn-solid" onclick="addtocrt('@Model.ProductItemId');">add to cart</a> <a href="/cart" class="btn btn-solid">buy now</a></div>
+                        <div class="product-buttons"><a href="javascript:void(0);" data-toggle="modal" data-target="#addtocart" class="btn btn-solid" onclick="addtocrt('@Model.ProductItemId');">add to cart</a> <a href="/cart" onclick="addtocrt('@Model.ProductItemId');return true;" class="btn btn-solid">buy now</a></div>
                         <div class="border-product">
                             <h6 class="product-title">product details</h6>
                             <p>@Model.ItemDescription</p>
