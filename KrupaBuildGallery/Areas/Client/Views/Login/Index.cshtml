@@ -40,16 +40,19 @@
                         <div class="form-group">
                             <label for="review">Password</label>
                             <input type="password" class="form-control" id="password" name="password" placeholder="Enter your password" required="">
+
+                            @if (TempData["LoginError"] != null)
+                            {
+                                <span style="color:red;" class="errorcls">@TempData["LoginError"]</span>
+                            }
+                            else
+                            {
+                                <span style="color:red;" class="errorcls"></span>
+                            }
+                            <br />
+
                         </div>
-                        if (TempData["LoginError"] != null)
-                        {
-                            <span style="color:red;" class="errorcls">@TempData["LoginError"]</span>
-                        }
-                        else
-                        {
-                            <span style="color:red;" class="errorcls"></span>
-                        }
-                        <br />
+
                         <input type="hidden" name="hdnReferer" value="@ViewBag.Referer" />
                         <input type="submit" value="Login" class="btn btn-solid" />
 
@@ -75,14 +78,14 @@
 </section>
 <!--Section ends-->
 <script>
-      function Login() {
-          if ($("#email").val().trim() == "" || $("#password").val().trim() == "") {
-              $(".errorcls").html("Email and Password must be required!!");
-                return false;
-            }
-          else {
-               StartLoading();
-                return true;
-            }
+    function Login() {
+        if ($("#email").val().trim() == "" || $("#password").val().trim() == "") {
+            $(".errorcls").html("Email and Password must be required!!");
+            return false;
         }
+        else {
+            StartLoading();
+            return true;
+        }
+    }
 </script>

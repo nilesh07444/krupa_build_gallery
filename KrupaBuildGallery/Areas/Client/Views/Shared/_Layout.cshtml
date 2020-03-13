@@ -39,7 +39,10 @@
     <meta name="keywords" content="Krupa Build Gallery, Online store, ecommerce website">
     <meta name="author" content="Krupa Build Gallery">
     <link rel="icon" href="~/Content/assets/images/favicon/1.png" type="image/x-icon">
-    <link rel="shortcut icon" href="~/Content/assets/images/favicon/1.png" type="image/x-icon">
+    @*<link rel="shortcut icon" href="~/Content/assets/images/favicon/1.png" type="image/x-icon">*@
+
+    <link rel="shortcut icon" href="~/Content/assets/images/dashboard/fav.ico" type="image/x-icon">
+
     <title>@ViewBag.Title | Krupa Build Gallery</title>
 
     <!--Google font-->
@@ -169,7 +172,7 @@
                                 </div>
                             </div>
                             <div class="brand-logo">
-                                <a href="/"><img src="~/Content/assets/images/icon/newlogo.jpeg" class="img-fluid blur-up lazyload" alt=""></a>
+                                <a href="/"><img src="~/Content/assets/images/logos/logo.png" class="img-fluid blur-up lazyload" alt=""></a>
                             </div>
                         </div>
                         <div class="menu-right pull-right">
@@ -198,7 +201,20 @@
                                                                 <ul>
                                                                     @foreach (ProductInfo product in category.ProductInfo)
                                                                     {
-                                                                        <li><a href="/products/Byproduct/@product.ProductId">@product.ProductName</a></li>
+                                                                        <li>
+                                                                            <a href="/products/Byproduct/@product.ProductId">@product.ProductName</a>
+                                                                            @if (product.SubProductInfo.Count() > 0)
+                                                                            {
+                                                                                <ul>
+                                                                                    @foreach (SubProductInfo subproduct in product.SubProductInfo)
+                                                                                    {
+                                                                                        <li><a href="/products/Bysubproduct/@subproduct.SubProductId">@subproduct.SubProductName</a></li>
+                                                                                    }
+                                                                                </ul>
+                                                                            }
+
+                                                                        </li>
+
                                                                     }
                                                                 </ul>
                                                             }
@@ -256,9 +272,7 @@
                                         </li>
                                         <li class="onhover-div mobile-cart" style="max-height:250px;">
                                             <div><img src="~/Content/assets/images/icon/cart.png" class="img-fluid blur-up lazyload" alt=""> <i class="ti-shopping-cart"></i></div>
-                                            <ul class="show-div shopping-cart" id="ulCartitems" style="max-height:250px;overflow:auto;">
-                                             
-                                            </ul>
+                                            <ul class="show-div shopping-cart" id="ulCartitems" style="max-height:250px;overflow:auto;"></ul>
                                         </li>
                                     </ul>
                                 </div>
@@ -277,31 +291,6 @@
 
     <!-- footer -->
     <footer class="footer-light">
-        <div class="light-layout">
-            <div class="container">
-                <section class="small-section border-section border-top-0">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div class="subscribe">
-                                <div>
-                                    <h4>KNOW IT ALL FIRST!</h4>
-                                    <p>Never Miss Anything From Krupa Build Gallery By Signing Up To Our Newsletter.</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <form action="https://pixelstrap.us19.list-manage.com/subscribe/post?u=5a128856334b598b395f1fc9b&amp;id=082f74cbda" class="form-inline subscribe-form auth-form needs-validation" method="post" id="mc-embedded-subscribe-form1" name="mc-embedded-subscribe-form"
-                                  target="_blank">
-                                <div class="form-group mx-sm-3">
-                                    <input type="text" class="form-control" name="EMAIL" id="mce-EMAIL" placeholder="Enter your email" required="required">
-                                </div>
-                                <button type="submit" class="btn btn-solid" id="mc-submit">subscribe</button>
-                            </form>
-                        </div>
-                    </div>
-                </section>
-            </div>
-        </div>
         <section class="section-b-space light-layout">
             <div class="container">
                 <div class="row footer-theme partition-f">
@@ -310,7 +299,7 @@
                             <h4>about</h4>
                         </div>
                         <div class="footer-contant">
-                            <div class="footer-logo"><img src="~/Content/assets/images/icon/newlogo.jpeg" alt=""></div>
+                            <div class="footer-logo"><img src="~/Content/assets/images/logos/logo.png" alt=""></div>
                             <p>Krupa Build Gallery in Godhra has a wide range of products and services to cater to the varied requirements of their customers. The staff at this establishment are courteous and prompt at providing any assistance.</p>
                             <div class="footer-social">
                                 <ul>
@@ -485,27 +474,28 @@
     <!-- Quick-view modal popup end-->
     <!-- exit modal popup start-->
     @*<div class="modal fade bd-example-modal-lg theme-modal exit-modal" id="exit_popup" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-body modal1">
-                    <div class="container-fluid p-0">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="modal-bg">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                    <div class="media">
-                                        <img src="~/Content/assets/images/stop.png" class="stop img-fluid blur-up lazyload mr-3" alt="">
-                                        <div class="media-body text-left align-self-center">
-                                            <div>
-                                                <h2>wait!</h2>
-                                                <h4>
-                                                    We want to give you
-                                                    <b>10% discount</b>
-                                                    <span>for your first order</span>
-                                                </h4>
-                                                <h5>Use discount code at checkout</h5>
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-body modal1">
+                        <div class="container-fluid p-0">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="modal-bg">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                        <div class="media">
+                                            <img src="~/Content/assets/images/stop.png" class="stop img-fluid blur-up lazyload mr-3" alt="">
+                                            <div class="media-body text-left align-self-center">
+                                                <div>
+                                                    <h2>wait!</h2>
+                                                    <h4>
+                                                        We want to give you
+                                                        <b>10% discount</b>
+                                                        <span>for your first order</span>
+                                                    </h4>
+                                                    <h5>Use discount code at checkout</h5>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -515,8 +505,7 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>*@
+        </div>*@
     <!-- Add to cart modal popup end-->
     <!-- fly cart ui jquery-->
     <script src="~/Content/assets/js/jquery-ui.min.js"></script>
@@ -572,12 +561,12 @@
         function StopLoading() {
             jQuery.unblockUI();
         }
-        $(document).ready(function() { 
+        $(document).ready(function() {
               $.ajax({
                 url: '@Url.Action("CartItemsListTop", "Cart")',
                 type: "post",
                 dataType: "html",
-                contentType: 'application/json; charset=utf-8',                
+                contentType: 'application/json; charset=utf-8',
                 success: function (data) {
                     //success
                     $("#ulCartitems").html(data); //populate the tab content.
@@ -587,7 +576,7 @@
                     alert("error");
                 }
             });
-         
+
         });
     </script>
 </body>

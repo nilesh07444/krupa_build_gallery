@@ -2122,6 +2122,7 @@
     <Content Include="Content\assets\images\logos\8.png" />
     <Content Include="Content\assets\images\logos\9.png" />
     <Content Include="Content\assets\images\logos\krupalogo.jpeg" />
+    <Content Include="Content\assets\images\logos\logo.png" />
     <Content Include="Content\assets\images\lookbook.jpg" />
     <Content Include="Content\assets\images\lookbook2.jpg" />
     <Content Include="Content\assets\images\main-banner-bg.jpg" />

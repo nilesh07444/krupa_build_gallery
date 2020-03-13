@@ -12316,10 +12316,12 @@ body.dark {
     white-space: nowrap; }
   .pixelstrap ul a, .pixelstrap.sm-vertical a {
     white-space: normal; }
-  .pixelstrap .sm-nowrap > li > a, .pixelstrap .sm-nowrap > li > :not(ul) a {
-    white-space: nowrap; }
+    .pixelstrap .sm-nowrap > li > a, .pixelstrap .sm-nowrap > li > :not(ul) a {
+        white-space: pre-wrap;
+    }
     .pixelstrap .sm-nowrap > li > a.highlighted, .pixelstrap .sm-nowrap > li > :not(ul) a.highlighted {
-      white-space: nowrap; }
+        white-space: pre-wrap;
+    }
   .sm-horizontal .mega-menu li a {
     padding: 0; }
     .sm-horizontal .mega-menu li a:focus, .sm-horizontal .mega-menu li a:active {
