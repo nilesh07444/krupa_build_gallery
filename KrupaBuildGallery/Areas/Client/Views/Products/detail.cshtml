@@ -101,8 +101,7 @@
                 </div>
                 <div class="col-lg-6 rtl-text">
                     <div class="product-right">
-                        <h2>@Model.ItemName</h2>
-                        @*<h4><del>$459.00</del><span>55% off</span></h4>*@
+                        <h2>@Model.ItemName</h2> 
                         @if (clsClientSession.UserID == 0 || (clsClientSession.UserID > 0 && clsClientSession.RoleID == 1))
                         {
                             <h4>₹ @Model.CustomerPrice <del>₹ @Model.MRPPrice</del></h4>

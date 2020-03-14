@@ -43,18 +43,18 @@
                             @Html.AntiForgeryToken()
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                        <div class="form-group row">
-                            @Html.LabelFor(model => model.CategoryId, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
-                            @Html.DropDownListFor(model => model.CategoryId, new SelectList(Model.CategoryList, "Value", "Text"), "- Select Category -", new { @class = "form-control col-md-8", style = "" })
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.CategoryId, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.DropDownListFor(model => model.CategoryId, new SelectList(Model.CategoryList, "Value", "Text"), "- Select Category -", new { @class = "form-control col-md-8", style = "" })
 
-                            <lable class="col-xl-3 col-md-4"></lable>
-                            @Html.ValidationMessageFor(model => model.CategoryId, "", new { @class = "text-danger" })
-                        </div>
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.CategoryId, "", new { @class = "text-danger" })
+                            </div>
 
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.ProductId, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.DropDownListFor(model => model.ProductId, new SelectList(Model.ProductList, "Value", "Text"), "- Select Product -", new { @class = "form-control col-md-8", style = "" })
-                                
+
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.ProductId, "", new { @class = "text-danger" })
                             </div>
@@ -73,6 +73,14 @@
 
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.ItemMainImageFile, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.ItemGalleryImageFile, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.TextBoxFor(model => model.ItemGalleryImageFile, new { type = "file", @multiple = "multiple", @class = "form-control col-md-8" })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.ItemGalleryImageFile, "", new { @class = "text-danger" })
                             </div>
 
                             <div class="form-group row">
@@ -142,7 +150,7 @@
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.Notification, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.EditorFor(model => model.Notification, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Notification Text", maxlength = "200" } })
-                                
+
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.Notification, "", new { @class = "text-danger" })
                             </div>

@@ -75,7 +75,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Add(ProductItemVM productItemVM, HttpPostedFileBase ItemMainImageFile)
+        public ActionResult Add(ProductItemVM productItemVM, HttpPostedFileBase ItemMainImageFile, HttpPostedFileBase[] ItemGalleryImageFile)
         {
             try
             {
@@ -121,6 +121,35 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
                     _db.tbl_ProductItems.Add(objProductItem);
                     _db.SaveChanges();
+
+                    //iterating through multiple file collection   
+                    if (ItemGalleryImageFile != null && ItemGalleryImageFile.Count() > 0)
+                    {
+                        foreach (HttpPostedFileBase file in ItemGalleryImageFile)
+                        {
+                            //Checking file is available to save.  
+                            if (file != null)
+                            {
+                                string fileName1 = Guid.NewGuid() + "-" + Path.GetFileName(ItemMainImageFile.FileName);
+                                string path1 = Server.MapPath("~/Images/ProductItemMedia/");
+                                file.SaveAs(path1 + fileName1);
+
+                                tbl_ProductItemImages objGalleryImage = new tbl_ProductItemImages();
+                                objGalleryImage.ProductItemId = objProductItem.ProductItemId;
+                                objGalleryImage.ItemImage = fileName1;
+                                objGalleryImage.IsActive = true;
+                                objGalleryImage.IsDelete = false;
+                                objGalleryImage.CreatedBy = LoggedInUserId;
+                                objGalleryImage.CreatedDate = DateTime.UtcNow;
+                                objGalleryImage.UpdatedBy = LoggedInUserId;
+                                objGalleryImage.UpdatedDate = DateTime.UtcNow;
+                                _db.tbl_ProductItemImages.Add(objGalleryImage);
+                                _db.SaveChanges();
+
+                            }
+
+                        }
+                    }
 
                     return RedirectToAction("Index");
 
@@ -168,7 +197,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit(ProductItemVM productItemVM, HttpPostedFileBase ItemMainImageFile)
+        public ActionResult Edit(ProductItemVM productItemVM, HttpPostedFileBase ItemMainImageFile, HttpPostedFileBase[] ItemGalleryImageFile)
         {
             try
             {
@@ -209,6 +238,35 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     objProductItem.UpdatedBy = LoggedInUserId;
                     objProductItem.UpdatedDate = DateTime.UtcNow; 
                     _db.SaveChanges();
+
+                    //iterating through multiple file collection   
+                    if (ItemGalleryImageFile != null && ItemGalleryImageFile.Count() > 0)
+                    {
+                        foreach (HttpPostedFileBase file in ItemGalleryImageFile)
+                        {
+                            //Checking file is available to save.  
+                            if (file != null)
+                            {
+                                string fileName1 = Guid.NewGuid() + "-" + Path.GetFileName(ItemMainImageFile.FileName);
+                                string path1 = Server.MapPath("~/Images/ProductItemMedia/");
+                                file.SaveAs(path1 + fileName1);
+
+                                tbl_ProductItemImages objGalleryImage = new tbl_ProductItemImages();
+                                objGalleryImage.ProductItemId = objProductItem.ProductItemId;
+                                objGalleryImage.ItemImage = fileName1;
+                                objGalleryImage.IsActive = true;
+                                objGalleryImage.IsDelete = false;
+                                objGalleryImage.CreatedBy = LoggedInUserId;
+                                objGalleryImage.CreatedDate = DateTime.UtcNow;
+                                objGalleryImage.UpdatedBy = LoggedInUserId;
+                                objGalleryImage.UpdatedDate = DateTime.UtcNow;
+                                _db.tbl_ProductItemImages.Add(objGalleryImage);
+                                _db.SaveChanges();
+
+                            }
+
+                        }
+                    }
 
                     return RedirectToAction("Index");
 
