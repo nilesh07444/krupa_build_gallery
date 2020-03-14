@@ -46,12 +46,12 @@ namespace KrupaBuildGallery.Model
         }
         public static void SendEmail(string To, string from, string subject, string body)
         {
-            System.Net.Mail.MailMessage mailMessage = new System.Net.Mail.MailMessage(
-   from, // From field
-   To, // Recipient field
-  subject, // Subject of the email message
-   body // Email message body
-   );
+            MailMessage mailMessage = new MailMessage(
+                       from, // From field
+                       To, // Recipient field
+                      subject, // Subject of the email message
+                       body // Email message body
+            );
             string SMTPHost = ConfigurationManager.AppSettings["SMTPHost"];
             string SMTpPort = ConfigurationManager.AppSettings["SMTPPort"];
             string SMTPEMail = ConfigurationManager.AppSettings["SMTPEmail"];
@@ -61,10 +61,10 @@ namespace KrupaBuildGallery.Model
 
             /* Setting should be kept somewhere so no need to 
                pass as a parameter (might be in web.config)       */
-            using (SmtpClient client = new SmtpClient(SMTPHost,Convert.ToInt32(SMTpPort)))
+            using (SmtpClient client = new SmtpClient(SMTPHost, Convert.ToInt32(SMTpPort)))
             {
                 // Configure the client
-                client.EnableSsl = true;               
+                client.EnableSsl = true;
                 client.Credentials = new NetworkCredential(SMTPEMail, SMTPPwd);
 
                 client.DeliveryMethod = SmtpDeliveryMethod.Network;
