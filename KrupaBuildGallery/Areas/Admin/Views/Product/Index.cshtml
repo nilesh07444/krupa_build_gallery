@@ -58,34 +58,41 @@
                         {
                             foreach (ProductVM product in Model)
                             {
-                                <tr class="gradeX">
-                                    <td>@counter.</td>
-                                    <td>
-                                        @if (!string.IsNullOrEmpty(product.ProductImage))
-                                        {
-                                            if (File.Exists(Server.MapPath("~/Images/ProductMedia/" + product.ProductImage)))
-                                            {
-                                                <img src="~/Images/ProductMedia/@product.ProductImage" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
-                                            }
-                                            else
-                                            {
-                                                <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
-                                            }
-                                        }
-                                        else
-                                        {
-                                            <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
-                                        }
+                        <tr class="gradeX">
+                            <td>@counter.</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(product.ProductImage))
+                                {
+                                    if (File.Exists(Server.MapPath("~/Images/ProductMedia/" + product.ProductImage)))
+                                    {
+                                        <img src="~/Images/ProductMedia/@product.ProductImage" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                    }
+                                    else
+                                    {
+                                        <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                    }
+                                }
+                                else
+                                {
+                                    <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                }
 
-                                    </td>
-                                    <td>@product.ProductName</td>
-                                    <td>@product.CategoryName</td>
-                                    <td>Active</td>
-                                    <td>
-                                        <a href="/admin/product/edit/@product.ProductId"><i class="fa fa-edit mr-2 font-success"></i></a>
-                                        <a href="javascript:void(0);" onclick="fnDeleteProduct('@product.ProductId')"><i class="fa fa-trash font-danger"></i></a>
-                                    </td>
-                                </tr>
+                            </td>
+                            <td>@product.ProductName</td>
+                            <td>@product.CategoryName</td>
+                            @if (product.IsActive == true)
+                            {
+                                <td><span class="badge badge-warning" style="cursor:pointer;" title="Click to Inactive" onclick="fnChangeStatus('@product.ProductId','InActive');">Active</span></td>
+                            }
+                            else
+                            {
+                                <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@product.ProductId','Active');">InActive</span></td>
+                            }
+                            <td>
+                                <a href="/admin/product/edit/@product.ProductId"><i class="fa fa-edit mr-2 font-success"></i></a>
+                                <a href="javascript:void(0);" onclick="fnDeleteProduct('@product.ProductId')"><i class="fa fa-trash font-danger"></i></a>
+                            </td>
+                        </tr>
                                 counter++;
                             }
                         }
@@ -119,7 +126,25 @@
     </div>
 </div>
 <!-- Delete modal -->
-
+<div class="modal fade open" id="activeinactiveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to active ?
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="hdndataId" />
+                <input type="hidden" id="hdnstatus" />
+                <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
+                <button id="btnChangeStatus" class="btn btn-primary" type="button">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
 @*<script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>*@
 
 
@@ -176,4 +201,46 @@
         $('#deleteProductModal').modal('show');
         }
 
+     function fnChangeStatus(cat_id,status) {
+         jQuery("#hdndataId").val(cat_id);
+         jQuery("#hdnstatus").val(status);
+         if (status == "Active") {
+             $('#activeinactiveModal .modal-body').html(" Are you sure you want to make active ?");
+         }
+         else {
+             $('#activeinactiveModal .modal-body').html(" Are you sure you want to make inactive ?");
+         }
+        $('#activeinactiveModal').modal('show');
+    }
+
+       jQuery(document).on("click", "#btnChangeStatus", function () {
+
+        var Id = jQuery("#hdndataId").val();
+        if (Id != "" && Id != null) {
+            $('#activeinactiveModal').modal('hide');
+
+            StartLoading();
+
+            var URL = '@Url.Action("ChangeStatus", "Product")';
+            $.ajax({
+                type: 'POST',
+                async: true,
+                url: URL + "?Id=" + Id+"&Status="+jQuery("#hdnstatus").val(),
+                success: function (result) {
+                    if (result == "success") {
+                        alert("Status change Successfully...");
+                        window.location.reload();
+                    }                    
+                    else {
+                        alert("Something went wrong. Please try again");
+                    }
+
+                   StopLoading();
+                },
+                error: function (resultData) {
+                    StopLoading();
+                }
+            });
+        }
+    });
 </script>

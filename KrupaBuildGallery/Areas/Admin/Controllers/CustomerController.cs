@@ -55,5 +55,41 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             return View(lstClientUser);
         }
+
+        [HttpPost]
+        public string ChangeStatus(long Id, string Status)
+        {
+            string ReturnMessage = "";
+            try
+            {
+                tbl_ClientUsers objtbl_ClientUsers = _db.tbl_ClientUsers.Where(x => x.ClientUserId == Id).FirstOrDefault();
+
+                if (objtbl_ClientUsers != null)
+                {
+                    long LoggedInUserId = Int64.Parse(clsAdminSession.UserID.ToString());
+                    if (Status == "Active")
+                    {
+                        objtbl_ClientUsers.IsActive = true;
+                    }
+                    else
+                    {
+                        objtbl_ClientUsers.IsActive = false;
+                    }
+
+                    objtbl_ClientUsers.UpdatedBy = LoggedInUserId;
+                    objtbl_ClientUsers.UpdatedDate = DateTime.UtcNow;
+
+                    _db.SaveChanges();
+                    ReturnMessage = "success";
+                }
+            }
+            catch (Exception ex)
+            {
+                string msg = ex.Message.ToString();
+                ReturnMessage = "exception";
+            }
+
+            return ReturnMessage;
+        }
     }
 }

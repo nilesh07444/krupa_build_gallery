@@ -48,6 +48,7 @@
                             <th>City</th>
                             <th>State</th>
                             <th>Company Name</th>
+                            <th width="15%;">Active</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -56,22 +57,30 @@
                         {
                             foreach (KrupaBuildGallery.ViewModel.ClientUserVM objusr in Model)
                             {
-                                <tr class="gradeX">
-                                    <td>@counter.</td>
-                                    <td><img src="\Areas\Admin\Content\img\product-list\pro-thumb-3.jpg" class="clsimgproduct" /></td>
-                                    <td>@objusr.FirstName</td>
-                                    <td>@objusr.LastName</td>
-                                    <td>@objusr.Email</td>
-                                    <td>@objusr.MobileNo</td>
-                                    <td>@objusr.UserName</td>
-                                    <td>@objusr.City</td>
-                                    <td>@objusr.State</td>
-                                    <td>@objusr.CompanyName</td>
-                                    <td>
-                                        <a href="/admin/distributor/detail/@objusr.ClientUserId"><i class="fa fa-eye font-success"></i></a>                                        
-                                        <a href="javascript:void(0);"><i class="fa fa-trash font-danger"></i></a>
-                                    </td>
-                                </tr>
+                        <tr class="gradeX">
+                            <td>@counter.</td>
+                            <td><img src="\Areas\Admin\Content\img\product-list\pro-thumb-3.jpg" class="clsimgproduct" /></td>
+                            <td>@objusr.FirstName</td>
+                            <td>@objusr.LastName</td>
+                            <td>@objusr.Email</td>
+                            <td>@objusr.MobileNo</td>
+                            <td>@objusr.UserName</td>
+                            <td>@objusr.City</td>
+                            <td>@objusr.State</td>
+                            <td>@objusr.CompanyName</td>
+                            @if (objusr.IsActive == true)
+                            {
+                                <td><span class="badge badge-warning" style="cursor:pointer;" title="Click to Inactive" onclick="fnChangeStatus('@objusr.ClientUserId','InActive');">Active</span></td>
+                            }
+                            else
+                            {
+                                <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@objusr.ClientUserId','Active');">InActive</span></td>
+                            }
+                            <td>
+                                <a href="/admin/distributor/detail/@objusr.ClientUserId"><i class="fa fa-eye font-success"></i></a>
+                                <a href="javascript:void(0);"><i class="fa fa-trash font-danger"></i></a>
+                            </td>
+                        </tr>
                                 counter++;
                             }
 
@@ -85,3 +94,66 @@
 
 </div>
 
+<div class="modal fade open" id="activeinactiveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to active ?
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="hdndataId" />
+                <input type="hidden" id="hdnstatus" />
+                <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
+                <button id="btnChangeStatus" class="btn btn-primary" type="button">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+     function fnChangeStatus(cat_id,status) {
+         jQuery("#hdndataId").val(cat_id);
+         jQuery("#hdnstatus").val(status);
+         if (status == "Active") {
+             $('#activeinactiveModal .modal-body').html(" Are you sure you want to make active ?");
+         }
+         else {
+             $('#activeinactiveModal .modal-body').html(" Are you sure you want to make inactive ?");
+         }
+        $('#activeinactiveModal').modal('show');
+    }
+
+       jQuery(document).on("click", "#btnChangeStatus", function () {
+
+        var Id = jQuery("#hdndataId").val();
+        if (Id != "" && Id != null) {
+            $('#activeinactiveModal').modal('hide');
+
+            StartLoading();
+
+            var URL = '@Url.Action("ChangeStatus", "Distributor")';
+            $.ajax({
+                type: 'POST',
+                async: true,
+                url: URL + "?Id=" + Id+"&Status="+jQuery("#hdnstatus").val(),
+                success: function (result) {
+                    if (result == "success") {
+                        alert("Status change Successfully...");
+                        window.location.reload();
+                    }                    
+                    else {
+                        alert("Something went wrong. Please try again");
+                    }
+
+                   StopLoading();
+                },
+                error: function (resultData) {
+                    StopLoading();
+                }
+            });
+        }
+    });
+</script>

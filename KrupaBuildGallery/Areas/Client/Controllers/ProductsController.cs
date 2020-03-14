@@ -368,6 +368,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             }
             objProductItem.CustomerPrice = GetOfferPrice(objProductItem.ProductItemId, objProductItem.CustomerPrice);
             objProductItem.DistributorPrice = GetDistributorOfferPrice(objProductItem.ProductItemId, objProductItem.DistributorPrice);
+            objProductItem.InStock = ItemStock(objProductItem.ProductItemId);
             return View(objProductItem);
         }
         public decimal GetOfferPrice(long Itemid,decimal price)
@@ -390,6 +391,12 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             }
 
             return price;
+        }
+
+        public int ItemStock(long ItemId)
+        {
+            long? TotalStock = _db.tbl_ItemStocks.Where(o => o.IsActive == true && o.IsDelete == false && o.ProductItemId == ItemId).Sum(o => (long?)o.Qty);
+            return Convert.ToInt32(TotalStock);
         }
 
     }

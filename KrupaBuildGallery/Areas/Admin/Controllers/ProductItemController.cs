@@ -351,5 +351,41 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             long? TotalSold = _db.tbl_OrderItemDetails.Where(o => o.ProductItemId == ItemId && o.IsDelete == false).Sum(o => (long?)o.Qty.Value);
             return Convert.ToInt32(TotalSold);
         }
+
+        [HttpPost]
+        public string ChangeStatus(long Id, string Status)
+        {
+            string ReturnMessage = "";
+            try
+            {
+                tbl_ProductItems objtbl_ProductItems = _db.tbl_ProductItems.Where(x => x.ProductItemId == Id).FirstOrDefault();
+
+                if (objtbl_ProductItems != null)
+                {
+                    long LoggedInUserId = Int64.Parse(clsAdminSession.UserID.ToString());
+                    if (Status == "Active")
+                    {
+                        objtbl_ProductItems.IsActive = true;
+                    }
+                    else
+                    {
+                        objtbl_ProductItems.IsActive = false;
+                    }
+
+                    objtbl_ProductItems.UpdatedBy = LoggedInUserId;
+                    objtbl_ProductItems.UpdatedDate = DateTime.UtcNow;
+
+                    _db.SaveChanges();
+                    ReturnMessage = "success";
+                }
+            }
+            catch (Exception ex)
+            {
+                string msg = ex.Message.ToString();
+                ReturnMessage = "exception";
+            }
+
+            return ReturnMessage;
+        }
     }
 }
