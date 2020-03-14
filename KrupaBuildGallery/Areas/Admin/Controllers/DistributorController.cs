@@ -12,6 +12,8 @@ using iTextSharp.text.pdf;
 using iTextSharp.tool.xml;
 using iTextSharp.text.html.simpleparser;
 using System.Text;
+using System.Configuration;
+using System.Net;
 
 namespace KrupaBuildGallery.Areas.Admin.Controllers
 {
@@ -491,6 +493,139 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 string ErrorMessage = ex.Message.ToString();
             }
             return View(objDistReq);
+        }
+
+        [HttpPost]
+        public string ApproveRejectDistributorRequest(long RequestId,string IsApprove,string CreditLimit = "0",string Password = "")
+        {
+            string ReturnMessage = "";
+
+            try
+            {
+                var objReq = _db.tbl_DistributorRequestDetails.Where(o => o.DistributorRequestId == RequestId).FirstOrDefault();
+                if(objReq != null)
+                {
+                    if(IsApprove == "false")
+                    {
+                        objReq.IsDelete = true;
+                        _db.SaveChanges();
+                    }
+                    else
+                    {
+                        tbl_ClientUsers objClient = new tbl_ClientUsers();
+                        objClient.FirstName = objReq.FirstName;
+                        objClient.LastName = objReq.LastName;
+                        objClient.Email = objReq.Email;
+                        objClient.MobileNo = objReq.MobileNo;
+                        objClient.Password = clsCommon.EncryptString(Password);
+                        objClient.IsActive = true;
+                        objClient.IsDelete = false;
+                        objClient.UserName = objReq.FirstName + objReq.LastName;
+                        objClient.CompanyName = objReq.CompanyName;
+                        objClient.CreatedBy = clsAdminSession.UserID;
+                        objClient.CreatedDate = DateTime.Now;
+                        objClient.ClientRoleId = 2;
+                        _db.tbl_ClientUsers.Add(objClient);
+                        _db.SaveChanges();
+                        tbl_ClientOtherDetails objClientOther = new tbl_ClientOtherDetails();
+                        objClientOther.ClientUserId = objClient.ClientUserId;
+                        objClientOther.Addharcardno = objReq.AddharcardNo;
+                        objClientOther.GSTno = objReq.GSTNo;
+                        objClientOther.CreditLimitAmt = Convert.ToDecimal(CreditLimit);
+                        objClientOther.AmountDue = 0;
+                        objClientOther.IsActive = true;
+                        objClientOther.IsDelete = false;
+                        objClientOther.CreatedDate = DateTime.Now;
+                        objClientOther.CreatedBy = clsAdminSession.UserID;
+                        objClientOther.UpdatedDate = DateTime.Now;
+                        objClientOther.UpdatedBy = clsAdminSession.UserID;
+                        objClientOther.City = objReq.City;
+                        objClientOther.State = objReq.State;
+                        _db.tbl_ClientOtherDetails.Add(objClientOther);
+                        objReq.IsDelete = true;                        
+                        _db.SaveChanges();
+
+                        try
+                        {
+                            string ToEmail = objReq.Email;
+                            string FromEmail = ConfigurationManager.AppSettings["FromEmail"];
+                            string Subject = "Your Registration as a Distributor Created - Krupa Build Gallery";
+                            string bodyhtml = "Thank you for become a valuable distributor of Krupa Build Gallery<br/>";
+                            bodyhtml += "Following are the login details<br/>";
+                            bodyhtml += "===============================<br/>";
+                            bodyhtml += "Email: " + objReq.Email + "<br/>";
+                            bodyhtml += "Password: " + Password + "<br/>";
+                            clsCommon.SendEmail(ToEmail, FromEmail, Subject, bodyhtml);
+                        }
+                        catch(Exception e)
+                        {
+
+                        }                        
+
+                        using (WebClient webClient = new WebClient())
+                        {
+                            WebClient client = new WebClient();
+                            Random random = new Random();
+                            int num = random.Next(111566, 999999);
+                            string msg = "Thank you for become a valuable distributor of Krupa Build Gallery\n" ;
+                            msg += "Login Details:\n";
+                            msg += "Email:" + objReq.Email + "\n";
+                            msg += "Password:" + Password + "\n";
+                            string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objReq.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                            var json = webClient.DownloadString(url);
+                            if (json.Contains("invalidnumber"))
+                            {
+                               /// return "InvalidNumber";
+                            }
+                            else
+                            {
+                              //  return num.ToString();
+                            }
+
+                        }
+
+
+                    }
+                }
+
+                ReturnMessage = "Success";
+            }
+            catch (Exception ex)
+            {
+                string msg = ex.Message.ToString();
+                ReturnMessage = "exception";
+            }
+
+            return ReturnMessage;
+        }
+
+        [HttpPost]
+        public string DeleteDistributorRequest(long RequestId)
+        {
+            string ReturnMessage = "";
+
+            try
+            {
+                tbl_DistributorRequestDetails distributorreq = _db.tbl_DistributorRequestDetails.Where(x => x.DistributorRequestId == RequestId).FirstOrDefault();
+
+                if (distributorreq == null)
+                {
+                    ReturnMessage = "notfound";
+                }
+                else
+                {
+                    _db.tbl_DistributorRequestDetails.Remove(distributorreq);
+                    _db.SaveChanges();
+                    ReturnMessage = "success";
+                }
+            }
+            catch (Exception ex)
+            {
+                string msg = ex.Message.ToString();
+                ReturnMessage = "exception";
+            }
+
+            return ReturnMessage;
         }
     }
 }

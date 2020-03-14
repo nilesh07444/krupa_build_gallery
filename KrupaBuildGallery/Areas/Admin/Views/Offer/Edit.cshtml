@@ -1,6 +1,7 @@
 ﻿@model OfferVM
+
 @{
-    ViewBag.Title = "Add Offer";
+    ViewBag.Title = "Edit Offer";
 }
 
 <div class="page-body">
@@ -12,7 +13,7 @@
                 <div class="col">
                     <div class="page-header-left">
                         <h3>
-                            Add Offer
+                            Edit Offer
                         </h3>
                     </div>
                 </div>
@@ -20,7 +21,7 @@
                     <ol class="breadcrumb pull-right">
                         <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
                         <li class="breadcrumb-item"><a href="/admin/offer">Offer</a></li>
-                        <li class="breadcrumb-item active">Add Offer</li>
+                        <li class="breadcrumb-item active">Edit Offer</li>
                     </ol>
                 </div>
             </div>
@@ -33,10 +34,10 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5>Add Offer</h5>
+                        <h5>Edit Offer</h5>
                     </div>
                     <div class="card-body">
-                        @using (Html.BeginForm("Add", "Offer", FormMethod.Post, new { @id = "ProductItemStockFormId", @class = "needs-validation", enctype = "multipart/form-data", role = "form" }))
+                        @using (Html.BeginForm("Edit", "Offer", FormMethod.Post, new { @id = "ProductStockFormId", @class = "needs-validation", enctype = "multipart/form-data", role = "form" }))
                         {
 
                             @Html.AntiForgeryToken()
@@ -110,7 +111,7 @@
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.OfferEndDate, "", new { @class = "text-danger" })
                             </div>
-
+                            @Html.HiddenFor(x => x.OfferId)
                             <button type="submit" class="btn btn-primary">Submit</button>
                             <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
                         }
@@ -156,7 +157,7 @@
                     var htmlData = "<option value='0'>-Select Product-</option>";
                     if (result && result.length > 0) {
                         result.forEach(element => {
-                            htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
+                           htmlData += "<option value='"+ element.Value +"'> "+ element.Text +" </option>";
                         });
                     }
                     $("#ProductId").html(htmlData);
@@ -165,10 +166,14 @@
                 }
             });
         }
-       else {
-             var htmlSubData = "<option value='0'>- Select Product -</option>";
-            $("#ProductId").html(htmlSubData);
+        else {
+            var htmlData = "<option value='0'>- Select Product -</option>";
+            $("#ProductId").html(htmlData);
+
+            var htmlSubData = "<option value='0'>- Select Sub Product -</option>";
+            $("#SubProductId").html(htmlSubData);
         }
+
     });
 
     jQuery(document).on("change", "#ProductId", function () {
@@ -186,7 +191,7 @@
                     var htmlData = "<option value='0'>-Select SubProduct-</option>";
                     if (result && result.length > 0) {
                         result.forEach(element => {
-                            htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
+                           htmlData += "<option value='"+ element.Value +"'> "+ element.Text +" </option>";
                         });
                     }
                     $("#SubProductId").html(htmlData);
@@ -196,17 +201,17 @@
             });
         }
         else {
-             var htmlSubData = "<option value='0'>- Select SubProduct -</option>";
+            var htmlSubData = "<option value='0'>- Select Sub Product -</option>";
             $("#SubProductId").html(htmlSubData);
         }
     });
-
     jQuery(document).on("change", "#ProductId,#SubProductId", function () {
 
         var ProductId = jQuery("#ProductId option:selected").val();
         var SubProductId = jQuery("#SubProductId option:selected").val();
 
         if ((ProductId != "" && ProductId != null) || (SubProductId != "" && SubProductId != null)) {
+            StartLoading();
             var URL = '@Url.Action("GetItemList", "Stock")';
             $.ajax({
                 type: 'GET',
@@ -220,8 +225,10 @@
                         });
                     }
                     $("#ProductItemId").html(htmlData);
+                    StopLoading();
                 },
                 error: function (error) {
+                    $.unblockUI();
                 }
             });
         }
@@ -230,6 +237,5 @@
             $("#ProductItemId").html(htmlSubData);
         }
     });
-
 </script>
 

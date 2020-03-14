@@ -25,12 +25,17 @@ namespace KrupaBuildGallery
         [Display(Name = "Item Description")]
         public string ItemDescription { get; set; }
         [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "MRP Price must be greater than 0")]
         [Display(Name = "MRP Price")]
         public decimal MRPPrice { get; set; }
+
         [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "Customer Price must be greater than 0")]
         [Display(Name = "Customer Price")]
         public decimal CustomerPrice { get; set; }
+
         [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "Distributor Price must be greater than 0")]
         [Display(Name = "Distributor Price")]
         public decimal DistributorPrice { get; set; }
         [Required]
@@ -39,6 +44,7 @@ namespace KrupaBuildGallery
         [Display(Name = "IGST Per")]
         public decimal IGST_Per { get; set; } 
         public string MainImage { get; set; }
+        [Required]
         [Display(Name = "Notification Text")]
         public string Notification { get; set; }
         [Display(Name = "Sku")]
@@ -58,5 +64,8 @@ namespace KrupaBuildGallery
         public bool IsWishListItem { get; set; }
         public DateTime CreatedDate { get; set; }
         public List<string> OtherImages { get; set; }
+        public int InStock { get; set; }        
+        public int Sold { get; set; }
+
     }
 }

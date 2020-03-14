@@ -54,6 +54,8 @@
                             <th>MRP Price</th>
                             <th>Customer Price</th>
                             <th>Dist. Price</th>
+                            <th>In Stock</th>
+                            <th>Sold</th>
                             <th width="5%;">Active</th>
                             <th width="10%;">Action</th>
                         </tr>
@@ -64,39 +66,41 @@
                         {
                             foreach (ProductItemVM item in Model)
                             {
-                                <tr class="gradeX">
-                                    <td>@counter.</td>
-                                    <td>
-                                        @if (!string.IsNullOrEmpty(item.MainImage))
-                                        {
-                                            if (File.Exists(Server.MapPath("~/Images/ProductItemMedia/" + item.MainImage)))
-                                            {
-                                                <img src="~/Images/ProductItemMedia/@item.MainImage" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
-                                            }
-                                            else
-                                            {
-                                                <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
-                                            }
-                                        }
-                                        else
-                                        {
-                                            <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
-                                        }
+                        <tr class="gradeX">
+                            <td>@counter.</td>
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.MainImage))
+                                {
+                                    if (File.Exists(Server.MapPath("~/Images/ProductItemMedia/" + item.MainImage)))
+                                    {
+                                        <img src="~/Images/ProductItemMedia/@item.MainImage" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                    }
+                                    else
+                                    {
+                                        <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                    }
+                                }
+                                else
+                                {
+                                    <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                }
 
-                                    </td>
-                                    <td>@item.CategoryName</td>
-                                    <td>@item.ProductName</td>
-                                    <td>@item.SubProductName</td>
-                                    <td>@item.ItemName</td>
-                                    <td>@item.MRPPrice</td>
-                                    <td>@item.CustomerPrice</td>
-                                    <td>@item.DistributorPrice</td>
-                                    <td>Active</td>
-                                    <td>
-                                        <a href="/admin/productitem/edit/@item.ProductItemId"><i class="fa fa-edit mr-2 font-success"></i></a>
-                                        <a href="javascript:void(0);" onclick="fnDeleteProductItem('@item.ProductItemId')"><i class="fa fa-trash font-danger"></i></a>
-                                    </td>
-                                </tr>
+                            </td>
+                            <td>@item.CategoryName</td>
+                            <td>@item.ProductName</td>
+                            <td>@item.SubProductName</td>
+                            <td>@item.ItemName</td>
+                            <td>@item.MRPPrice</td>
+                            <td>@item.CustomerPrice</td>
+                            <td>@item.DistributorPrice</td>
+                            <td>@item.InStock</td>
+                            <td>@item.Sold</td>
+                            <td>Active</td>
+                            <td>
+                                <a href="/admin/productitem/edit/@item.ProductItemId"><i class="fa fa-edit mr-2 font-success"></i></a>
+                                <a href="javascript:void(0);" onclick="fnDeleteProductItem('@item.ProductItemId')"><i class="fa fa-trash font-danger"></i></a>
+                            </td>
+                        </tr>
                                 counter++;
                             }
                         }
@@ -139,19 +143,19 @@
         window.location.href = "/admin/productitem/add";
     });
 
-    jQuery(document).ready(function () {
-        StartLoading()
-        jQuery('html, body').animate({ scrollTop: 0 }, 1000);
-    });
+    //jQuery(document).ready(function () {
+    //    StartLoading()
+    //    jQuery('html, body').animate({ scrollTop: 0 }, 1000);
+    //});
 
     function fnDeleteProductItem(item_id) {
         jQuery("#hdnDeleteProductItem").val(item_id);
         jQuery('#deleteProductItemModal').modal('show');
     }
 
-    jQuery(window).on("load", function () {
-        StopLoading();
-    });
+    //jQuery(window).on("load", function () {
+    //    StopLoading();
+    //});
 
     jQuery(document).on("click", "#btnDeleteProductItem", function () {
 

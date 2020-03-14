@@ -1,6 +1,7 @@
 ﻿using KrupaBuildGallery.Model;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -78,6 +79,25 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                   
                     _db.tbl_DistributorRequestDetails.Add(objRequest);
                     _db.SaveChanges();
+                    string AdminEmail = ConfigurationManager.AppSettings["AdminEmail"];
+
+                    _db.SaveChanges();
+                    string FromEmail = ConfigurationManager.AppSettings["FromEmail"];
+                    if (!string.IsNullOrEmpty(objRequest.Email))
+                    {
+                        FromEmail = objRequest.Email;
+                    }
+                    string Subject = "New Distributor Request - Krupa Build Gallery";
+                    string bodyhtml = "Following are the details:<br/>";
+                    bodyhtml += "FirstName: " + objRequest.FirstName + "<br/>";
+                    bodyhtml += "LastName: " + objRequest.LastName + "<br/>";
+                    bodyhtml += "MobileNo: " + objRequest.MobileNo + "<br/>";
+                    bodyhtml += "Email: " + objRequest.Email + "<br/>";
+                    bodyhtml += "CompanyName: " + objRequest.CompanyName + "<br/>";
+                    bodyhtml += "City: " + objRequest.City + "<br/>";
+                    bodyhtml += "State: " + objRequest.State + "<br/>";
+
+                    clsCommon.SendEmail(AdminEmail, FromEmail, Subject, bodyhtml);
                     TempData["RegisterError"] = "Request recieve Successfully.We will contact you asap.";
                     return RedirectToAction("Index", "DistributorRequest", new { area = "Client" });
                 }

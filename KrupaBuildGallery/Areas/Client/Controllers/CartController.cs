@@ -49,6 +49,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                      ItemImage = i.MainImage,
                                      Qty = crt.CartItemQty.Value                                    
                                  }).OrderByDescending(x => x.CartId).ToList();
+                    lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price);});
                 }
                 else
                 {
@@ -64,6 +65,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                         ItemImage = i.MainImage,
                                         Qty = crt.CartItemQty.Value
                                     }).OrderByDescending(x => x.CartId).ToList();
+                    lstCartItems.ForEach(x => { x.Price = GetOfferPrice(x.ItemId, x.Price); });
                 }
                    
             }
@@ -286,6 +288,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                         ItemImage = i.MainImage,
                                         Qty = crt.CartItemQty.Value
                                     }).OrderByDescending(x => x.CartId).ToList();
+                    lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price); });
                 }
                 else
                 {
@@ -301,6 +304,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                         ItemImage = i.MainImage,
                                         Qty = crt.CartItemQty.Value
                                     }).OrderByDescending(x => x.CartId).ToList();
+                    lstCartItems.ForEach(x => { x.Price = GetOfferPrice(x.ItemId, x.Price); });
                 }
 
             }
@@ -348,6 +352,47 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             }
 
             return ReturnMessage;
+        }
+
+        public decimal GetOfferPrice(long Itemid, decimal price)
+        {
+            var objItem = _db.tbl_Offers.Where(o => o.ProductItemId == Itemid && DateTime.Now >= o.StartDate && DateTime.Now <= o.EndDate).FirstOrDefault();
+            if (objItem != null)
+            {
+                return objItem.OfferPrice;
+            }
+
+            return price;
+        }
+
+        public decimal GetDistributorOfferPrice(long Itemid, decimal price)
+        {
+            var objItem = _db.tbl_Offers.Where(o => o.ProductItemId == Itemid && DateTime.Now >= o.StartDate && DateTime.Now <= o.EndDate).FirstOrDefault();
+            if (objItem != null)
+            {
+                return objItem.OfferPriceforDistributor.Value;
+            }
+
+            return price;
+        }
+
+        public decimal GetPriceGenral(long Itemid, decimal price)
+        {
+            var objItem = _db.tbl_Offers.Where(o => o.ProductItemId == Itemid && DateTime.Now >= o.StartDate && DateTime.Now <= o.EndDate).FirstOrDefault();
+            if (objItem != null)
+            {
+                if(clsClientSession.RoleID == 1)
+                {
+                    return objItem.OfferPrice;
+                }
+                else
+                {
+                    return objItem.OfferPriceforDistributor.Value;
+                }
+                  
+            }
+
+            return price;
         }
     }
 }

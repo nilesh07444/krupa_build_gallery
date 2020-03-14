@@ -306,6 +306,7 @@
     <Compile Include="ViewModel\DistributorRequestVM.cs" />
     <Compile Include="ViewModel\ItemStockVM.cs" />
     <Compile Include="ViewModel\LoginVM.cs" />
+    <Compile Include="ViewModel\OfferVM.cs" />
     <Compile Include="ViewModel\OrderItemsVM.cs" />
     <Compile Include="ViewModel\OrderVM.cs" />
     <Compile Include="ViewModel\PaymentHistoryVM.cs" />
@@ -3811,6 +3812,7 @@
     <Content Include="Areas\Client\Views\PrivacyPolicy\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Distributor\RequestDetail.cshtml" />
     <Content Include="Areas\Client\Views\TermsCondition\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Offer\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />

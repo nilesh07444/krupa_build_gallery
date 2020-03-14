@@ -92,18 +92,18 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <h2>@item.Price</h2>
+                                            <h2 class="clsprc_@item.CartId" >@item.Price</h2>
                                         </td>
                                         <td>
                                             <div class="qty-box">
                                                 <div class="input-group">
-                                                    <input type="number" name="quantity" class="form-control input-number" value="@item.Qty">
+                                                    <input type="number" name="quantity" data-attrcrtidd="@item.CartId" min="1" class="form-control input-number clsq clsqty_@item.CartId" value="@item.Qty">
                                                 </div>
                                             </div>
                                         </td>
                                         <td><a href="javascript:void(0);" class="icon" onclick="removecart('@item.CartId');"><i class="ti-close"></i></a></td>
                                         <td>
-                                            <h2 class="td-color">@ItemTotal</h2>
+                                            <h2 class="td-color clspr clsttl_@item.CartId">@ItemTotal</h2>
                                         </td>
                                     </tr>
                                     counter = counter + 1;
@@ -118,7 +118,7 @@
                             <tr>
                                 <td>total price :</td>
                                 <td>
-                                    <h2>@CartTotal</h2>
+                                    <h2 class="clsttlfull">@CartTotal</h2>
                                 </td>
                             </tr>
                         </tfoot>
@@ -187,4 +187,18 @@
             }
         });
     }
+
+    $(".clsq").change(function () {
+        debugger;
+        var qty = parseFloat($(this).val());
+        var idd = $(this).attr("data-attrcrtidd");
+        var prc = parseFloat($(".clsprc_" + idd).html());
+        var totll = prc * qty;
+        $(".clsttl_" + idd).html(totll);
+        var ttlll = 0;
+        $(".clspr").each(function () {
+          ttlll = ttlll + parseFloat($(this).html());
+        })
+        $(".clsttlfull").html(ttlll);
+    })
 </script>

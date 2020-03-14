@@ -37,12 +37,12 @@
             <div class="card-body vendor-table">
                 <table class="display" id="basic-1">
                     <thead>
-                        <tr>           
+                        <tr>
                             <th></th>
                             <th>First Name</th>
                             <th>Last Name</th>
                             <th>Email</th>
-                            <th>Mobile No.</th>                        
+                            <th>Mobile No.</th>
                             <th>City</th>
                             <th>State</th>
                             <th>Company</th>
@@ -54,24 +54,24 @@
                         {
                             foreach (KrupaBuildGallery.ViewModel.DistributorRequestVM objreq in Model)
                             {
-                        <tr class="gradeX">
-                            <td>@counter.</td>
-                            <td>@objreq.FirstName</td>
-                            <td>@objreq.LastName</td>
-                            <td>@objreq.Email</td>
-                            <td>@objreq.MobileNo</td>
-                            <td>@objreq.City</td>
-                            <td>@objreq.State</td>
-                            <td>@objreq.CompanyName</td>
-                            <td>
-                                <a href="/admin/distributor/requestdetail/@objreq.DistributorRequestId"><i class="fa fa-eye font-success"></i></a>
-                                <a href="javascript:void(0);"><i class="fa fa-trash font-danger"></i></a>
-                            </td>
-                        </tr>
+                                <tr class="gradeX">
+                                    <td>@counter.</td>
+                                    <td>@objreq.FirstName</td>
+                                    <td>@objreq.LastName</td>
+                                    <td>@objreq.Email</td>
+                                    <td>@objreq.MobileNo</td>
+                                    <td>@objreq.City</td>
+                                    <td>@objreq.State</td>
+                                    <td>@objreq.CompanyName</td>
+                                    <td>
+                                        <a href="/admin/distributor/requestdetail/@objreq.DistributorRequestId"><i class="fa fa-eye font-success"></i></a>
+                                        <a href="javascript:void(0);" onclick="fnDeleteReq('@objreq.DistributorRequestId');"><i class="fa fa-trash font-danger"></i></a>
+                                    </td>
+                                </tr>
                                 counter++;
                             }
 
-                        }                     
+                        }
                     </tbody>
                 </table>
             </div>
@@ -80,4 +80,63 @@
     <!-- Container-fluid Ends-->
 
 </div>
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteReqModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete Confirm</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete ?
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="hdnReqid" />
+                <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+                <button id="btnDeleteReq" class="btn btn-primary" type="button">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Delete modal -->
+<script>
+     function fnDeleteReq(ReqId) {
+        jQuery("#hdnReqid").val(ReqId);
+        $('#deleteReqModal').modal('show');
+    }
 
+      jQuery(document).on("click", "#btnDeleteReq", function () {
+
+        var Reqid = jQuery("#hdnReqid").val();
+        if (Reqid != "" && Reqid != null) {
+            $('#deleteReqModal').modal('hide');
+            $.blockUI({ message: "<h4>Please Wait...</h4>" });
+            var URL = '@Url.Action("DeleteDistributorRequest", "Distributor")';
+            $.ajax({
+                type: 'POST',
+                async: true,
+                url: URL + "?RequestId=" + Reqid,
+                success: function (result) {
+                    if (result == "success") {
+                        alert("Request deleted successfully");
+                        window.location.reload();
+                    }
+                    else if (result == "notfound") {
+                        alert("Request Not Found");
+                    }
+                    else {
+                        alert("Something went wrong. Please try again");
+                    }
+
+                    $.unblockUI();
+                },
+                error: function (resultData) {
+                    console.log("error");
+                    $.unblockUI();
+                }
+            });
+        }
+    });
+
+</script>

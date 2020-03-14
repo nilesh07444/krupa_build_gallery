@@ -30,6 +30,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 Price = clsClientSession.RoleID == 1 ? i.CustomerPrice : i.DistributorPrice,
                                 ItemImage = i.MainImage                                
                             }).OrderByDescending(x => x.WishListId).ToList();
+            lstWishItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price); });
             return View(lstWishItems);
         }
 
@@ -52,6 +53,25 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             }
 
             return ReturnMessage;
+        }
+
+        public decimal GetPriceGenral(long Itemid, decimal price)
+        {
+            var objItem = _db.tbl_Offers.Where(o => o.ProductItemId == Itemid && DateTime.Now >= o.StartDate && DateTime.Now <= o.EndDate).FirstOrDefault();
+            if (objItem != null)
+            {
+                if (clsClientSession.RoleID == 1)
+                {
+                    return objItem.OfferPrice;
+                }
+                else
+                {
+                    return objItem.OfferPriceforDistributor.Value;
+                }
+
+            }
+
+            return price;
         }
     }
 }

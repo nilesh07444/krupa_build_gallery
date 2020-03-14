@@ -91,8 +91,8 @@
                                 <input type="text" class="form-control" id="lastname" name="lastname" placeholder="Enter Last Name" value="@clsClientSession.LastName" required="">
                             </div>
                             <div class="col-md-6">
-                                <label for="phonenumber">Phone number *</label>
-                                <input type="text" class="form-control" id="phonenumber" name="phonenumber" placeholder="Enter Phone number" required="">
+                                <label for="phonenumber">Mobile number *</label>
+                                <input type="text" class="form-control" id="phonenumber" name="phonenumber" placeholder="Enter Mobile number" required="">
                             </div>
                             <div class="col-md-6">
                                 <label for="email">Email *</label>
@@ -102,6 +102,7 @@
                                 <label for="txtmessage">Write Your Message *</label>
                                 <textarea class="form-control" placeholder="Write Your Message" id="txtmessage" name="txtmessage" rows="6"></textarea>
                             </div>
+                            <input type="hidden" id="hdnotptxt" value="" />
                             <div class="col-md-12">
                                 <button class="btn btn-solid" type="submit">Send Your Message</button>
                             </div>
@@ -112,6 +113,24 @@
         </div>
     </div>
 </section>
+<div class="modal fade open" id="otpmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Contactus form request</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="$('#hdnotptxt').val('');">&times;</button>
+            </div>
+            <div class="modal-body">
+                <label>Enter OTP</label><input type="text" id="otptxt" value="" class="form-control" />              
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="hdnDeleteProductItem" />
+                <button data-dismiss="modal" class="btn btn-danger" type="button" onclick="$('#hdnotptxt').val('');">Close</button>
+                <button class="btn btn-primary" type="button" onclick="submitotp();">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
 <!--Section ends-->
 @if (TempData["Message"] != null)
 {
@@ -123,7 +142,7 @@
     </script>
 }
 <script>
-
+    
     function checkdetails() {
         if (!ValidateEmail($("#email").val())) {
             alert("You have entered an invalid email address!")
@@ -134,8 +153,32 @@
             return false;
         }
         else {
-            StartLoading();
-            return true;
+            if ($('#hdnotptxt').val() == "") {
+                 var URL = '@Url.Action("SendOTP", "ContactUs")';
+               $.ajax({
+                type: 'POST',
+                async: true,
+                url: URL + "?MobileNumber=" + $("#phonenumber").val(),
+                success: function (result) {
+                    if (result == "InvalidNumber") {
+                        alert("Mobile Number is invalid");
+                        return false;
+                    }
+                    else {
+                        $('#hdnotptxt').val(result);
+                        $("#otpmodal").modal();
+                    }
+                },
+                error: function (resultData) {                    
+                }
+            });
+                return false;
+            }
+            else {
+                StartLoading();
+                return true;
+            }
+            
         }
 
     }
@@ -147,5 +190,18 @@
         else {
             return false;
         }
+    }
+
+    function submitotp() {
+        if ($("#otptxt").val() == "") {
+            alert("Please enter otp");
+            return false;
+        }
+
+        if ($("#otptxt").val() != $('#hdnotptxt').val()) {
+             alert("Invalid OTP");
+            return false;
+        }
+        $("#theFormId").submit();
     }
 </script>

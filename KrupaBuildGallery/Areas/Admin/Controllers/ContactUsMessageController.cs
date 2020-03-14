@@ -45,5 +45,33 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             return View(lstContactUsMessageVM);
         }
+
+        [HttpPost]
+        public string DeleteContactUs(long Id)
+        {
+            string ReturnMessage = "";
+
+            try
+            {
+                tbl_ContactFormData objtbl_ContactFormData = _db.tbl_ContactFormData.Where(x => x.ContactForm_Id == Id).FirstOrDefault();
+
+                if (objtbl_ContactFormData != null)
+                {
+                    _db.tbl_ContactFormData.Remove(objtbl_ContactFormData);
+                    _db.SaveChanges();
+                    ReturnMessage = "success";
+                }
+              
+            }
+            catch (Exception ex)
+            {
+                string msg = ex.Message.ToString();
+                ReturnMessage = "exception";
+            }
+
+            return ReturnMessage;
+        }
+
+        
     }
 }

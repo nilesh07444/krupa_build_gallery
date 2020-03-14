@@ -131,6 +131,7 @@
                             </div>
                         </div>
                         <br />
+                        <input type="hidden" value="@Model.DistributorRequestId" id="requestid" />
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="label-wrapper"><label class="control-label">Do you want to Approve/Reject?</label></div>
@@ -145,7 +146,7 @@
                                 <div class="label-wrapper"><label class="control-label">Credit Limit</label></div>
                             </div>
                             <div class="col-md-8">
-                                <input type="number" name="txtcreditlimit" style="width:150px;height:30px;" class="form-control" />
+                                <input type="number" name="txtcreditlimit" id="txtcreditlimit" style="width:150px;height:30px;" class="form-control" />
                             </div>
                         </div>
                         <div class="row distributorinfo" style="margin-top:5px;display:none;">
@@ -153,23 +154,23 @@
                                 <div class="label-wrapper"><label class="control-label">Password</label></div>
                             </div>
                             <div class="col-md-8">
-                                <input type="password" name="txtpassword" style="width:400px;height:30px;" class="form-control" />
+                                <input type="password" name="txtpassword" id="txtpassword" style="width:400px;height:30px;" class="form-control" />
                             </div>
                         </div>
-                        <div class="row distributorinfo" style="margin-top:5px;display:none;">
+                        <div class="row distributorinfo" style="margin-top:10px;display:none;">
                             <div class="col-md-2">
 
                             </div>
                             <div class="col-md-10">
-                                <button type="button" class="btn btn-primary">Approve and Add to Distributor</button>
+                                <button type="button" class="btn btn-primary" onclick="ApproveDistributor();" >Approve and Add to Distributor</button>
                             </div>
                         </div>
                         <div class="row distributorinforeject" style="margin-top:5px;display:none;">
-                            <div class="col-md-2">
+                            <div class="col-md-4">
 
                             </div>
-                            <div class="col-md-10">
-                                <button type="button" class="btn btn-primary">Reject</button>
+                            <div class="col-md-6">
+                                <button type="button" class="btn btn-primary" onclick="RejectDistributor();">Reject</button>
                             </div>
                         </div>
                     </div>
@@ -183,6 +184,57 @@
     </div>
 </div>
 <script>
+    $("input[name=optradioapprove]").click(function () {
+        if ($(this).val() == "Approve") {
+            $(".distributorinfo").show();
+            $(".distributorinforeject").hide();
+        }
+        else {
+            $(".distributorinforeject").show();
+            $(".distributorinfo").hide();
+        }
+    });
+    function ApproveDistributor() {
+        var creditlimi = $("#txtcreditlimit").val();
+        if (creditlimi == "") {
+            creditlimi = "0";
+        }
+        var pwd = $("#txtpassword").val();
+        if (pwd == "") {
+            alert("Please enter password");
+            return false;
+        }
 
-   
+        var URL = '/Admin/Distributor/ApproveRejectDistributorRequest';
+        $.ajax({
+            type: 'POST',
+            async: true,
+            url: URL + "?RequestId=" + $("#requestid").val() +"&IsApprove=true&CreditLimit="+creditlimi+"&Password="+pwd,
+            success: function (result) {
+                alert("Distributor Request Approved. You can find approved distributors in distributor list");
+                location.href = "/admin/distributor/requestlist";
+            },
+            error: function (resultData) {
+                console.log("error");
+
+            }
+        });
+    }
+
+    function RejectDistributor() {
+         var URL = '/Admin/Distributor/ApproveRejectDistributorRequest';
+        $.ajax({
+            type: 'POST',
+            async: true,
+            url: URL + "?RequestId=" + $("#requestid").val() +"&IsApprove=false",
+            success: function (result) {
+                alert("Distributor Request Rejected!");
+                location.href = "/admin/distributor/requestlist";
+            },
+            error: function (resultData) {
+                console.log("error");
+
+            }
+        });
+    }
 </script>

@@ -48,6 +48,11 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                       DistributorPrice = i.DistributorPrice,
                                       IsActive = i.IsActive
                                   }).OrderByDescending(x => x.ProductItemId).ToList();
+                if (lstProductItem != null && lstProductItem.Count() > 0)
+                {
+                    lstProductItem.ForEach(x => { x.Sold = SoldItems(x.ProductItemId); x.InStock = ItemStock(x.ProductItemId) - x.Sold;});
+                }
+
             }
             catch (Exception ex)
             {
@@ -278,5 +283,15 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return ProductList;
         }
 
+        public int ItemStock(long ItemId)
+        {
+           long? TotalStock = _db.tbl_ItemStocks.Where(o => o.IsActive == true && o.IsDelete == false && o.ProductItemId == ItemId).Sum(o => (long?) o.Qty);
+           return Convert.ToInt32(TotalStock);
+        }
+        public int SoldItems(long ItemId)
+        {
+            long? TotalSold = _db.tbl_OrderItemDetails.Where(o => o.ProductItemId == ItemId && o.IsDelete == false).Sum(o => (long?)o.Qty.Value);
+            return Convert.ToInt32(TotalSold);
+        }
     }
 }

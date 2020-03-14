@@ -108,19 +108,19 @@
         window.location.href = "/admin/stock/add";
      });
 
-    jQuery(document).ready(function () {
-        StartLoading()
-        jQuery('html, body').animate({ scrollTop: 0 }, 1000);
-    });
+    //jQuery(document).ready(function () {
+    //    StartLoading()
+    //    jQuery('html, body').animate({ scrollTop: 0 }, 1000);
+    //});
 
     function fnDeleteStock(item_id) {
         jQuery("#hdnDeleteStockItem").val(item_id);
         jQuery('#deleteProductStockModal').modal('show');
     }
 
-    jQuery(window).on("load", function () {
-        StopLoading();
-    });
+    //jQuery(window).on("load", function () {
+    //    StopLoading();
+    //});
 
     jQuery(document).on("click", "#btnDeleteStockItem", function () {
 

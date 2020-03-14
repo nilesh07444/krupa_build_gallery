@@ -123,10 +123,10 @@
 
 <script>
 
-    jQuery(document).ready(function () {
-        StartLoading()
-        jQuery('html, body').animate({ scrollTop: 0 }, 1000);
-    });
+    //jQuery(document).ready(function () {
+    //    StartLoading()
+    //    jQuery('html, body').animate({ scrollTop: 0 }, 1000);
+    //});
 
     $(document).on("click", "#btnAdd", function () {
         window.location.href = "/admin/category/add";
@@ -137,9 +137,9 @@
         $('#deleteCategoryModal').modal('show');
     }
 
-    jQuery(window).on("load", function () {
-        StopLoading();
-    });
+    //jQuery(window).on("load", function () {
+    //    StopLoading();
+    //});
 
     jQuery(document).on("click", "#btnDeleteCategory", function () {
 

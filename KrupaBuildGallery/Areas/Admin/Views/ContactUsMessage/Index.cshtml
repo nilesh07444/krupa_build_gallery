@@ -38,8 +38,8 @@
                 <table class="display" id="basic-1">
                     <thead>
                         <tr>
-                            <th style="width:50px !important;"></th>                            
-                            <th>Name</th>                            
+                            <th style="width:50px !important;"></th>
+                            <th>Name</th>
                             <th>Email</th>
                             <th>Mobile No.</th>
                             <th>Message</th>
@@ -60,9 +60,9 @@
                                     <td>@objcontact.MobileNumber</td>
                                     <td>@objcontact.Message</td>
                                     <td>@objcontact.FromWhere</td>
-                                    <td>@objcontact.MessageDate.ToString("MMM dd,yyyy")</td>                                    
-                                    <td>                                        
-                                        <a href="javascript:void(0);"><i class="fa fa-trash font-danger"></i></a>
+                                    <td>@objcontact.MessageDate.ToString("MMM dd,yyyy")</td>
+                                    <td>
+                                        <a href="javascript:void(0);" onclick="fnDeleteContactus('@objcontact.ContactUsMsgId');" ><i class="fa fa-trash font-danger"></i></a>
                                     </td>
                                 </tr>
                                 counter++;
@@ -77,4 +77,63 @@
     <!-- Container-fluid Ends-->
 
 </div>
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteContactusModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete Confirm</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete ?
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="hdnDeleteContactusid" />
+                <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+                <button id="btnDeleteContactUs" class="btn btn-primary" type="button">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Delete modal -->
+<script>
+        jQuery(document).on("click", "#btnDeleteContactUs", function () {
 
+        var contactusid = jQuery("#hdnDeleteContactusid").val();
+        if (contactusid != "" && contactusid != null) {
+            $('#deleteContactusModal').modal('hide');
+            $.blockUI({ message: "<h4>Please Wait...</h4>" });
+            var URL = '@Url.Action("DeleteContactUs", "ContactUsMessage")';
+            $.ajax({
+                type: 'POST',
+                async: true,
+                url: URL + "?Id=" + contactusid,
+                success: function (result) {
+                    if (result == "success") {
+                        alert("ContactUs message deleted successfully");
+                        window.location.reload();
+                    }
+                    else if (result == "notfound") {                    
+                        alert("Something went wrong. Please try again");
+                    }
+                    else {
+                        alert("Something went wrong. Please try again");
+                    }
+
+                    $.unblockUI();
+                },
+                error: function (resultData) {
+                    console.log("error");
+                    $.unblockUI();
+                }
+            });
+        }
+    });
+
+    function fnDeleteContactus(contact_id) {
+        jQuery("#hdnDeleteContactusid").val(contact_id);
+        $('#deleteContactusModal').modal('show');
+        }
+
+</script>

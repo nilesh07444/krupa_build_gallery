@@ -1,5 +1,10 @@
-﻿
+﻿@using KrupaBuildGallery.Model;
+@model List<OfferVM>
+@{
+    ViewBag.Title = "Offers";
 
+    int counter = 1;
+}
 <div class="page-body">
 
     <!-- Container-fluid starts-->
@@ -39,37 +44,48 @@
                 <table class="display" id="basic-1">
                     <thead>
                         <tr>
-                            <th>Vendor</th>
-                            <th>Products</th>
-                            <th>Store Name</th>
-                            <th>Create Date</th>
-                            <th>Wallet Balance</th>
-                            <th>Revenue</th>
-                            <th>Action</th>
+                            <th>Offer Title</th>
+                            <th>Item Name</th>
+                            <th>Customer Offer Price</th>
+                            <th>Distributor Offer Price</th>
+                            <th>Offer Start</th>
+                            <th>Offer End</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            foreach (OfferVM item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.OfferTitle
+                                    </td>
+                                    <td>
+                                        @item.ProductItemName
+                                    </td>
+                                    <td>
+                                        @item.CustomerOfferPrice
+                                    </td>
+                                    <td>
+                                        @item.DistributorOfferPrice
+                                    </td>
+                                    <td>
+                                        @item.OfferStartDate.ToString("dd-MMM-yyyy")
+                                    </td>
+                                    <td>
+                                        @item.OfferEndDate.ToString("dd-MMM-yyyy")
+                                    </td>
+                                    <td style="width:10% !important;">
+                                        <a href="/admin/offer/edit/@item.OfferId"><i class="fa fa-edit mr-2 font-success"></i></a>
+                                        <a href="javascript:void(0);" onclick="fnDeleteOffer('@item.OfferId')"><i class="fa fa-trash font-danger"></i></a>
+                                    </td>
+                                </tr>
 
-                        <tr>
-                            <td>
-                                <div class="d-flex vendor-list">
-                                    <img src="~/Content/assets/images/team/1.jpg" alt="" class="img-fluid img-40 rounded-circle blur-up lazyloaded">
-                                    <span>Paige Turner</span>
-                                </div>
-                            </td>
-                            <td>4680</td>
-                            <td>Finhigh</td>
-                            <td>11/7/18</td>
-                            <td>$87616</td>
-                            <td>$947611</td>
-                            <td>
-                                <div>
-                                    <i class="fa fa-edit mr-2 font-success"></i>
-                                    <i class="fa fa-trash font-danger"></i>
-                                </div>
-                            </td>
-                        </tr>
+                            }
 
+                        }
                     </tbody>
                 </table>
             </div>
@@ -79,20 +95,75 @@
 
 </div>
 
-
+<!-- Delete Modal -->
+<div class="modal fade open" id="deleteOfferModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete Confirm</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete ?
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="hdnDeleteOfferItem" />
+                <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
+                <button id="btnDeleteOfferItem" class="btn btn-primary" type="button">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Delete modal -->
 <script>
 
-    jQuery(document).ready(function () {
-        StartLoading();
-        jQuery('html, body').animate({ scrollTop: 0 }, 1000);
-    });
+    //jQuery(document).ready(function () {
+    //    StartLoading();
+    //    jQuery('html, body').animate({ scrollTop: 0 }, 1000);
+    //});
 
-    jQuery(window).on("load", function () {
-        StopLoading();
-    });
+    //jQuery(window).on("load", function () {
+    //    StopLoading();
+    //});
 
     $(document).on("click", "#btnAdd", function () {
         window.location.href = "/admin/offer/add";
     });
+      function fnDeleteOffer(item_id) {
+        jQuery("#hdnDeleteOfferItem").val(item_id);
+        jQuery('#deleteOfferModal').modal('show');
+    }
+      jQuery(document).on("click", "#btnDeleteOfferItem", function () {
 
+        var offerid = jQuery("#hdnDeleteOfferItem").val();
+        if (offerid != "" && offerid != null) {
+            $('#deleteOfferModal').modal('hide');
+
+            StartLoading();
+
+            var URL = '@Url.Action("DeleteOffer", "Offer")';
+            $.ajax({
+                type: 'POST',
+                async: true,
+                url: URL + "?offerid=" + offerid,
+                success: function (result) {
+                    if (result == "success") {
+                        alert("Offer deleted successfully");
+                        window.location.reload();
+                    }
+                    else if (result == "notfound") {
+                        alert("Offer Not Found");
+                    }
+                    else {
+                        alert("Something went wrong. Please try again");
+                    }
+
+                   StopLoading();
+                },
+                error: function (resultData) {
+                    StopLoading();
+                }
+            });
+        }
+    });
 </script>

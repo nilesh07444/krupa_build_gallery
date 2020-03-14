@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
+using System.Net;
+using System.Net.Mail;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
@@ -41,14 +44,42 @@ namespace KrupaBuildGallery.Model
             objTripleDESCryptoService.Clear();
             return UTF8Encoding.UTF8.GetString(resultArray);
         }
+        public static void SendEmail(string To, string from, string subject, string body)
+        {
+            System.Net.Mail.MailMessage mailMessage = new System.Net.Mail.MailMessage(
+   from, // From field
+   To, // Recipient field
+  subject, // Subject of the email message
+   body // Email message body
+   );
+            string SMTPHost = ConfigurationManager.AppSettings["SMTPHost"];
+            string SMTpPort = ConfigurationManager.AppSettings["SMTPPort"];
+            string SMTPEMail = ConfigurationManager.AppSettings["SMTPEmail"];
+            string SMTPPwd = ConfigurationManager.AppSettings["SMTPPwd"];
+            mailMessage.IsBodyHtml = true;
+            // System.Net.Mail.MailMessage mailMessage = (System.Net.Mail.MailMessage)mailMsg;
+
+            /* Setting should be kept somewhere so no need to 
+               pass as a parameter (might be in web.config)       */
+            using (SmtpClient client = new SmtpClient(SMTPHost,Convert.ToInt32(SMTpPort)))
+            {
+                // Configure the client
+                client.EnableSsl = true;               
+                client.Credentials = new NetworkCredential(SMTPEMail, SMTPPwd);
+
+                client.DeliveryMethod = SmtpDeliveryMethod.Network;
+                mailMessage.IsBodyHtml = true;
+                client.Send(mailMessage);
+            }
+        }
 
     }
 
     enum OrderStatus
     {
         Processing = 1,
-        Completed= 2,
+        Completed = 2,
         Pending = 3,
-        Shipped = 4,        
+        Shipped = 4,
     }
 }
