@@ -51,7 +51,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 }
                 else
                 {
-                    TempData["LoginError"] = "Invalid username or password";
+                    TempData["LoginError"] = "Invalid Username or Password";
                     return View();
                 }
             }
