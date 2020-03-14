@@ -213,5 +213,41 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return ReturnMessage;
         }
 
+
+        [HttpPost]
+        public string ChangeStatus(long Id,string Status)
+        {
+            string ReturnMessage = "";
+            try
+            {
+                tbl_Categories objCategory = _db.tbl_Categories.Where(x => x.CategoryId == Id).FirstOrDefault();
+
+                if (objCategory != null)
+                {
+                    long LoggedInUserId = Int64.Parse(clsAdminSession.UserID.ToString());
+                    if(Status == "Active")
+                    {
+                        objCategory.IsActive = true;
+                    }
+                    else
+                    {
+                        objCategory.IsActive = false;
+                    }
+                    
+                    objCategory.UpdatedBy = LoggedInUserId;
+                    objCategory.UpdatedDate = DateTime.UtcNow;
+
+                    _db.SaveChanges();
+                    ReturnMessage = "success";
+                }                
+            }
+            catch (Exception ex)
+            {
+                string msg = ex.Message.ToString();
+                ReturnMessage = "exception";
+            }
+
+            return ReturnMessage;
+        }
     }
 }

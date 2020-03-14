@@ -49,7 +49,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                       OfferEndDate = stk.EndDate,
                                       CustomerOfferPrice = stk.OfferPrice,
                                       DistributorOfferPrice = stk.OfferPriceforDistributor.Value,
-                                      IsActive = i.IsActive
+                                      IsActive = stk.IsActive
                                   }).OrderByDescending(x => x.OfferId).ToList();
             }
             catch (Exception ex)
@@ -266,6 +266,42 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         .OrderBy(x => x.Text).ToList();
 
             return ProductItemList;
+        }
+
+        [HttpPost]
+        public string ChangeStatus(long Id, string Status)
+        {
+            string ReturnMessage = "";
+            try
+            {
+                tbl_Offers objtbl_Offers = _db.tbl_Offers.Where(x => x.OfferId == Id).FirstOrDefault();
+
+                if (objtbl_Offers != null)
+                {
+                    long LoggedInUserId = Int64.Parse(clsAdminSession.UserID.ToString());
+                    if (Status == "Active")
+                    {
+                        objtbl_Offers.IsActive = true;
+                    }
+                    else
+                    {
+                        objtbl_Offers.IsActive = false;
+                    }
+
+                    objtbl_Offers.UpdatedBy = LoggedInUserId;
+                    objtbl_Offers.UpdatedDate = DateTime.UtcNow;
+
+                    _db.SaveChanges();
+                    ReturnMessage = "success";
+                }
+            }
+            catch (Exception ex)
+            {
+                string msg = ex.Message.ToString();
+                ReturnMessage = "exception";
+            }
+
+            return ReturnMessage;
         }
     }
 }

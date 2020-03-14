@@ -50,6 +50,7 @@
                             <th>Distributor Offer Price</th>
                             <th>Offer Start</th>
                             <th>Offer End</th>
+                            <th width="15%;">Active</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -58,30 +59,38 @@
                         {
                             foreach (OfferVM item in Model)
                             {
-                                <tr>
-                                    <td>
-                                        @item.OfferTitle
-                                    </td>
-                                    <td>
-                                        @item.ProductItemName
-                                    </td>
-                                    <td>
-                                        @item.CustomerOfferPrice
-                                    </td>
-                                    <td>
-                                        @item.DistributorOfferPrice
-                                    </td>
-                                    <td>
-                                        @item.OfferStartDate.ToString("dd-MMM-yyyy")
-                                    </td>
-                                    <td>
-                                        @item.OfferEndDate.ToString("dd-MMM-yyyy")
-                                    </td>
-                                    <td style="width:10% !important;">
-                                        <a href="/admin/offer/edit/@item.OfferId"><i class="fa fa-edit mr-2 font-success"></i></a>
-                                        <a href="javascript:void(0);" onclick="fnDeleteOffer('@item.OfferId')"><i class="fa fa-trash font-danger"></i></a>
-                                    </td>
-                                </tr>
+                        <tr>
+                            <td>
+                                @item.OfferTitle
+                            </td>
+                            <td>
+                                @item.ProductItemName
+                            </td>
+                            <td>
+                                @item.CustomerOfferPrice
+                            </td>
+                            <td>
+                                @item.DistributorOfferPrice
+                            </td>
+                            <td>
+                                @item.OfferStartDate.ToString("dd-MMM-yyyy")
+                            </td>
+                            <td>
+                                @item.OfferEndDate.ToString("dd-MMM-yyyy")
+                            </td>
+                            @if (item.IsActive == true)
+                            {
+                                <td><span class="badge badge-warning" style="cursor:pointer;" title="Click to Inactive" onclick="fnChangeStatus('@item.OfferId','InActive');">Active</span></td>
+                            }
+                            else
+                            {
+                                <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@item.OfferId','Active');">InActive</span></td>
+                            }
+                            <td style="width:10% !important;">
+                                <a href="/admin/offer/edit/@item.OfferId"><i class="fa fa-edit mr-2 font-success"></i></a>
+                                <a href="javascript:void(0);" onclick="fnDeleteOffer('@item.OfferId')"><i class="fa fa-trash font-danger"></i></a>
+                            </td>
+                        </tr>
 
                             }
 
@@ -115,6 +124,25 @@
     </div>
 </div>
 <!-- Delete modal -->
+<div class="modal fade open" id="activeinactiveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to active ?
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="hdndataId" />
+                <input type="hidden" id="hdnstatus" />
+                <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
+                <button id="btnChangeStatus" class="btn btn-primary" type="button">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
 
     //jQuery(document).ready(function () {
@@ -154,6 +182,50 @@
                     else if (result == "notfound") {
                         alert("Offer Not Found");
                     }
+                    else {
+                        alert("Something went wrong. Please try again");
+                    }
+
+                   StopLoading();
+                },
+                error: function (resultData) {
+                    StopLoading();
+                }
+            });
+        }
+      });
+
+
+       function fnChangeStatus(cat_id,status) {
+         jQuery("#hdndataId").val(cat_id);
+         jQuery("#hdnstatus").val(status);
+         if (status == "Active") {
+             $('#activeinactiveModal .modal-body').html(" Are you sure you want to make active ?");
+         }
+         else {
+             $('#activeinactiveModal .modal-body').html(" Are you sure you want to make inactive ?");
+         }
+        $('#activeinactiveModal').modal('show');
+    }
+
+       jQuery(document).on("click", "#btnChangeStatus", function () {
+
+        var Id = jQuery("#hdndataId").val();
+        if (Id != "" && Id != null) {
+            $('#activeinactiveModal').modal('hide');
+
+            StartLoading();
+
+            var URL = '@Url.Action("ChangeStatus", "Offer")';
+            $.ajax({
+                type: 'POST',
+                async: true,
+                url: URL + "?Id=" + Id+"&Status="+jQuery("#hdnstatus").val(),
+                success: function (result) {
+                    if (result == "success") {
+                        alert("Status change Successfully...");
+                        window.location.reload();
+                    }                    
                     else {
                         alert("Something went wrong. Please try again");
                     }

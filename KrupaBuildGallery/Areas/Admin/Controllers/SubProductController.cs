@@ -39,7 +39,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                       SubProductImage = s.SubProductImage,
                                       CategoryId = c.CategoryId,
                                       ProductName = p.ProductName,
-                                      IsActive = c.IsActive
+                                      IsActive = s.IsActive
                                   }).OrderByDescending(x => x.ProductId).ToList();
 
             }
@@ -269,6 +269,43 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                          .OrderBy(x => x.Text).ToList();
 
             return Json(CategoryList, JsonRequestBehavior.AllowGet);
+        }
+
+
+        [HttpPost]
+        public string ChangeStatus(long Id, string Status)
+        {
+            string ReturnMessage = "";
+            try
+            {
+                tbl_SubProducts objtbl_SubProducts = _db.tbl_SubProducts.Where(x => x.SubProductId == Id).FirstOrDefault();
+
+                if (objtbl_SubProducts != null)
+                {
+                    long LoggedInUserId = Int64.Parse(clsAdminSession.UserID.ToString());
+                    if (Status == "Active")
+                    {
+                        objtbl_SubProducts.IsActive = true;
+                    }
+                    else
+                    {
+                        objtbl_SubProducts.IsActive = false;
+                    }
+
+                    objtbl_SubProducts.UpdatedBy = LoggedInUserId;
+                    objtbl_SubProducts.UpdatedDate = DateTime.UtcNow;
+
+                    _db.SaveChanges();
+                    ReturnMessage = "success";
+                }
+            }
+            catch (Exception ex)
+            {
+                string msg = ex.Message.ToString();
+                ReturnMessage = "exception";
+            }
+
+            return ReturnMessage;
         }
 
 
