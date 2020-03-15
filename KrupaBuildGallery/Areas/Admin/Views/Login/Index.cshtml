@@ -866,6 +866,18 @@
                                 <div class="tab-content" id="top-tabContent">
                                     <div class="tab-pane fade show active" id="top-profile" role="tabpanel" aria-labelledby="top-profile-tab">
                                         <form class="form-horizontal auth-form" method="post">
+
+                                            @if (TempData["LoginError"] != null)
+                                            {
+
+                                                <div class="alert alert-block alert-danger fade show" style="margin-top: 10px;">
+                                                    <button data-dismiss="alert" class="close close-sm" type="button">
+                                                        <i class="fa fa-times"></i>
+                                                    </button>
+                                                    <strong>@TempData["LoginError"]</strong>
+                                                </div>
+                                            }
+
                                             <div class="form-group">
                                                 @*<input required="" name="login[username]" type="email" class="form-control" placeholder="Username" id="exampleInputEmail1">*@
                                                 @Html.TextBoxFor(model => model.UserName, new { id = "txtUserName", name = "txtUserName", placeholder = "Username", @class = "form-control" })
@@ -887,25 +899,16 @@
                                                 <button id="cmdSubmit" class="btn btn-primary" type="submit">Login</button>
                                             </div>
 
-                                            @if (TempData["LoginError"] != null)
-                                            {
 
-                                                <div class="alert alert-block alert-danger fade show" style="margin-top: 10px;">
-                                                    <button data-dismiss="alert" class="close close-sm" type="button">
-                                                        <i class="fa fa-times"></i>
-                                                    </button>
-                                                    <strong>@TempData["LoginError"]</strong>
-                                                </div>
-                                            }
 
                                             <div class="form-footer">
                                                 @*<span>Or Login up with social platforms</span>
-                                                <ul class="social">
-                                                    <li><a class="icon-facebook" href=""></a></li>
-                                                    <li><a class="icon-twitter" href=""></a></li>
-                                                    <li><a class="icon-instagram" href=""></a></li>
-                                                    <li><a class="icon-pinterest" href=""></a></li>
-                                                </ul>*@
+            <ul class="social">
+                <li><a class="icon-facebook" href=""></a></li>
+                <li><a class="icon-twitter" href=""></a></li>
+                <li><a class="icon-instagram" href=""></a></li>
+                <li><a class="icon-pinterest" href=""></a></li>
+            </ul>*@
                                             </div>
                                         </form>
                                     </div>  
