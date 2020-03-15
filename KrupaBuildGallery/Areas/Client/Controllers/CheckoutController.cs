@@ -86,7 +86,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 }
 
                 ViewBag.CreditRemaining = creditlimitreminng;
-
+                tbl_ClientOtherDetails objotherdetails = _db.tbl_ClientOtherDetails.Where(o => o.ClientUserId == clsClientSession.UserID).FirstOrDefault();
+                ViewData["objotherdetails"] = objotherdetails;
             }
             catch (Exception ex)
             {
@@ -196,7 +197,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     tbl_Orders objOrder = new tbl_Orders();
                     objOrder.ClientUserId = clientusrid;
                     objOrder.OrderAmount = Convert.ToDecimal(objCheckout.Orderamount);
-                    objOrder.OrderShipCity = objCheckout.shipcity;
+                    objOrder.OrderShipCity = objCheckout.shipcity+" - "+ objCheckout.shippincode;
                     objOrder.OrderShipAddress = objCheckout.shipaddress;
                     objOrder.OrderShipState = objCheckout.shipstate;
                     objOrder.OrderShipClientName = objCheckout.shipfirstname + " " + objCheckout.shiplastname;
@@ -227,6 +228,14 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             
                         }
                         objotherdetails.AmountDue = amtdue + Convert.ToDecimal(objCheckout.Orderamount);
+                        objotherdetails.ShipAddress = objCheckout.shipaddress;
+                        objotherdetails.ShipCity = objCheckout.shipcity;
+                        objotherdetails.ShipFirstName = objCheckout.shipfirstname;
+                        objotherdetails.ShipLastName = objCheckout.shiplastname;
+                        objotherdetails.ShipPhoneNumber = objCheckout.shipphone;
+                        objotherdetails.ShipPostalcode = objCheckout.shippincode;
+                        objotherdetails.ShipState = objCheckout.shipstate;
+                        objotherdetails.ShipEmail = objCheckout.shipemailaddress;
                     }
                     _db.SaveChanges();
 
@@ -369,7 +378,19 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 }
                                 _db.SaveChanges();
                             }
-
+                            var objotherdetails = _db.tbl_ClientOtherDetails.Where(o => o.ClientUserId == clientusrid).FirstOrDefault();
+                            if (objotherdetails != null)
+                            {                               
+                                objotherdetails.ShipAddress = objCheckout.shipaddress;
+                                objotherdetails.ShipCity = objCheckout.shipcity;
+                                objotherdetails.ShipFirstName = objCheckout.shipfirstname;
+                                objotherdetails.ShipLastName = objCheckout.shiplastname;
+                                objotherdetails.ShipPhoneNumber = objCheckout.shipphone;
+                                objotherdetails.ShipPostalcode = objCheckout.shippincode;
+                                objotherdetails.ShipState = objCheckout.shipstate;
+                                objotherdetails.ShipEmail = objCheckout.shipemailaddress;
+                                _db.SaveChanges();
+                            }
                             string orderid = clsCommon.EncryptString(objOrder.OrderId.ToString());
                             ReturnMessage = "Success^" + orderid;
                         }

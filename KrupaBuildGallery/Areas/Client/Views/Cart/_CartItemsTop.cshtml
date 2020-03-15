@@ -50,7 +50,17 @@
         </div>
     </li>
     <li>
-        <div class="buttons"><a href="/cart" class="view-cart">view cart</a> <a href="/checkout" class="checkout">checkout</a></div>
+        <div class="buttons">
+            <a href="/cart" class="view-cart">view cart</a>
+            @if (clsClientSession.UserID > 0)
+            {
+                <a href="/checkout" class="checkout">checkout</a>
+            }
+            else
+            {
+                <a href="/login?referer=checkout" class="checkout">checkout</a>
+            }
+        </div>
     </li>
 }
 else

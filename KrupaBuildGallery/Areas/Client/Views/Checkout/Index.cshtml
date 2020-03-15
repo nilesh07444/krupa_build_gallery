@@ -5,6 +5,7 @@
 @{
     List<CartVM> lstCartItmms = ViewData["lstCartItems"] as List<CartVM>;
     decimal CartTotal = 0;
+    tbl_ClientOtherDetails objClientOther = ViewData["objotherdetails"] as tbl_ClientOtherDetails;
 }
 <style>
     .errorcls{
@@ -49,42 +50,42 @@
                                 <div class="row check-out">
                                     <div class="form-group col-md-6 col-sm-6 col-xs-12">
                                         <div class="field-label">First Name *</div>
-                                        <input type="text" name="shipfirstname" required value="" placeholder="">
+                                        <input type="text" name="shipfirstname" required value="@objClientOther.ShipFirstName" placeholder="">
                                         <span class="errorcls"></span>
                                     </div>
                                     <div class="form-group col-md-6 col-sm-6 col-xs-12">
                                         <div class="field-label">Last Name *</div>
-                                        <input type="text" name="shiplastname" required value="" placeholder="">
+                                        <input type="text" name="shiplastname" required value="@objClientOther.ShipLastName" placeholder="">
                                         <span class="errorcls"></span>
                                     </div>
                                     <div class="form-group col-md-6 col-sm-6 col-xs-12">
                                         <div class="field-label">Phone *</div>
-                                        <input type="text" name="shipphone" required value="" placeholder="">
+                                        <input type="text" name="shipphone" required value="@objClientOther.ShipPhoneNumber" placeholder="">
                                         <span class="errorcls"></span>
                                     </div>
                                     <div class="form-group col-md-6 col-sm-6 col-xs-12">
                                         <div class="field-label">Email Address</div>
-                                        <input type="text" name="shipemailaddress" required value="" placeholder="">
+                                        <input type="text" name="shipemailaddress" required value="@objClientOther.ShipEmail" placeholder="">
                                         <span class="errorcls"></span>
                                     </div>
                                     <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                         <div class="field-label">Address *</div>
-                                        <input type="text" name="shipaddress" required value="" placeholder="Street address">
+                                        <input type="text" name="shipaddress" required value="@objClientOther.ShipAddress" placeholder="Street address">
                                         <span class="errorcls"></span>
                                     </div>
                                     <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                         <div class="field-label">Town/City *</div>
-                                        <input type="text" name="shipcity" required value="" placeholder="">
+                                        <input type="text" name="shipcity" required value="@objClientOther.ShipCity" placeholder="">
                                         <span class="errorcls"></span>
                                     </div>
                                     <div class="form-group col-md-12 col-sm-6 col-xs-12">
                                         <div class="field-label">State *</div>
-                                        <input type="text" name="shipstate" required value="" placeholder="">
+                                        <input type="text" name="shipstate" required value="@objClientOther.ShipState" placeholder="">
                                         <span class="errorcls"></span>
                                     </div>
                                     <div class="form-group col-md-12 col-sm-6 col-xs-12">
                                         <div class="field-label">Postal Code *</div>
-                                        <input type="text" name="shippincode" required value="" placeholder="">
+                                        <input type="text" name="shippincode" required value="@objClientOther.ShipPostalcode" placeholder="">
                                         <span class="errorcls"></span>
                                     </div>
                                 </div>
@@ -131,30 +132,54 @@
                                     <div class="payment-box">
                                         <div class="upper-box">
                                             <div class="payment-options">
-                                                <h4 style="margin-bottom:5px;">Payment</h4>
-                                                <ul>
-                                                    @if (clsClientSession.UserID > 0 && clsClientSession.RoleID == 2)
+                                                @if (clsClientSession.UserID > 0 && clsClientSession.RoleID == 2)
+                                                {
+                                                    decimal creditreminng = Convert.ToDecimal(ViewBag.CreditRemaining);
+                                                    if (creditreminng > 0 && creditreminng >= CartTotal)
                                                     {
-                                                        decimal creditreminng = Convert.ToDecimal(ViewBag.CreditRemaining);
-                                                        if (creditreminng > 0 && creditreminng >= CartTotal)
-                                                        {
+                                                        <h4 style="margin-bottom:5px;">Payment</h4>
+                                                        <ul>
                                                             <li>
                                                                 <div class="radio-option">
                                                                     <input type="radio" name="payment-group" value="ByCredit" id="payment-1">
                                                                     <label for="payment-1">By Credit<span class="small-text">Current Credit Remaining(@ViewBag.CreditRemaining)</span></label>
                                                                 </div>
                                                             </li>
-                                                        }
-
+                                                            <li>
+                                                                <div class="radio-option">
+                                                                    <input type="radio" name="payment-group" value="ByOther" id="payment-2">
+                                                                    <label for="payment-2">By Other Payment Sources<span class="small-text">Select to pay by credit card, upi, net banking etc</span></label>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
                                                     }
-                                                <li>
-                                                    <div class="radio-option">
-                                                        <input type="radio" name="payment-group" value="ByOther" id="payment-2">
-                                                        <label for="payment-2">By Other Payment Sources<span class="small-text">Select to pay by credit card, upi, net banking etc</span></label>
-                                                    </div>
-                                                </li> 
-                                                   
-                                                </ul>
+                                                    else
+                                                    {
+                                                        <ul style="display:none;">
+                                                            <li>
+                                                                <div class="radio-option">
+                                                                    <input type="radio" name="payment-group" value="ByOther" id="payment-2" checked>
+                                                                    <label for="payment-2">By Other Payment Sources<span class="small-text">Select to pay by credit card, upi, net banking etc</span></label>
+                                                                </div>
+                                                            </li>
+                                                        </ul>
+                                                    }
+
+                                                }
+                                                else if (clsClientSession.UserID == 0 || clsClientSession.UserID > 0 && clsClientSession.RoleID == 1)
+                                                {
+                                                    <ul style="display:none;">
+                                                        <li>
+                                                            <div class="radio-option">
+                                                                <input type="radio" name="payment-group" value="ByOther" id="payment-2" checked>
+                                                                <label for="payment-2">By Other Payment Sources<span class="small-text">Select to pay by credit card, upi, net banking etc</span></label>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                }
+
+
+
                                             </div>
                                         </div>
 

@@ -138,7 +138,18 @@
             @if (Model != null && Model.Count > 0)
             {
                 <div class="col-6"><a href="/" class="btn btn-solid">continue shopping</a></div>
-                <div class="col-6"><a href="javascript:void(0);" onclick="UpdateCart();" class="btn btn-solid" style="margin-right:10px;">Update Cart</a><a href="/checkout" class="btn btn-solid">check out</a></div>
+                <div class="col-6">
+                    <a href="javascript:void(0);" onclick="UpdateCart();" class="btn btn-solid" style="margin-right:10px;">Update Cart</a>
+                    @if (clsClientSession.UserID > 0)
+                    {
+                          <a href="/checkout" class="btn btn-solid">check out</a>
+                    }
+                    else
+                    {
+                        <a href="/login?referer=checkout" class="btn btn-solid">checkout</a>
+                    }
+                    
+                </div>
 
             }
         </div>

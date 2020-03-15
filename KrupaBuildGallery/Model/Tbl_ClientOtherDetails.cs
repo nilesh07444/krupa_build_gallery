@@ -33,5 +33,10 @@ namespace KrupaBuildGallery.Model
         public System.DateTime CreatedDate { get; set; }
         public Nullable<long> UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDate { get; set; }
+        public string ShipFirstName { get; set; }
+        public string ShipLastName { get; set; }
+        public string ShipPhoneNumber { get; set; }
+        public string ShipEmail { get; set; }
+        public string ShipPostalcode { get; set; }
     }
 }

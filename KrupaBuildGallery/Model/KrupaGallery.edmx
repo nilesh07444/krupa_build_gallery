@@ -86,6 +86,11 @@
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="UpdatedBy" Type="bigint" />
           <Property Name="UpdatedDate" Type="datetime" />
+          <Property Name="ShipFirstName" Type="nvarchar" MaxLength="300" />
+          <Property Name="ShipLastName" Type="nvarchar" MaxLength="300" />
+          <Property Name="ShipPhoneNumber" Type="nvarchar" MaxLength="20" />
+          <Property Name="ShipEmail" Type="nvarchar" MaxLength="150" />
+          <Property Name="ShipPostalcode" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="tbl_ClientRoles">
           <Key>
@@ -428,6 +433,11 @@
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="UpdatedBy" Type="Int64" />
           <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <Property Name="ShipFirstName" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="ShipLastName" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="ShipPhoneNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ShipEmail" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="ShipPostalcode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_ClientRoles">
           <Key>
@@ -766,6 +776,11 @@
           <EntitySetMapping Name="tbl_ClientOtherDetails">
             <EntityTypeMapping TypeName="krupagallarydbModel.tbl_ClientOtherDetails">
               <MappingFragment StoreEntitySet="tbl_ClientOtherDetails">
+                <ScalarProperty Name="ShipPostalcode" ColumnName="ShipPostalcode" />
+                <ScalarProperty Name="ShipEmail" ColumnName="ShipEmail" />
+                <ScalarProperty Name="ShipPhoneNumber" ColumnName="ShipPhoneNumber" />
+                <ScalarProperty Name="ShipLastName" ColumnName="ShipLastName" />
+                <ScalarProperty Name="ShipFirstName" ColumnName="ShipFirstName" />
                 <ScalarProperty Name="ClientOtherDetailsId" ColumnName="ClientOtherDetailsId" />
                 <ScalarProperty Name="ClientUserId" ColumnName="ClientUserId" />
                 <ScalarProperty Name="Addharcardno" ColumnName="Addharcardno" />

@@ -69,8 +69,14 @@
                             </div>
                             <input type="hidden" name="hdnReferer" value="@ViewBag.Referer" />
                             <input type="submit" value="Create Account" class="btn btn-solid" />
-
-                            <input onclick="location.href='/login'" type="button" value="Back to Login" class="btn btn-solid" />
+                            @if (Convert.ToString(ViewBag.Referer) != "")
+                            {
+                                <input onclick="location.href='/login?referer=@ViewBag.Referer'" type="button" value="Back to Login" class="btn btn-solid" />
+                            }
+                            else
+                            {
+                                <input onclick="location.href='/login'" type="button" value="Back to Login" class="btn btn-solid" />
+                            }
 
                         </div>
                     }

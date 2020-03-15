@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 
@@ -110,6 +111,35 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
 
             return RedirectToAction("Index", "DistributorRequest", new { area = "Client" });
 
+        }
+
+        public string SendOTP(string MobileNumber)
+        {
+            try
+            {
+                using (WebClient webClient = new WebClient())
+                {
+                    WebClient client = new WebClient();
+                    Random random = new Random();
+                    int num = random.Next(111566, 999999);
+                    string msg = "Your distributor request OTP code is " + num;
+                    string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + MobileNumber + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    var json = webClient.DownloadString(url);
+                    if (json.Contains("invalidnumber"))
+                    {
+                        return "InvalidNumber";
+                    }
+                    else
+                    {
+                        return num.ToString();
+                    }
+
+                }
+            }
+            catch (WebException ex)
+            {
+                throw ex;
+            }
         }
     }
 }

@@ -99,36 +99,40 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     if (existProduct != null)
                     {
                         ModelState.AddModelError("ProductName", ErrorMessage.ProductNameExists);
-                        return View(productVM);
-                    }
-
-                    string fileName = string.Empty;
-                    string path = Server.MapPath("~/Images/ProductMedia/");
-                    if (ProductImageFile != null)
-                    {
-                        fileName = Guid.NewGuid() + "-" + Path.GetFileName(ProductImageFile.FileName);
-                        ProductImageFile.SaveAs(path + fileName);
+                       // return View(productVM);
                     }
                     else
                     {
-                        fileName = productVM.ProductImage;
+                        string fileName = string.Empty;
+                        string path = Server.MapPath("~/Images/ProductMedia/");
+                        if (ProductImageFile != null)
+                        {
+                            fileName = Guid.NewGuid() + "-" + Path.GetFileName(ProductImageFile.FileName);
+                            ProductImageFile.SaveAs(path + fileName);
+                        }
+                        else
+                        {
+                            fileName = productVM.ProductImage;
+                        }
+
+
+                        tbl_Products objProducts = new tbl_Products();
+                        objProducts.ProductName = productVM.ProductName;
+                        objProducts.ProductImage = fileName;
+                        objProducts.CategoryId = Convert.ToInt64(productVM.CategoryId);
+                        objProducts.IsActive = true;
+                        objProducts.IsDelete = false;
+                        objProducts.CreatedBy = LoggedInUserId;
+                        objProducts.CreatedDate = DateTime.UtcNow;
+                        objProducts.UpdatedBy = LoggedInUserId;
+                        objProducts.UpdatedDate = DateTime.UtcNow;
+                        _db.tbl_Products.Add(objProducts);
+                        _db.SaveChanges();
+
+                        return RedirectToAction("Index");
                     }
 
-
-                    tbl_Products objProducts = new tbl_Products();
-                    objProducts.ProductName = productVM.ProductName;
-                    objProducts.ProductImage = fileName;
-                    objProducts.CategoryId = Convert.ToInt64(productVM.CategoryId);
-                    objProducts.IsActive = true;
-                    objProducts.IsDelete = false;
-                    objProducts.CreatedBy = LoggedInUserId;
-                    objProducts.CreatedDate = DateTime.UtcNow;
-                    objProducts.UpdatedBy = LoggedInUserId;
-                    objProducts.UpdatedDate = DateTime.UtcNow;
-                    _db.tbl_Products.Add(objProducts);
-                    _db.SaveChanges();
-
-                    return RedirectToAction("Index");
+                    
 
                 }
             }

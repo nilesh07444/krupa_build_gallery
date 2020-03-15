@@ -101,7 +101,7 @@
                 </div>
                 <div class="col-lg-6 rtl-text">
                     <div class="product-right">
-                        <h2>@Model.ItemName</h2> 
+                        <h2>@Model.ItemName</h2>
                         @if (clsClientSession.UserID == 0 || (clsClientSession.UserID > 0 && clsClientSession.RoleID == 1))
                         {
                             <h4>₹ @Model.CustomerPrice <del>₹ @Model.MRPPrice</del></h4>
@@ -119,7 +119,21 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="product-buttons"><a href="javascript:void(0);" data-toggle="modal" data-target="#addtocart" class="btn btn-solid" onclick="addtocrt('@Model.ProductItemId');">add to cart</a> <a href="/checkout" class="btn btn-solid">checkout</a></div>
+                        <div class="product-buttons">
+                            <a href="javascript:void(0);" data-toggle="modal" data-target="#addtocart" class="btn btn-solid" onclick="addtocrt('@Model.ProductItemId');">add to cart</a>
+                            @if (clsClientSession.UserID > 0)
+                            {
+                                <a href="/checkout" class="btn btn-solid">checkout</a>
+                            }
+                            else
+                            {
+                                <a href="/login?referer=checkout" class="btn btn-solid">checkout</a>
+                            }                            
+                        </div>
+                        <div class="border-product">
+                            <h6 class="product-title">SKU</h6>
+                            <p>@Model.Sku</p>
+                        </div>
                         <div class="border-product">
                             <h6 class="product-title">product details</h6>
                             <p>@Model.ItemDescription</p>
