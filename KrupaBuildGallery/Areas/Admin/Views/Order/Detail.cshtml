@@ -76,7 +76,7 @@
                     <div class="card-body form-horizontal">
                         <div class="form-group">
                             <div class="col-md-3">
-                                <div class="label-wrapper"><label class="control-label">Order #</label></div>
+                                <div class="label-wrapper"><label class="control-label">Order #:</label></div>
                             </div>
                             <div class="col-md-9">
                                 <div class="form-text-row">@Model.OrderId</div>
@@ -84,7 +84,7 @@
                         </div>
                         <div class="form-group">
                             <div class="col-md-3">
-                                <div class="label-wrapper"><label class="control-label">Order Date</label></div>
+                                <div class="label-wrapper"><label class="control-label">Order Date:</label></div>
                             </div>
                             <div class="col-md-9">
                                 <div class="form-text-row">@Model.OrderDate.ToString("MMM dd,yyyy hh:mm:ss")</div>
@@ -92,7 +92,7 @@
                         </div>
                         <div class="form-group">
                             <div class="col-md-3">
-                                <div class="label-wrapper"><label class="control-label">Customer</label></div>
+                                <div class="label-wrapper"><label class="control-label">Customer:</label></div>
                             </div>
                             <div class="col-md-9">
                                 <div class="form-text-row">@Model.ClientUserName</div>
@@ -100,13 +100,13 @@
                         </div>
                         <div class="form-group">
                             <div class="col-md-3">
-                                <div class="label-wrapper"><label class="control-label">Order Status</label></div>
+                                <div class="label-wrapper"><label class="control-label">Order Status:</label></div>
                             </div>
                             <div class="col-md-9">
                                 <div class="form-text-row">@Model.OrderStatus</div>
-                                <button type="button" name="" id="cancelorder" class="btn bg-red" style="margin-right: 3px;">
+                                @*<button type="button" name="" id="cancelorder" class="btn bg-red" style="margin-right: 3px;">
                                     Cancel order
-                                </button>
+                                </button>*@
                                 <button type="submit" name="btnChangeOrderStatus" id="btnChangeOrderStatus" class="btn btn-primary" style="display: inline-block;">
                                     Change status
                                 </button>
@@ -114,7 +114,7 @@
                         </div>
                         <div class="form-group">
                             <div class="col-md-3">
-                                <div class="label-wrapper"><label class="control-label">Payment Method</label></div>
+                                <div class="label-wrapper"><label class="control-label">Payment Method:</label></div>
                             </div>
                             <div class="col-md-9">
                                 <div class="form-text-row">@Model.PaymentType</div>
@@ -122,7 +122,7 @@
                         </div>
                         <div class="form-group" style="border-bottom: 1px solid #eff2f7;">
                             <div class="col-md-3">
-                                <div class="label-wrapper"><label class="control-label">Order Total Amount</label></div>
+                                <div class="label-wrapper"><label class="control-label">Order Total Amount:</label></div>
                             </div>
                             <div class="col-md-9">
                                 <div class="form-text-row">₹ @Model.OrderAmount</div>
@@ -130,7 +130,7 @@
                         </div>
                         <div class="form-group">
                             <div class="col-md-3">
-                                <div class="label-wrapper"><label class="control-label">Shipping Address</label></div>
+                                <div class="label-wrapper"><label class="control-label">Shipping Address:</label></div>
                             </div>
                             <div class="col-md-9">
                                 <div class="form-text-row"></div>
@@ -139,7 +139,7 @@
                         <br/>
                         <div class="form-group">
                             <div class="col-md-3">
-                                <div class="label-wrapper"><label class="control-label">Name</label></div>
+                                <div class="label-wrapper"><label class="control-label">Name:</label></div>
                             </div>
                             <div class="col-md-9">
                                 <div class="form-text-row">@Model.OrderShipClientName</div>
@@ -147,7 +147,7 @@
                         </div>
                         <div class="form-group">
                             <div class="col-md-3">
-                                <div class="label-wrapper"><label class="control-label">Phone</label></div>
+                                <div class="label-wrapper"><label class="control-label">Phone:</label></div>
                             </div>
                             <div class="col-md-9">
                                 <div class="form-text-row">@Model.OrderShipClientPhone</div>
@@ -155,7 +155,7 @@
                         </div>
                         <div class="form-group">
                             <div class="col-md-3">
-                                <div class="label-wrapper"><label class="control-label">Address</label></div>
+                                <div class="label-wrapper"><label class="control-label">Address:</label></div>
                             </div>
                             <div class="col-md-9">
                                 <div class="form-text-row">@Model.OrderShipAddress</div>
@@ -163,7 +163,7 @@
                         </div>
                         <div class="form-group">
                             <div class="col-md-3">
-                                <div class="label-wrapper"><label class="control-label">City</label></div>
+                                <div class="label-wrapper"><label class="control-label">City:</label></div>
                             </div>
                             <div class="col-md-9">
                                 <div class="form-text-row">@Model.OrderShipCity</div>
@@ -171,7 +171,7 @@
                         </div>
                         <div class="form-group">
                             <div class="col-md-3">
-                                <div class="label-wrapper"><label class="control-label">State</label></div>
+                                <div class="label-wrapper"><label class="control-label">State:</label></div>
                             </div>
                             <div class="col-md-9">
                                 <div class="form-text-row">@Model.OrderShipState</div>
@@ -202,7 +202,23 @@
                                         foreach (KrupaBuildGallery.ViewModel.OrderItemsVM objorderItem in Model.OrderItems)
                                         {
                                             <tr>
-                                                <td><img src="\Areas\Admin\Content\img\product-list\pro-thumb-3.jpg" class="clsimgproduct" /></td>
+                                                <td>
+                                                    @if (!string.IsNullOrEmpty(objorderItem.ItemImg))
+                                                    {
+                                                        if (File.Exists(Server.MapPath("~/Images/ProductItemMedia/" + objorderItem.ItemImg)))
+                                                        {
+                                                            <img src="~/Images/ProductItemMedia/@objorderItem.ItemImg" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                                        }
+                                                        else
+                                                        {
+                                                            <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                                    }
+                                                </td>
                                                 <td>@objorderItem.ItemName</td>
                                                 <td>@objorderItem.Sku</td>
                                                 <td>₹ @Math.Round(objorderItem.Price,2)</td>

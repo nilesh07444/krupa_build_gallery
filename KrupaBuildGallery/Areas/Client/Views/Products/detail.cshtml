@@ -64,7 +64,7 @@
                                 {
                                     imgpath = "/Images/default_image.png";
                                 }
-                                <div><img src="@imgpath" alt="" class="img-fluid blur-up lazyload image_zoom_cls-0"></div>
+                                <div><img src="@imgpath" alt="" class="img-fluid blur-up lazyload image_zoom_cls-0" style="cursor: pointer;"></div>
                             }
                         }
                     </div>
@@ -91,7 +91,7 @@
                                         {
                                             imgpath = "/Images/default_image.png";
                                         }
-                                        <div><img src="@imgpath" alt="" class="img-fluid blur-up lazyload"></div>
+                                        <div><img src="@imgpath" alt="" class="img-fluid blur-up lazyload" style="cursor: pointer;"></div>
                                     }
                                 }
 
@@ -119,7 +119,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="product-buttons"><a href="javascript:void(0);" data-toggle="modal" data-target="#addtocart" class="btn btn-solid" onclick="addtocrt('@Model.ProductItemId');">add to cart</a> <a href="/cart" onclick="addtocrt('@Model.ProductItemId');return true;" class="btn btn-solid">buy now</a></div>
+                        <div class="product-buttons"><a href="javascript:void(0);" data-toggle="modal" data-target="#addtocart" class="btn btn-solid" onclick="addtocrt('@Model.ProductItemId');">add to cart</a> <a href="/checkout" class="btn btn-solid">checkout</a></div>
                         <div class="border-product">
                             <h6 class="product-title">product details</h6>
                             <p>@Model.ItemDescription</p>
@@ -127,7 +127,7 @@
                         @if (Model.InStock <= 0)
                         {
                             <div class="border-product">
-                                <p>@Model.Notification</p>
+                                <p style="color: red; text-transform: uppercase;">Note: @Model.Notification</p>
                             </div>
                         }
 

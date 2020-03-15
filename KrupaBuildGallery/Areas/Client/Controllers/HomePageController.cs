@@ -41,11 +41,11 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             {
                 long UserId = clsClientSession.UserID;
                 wishlistitemsId = _db.tbl_WishList.Where(o => o.ClientUserId == UserId).Select(o => o.ItemId.Value).ToList();
-                lstNewProductItem.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.CustomerPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
+                lstNewProductItem.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
             }
             else
             {
-                lstNewProductItem.ForEach(x => { x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.CustomerPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
+                lstNewProductItem.ForEach(x => { x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
             }
             lstPopularProductItem = (from i in _db.tbl_ProductItems
                                  where !i.IsDelete && i.IsActive == true && i.IsPopularProduct == true
@@ -65,11 +65,11 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
 
             if (clsClientSession.UserID != 0)
             {               
-                lstPopularProductItem.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.CustomerPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
+                lstPopularProductItem.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
             }
             else
             {
-                lstPopularProductItem.ForEach(x => { x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.CustomerPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
+                lstPopularProductItem.ForEach(x => { x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
             }
             List<long> lstOfferItemsId = new List<long>();
               List<tbl_Offers> lstOfferss = _db.tbl_Offers.Where(o => DateTime.Now >= o.StartDate && DateTime.Now <= o.EndDate  && o.IsActive == true && o.IsDelete == false).ToList();

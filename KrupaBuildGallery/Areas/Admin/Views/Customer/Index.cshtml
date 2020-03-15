@@ -39,7 +39,7 @@
                     <thead>
                         <tr>
                             <th></th>
-                            <th>Photo</th>
+                            @*<th>Photo</th>*@
                             <th>First Name</th>
                             <th>Last Name</th>
                             <th>Email</th>
@@ -58,7 +58,7 @@
                             {
                         <tr class="gradeX">
                             <td>@counter.</td>
-                            <td><img src="\Areas\Admin\Content\img\product-list\pro-thumb-3.jpg" class="clsimgproduct" /></td>
+                         @*   <td><img src="\Areas\Admin\Content\img\product-list\pro-thumb-3.jpg" class="clsimgproduct" /></td>*@
                             <td>@objusr.FirstName</td>
                             <td>@objusr.LastName</td>
                             <td>@objusr.Email</td>
@@ -68,7 +68,7 @@
                             <td>@objusr.State</td>
                             @if (objusr.IsActive == true)
                             {
-                                <td><span class="badge badge-warning" style="cursor:pointer;" title="Click to Inactive" onclick="fnChangeStatus('@objusr.ClientUserId','InActive');">Active</span></td>
+                                <td><span class="badge badge-success" style="cursor:pointer;" title="Click to Inactive" onclick="fnChangeStatus('@objusr.ClientUserId','InActive');">Active</span></td>
                             }
                             else
                             {
