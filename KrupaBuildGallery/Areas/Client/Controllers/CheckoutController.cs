@@ -48,10 +48,11 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                         CartId = crt.Cart_Id,
                                         ItemName = i.ItemName,
                                         ItemId = i.ProductItemId,
-                                        Price = i.CustomerPrice,
+                                        Price = clsClientSession.RoleID == 1 ? i.CustomerPrice : i.DistributorPrice,
                                         ItemImage = i.MainImage,
                                         Qty = crt.CartItemQty.Value
                                     }).OrderByDescending(x => x.CartId).ToList();
+                    lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price); });
                 }
                 else
                 {
@@ -67,6 +68,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                         ItemImage = i.MainImage,
                                         Qty = crt.CartItemQty.Value
                                     }).OrderByDescending(x => x.CartId).ToList();
+                    lstCartItems.ForEach(x => { x.Price = GetOfferPrice(x.ItemId, x.Price); });
                 }
 
                 decimal creditlimitreminng = 0;
@@ -183,13 +185,14 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                                      CartId = crt.Cart_Id,
                                                      ItemName = i.ItemName,
                                                      ItemId = i.ProductItemId,
-                                                     Price = i.CustomerPrice,
+                                                     Price = clsClientSession.RoleID == 1 ? i.CustomerPrice : i.DistributorPrice,
                                                      ItemImage = i.MainImage,
                                                      Qty = crt.CartItemQty.Value,
                                                      ItemSku = i.Sku,
                                                      GSTPer = i.GST_Per,
                                                      IGSTPer = i.IGST_Per
                                                  }).OrderByDescending(x => x.CartId).ToList();
+                    lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price); });
                     // List<tbl_Cart> lstCarts = _db.tbl_Cart.Where(o => o.ClientUserId == clientusrid).ToList();
                     string paymentmethod = "ByCredit";
                     string paymentdetails = "";
@@ -290,13 +293,14 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                                              CartId = crt.Cart_Id,
                                                              ItemName = i.ItemName,
                                                              ItemId = i.ProductItemId,
-                                                             Price = i.CustomerPrice,
+                                                             Price = clsClientSession.RoleID == 1 ? i.CustomerPrice : i.DistributorPrice,
                                                              ItemImage = i.MainImage,
                                                              Qty = crt.CartItemQty.Value,
                                                              ItemSku = i.Sku,
                                                              GSTPer = i.GST_Per,
                                                              IGSTPer = i.IGST_Per
                                                          }).OrderByDescending(x => x.CartId).ToList();
+                            lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price); });
                             // List<tbl_Cart> lstCarts = _db.tbl_Cart.Where(o => o.ClientUserId == clientusrid).ToList();
                             string paymentmethod = objpymn["method"];
                             string paymentdetails = "";
@@ -414,6 +418,47 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             }
 
             return Json(ReturnMessage);
+        }
+
+        public decimal GetOfferPrice(long Itemid, decimal price)
+        {
+            var objItem = _db.tbl_Offers.Where(o => o.ProductItemId == Itemid && DateTime.Now >= o.StartDate && DateTime.Now <= o.EndDate).FirstOrDefault();
+            if (objItem != null)
+            {
+                return objItem.OfferPrice;
+            }
+
+            return price;
+        }
+
+        public decimal GetDistributorOfferPrice(long Itemid, decimal price)
+        {
+            var objItem = _db.tbl_Offers.Where(o => o.ProductItemId == Itemid && DateTime.Now >= o.StartDate && DateTime.Now <= o.EndDate).FirstOrDefault();
+            if (objItem != null)
+            {
+                return objItem.OfferPriceforDistributor.Value;
+            }
+
+            return price;
+        }
+
+        public decimal GetPriceGenral(long Itemid, decimal price)
+        {
+            var objItem = _db.tbl_Offers.Where(o => o.ProductItemId == Itemid && DateTime.Now >= o.StartDate && DateTime.Now <= o.EndDate).FirstOrDefault();
+            if (objItem != null)
+            {
+                if (clsClientSession.RoleID == 1)
+                {
+                    return objItem.OfferPrice;
+                }
+                else
+                {
+                    return objItem.OfferPriceforDistributor.Value;
+                }
+
+            }
+
+            return price;
         }
     }
 }
