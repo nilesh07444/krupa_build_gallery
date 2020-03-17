@@ -1,5 +1,5 @@
 ﻿
-@{ 
+@{
     ViewBag.Title = "Distributor Request";
 }
 
@@ -57,11 +57,11 @@
                         <div class="form-row">
                             <div class="col-md-6">
                                 <label for="mobileno">Mobile No *</label>
-                                <input type="text" class="form-control" id="mobileno" name="mobileno"  value="@TempData["mobileno"]" placeholder="Enter Mobile No" required="">
+                                <input type="text" class="form-control" id="mobileno" name="mobileno" value="@TempData["mobileno"]" placeholder="Enter Mobile No" required="">
                             </div>
                             <div class="col-md-6">
-                                <label for="addharno">Aadhaar Card No.</label>
-                                <input type="text" class="form-control" id="addharno" name="addharno"  placeholder="Aadhaar Number" >
+                                <label for="addharno">Aadhaar Card No. *</label>
+                                <input type="text" class="form-control" id="addharno" name="addharno" placeholder="Aadhaar Number" required="">
                             </div>
                         </div>
                         <div class="form-row">
@@ -72,6 +72,14 @@
                             <div class="col-md-6">
                                 <label for="state">State *</label>
                                 <input type="text" class="form-control" id="state" name="state" value="@TempData["state"]" placeholder="State" required="">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <label for="city">GST No </label>
+                                <input type="text" class="form-control" id="gstno" name="gstno" value="@TempData["gstno"]" placeholder="GST No." required="">
+                            </div>
+                            <div class="col-md-6">
                             </div>
                             <input type="hidden" id="hdnotptxt" value="" />
                             <input type="submit" value="Submit" class="btn btn-solid" />
@@ -108,7 +116,7 @@
     alert('@TempData["RegisterError"]');
     }, 1000);
 
-</script>
+    </script>
 }
 <script>
     function checkdetails() {
@@ -117,7 +125,7 @@
             return false;
         }
         else {
-            
+
             if ($('#hdnotptxt').val() == "") {
                  var URL = '@Url.Action("SendOTP", "DistributorRequest")';
                $.ajax({
@@ -134,7 +142,7 @@
                         $("#otpmodal").modal();
                     }
                 },
-                error: function (resultData) {                    
+                error: function (resultData) {
                 }
             });
                 return false;
@@ -143,9 +151,9 @@
                 StartLoading();
                 return true;
             }
-            
+
         }
-       
+
     }
 
  function ValidateEmail(mail)
@@ -170,4 +178,4 @@
         }
         $("#theFormId").submit();
     }
-    </script>
+</script>

@@ -33,7 +33,9 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 string addharno = frm["addharno"].ToString();
                 string city = frm["city"].ToString();
                 string state = frm["state"].ToString();
-                 
+                string gstno = frm["gstno"].ToString();
+
+
                 tbl_DistributorRequestDetails objRequest = _db.tbl_DistributorRequestDetails.Where(o => o.Email.ToLower() == email.ToLower() && o.IsDelete == false).FirstOrDefault();
                 if(objRequest != null)
                 {
@@ -45,6 +47,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     TempData["addharno"] = frm["addharno"].ToString();
                     TempData["city"] = frm["city"].ToString();
                     TempData["state"] = frm["state"].ToString();
+                    TempData["gstno"] = frm["gstno"].ToString();
                     TempData["RegisterError"] = "You have already sent a request with this email.";
                     return RedirectToAction("Index", "DistributorRequest", new { area = "Client" });
                 }
@@ -60,6 +63,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     TempData["addharno"] = frm["addharno"].ToString();
                     TempData["city"] = frm["city"].ToString();
                     TempData["state"] = frm["state"].ToString();
+                    TempData["gstno"] = frm["gstno"].ToString();
                     TempData["RegisterError"] = "Email is already exist.Please try with another email";                    
                     return RedirectToAction("Index", "DistributorRequest", new { area = "Client" });
                 }
@@ -76,8 +80,9 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     objRequest.City = city;
                     objRequest.State = state;
                     objRequest.AddharcardNo = addharno;
+                    objRequest.GSTNo = gstno;
                     objRequest.IsDelete = false;
-                  
+                    
                     _db.tbl_DistributorRequestDetails.Add(objRequest);
                     _db.SaveChanges();
                     string AdminEmail = ConfigurationManager.AppSettings["AdminEmail"];
