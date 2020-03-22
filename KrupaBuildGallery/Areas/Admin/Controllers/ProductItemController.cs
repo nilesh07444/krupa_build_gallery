@@ -170,7 +170,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                 //Checking file is available to save.  
                                 if (file != null)
                                 {
-                                    string fileName1 = Guid.NewGuid() + "-" + Path.GetFileName(ItemMainImageFile.FileName);
+                                    string fileName1 = Guid.NewGuid() + "-" + Path.GetFileName(file.FileName);
                                     string path1 = Server.MapPath("~/Images/ProductItemMedia/");
                                     file.SaveAs(path1 + fileName1);
 
@@ -338,7 +338,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                 //Checking file is available to save.  
                                 if (file != null)
                                 {
-                                    string fileName1 = Guid.NewGuid() + "-" + Path.GetFileName(ItemMainImageFile.FileName);
+                                    string fileName1 = Guid.NewGuid() + "-" + Path.GetFileName(file.FileName);
                                     string path1 = Server.MapPath("~/Images/ProductItemMedia/");
                                     file.SaveAs(path1 + fileName1);
 
