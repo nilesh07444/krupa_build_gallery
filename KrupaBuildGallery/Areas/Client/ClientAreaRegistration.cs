@@ -14,11 +14,7 @@ namespace KrupaBuildGallery.Areas.Client
 
         public override void RegisterArea(AreaRegistrationContext context) 
         {
-            context.MapRoute(
-                "Client_default",
-                "client/{controller}/{action}/{id}",
-                new { action = "Index", id = UrlParameter.Optional }
-            );
+           
 
             context.MapRoute(
                 "Client_HomePage",
@@ -91,6 +87,11 @@ namespace KrupaBuildGallery.Areas.Client
                 "termscondition",
                 new { controller = "TermsCondition", action = "Index", id = UrlParameter.Optional }
             );
+            context.MapRoute(
+                "ClientDistributorLogin",
+                "distributorlogin",
+                new { controller = "Login", action = "Distributor", id = UrlParameter.Optional }
+            );
 
             // Product Urls 
 
@@ -112,6 +113,11 @@ namespace KrupaBuildGallery.Areas.Client
                new { controller = "login", action = "signout", id = UrlParameter.Optional }
            );
 
+            context.MapRoute(
+               "Client_default",
+               "client/{controller}/{action}/{id}",
+               new { action = "Index", id = UrlParameter.Optional }
+           );
         }
     }
 }

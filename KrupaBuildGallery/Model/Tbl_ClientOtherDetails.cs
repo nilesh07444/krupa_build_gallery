@@ -38,5 +38,12 @@ namespace KrupaBuildGallery.Model
         public string ShipPhoneNumber { get; set; }
         public string ShipEmail { get; set; }
         public string ShipPostalcode { get; set; }
+        public Nullable<System.DateTime> Dob { get; set; }
+        public string ShopPhoto { get; set; }
+        public string ShopName { get; set; }
+        public string PanCardPhoto { get; set; }
+        public string GSTPhoto { get; set; }
+        public string DistributorCode { get; set; }
+        public string AddharPhoto { get; set; }
     }
 }

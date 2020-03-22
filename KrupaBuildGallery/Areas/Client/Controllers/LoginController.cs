@@ -1,7 +1,9 @@
 ﻿using KrupaBuildGallery.Model;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 
@@ -23,14 +25,14 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
 
         public ActionResult CheckLogin(FormCollection frm)
         {
-            string username = frm["email"];
+            string mobilenumber = frm["mobilenumber"];
             string password = frm["password"];
             string referer = frm["hdnReferer"];
             try
             {
                 string EncyptedPassword = clsCommon.EncryptString(password); // Encrypt(userLogin.Password);
 
-                var data = _db.tbl_ClientUsers.Where(x => (x.UserName == username || x.Email == username)
+                var data = _db.tbl_ClientUsers.Where(x => (x.MobileNo == mobilenumber && x.ClientRoleId == 1)
                 && x.Password == EncyptedPassword && !x.IsDelete).FirstOrDefault();
 
                 if (data != null)
@@ -187,5 +189,129 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
 
             }
         }
+
+        public ActionResult Distributor(string referer = "")
+        {
+            ViewBag.Referer = referer;
+            return View();
+        }
+
+        public string SendOTP(string MobileNumber)
+        {
+            try
+            {                   
+                tbl_ClientUsers objClientUsr = _db.tbl_ClientUsers.Where(o => (o.Email.ToLower() == MobileNumber || o.MobileNo.ToLower() == MobileNumber.ToLower()) && o.ClientRoleId == 2 && o.IsDelete == false && o.IsActive == true).FirstOrDefault();
+                if (objClientUsr == null)
+                {
+                    return "NotExist";
+                }
+                using (WebClient webClient = new WebClient())
+                {                   
+                    Random random = new Random();
+                    int num = random.Next(555555, 999999);
+                    string msg = "Your Otp code for Login is " + num;
+                    string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objClientUsr.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    var json = webClient.DownloadString(url);
+                    if (json.Contains("invalidnumber"))
+                    {
+                        return "InvalidNumber";
+                    }
+                    else
+                    {
+                        string FromEmail = ConfigurationManager.AppSettings["FromEmail"];
+                        string msg1 = "Your Otp code for Login is " + num;
+                        try
+                        {
+                            clsCommon.SendEmail(objClientUsr.Email, FromEmail, "OTP Code for Login - Krupa Build Gallery", msg1);
+                        }
+                        catch(Exception e)
+                        {
+
+                        }
+                        return num.ToString();
+
+                    }
+
+                }
+            }
+            catch (WebException ex)
+            {
+                throw ex;
+            }
+        }
+
+        public ActionResult CheckLoginDistributor(FormCollection frm)
+        {
+            string mobilenumber = frm["emailmobile"];
+            string password = frm["password"];
+            string referer = frm["hdnReferer"];
+            try
+            {
+                string EncyptedPassword = clsCommon.EncryptString(password); // Encrypt(userLogin.Password);                
+                var data = _db.tbl_ClientUsers.Where(x => (x.Email.ToLower() == mobilenumber.ToLower() || x.MobileNo.ToLower() == mobilenumber.ToLower()) && x.ClientRoleId == 2 && x.Password == EncyptedPassword && !x.IsDelete).FirstOrDefault();
+
+                if (data != null)
+                {
+                    if (!data.IsActive)
+                    {
+                        TempData["LoginError"] = "Your Account is not active. Please contact administrator.";
+                        if (!string.IsNullOrEmpty(referer))
+                        {
+                            return RedirectToAction("Distributor", "Login");
+                        }
+                        else
+                        {
+                            return RedirectToAction("Distributor", "Login", new { referer = referer });
+                        }
+                    }
+
+                    clsClientSession.SessionID = Session.SessionID;
+                    clsClientSession.UserID = data.ClientUserId;
+                    clsClientSession.RoleID = Convert.ToInt32(data.ClientRoleId);
+                    clsClientSession.FirstName = data.FirstName;
+                    clsClientSession.LastName = data.LastName;
+                    clsClientSession.ImagePath = data.ProfilePicture;
+                    clsClientSession.Email = data.Email;
+                    clsClientSession.MobileNumber = data.MobileNo;
+                    UpdatCarts();
+                    if (!string.IsNullOrEmpty(referer))
+                    {
+                        return RedirectToAction("Index", "Checkout");
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index", "HomePage");
+                    }
+
+                }
+                else
+                {
+                    TempData["LoginError"] = "Invalid username or password";
+                    if (!string.IsNullOrEmpty(referer))
+                    {
+                        return RedirectToAction("Distributor", "Login");
+                    }
+                    else
+                    {
+                        return RedirectToAction("Distributor", "Login", new { referer = referer });
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                string ErrorMessage = ex.Message.ToString();
+                TempData["LoginError"] = ErrorMessage;
+            }
+            if (!string.IsNullOrEmpty(referer))
+            {
+                return RedirectToAction("Distributor", "Login");
+            }
+            else
+            {
+                return RedirectToAction("Distributor", "Login", new { referer = referer });
+            }
+
+        }
+
     }
 }

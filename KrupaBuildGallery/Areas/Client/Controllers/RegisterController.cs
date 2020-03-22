@@ -1,7 +1,9 @@
 ﻿using KrupaBuildGallery.Model;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 
@@ -108,6 +110,42 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 return RedirectToAction("Index", "Register", new { area = "Client", referer = referer });
             }
 
+        }
+
+        public string SendOTP(string MobileNumber)
+        {
+            try
+            {
+                tbl_ClientUsers objClientUsr = _db.tbl_ClientUsers.Where(o => o.MobileNo.ToLower() == MobileNumber.ToLower() && o.ClientRoleId == 1).FirstOrDefault();
+                
+                if (objClientUsr != null)
+                {
+                    return "AlreadyExist";
+                }
+
+                using (WebClient webClient = new WebClient())
+                {
+                    WebClient client = new WebClient();
+                    Random random = new Random();
+                    int num = random.Next(555555, 999999);
+                    string msg = "Registration's OTP code is " + num + "\n Thanks \n Krupa Build Gallery";
+                    string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + MobileNumber + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    var json = webClient.DownloadString(url);
+                    if (json.Contains("invalidnumber"))
+                    {
+                        return "InvalidNumber";
+                    }
+                    else
+                    {                                                                        
+                        return num.ToString(); 
+                    }
+
+                }
+            }
+            catch (WebException ex)
+            {
+                throw ex;
+            }
         }
 
         public void UpdatCarts()

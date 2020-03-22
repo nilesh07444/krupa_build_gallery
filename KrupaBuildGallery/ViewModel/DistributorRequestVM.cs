@@ -8,6 +8,7 @@ namespace KrupaBuildGallery.ViewModel
     public class DistributorRequestVM
     {
         public long DistributorRequestId { get; set; }
+        public string Prefix { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string UserName { get; set; }
@@ -19,5 +20,15 @@ namespace KrupaBuildGallery.ViewModel
         public string AddharCardNo { get; set; }
         public string PanCardNo { get; set; }
         public string GSTNo { get; set; }
+        public string AlternateMobile { get; set; }
+        public DateTime Dob { get; set; }
+        public string ShopName { get; set; }
+        public string ShopPhoto { get; set; }
+        public string AddharPhoto { get; set; }
+        public string PancardPhoto { get; set; }
+        public string GSTPhoto { get; set; }
+        public string ProfilePhoto { get; set; }
+
+
     }  
 }

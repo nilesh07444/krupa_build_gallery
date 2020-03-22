@@ -41,6 +41,7 @@
         }
     }
 </style>
+<link href="~/Content/lightbox.min.css" rel="stylesheet" />
 <div class="page-body">
 
     <!-- Container-fluid starts-->
@@ -84,10 +85,18 @@
                         </div>
                         <div class="form-group">
                             <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Shop Name:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@Model.ShopName</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
                                 <div class="label-wrapper"><label class="control-label">Name:</label></div>
                             </div>
                             <div class="col-md-9">
-                                <div class="form-text-row">@Model.FirstName @Model.LastName</div>
+                                <div class="form-text-row">@Model.Prefix @Model.FirstName @Model.LastName</div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -100,10 +109,26 @@
                         </div>
                         <div class="form-group">
                             <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Birth Date:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@Model.Dob.ToString("dd-MMM-yyyy")</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
                                 <div class="label-wrapper"><label class="control-label">Mobile No.:</label></div>
                             </div>
                             <div class="col-md-9">
                                 <div class="form-text-row">@Model.MobileNo</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Alternate Mobile No.:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@Model.AlternateMobile</div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -114,14 +139,14 @@
                                 <div class="form-text-row">@Model.City <br /> @Model.State  </div>
                             </div>
                         </div>
-                        @*<div class="form-group">
+                        <div class="form-group">
                             <div class="col-md-3">
                                 <div class="label-wrapper"><label class="control-label">GST No</label></div>
                             </div>
                             <div class="col-md-9">
                                 <div class="form-text-row">@Model.GSTNo</div>
                             </div>
-                        </div>*@
+                        </div>
                         <div class="form-group">
                             <div class="col-md-3">
                                 <div class="label-wrapper"><label class="control-label">Aadhaar No:</label></div>
@@ -130,6 +155,111 @@
                                 <div class="form-text-row">@Model.AddharCardNo</div>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">PanCard No:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@Model.PanCardNo</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Profile Photo:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">
+                                    @if (!string.IsNullOrEmpty(Model.ProfilePhoto))
+                                    {
+                                        if (File.Exists(Server.MapPath("~/Images/UsersDocuments/" + (Model.ProfilePhoto))))
+                                        {
+                                            <a class="example-image-link" href="~/Images/UsersDocuments/@Model.ProfilePhoto" data-lightbox="ProfilePhoto">
+                                                <img src="~/Images/UsersDocuments/@Model.ProfilePhoto" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                            </a>
+
+                                        }
+                                    }
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Addhar Card Photo:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">
+                                    @if (!string.IsNullOrEmpty(Model.AddharPhoto))
+                                    {
+                                        if (File.Exists(Server.MapPath("~/Images/UsersDocuments/" + (Model.AddharPhoto))))
+                                        {
+                                            <a class="example-image-link" href="~/Images/UsersDocuments/@Model.AddharPhoto" data-lightbox="AddharPhoto">
+                                                <img src="~/Images/UsersDocuments/@Model.AddharPhoto" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                            </a>
+
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Shop Photo:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">
+                                    @if (!string.IsNullOrEmpty(Model.ShopPhoto))
+                                    {
+                                        if (File.Exists(Server.MapPath("~/Images/UsersDocuments/" + (Model.ShopPhoto))))
+                                        {
+                                            <a class="example-image-link" href="~/Images/UsersDocuments/@Model.ShopPhoto" data-lightbox="ShopPhoto">
+                                                <img src="~/Images/UsersDocuments/@Model.ShopPhoto" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                            </a>
+
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">GST Photo:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">
+                                    @if (!string.IsNullOrEmpty(Model.GSTPhoto))
+                                    {
+                                        if (File.Exists(Server.MapPath("~/Images/UsersDocuments/" + (Model.GSTPhoto))))
+                                        {
+                                            <a class="example-image-link" href="~/Images/UsersDocuments/@Model.GSTPhoto" data-lightbox="GSTPhoto">
+                                                <img src="~/Images/UsersDocuments/@Model.GSTPhoto" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                            </a>
+
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Pan Card Photo:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">
+                                    @if (!string.IsNullOrEmpty(Model.PancardPhoto))
+                                    {
+                                        if (File.Exists(Server.MapPath("~/Images/UsersDocuments/" + (Model.PancardPhoto))))
+                                        {
+                                            <a class="example-image-link" href="~/Images/UsersDocuments/@Model.PancardPhoto" data-lightbox="panphoto">
+                                                <img src="~/Images/UsersDocuments/@Model.PancardPhoto" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                            </a>
+
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
                         <br />
                         <input type="hidden" value="@Model.DistributorRequestId" id="requestid" />
                         <div class="row">
@@ -162,7 +292,15 @@
 
                             </div>
                             <div class="col-md-10">
-                                <button type="button" class="btn btn-primary" onclick="ApproveDistributor();" >Approve and Add to Distributor</button>
+                                <button type="button" class="btn btn-primary" onclick="ApproveDistributor();">Approve and Add to Distributor</button>
+                            </div>
+                        </div>
+                        <div class="row distributorinforeject" style="display:none;">
+                            <div class="col-md-4">
+                                <div class="label-wrapper"><label class="control-label">Reason:</label></div>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="text" name="txtreason" id="txtreason" style="width:150px;height:30px;" class="form-control" />
                             </div>
                         </div>
                         <div class="row distributorinforeject" style="margin-top:5px;display:none;">
@@ -174,7 +312,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                 </div>
             </div>
         </div>
@@ -183,6 +321,8 @@
     <div style="display: none;" id="dvPrint">
     </div>
 </div>
+<script src="~/Scripts/prism.min.js"></script>
+<script src="~/Scripts/lightbox-plus-jquery.min.js"></script>
 <script>
     $("input[name=optradioapprove]").click(function () {
         if ($(this).val() == "Approve") {
@@ -209,7 +349,7 @@
         $.ajax({
             type: 'POST',
             async: true,
-            url: URL + "?RequestId=" + $("#requestid").val() +"&IsApprove=true&CreditLimit="+creditlimi+"&Password="+pwd,
+            url: URL + "?RequestId=" + $("#requestid").val() + "&IsApprove=true&CreditLimit=" + creditlimi + "&Password=" + pwd,
             success: function (result) {
                 alert("Distributor Request Approved. You can find approved distributors in distributor list");
                 location.href = "/admin/distributor/requestlist";
@@ -222,11 +362,16 @@
     }
 
     function RejectDistributor() {
-         var URL = '/Admin/Distributor/ApproveRejectDistributorRequest';
+        var URL = '/Admin/Distributor/ApproveRejectDistributorRequest';
+         var reason = $("#txtreason").val();
+        if (reason == "") {
+            alert("Please enter reason to reject");
+            return false;
+        }
         $.ajax({
             type: 'POST',
             async: true,
-            url: URL + "?RequestId=" + $("#requestid").val() +"&IsApprove=false",
+            url: URL + "?RequestId=" + $("#requestid").val() + "&IsApprove=false&Reason="+$("#txtreason").val(),
             success: function (result) {
                 alert("Distributor Request Rejected!");
                 location.href = "/admin/distributor/requestlist";

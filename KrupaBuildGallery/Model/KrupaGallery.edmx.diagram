@@ -43,6 +43,9 @@
         <EntityTypeShape EntityType="krupagallarydbModel.tbl_Cart" Width="1.5" PointX="6.125" PointY="13.875" />
         <EntityTypeShape EntityType="krupagallarydbModel.tbl_ProductItems" Width="1.5" PointX="0.91349229072848914" PointY="23.661409836104795" />
         <EntityTypeShape EntityType="krupagallarydbModel.tbl_WishList" Width="1.5" PointX="10.414562064416037" PointY="21.764856870176668" />
+        <EntityTypeShape EntityType="krupagallarydbModel.tbl_GSTMaster" Width="1.5" PointX="4.0613115411537288" PointY="19.196123281119448" />
+        <EntityTypeShape EntityType="krupagallarydbModel.tbl_Itemtext_master" Width="1.5" PointX="11.647882528439109" PointY="24.371272754097017" />
+        <EntityTypeShape EntityType="krupagallarydbModel.tbl_LoginHistory" Width="1.5" PointX="10.195933855229958" PointY="6.9831066611144257" />
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

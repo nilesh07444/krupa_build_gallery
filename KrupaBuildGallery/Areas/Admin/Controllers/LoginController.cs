@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using KrupaBuildGallery.Model;
@@ -47,6 +48,18 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     clsAdminSession.UserName = data.FirstName + " " + data.LastName;
                     clsAdminSession.ImagePath = data.ProfilePicture;
 
+                    tbl_LoginHistory objLogin = new tbl_LoginHistory();
+                    objLogin.UserId = data.AdminUserId;
+                    objLogin.Type = "Login";
+                    objLogin.DateAction = DateTime.Now;
+                    string VisitorsIPAddr = Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+                    if (VisitorsIPAddr != null || VisitorsIPAddr != String.Empty)
+                    {
+                        VisitorsIPAddr = Request.ServerVariables["REMOTE_ADDR"];
+                    }
+                    objLogin.IPAddress = VisitorsIPAddr;
+                    _db.tbl_LoginHistory.Add(objLogin);
+
                     return RedirectToAction("Index", "Dashboard");
                 }
                 else
@@ -66,6 +79,18 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
         public ActionResult Signout()
         {
+            tbl_LoginHistory objLogin = new tbl_LoginHistory();
+            objLogin.UserId = clsAdminSession.UserID;
+            objLogin.Type = "LogOut";
+            objLogin.DateAction = DateTime.Now;
+            string VisitorsIPAddr = Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+            if (VisitorsIPAddr != null || VisitorsIPAddr != String.Empty)
+            {
+                VisitorsIPAddr = Request.ServerVariables["REMOTE_ADDR"];
+            }
+            objLogin.IPAddress = VisitorsIPAddr;
+            _db.tbl_LoginHistory.Add(objLogin);
+
             clsAdminSession.SessionID = "";
             return RedirectToAction("Index");
         }

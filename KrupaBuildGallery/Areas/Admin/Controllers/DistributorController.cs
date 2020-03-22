@@ -471,7 +471,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             try
             {
                  objDistReq = (from cu in _db.tbl_DistributorRequestDetails
-                                                   where !cu.IsDelete.Value
+                                                   where !cu.IsDelete.Value && cu.DistributorRequestId == Id
                                                    select new DistributorRequestVM
                                                    {
                                                        DistributorRequestId = cu.DistributorRequestId,
@@ -484,7 +484,16 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                                        State = cu.State,
                                                        AddharCardNo = cu.AddharcardNo,
                                                        PanCardNo = cu.PanCardNo,
-                                                       GSTNo = cu.GSTNo
+                                                       GSTNo = cu.GSTNo,
+                                                       ProfilePhoto = cu.ProfilePhoto,
+                                                       AddharPhoto = cu.AddharPhoto,
+                                                       AlternateMobile = cu.AlternateMobileNo,
+                                                       Dob = cu.Dob.Value,
+                                                       ShopName = cu.ShopName,
+                                                       GSTPhoto = cu.GSTPhoto,
+                                                       PancardPhoto = cu.PanCardPhoto,
+                                                       ShopPhoto = cu.ShopPhoto,
+                                                       Prefix = cu.Prefix
                                                    }).FirstOrDefault();
 
             }
@@ -496,7 +505,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public string ApproveRejectDistributorRequest(long RequestId,string IsApprove,string CreditLimit = "0",string Password = "")
+        public string ApproveRejectDistributorRequest(long RequestId,string IsApprove,string CreditLimit = "0",string Password = "",string Reason="")
         {
             string ReturnMessage = "";
 
@@ -509,6 +518,42 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     {
                         objReq.IsDelete = true;
                         _db.SaveChanges();
+                        try
+                        {
+                            string ToEmail = objReq.Email;
+                            string FromEmail = ConfigurationManager.AppSettings["FromEmail"];
+                            string Subject = "Your Registration as a Distributor Rejected - Krupa Build Gallery";
+                            string bodyhtml = "Following is the reason<br/>";                            
+                            bodyhtml += "===============================<br/>";
+                            bodyhtml += Reason;                          
+                            clsCommon.SendEmail(ToEmail, FromEmail, Subject, bodyhtml);
+                        }
+                        catch (Exception e)
+                        {
+
+                        }
+
+                        using (WebClient webClient = new WebClient())
+                        {
+                            WebClient client = new WebClient();
+                            Random random = new Random();
+                            int num = random.Next(111566, 999999);
+                            string msg = "Your Registration as a Distributor Rejected - Krupa Build Gallery\n";
+                            msg += "Following is the reason:\n";
+                            msg += Reason;                            
+                            string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objReq.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                            var json = webClient.DownloadString(url);
+                            if (json.Contains("invalidnumber"))
+                            {
+                                /// return "InvalidNumber";
+                            }
+                            else
+                            {
+                                //  return num.ToString();
+                            }
+
+                        }
+
                     }
                     else
                     {
@@ -524,6 +569,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         objClient.CompanyName = objReq.CompanyName;
                         objClient.CreatedBy = clsAdminSession.UserID;
                         objClient.CreatedDate = DateTime.Now;
+                        objClient.AlternateMobileNo = objReq.AlternateMobileNo;
+                        objClient.Prefix = objReq.Prefix;
+                        objClient.ProfilePicture = objReq.ProfilePhoto;                      
                         objClient.ClientRoleId = 2;
                         _db.tbl_ClientUsers.Add(objClient);
                         _db.SaveChanges();
@@ -541,6 +589,13 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         objClientOther.UpdatedBy = clsAdminSession.UserID;
                         objClientOther.City = objReq.City;
                         objClientOther.State = objReq.State;
+                        objClientOther.Dob = objReq.Dob;
+                        objClientOther.PanCardPhoto = objReq.PanCardPhoto;
+                        objClientOther.AddharPhoto = objReq.AddharPhoto;
+                        objClientOther.ShopName = objReq.ShopName;
+                        objClientOther.GSTPhoto = objReq.GSTPhoto;
+                        objClientOther.ShopPhoto = objReq.ShopPhoto;
+                        objClientOther.DistributorCode = "KBG/" + DateTime.Now.ToString("ddMMyyyy") + "/" + objClient.ClientUserId;
                         _db.tbl_ClientOtherDetails.Add(objClientOther);
                         objReq.IsDelete = true;                        
                         _db.SaveChanges();

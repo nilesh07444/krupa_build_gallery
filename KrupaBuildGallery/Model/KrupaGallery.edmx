@@ -37,6 +37,14 @@
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="UpdatedBy" Type="bigint" />
           <Property Name="UpdatedDate" Type="datetime" />
+          <Property Name="AlternateMobile" Type="nvarchar" MaxLength="50" />
+          <Property Name="Address" Type="nvarchar" MaxLength="450" />
+          <Property Name="City" Type="nvarchar" MaxLength="200" />
+          <Property Name="Designation" Type="nvarchar" MaxLength="350" />
+          <Property Name="Remarks" Type="nvarchar" MaxLength="600" />
+          <Property Name="IDProof" Type="nvarchar" MaxLength="250" />
+          <Property Name="Dob" Type="datetime" />
+          <Property Name="RoleId" Type="int" />
         </EntityType>
         <EntityType Name="tbl_Cart">
           <Key>
@@ -91,6 +99,13 @@
           <Property Name="ShipPhoneNumber" Type="nvarchar" MaxLength="20" />
           <Property Name="ShipEmail" Type="nvarchar" MaxLength="150" />
           <Property Name="ShipPostalcode" Type="nvarchar" MaxLength="50" />
+          <Property Name="Dob" Type="datetime" />
+          <Property Name="ShopPhoto" Type="nvarchar(max)" />
+          <Property Name="ShopName" Type="nvarchar" MaxLength="250" />
+          <Property Name="PanCardPhoto" Type="nvarchar" MaxLength="450" />
+          <Property Name="GSTPhoto" Type="nvarchar" MaxLength="450" />
+          <Property Name="DistributorCode" Type="nvarchar" MaxLength="150" />
+          <Property Name="AddharPhoto" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="tbl_ClientRoles">
           <Key>
@@ -125,6 +140,8 @@
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="UpdatedBy" Type="bigint" />
           <Property Name="UpdatedDate" Type="datetime" />
+          <Property Name="AlternateMobileNo" Type="nvarchar(max)" />
+          <Property Name="Prefix" Type="nvarchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="tbl_ContactFormData">
           <Key>
@@ -159,6 +176,23 @@
           <Property Name="CreatedDate" Type="datetime" />
           <Property Name="UpdatedDate" Type="datetime" />
           <Property Name="UpdatedBy" Type="bigint" />
+          <Property Name="Dob" Type="datetime" />
+          <Property Name="AlternateMobileNo" Type="nvarchar" MaxLength="50" />
+          <Property Name="Prefix" Type="nvarchar" MaxLength="10" />
+          <Property Name="ShopName" Type="nvarchar" MaxLength="200" />
+          <Property Name="ShopPhoto" Type="nvarchar(max)" />
+          <Property Name="PanCardPhoto" Type="nvarchar(max)" />
+          <Property Name="GSTPhoto" Type="nvarchar(max)" />
+          <Property Name="AddharPhoto" Type="nvarchar" MaxLength="450" />
+          <Property Name="ProfilePhoto" Type="nvarchar" MaxLength="450" />
+        </EntityType>
+        <EntityType Name="tbl_GSTMaster">
+          <Key>
+            <PropertyRef Name="GST_Id" />
+          </Key>
+          <Property Name="GST_Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GSTText" Type="nvarchar" MaxLength="15" />
+          <Property Name="GSTPer" Type="decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="tbl_ItemStocks">
           <Key>
@@ -176,6 +210,25 @@
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="UpdatedBy" Type="bigint" />
           <Property Name="UpdatedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="tbl_Itemtext_master">
+          <Key>
+            <PropertyRef Name="Item_Text_Id" />
+          </Key>
+          <Property Name="Item_Text_Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ItemText" Type="nvarchar(max)" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="tbl_LoginHistory">
+          <Key>
+            <PropertyRef Name="LoginHistoryId" />
+          </Key>
+          <Property Name="LoginHistoryId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="bigint" />
+          <Property Name="DateAction" Type="datetime" />
+          <Property Name="IPAddress" Type="nvarchar" MaxLength="150" />
+          <Property Name="Type" Type="nvarchar" MaxLength="500" />
         </EntityType>
         <EntityType Name="tbl_Offers">
           <Key>
@@ -348,7 +401,10 @@
           <EntitySet Name="tbl_ClientUsers" EntityType="Self.tbl_ClientUsers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ContactFormData" EntityType="Self.tbl_ContactFormData" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_DistributorRequestDetails" EntityType="Self.tbl_DistributorRequestDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_GSTMaster" EntityType="Self.tbl_GSTMaster" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ItemStocks" EntityType="Self.tbl_ItemStocks" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Itemtext_master" EntityType="Self.tbl_Itemtext_master" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_LoginHistory" EntityType="Self.tbl_LoginHistory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Offers" EntityType="Self.tbl_Offers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_OrderItemDetails" EntityType="Self.tbl_OrderItemDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Orders" EntityType="Self.tbl_Orders" Schema="dbo" store:Type="Tables" />
@@ -395,6 +451,14 @@
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="UpdatedBy" Type="Int64" />
           <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <Property Name="AlternateMobile" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Address" Type="String" MaxLength="450" FixedLength="false" Unicode="true" />
+          <Property Name="City" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Designation" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="Remarks" Type="String" MaxLength="600" FixedLength="false" Unicode="true" />
+          <Property Name="IDProof" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Dob" Type="DateTime" Precision="3" />
+          <Property Name="RoleId" Type="Int32" />
         </EntityType>
         <EntityType Name="tbl_Categories">
           <Key>
@@ -438,6 +502,13 @@
           <Property Name="ShipPhoneNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="ShipEmail" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="ShipPostalcode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Dob" Type="DateTime" Precision="3" />
+          <Property Name="ShopPhoto" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ShopName" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="PanCardPhoto" Type="String" MaxLength="450" FixedLength="false" Unicode="true" />
+          <Property Name="GSTPhoto" Type="String" MaxLength="450" FixedLength="false" Unicode="true" />
+          <Property Name="DistributorCode" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="AddharPhoto" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_ClientRoles">
           <Key>
@@ -472,6 +543,8 @@
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="UpdatedBy" Type="Int64" />
           <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <Property Name="AlternateMobileNo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Prefix" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_ContactFormData">
           <Key>
@@ -506,6 +579,15 @@
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="Int64" />
+          <Property Name="Dob" Type="DateTime" Precision="3" />
+          <Property Name="AlternateMobileNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Prefix" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="ShopName" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="ShopPhoto" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PanCardPhoto" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="GSTPhoto" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="AddharPhoto" Type="String" MaxLength="450" FixedLength="false" Unicode="true" />
+          <Property Name="ProfilePhoto" Type="String" MaxLength="450" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_ItemStocks">
           <Key>
@@ -669,6 +751,9 @@
           <EntitySet Name="tbl_Cart" EntityType="krupagallarydbModel.tbl_Cart" />
           <EntitySet Name="tbl_ProductItems" EntityType="krupagallarydbModel.tbl_ProductItems" />
           <EntitySet Name="tbl_WishList" EntityType="krupagallarydbModel.tbl_WishList" />
+          <EntitySet Name="tbl_GSTMaster" EntityType="krupagallarydbModel.tbl_GSTMaster" />
+          <EntitySet Name="tbl_Itemtext_master" EntityType="krupagallarydbModel.tbl_Itemtext_master" />
+          <EntitySet Name="tbl_LoginHistory" EntityType="krupagallarydbModel.tbl_LoginHistory" />
         </EntityContainer>
         <EntityType Name="tbl_Cart">
           <Key>
@@ -717,6 +802,33 @@
           <Property Name="ClientUserId" Type="Int64" />
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
         </EntityType>
+        <EntityType Name="tbl_GSTMaster">
+          <Key>
+            <PropertyRef Name="GST_Id" />
+          </Key>
+          <Property Name="GST_Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GSTText" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="GSTPer" Type="Decimal" Precision="18" Scale="2" />
+        </EntityType>
+        <EntityType Name="tbl_Itemtext_master">
+          <Key>
+            <PropertyRef Name="Item_Text_Id" />
+          </Key>
+          <Property Name="Item_Text_Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ItemText" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="tbl_LoginHistory">
+          <Key>
+            <PropertyRef Name="LoginHistoryId" />
+          </Key>
+          <Property Name="LoginHistoryId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int64" />
+          <Property Name="DateAction" Type="DateTime" Precision="3" />
+          <Property Name="IPAddress" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="Type" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -740,6 +852,14 @@
           <EntitySetMapping Name="tbl_AdminUsers">
             <EntityTypeMapping TypeName="krupagallarydbModel.tbl_AdminUsers">
               <MappingFragment StoreEntitySet="tbl_AdminUsers">
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+                <ScalarProperty Name="Dob" ColumnName="Dob" />
+                <ScalarProperty Name="IDProof" ColumnName="IDProof" />
+                <ScalarProperty Name="Remarks" ColumnName="Remarks" />
+                <ScalarProperty Name="Designation" ColumnName="Designation" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="AlternateMobile" ColumnName="AlternateMobile" />
                 <ScalarProperty Name="AdminUserId" ColumnName="AdminUserId" />
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
                 <ScalarProperty Name="LastName" ColumnName="LastName" />
@@ -776,6 +896,13 @@
           <EntitySetMapping Name="tbl_ClientOtherDetails">
             <EntityTypeMapping TypeName="krupagallarydbModel.tbl_ClientOtherDetails">
               <MappingFragment StoreEntitySet="tbl_ClientOtherDetails">
+                <ScalarProperty Name="AddharPhoto" ColumnName="AddharPhoto" />
+                <ScalarProperty Name="DistributorCode" ColumnName="DistributorCode" />
+                <ScalarProperty Name="GSTPhoto" ColumnName="GSTPhoto" />
+                <ScalarProperty Name="PanCardPhoto" ColumnName="PanCardPhoto" />
+                <ScalarProperty Name="ShopName" ColumnName="ShopName" />
+                <ScalarProperty Name="ShopPhoto" ColumnName="ShopPhoto" />
+                <ScalarProperty Name="Dob" ColumnName="Dob" />
                 <ScalarProperty Name="ShipPostalcode" ColumnName="ShipPostalcode" />
                 <ScalarProperty Name="ShipEmail" ColumnName="ShipEmail" />
                 <ScalarProperty Name="ShipPhoneNumber" ColumnName="ShipPhoneNumber" />
@@ -820,6 +947,8 @@
           <EntitySetMapping Name="tbl_ClientUsers">
             <EntityTypeMapping TypeName="krupagallarydbModel.tbl_ClientUsers">
               <MappingFragment StoreEntitySet="tbl_ClientUsers">
+                <ScalarProperty Name="Prefix" ColumnName="Prefix" />
+                <ScalarProperty Name="AlternateMobileNo" ColumnName="AlternateMobileNo" />
                 <ScalarProperty Name="ClientUserId" ColumnName="ClientUserId" />
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
                 <ScalarProperty Name="LastName" ColumnName="LastName" />
@@ -857,6 +986,15 @@
           <EntitySetMapping Name="tbl_DistributorRequestDetails">
             <EntityTypeMapping TypeName="krupagallarydbModel.tbl_DistributorRequestDetails">
               <MappingFragment StoreEntitySet="tbl_DistributorRequestDetails">
+                <ScalarProperty Name="ProfilePhoto" ColumnName="ProfilePhoto" />
+                <ScalarProperty Name="AddharPhoto" ColumnName="AddharPhoto" />
+                <ScalarProperty Name="GSTPhoto" ColumnName="GSTPhoto" />
+                <ScalarProperty Name="PanCardPhoto" ColumnName="PanCardPhoto" />
+                <ScalarProperty Name="ShopPhoto" ColumnName="ShopPhoto" />
+                <ScalarProperty Name="ShopName" ColumnName="ShopName" />
+                <ScalarProperty Name="Prefix" ColumnName="Prefix" />
+                <ScalarProperty Name="AlternateMobileNo" ColumnName="AlternateMobileNo" />
+                <ScalarProperty Name="Dob" ColumnName="Dob" />
                 <ScalarProperty Name="DistributorRequestId" ColumnName="DistributorRequestId" />
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
                 <ScalarProperty Name="LastName" ColumnName="LastName" />
@@ -1072,6 +1210,36 @@
                 <ScalarProperty Name="ClientUserId" ColumnName="ClientUserId" />
                 <ScalarProperty Name="ItemId" ColumnName="ItemId" />
                 <ScalarProperty Name="PK_WishListId" ColumnName="PK_WishListId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_GSTMaster">
+            <EntityTypeMapping TypeName="krupagallarydbModel.tbl_GSTMaster">
+              <MappingFragment StoreEntitySet="tbl_GSTMaster">
+                <ScalarProperty Name="GSTPer" ColumnName="GSTPer" />
+                <ScalarProperty Name="GSTText" ColumnName="GSTText" />
+                <ScalarProperty Name="GST_Id" ColumnName="GST_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Itemtext_master">
+            <EntityTypeMapping TypeName="krupagallarydbModel.tbl_Itemtext_master">
+              <MappingFragment StoreEntitySet="tbl_Itemtext_master">
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ItemText" ColumnName="ItemText" />
+                <ScalarProperty Name="Item_Text_Id" ColumnName="Item_Text_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_LoginHistory">
+            <EntityTypeMapping TypeName="krupagallarydbModel.tbl_LoginHistory">
+              <MappingFragment StoreEntitySet="tbl_LoginHistory">
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="IPAddress" ColumnName="IPAddress" />
+                <ScalarProperty Name="DateAction" ColumnName="DateAction" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="LoginHistoryId" ColumnName="LoginHistoryId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

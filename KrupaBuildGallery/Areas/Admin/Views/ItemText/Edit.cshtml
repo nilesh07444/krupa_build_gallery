@@ -1,0 +1,75 @@
+﻿@using KrupaBuildGallery.ViewModel
+@model ItemTextVM
+
+@{
+    ViewBag.Title = "Edit Item Text";
+}
+
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col">
+                    <div class="page-header-left">
+                        <h3>
+                            Edit Item Text
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="/admin/itemtext">Item Text</a></li>
+                        <li class="breadcrumb-item active">Edit Item Text</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Edit Item Text</h5>
+                    </div>
+                    <div class="card-body">
+                        @using (Html.BeginForm("Edit", "ItemText", FormMethod.Post, new { @id = "Itemtextformid", @class = "needs-validation", enctype = "multipart/form-data", role = "form" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.ItemText, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.EditorFor(model => model.ItemText, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Item Text", maxlength = "200" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.ItemText, "", new { @class = "text-danger" })
+                            </div>
+                            @Html.HiddenFor(x => x.ItemTextId)
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+</div>
+
+<script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+<script>
+
+    $(document).on("click", "#btnCancel", function () {
+        window.location.href = "/admin/itemtext";
+    });
+</script>

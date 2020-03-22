@@ -44,5 +44,8 @@ namespace KrupaBuildGallery.Model
         public DbSet<tbl_Cart> tbl_Cart { get; set; }
         public DbSet<tbl_ProductItems> tbl_ProductItems { get; set; }
         public DbSet<tbl_WishList> tbl_WishList { get; set; }
+        public DbSet<tbl_GSTMaster> tbl_GSTMaster { get; set; }
+        public DbSet<tbl_Itemtext_master> tbl_Itemtext_master { get; set; }
+        public DbSet<tbl_LoginHistory> tbl_LoginHistory { get; set; }
     }
 }

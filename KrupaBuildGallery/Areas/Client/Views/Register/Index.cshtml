@@ -54,7 +54,7 @@
                                 <input type="number" class="form-control" id="mobileno" name="mobileno" value="@TempData["mobileno"]" placeholder="Mobile No." required />
                             </div>
                             <div class="col-md-6">
-                                <label for="email">Email *</label>
+                                <label for="email">Email</label>
                                 <input type="text" class="form-control" id="email" value="@TempData["email"]" name="email" placeholder="Email" required />
                             </div>
                         </div>
@@ -67,7 +67,16 @@
                                 <label for="confirmpassword">Confirm Password *</label>
                                 <input type="password" class="form-control" id="confirmpassword" name="confirmpassword" placeholder="Enter your confirm password" required />
                             </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <input type="checkbox" name="chktermcondition" id="chktermcondition" required /> I have read and accept the <a href="/termscondition" target="_blank">terms & conditions.</a>
+                            </div>
+                            <div class="col-md-6">
+
+                            </div>
                             <input type="hidden" name="hdnReferer" value="@ViewBag.Referer" />
+                            <input type="hidden" id="hdnotptxt" value="" />
                             <input type="submit" value="Create Account" class="btn btn-solid" />
                             @if (Convert.ToString(ViewBag.Referer) != "")
                             {
@@ -77,14 +86,33 @@
                             {
                                 <input onclick="location.href='/login'" type="button" value="Back to Login" class="btn btn-solid" />
                             }
-
                         </div>
+
                     }
                 </div>
             </div>
         </div>
     </div>
 </section>
+<div class="modal fade open" id="otpmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Register</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="$('#hdnotptxt').val('');$('#otptxt').val('');">&times;</button>
+            </div>
+            <div class="modal-body">
+                <label>Enter Mobile's OTP</label><input type="text" id="otptxt" value="" class="form-control" />                
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="hdnDeleteProductItem" />
+                <button data-dismiss="modal" class="btn btn-danger" type="button" onclick="$('#hdnotptxt').val('');$('#otptxt').val('');">Close</button>
+                <button class="btn btn-primary" type="button" onclick="submitotp();">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!--Section ends-->
 @if (TempData["RegisterError"] != null)
 {
@@ -107,8 +135,35 @@
             return false;
         }
         else {
-            StartLoading();
-            return true;
+           if ($('#hdnotptxt').val() == "") {
+                 var URL = '@Url.Action("SendOTP", "Register")';
+               $.ajax({
+                type: 'POST',
+                async: true,
+                url: URL + "?MobileNumber=" + $("#mobileno").val(),
+                success: function (result) {
+                    if (result == "InvalidNumber") {
+                        alert("Mobile Number is invalid");
+                        return false;
+                    }                 
+                   else if (result == "AlreadyExist") {
+                        alert("Your Account is already exist with this mobile number.Please go to Login or Contact to support");
+                        return false;
+                    }
+                    else {
+                        $('#hdnotptxt').val(result);                       
+                        $("#otpmodal").modal();
+                    }
+                },
+                error: function (resultData) {
+                }
+            });
+                return false;
+            }
+            else {
+                StartLoading();
+                return true;
+            }
         }
 
     }
@@ -120,5 +175,18 @@
         else {
             return false;
         }
+    }
+     function submitotp() {
+        if ($("#otptxt").val() == "") {
+            alert("Please enter otp");
+            return false;
+        }
+
+        if ($("#otptxt").val() != $('#hdnotptxt').val()) {
+             alert("Invalid Mobile OTP");
+            return false;
+        }
+
+        $("#theFormId").submit();
     }
 </script>

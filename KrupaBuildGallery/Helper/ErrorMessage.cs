@@ -13,7 +13,7 @@ namespace KrupaBuildGallery.Helper
         public static string ProductNameExists = "Product Name is already exist";
         public static string ItemNameExists = "Item Name is already exist";
         public static string QtyGreater = "Please enter quantity greater than 0";
-
+        public static string ItemTextExists = "Item Text is already exist";
         // Client Portal Messages
 
     }

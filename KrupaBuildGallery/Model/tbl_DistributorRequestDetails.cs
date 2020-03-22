@@ -29,5 +29,14 @@ namespace KrupaBuildGallery.Model
         public Nullable<System.DateTime> CreatedDate { get; set; }
         public Nullable<System.DateTime> UpdatedDate { get; set; }
         public Nullable<long> UpdatedBy { get; set; }
+        public Nullable<System.DateTime> Dob { get; set; }
+        public string AlternateMobileNo { get; set; }
+        public string Prefix { get; set; }
+        public string ShopName { get; set; }
+        public string ShopPhoto { get; set; }
+        public string PanCardPhoto { get; set; }
+        public string GSTPhoto { get; set; }
+        public string AddharPhoto { get; set; }
+        public string ProfilePhoto { get; set; }
     }
 }

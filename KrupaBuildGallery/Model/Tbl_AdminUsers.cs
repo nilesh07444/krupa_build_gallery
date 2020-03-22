@@ -29,5 +29,13 @@ namespace KrupaBuildGallery.Model
         public System.DateTime CreatedDate { get; set; }
         public Nullable<long> UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDate { get; set; }
+        public string AlternateMobile { get; set; }
+        public string Address { get; set; }
+        public string City { get; set; }
+        public string Designation { get; set; }
+        public string Remarks { get; set; }
+        public string IDProof { get; set; }
+        public Nullable<System.DateTime> Dob { get; set; }
+        public Nullable<int> RoleId { get; set; }
     }
 }
