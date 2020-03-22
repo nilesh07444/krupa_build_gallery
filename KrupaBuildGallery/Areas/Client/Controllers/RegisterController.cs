@@ -41,7 +41,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     TempData["firstnm"] = firstnm;
                     TempData["lastnm"] = lastnm;
                     TempData["mobileno"] = mobileno;
-                    if (!string.IsNullOrEmpty(referer))
+                    if (string.IsNullOrEmpty(referer))
                     {
                         return RedirectToAction("Index", "Register", new { area = "Client", });
                     }
@@ -101,7 +101,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 TempData["RegisterError"] = ErrorMessage;
             }
 
-            if (!string.IsNullOrEmpty(referer))
+            if (string.IsNullOrEmpty(referer))
             {
                 return RedirectToAction("Index", "Register", new { area = "Client", });
             }

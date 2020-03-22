@@ -121,7 +121,9 @@
 
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.GST_Per, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
-                                @Html.EditorFor(model => model.GST_Per, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter GST Percentage", maxlength = "200" } })
+                                @Html.DropDownListFor(model => model.GST_Per, new SelectList(Model.GST, "Value", "Text"), "- Select GST -", new { @class = "form-control col-md-8", style = "" })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.GST_Per, "", new { @class = "text-danger" })
                             </div>
 
@@ -130,7 +132,20 @@
                                 @Html.EditorFor(model => model.IGST_Per, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter IGST Percentage", maxlength = "200" } })
                                 @Html.ValidationMessageFor(model => model.IGST_Per, "", new { @class = "text-danger" })
                             </div>
+                            <div class="form-group row" style="display:none;">
+                                @Html.LabelFor(model => model.InitialQty, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.EditorFor(model => model.InitialQty, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter quantity", maxlength = "15" } })
 
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.InitialQty, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.ShippingCharge, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.EditorFor(model => model.ShippingCharge, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Shipping Charge", maxlength = "15" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.ShippingCharge, "", new { @class = "text-danger" })
+                            </div>
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.Notification, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.EditorFor(model => model.Notification, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Notification Text", maxlength = "200" } })

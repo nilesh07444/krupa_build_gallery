@@ -59,7 +59,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     }
                     objLogin.IPAddress = VisitorsIPAddr;
                     _db.tbl_LoginHistory.Add(objLogin);
-
+                    _db.SaveChanges();
                     return RedirectToAction("Index", "Dashboard");
                 }
                 else

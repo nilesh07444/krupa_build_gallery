@@ -77,9 +77,8 @@ namespace KrupaBuildGallery.Model
 
     enum OrderStatus
     {
-        Processing = 1,
-        Completed = 2,
-        Pending = 3,
-        Shipped = 4,
+        NewOrder = 1,
+        Confirmed = 2,
+        Dispatched = 3
     }
 }

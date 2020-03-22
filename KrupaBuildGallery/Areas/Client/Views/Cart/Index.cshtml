@@ -75,6 +75,7 @@
                                         </td>
                                         <td>
                                             <a href="#">@item.ItemName</a>
+                                            <span>(In Stock: @item.StockQty)</span>
                                             <div class="mobile-cart-content row">
                                                 <div class="col-xs-3">
                                                     <div class="qty-box">
@@ -84,7 +85,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="col-xs-3">
-                                                    <h2 class="td-color">@item.Price</h2>
+                                                    <h2 class="td-color">₹ @item.Price</h2>
                                                 </div>
                                                 <div class="col-xs-3">
                                                     <h2 class="td-color"><a href="javascript:void(0);" onclick="removecart('@item.CartId');" class="icon"><i class="ti-close"></i></a></h2>
@@ -92,7 +93,7 @@
                                             </div>
                                         </td>
                                         <td>
-                                            <h2 class="clsprc_@item.CartId" >@item.Price</h2>
+                                            <h2 class="clsprc_@item.CartId" data-attrpprc="@item.Price">₹ @item.Price</h2>
                                         </td>
                                         <td>
                                             <div class="qty-box">
@@ -103,7 +104,7 @@
                                         </td>
                                         <td><a href="javascript:void(0);" class="icon" onclick="removecart('@item.CartId');"><i class="ti-close"></i></a></td>
                                         <td>
-                                            <h2 class="td-color clspr clsttl_@item.CartId">@ItemTotal</h2>
+                                            <h2 class="td-color clspr clsttl_@item.CartId" data-attrttls="@ItemTotal">₹ @ItemTotal</h2>
                                         </td>
                                     </tr>
                                     counter = counter + 1;
@@ -118,7 +119,7 @@
                             <tr>
                                 <td>total price :</td>
                                 <td>
-                                    <h2 class="clsttlfull">@CartTotal</h2>
+                                    <h2 class="clsttlfull">₹ @CartTotal</h2>
                                 </td>
                             </tr>
                         </tfoot>
@@ -203,13 +204,15 @@
         debugger;
         var qty = parseFloat($(this).val());
         var idd = $(this).attr("data-attrcrtidd");
-        var prc = parseFloat($(".clsprc_" + idd).html());
+        var prrcc = $(".clsprc_" + idd).attr("data-attrpprc");
+        var prc = parseFloat(prrcc);
         var totll = prc * qty;
-        $(".clsttl_" + idd).html(totll);
+        $(".clsttl_" + idd).html("₹" + totll);
+        $(".clsttl_" + idd).attr("data-attrttls", totll);
         var ttlll = 0;
         $(".clspr").each(function () {
-          ttlll = ttlll + parseFloat($(this).html());
+          ttlll = ttlll + parseFloat($(this).attr("data-attrttls"));
         })
-        $(".clsttlfull").html(ttlll);
+        $(".clsttlfull").html("₹ " +ttlll);
     })
 </script>
