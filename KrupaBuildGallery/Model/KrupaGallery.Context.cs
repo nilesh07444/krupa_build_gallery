@@ -47,5 +47,6 @@ namespace KrupaBuildGallery.Model
         public DbSet<tbl_GSTMaster> tbl_GSTMaster { get; set; }
         public DbSet<tbl_Itemtext_master> tbl_Itemtext_master { get; set; }
         public DbSet<tbl_LoginHistory> tbl_LoginHistory { get; set; }
+        public DbSet<tbl_HomeImages> tbl_HomeImages { get; set; }
     }
 }

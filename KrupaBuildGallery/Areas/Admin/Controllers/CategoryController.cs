@@ -213,7 +213,6 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return ReturnMessage;
         }
 
-
         [HttpPost]
         public string ChangeStatus(long Id,string Status)
         {

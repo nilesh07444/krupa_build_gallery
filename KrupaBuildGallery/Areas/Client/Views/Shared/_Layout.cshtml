@@ -146,19 +146,22 @@
                                                 {
                                                     <li>
                                                         <a href="/products/bycategory/@category.CategoryId">@category.CategoryName</a>
-                                                        @if (category.ProductInfo != null)
+                                                        @if (category.ProductInfo != null && category.ProductInfo.Count() > 0)
                                                         {
                                                             <ul>
                                                                 @foreach (ProductInfo product in category.ProductInfo)
                                                                 {
                                                                     <li>
                                                                         <a href="/products/Byproduct/@product.ProductId">@product.ProductName</a>
-                                                                        <ul>
-                                                                            @foreach (SubProductInfo subproduct in product.SubProductInfo)
-                                                                            {
-                                                                                <li><a href="/products/Bysubproduct/@subproduct.SubProductId">@subproduct.SubProductName</a></li>
-                                                                            }
-                                                                        </ul>
+                                                                        @if (product.SubProductInfo.Count() > 0)
+                                                                        {
+                                                                            <ul>
+                                                                                @foreach (SubProductInfo subproduct in product.SubProductInfo)
+                                                                                {
+                                                                                    <li><a href="/products/Bysubproduct/@subproduct.SubProductId">@subproduct.SubProductName</a></li>
+                                                                                }
+                                                                            </ul>
+                                                                        }
                                                                     </li>
                                                                 }
                                                             </ul>
@@ -196,7 +199,7 @@
                                                     {
                                                         <li>
                                                             <a href="/products/bycategory/@category.CategoryId">@category.CategoryName</a>
-                                                            @if (category.ProductInfo != null)
+                                                            @if (category.ProductInfo != null && category.ProductInfo.Count() > 0)
                                                             {
                                                                 <ul>
                                                                     @foreach (ProductInfo product in category.ProductInfo)

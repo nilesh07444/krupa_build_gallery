@@ -187,6 +187,7 @@
     <Compile Include="Areas\Admin\Controllers\CustomerController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Admin\Controllers\DistributorController.cs" />
+    <Compile Include="Areas\Admin\Controllers\HomeImagesController.cs" />
     <Compile Include="Areas\Admin\Controllers\ItemTextController.cs" />
     <Compile Include="Areas\Admin\Controllers\LoginController.cs" />
     <Compile Include="Areas\Admin\Controllers\MyProfileController.cs" />
@@ -270,6 +271,9 @@
     <Compile Include="Model\tbl_GSTMaster.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\tbl_HomeImages.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\tbl_ItemStocks.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
@@ -307,6 +311,7 @@
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModel\Admin\HomeImageVM.cs" />
     <Compile Include="ViewModel\CartVM.cs" />
     <Compile Include="ViewModel\CategoryVM.cs" />
     <Compile Include="ViewModel\CheckoutVM.cs" />
@@ -3829,6 +3834,9 @@
     <Content Include="Areas\Admin\Views\ItemText\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\ItemText\Index.cshtml" />
     <Content Include="Areas\Client\Views\Login\Distributor.cshtml" />
+    <Content Include="Areas\Admin\Views\HomeImages\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\HomeImages\Add.cshtml" />
+    <Content Include="Areas\Admin\Views\HomeImages\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />

@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="d3e5888e16234a598970c790e3a31fcf" Name="Diagram1" ZoomLevel="70">
+      <Diagram DiagramId="d3e5888e16234a598970c790e3a31fcf" Name="Diagram1" ZoomLevel="10">
         <EntityTypeShape EntityType="krupagallarydbModel.tbl_AdminRoles" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="krupagallarydbModel.tbl_AdminUsers" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="krupagallarydbModel.tbl_Categories" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
@@ -46,6 +46,7 @@
         <EntityTypeShape EntityType="krupagallarydbModel.tbl_GSTMaster" Width="1.5" PointX="4.0613115411537288" PointY="19.196123281119448" />
         <EntityTypeShape EntityType="krupagallarydbModel.tbl_Itemtext_master" Width="1.5" PointX="11.647882528439109" PointY="24.371272754097017" />
         <EntityTypeShape EntityType="krupagallarydbModel.tbl_LoginHistory" Width="1.5" PointX="10.195933855229958" PointY="6.9831066611144257" />
+        <EntityTypeShape EntityType="krupagallarydbModel.tbl_HomeImages" Width="1.5" PointX="4.4770842587934272" PointY="20.716756830325703" />
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>
