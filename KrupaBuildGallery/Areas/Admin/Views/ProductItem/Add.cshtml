@@ -93,8 +93,8 @@
 
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.ItemDescription, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
-                                
-                                @Html.TextAreaFor(model => model.ItemDescription, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Item Description", maxlength = "200",cols = 35, @rows = 4},@style="width:600px;height:80px;" })
+
+                                @Html.TextAreaFor(model => model.ItemDescription, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Item Description", maxlength = "200", cols = 35, @rows = 4 }, @style = "width:600px;height:80px;" })
 
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.ItemDescription, "", new { @class = "text-danger" })
@@ -131,15 +131,13 @@
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.DistributorPrice, "", new { @class = "text-danger" })
                             </div>
-
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.GST_Per, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
-                                @Html.EditorFor(model => model.GST_Per, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter GST Percentage", maxlength = "200" } })
+                                @Html.DropDownListFor(model => model.GST_Per, new SelectList(Model.GST, "Value", "Text"), "- Select GST -", new { @class = "form-control col-md-8", style = "" })
 
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.GST_Per, "", new { @class = "text-danger" })
                             </div>
-
                             <div class="form-group row" style="display:none;">
                                 @Html.LabelFor(model => model.IGST_Per, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.EditorFor(model => model.IGST_Per, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter IGST Percentage", maxlength = "200" } })
@@ -147,7 +145,20 @@
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.IGST_Per, "", new { @class = "text-danger" })
                             </div>
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.InitialQty, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.EditorFor(model => model.InitialQty, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter quantity", maxlength = "15" } })
 
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.InitialQty, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.ShippingCharge, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.EditorFor(model => model.ShippingCharge, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Shipping Charge", maxlength = "15" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.ShippingCharge, "", new { @class = "text-danger" })
+                            </div>
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.Notification, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.EditorFor(model => model.Notification, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Notification Text", maxlength = "200" } })
@@ -179,7 +190,10 @@
 <script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>
 <script src="~/Scripts/jquery.validate.min.js"></script>
 <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
-
+<script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.0.min.js" type="text/javascript"></script>
+<script src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/jquery-ui.min.js" type="text/javascript"></script>
+<link href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/themes/blitzer/jquery-ui.css"
+      rel="Stylesheet" type="text/css" />
 <script>
 
     $(document).on("click", "#btnCancel", function () {
@@ -247,6 +261,35 @@
             $("#SubProductId").html(htmlSubData);
         }
     });
-
+        $(function () {
+            $("#ItemName").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: '/admin/ProductItem/GetItemText/',
+                        data: "{ 'prefix': '" + request.term + "'}",
+                        dataType: "json",
+                        type: "POST",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (data) {
+                            response($.map(data, function (item) {
+                                return item;
+                            }))
+                        },
+                        error: function (response) {
+                            console.log(response.responseText);
+                           // alert(response.responseText);
+                        },
+                        failure: function (response) {
+                            console.log(response.responseText);
+                           // alert(response.responseText);
+                        }
+                    });
+                },
+                select: function (e, i) {
+                   // $("#ItemName").val(i.item.val);
+                },
+                minLength: 1
+            });
+        });
 </script>
 

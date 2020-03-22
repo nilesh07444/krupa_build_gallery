@@ -63,14 +63,44 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
         }
 
-        public ActionResult Add()
+        public ActionResult Add(long Id = 0)
         {
             ProductItemVM objProductItem = new ProductItemVM();
-
-            objProductItem.CategoryList = GetCategoryList();
-            objProductItem.ProductList = new List<SelectListItem>();
-            objProductItem.SubProductList = new List<SelectListItem>();
-
+            if(Id > 0)
+            {
+                var objProductItm =  _db.tbl_ProductItems.Where(o => o.ProductItemId == Id).FirstOrDefault();
+                objProductItem.CategoryId = objProductItm.CategoryId;
+                objProductItem.ProductId = objProductItm.ProductId;
+                objProductItem.SubProductId = objProductItm.SubProductId;
+                objProductItem.CategoryList = GetCategoryList();
+                objProductItem.ProductList = GetProductListByCategoryId(objProductItm.CategoryId);
+                objProductItem.SubProductList = GetSubProductListByProductId(objProductItm.ProductId);
+                objProductItem.GST = GetGST();
+                objProductItem.GST_Per = objProductItm.GST_Per;
+            }
+            else
+            {
+                objProductItem.CategoryList = GetCategoryList();
+                objProductItem.ProductList = new List<SelectListItem>();
+                objProductItem.SubProductList = new List<SelectListItem>();
+                objProductItem.GST = GetGST();
+            }
+            //if (productItemVM != null && productItemVM.CategoryId > 0)
+            //{
+            //    //objProductItem = productItemVM;
+            //    productItemVM.CategoryId = productItemVM.CategoryId;
+            //    productItemVM.ProductId = productItemVM.ProductId;
+            //    productItemVM.SubProductId = productItemVM.SubProductId;
+            //    productItemVM.ProductList = GetProductListByCategoryId(objProductItem.CategoryId);
+            //    productItemVM.SubProductList = GetSubProductListByProductId(objProductItem.ProductId);
+            //    productItemVM.GST = GetGST();
+            //    productItemVM.GST_Per = productItemVM.GST_Per;
+            //}
+            //else
+            //{
+            
+           // }
+           
             return View(objProductItem);
         }
 
@@ -83,75 +113,123 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 if (ModelState.IsValid)
                 {
                     long LoggedInUserId = Int64.Parse(clsAdminSession.UserID.ToString());
+                    // Check for exist
+                    var existProductItem = _db.tbl_ProductItems.Where(x => x.ItemName.ToLower() == productItemVM.ItemName.ToLower()
+                        && x.CategoryId == productItemVM.CategoryId && x.ProductId == productItemVM.ProductId
+                        && !x.IsDelete).FirstOrDefault();
 
-                    string fileName = string.Empty;
-                    string path = Server.MapPath("~/Images/ProductItemMedia/");
-                    if (ItemMainImageFile != null)
+                    if (existProductItem != null)
                     {
-                        fileName = Guid.NewGuid() + "-" + Path.GetFileName(ItemMainImageFile.FileName);
-                        ItemMainImageFile.SaveAs(path + fileName);
-                    }
+                        ModelState.AddModelError("ItemName", ErrorMessage.ItemNameExists);
+                    }                  
                     else
                     {
-                        fileName = productItemVM.MainImage;
-                    }
-
-                    tbl_ProductItems objProductItem = new tbl_ProductItems();
-                    objProductItem.CategoryId = productItemVM.CategoryId;
-                    objProductItem.ProductId = productItemVM.ProductId;
-                    objProductItem.SubProductId = productItemVM.SubProductId;
-                    objProductItem.ItemName = productItemVM.ItemName;
-                    objProductItem.ItemDescription = productItemVM.ItemDescription;
-                    objProductItem.Sku = productItemVM.Sku;
-                    objProductItem.MRPPrice = productItemVM.MRPPrice;
-                    objProductItem.CustomerPrice = productItemVM.CustomerPrice;
-                    objProductItem.DistributorPrice = productItemVM.DistributorPrice;
-                    objProductItem.GST_Per = productItemVM.GST_Per;
-                    objProductItem.IGST_Per = productItemVM.IGST_Per;
-                    objProductItem.Notification = productItemVM.Notification;
-                    objProductItem.MainImage = fileName;
-                    objProductItem.IsPopularProduct = productItemVM.IsPopularProduct;
-
-                    objProductItem.IsActive = true;
-                    objProductItem.IsDelete = false;
-                    objProductItem.CreatedBy = LoggedInUserId;
-                    objProductItem.CreatedDate = DateTime.UtcNow;
-                    objProductItem.UpdatedBy = LoggedInUserId;
-                    objProductItem.UpdatedDate = DateTime.UtcNow;
-
-                    _db.tbl_ProductItems.Add(objProductItem);
-                    _db.SaveChanges();
-
-                    //iterating through multiple file collection   
-                    if (ItemGalleryImageFile != null && ItemGalleryImageFile.Count() > 0)
-                    {
-                        foreach (HttpPostedFileBase file in ItemGalleryImageFile)
+                        string fileName = string.Empty;
+                        string path = Server.MapPath("~/Images/ProductItemMedia/");
+                        if (ItemMainImageFile != null)
                         {
-                            //Checking file is available to save.  
-                            if (file != null)
-                            {
-                                string fileName1 = Guid.NewGuid() + "-" + Path.GetFileName(ItemMainImageFile.FileName);
-                                string path1 = Server.MapPath("~/Images/ProductItemMedia/");
-                                file.SaveAs(path1 + fileName1);
+                            fileName = Guid.NewGuid() + "-" + Path.GetFileName(ItemMainImageFile.FileName);
+                            ItemMainImageFile.SaveAs(path + fileName);
+                        }
+                        else
+                        {
+                            fileName = productItemVM.MainImage;
+                        }
 
-                                tbl_ProductItemImages objGalleryImage = new tbl_ProductItemImages();
-                                objGalleryImage.ProductItemId = objProductItem.ProductItemId;
-                                objGalleryImage.ItemImage = fileName1;
-                                objGalleryImage.IsActive = true;
-                                objGalleryImage.IsDelete = false;
-                                objGalleryImage.CreatedBy = LoggedInUserId;
-                                objGalleryImage.CreatedDate = DateTime.UtcNow;
-                                objGalleryImage.UpdatedBy = LoggedInUserId;
-                                objGalleryImage.UpdatedDate = DateTime.UtcNow;
-                                _db.tbl_ProductItemImages.Add(objGalleryImage);
-                                _db.SaveChanges();
+                        tbl_ProductItems objProductItem = new tbl_ProductItems();
+                        objProductItem.CategoryId = productItemVM.CategoryId;
+                        objProductItem.ProductId = productItemVM.ProductId;
+                        objProductItem.SubProductId = productItemVM.SubProductId;
+                        objProductItem.ItemName = productItemVM.ItemName;
+                        objProductItem.ItemDescription = productItemVM.ItemDescription;
+                        objProductItem.Sku = productItemVM.Sku;
+                        objProductItem.MRPPrice = productItemVM.MRPPrice;
+                        objProductItem.CustomerPrice = productItemVM.CustomerPrice;
+                        objProductItem.DistributorPrice = productItemVM.DistributorPrice;
+                        objProductItem.GST_Per = productItemVM.GST_Per;
+                        objProductItem.IGST_Per = productItemVM.IGST_Per;
+                        objProductItem.Notification = productItemVM.Notification;
+                        objProductItem.MainImage = fileName;
+                        objProductItem.IsPopularProduct = productItemVM.IsPopularProduct;
+                        objProductItem.ShippingCharge = productItemVM.ShippingCharge;
+                        objProductItem.IsActive = true;
+                        objProductItem.IsDelete = false;
+                        objProductItem.CreatedBy = LoggedInUserId;
+                        objProductItem.CreatedDate = DateTime.UtcNow;
+                        objProductItem.UpdatedBy = LoggedInUserId;
+                        objProductItem.UpdatedDate = DateTime.UtcNow;
+
+                        _db.tbl_ProductItems.Add(objProductItem);
+                        _db.SaveChanges();
+
+                        //iterating through multiple file collection   
+                        if (ItemGalleryImageFile != null && ItemGalleryImageFile.Count() > 0)
+                        {
+                            foreach (HttpPostedFileBase file in ItemGalleryImageFile)
+                            {
+                                //Checking file is available to save.  
+                                if (file != null)
+                                {
+                                    string fileName1 = Guid.NewGuid() + "-" + Path.GetFileName(ItemMainImageFile.FileName);
+                                    string path1 = Server.MapPath("~/Images/ProductItemMedia/");
+                                    file.SaveAs(path1 + fileName1);
+
+                                    tbl_ProductItemImages objGalleryImage = new tbl_ProductItemImages();
+                                    objGalleryImage.ProductItemId = objProductItem.ProductItemId;
+                                    objGalleryImage.ItemImage = fileName1;
+                                    objGalleryImage.IsActive = true;
+                                    objGalleryImage.IsDelete = false;
+                                    objGalleryImage.CreatedBy = LoggedInUserId;
+                                    objGalleryImage.CreatedDate = DateTime.UtcNow;
+                                    objGalleryImage.UpdatedBy = LoggedInUserId;
+                                    objGalleryImage.UpdatedDate = DateTime.UtcNow;
+                                    _db.tbl_ProductItemImages.Add(objGalleryImage);
+                                    _db.SaveChanges();
+
+                                }
 
                             }
-
                         }
-                    }
 
-                    return RedirectToAction("Index");
+
+                        tbl_ItemStocks objItemStock = new tbl_ItemStocks();
+                        objItemStock.CategoryId = productItemVM.CategoryId;
+                        objItemStock.ProductId = productItemVM.ProductId;
+                        objItemStock.SubProductId = productItemVM.SubProductId;
+                        objItemStock.ProductItemId = objProductItem.ProductItemId;
+                        objItemStock.Qty = Convert.ToInt64(productItemVM.InitialQty);
+
+                        objItemStock.IsActive = true;
+                        objItemStock.IsDelete = false;
+                        objItemStock.CreatedBy = LoggedInUserId;
+                        objItemStock.CreatedDate = DateTime.UtcNow;
+                        objItemStock.UpdatedBy = LoggedInUserId;
+                        objItemStock.UpdatedDate = DateTime.UtcNow;
+                        _db.tbl_ItemStocks.Add(objItemStock);
+                        _db.SaveChanges();
+
+                        //productItemVM = new ProductItemVM();
+                        //productItemVM.ItemName = "";
+                        //productItemVM.ItemDescription = "";
+                        //productItemVM.MRPPrice = 0;
+                        //productItemVM.CustomerPrice = 0;
+                        //productItemVM.DistributorPrice = 0;
+                        //productItemVM.InitialQty = 0;
+                        //productItemVM.Notification = "";
+                        //productItemVM.ProductItemId = 0;
+                        //productItemVM.Sku = "";                        
+                        //productItemVM.CategoryId = objProductItem.CategoryId;
+                        //productItemVM.ProductId = objProductItem.ProductId;
+                        //productItemVM.SubProductId = objProductItem.SubProductId;
+                        //productItemVM.CategoryList = GetCategoryList();
+                        //productItemVM.GST_Per = objProductItem.GST_Per;
+                        //productItemVM.ProductList = GetProductListByCategoryId(objProductItem.CategoryId);
+                        //productItemVM.SubProductList = GetSubProductListByProductId(objProductItem.ProductId);
+                        //productItemVM.GST = GetGST();
+                        //return RedirectToAction("Add", productItemVM);
+                        //return View(productItemVM);
+                        return RedirectToAction("Add",new {Id= objProductItem .ProductItemId});
+                    }                  
 
                 }
             }
@@ -159,7 +237,10 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             {
                 string ErrorMessage = ex.Message.ToString();
             }
-
+            productItemVM.CategoryList = GetCategoryList();
+            productItemVM.ProductList = new List<SelectListItem>();
+            productItemVM.SubProductList = new List<SelectListItem>();
+            productItemVM.GST = GetGST();
             return View(productItemVM);
         }
 
@@ -186,13 +267,15 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                   Notification = i.Notification,
                                   IsPopularProduct = i.IsPopularProduct,
                                   Sku = i.Sku,
-                                  IsActive = i.IsActive
+                                  IsActive = i.IsActive,
+                                  InitialQty = 1,
+                                  ShippingCharge = i.ShippingCharge.HasValue ? i.ShippingCharge.Value:0
                               }).FirstOrDefault();
 
             objProductItem.CategoryList = GetCategoryList();
             objProductItem.ProductList = GetProductListByCategoryId(objProductItem.CategoryId);
             objProductItem.SubProductList = GetSubProductListByProductId(objProductItem.ProductId);
-
+            objProductItem.GST = GetGST();
             return View(objProductItem);
         }
 
@@ -204,71 +287,81 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 IEnumerable<ModelError> allErrors = ModelState.Values.SelectMany(v => v.Errors);
                 if (ModelState.IsValid)
                 {
-                    tbl_ProductItems objProductItem = _db.tbl_ProductItems.Where(x => x.ProductItemId == productItemVM.ProductItemId).FirstOrDefault();
-
                     long LoggedInUserId = Int64.Parse(clsAdminSession.UserID.ToString());
+                    var existProductItem = _db.tbl_ProductItems.Where(x => x.ProductItemId != productItemVM.ProductItemId &&  x.ItemName.ToLower() == productItemVM.ItemName.ToLower()
+                      && x.CategoryId == productItemVM.CategoryId && x.ProductId == productItemVM.ProductId
+                      && !x.IsDelete).FirstOrDefault();
 
-                    string fileName = string.Empty;
-                    string path = Server.MapPath("~/Images/ProductItemMedia/");
-                    if (ItemMainImageFile != null)
+                    if (existProductItem != null)
                     {
-                        fileName = Guid.NewGuid() + "-" + Path.GetFileName(ItemMainImageFile.FileName);
-                        ItemMainImageFile.SaveAs(path + fileName);
+                        ModelState.AddModelError("ItemName", ErrorMessage.ItemNameExists);
                     }
                     else
                     {
-                        fileName = objProductItem.MainImage;
-                    }
-                     
-                    objProductItem.CategoryId = productItemVM.CategoryId;
-                    objProductItem.ProductId = productItemVM.ProductId;
-                    objProductItem.SubProductId = productItemVM.SubProductId;
-                    objProductItem.ItemName = productItemVM.ItemName;
-                    objProductItem.ItemDescription = productItemVM.ItemDescription;
-                    objProductItem.Sku = productItemVM.Sku;
-                    objProductItem.MRPPrice = productItemVM.MRPPrice;
-                    objProductItem.CustomerPrice = productItemVM.CustomerPrice;
-                    objProductItem.DistributorPrice = productItemVM.DistributorPrice;
-                    objProductItem.GST_Per = productItemVM.GST_Per;
-                    objProductItem.IGST_Per = productItemVM.IGST_Per;
-                    objProductItem.Notification = productItemVM.Notification;
-                    objProductItem.MainImage = fileName;
-                    objProductItem.IsPopularProduct = productItemVM.IsPopularProduct;
-
-                    objProductItem.UpdatedBy = LoggedInUserId;
-                    objProductItem.UpdatedDate = DateTime.UtcNow; 
-                    _db.SaveChanges();
-
-                    //iterating through multiple file collection   
-                    if (ItemGalleryImageFile != null && ItemGalleryImageFile.Count() > 0)
-                    {
-                        foreach (HttpPostedFileBase file in ItemGalleryImageFile)
+                        tbl_ProductItems objProductItem = _db.tbl_ProductItems.Where(x => x.ProductItemId == productItemVM.ProductItemId).FirstOrDefault();
+                        string fileName = string.Empty;
+                        string path = Server.MapPath("~/Images/ProductItemMedia/");
+                        if (ItemMainImageFile != null)
                         {
-                            //Checking file is available to save.  
-                            if (file != null)
-                            {
-                                string fileName1 = Guid.NewGuid() + "-" + Path.GetFileName(ItemMainImageFile.FileName);
-                                string path1 = Server.MapPath("~/Images/ProductItemMedia/");
-                                file.SaveAs(path1 + fileName1);
+                            fileName = Guid.NewGuid() + "-" + Path.GetFileName(ItemMainImageFile.FileName);
+                            ItemMainImageFile.SaveAs(path + fileName);
+                        }
+                        else
+                        {
+                            fileName = objProductItem.MainImage;
+                        }
 
-                                tbl_ProductItemImages objGalleryImage = new tbl_ProductItemImages();
-                                objGalleryImage.ProductItemId = objProductItem.ProductItemId;
-                                objGalleryImage.ItemImage = fileName1;
-                                objGalleryImage.IsActive = true;
-                                objGalleryImage.IsDelete = false;
-                                objGalleryImage.CreatedBy = LoggedInUserId;
-                                objGalleryImage.CreatedDate = DateTime.UtcNow;
-                                objGalleryImage.UpdatedBy = LoggedInUserId;
-                                objGalleryImage.UpdatedDate = DateTime.UtcNow;
-                                _db.tbl_ProductItemImages.Add(objGalleryImage);
-                                _db.SaveChanges();
+                        objProductItem.CategoryId = productItemVM.CategoryId;
+                        objProductItem.ProductId = productItemVM.ProductId;
+                        objProductItem.SubProductId = productItemVM.SubProductId;
+                        objProductItem.ItemName = productItemVM.ItemName;
+                        objProductItem.ItemDescription = productItemVM.ItemDescription;
+                        objProductItem.Sku = productItemVM.Sku;
+                        objProductItem.MRPPrice = productItemVM.MRPPrice;
+                        objProductItem.CustomerPrice = productItemVM.CustomerPrice;
+                        objProductItem.DistributorPrice = productItemVM.DistributorPrice;
+                        objProductItem.GST_Per = productItemVM.GST_Per;
+                        objProductItem.IGST_Per = productItemVM.IGST_Per;
+                        objProductItem.Notification = productItemVM.Notification;
+                        objProductItem.MainImage = fileName;
+                        objProductItem.IsPopularProduct = productItemVM.IsPopularProduct;
+                        objProductItem.ShippingCharge = productItemVM.ShippingCharge;
+                        objProductItem.UpdatedBy = LoggedInUserId;
+                        objProductItem.UpdatedDate = DateTime.UtcNow;
+                        _db.SaveChanges();
+
+                        //iterating through multiple file collection   
+                        if (ItemGalleryImageFile != null && ItemGalleryImageFile.Count() > 0)
+                        {
+                            foreach (HttpPostedFileBase file in ItemGalleryImageFile)
+                            {
+                                //Checking file is available to save.  
+                                if (file != null)
+                                {
+                                    string fileName1 = Guid.NewGuid() + "-" + Path.GetFileName(ItemMainImageFile.FileName);
+                                    string path1 = Server.MapPath("~/Images/ProductItemMedia/");
+                                    file.SaveAs(path1 + fileName1);
+
+                                    tbl_ProductItemImages objGalleryImage = new tbl_ProductItemImages();
+                                    objGalleryImage.ProductItemId = objProductItem.ProductItemId;
+                                    objGalleryImage.ItemImage = fileName1;
+                                    objGalleryImage.IsActive = true;
+                                    objGalleryImage.IsDelete = false;
+                                    objGalleryImage.CreatedBy = LoggedInUserId;
+                                    objGalleryImage.CreatedDate = DateTime.UtcNow;
+                                    objGalleryImage.UpdatedBy = LoggedInUserId;
+                                    objGalleryImage.UpdatedDate = DateTime.UtcNow;
+                                    _db.tbl_ProductItemImages.Add(objGalleryImage);
+                                    _db.SaveChanges();
+
+                                }
 
                             }
-
                         }
-                    }
 
-                    return RedirectToAction("Index");
+                        return RedirectToAction("Index");
+
+                    }
 
                 }
             }
@@ -276,7 +369,10 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             {
                 string ErrorMessage = ex.Message.ToString();
             }
-
+            productItemVM.CategoryList = GetCategoryList();
+            productItemVM.ProductList = GetProductListByCategoryId(productItemVM.CategoryId);
+            productItemVM.SubProductList = GetSubProductListByProductId(productItemVM.ProductId);
+            productItemVM.GST = GetGST();
             return View(productItemVM);
         }
          
@@ -323,6 +419,24 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return CategoryList;
         }
 
+        public List<SelectListItem> GetGST()
+        {
+           var lstGST =  _db.tbl_GSTMaster.OrderBy(x => x.GSTPer).ToList();
+            List<SelectListItem> lstselc = new List<SelectListItem>();
+           if (lstGST != null && lstGST.Count() > 0)
+            {
+                foreach(var objj in lstGST)
+                {
+                    SelectListItem obb = new SelectListItem();
+                    obb.Value = objj.GSTPer.ToString();
+                    obb.Text = objj.GSTText;
+                    lstselc.Add(obb);
+                }
+            }
+        
+            return lstselc;
+        }
+
         public List<SelectListItem> GetProductListByCategoryId(long Id)
         {
             var ProductList = _db.tbl_Products.Where(x => x.IsActive && !x.IsDelete && x.CategoryId == Id)
@@ -344,11 +458,19 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         public int ItemStock(long ItemId)
         {
            long? TotalStock = _db.tbl_ItemStocks.Where(o => o.IsActive == true && o.IsDelete == false && o.ProductItemId == ItemId).Sum(o => (long?) o.Qty);
+           if(TotalStock == null)
+            {
+                TotalStock = 0;
+            }
            return Convert.ToInt32(TotalStock);
         }
         public int SoldItems(long ItemId)
         {
             long? TotalSold = _db.tbl_OrderItemDetails.Where(o => o.ProductItemId == ItemId && o.IsDelete == false).Sum(o => (long?)o.Qty.Value);
+            if(TotalSold == null)
+            {
+                TotalSold = 0;
+            }
             return Convert.ToInt32(TotalSold);
         }
 
@@ -387,5 +509,20 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             return ReturnMessage;
         }
+
+        [HttpPost]
+        public JsonResult GetItemText(string prefix)
+        {           
+            var itmtext = (from txt in _db.tbl_Itemtext_master
+                             where txt.ItemText.ToLower().Contains(prefix.ToLower())
+                             select new
+                             {
+                                 label = txt.ItemText,
+                                 val = txt.ItemText
+                             }).ToList();
+
+            return Json(itmtext);
+        }
+
     }
 }

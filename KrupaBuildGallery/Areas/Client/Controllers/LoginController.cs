@@ -42,11 +42,11 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         TempData["LoginError"] = "Your Account is not active. Please contact administrator.";
                         if (!string.IsNullOrEmpty(referer))
                         {
-                            return RedirectToAction("Index", "Login");
+                            return RedirectToAction("Index", "Login", new { referer = referer });
                         }
                         else
                         {
-                            return RedirectToAction("Index", "Login", new {referer = referer });
+                            return RedirectToAction("Index", "Login");
                         }
                     }
 
@@ -71,14 +71,14 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 }
                 else
                 {
-                    TempData["LoginError"] = "Invalid username or password";
+                    TempData["LoginError"] = "Invalid mobilenumber or password";
                     if (!string.IsNullOrEmpty(referer))
                     {
-                        return RedirectToAction("Index", "Login");
+                        return RedirectToAction("Index", "Login", new { referer = referer });
                     }
                     else
                     {
-                        return RedirectToAction("Index", "Login", new { referer = referer });
+                        return RedirectToAction("Index", "Login");
                     }
                 }
             }
@@ -89,11 +89,11 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             }
             if (!string.IsNullOrEmpty(referer))
             {
-                return RedirectToAction("Index", "Login");
+                return RedirectToAction("Index", "Login", new { referer = referer });
             }
             else
             {
-                return RedirectToAction("Index", "Login", new {referer = referer });
+                return RedirectToAction("Index", "Login");
             }
 
         }
@@ -255,7 +255,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     if (!data.IsActive)
                     {
                         TempData["LoginError"] = "Your Account is not active. Please contact administrator.";
-                        if (!string.IsNullOrEmpty(referer))
+                        if (string.IsNullOrEmpty(referer))
                         {
                             return RedirectToAction("Distributor", "Login");
                         }
@@ -287,7 +287,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 else
                 {
                     TempData["LoginError"] = "Invalid username or password";
-                    if (!string.IsNullOrEmpty(referer))
+                    if (string.IsNullOrEmpty(referer))
                     {
                         return RedirectToAction("Distributor", "Login");
                     }
@@ -302,7 +302,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 string ErrorMessage = ex.Message.ToString();
                 TempData["LoginError"] = ErrorMessage;
             }
-            if (!string.IsNullOrEmpty(referer))
+            if (string.IsNullOrEmpty(referer))
             {
                 return RedirectToAction("Distributor", "Login");
             }

@@ -61,7 +61,7 @@ namespace KrupaBuildGallery
         public List<SelectListItem> CategoryList { get; set; }
         public List<SelectListItem> ProductList { get; set; }
         public List<SelectListItem> SubProductList { get; set; }
-
+        public List<SelectListItem> GST { get; set; }
         public string CategoryName { get; set; }
         public string ProductName { get; set; }
         public string SubProductName { get; set; }
@@ -70,6 +70,13 @@ namespace KrupaBuildGallery
         public List<string> OtherImages { get; set; }
         public int InStock { get; set; }        
         public int Sold { get; set; }
-
+        [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "Quatity must be greater than 0")]
+        [Display(Name = "Initial Qty")]
+        public int InitialQty { get; set; }
+        [Required]
+        [Display(Name = "Shipping Charge")]
+        public decimal ShippingCharge { get; set; }
+        public string Tags { get; set; }
     }
 }

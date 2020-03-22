@@ -205,7 +205,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     objOrder.OrderShipState = objCheckout.shipstate;
                     objOrder.OrderShipClientName = objCheckout.shipfirstname + " " + objCheckout.shiplastname;
                     objOrder.OrderShipClientPhone = objCheckout.shipphone;
-                    objOrder.OrderStatusId = Convert.ToInt64(OrderStatus.Processing);
+                    objOrder.OrderStatusId = Convert.ToInt64(OrderStatus.NewOrder);
                     objOrder.PaymentType = paymentmethod;
                     objOrder.IsActive = true;
                     objOrder.IsDelete = false;
@@ -325,7 +325,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             objOrder.OrderShipState = objCheckout.shipstate;
                             objOrder.OrderShipClientName = objCheckout.shipfirstname + " " + objCheckout.shiplastname;
                             objOrder.OrderShipClientPhone = objCheckout.shipphone;
-                            objOrder.OrderStatusId = Convert.ToInt64(OrderStatus.Processing);
+                            objOrder.OrderStatusId = Convert.ToInt64(OrderStatus.NewOrder);
                             objOrder.PaymentType = paymentmethod;
                             objOrder.IsActive = true;
                             objOrder.IsDelete = false;

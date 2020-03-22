@@ -203,14 +203,25 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 }
                 else
                 {
-                    long LoggedInUserId = Int64.Parse(clsAdminSession.UserID.ToString());
+                    long Itmid = objtbl_ItemStocks.ProductItemId;
+                    int soldQty = SoldItems(Itmid);
+                    int stockQty = ItemStock(Itmid);
+                    int remaining = stockQty - soldQty;
+                    if(remaining < objtbl_ItemStocks.Qty)
+                    {
+                        ReturnMessage = "qtyless";
+                    }
+                    else
+                    {
+                        long LoggedInUserId = Int64.Parse(clsAdminSession.UserID.ToString());
 
-                    objtbl_ItemStocks.IsDelete = true;
-                    objtbl_ItemStocks.UpdatedBy = LoggedInUserId;
-                    objtbl_ItemStocks.UpdatedDate = DateTime.UtcNow;
+                        objtbl_ItemStocks.IsDelete = true;
+                        objtbl_ItemStocks.UpdatedBy = LoggedInUserId;
+                        objtbl_ItemStocks.UpdatedDate = DateTime.UtcNow;
 
-                    _db.SaveChanges();
-                    ReturnMessage = "success";
+                        _db.SaveChanges();
+                        ReturnMessage = "success";
+                    }
                 }
             }
             catch (Exception ex)
@@ -247,6 +258,25 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         .OrderBy(x => x.Text).ToList();
 
             return ProductItemList;
+        }
+
+        public int ItemStock(long ItemId)
+        {
+            long? TotalStock = _db.tbl_ItemStocks.Where(o => o.IsActive == true && o.IsDelete == false && o.ProductItemId == ItemId).Sum(o => (long?)o.Qty);
+            if(TotalStock != null)
+            {
+                TotalStock = 0;
+            }
+            return Convert.ToInt32(TotalStock);
+        }
+        public int SoldItems(long ItemId)
+        {
+            long? TotalSold = _db.tbl_OrderItemDetails.Where(o => o.ProductItemId == ItemId && o.IsDelete == false).Sum(o => (long?)o.Qty.Value);
+            if(TotalSold != null)
+            {
+                TotalSold = 0;
+            }
+            return Convert.ToInt32(TotalSold);
         }
     }
 }

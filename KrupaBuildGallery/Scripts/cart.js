@@ -5,10 +5,17 @@
         async: true,
         url: URL + "?ItemId=" + itemid + "&Qty=" + qty,
         success: function (result) {
-            msgdisplay("Item Successfully added to your cart");
-            if (result == "notfound") {
-               alert("Product Not Found");
-            }         
+            if (result == "OutofStock") {
+                msgdisplay("Item is out of stock can not add to cart");
+                return false;
+            }
+            else {
+                msgdisplay("Item Successfully added to your cart");
+            }
+            
+           // if (result == "notfound") {
+             //  alert("Product Not Found");
+           // }         
             $.ajax({
                 url: '/Client/Cart/CartItemsListTop',
                 type: "post",
