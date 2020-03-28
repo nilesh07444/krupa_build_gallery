@@ -195,8 +195,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price); });
                     // List<tbl_Cart> lstCarts = _db.tbl_Cart.Where(o => o.ClientUserId == clientusrid).ToList();
                     string paymentmethod = "ByCredit";
-                    string paymentdetails = "";
-                   
+                    
                     tbl_Orders objOrder = new tbl_Orders();
                     objOrder.ClientUserId = clientusrid;
                     objOrder.OrderAmount = Convert.ToDecimal(objCheckout.Orderamount);

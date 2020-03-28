@@ -5,12 +5,35 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="krupagalleryModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="tbl_AdminRoleModules">
+          <Key>
+            <PropertyRef Name="AdminRoleModuleId" />
+          </Key>
+          <Property Name="AdminRoleModuleId" Type="int" Nullable="false" />
+          <Property Name="ModuleName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="DisplayOrder" Type="int" Nullable="false" />
+          <Property Name="None" Type="bit" Nullable="false" />
+          <Property Name="View" Type="bit" Nullable="false" />
+          <Property Name="Add" Type="bit" Nullable="false" />
+          <Property Name="Edit" Type="bit" Nullable="false" />
+          <Property Name="Full" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_AdminRolePermissions">
+          <Key>
+            <PropertyRef Name="AdminRolePermissionId" />
+          </Key>
+          <Property Name="AdminRolePermissionId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AdminRoleId" Type="int" Nullable="false" />
+          <Property Name="AdminRoleModuleId" Type="int" Nullable="false" />
+          <Property Name="Permission" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="tbl_AdminRoles">
           <Key>
             <PropertyRef Name="AdminRoleId" />
           </Key>
-          <Property Name="AdminRoleId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AdminRoleId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="AdminRoleName" Type="nvarchar" MaxLength="150" />
+          <Property Name="AdminRoleDescription" Type="nvarchar" MaxLength="500" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
           <Property Name="IsDelete" Type="bit" Nullable="false" />
           <Property Name="CreatedBy" Type="bigint" />
@@ -420,7 +443,33 @@
           <Property Name="ClientUserId" Type="bigint" />
           <Property Name="CreatedDate" Type="datetime" />
         </EntityType>
+        <Association Name="FK_tbl_AdminRolePermissions_tbl_AdminRoleModules">
+          <End Role="tbl_AdminRoleModules" Type="Self.tbl_AdminRoleModules" Multiplicity="1" />
+          <End Role="tbl_AdminRolePermissions" Type="Self.tbl_AdminRolePermissions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_AdminRoleModules">
+              <PropertyRef Name="AdminRoleModuleId" />
+            </Principal>
+            <Dependent Role="tbl_AdminRolePermissions">
+              <PropertyRef Name="AdminRoleModuleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_tbl_AdminRolePermissions_tbl_AdminRolePermissions1">
+          <End Role="tbl_AdminRoles" Type="Self.tbl_AdminRoles" Multiplicity="1" />
+          <End Role="tbl_AdminRolePermissions" Type="Self.tbl_AdminRolePermissions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_AdminRoles">
+              <PropertyRef Name="AdminRoleId" />
+            </Principal>
+            <Dependent Role="tbl_AdminRolePermissions">
+              <PropertyRef Name="AdminRoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="krupagalleryModelStoreContainer">
+          <EntitySet Name="tbl_AdminRoleModules" EntityType="Self.tbl_AdminRoleModules" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_AdminRolePermissions" EntityType="Self.tbl_AdminRolePermissions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_AdminRoles" EntityType="Self.tbl_AdminRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_AdminUsers" EntityType="Self.tbl_AdminUsers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Cart" EntityType="Self.tbl_Cart" Schema="dbo" store:Type="Tables" />
@@ -445,23 +494,29 @@
           <EntitySet Name="tbl_Products" EntityType="Self.tbl_Products" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_SubProducts" EntityType="Self.tbl_SubProducts" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_WishList" EntityType="Self.tbl_WishList" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_tbl_AdminRolePermissions_tbl_AdminRoleModules" Association="Self.FK_tbl_AdminRolePermissions_tbl_AdminRoleModules">
+            <End Role="tbl_AdminRoleModules" EntitySet="tbl_AdminRoleModules" />
+            <End Role="tbl_AdminRolePermissions" EntitySet="tbl_AdminRolePermissions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_AdminRolePermissions_tbl_AdminRolePermissions1" Association="Self.FK_tbl_AdminRolePermissions_tbl_AdminRolePermissions1">
+            <End Role="tbl_AdminRoles" EntitySet="tbl_AdminRoles" />
+            <End Role="tbl_AdminRolePermissions" EntitySet="tbl_AdminRolePermissions" />
+          </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="krupagalleryModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
-        <EntityType Name="tbl_AdminRoles">
+        <EntityType Name="tbl_AdminRolePermissions">
           <Key>
-            <PropertyRef Name="AdminRoleId" />
+            <PropertyRef Name="AdminRolePermissionId" />
           </Key>
-          <Property Name="AdminRoleId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="AdminRoleName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
-          <Property Name="IsActive" Type="Boolean" Nullable="false" />
-          <Property Name="IsDelete" Type="Boolean" Nullable="false" />
-          <Property Name="CreatedBy" Type="Int64" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="UpdatedBy" Type="Int64" />
-          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <Property Name="AdminRolePermissionId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AdminRoleId" Type="Int32" Nullable="false" />
+          <Property Name="AdminRoleModuleId" Type="Int32" Nullable="false" />
+          <Property Name="Permission" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="tbl_AdminRoles" Relationship="krupagalleryModel.FK_tbl_AdminRolePermissions_tbl_AdminRolePermissions1" FromRole="tbl_AdminRolePermissions" ToRole="tbl_AdminRoles" />
+          <NavigationProperty Name="tbl_AdminRoleModules" Relationship="krupagalleryModel.FK_tbl_AdminRolePermissions_tbl_AdminRoleModules" FromRole="tbl_AdminRolePermissions" ToRole="tbl_AdminRoleModules" />
         </EntityType>
         <EntityType Name="tbl_AdminUsers">
           <Key>
@@ -630,6 +685,19 @@
           <Property Name="GSTPhoto" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="AddharPhoto" Type="String" MaxLength="450" FixedLength="false" Unicode="true" />
           <Property Name="ProfilePhoto" Type="String" MaxLength="450" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="tbl_Godown">
+          <Key>
+            <PropertyRef Name="GodownId" />
+          </Key>
+          <Property Name="GodownId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GodownName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdatedBy" Type="Int32" Nullable="false" />
+          <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
         <EntityType Name="tbl_GSTMaster">
           <Key>
@@ -853,7 +921,7 @@
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityContainer Name="krupagallarydbEntities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="tbl_AdminRoles" EntityType="Self.tbl_AdminRoles" />
+          <EntitySet Name="tbl_AdminRolePermissions" EntityType="Self.tbl_AdminRolePermissions" />
           <EntitySet Name="tbl_AdminUsers" EntityType="Self.tbl_AdminUsers" />
           <EntitySet Name="tbl_Cart" EntityType="Self.tbl_Cart" />
           <EntitySet Name="tbl_Categories" EntityType="Self.tbl_Categories" />
@@ -862,6 +930,7 @@
           <EntitySet Name="tbl_ClientUsers" EntityType="Self.tbl_ClientUsers" />
           <EntitySet Name="tbl_ContactFormData" EntityType="Self.tbl_ContactFormData" />
           <EntitySet Name="tbl_DistributorRequestDetails" EntityType="Self.tbl_DistributorRequestDetails" />
+          <EntitySet Name="tbl_Godown" EntityType="Self.tbl_Godown" />
           <EntitySet Name="tbl_GSTMaster" EntityType="Self.tbl_GSTMaster" />
           <EntitySet Name="tbl_HomeImages" EntityType="Self.tbl_HomeImages" />
           <EntitySet Name="tbl_ItemStocks" EntityType="Self.tbl_ItemStocks" />
@@ -876,38 +945,83 @@
           <EntitySet Name="tbl_Products" EntityType="Self.tbl_Products" />
           <EntitySet Name="tbl_SubProducts" EntityType="Self.tbl_SubProducts" />
           <EntitySet Name="tbl_WishList" EntityType="Self.tbl_WishList" />
-          <EntitySet Name="tbl_Godown" EntityType="krupagalleryModel.tbl_Godown" />
+          <EntitySet Name="tbl_AdminRoles" EntityType="krupagalleryModel.tbl_AdminRoles" />
+          <AssociationSet Name="FK_tbl_AdminRolePermissions_tbl_AdminRolePermissions1" Association="krupagalleryModel.FK_tbl_AdminRolePermissions_tbl_AdminRolePermissions1">
+            <End Role="tbl_AdminRoles" EntitySet="tbl_AdminRoles" />
+            <End Role="tbl_AdminRolePermissions" EntitySet="tbl_AdminRolePermissions" />
+          </AssociationSet>
+          <EntitySet Name="tbl_AdminRoleModules" EntityType="krupagalleryModel.tbl_AdminRoleModules" />
+          <AssociationSet Name="FK_tbl_AdminRolePermissions_tbl_AdminRoleModules" Association="krupagalleryModel.FK_tbl_AdminRolePermissions_tbl_AdminRoleModules">
+            <End Role="tbl_AdminRoleModules" EntitySet="tbl_AdminRoleModules" />
+            <End Role="tbl_AdminRolePermissions" EntitySet="tbl_AdminRolePermissions" />
+          </AssociationSet>
         </EntityContainer>
-        <EntityType Name="tbl_Godown">
+        <EntityType Name="tbl_AdminRoles">
           <Key>
-            <PropertyRef Name="GodownId" />
+            <PropertyRef Name="AdminRoleId" />
           </Key>
-          <Property Name="GodownId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="GodownName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="AdminRoleId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AdminRoleName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="AdminRoleDescription" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
-          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
-          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
+          <Property Name="IsDelete" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedBy" Type="Int64" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="UpdatedBy" Type="Int32" Nullable="false" />
-          <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdatedBy" Type="Int64" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="tbl_AdminRolePermissions" Relationship="krupagalleryModel.FK_tbl_AdminRolePermissions_tbl_AdminRolePermissions1" FromRole="tbl_AdminRoles" ToRole="tbl_AdminRolePermissions" />
         </EntityType>
+        <Association Name="FK_tbl_AdminRolePermissions_tbl_AdminRolePermissions1">
+          <End Type="krupagalleryModel.tbl_AdminRoles" Role="tbl_AdminRoles" Multiplicity="1" />
+          <End Type="krupagalleryModel.tbl_AdminRolePermissions" Role="tbl_AdminRolePermissions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_AdminRoles">
+              <PropertyRef Name="AdminRoleId" />
+            </Principal>
+            <Dependent Role="tbl_AdminRolePermissions">
+              <PropertyRef Name="AdminRoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="tbl_AdminRoleModules">
+          <Key>
+            <PropertyRef Name="AdminRoleModuleId" />
+          </Key>
+          <Property Name="AdminRoleModuleId" Type="Int32" Nullable="false" />
+          <Property Name="ModuleName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="DisplayOrder" Type="Int32" Nullable="false" />
+          <Property Name="None" Type="Boolean" Nullable="false" />
+          <Property Name="View" Type="Boolean" Nullable="false" />
+          <Property Name="Add" Type="Boolean" Nullable="false" />
+          <Property Name="Edit" Type="Boolean" Nullable="false" />
+          <Property Name="Full" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="tbl_AdminRolePermissions" Relationship="krupagalleryModel.FK_tbl_AdminRolePermissions_tbl_AdminRoleModules" FromRole="tbl_AdminRoleModules" ToRole="tbl_AdminRolePermissions" />
+        </EntityType>
+        <Association Name="FK_tbl_AdminRolePermissions_tbl_AdminRoleModules">
+          <End Type="krupagalleryModel.tbl_AdminRoleModules" Role="tbl_AdminRoleModules" Multiplicity="1" />
+          <End Type="krupagalleryModel.tbl_AdminRolePermissions" Role="tbl_AdminRolePermissions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_AdminRoleModules">
+              <PropertyRef Name="AdminRoleModuleId" />
+            </Principal>
+            <Dependent Role="tbl_AdminRolePermissions">
+              <PropertyRef Name="AdminRoleModuleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="krupagalleryModelStoreContainer" CdmEntityContainer="krupagallarydbEntities">
-          <EntitySetMapping Name="tbl_AdminRoles">
-            <EntityTypeMapping TypeName="krupagalleryModel.tbl_AdminRoles">
-              <MappingFragment StoreEntitySet="tbl_AdminRoles">
+          <EntitySetMapping Name="tbl_AdminRolePermissions">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_AdminRolePermissions">
+              <MappingFragment StoreEntitySet="tbl_AdminRolePermissions">
+                <ScalarProperty Name="AdminRolePermissionId" ColumnName="AdminRolePermissionId" />
                 <ScalarProperty Name="AdminRoleId" ColumnName="AdminRoleId" />
-                <ScalarProperty Name="AdminRoleName" ColumnName="AdminRoleName" />
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="AdminRoleModuleId" ColumnName="AdminRoleModuleId" />
+                <ScalarProperty Name="Permission" ColumnName="Permission" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1084,6 +1198,20 @@
                 <ScalarProperty Name="GSTPhoto" ColumnName="GSTPhoto" />
                 <ScalarProperty Name="AddharPhoto" ColumnName="AddharPhoto" />
                 <ScalarProperty Name="ProfilePhoto" ColumnName="ProfilePhoto" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Godown">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_Godown">
+              <MappingFragment StoreEntitySet="tbl_Godown">
+                <ScalarProperty Name="GodownId" ColumnName="GodownId" />
+                <ScalarProperty Name="GodownName" ColumnName="GodownName" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1322,17 +1450,32 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="tbl_Godown">
-            <EntityTypeMapping TypeName="krupagalleryModel.tbl_Godown">
-              <MappingFragment StoreEntitySet="tbl_Godown">
+          <EntitySetMapping Name="tbl_AdminRoles">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_AdminRoles">
+              <MappingFragment StoreEntitySet="tbl_AdminRoles">
                 <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
                 <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="GodownName" ColumnName="GodownName" />
-                <ScalarProperty Name="GodownId" ColumnName="GodownId" />
+                <ScalarProperty Name="AdminRoleDescription" ColumnName="AdminRoleDescription" />
+                <ScalarProperty Name="AdminRoleName" ColumnName="AdminRoleName" />
+                <ScalarProperty Name="AdminRoleId" ColumnName="AdminRoleId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_AdminRoleModules">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_AdminRoleModules">
+              <MappingFragment StoreEntitySet="tbl_AdminRoleModules">
+                <ScalarProperty Name="Full" ColumnName="Full" />
+                <ScalarProperty Name="Edit" ColumnName="Edit" />
+                <ScalarProperty Name="Add" ColumnName="Add" />
+                <ScalarProperty Name="View" ColumnName="View" />
+                <ScalarProperty Name="None" ColumnName="None" />
+                <ScalarProperty Name="DisplayOrder" ColumnName="DisplayOrder" />
+                <ScalarProperty Name="ModuleName" ColumnName="ModuleName" />
+                <ScalarProperty Name="AdminRoleModuleId" ColumnName="AdminRoleModuleId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

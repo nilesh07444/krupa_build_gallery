@@ -226,7 +226,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         }
                         catch(Exception e)
                         {
-
+                            string ErrorMessage = e.Message.ToString();
                         }
                         return num.ToString();
 

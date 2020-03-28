@@ -56,6 +56,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             }
             catch (Exception ex)
             {
+                string ErrorMessage = ex.Message.ToString();
                 ReturnMessage = "ERROR";
             }
 

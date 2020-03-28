@@ -1,0 +1,126 @@
+﻿@model RoleVM
+
+@{
+    ViewBag.Title = "Role";
+}
+
+@{
+    int cnt = 0;
+}
+
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col">
+                    <div class="page-header-left">
+                        <h3>
+                            Edit Role
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="/admin/role">Role</a></li>
+                        <li class="breadcrumb-item active">Edit Role</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Edit Role</h5>
+                    </div>
+                    <div class="card-body">
+                        @using (Html.BeginForm("Edit", "Role", FormMethod.Post, new { @id = "RoleFormId", @class = "needs-validation", enctype = "multipart/form-data", role = "form" }))
+                        {
+
+                            @Html.AntiForgeryToken()
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.AdminRoleName, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.EditorFor(model => model.AdminRoleName, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Role Name", maxlength = "100" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.AdminRoleName, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.AdminRoleDescription, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.EditorFor(model => model.AdminRoleDescription, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Role Description", maxlength = "200" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.AdminRoleDescription, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group row m-checkbox-inline mb-0 custom-radio-ml d-flex radio-animated">
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                <table class="table table-bordernone mb-0 col-md-8">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col" width="30%">Module Name</th>
+                                            <th scope="col">Permission</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (Model.lstRoleModules != null && Model.lstRoleModules.Count > 0)
+                                        {
+                                            foreach (RoleModuleVM module in Model.lstRoleModules)
+                                            {
+                                                <tr>
+                                                    <td>@(cnt + 1)</td>
+                                                    <td>@module.ModuleName</td>
+                                                    <td>
+                                                        <label>@Html.RadioButtonFor(m => m.lstRoleModules[cnt].SelectedValue, 0, new { @class = "radio_animated" }) None</label>
+                                                        <label>@Html.RadioButtonFor(m => m.lstRoleModules[cnt].SelectedValue, 1, new { @class = "radio_animated" }) View</label>
+                                                        <label>@Html.RadioButtonFor(m => m.lstRoleModules[cnt].SelectedValue, 2, new { @class = "radio_animated" }) Add</label>
+                                                        <label>@Html.RadioButtonFor(m => m.lstRoleModules[cnt].SelectedValue, 3, new { @class = "radio_animated" }) Edit</label>
+                                                        <label>@Html.RadioButtonFor(m => m.lstRoleModules[cnt].SelectedValue, 4, new { @class = "radio_animated" }) Full</label>
+                                                    </td>
+                                                </tr>
+
+                                                @Html.HiddenFor(m => m.lstRoleModules[cnt].AdminRoleModuleId)
+                                                @Html.HiddenFor(m => m.lstRoleModules[cnt].ModuleName)
+                                                @Html.HiddenFor(m => m.lstRoleModules[cnt].AdminRolePermissionId)
+
+                                                cnt++;
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+
+                            </div>
+
+                            @Html.HiddenFor(x => x.AdminRoleId)
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+</div>
+
+<script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+<script>
+    $(document).on("click", "#btnCancel", function () {
+        window.location.href = "/admin/role";
+    });
+</script>

@@ -530,7 +530,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         }
                         catch (Exception e)
                         {
-
+                            string ErrorMessage = e.Message.ToString();
                         }
 
                         using (WebClient webClient = new WebClient())
@@ -614,7 +614,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         }
                         catch(Exception e)
                         {
-
+                            string ErrorMessage = e.Message.ToString();
                         }                        
 
                         using (WebClient webClient = new WebClient())

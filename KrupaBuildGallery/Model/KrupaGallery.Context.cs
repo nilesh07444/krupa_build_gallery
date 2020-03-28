@@ -25,7 +25,7 @@ namespace KrupaBuildGallery.Model
             throw new UnintentionalCodeFirstException();
         }
     
-        public DbSet<tbl_AdminRoles> tbl_AdminRoles { get; set; }
+        public DbSet<tbl_AdminRolePermissions> tbl_AdminRolePermissions { get; set; }
         public DbSet<tbl_AdminUsers> tbl_AdminUsers { get; set; }
         public DbSet<tbl_Cart> tbl_Cart { get; set; }
         public DbSet<tbl_Categories> tbl_Categories { get; set; }
@@ -34,6 +34,7 @@ namespace KrupaBuildGallery.Model
         public DbSet<tbl_ClientUsers> tbl_ClientUsers { get; set; }
         public DbSet<tbl_ContactFormData> tbl_ContactFormData { get; set; }
         public DbSet<tbl_DistributorRequestDetails> tbl_DistributorRequestDetails { get; set; }
+        public DbSet<tbl_Godown> tbl_Godown { get; set; }
         public DbSet<tbl_GSTMaster> tbl_GSTMaster { get; set; }
         public DbSet<tbl_HomeImages> tbl_HomeImages { get; set; }
         public DbSet<tbl_ItemStocks> tbl_ItemStocks { get; set; }
@@ -48,6 +49,7 @@ namespace KrupaBuildGallery.Model
         public DbSet<tbl_Products> tbl_Products { get; set; }
         public DbSet<tbl_SubProducts> tbl_SubProducts { get; set; }
         public DbSet<tbl_WishList> tbl_WishList { get; set; }
-        public DbSet<tbl_Godown> tbl_Godown { get; set; }
+        public DbSet<tbl_AdminRoles> tbl_AdminRoles { get; set; }
+        public DbSet<tbl_AdminRoleModules> tbl_AdminRoleModules { get; set; }
     }
 }

@@ -12,22 +12,21 @@ namespace KrupaBuildGallery.Model
     using System;
     using System.Collections.Generic;
     
-    public partial class tbl_AdminRoles
+    public partial class tbl_AdminRoleModules
     {
-        public tbl_AdminRoles()
+        public tbl_AdminRoleModules()
         {
             this.tbl_AdminRolePermissions = new HashSet<tbl_AdminRolePermissions>();
         }
     
-        public int AdminRoleId { get; set; }
-        public string AdminRoleName { get; set; }
-        public string AdminRoleDescription { get; set; }
-        public bool IsActive { get; set; }
-        public bool IsDelete { get; set; }
-        public Nullable<long> CreatedBy { get; set; }
-        public System.DateTime CreatedDate { get; set; }
-        public Nullable<long> UpdatedBy { get; set; }
-        public Nullable<System.DateTime> UpdatedDate { get; set; }
+        public int AdminRoleModuleId { get; set; }
+        public string ModuleName { get; set; }
+        public int DisplayOrder { get; set; }
+        public bool None { get; set; }
+        public bool View { get; set; }
+        public bool Add { get; set; }
+        public bool Edit { get; set; }
+        public bool Full { get; set; }
     
         public virtual ICollection<tbl_AdminRolePermissions> tbl_AdminRolePermissions { get; set; }
     }
