@@ -14,6 +14,10 @@ namespace KrupaBuildGallery.Helper
         public static string ItemNameExists = "Item Name is already exist";
         public static string QtyGreater = "Please enter quantity greater than 0";
         public static string ItemTextExists = "Item Text is already exist";
+        public static string ImageRequired = "Image is required";
+        public static string GodownNameExists = "Godown name is already exist";
+        public static string SelectOnlyImage = "Please select only image file";
+
         // Client Portal Messages
 
     }

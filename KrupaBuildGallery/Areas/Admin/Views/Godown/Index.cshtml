@@ -1,7 +1,7 @@
 ﻿@using KrupaBuildGallery.Model;
-@model List<HomeImageVM>
+@model List<GodownVM>
 @{
-    ViewBag.Title = "HomeImage";
+    ViewBag.Title = "Godown";
 
     int counter = 1;
 }
@@ -15,14 +15,14 @@
                 <div class="col-lg-6">
                     <div class="page-header-left">
                         <h3>
-                            Home Image List
+                            Godown List
                         </h3>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <ol class="breadcrumb pull-right">
                         <li class="breadcrumb-item"><a href="/"><i data-feather="home"></i></a></li>
-                        <li class="breadcrumb-item active">Home Image List</li>
+                        <li class="breadcrumb-item active">Godown List</li>
                     </ol>
                 </div>
             </div>
@@ -33,21 +33,19 @@
     <div class="container-fluid">
         <div class="card">
             <div class="card-header">
-                <h5>Home Image List</h5>
+                <h5>Godown List</h5>
             </div>
             <div class="card-body vendor-table">
 
                 <div class="btn-popup pull-right">
-                    <button type="button" class="btn btn-primary" id="btnAdd">Add Home Image</button>
+                    <button type="button" class="btn btn-primary" id="btnAdd">Add Godown</button>
                 </div>
 
                 <table class="display" id="basic-1">
                     <thead>
                         <tr>
                             <th width="10%;">#</th>
-                            <th width="15%;">Home Image</th>
-                            <th>Heading Text 1</th>
-                            <th>Heading Text 2</th>
+                            <th width="15%;">Godown</th> 
                             <th width="15%;">Active</th>
                             <th width="15%;">Action</th>
                         </tr>
@@ -56,42 +54,23 @@
 
                         @if (Model != null && Model.Count > 0)
                         {
-                            foreach (HomeImageVM obj in Model)
+                            foreach (GodownVM obj in Model)
                             {
                                 <tr class="gradeX">
-                                    <td>@counter.</td>
-                                    <td>
-                                        @if (!string.IsNullOrEmpty(obj.HomeImageName))
-                                        {
-                                            if (File.Exists(Server.MapPath("~/Images/HomeMedia/" + obj.HomeImageName)))
-                                            {
-                                                <img src="~/Images/HomeMedia/@obj.HomeImageName" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
-                                            }
-                                            else
-                                            {
-                                                <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
-                                            }
-                                        }
-                                        else
-                                        {
-                                            <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
-                                        }
-
-                                    </td>
-                                    <td>@obj.HeadingText1</td>
-                                    <td>@obj.HeadingText2</td>
+                                    <td>@counter.</td> 
+                                    <td>@obj.GodownName</td>
                                     @if (obj.IsActive == true)
                                     {
-                                        <td><span class="badge badge-success" style="cursor:pointer;" title="Click to Inactive" onclick="fnChangeStatus('@obj.HomeImageId','InActive');">Active</span></td>
+                                        <td><span class="badge badge-success" style="cursor:pointer;" title="Click to Inactive" onclick="fnChangeStatus('@obj.GodownId','InActive');">Active</span></td>
                                     }
                                     else
                                     {
-                                        <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@obj.HomeImageId','Active');">InActive</span></td>
+                                        <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@obj.GodownId','Active');">InActive</span></td>
                                     }
 
                                     <td>
-                                        <a href="/admin/homeimages/edit/@obj.HomeImageId"><i class="fa fa-edit mr-2 font-success"></i></a>
-                                        <a href="javascript:void(0);" onclick="fnDeleteHomeImage('@obj.HomeImageId')"><i class="fa fa-trash font-danger"></i></a>
+                                        <a href="/admin/godown/edit/@obj.GodownId"><i class="fa fa-edit mr-2 font-success"></i></a>
+                                        <a href="javascript:void(0);" onclick="fnDeleteGodown('@obj.GodownId')"><i class="fa fa-trash font-danger"></i></a>
                                     </td>
                                 </tr>
                                 counter++;
@@ -108,7 +87,7 @@
 </div>
 
 <!-- Delete Modal -->
-<div class="modal fade open" id="deleteHomeImageModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade open" id="deleteGodownModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -119,9 +98,9 @@
                 Are you sure you want to delete ?
             </div>
             <div class="modal-footer">
-                <input type="hidden" id="hdnDeleteHomeImage" />
+                <input type="hidden" id="hdnDeleteGodown" />
                 <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
-                <button id="btnDeleteHomeImage" class="btn btn-primary" type="button">Delete</button>
+                <button id="btnDeleteGodown" class="btn btn-primary" type="button">Delete</button>
             </div>
         </div>
     </div>
@@ -158,38 +137,38 @@
     //});
 
     $(document).on("click", "#btnAdd", function () {
-        window.location.href = "/admin/homeimages/add";
+        window.location.href = "/admin/godown/add";
     });
 
-    function fnDeleteHomeImage(HomeImage_Id) {
-        jQuery("#hdnDeleteHomeImage").val(HomeImage_Id);
-        $('#deleteHomeImageModal').modal('show');
+    function fnDeleteGodown(Godown_Id) {
+        jQuery("#hdnDeleteGodown").val(Godown_Id);
+        $('#deleteGodownModal').modal('show');
     }
 
     //jQuery(window).on("load", function () {
     //    StopLoading();
     //});
 
-    jQuery(document).on("click", "#btnDeleteHomeImage", function () {
+    jQuery(document).on("click", "#btnDeleteGodown", function () {
 
-        var HomeImage_Id = jQuery("#hdnDeleteHomeImage").val();
-        if (HomeImage_Id != "" && HomeImage_Id != null) {
-            $('#deleteHomeImageModal').modal('hide');
+        var Godown_Id = jQuery("#hdnDeleteGodown").val();
+        if (Godown_Id != "" && Godown_Id != null) {
+            $('#deleteGodownModal').modal('hide');
 
             StartLoading();
 
-            var URL = '@Url.Action("DeleteHomeImage", "HomeImages")';
+            var URL = '@Url.Action("DeleteGodown", "Godown")';
             $.ajax({
                 type: 'POST',
                 async: true,
-                url: URL + "?HomeImageId=" + HomeImage_Id,
+                url: URL + "?GodownId=" + Godown_Id,
                 success: function (result) {
                     if (result == "success") {
-                        alert("Image deleted successfully");
+                        alert("Godown deleted successfully");
                         window.location.reload();
                     }
                     else if (result == "notfound") {
-                        alert("Image Not Found");
+                        alert("Godown Not Found");
                     }
                     else {
                         alert("Something went wrong. Please try again");
@@ -203,9 +182,9 @@
             });
         }
     });
-     
-     function fnChangeStatus(HomeImage_Id,status) {
-         jQuery("#hdndataId").val(HomeImage_Id);
+
+     function fnChangeStatus(Godown_Id,status) {
+         jQuery("#hdndataId").val(Godown_Id);
          jQuery("#hdnstatus").val(status);
          if (status == "Active") {
              $('#activeinactiveModal .modal-body').html(" Are you sure you want to make active ?");
@@ -224,7 +203,7 @@
 
             StartLoading();
 
-            var URL = '@Url.Action("ChangeStatus", "HomeImages")';
+            var URL = '@Url.Action("ChangeStatus", "Godown")';
             $.ajax({
                 type: 'POST',
                 async: true,

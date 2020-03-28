@@ -22,9 +22,9 @@ namespace KrupaBuildGallery
             routes.MapRoute("redirect all other requests", "{*url}",
             new
             {
-                controller = "HomePage", // Login
+                controller = "Dashboard", // HomePage
                 action = "Index"
-            }).DataTokens = new RouteValueDictionary(new { area = "Client" }); // Admin
+            }).DataTokens = new RouteValueDictionary(new { area = "Admin" }); // Client
 
         }
     }

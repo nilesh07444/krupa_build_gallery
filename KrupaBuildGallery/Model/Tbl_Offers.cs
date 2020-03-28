@@ -21,6 +21,7 @@ namespace KrupaBuildGallery.Model
         public Nullable<long> SubproductId { get; set; }
         public long ProductItemId { get; set; }
         public decimal OfferPrice { get; set; }
+        public Nullable<decimal> OfferPriceforDistributor { get; set; }
         public System.DateTime StartDate { get; set; }
         public System.DateTime EndDate { get; set; }
         public bool IsActive { get; set; }
@@ -29,6 +30,5 @@ namespace KrupaBuildGallery.Model
         public System.DateTime CreatedDate { get; set; }
         public Nullable<long> UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDate { get; set; }
-        public Nullable<decimal> OfferPriceforDistributor { get; set; }
     }
 }
