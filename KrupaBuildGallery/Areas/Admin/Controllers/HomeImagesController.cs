@@ -15,10 +15,13 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
     public class HomeImagesController : Controller
     {
         private readonly krupagallarydbEntities _db;
+        public string HomeDirectoryPath = "";
         public HomeImagesController()
         {
-            _db = new krupagallarydbEntities();
+            _db = new krupagallarydbEntities(); 
+            HomeDirectoryPath = ErrorMessage.HomeDirectoryPath;
         }
+
         public ActionResult Index()
         {
             List<HomeImageVM> lstHomeImages = new List<HomeImageVM>();
@@ -60,7 +63,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     long LoggedInUserId = Int64.Parse(clsAdminSession.UserID.ToString());
 
                     string fileName = string.Empty;
-                    string path = Server.MapPath("~/Images/HomeMedia/");
+                    string path = Server.MapPath(HomeDirectoryPath);
 
                     bool folderExists = Directory.Exists(path);
                     if (!folderExists)
@@ -105,6 +108,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             catch (Exception ex)
             {
                 string ErrorMessage = ex.Message.ToString();
+                throw ex;
             }
 
             return View(homeImageVM);
@@ -148,7 +152,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     tbl_HomeImages objHome = _db.tbl_HomeImages.Where(x => x.HomeImageId == homeImageVM.HomeImageId).FirstOrDefault();
 
                     string fileName = string.Empty;
-                    string path = Server.MapPath("~/Images/HomeMedia/");
+                    string path = Server.MapPath(HomeDirectoryPath);
                     if (HomeImageFile != null)
                     {
                         // Image file validation

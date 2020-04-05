@@ -1,4 +1,5 @@
-﻿@model HomeImageVM
+﻿@using KrupaBuildGallery.Helper;
+@model HomeImageVM
 
 @{
     ViewBag.Title = "HomeImage";
@@ -70,7 +71,7 @@
                             if (!string.IsNullOrEmpty(Model.HomeImageName))
                             {
                                 <div class="form-group row">
-                                    <p><a target="_blank" href="~/Images/HomeMedia/@Model.HomeImageName"> Click here to view image </a></p>
+                                    <p><a target="_blank" href="@ErrorMessage.HomeDirectoryPath/@Model.HomeImageName"> Click here to view image </a></p>
                                 </div>
                             }
 

@@ -11,7 +11,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 {
     public class LoginController : Controller
     {
-         
+
         private readonly krupagallarydbEntities _db;
         public LoginController()
         {
@@ -19,7 +19,10 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         }
 
         public ActionResult Index()
-        {            
+        {
+
+
+
             return View();
         }
 
@@ -30,8 +33,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             {
                 string EncyptedPassword = userLogin.Password; // Encrypt(userLogin.Password);
 
-                var data = _db.tbl_AdminUsers.Where(x => (x.UserName == userLogin.UserName || x.Email == userLogin.UserName)
-                && x.Password == EncyptedPassword && !x.IsDeleted).FirstOrDefault();
+                var data = _db.tbl_AdminUsers.Where(x => x.MobileNo == userLogin.MobileNo && x.Password == EncyptedPassword && !x.IsDeleted).FirstOrDefault();
 
                 if (data != null)
                 {
@@ -42,12 +44,29 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         return View();
                     }
 
+                    var roleData = _db.tbl_AdminRoles.Where(x => x.AdminRoleId == data.AdminRoleId).FirstOrDefault();
+
+                    if (!roleData.IsActive)
+                    {
+                        TempData["LoginError"] = "Your Role is not active. Please contact administrator.";
+                        return View();
+                    }
+
+                    if (roleData.IsDelete)
+                    {
+                        TempData["LoginError"] = "Your Role is deleted. Please contact administrator.";
+                        return View();
+                    }
+
                     clsAdminSession.SessionID = Session.SessionID;
                     clsAdminSession.UserID = data.AdminUserId;
                     clsAdminSession.RoleID = data.AdminRoleId;
+                    clsAdminSession.RoleName = roleData.AdminRoleName;
                     clsAdminSession.UserName = data.FirstName + " " + data.LastName;
                     clsAdminSession.ImagePath = data.ProfilePicture;
 
+                    // Add Login history entry
+                    #region LoginHistoryEntry
                     tbl_LoginHistory objLogin = new tbl_LoginHistory();
                     objLogin.UserId = data.AdminUserId;
                     objLogin.Type = "Login";
@@ -60,11 +79,13 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     objLogin.IPAddress = VisitorsIPAddr;
                     _db.tbl_LoginHistory.Add(objLogin);
                     _db.SaveChanges();
+                    #endregion LoginHistoryEntry
+
                     return RedirectToAction("Index", "Dashboard");
                 }
                 else
                 {
-                    TempData["LoginError"] = "Invalid Username or Password";
+                    TempData["LoginError"] = "Invalid Mobile or Password";
                     return View();
                 }
             }

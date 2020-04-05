@@ -26,7 +26,6 @@ namespace KrupaBuildGallery.Model
         }
     
         public DbSet<tbl_AdminRolePermissions> tbl_AdminRolePermissions { get; set; }
-        public DbSet<tbl_AdminUsers> tbl_AdminUsers { get; set; }
         public DbSet<tbl_Cart> tbl_Cart { get; set; }
         public DbSet<tbl_Categories> tbl_Categories { get; set; }
         public DbSet<tbl_ClientOtherDetails> tbl_ClientOtherDetails { get; set; }
@@ -51,5 +50,6 @@ namespace KrupaBuildGallery.Model
         public DbSet<tbl_WishList> tbl_WishList { get; set; }
         public DbSet<tbl_AdminRoles> tbl_AdminRoles { get; set; }
         public DbSet<tbl_AdminRoleModules> tbl_AdminRoleModules { get; set; }
+        public DbSet<tbl_AdminUsers> tbl_AdminUsers { get; set; }
     }
 }

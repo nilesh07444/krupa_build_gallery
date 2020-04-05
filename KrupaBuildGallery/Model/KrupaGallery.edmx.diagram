@@ -4,9 +4,8 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="8d048f9b7d7441688c9ddb27be11a8f4" Name="Diagram1">
+      <Diagram DiagramId="8d048f9b7d7441688c9ddb27be11a8f4" Name="Diagram1" ZoomLevel="92">
         <EntityTypeShape EntityType="krupagalleryModel.tbl_AdminRolePermissions" Width="1.5" PointX="3" PointY="1.125" IsExpanded="true" />
-        <EntityTypeShape EntityType="krupagalleryModel.tbl_AdminUsers" Width="1.5" PointX="2.75" PointY="4.75" IsExpanded="true" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_Cart" Width="1.5" PointX="4.75" PointY="4.75" IsExpanded="true" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_Categories" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_ClientOtherDetails" Width="1.5" PointX="6.75" PointY="4.75" IsExpanded="true" />
@@ -33,6 +32,7 @@
         <AssociationConnector Association="krupagalleryModel.FK_tbl_AdminRolePermissions_tbl_AdminRolePermissions1" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_AdminRoleModules" Width="1.5" PointX="0.75" PointY="0.875" />
         <AssociationConnector Association="krupagalleryModel.FK_tbl_AdminRolePermissions_tbl_AdminRoleModules" />
+        <EntityTypeShape EntityType="krupagalleryModel.tbl_AdminUsers" Width="1.5" PointX="0.75" PointY="4.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

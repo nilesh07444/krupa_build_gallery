@@ -63,7 +63,14 @@
                                     <td>@obj.AdminRoleDescription</td>
                                     @if (obj.IsActive == true)
                                     {
-                                        <td><span class="badge badge-success" style="cursor:pointer;" title="Click to Inactive" onclick="fnChangeStatus('@obj.AdminRoleId','InActive');">Active</span></td>
+                                        if (obj.AdminRoleId != 1)
+                                        {
+                                            <td><span class="badge badge-success" style="cursor:pointer;" title="Click to Inactive" onclick="fnChangeStatus('@obj.AdminRoleId','InActive');">Active</span></td>
+                                        }
+                                        else
+                                        {
+                                            <td><span class="badge badge-success">Active</span></td>
+                                        }
                                     }
                                     else
                                     {
@@ -71,8 +78,11 @@
                                     }
 
                                     <td>
-                                        <a href="/admin/role/edit/@obj.AdminRoleId"><i class="fa fa-edit mr-2 font-success"></i></a>
-                                        <a href="javascript:void(0);" onclick="fnDeleteRole('@obj.AdminRoleId')"><i class="fa fa-trash font-danger"></i></a>
+                                        @if (obj.AdminRoleId != 1)
+                                        {
+                                            <a href="/admin/role/edit/@obj.AdminRoleId"><i class="fa fa-edit mr-2 font-success"></i></a>
+                                            <a href="javascript:void(0);" onclick="fnDeleteRole('@obj.AdminRoleId')"><i class="fa fa-trash font-danger"></i></a>
+                                        }
                                     </td>
                                 </tr>
                                 counter++;

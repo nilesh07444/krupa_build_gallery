@@ -25,7 +25,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             try
             {
                 lstRoles = (from r in _db.tbl_AdminRoles
-                            where !r.IsDelete && r.AdminRoleId != 1
+                            where !r.IsDelete
                             select new RoleVM
                             {
                                 AdminRoleId = r.AdminRoleId,
@@ -37,6 +37,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             catch (Exception ex)
             {
                 string ErrorMessage = ex.Message.ToString();
+                throw ex;
             }
 
             return View(lstRoles);

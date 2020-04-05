@@ -15,13 +15,23 @@ namespace KrupaBuildGallery.Model
     public partial class tbl_AdminUsers
     {
         public long AdminUserId { get; set; }
+        public int AdminRoleId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string UserName { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }
         public string MobileNo { get; set; }
-        public int AdminRoleId { get; set; }
+        public string AlternateMobile { get; set; }
+        public string Address { get; set; }
+        public string City { get; set; }
+        public string Designation { get; set; }
+        public Nullable<System.DateTime> Dob { get; set; }
+        public Nullable<System.DateTime> DateOfJoin { get; set; }
+        public string BloodGroup { get; set; }
+        public string WorkingTime { get; set; }
+        public string AdharCardNo { get; set; }
+        public Nullable<System.DateTime> DateOfIdCardExpiry { get; set; }
+        public string Remarks { get; set; }
         public string ProfilePicture { get; set; }
         public bool IsActive { get; set; }
         public bool IsDeleted { get; set; }
@@ -29,13 +39,5 @@ namespace KrupaBuildGallery.Model
         public System.DateTime CreatedDate { get; set; }
         public Nullable<long> UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDate { get; set; }
-        public string AlternateMobile { get; set; }
-        public string Address { get; set; }
-        public string City { get; set; }
-        public string Designation { get; set; }
-        public string Remarks { get; set; }
-        public string IDProof { get; set; }
-        public Nullable<System.DateTime> Dob { get; set; }
-        public Nullable<int> RoleId { get; set; }
     }
 }

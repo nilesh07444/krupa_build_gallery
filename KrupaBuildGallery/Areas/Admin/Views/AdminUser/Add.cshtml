@@ -1,0 +1,212 @@
+﻿@model AdminUserVM
+
+@{
+    ViewBag.Title = "AdminUser";
+}
+
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col">
+                    <div class="page-header-left">
+                        <h3>
+                            Add Admin User
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="/admin/adminuser">Admin User</a></li>
+                        <li class="breadcrumb-item active">Add Admin User</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Add Admin User</h5>
+                    </div>
+                    <div class="card-body">
+                        @using (Html.BeginForm("Add", "AdminUser", FormMethod.Post, new { @id = "AdminUserFormId", @class = "needs-validation", enctype = "multipart/form-data", role = "form" }))
+                        {
+
+                            @Html.AntiForgeryToken()
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter First Name", maxlength = "200" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Last Name", maxlength = "200" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.AdminRoleId, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.DropDownListFor(model => model.AdminRoleId, new SelectList(Model.RoleList, "Value", "Text"), "- Select Role -", new { @class = "form-control col-md-8", style = "" })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.AdminRoleId, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Email Id", maxlength = "100" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.MobileNo, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.EditorFor(model => model.MobileNo, new { htmlAttributes = new { @type = "number", @class = "form-control col-md-8", @placeholder = "Enter Mobile No", maxlength = "10" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.MobileNo, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Password", maxlength = "20" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.AlternateMobile, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.EditorFor(model => model.AlternateMobile, new { htmlAttributes = new { @type = "number", @class = "form-control col-md-8", @placeholder = "Enter Alternate Mobile No", maxlength = "10" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.AlternateMobile, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Address", maxlength = "200" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.City, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.EditorFor(model => model.City, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter City", maxlength = "50" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.City, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.Dob, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.EditorFor(model => model.Dob, new { htmlAttributes = new { @class = "form-control col-md-8 datepicker-here", @placeholder = "DD/MM/YYYY", @data_language = "en" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.Dob, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.Designation, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.EditorFor(model => model.Designation, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Designation", maxlength = "200" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.Designation, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.DateOfJoin, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.EditorFor(model => model.DateOfJoin, new { htmlAttributes = new { @class = "form-control col-md-8 datepicker-here", @placeholder = "DD/MM/YYYY", @data_language = "en" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.DateOfJoin, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.WorkingTime, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.EditorFor(model => model.WorkingTime, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Working Time", maxlength = "50" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.Designation, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.BloodGroup, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.EditorFor(model => model.BloodGroup, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Blood Group", maxlength = "10" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.BloodGroup, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.AdharCardNo, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.EditorFor(model => model.AdharCardNo, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Aadhar Card No", maxlength = "20" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.AdharCardNo, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.DateOfIdCardExpiry, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.EditorFor(model => model.DateOfIdCardExpiry, new { htmlAttributes = new { @class = "form-control col-md-8 datepicker-here", @placeholder = "DD/MM/YYYY", @data_language = "en" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.DateOfIdCardExpiry, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.ProfilePictureFile, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.TextBoxFor(model => model.ProfilePictureFile, new { type = "file", @class = "form-control col-md-8" })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.ProfilePictureFile, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Remarks", maxlength = "200" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                            <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+</div>
+
+<script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+ 
+<script>
+     
+    $(document).on("click", "#btnCancel", function () {
+        window.location.href = "/admin/adminuser";
+    });
+     
+</script>

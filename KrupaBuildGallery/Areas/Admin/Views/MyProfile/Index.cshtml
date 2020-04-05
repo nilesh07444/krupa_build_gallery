@@ -1,7 +1,8 @@
-﻿
+﻿@using KrupaBuildGallery.Helper;
+@model AdminUserVM
 
 @{
-    ViewBag.Title = "My Profile";
+    ViewBag.Title = "MyProfile";
 }
 
 <div class="page-body">
@@ -39,46 +40,85 @@
                         <form>
 
                             <div class="form-group row">
-                                <label for="txtUserName" class="col-xl-3 col-md-4">User Name</label>
-                                <input type="text" class="form-control col-md-8" id="txtUserName" placeholder="Enter User Name">
-
-                                @*<lable class="col-xl-3 col-md-4"></lable>
-                                    <span>Error message here</span>*@
-                            </div>
-
-                            <div class="form-group row">
                                 <label for="txtFirstName" class="col-xl-3 col-md-4">First Name</label>
-                                <input type="text" class="form-control col-md-8" id="txtFirstName" placeholder="Enter First Name">
-
-                                @*<lable class="col-xl-3 col-md-4"></lable>
-                                    <span>Error message here</span>*@
+                                <lable class="form-control col-md-8">@Model.FirstName</lable>
                             </div>
 
                             <div class="form-group row">
                                 <label for="txtLastName" class="col-xl-3 col-md-4">Last Name</label>
-                                <input type="text" class="form-control col-md-8" id="txtLastName" placeholder="Enter Last Name">
-
-                                @*<lable class="col-xl-3 col-md-4"></lable>
-                                    <span>Error message here</span>*@
+                                <lable class="form-control col-md-8">@Model.LastName</lable>
                             </div>
 
                             <div class="form-group row">
                                 <label for="txtEmail" class="col-xl-3 col-md-4">Email</label>
-                                <input type="text" class="form-control col-md-8" id="txtEmail" placeholder="Enter Email">
-
-                                @*<lable class="col-xl-3 col-md-4"></lable>
-                                    <span>Error message here</span>*@
+                                <lable class="form-control col-md-8">@Model.Email</lable>
                             </div>
 
                             <div class="form-group row">
                                 <label for="txtMobileNo" class="col-xl-3 col-md-4">Mobile No</label>
-                                <input type="text" class="form-control col-md-8" id="txtMobileNo" placeholder="Enter Mobile No">
-
-                                @*<lable class="col-xl-3 col-md-4"></lable>
-                                    <span>Error message here</span>*@
+                                <lable class="form-control col-md-8">@Model.MobileNo</lable>
                             </div>
 
-                            <button type="button" class="btn btn-primary">Submit</button>
+                            <div class="form-group row">
+                                <label for="txtMobileNo" class="col-xl-3 col-md-4">Alternate Mobile No</label>
+                                <lable class="form-control col-md-8">@Model.AlternateMobile</lable>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="txtMobileNo" class="col-xl-3 col-md-4">Role</label>
+                                <lable class="form-control col-md-8">@Model.RoleName</lable>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="txtMobileNo" class="col-xl-3 col-md-4">Address</label>
+                                <lable class="form-control col-md-8">@Model.Address</lable>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="txtMobileNo" class="col-xl-3 col-md-4">City</label>
+                                <lable class="form-control col-md-8">@Model.City</lable>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="txtMobileNo" class="col-xl-3 col-md-4">Date Of Birth</label>
+                                <lable class="form-control col-md-8">@(Model.Dob != null ? Model.Dob : "")</lable>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="txtMobileNo" class="col-xl-3 col-md-4">Designation</label>
+                                <lable class="form-control col-md-8">@Model.Designation</lable>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="txtMobileNo" class="col-xl-3 col-md-4">Joining Date</label>
+                                <lable class="form-control col-md-8">@(Model.DateOfJoin != null ? Model.DateOfJoin : "")</lable>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="txtMobileNo" class="col-xl-3 col-md-4">Working Time</label>
+                                <lable class="form-control col-md-8">@Model.WorkingTime</lable>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="txtMobileNo" class="col-xl-3 col-md-4">Blood Group</label>
+                                <lable class="form-control col-md-8">@Model.BloodGroup</lable>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="txtMobileNo" class="col-xl-3 col-md-4">Aadhar Card No</label>
+                                <lable class="form-control col-md-8">@Model.AdharCardNo</lable>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="txtMobileNo" class="col-xl-3 col-md-4">Card Expiry Date</label>
+                                <lable class="form-control col-md-8">@(Model.DateOfIdCardExpiry != null ? Model.DateOfIdCardExpiry : "")</lable>
+                            </div>
+
+                            <div class="form-group row">
+                                <label for="txtMobileNo" class="col-xl-3 col-md-4">Remarks</label>
+                                <lable class="form-control col-md-8">@Model.Remarks</lable>
+                            </div>
+
                         </form>
                     </div>
                 </div>

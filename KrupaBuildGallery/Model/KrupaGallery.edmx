@@ -46,13 +46,23 @@
             <PropertyRef Name="AdminUserId" />
           </Key>
           <Property Name="AdminUserId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AdminRoleId" Type="int" Nullable="false" />
           <Property Name="FirstName" Type="nvarchar" MaxLength="350" Nullable="false" />
           <Property Name="LastName" Type="nvarchar" MaxLength="250" Nullable="false" />
-          <Property Name="UserName" Type="nvarchar" MaxLength="150" />
-          <Property Name="Email" Type="nvarchar" MaxLength="350" Nullable="false" />
+          <Property Name="Email" Type="nvarchar" MaxLength="350" />
           <Property Name="Password" Type="nvarchar" MaxLength="150" Nullable="false" />
           <Property Name="MobileNo" Type="nvarchar" MaxLength="20" />
-          <Property Name="AdminRoleId" Type="int" Nullable="false" />
+          <Property Name="AlternateMobile" Type="nvarchar" MaxLength="50" />
+          <Property Name="Address" Type="nvarchar" MaxLength="450" />
+          <Property Name="City" Type="nvarchar" MaxLength="200" />
+          <Property Name="Designation" Type="nvarchar" MaxLength="350" />
+          <Property Name="Dob" Type="datetime" />
+          <Property Name="DateOfJoin" Type="datetime" />
+          <Property Name="BloodGroup" Type="nvarchar" MaxLength="50" />
+          <Property Name="WorkingTime" Type="nvarchar" MaxLength="50" />
+          <Property Name="AdharCardNo" Type="nvarchar" MaxLength="50" />
+          <Property Name="DateOfIdCardExpiry" Type="datetime" />
+          <Property Name="Remarks" Type="nvarchar" MaxLength="600" />
           <Property Name="ProfilePicture" Type="nvarchar" MaxLength="100" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
           <Property Name="IsDeleted" Type="bit" Nullable="false" />
@@ -60,14 +70,6 @@
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="UpdatedBy" Type="bigint" />
           <Property Name="UpdatedDate" Type="datetime" />
-          <Property Name="AlternateMobile" Type="nvarchar" MaxLength="50" />
-          <Property Name="Address" Type="nvarchar" MaxLength="450" />
-          <Property Name="City" Type="nvarchar" MaxLength="200" />
-          <Property Name="Designation" Type="nvarchar" MaxLength="350" />
-          <Property Name="Remarks" Type="nvarchar" MaxLength="600" />
-          <Property Name="IDProof" Type="nvarchar" MaxLength="250" />
-          <Property Name="Dob" Type="datetime" />
-          <Property Name="RoleId" Type="int" />
         </EntityType>
         <EntityType Name="tbl_Cart">
           <Key>
@@ -518,34 +520,6 @@
           <NavigationProperty Name="tbl_AdminRoles" Relationship="krupagalleryModel.FK_tbl_AdminRolePermissions_tbl_AdminRolePermissions1" FromRole="tbl_AdminRolePermissions" ToRole="tbl_AdminRoles" />
           <NavigationProperty Name="tbl_AdminRoleModules" Relationship="krupagalleryModel.FK_tbl_AdminRolePermissions_tbl_AdminRoleModules" FromRole="tbl_AdminRolePermissions" ToRole="tbl_AdminRoleModules" />
         </EntityType>
-        <EntityType Name="tbl_AdminUsers">
-          <Key>
-            <PropertyRef Name="AdminUserId" />
-          </Key>
-          <Property Name="AdminUserId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="FirstName" Type="String" MaxLength="350" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="LastName" Type="String" MaxLength="250" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="UserName" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
-          <Property Name="Email" Type="String" MaxLength="350" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Password" Type="String" MaxLength="150" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="MobileNo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="AdminRoleId" Type="Int32" Nullable="false" />
-          <Property Name="ProfilePicture" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="IsActive" Type="Boolean" Nullable="false" />
-          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
-          <Property Name="CreatedBy" Type="Int64" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="UpdatedBy" Type="Int64" />
-          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
-          <Property Name="AlternateMobile" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Address" Type="String" MaxLength="450" FixedLength="false" Unicode="true" />
-          <Property Name="City" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="Designation" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
-          <Property Name="Remarks" Type="String" MaxLength="600" FixedLength="false" Unicode="true" />
-          <Property Name="IDProof" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="Dob" Type="DateTime" Precision="3" />
-          <Property Name="RoleId" Type="Int32" />
-        </EntityType>
         <EntityType Name="tbl_Cart">
           <Key>
             <PropertyRef Name="Cart_Id" />
@@ -922,7 +896,6 @@
         </EntityType>
         <EntityContainer Name="krupagallarydbEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="tbl_AdminRolePermissions" EntityType="Self.tbl_AdminRolePermissions" />
-          <EntitySet Name="tbl_AdminUsers" EntityType="Self.tbl_AdminUsers" />
           <EntitySet Name="tbl_Cart" EntityType="Self.tbl_Cart" />
           <EntitySet Name="tbl_Categories" EntityType="Self.tbl_Categories" />
           <EntitySet Name="tbl_ClientOtherDetails" EntityType="Self.tbl_ClientOtherDetails" />
@@ -955,6 +928,7 @@
             <End Role="tbl_AdminRoleModules" EntitySet="tbl_AdminRoleModules" />
             <End Role="tbl_AdminRolePermissions" EntitySet="tbl_AdminRolePermissions" />
           </AssociationSet>
+          <EntitySet Name="tbl_AdminUsers" EntityType="krupagalleryModel.tbl_AdminUsers" />
         </EntityContainer>
         <EntityType Name="tbl_AdminRoles">
           <Key>
@@ -1009,6 +983,36 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="tbl_AdminUsers">
+          <Key>
+            <PropertyRef Name="AdminUserId" />
+          </Key>
+          <Property Name="AdminUserId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AdminRoleId" Type="Int32" Nullable="false" />
+          <Property Name="FirstName" Type="String" Nullable="false" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="MobileNo" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="AlternateMobile" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Address" Type="String" MaxLength="450" FixedLength="false" Unicode="true" />
+          <Property Name="City" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Designation" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="Dob" Type="DateTime" Precision="3" />
+          <Property Name="DateOfJoin" Type="DateTime" Precision="3" />
+          <Property Name="BloodGroup" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="WorkingTime" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AdharCardNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DateOfIdCardExpiry" Type="DateTime" Precision="3" />
+          <Property Name="Remarks" Type="String" MaxLength="600" FixedLength="false" Unicode="true" />
+          <Property Name="ProfilePicture" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdatedBy" Type="Int64" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1022,35 +1026,6 @@
                 <ScalarProperty Name="AdminRoleId" ColumnName="AdminRoleId" />
                 <ScalarProperty Name="AdminRoleModuleId" ColumnName="AdminRoleModuleId" />
                 <ScalarProperty Name="Permission" ColumnName="Permission" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="tbl_AdminUsers">
-            <EntityTypeMapping TypeName="krupagalleryModel.tbl_AdminUsers">
-              <MappingFragment StoreEntitySet="tbl_AdminUsers">
-                <ScalarProperty Name="AdminUserId" ColumnName="AdminUserId" />
-                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
-                <ScalarProperty Name="LastName" ColumnName="LastName" />
-                <ScalarProperty Name="UserName" ColumnName="UserName" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
-                <ScalarProperty Name="Password" ColumnName="Password" />
-                <ScalarProperty Name="MobileNo" ColumnName="MobileNo" />
-                <ScalarProperty Name="AdminRoleId" ColumnName="AdminRoleId" />
-                <ScalarProperty Name="ProfilePicture" ColumnName="ProfilePicture" />
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
-                <ScalarProperty Name="AlternateMobile" ColumnName="AlternateMobile" />
-                <ScalarProperty Name="Address" ColumnName="Address" />
-                <ScalarProperty Name="City" ColumnName="City" />
-                <ScalarProperty Name="Designation" ColumnName="Designation" />
-                <ScalarProperty Name="Remarks" ColumnName="Remarks" />
-                <ScalarProperty Name="IDProof" ColumnName="IDProof" />
-                <ScalarProperty Name="Dob" ColumnName="Dob" />
-                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1476,6 +1451,37 @@
                 <ScalarProperty Name="DisplayOrder" ColumnName="DisplayOrder" />
                 <ScalarProperty Name="ModuleName" ColumnName="ModuleName" />
                 <ScalarProperty Name="AdminRoleModuleId" ColumnName="AdminRoleModuleId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_AdminUsers">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_AdminUsers">
+              <MappingFragment StoreEntitySet="tbl_AdminUsers">
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="ProfilePicture" ColumnName="ProfilePicture" />
+                <ScalarProperty Name="Remarks" ColumnName="Remarks" />
+                <ScalarProperty Name="DateOfIdCardExpiry" ColumnName="DateOfIdCardExpiry" />
+                <ScalarProperty Name="AdharCardNo" ColumnName="AdharCardNo" />
+                <ScalarProperty Name="WorkingTime" ColumnName="WorkingTime" />
+                <ScalarProperty Name="BloodGroup" ColumnName="BloodGroup" />
+                <ScalarProperty Name="DateOfJoin" ColumnName="DateOfJoin" />
+                <ScalarProperty Name="Dob" ColumnName="Dob" />
+                <ScalarProperty Name="Designation" ColumnName="Designation" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="AlternateMobile" ColumnName="AlternateMobile" />
+                <ScalarProperty Name="MobileNo" ColumnName="MobileNo" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="AdminRoleId" ColumnName="AdminRoleId" />
+                <ScalarProperty Name="AdminUserId" ColumnName="AdminUserId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

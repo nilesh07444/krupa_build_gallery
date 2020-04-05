@@ -18,8 +18,14 @@ namespace KrupaBuildGallery.Helper
         public static string GodownNameExists = "Godown name is already exist";
         public static string SelectOnlyImage = "Please select only image file";
         public static string RoleNameExists = "Role name is already exist";
+        public static string MobileNoExists = "Mobile No is already exist";
 
         // Client Portal Messages
+
+
+        // Folder Directory Path
+        public static string HomeDirectoryPath = "/Images/HomeMedia/";
+        public static string AdminUserDirectoryPath = "/Images/AdminUserMedia/";
 
     }
 }
