@@ -327,6 +327,7 @@
     <Compile Include="ViewModel\Admin\HomeImageVM.cs" />
     <Compile Include="ViewModel\Admin\RoleModuleVM.cs" />
     <Compile Include="ViewModel\Admin\RoleVM.cs" />
+    <Compile Include="ViewModel\Admin\UserPermissionVM.cs" />
     <Compile Include="ViewModel\CartVM.cs" />
     <Compile Include="ViewModel\CategoryVM.cs" />
     <Compile Include="ViewModel\CheckoutVM.cs" />

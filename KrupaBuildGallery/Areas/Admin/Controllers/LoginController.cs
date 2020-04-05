@@ -4,8 +4,10 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using KrupaBuildGallery.Helper;
 using KrupaBuildGallery.Model;
 using KrupaBuildGallery.ViewModel;
+using Newtonsoft.Json;
 
 namespace KrupaBuildGallery.Areas.Admin.Controllers
 {
@@ -65,6 +67,43 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     clsAdminSession.UserName = data.FirstName + " " + data.LastName;
                     clsAdminSession.ImagePath = data.ProfilePicture;
 
+                    // Get Role Permissions
+                    if (data.AdminRoleId != 1)
+                    {
+                        List<RoleModuleVM> lstPermissions = (from m in _db.tbl_AdminRoleModules
+                                                             join p in _db.tbl_AdminRolePermissions.Where(x => x.AdminRoleId == data.AdminRoleId) on m.AdminRoleModuleId equals p.AdminRoleModuleId into outerPerm
+                                                             from p in outerPerm
+                                                             select new RoleModuleVM
+                                                             {
+                                                                 AdminRoleModuleId = m.AdminRoleModuleId,
+                                                                 SelectedValue = (p != null ? p.Permission : 0)
+                                                             }).ToList();
+
+                        UserPermissionVM objUserPermission = new UserPermissionVM();
+                        objUserPermission.Role = lstPermissions.Where(x => x.AdminRoleModuleId == (int)RoleModules.Role).First().SelectedValue;
+                        objUserPermission.Category = lstPermissions.Where(x => x.AdminRoleModuleId == (int)RoleModules.Category).First().SelectedValue;
+                        objUserPermission.Product = lstPermissions.Where(x => x.AdminRoleModuleId == (int)RoleModules.Product).First().SelectedValue;
+                        objUserPermission.SubProduct = lstPermissions.Where(x => x.AdminRoleModuleId == (int)RoleModules.SubProduct).First().SelectedValue;
+                        objUserPermission.ProductItem = lstPermissions.Where(x => x.AdminRoleModuleId == (int)RoleModules.ProductItem).First().SelectedValue;
+                        objUserPermission.Stock = lstPermissions.Where(x => x.AdminRoleModuleId == (int)RoleModules.Stock).First().SelectedValue;
+                        objUserPermission.Order = lstPermissions.Where(x => x.AdminRoleModuleId == (int)RoleModules.Order).First().SelectedValue;
+                        objUserPermission.Offer = lstPermissions.Where(x => x.AdminRoleModuleId == (int)RoleModules.Role).First().SelectedValue;
+                        objUserPermission.Customers = lstPermissions.Where(x => x.AdminRoleModuleId == (int)RoleModules.Customers).First().SelectedValue;
+                        objUserPermission.Distibutors = lstPermissions.Where(x => x.AdminRoleModuleId == (int)RoleModules.Distibutors).First().SelectedValue;
+                        objUserPermission.DistibutorRequest = lstPermissions.Where(x => x.AdminRoleModuleId == (int)RoleModules.DistibutorRequest).First().SelectedValue;
+                        objUserPermission.ContactRequest = lstPermissions.Where(x => x.AdminRoleModuleId == (int)RoleModules.ContactRequest).First().SelectedValue;
+                        objUserPermission.Setting = lstPermissions.Where(x => x.AdminRoleModuleId == (int)RoleModules.Setting).First().SelectedValue;
+                        objUserPermission.ManagePageContent = lstPermissions.Where(x => x.AdminRoleModuleId == (int)RoleModules.ManagePageContent).First().SelectedValue;
+                         
+                        string jsonPermissionValues = JsonConvert.SerializeObject(objUserPermission, Formatting.Indented, new JsonSerializerSettings
+                        {
+                            NullValueHandling = NullValueHandling.Ignore
+                        });
+
+                        clsAdminSession.UserPermission = jsonPermissionValues;
+
+                    }
+
                     // Add Login history entry
                     #region LoginHistoryEntry
                     tbl_LoginHistory objLogin = new tbl_LoginHistory();
@@ -96,8 +135,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             return View();
         }
-
-
+          
         public ActionResult Signout()
         {
             tbl_LoginHistory objLogin = new tbl_LoginHistory();
