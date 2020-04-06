@@ -1,9 +1,27 @@
-﻿@model List<KrupaBuildGallery.ViewModel.ClientUserVM>
+﻿@using KrupaBuildGallery.Helper;
+@using Newtonsoft.Json;
+@using KrupaBuildGallery.Model;
+
+@model List<KrupaBuildGallery.ViewModel.ClientUserVM>
 @{
     ViewBag.Title = "Distributors";
 
     int counter = 1;
 }
+
+@{
+    UserPermissionVM objPermission = new UserPermissionVM();
+
+    int RoleId = Int32.Parse(clsAdminSession.RoleID.ToString());
+
+    if (RoleId != 1)
+    {
+        string strPermission = clsAdminSession.UserPermission;
+        objPermission = JsonConvert.DeserializeObject<UserPermissionVM>(strPermission, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+    }
+    bool IsSA = (RoleId == 1 ? true : false);
+}
+
 <div class="page-body">
 
     <!-- Container-fluid starts-->
@@ -57,30 +75,36 @@
                         {
                             foreach (KrupaBuildGallery.ViewModel.ClientUserVM objusr in Model)
                             {
-                        <tr class="gradeX">
-                            <td>@counter.</td>
-                            @*<td><img src="\Areas\Admin\Content\img\product-list\pro-thumb-3.jpg" class="clsimgproduct" /></td>*@
-                            <td>@objusr.FirstName</td>
-                            <td>@objusr.LastName</td>
-                            <td>@objusr.Email</td>
-                            <td>@objusr.MobileNo</td>
-                            <td>@objusr.UserName</td>
-                            <td>@objusr.City</td>
-                            <td>@objusr.State</td>
-                            <td>@objusr.CompanyName</td>
-                            @if (objusr.IsActive == true)
-                            {
-                                <td><span class="badge badge-success" style="cursor:pointer;" title="Click to Inactive" onclick="fnChangeStatus('@objusr.ClientUserId','InActive');">Active</span></td>
-                            }
-                            else
-                            {
-                                <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@objusr.ClientUserId','Active');">InActive</span></td>
-                            }
-                            <td>
-                                <a href="/admin/distributor/detail/@objusr.ClientUserId"><i class="fa fa-eye font-success"></i></a>
-                                <a href="javascript:void(0);"><i class="fa fa-trash font-danger"></i></a>
-                            </td>
-                        </tr>
+                                <tr class="gradeX">
+                                    <td>@counter.</td>
+                                    @*<td><img src="\Areas\Admin\Content\img\product-list\pro-thumb-3.jpg" class="clsimgproduct" /></td>*@
+                                    <td>@objusr.FirstName</td>
+                                    <td>@objusr.LastName</td>
+                                    <td>@objusr.Email</td>
+                                    <td>@objusr.MobileNo</td>
+                                    <td>@objusr.UserName</td>
+                                    <td>@objusr.City</td>
+                                    <td>@objusr.State</td>
+                                    <td>@objusr.CompanyName</td>
+                                    @if (objusr.IsActive == true)
+                                    {
+                                        <td><span class="badge badge-success" style="cursor:pointer;" title="Click to Inactive" onclick="fnChangeStatus('@objusr.ClientUserId','InActive');">Active</span></td>
+                                    }
+                                    else
+                                    {
+                                        <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@objusr.ClientUserId','Active');">InActive</span></td>
+                                    }
+                                    <td>
+                                        @if (IsSA || objPermission.Distibutors >= (int)ModulePermission.View)
+                                        {
+                                            <a href="/admin/distributor/detail/@objusr.ClientUserId"><i class="fa fa-eye font-success"></i></a>
+                                        }
+                                        @if (IsSA || objPermission.Distibutors == (int)ModulePermission.Full)
+                                        {
+                                            <a href="javascript:void(0);"><i class="fa fa-trash font-danger"></i></a>
+                                        }
+                                    </td>
+                                </tr>
                                 counter++;
                             }
 
@@ -143,7 +167,7 @@
                     if (result == "success") {
                         alert("Status change Successfully...");
                         window.location.reload();
-                    }                    
+                    }
                     else {
                         alert("Something went wrong. Please try again");
                     }

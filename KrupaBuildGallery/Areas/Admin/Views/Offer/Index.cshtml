@@ -1,10 +1,25 @@
-﻿@using KrupaBuildGallery.Model;
+﻿@using KrupaBuildGallery.Helper;
+@using Newtonsoft.Json;
+@using KrupaBuildGallery.Model;
+
 @model List<OfferVM>
 @{
     ViewBag.Title = "Offers";
-
-    int counter = 1;
 }
+
+@{
+    UserPermissionVM objPermission = new UserPermissionVM();
+
+    int RoleId = Int32.Parse(clsAdminSession.RoleID.ToString());
+
+    if (RoleId != 1)
+    {
+        string strPermission = clsAdminSession.UserPermission;
+        objPermission = JsonConvert.DeserializeObject<UserPermissionVM>(strPermission, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+    }
+    bool IsSA = (RoleId == 1 ? true : false);
+}
+
 <div class="page-body">
 
     <!-- Container-fluid starts-->
@@ -36,11 +51,12 @@
                 <h5>Offer List</h5>
             </div>
             <div class="card-body vendor-table">
-
-                <div class="btn-popup pull-right">
-                    <button type="button" class="btn btn-primary" id="btnAdd">Add Offer</button>
-                </div>
-
+                @if (IsSA || objPermission.Offer >= (int)ModulePermission.Add)
+                {
+                    <div class="btn-popup pull-right">
+                        <button type="button" class="btn btn-primary" id="btnAdd">Add Offer</button>
+                    </div>
+                }
                 <table class="display" id="basic-1">
                     <thead>
                         <tr>
@@ -59,38 +75,44 @@
                         {
                             foreach (OfferVM item in Model)
                             {
-                        <tr>
-                            <td>
-                                @item.OfferTitle
-                            </td>
-                            <td>
-                                @item.ProductItemName
-                            </td>
-                            <td>
-                                @item.CustomerOfferPrice
-                            </td>
-                            <td>
-                                @item.DistributorOfferPrice
-                            </td>
-                            <td>
-                                @item.OfferStartDate.ToString("dd-MMM-yyyy")
-                            </td>
-                            <td>
-                                @item.OfferEndDate.ToString("dd-MMM-yyyy")
-                            </td>
-                            @if (item.IsActive == true)
-                            {
-                                <td><span class="badge badge-success" style="cursor:pointer;" title="Click to Inactive" onclick="fnChangeStatus('@item.OfferId','InActive');">Active</span></td>
-                            }
-                            else
-                            {
-                                <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@item.OfferId','Active');">InActive</span></td>
-                            }
-                            <td style="width:10% !important;">
-                                <a href="/admin/offer/edit/@item.OfferId"><i class="fa fa-edit mr-2 font-success"></i></a>
-                                <a href="javascript:void(0);" onclick="fnDeleteOffer('@item.OfferId')"><i class="fa fa-trash font-danger"></i></a>
-                            </td>
-                        </tr>
+                                <tr>
+                                    <td>
+                                        @item.OfferTitle
+                                    </td>
+                                    <td>
+                                        @item.ProductItemName
+                                    </td>
+                                    <td>
+                                        @item.CustomerOfferPrice
+                                    </td>
+                                    <td>
+                                        @item.DistributorOfferPrice
+                                    </td>
+                                    <td>
+                                        @item.OfferStartDate.ToString("dd-MMM-yyyy")
+                                    </td>
+                                    <td>
+                                        @item.OfferEndDate.ToString("dd-MMM-yyyy")
+                                    </td>
+                                    @if (item.IsActive == true)
+                                    {
+                                        <td><span class="badge badge-success" style="cursor:pointer;" title="Click to Inactive" onclick="fnChangeStatus('@item.OfferId','InActive');">Active</span></td>
+                                    }
+                                    else
+                                    {
+                                        <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@item.OfferId','Active');">InActive</span></td>
+                                    }
+                                    <td style="width:10% !important;">
+                                        @if (IsSA || objPermission.Offer >= (int)ModulePermission.Edit)
+                                        {
+                                            <a href="/admin/offer/edit/@item.OfferId"><i class="fa fa-edit mr-2 font-success"></i></a>
+                                        }
+                                        @if (IsSA || objPermission.Offer == (int)ModulePermission.Full)
+                                        {
+                                            <a href="javascript:void(0);" onclick="fnDeleteOffer('@item.OfferId')"><i class="fa fa-trash font-danger"></i></a>
+                                        }
+                                    </td>
+                                </tr>
 
                             }
 
@@ -225,7 +247,7 @@
                     if (result == "success") {
                         alert("Status change Successfully...");
                         window.location.reload();
-                    }                    
+                    }
                     else {
                         alert("Something went wrong. Please try again");
                     }

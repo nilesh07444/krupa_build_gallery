@@ -1,9 +1,27 @@
-﻿@model List<KrupaBuildGallery.ViewModel.ContactUsMessageVM>
+﻿@using KrupaBuildGallery.Helper;
+@using Newtonsoft.Json;
+@using KrupaBuildGallery.Model;
+
+@model List<KrupaBuildGallery.ViewModel.ContactUsMessageVM>
 @{
     ViewBag.Title = "Contact Us Messages";
 
     int counter = 1;
 }
+
+@{
+    UserPermissionVM objPermission = new UserPermissionVM();
+
+    int RoleId = Int32.Parse(clsAdminSession.RoleID.ToString());
+
+    if (RoleId != 1)
+    {
+        string strPermission = clsAdminSession.UserPermission;
+        objPermission = JsonConvert.DeserializeObject<UserPermissionVM>(strPermission, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+    }
+    bool IsSA = (RoleId == 1 ? true : false);
+}
+
 <div class="page-body">
 
     <!-- Container-fluid starts-->
@@ -62,7 +80,10 @@
                                     <td>@objcontact.FromWhere</td>
                                     <td>@objcontact.MessageDate.ToString("MMM dd,yyyy")</td>
                                     <td>
-                                        <a href="javascript:void(0);" onclick="fnDeleteContactus('@objcontact.ContactUsMsgId');" ><i class="fa fa-trash font-danger"></i></a>
+                                        @if (IsSA || objPermission.ContactRequest >= (int)ModulePermission.Full)
+                                        {
+                                            <a href="javascript:void(0);" onclick="fnDeleteContactus('@objcontact.ContactUsMsgId');"><i class="fa fa-trash font-danger"></i></a>
+                                        }
                                     </td>
                                 </tr>
                                 counter++;
@@ -114,7 +135,7 @@
                         alert("ContactUs message deleted successfully");
                         window.location.reload();
                     }
-                    else if (result == "notfound") {                    
+                    else if (result == "notfound") {
                         alert("Something went wrong. Please try again");
                     }
                     else {

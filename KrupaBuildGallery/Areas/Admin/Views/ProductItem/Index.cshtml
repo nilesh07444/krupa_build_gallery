@@ -1,10 +1,26 @@
-﻿@using KrupaBuildGallery.Model;
+﻿@using KrupaBuildGallery.Helper;
+@using Newtonsoft.Json;
+@using KrupaBuildGallery.Model;
+
 @model List<ProductItemVM>
 
 @{
     ViewBag.Title = "ProductItem";
 
     int counter = 1;
+}
+
+@{
+    UserPermissionVM objPermission = new UserPermissionVM();
+
+    int RoleId = Int32.Parse(clsAdminSession.RoleID.ToString());
+
+    if (RoleId != 1)
+    {
+        string strPermission = clsAdminSession.UserPermission;
+        objPermission = JsonConvert.DeserializeObject<UserPermissionVM>(strPermission, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+    }
+    bool IsSA = (RoleId == 1 ? true : false);
 }
 
 <div class="page-body">
@@ -22,7 +38,7 @@
                 </div>
                 <div class="col-lg-6">
                     <ol class="breadcrumb pull-right">
-                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li> 
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
                         <li class="breadcrumb-item active">Product Item</li>
                     </ol>
                 </div>
@@ -37,11 +53,12 @@
                 <h5>Product Item List</h5>
             </div>
             <div class="card-body vendor-table">
-
-                <div class="btn-popup pull-right">
-                    <button type="button" class="btn btn-primary" id="btnAdd">Add Product Item</button>
-                </div>
-
+                @if (IsSA || objPermission.ProductItem >= (int)ModulePermission.Add)
+                {
+                    <div class="btn-popup pull-right">
+                        <button type="button" class="btn btn-primary" id="btnAdd">Add Product Item</button>
+                    </div>
+                }
                 <table class="display" id="basic-1">
                     <thead>
                         <tr>
@@ -66,48 +83,54 @@
                         {
                             foreach (ProductItemVM item in Model)
                             {
-                        <tr class="gradeX">
-                            <td>@counter.</td>
-                            <td>
-                                @if (!string.IsNullOrEmpty(item.MainImage))
-                                {
-                                    if (File.Exists(Server.MapPath("~/Images/ProductItemMedia/" + item.MainImage)))
+                                <tr class="gradeX">
+                                    <td>@counter.</td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(item.MainImage))
+                                        {
+                                            if (File.Exists(Server.MapPath("~/Images/ProductItemMedia/" + item.MainImage)))
+                                            {
+                                                <img src="~/Images/ProductItemMedia/@item.MainImage" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                            }
+                                            else
+                                            {
+                                                <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                        }
+
+                                    </td>
+                                    <td>@item.CategoryName</td>
+                                    <td>@item.ProductName</td>
+                                    <td>@item.SubProductName</td>
+                                    <td>@item.ItemName</td>
+                                    <td>@item.MRPPrice</td>
+                                    <td>@item.CustomerPrice</td>
+                                    <td>@item.DistributorPrice</td>
+                                    <td>@item.InStock</td>
+                                    <td>@item.Sold</td>
+                                    @if (item.IsActive == true)
                                     {
-                                        <img src="~/Images/ProductItemMedia/@item.MainImage" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                        <td><span class="badge badge-success" style="cursor:pointer;" title="Click to Inactive" onclick="fnChangeStatus('@item.ProductItemId','InActive');">Active</span></td>
                                     }
                                     else
                                     {
-                                        <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                        <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@item.ProductItemId','Active');">InActive</span></td>
                                     }
-                                }
-                                else
-                                {
-                                    <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
-                                }
-
-                            </td>
-                            <td>@item.CategoryName</td>
-                            <td>@item.ProductName</td>
-                            <td>@item.SubProductName</td>
-                            <td>@item.ItemName</td>
-                            <td>@item.MRPPrice</td>
-                            <td>@item.CustomerPrice</td>
-                            <td>@item.DistributorPrice</td>
-                            <td>@item.InStock</td>
-                            <td>@item.Sold</td>
-                            @if (item.IsActive == true)
-                            {
-                                <td><span class="badge badge-success" style="cursor:pointer;" title="Click to Inactive" onclick="fnChangeStatus('@item.ProductItemId','InActive');">Active</span></td>
-                            }
-                            else
-                            {
-                                <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@item.ProductItemId','Active');">InActive</span></td>
-                            }
-                            <td>
-                                <a href="/admin/productitem/edit/@item.ProductItemId"><i class="fa fa-edit mr-2 font-success"></i></a>
-                                <a href="javascript:void(0);" onclick="fnDeleteProductItem('@item.ProductItemId')"><i class="fa fa-trash font-danger"></i></a>
-                            </td>
-                        </tr>
+                                    <td>
+                                        @if (IsSA || objPermission.ProductItem >= (int)ModulePermission.Edit)
+                                        {
+                                            <a href="/admin/productitem/edit/@item.ProductItemId"><i class="fa fa-edit mr-2 font-success"></i></a>
+                                        }
+                                        @if (IsSA || objPermission.ProductItem == (int)ModulePermission.Full)
+                                        {
+                                            <a href="javascript:void(0);" onclick="fnDeleteProductItem('@item.ProductItemId')"><i class="fa fa-trash font-danger"></i></a>
+                                        }
+                                    </td>
+                                </tr>
                                 counter++;
                             }
                         }
@@ -244,7 +267,7 @@
                     if (result == "success") {
                         alert("Status change Successfully...");
                         window.location.reload();
-                    }                    
+                    }
                     else {
                         alert("Something went wrong. Please try again");
                     }

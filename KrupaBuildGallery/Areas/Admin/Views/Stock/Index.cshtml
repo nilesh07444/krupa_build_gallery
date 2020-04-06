@@ -1,10 +1,27 @@
-﻿@using KrupaBuildGallery.Model;
+﻿@using KrupaBuildGallery.Helper;
+@using Newtonsoft.Json;
+@using KrupaBuildGallery.Model;
+
 @model List<ItemStockVM>
 @{
     ViewBag.Title = "Stocks";
 
     int counter = 1;
 }
+
+@{
+    UserPermissionVM objPermission = new UserPermissionVM();
+
+    int RoleId = Int32.Parse(clsAdminSession.RoleID.ToString());
+
+    if (RoleId != 1)
+    {
+        string strPermission = clsAdminSession.UserPermission;
+        objPermission = JsonConvert.DeserializeObject<UserPermissionVM>(strPermission, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+    }
+    bool IsSA = (RoleId == 1 ? true : false);
+}
+
 <div class="page-body">
 
     <!-- Container-fluid starts-->
@@ -37,9 +54,12 @@
             </div>
             <div class="card-body vendor-table">
 
-                <div class="btn-popup pull-right">
-                    <button type="button" class="btn btn-primary" id="btnAdd">Add Stock</button>
-                </div>
+                @if (IsSA || objPermission.Stock >= (int)ModulePermission.Add)
+                {
+                    <div class="btn-popup pull-right">
+                        <button type="button" class="btn btn-primary" id="btnAdd">Add Stock</button>
+                    </div>
+                }
 
                 <table class="display" id="basic-1">
                     <thead>
@@ -66,8 +86,14 @@
                                     <td>@item.ProductItemName</td>
                                     <td>@item.Quantity</td>
                                     <td style="width:10% !important;">
-                                        <a href="/admin/stock/edit/@item.StockId" style="display:none;"><i class="fa fa-edit mr-2 font-success"></i></a>
-                                        <a href="javascript:void(0);" onclick="fnDeleteStock('@item.StockId')"><i class="fa fa-trash font-danger"></i></a>
+                                        @if (IsSA || objPermission.Stock >= (int)ModulePermission.Edit)
+                                        {
+                                            <a href="/admin/stock/edit/@item.StockId" style="display:none;"><i class="fa fa-edit mr-2 font-success"></i></a>
+                                        }
+                                        @if (IsSA || objPermission.Stock == (int)ModulePermission.Full)
+                                        {
+                                            <a href="javascript:void(0);" onclick="fnDeleteStock('@item.StockId')"><i class="fa fa-trash font-danger"></i></a>
+                                        }
                                     </td>
                                 </tr>
                                 counter++;

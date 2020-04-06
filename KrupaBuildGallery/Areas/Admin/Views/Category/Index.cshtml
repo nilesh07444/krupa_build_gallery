@@ -1,9 +1,25 @@
-﻿@using KrupaBuildGallery.Model;
+﻿@using KrupaBuildGallery.Helper;
+@using Newtonsoft.Json;
+@using KrupaBuildGallery.Model;
+
 @model List<CategoryVM>
 @{
     ViewBag.Title = "Category";
 
     int counter = 1;
+}
+
+@{
+    UserPermissionVM objPermission = new UserPermissionVM();
+
+    int RoleId = Int32.Parse(clsAdminSession.RoleID.ToString());
+
+    if (RoleId != 1)
+    {
+        string strPermission = clsAdminSession.UserPermission;
+        objPermission = JsonConvert.DeserializeObject<UserPermissionVM>(strPermission, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+    }
+    bool IsSA = (RoleId == 1 ? true : false);
 }
 
 <div class="page-body">
@@ -37,11 +53,12 @@
                 <h5>Category List</h5>
             </div>
             <div class="card-body vendor-table">
-
-                <div class="btn-popup pull-right">
-                    <button type="button" class="btn btn-primary" id="btnAdd">Add Category</button>
-                </div>
-
+                @if (IsSA || objPermission.Category >= (int)ModulePermission.Add)
+                {
+                    <div class="btn-popup pull-right">
+                        <button type="button" class="btn btn-primary" id="btnAdd">Add Category</button>
+                    </div>
+                }
                 <table class="display" id="basic-1">
                     <thead>
                         <tr>
@@ -58,41 +75,47 @@
                         {
                             foreach (CategoryVM category in Model)
                             {
-                        <tr class="gradeX">
-                            <td>@counter.</td>
-                            <td>
-                                @if (!string.IsNullOrEmpty(category.CategoryImage))
-                                {
-                                    if (File.Exists(Server.MapPath("~/Images/CategoryMedia/" + category.CategoryImage)))
+                                <tr class="gradeX">
+                                    <td>@counter.</td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(category.CategoryImage))
+                                        {
+                                            if (File.Exists(Server.MapPath("~/Images/CategoryMedia/" + category.CategoryImage)))
+                                            {
+                                                <img src="~/Images/CategoryMedia/@category.CategoryImage" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                            }
+                                            else
+                                            {
+                                                <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                        }
+
+                                    </td>
+                                    <td>@category.CategoryName</td>
+                                    @if (category.IsActive == true)
                                     {
-                                        <img src="~/Images/CategoryMedia/@category.CategoryImage" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                        <td><span class="badge badge-success" style="cursor:pointer;" title="Click to Inactive" onclick="fnChangeStatus('@category.CategoryId','InActive');">Active</span></td>
                                     }
                                     else
                                     {
-                                        <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                        <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@category.CategoryId','Active');">InActive</span></td>
                                     }
-                                }
-                                else
-                                {
-                                    <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
-                                }
 
-                            </td>
-                            <td>@category.CategoryName</td>
-                            @if (category.IsActive == true)
-                            {
-                                <td><span class="badge badge-success" style="cursor:pointer;" title="Click to Inactive" onclick="fnChangeStatus('@category.CategoryId','InActive');">Active</span></td>
-                            }
-                            else
-                            {
-                                <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@category.CategoryId','Active');">InActive</span></td>
-                            }
-
-                            <td>
-                                <a href="/admin/category/edit/@category.CategoryId"><i class="fa fa-edit mr-2 font-success"></i></a>
-                                <a href="javascript:void(0);" onclick="fnDeleteCategory('@category.CategoryId')"><i class="fa fa-trash font-danger"></i></a>
-                            </td>
-                        </tr>
+                                    <td>
+                                        @if (IsSA || objPermission.Category >= (int)ModulePermission.Edit)
+                                        {
+                                            <a href="/admin/category/edit/@category.CategoryId"><i class="fa fa-edit mr-2 font-success"></i></a>
+                                        }
+                                        @if (IsSA || objPermission.Category == (int)ModulePermission.Full)
+                                        {
+                                            <a href="javascript:void(0);" onclick="fnDeleteCategory('@category.CategoryId')"><i class="fa fa-trash font-danger"></i></a>
+                                        }
+                                    </td>
+                                </tr>
                                 counter++;
                             }
                         }
@@ -203,7 +226,7 @@
         }
     });
 
-   
+
 
 
      function fnChangeStatus(cat_id,status) {
@@ -235,7 +258,7 @@
                     if (result == "success") {
                         alert("Status change Successfully...");
                         window.location.reload();
-                    }                    
+                    }
                     else {
                         alert("Something went wrong. Please try again");
                     }
@@ -248,5 +271,5 @@
             });
         }
     });
- 
+
 </script>

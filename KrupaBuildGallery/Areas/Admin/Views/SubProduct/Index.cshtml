@@ -1,9 +1,26 @@
-﻿@model List<SubProductVM>
+﻿@using KrupaBuildGallery.Helper;
+@using Newtonsoft.Json;
+@using KrupaBuildGallery.Model;
+
+@model List<SubProductVM>
 
 @{
     ViewBag.Title = "SubProduct";
 
     int counter = 1;
+}
+
+@{
+    UserPermissionVM objPermission = new UserPermissionVM();
+
+    int RoleId = Int32.Parse(clsAdminSession.RoleID.ToString());
+
+    if (RoleId != 1)
+    {
+        string strPermission = clsAdminSession.UserPermission;
+        objPermission = JsonConvert.DeserializeObject<UserPermissionVM>(strPermission, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+    }
+    bool IsSA = (RoleId == 1 ? true : false);
 }
 
 <div class="page-body">
@@ -36,11 +53,12 @@
                 <h5>Sub Product List</h5>
             </div>
             <div class="card-body vendor-table">
-
-                <div class="btn-popup pull-right">
-                    <button type="button" class="btn btn-primary" id="btnAdd">Add Sub Product</button>
-                </div>
-
+                @if (IsSA || objPermission.SubProduct >= (int)ModulePermission.Add)
+                {
+                    <div class="btn-popup pull-right">
+                        <button type="button" class="btn btn-primary" id="btnAdd">Add Sub Product</button>
+                    </div>
+                }
                 <table class="display" id="basic-1">
                     <thead>
                         <tr>
@@ -59,42 +77,48 @@
                         {
                             foreach (SubProductVM product in Model)
                             {
-                        <tr class="gradeX">
-                            <td>@counter.</td>
-                            <td>
-                                @if (!string.IsNullOrEmpty(product.SubProductImage))
-                                {
-                                    if (File.Exists(Server.MapPath("~/Images/SubProductMedia/" + product.SubProductImage)))
+                                <tr class="gradeX">
+                                    <td>@counter.</td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(product.SubProductImage))
+                                        {
+                                            if (File.Exists(Server.MapPath("~/Images/SubProductMedia/" + product.SubProductImage)))
+                                            {
+                                                <img src="~/Images/SubProductMedia/@product.SubProductImage" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                            }
+                                            else
+                                            {
+                                                <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                        }
+
+                                    </td>
+                                    <td>@product.SubProductName</td>
+                                    <td>@product.ProductName</td>
+                                    <td>@product.CategoryName</td>
+                                    @if (product.IsActive == true)
                                     {
-                                        <img src="~/Images/SubProductMedia/@product.SubProductImage" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                        <td><span class="badge badge-success" style="cursor:pointer;" title="Click to Inactive" onclick="fnChangeStatus('@product.SubProductId','InActive');">Active</span></td>
                                     }
                                     else
                                     {
-                                        <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                        <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@product.SubProductId','Active');">InActive</span></td>
                                     }
-                                }
-                                else
-                                {
-                                    <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
-                                }
-
-                            </td>
-                            <td>@product.SubProductName</td>
-                            <td>@product.ProductName</td>
-                            <td>@product.CategoryName</td>
-                            @if (product.IsActive == true)
-                            {
-                                <td><span class="badge badge-success" style="cursor:pointer;" title="Click to Inactive" onclick="fnChangeStatus('@product.SubProductId','InActive');">Active</span></td>
-                            }
-                            else
-                            {
-                                <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@product.SubProductId','Active');">InActive</span></td>
-                            }
-                            <td>
-                                <a href="/admin/subproduct/edit/@product.SubProductId"><i class="fa fa-edit mr-2 font-success"></i></a>
-                                <a href="javascript:void(0);" onclick="fnDeleteSubProduct('@product.SubProductId')"><i class="fa fa-trash font-danger"></i></a>
-                            </td>
-                        </tr>
+                                    <td>
+                                        @if (IsSA || objPermission.SubProduct >= (int)ModulePermission.Edit)
+                                        {
+                                            <a href="/admin/subproduct/edit/@product.SubProductId"><i class="fa fa-edit mr-2 font-success"></i></a>
+                                        }
+                                        @if (IsSA || objPermission.SubProduct == (int)ModulePermission.Full)
+                                        {
+                                            <a href="javascript:void(0);" onclick="fnDeleteSubProduct('@product.SubProductId')"><i class="fa fa-trash font-danger"></i></a>
+                                        }
+                                    </td>
+                                </tr>
                                 counter++;
                             }
                         }
@@ -229,7 +253,7 @@
                     if (result == "success") {
                         alert("Status change Successfully...");
                         window.location.reload();
-                    }                    
+                    }
                     else {
                         alert("Something went wrong. Please try again");
                     }

@@ -1,9 +1,25 @@
-﻿@using KrupaBuildGallery.ViewModel
+﻿@using KrupaBuildGallery.Helper;
+@using Newtonsoft.Json;
+@using KrupaBuildGallery.Model;
+
 @model List<ProductVM>
 @{
     ViewBag.Title = "Product";
 
     int counter = 1;
+}
+
+@{
+    UserPermissionVM objPermission = new UserPermissionVM();
+
+    int RoleId = Int32.Parse(clsAdminSession.RoleID.ToString());
+
+    if (RoleId != 1)
+    {
+        string strPermission = clsAdminSession.UserPermission;
+        objPermission = JsonConvert.DeserializeObject<UserPermissionVM>(strPermission, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+    }
+    bool IsSA = (RoleId == 1 ? true : false);
 }
 
 <div class="page-body">
@@ -21,7 +37,7 @@
                 </div>
                 <div class="col-lg-6">
                     <ol class="breadcrumb pull-right">
-                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li> 
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
                         <li class="breadcrumb-item active">Product</li>
                     </ol>
                 </div>
@@ -37,10 +53,12 @@
             </div>
             <div class="card-body vendor-table">
 
-                <div class="btn-popup pull-right">
-                    <button type="button" class="btn btn-primary" id="btnAdd">Add Product</button>
-                </div>
-
+                @if (IsSA || objPermission.Product >= (int)ModulePermission.Add)
+                {
+                    <div class="btn-popup pull-right">
+                        <button type="button" class="btn btn-primary" id="btnAdd">Add Product</button>
+                    </div>
+                }
                 <table class="display" id="basic-1">
                     <thead>
                         <tr>
@@ -58,41 +76,47 @@
                         {
                             foreach (ProductVM product in Model)
                             {
-                        <tr class="gradeX">
-                            <td>@counter.</td>
-                            <td>
-                                @if (!string.IsNullOrEmpty(product.ProductImage))
-                                {
-                                    if (File.Exists(Server.MapPath("~/Images/ProductMedia/" + product.ProductImage)))
+                                <tr class="gradeX">
+                                    <td>@counter.</td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(product.ProductImage))
+                                        {
+                                            if (File.Exists(Server.MapPath("~/Images/ProductMedia/" + product.ProductImage)))
+                                            {
+                                                <img src="~/Images/ProductMedia/@product.ProductImage" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                            }
+                                            else
+                                            {
+                                                <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                        }
+
+                                    </td>
+                                    <td>@product.ProductName</td>
+                                    <td>@product.CategoryName</td>
+                                    @if (product.IsActive == true)
                                     {
-                                        <img src="~/Images/ProductMedia/@product.ProductImage" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                        <td><span class="badge badge-success" style="cursor:pointer;" title="Click to Inactive" onclick="fnChangeStatus('@product.ProductId','InActive');">Active</span></td>
                                     }
                                     else
                                     {
-                                        <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                        <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@product.ProductId','Active');">InActive</span></td>
                                     }
-                                }
-                                else
-                                {
-                                    <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
-                                }
-
-                            </td>
-                            <td>@product.ProductName</td>
-                            <td>@product.CategoryName</td>
-                            @if (product.IsActive == true)
-                            {
-                                <td><span class="badge badge-success" style="cursor:pointer;" title="Click to Inactive" onclick="fnChangeStatus('@product.ProductId','InActive');">Active</span></td>
-                            }
-                            else
-                            {
-                                <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@product.ProductId','Active');">InActive</span></td>
-                            }
-                            <td>
-                                <a href="/admin/product/edit/@product.ProductId"><i class="fa fa-edit mr-2 font-success"></i></a>
-                                <a href="javascript:void(0);" onclick="fnDeleteProduct('@product.ProductId')"><i class="fa fa-trash font-danger"></i></a>
-                            </td>
-                        </tr>
+                                    <td>
+                                        @if (IsSA || objPermission.Product >= (int)ModulePermission.Edit)
+                                        {
+                                            <a href="/admin/product/edit/@product.ProductId"><i class="fa fa-edit mr-2 font-success"></i></a>
+                                        }
+                                        @if (IsSA || objPermission.Product >= (int)ModulePermission.Full)
+                                        {
+                                            <a href="javascript:void(0);" onclick="fnDeleteProduct('@product.ProductId')"><i class="fa fa-trash font-danger"></i></a>
+                                        }
+                                    </td>
+                                </tr>
                                 counter++;
                             }
                         }
@@ -230,7 +254,7 @@
                     if (result == "success") {
                         alert("Status change Successfully...");
                         window.location.reload();
-                    }                    
+                    }
                     else {
                         alert("Something went wrong. Please try again");
                     }
