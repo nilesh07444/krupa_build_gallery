@@ -191,6 +191,7 @@
     <Compile Include="Areas\Admin\Controllers\HomeImagesController.cs" />
     <Compile Include="Areas\Admin\Controllers\ItemTextController.cs" />
     <Compile Include="Areas\Admin\Controllers\LoginController.cs" />
+    <Compile Include="Areas\Admin\Controllers\LoginHistoryController.cs" />
     <Compile Include="Areas\Admin\Controllers\MyProfileController.cs" />
     <Compile Include="Areas\Admin\Controllers\OfferController.cs" />
     <Compile Include="Areas\Admin\Controllers\OrderController.cs" />
@@ -216,6 +217,7 @@
     <Compile Include="Areas\WebAPI\Controllers\CategoryController.cs" />
     <Compile Include="Areas\WebAPI\WebAPIAreaRegistration.cs" />
     <Compile Include="Filters\CustomAuthorize.cs" />
+    <Compile Include="Helper\CommonMethod.cs" />
     <Compile Include="Helper\Enums.cs" />
     <Compile Include="Helper\ErrorMessage.cs" />
     <Compile Include="Helper\ResponseDataModel.cs" />
@@ -325,6 +327,7 @@
     <Compile Include="ViewModel\Admin\AdminUserVM.cs" />
     <Compile Include="ViewModel\Admin\GodownVM.cs" />
     <Compile Include="ViewModel\Admin\HomeImageVM.cs" />
+    <Compile Include="ViewModel\Admin\LoginHistoryVM.cs" />
     <Compile Include="ViewModel\Admin\RoleModuleVM.cs" />
     <Compile Include="ViewModel\Admin\RoleVM.cs" />
     <Compile Include="ViewModel\Admin\UserPermissionVM.cs" />
@@ -3862,6 +3865,7 @@
     <Content Include="Areas\Admin\Views\AdminUser\Index.cshtml" />
     <Content Include="Areas\Admin\Views\AdminUser\Add.cshtml" />
     <Content Include="Areas\Admin\Views\AdminUser\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\LoginHistory\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />
@@ -3942,7 +3946,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>51563</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:51563/</IISUrl>
+          <IISUrl>http://localhost:51565/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

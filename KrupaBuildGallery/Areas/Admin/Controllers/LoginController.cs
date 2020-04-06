@@ -109,7 +109,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     tbl_LoginHistory objLogin = new tbl_LoginHistory();
                     objLogin.UserId = data.AdminUserId;
                     objLogin.Type = "Login";
-                    objLogin.DateAction = DateTime.Now;
+                    objLogin.DateAction = DateTime.UtcNow;
                     string VisitorsIPAddr = Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
                     if (VisitorsIPAddr != null || VisitorsIPAddr != String.Empty)
                     {
