@@ -105,11 +105,21 @@
                             <div class="col-md-9">
                                 <div class="form-text-row">@Model.OrderStatus</div>
                                 @*<button type="button" name="" id="cancelorder" class="btn bg-red" style="margin-right: 3px;">
-                                    Cancel order
-                                </button>*@
-                                <button type="submit" name="btnChangeOrderStatus" id="btnChangeOrderStatus" class="btn btn-primary" style="display: inline-block;">
-                                    Change status
-                                </button>
+            Cancel order
+        </button>*@
+                                @if (Model.OrderStatusId == 1)
+                                {
+                            <button type="button" name="btnChangeOrderStatus" id="btnChangeOrderStatus" onclick="changestatus('Confirmed', 2,'@Model.OrderId');" class="btn btn-primary" style="display: inline-block;">
+                                Change status to Confirmed
+                            </button>
+                                }
+                                else if (Model.OrderStatusId == 2)
+                                {
+                            <button type="button" name="btnChangeOrderStatus" id="btnChangeOrderStatus" class="btn btn-primary" onclick="changestatus('Confirmed', 2,'@Model.OrderId');" style="display: inline-block;">
+                                Change status to Dispatched
+                            </button>
+                                }
+
                             </div>
                         </div>
                         <div class="form-group">
@@ -241,3 +251,8 @@
     <!-- Container-fluid Ends-->
 
 </div>
+<script>
+    function changestatus(status,statusid,orderid) {
+
+    }
+</script>

@@ -209,9 +209,9 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     objOrder.IsActive = true;
                     objOrder.IsDelete = false;
                     objOrder.CreatedBy = clientusrid;
-                    objOrder.CreatedDate = DateTime.Now;
+                    objOrder.CreatedDate = DateTime.UtcNow;
                     objOrder.UpdatedBy = clientusrid;
-                    objOrder.UpdatedDate = DateTime.Now;
+                    objOrder.UpdatedDate = DateTime.UtcNow;
                     objOrder.AmountDue = Convert.ToDecimal(objCheckout.Orderamount); 
                     objOrder.RazorpayOrderId = razorpay_order_id;
                     objOrder.RazorpayPaymentId = "";
@@ -256,9 +256,9 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             objOrderItem.IsActive = true;
                             objOrderItem.IsDelete = false;
                             objOrderItem.CreatedBy = clientusrid;
-                            objOrderItem.CreatedDate = DateTime.Now;
+                            objOrderItem.CreatedDate = DateTime.UtcNow;
                             objOrderItem.UpdatedBy = clientusrid;
-                            objOrderItem.UpdatedDate = DateTime.Now;
+                            objOrderItem.UpdatedDate = DateTime.UtcNow;
                             decimal InclusiveGST = Math.Round(Convert.ToDecimal(objOrderItem.Price) - Convert.ToDecimal(objOrderItem.Price) * (100 / (100 + objCart.GSTPer)), 2);
                             decimal PreGSTPrice = Math.Round(Convert.ToDecimal(objOrderItem.Price) - InclusiveGST, 2);
                             decimal basicTotalPrice = Math.Round(Convert.ToDecimal(PreGSTPrice * objOrderItem.Qty), 2);
@@ -329,9 +329,9 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             objOrder.IsActive = true;
                             objOrder.IsDelete = false;
                             objOrder.CreatedBy = clientusrid;
-                            objOrder.CreatedDate = DateTime.Now;
+                            objOrder.CreatedDate = DateTime.UtcNow;
                             objOrder.UpdatedBy = clientusrid;
-                            objOrder.UpdatedDate = DateTime.Now;
+                            objOrder.UpdatedDate = DateTime.UtcNow;
                             objOrder.AmountDue = 0;
                             objOrder.RazorpayOrderId = razorpay_order_id;
                             objOrder.RazorpayPaymentId = razorpay_payment_id;
@@ -343,9 +343,9 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             objPyment.PaymentBy = paymentmethod;
                             objPyment.AmountDue = Convert.ToDecimal(objCheckout.Orderamount);
                             objPyment.AmountPaid = Convert.ToDecimal(objCheckout.Orderamount);
-                            objPyment.DateOfPayment = DateTime.Now; 
+                            objPyment.DateOfPayment = DateTime.UtcNow; 
                             objPyment.CreatedBy = clientusrid;
-                            objPyment.CreatedDate = DateTime.Now;
+                            objPyment.CreatedDate = DateTime.UtcNow;
                             _db.tbl_PaymentHistory.Add(objPyment);
                             _db.SaveChanges();
 
@@ -458,6 +458,66 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             }
 
             return price;
+        }
+
+        [HttpPost]
+        public string CheckItemsinStock()
+        {
+            string ReturnMessage = "";
+            bool isOutofStock = false;
+            try
+            {
+                if(clsClientSession.UserID > 0)
+                {
+                    var cartlist = _db.tbl_Cart.Where(o => o.ClientUserId == clsClientSession.UserID).ToList();
+                    if(cartlist != null && cartlist.Count() > 0)
+                    {                        
+                        foreach (var objcrt in cartlist)
+                        {
+                            if(objcrt != null)
+                            {
+                              int cntremingstk = RemainingStock(objcrt.CartItemId.Value);
+                              if(cntremingstk < Convert.ToInt32(objcrt.CartItemQty))
+                              {
+                                    isOutofStock = true; 
+                              }
+                            }
+                        }
+                    }
+                 
+                }
+                if (isOutofStock == true)
+                {
+                    ReturnMessage = "OutofStock";
+                }
+                else
+                {
+                    ReturnMessage = "Success";
+                }
+            }
+            catch (Exception ex)
+            {
+                string msg = ex.Message.ToString();
+                ReturnMessage = "exception";
+            }
+
+            return ReturnMessage;
+        }
+
+        public int RemainingStock(long ItemId)
+        {
+            long? TotalStock = _db.tbl_ItemStocks.Where(o => o.IsActive == true && o.IsDelete == false && o.ProductItemId == ItemId).Sum(o => (long?)o.Qty);
+            long? TotalSold = _db.tbl_OrderItemDetails.Where(o => o.ProductItemId == ItemId && o.IsDelete == false).Sum(o => (long?)o.Qty.Value);
+            if (TotalStock == null)
+            {
+                TotalStock = 0;
+            }
+            if (TotalSold == null)
+            {
+                TotalSold = 0;
+            }
+            long remiaing = TotalStock.Value - TotalSold.Value;
+            return Convert.ToInt32(remiaing);
         }
     }
 }

@@ -67,13 +67,35 @@
 
             if (flg == true) {
                 if ($("input[name=payment-group]:checked").val() == "ByOther") {
-                    var rzp1 = new Razorpay(options);
-                    rzp1.open();
-                    e.preventDefault();
+                    var isitemexists = CheckItemExists();
+                    if (isitemexists == true) {
+                        var rzp1 = new Razorpay(options);
+                        rzp1.open();
+                        e.preventDefault();
+                    }
+                    else {
+                        msgdisplayFail("Item is out of stock");
+                        setTimeout(function () {
+                            location.href = location.origin + "/cart";
+                        }, 500);
+
+                        
+                    }
                 }
                 else {
-                     StartLoading();
-                     PlaceOrder("ByCredit","","");
+                      var isitemexists = CheckItemExists();
+                    if (isitemexists == true) {
+                        StartLoading();
+                        PlaceOrder("ByCredit","","");
+                    }
+                    else {
+                         msgdisplayFail("Item is out of stock");
+                        setTimeout(function () {
+                            location.href = location.origin + "/cart";
+                        }, 500);
+
+                    }
+                     
                 }
             }
         });

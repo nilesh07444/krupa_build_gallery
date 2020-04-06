@@ -20,11 +20,16 @@ namespace KrupaBuildGallery
             //);
 
             routes.MapRoute("redirect all other requests", "{*url}",
+            //new
+            //{
+            //    controller = "Dashboard", // HomePage
+            //    action = "Index"
+            //}).DataTokens = new RouteValueDictionary(new { area = "Admin" }); // Client
             new
             {
-                controller = "Dashboard", // HomePage
+                controller = "HomePage", // HomePage
                 action = "Index"
-            }).DataTokens = new RouteValueDictionary(new { area = "Admin" }); // Client
+            }).DataTokens = new RouteValueDictionary(new { area = "Client" }); // Client
 
         }
     }
