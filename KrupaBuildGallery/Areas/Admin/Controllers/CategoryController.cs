@@ -86,9 +86,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     objCategory.IsActive = true;
                     objCategory.IsDelete = false;
                     objCategory.CreatedBy = LoggedInUserId;
-                    objCategory.CreatedDate = DateTime.UtcNow;
-                    objCategory.UpdatedBy = LoggedInUserId;
-                    objCategory.UpdatedDate = DateTime.UtcNow;
+                    objCategory.CreatedDate = DateTime.UtcNow; 
                     _db.tbl_Categories.Add(objCategory);
                     _db.SaveChanges();
 
@@ -159,7 +157,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     {
                         fileName = objCategory.CategoryImage;
                     }
-                     
+
                     objCategory.CategoryName = categoryVM.CategoryName;
                     objCategory.CategoryImage = fileName;
 
@@ -214,7 +212,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public string ChangeStatus(long Id,string Status)
+        public string ChangeStatus(long Id, string Status)
         {
             string ReturnMessage = "";
             try
@@ -224,7 +222,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 if (objCategory != null)
                 {
                     long LoggedInUserId = Int64.Parse(clsAdminSession.UserID.ToString());
-                    if(Status == "Active")
+                    if (Status == "Active")
                     {
                         objCategory.IsActive = true;
                     }
@@ -232,13 +230,13 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     {
                         objCategory.IsActive = false;
                     }
-                    
+
                     objCategory.UpdatedBy = LoggedInUserId;
                     objCategory.UpdatedDate = DateTime.UtcNow;
 
                     _db.SaveChanges();
                     ReturnMessage = "success";
-                }                
+                }
             }
             catch (Exception ex)
             {
@@ -248,5 +246,42 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             return ReturnMessage;
         }
+
+        public ActionResult View(int Id)
+        {
+            CategoryVM objCategory = new CategoryVM();
+
+            try
+            {
+                objCategory = (from c in _db.tbl_Categories
+                               join uC in _db.tbl_AdminUsers on c.CreatedBy equals uC.AdminUserId into outerCreated
+                               from uC in outerCreated.DefaultIfEmpty()
+
+                               join uM in _db.tbl_AdminUsers on c.UpdatedBy equals uM.AdminUserId into outerModified
+                               from uM in outerModified.DefaultIfEmpty()
+
+                               where c.CategoryId == Id
+                               select new CategoryVM
+                               {
+                                   CategoryId = c.CategoryId,
+                                   CategoryName = c.CategoryName,
+                                   CategoryImage = c.CategoryImage,
+                                   IsActive = c.IsActive,
+
+                                   CreatedDate = c.CreatedDate,
+                                   UpdatedDate = c.UpdatedDate,
+                                   strCreatedBy = (uC != null ? uC.FirstName + " " + uC.LastName : ""),
+                                   strModifiedBy = (uM != null ? uM.FirstName + " " + uM.LastName : "")
+
+                               }).FirstOrDefault();
+            }
+            catch (Exception ex)
+            {
+                string ErrorMessage = ex.Message.ToString();
+            }
+
+            return View(objCategory);
+        }
+
     }
 }

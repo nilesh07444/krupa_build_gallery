@@ -3866,6 +3866,7 @@
     <Content Include="Areas\Admin\Views\AdminUser\Add.cshtml" />
     <Content Include="Areas\Admin\Views\AdminUser\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\LoginHistory\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Category\View.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />

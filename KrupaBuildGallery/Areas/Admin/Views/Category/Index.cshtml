@@ -106,13 +106,17 @@
                                     }
 
                                     <td>
+                                        @if (IsSA || objPermission.Category >= (int)ModulePermission.View)
+                                        {
+                                            <a title="View" href="/admin/category/view/@category.CategoryId"><i class="fa fa-eye mr-2 font-success"></i></a>
+                                        }
                                         @if (IsSA || objPermission.Category >= (int)ModulePermission.Edit)
                                         {
-                                            <a href="/admin/category/edit/@category.CategoryId"><i class="fa fa-edit mr-2 font-success"></i></a>
+                                            <a title="Edit" href="/admin/category/edit/@category.CategoryId"><i class="fa fa-edit mr-2 font-success"></i></a>
                                         }
                                         @if (IsSA || objPermission.Category == (int)ModulePermission.Full)
                                         {
-                                            <a href="javascript:void(0);" onclick="fnDeleteCategory('@category.CategoryId')"><i class="fa fa-trash font-danger"></i></a>
+                                            <a title="Delete" href="javascript:void(0);" onclick="fnDeleteCategory('@category.CategoryId')"><i class="fa fa-trash font-danger"></i></a>
                                         }
                                     </td>
                                 </tr>

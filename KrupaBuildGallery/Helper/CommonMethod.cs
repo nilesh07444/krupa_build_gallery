@@ -7,10 +7,13 @@ namespace KrupaBuildGallery
 {
     public static class CommonMethod
     {
-        public static string ConvertFromUTC(DateTime utcDateTime)
+        public static string ConvertFromUTC(DateTime? utcDateTime)
         {
+            if (utcDateTime == null)
+                return "";
+
             TimeZoneInfo nzTimeZone = TimeZoneInfo.FindSystemTimeZoneById("India Standard Time");
-            DateTime dateTimeAsTimeZone = TimeZoneInfo.ConvertTimeFromUtc(utcDateTime, nzTimeZone);
+            DateTime dateTimeAsTimeZone = TimeZoneInfo.ConvertTimeFromUtc(Convert.ToDateTime(utcDateTime), nzTimeZone);
             string dt = dateTimeAsTimeZone.ToString("dd/MM/yyyy hh:mm tt");
             return dt;
         }

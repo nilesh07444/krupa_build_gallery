@@ -16,5 +16,12 @@ namespace KrupaBuildGallery
         public string CategoryImage { get; set; }
         [Display(Name = "Category Image")]
         public HttpPostedFileBase CategoryImageFile { get; set; }
+
+        // Additional fields
+        public string strCreatedBy { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public string strModifiedBy { get; set; }
+        public DateTime? UpdatedDate { get; set; }
+
     }
 }

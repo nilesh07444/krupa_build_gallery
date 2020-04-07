@@ -369,6 +369,10 @@
                                 <ul class="sidebar-submenu">
                                     <li><a href="/admin/homeimages"><i class="fa fa-circle"></i>Home Images</a></li>
                                     <li><a href="/admin/godown"><i class="fa fa-circle"></i>Godown</a></li>
+                                    @if (IsSA)
+                                    {
+                                        <li><a href="/admin/loginhistory"><i class="fa fa-circle"></i>Login History</a></li>
+                                    }
                                 </ul>
                             </li>
                         }
