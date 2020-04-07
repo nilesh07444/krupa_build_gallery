@@ -5,7 +5,11 @@
     int counter = 1;
     decimal CartTotal = 0;
 }
-
+<style>
+    .clrerror{
+        color:red !important;
+    }
+</style>
 
 <!-- breadcrumb start -->
 <div class="breadcrumb-section">
@@ -54,6 +58,11 @@
                                 {
                                     decimal ItemTotal = Convert.ToDecimal(item.Qty * item.Price);
                                     CartTotal = CartTotal + ItemTotal;
+                                    string clsclr = "";
+                                    if(item.Qty > item.StockQty)
+                                    {
+                                        clsclr = "clrerror";
+                                    }
                                     <tr class="trcart" data-trid="@item.CartId">
 
                                         <td>
@@ -75,7 +84,7 @@
                                         </td>
                                         <td>
                                             <a href="#">@item.ItemName</a>
-                                            <span>(In Stock: @item.StockQty)</span>
+                                            <span class="@clsclr">(In Stock: @item.StockQty)</span>
                                             <div class="mobile-cart-content row">
                                                 <div class="col-xs-3">
                                                     <div class="qty-box">

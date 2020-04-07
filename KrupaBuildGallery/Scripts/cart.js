@@ -216,3 +216,25 @@ $('.product-box a .ti-heart1 , .product-box a .fa-heart1').on('click', function 
             '</div>'
     });
 });
+
+function CheckItemExists() {
+    var URL = '/Client/Checkout/CheckItemsinStock';
+    jQuery.ajax({
+        type: 'POST',
+        async: false,
+        url: URL,
+        success: function (result) {
+            if (result == "OutofStock") {
+                msgdisplayFail("Item is out of stock");
+                return false;
+            }
+            else {       
+                return true;
+            }
+        },
+        error: function (resultData) {
+            console.log("error");
+            return false;
+        }
+    });
+}
