@@ -17,5 +17,8 @@ namespace KrupaBuildGallery
         public bool IsActive { get; set; }
         [Display(Name = "Home Image")]
         public HttpPostedFileBase HomeImageFile { get; set; }
+
+        // Additional fields
+        public string ImageUrl { get; set; }
     }
 }
