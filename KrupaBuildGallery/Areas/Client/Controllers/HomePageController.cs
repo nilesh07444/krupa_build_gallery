@@ -106,11 +106,20 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             }
 
             List<HomeImageVM> lstImages = GetHomeImages();
+            List<CategoryVM> lstCategory = (from c in _db.tbl_Categories
+                                              where !c.IsDelete && c.IsActive
+                                              select new CategoryVM
+                                              {
+                                                  CategoryId = c.CategoryId,
+                                                  CategoryName = c.CategoryName,
+                                                  CategoryImage = c.CategoryImage 
+                                              }).OrderByDescending(x => x.CategoryId).ToList();
 
             ViewData["lstPopularProductItem"] = lstPopularProductItem;
             ViewData["lstNewProductItem"] = lstNewProductItem;
             ViewData["lstOfferItems"] = lstOfferItems;
             ViewData["lstImages"] = lstImages;
+            ViewData["lstCategory"] = lstCategory;
 
             return View();
         }
