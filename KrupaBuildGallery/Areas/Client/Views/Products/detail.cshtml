@@ -1,4 +1,5 @@
 ﻿@using KrupaBuildGallery.Model;
+@using KrupaBuildGallery.Helper;
 @model  ProductItemVM
 @{
     string clswishlist = "";
@@ -57,12 +58,12 @@
                                     }
                                     else
                                     {
-                                        imgpath = "/Images/default_image.png";
+                                        imgpath = @ErrorMessage.DefaultImagePath;
                                     }
                                 }
                                 else
                                 {
-                                    imgpath = "/Images/default_image.png";
+                                    imgpath = @ErrorMessage.DefaultImagePath;
                                 }
                                 <div><img src="@imgpath" alt="" class="img-fluid blur-up lazyload image_zoom_cls-0" style="cursor: pointer;"></div>
                             }
@@ -84,12 +85,12 @@
                                             }
                                             else
                                             {
-                                                imgpath = "/Images/default_image.png";
+                                                imgpath = @ErrorMessage.DefaultImagePath;
                                             }
                                         }
                                         else
                                         {
-                                            imgpath = "/Images/default_image.png";
+                                            imgpath = @ErrorMessage.DefaultImagePath;
                                         }
                                         <div><img src="@imgpath" alt="" class="img-fluid blur-up lazyload" style="cursor: pointer;"></div>
                                     }

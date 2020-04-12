@@ -1,4 +1,6 @@
 ﻿@using KrupaBuildGallery.Model;
+@using KrupaBuildGallery.Helper;
+
 @model List<ProductItemVM>
 
 @{ 
@@ -69,12 +71,12 @@
                                                                                 }
                                                                                 else
                                                                                 {
-                                                                                    imgpath = "/Images/default_image.png";
+                                                                                    imgpath = @ErrorMessage.DefaultImagePath;
                                                                                 }
                                                                             }
                                                                             else
                                                                             {
-                                                                                imgpath = "/Images/default_image.png";
+                                                                                imgpath = @ErrorMessage.DefaultImagePath;
                                                                             }
                                                                             if (item.IsWishListItem)
                                                                             {

@@ -1,4 +1,6 @@
 ﻿@using KrupaBuildGallery.Model;
+@using KrupaBuildGallery.Helper;
+
 @model List<WishListVM>
 
 @{ 
@@ -88,12 +90,12 @@
                                                 }
                                                 else
                                                 {
-                                                    <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                                    <img src="@ErrorMessage.DefaultImagePath" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
                                                 }
                                             }
                                             else
                                             {
-                                                <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                                <img src="@ErrorMessage.DefaultImagePath" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
                                             }
                                         </a>
                                     </td>
