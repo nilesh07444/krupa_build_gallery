@@ -22,5 +22,9 @@ namespace KrupaBuildGallery.Model
         public Nullable<long> CreatedBy { get; set; }
         public Nullable<System.DateTime> CreatedDate { get; set; }
         public string PaymentBy { get; set; }
+        public string RazorpayOrderId { get; set; }
+        public string RazorpayPaymentId { get; set; }
+        public string RazorSignature { get; set; }
+        public string PaymentFor { get; set; }
     }
 }

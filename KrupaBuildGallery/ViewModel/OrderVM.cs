@@ -28,5 +28,6 @@ namespace KrupaBuildGallery.ViewModel
         public string ClientEmail { get; set; }
         public string RazorpayOrderId { get; set; }
         public decimal ShipmentCharge { get; set; }
+        public int ShippingStatus { get; set; }
     }
 }

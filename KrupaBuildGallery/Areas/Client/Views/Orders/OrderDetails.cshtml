@@ -1,4 +1,5 @@
 ﻿@using KrupaBuildGallery.Helper;
+@using KrupaBuildGallery.Model;
 @model  KrupaBuildGallery.ViewModel.OrderVM
 
 @{
@@ -178,10 +179,35 @@
                         </div>
                         <div class="form-group">
                             <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Pincode:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@Model.OrderPincode</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
                                 <div class="label-wrapper"><label class="control-label">State:</label></div>
                             </div>
                             <div class="col-md-9">
                                 <div class="form-text-row">@Model.OrderShipState</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Shipping Charge:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                @if (Model.ShippingStatus == 1)
+                                {
+                                    <button type="button" name="" id="rzp-placeorder" class="btn bg-red" style="margin-right: 3px;background-color: #bbc5ff;border-radius: 20px;">
+                                        Pay Shipping Charge - ₹ @Model.ShipmentCharge
+                                    </button>
+                                }
+                                else
+                                {
+                                    <div class="form-text-row">₹ @Model.ShipmentCharge</div>
+                                }
                             </div>
                         </div>
                     </div>
@@ -199,7 +225,7 @@
                                         <th>Price</th>
                                         <th>Quantity</th>
                                         <th>Discount</th>
-                                        <th>GST</th>                                        
+                                        <th>GST</th>
                                         <th>Total</th>
                                     </tr>
                                 </thead>
@@ -278,3 +304,63 @@
     </div>
 </section>
 <!--section end-->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    var options = {
+        "key": "rzp_test_DMsPlGIBp3SSnI", // Enter the Key ID generated from the Dashboard
+        "amount": "@ViewBag.Amount", // Amount is in currency subunits. Default currency is INR. Hence, 50000 means 50000 paise or ₹500.
+        "currency": "INR",
+        "name": "Krupa Build Gallery",
+        "description": "@ViewBag.Description",
+        "image": "https://razorpay.com/favicon.png",
+        "order_id": "@ViewBag.OrderId",// Replace this with the order_id created using Orders API (https://razorpay.com/docs/api/orders).
+        "handler": function (response) {
+            StartLoading();
+            SaveShippingCharge(response.razorpay_payment_id, response.razorpay_order_id, response.razorpay_signature,'@Model.OrderId');
+        },
+        "prefill": {
+            "name": "@clsClientSession.FirstName @clsClientSession.LastName",
+            "email": "@clsClientSession.Email",
+            "contact": "@clsClientSession.MobileNumber"
+        },
+        "notes": {
+            "address": "note value"
+        },
+        "theme": {
+            "color": "#F37254"
+        }
+    };
+
+    if ($("#rzp-placeorder").length > 0) {
+        $(document).on('click', '#rzp-placeorder', function (e) {
+          var rzp1 = new Razorpay(options);
+                    rzp1.open();
+                    e.preventDefault();
+
+        });
+    }
+
+    function SaveShippingCharge(razorpymentid, razororderid, razorsignature, orderid) {
+           var URL = '@Url.Action("SaveShippingCharge", "Orders")';    
+    jQuery.ajax({
+        type: 'POST',
+        async: true,
+        url: URL + "?razorpymentid=" + razorpymentid + "&razororderid=" + razororderid + "&razorsignature=" + razorsignature + "&orderid=" + orderid,
+        success: function (result) {  
+            if (result == "Success") {
+                msgdisplay("Shipping Charge Paid Successfully..");
+                location.reload();
+            }
+            else {
+                 msgdisplay("Problem in payment. Please contact to support");
+            }
+        
+        },
+        error: function (resultData) {
+            debugger;
+            console.log("error");
+            
+        }
+    });
+    }
+</script>

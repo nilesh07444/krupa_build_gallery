@@ -306,6 +306,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     objOrder.OrderShipState = objCheckout.shipstate;
                     objOrder.OrderShipClientName = objCheckout.shipfirstname + " " + objCheckout.shiplastname;
                     objOrder.OrderShipClientPhone = objCheckout.shipphone;
+                    objOrder.OrderShipPincode = objCheckout.shippincode;
                     objOrder.OrderStatusId = Convert.ToInt64(OrderStatus.NewOrder);
                     objOrder.PaymentType = paymentmethod;
                     objOrder.IsActive = true;
@@ -318,12 +319,16 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     objOrder.RazorpayOrderId = razorpay_order_id;
                     objOrder.RazorpayPaymentId = "";
                     objOrder.RazorSignature = "";
-                    objOrder.ShippingCharge = Convert.ToDecimal(objCheckout.shipamount);
-                    objOrder.ShippingStatus = 2;
-                    if (objCheckout.shipamount == "0")
+                    if(objCheckout.shippincode == "389001")
                     {
+                        objOrder.ShippingCharge = Convert.ToDecimal(objCheckout.shipamount);
+                        objOrder.ShippingStatus = 2;
+                    }                   
+                    else
+                    {
+                        objOrder.ShippingCharge = 0;
                         objOrder.ShippingStatus = 1;
-                    }
+                    }                 
                     _db.tbl_Orders.Add(objOrder);
                     _db.SaveChanges();
                     objOrder.RazorpayOrderId = objOrder.OrderId.ToString();
@@ -442,6 +447,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             objOrder.OrderShipState = objCheckout.shipstate;
                             objOrder.OrderShipClientName = objCheckout.shipfirstname + " " + objCheckout.shiplastname;
                             objOrder.OrderShipClientPhone = objCheckout.shipphone;
+                            objOrder.OrderShipPincode = objCheckout.shippincode;
                             objOrder.OrderStatusId = Convert.ToInt64(OrderStatus.NewOrder);
                             objOrder.PaymentType = paymentmethod;
                             objOrder.IsActive = true;
@@ -454,12 +460,16 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             objOrder.RazorpayOrderId = razorpay_order_id;
                             objOrder.RazorpayPaymentId = razorpay_payment_id;
                             objOrder.RazorSignature = razorpay_signature;
-                            objOrder.ShippingCharge = Convert.ToDecimal(objCheckout.shipamount);
-                            objOrder.ShippingStatus = 2;
-                            if (objCheckout.shipamount == "0")
+                            if (objCheckout.shippincode == "389001")
                             {
+                                objOrder.ShippingCharge = Convert.ToDecimal(objCheckout.shipamount);
+                                objOrder.ShippingStatus = 2;
+                            }
+                            else
+                            {
+                                objOrder.ShippingCharge = 0;
                                 objOrder.ShippingStatus = 1;
-                            }                            
+                            }
                             _db.tbl_Orders.Add(objOrder);
                             _db.SaveChanges();
                             tbl_PaymentHistory objPyment = new tbl_PaymentHistory();
@@ -470,6 +480,10 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             objPyment.DateOfPayment = DateTime.UtcNow; 
                             objPyment.CreatedBy = clientusrid;
                             objPyment.CreatedDate = DateTime.UtcNow;
+                            objPyment.RazorpayOrderId = razorpay_order_id;
+                            objPyment.RazorpayPaymentId = razorpay_payment_id;
+                            objPyment.RazorSignature = razorpay_signature;
+                            objPyment.PaymentFor = "OrderPayment";
                             _db.tbl_PaymentHistory.Add(objPyment);
                             _db.SaveChanges();
                             decimal pointreamining = 0;

@@ -374,6 +374,10 @@
           <Property Name="CreatedBy" Type="bigint" />
           <Property Name="CreatedDate" Type="datetime" />
           <Property Name="PaymentBy" Type="nvarchar" MaxLength="250" />
+          <Property Name="RazorpayOrderId" Type="nvarchar" MaxLength="300" />
+          <Property Name="RazorpayPaymentId" Type="nvarchar" MaxLength="300" />
+          <Property Name="RazorSignature" Type="nvarchar" MaxLength="300" />
+          <Property Name="PaymentFor" Type="nvarchar" MaxLength="250" />
         </EntityType>
         <EntityType Name="tbl_PointDetails">
           <Key>
@@ -843,6 +847,10 @@
           <Property Name="CreatedBy" Type="Int64" />
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="PaymentBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="RazorpayOrderId" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="RazorpayPaymentId" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="RazorSignature" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="PaymentFor" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_ProductItemImages">
           <Key>
@@ -1387,6 +1395,10 @@
           <EntitySetMapping Name="tbl_PaymentHistory">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_PaymentHistory">
               <MappingFragment StoreEntitySet="tbl_PaymentHistory">
+                <ScalarProperty Name="PaymentFor" ColumnName="PaymentFor" />
+                <ScalarProperty Name="RazorSignature" ColumnName="RazorSignature" />
+                <ScalarProperty Name="RazorpayPaymentId" ColumnName="RazorpayPaymentId" />
+                <ScalarProperty Name="RazorpayOrderId" ColumnName="RazorpayOrderId" />
                 <ScalarProperty Name="PaymentHistory_Id" ColumnName="PaymentHistory_Id" />
                 <ScalarProperty Name="AmountPaid" ColumnName="AmountPaid" />
                 <ScalarProperty Name="AmountDue" ColumnName="AmountDue" />

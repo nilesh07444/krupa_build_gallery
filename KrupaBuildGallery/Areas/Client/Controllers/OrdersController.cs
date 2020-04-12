@@ -1,5 +1,6 @@
 ﻿using KrupaBuildGallery.Model;
 using KrupaBuildGallery.ViewModel;
+using Razorpay.Api;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -81,7 +82,10 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             OrderStatusId = p.OrderStatusId,
                             PaymentType = p.PaymentType,
                             OrderDate = p.CreatedDate,
-                            ShipmentCharge = p.ShippingCharge.HasValue ? p.ShippingCharge.Value : 0
+                            ClientEmail = c.Email,
+                            ClientMobileNo = c.MobileNo,
+                            ShipmentCharge = p.ShippingCharge.HasValue ? p.ShippingCharge.Value : 0,
+                            ShippingStatus = p.ShippingStatus.HasValue ? p.ShippingStatus.Value : 2                            
                         }).OrderByDescending(x => x.OrderDate).FirstOrDefault();
             if (objOrder != null)
             {
@@ -105,7 +109,70 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                                    }).OrderByDescending(x => x.OrderItemId).ToList();
                 objOrder.OrderItems = lstOrderItms;
             }
+
+            if(objOrder.ShipmentCharge > 0)
+            {
+                Dictionary<string, object> input = new Dictionary<string, object>();
+                input.Add("amount", objOrder.ShipmentCharge * 100); // this amount should be same as transaction amount
+                input.Add("currency", "INR");
+                input.Add("receipt", "12121");
+                input.Add("payment_capture", 1);
+
+                string key = "rzp_test_DMsPlGIBp3SSnI";
+                string secret = "YMkpd9LbnaXViePncLLXhqms";
+
+                RazorpayClient client = new RazorpayClient(key, secret);
+
+                Razorpay.Api.Order order = client.Order.Create(input);
+                ViewBag.OrderId = order["id"];
+                ViewBag.Description = "Shipping Charge for Order #"+ objOrder.OrderId;
+                ViewBag.Amount = objOrder.ShipmentCharge * 100;
+            }
+            else
+            {
+                ViewBag.OrderId = 0;
+                ViewBag.Description = "Shipping Charge for Order #" + objOrder.OrderId;
+                ViewBag.Amount = objOrder.ShipmentCharge * 100;
+            }         
             return View(objOrder);
+        }
+
+        [HttpPost]
+        public string SaveShippingCharge(string razorpymentid,string razororderid,string razorsignature,string orderid)
+        {
+            long OrderID64 = Convert.ToInt64(orderid);
+          
+            Razorpay.Api.Payment objpymn = new Razorpay.Api.Payment().Fetch(razorpymentid);
+            if (objpymn != null)
+            {
+                if (objpymn["status"] != null && Convert.ToString(objpymn["status"]) == "captured")
+                {
+                    tbl_Orders objordr = _db.tbl_Orders.Where(o => o.OrderId == OrderID64).FirstOrDefault();
+                    if (objordr != null)
+                    {
+                        objordr.ShippingStatus = 2;
+                    }
+                    _db.SaveChanges();
+                    string paymentmethod = objpymn["method"];
+                    tbl_PaymentHistory objPayment = new tbl_PaymentHistory();
+                    objPayment.AmountPaid = objordr.ShippingCharge.Value;
+                    objPayment.AmountDue = objordr.ShippingCharge.Value;
+                    objPayment.DateOfPayment = DateTime.UtcNow;
+                    objPayment.OrderId = objordr.OrderId;
+                    objPayment.PaymentBy = paymentmethod;
+                    objPayment.CreatedBy = clsClientSession.UserID;
+                    objPayment.CreatedDate = DateTime.UtcNow;
+                    objPayment.RazorpayOrderId = razororderid;
+                    objPayment.RazorpayPaymentId = razorpymentid;
+                    objPayment.RazorSignature = razorsignature;
+                    objPayment.PaymentFor = "ShippingCharge";
+                    _db.tbl_PaymentHistory.Add(objPayment);
+                    _db.SaveChanges();
+                    return "Success";
+                }            
+            }
+
+            return "";
         }
     }
 }

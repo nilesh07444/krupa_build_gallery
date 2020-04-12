@@ -104,10 +104,10 @@
                                 <div class="label-wrapper"><label class="control-label">Order Status:</label></div>
                             </div>
                             <div class="col-md-9">
-                                <div class="form-text-row" id="dvorderstatus" >@Model.OrderStatus</div>
+                                <div class="form-text-row" id="dvorderstatus">@Model.OrderStatus</div>
                                 @*<button type="button" name="" id="cancelorder" class="btn bg-red" style="margin-right: 3px;">
-                                        Cancel order
-                                    </button>*@
+                    Cancel order
+                </button>*@
                                 @if (Model.OrderStatusId == 1)
                                 {
                                     <button type="button" name="btnChangeOrderStatustoconfirm" id="btnChangeOrderStatustoconfirm" onclick="changestatus('Confirmed', 2,'@Model.OrderId');" class="btn btn-primary" style="display: inline-block;">
@@ -185,10 +185,46 @@
                         </div>
                         <div class="form-group">
                             <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Pincode:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                @if (string.IsNullOrEmpty(Model.OrderPincode))
+                                {
+                                    <div class="form-text-row">-</div>
+                                }
+                                else
+                                {
+                                    <div class="form-text-row">@Model.OrderPincode</div>
+                                }
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
                                 <div class="label-wrapper"><label class="control-label">State:</label></div>
                             </div>
                             <div class="col-md-9">
                                 <div class="form-text-row">@Model.OrderShipState</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Shipping Charge:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                @if (Model.ShipmentCharge == 0)
+                                {
+                                <div class="form-text-row">
+                                    <button type="button" name="btnSetShippingCharge" id="btnSetShippingCharge" class="btn btn-primary" onclick="setshipchargemodl('@Model.OrderId');" style="display: inline-block;">
+                                        Set Shipping Charge
+                                    </button>
+                                    <span class="spnshipchrg"></span>
+                                </div>
+                                }
+                                else
+                                {
+                                    <div class="form-text-row">@Model.ShipmentCharge</div>
+                                }
+
                             </div>
                         </div>
                     </div>
@@ -205,8 +241,8 @@
                                         <th>Sku</th>
                                         <th>Price</th>
                                         <th>Quantity</th>
+                                        <th>Discount</th>
                                         <th>GST</th>
-                                        <th>IGST</th>
                                         <th>Total</th>
                                     </tr>
                                 </thead>
@@ -215,6 +251,7 @@
                                     {
                                         foreach (KrupaBuildGallery.ViewModel.OrderItemsVM objorderItem in Model.OrderItems)
                                         {
+                                             decimal Totl = Math.Round((objorderItem.Price * objorderItem.Qty) - objorderItem.Discount + objorderItem.GSTAmt, 2);
                                             <tr>
                                                 <td>
                                                     @if (!string.IsNullOrEmpty(objorderItem.ItemImg))
@@ -237,9 +274,9 @@
                                                 <td>@objorderItem.Sku</td>
                                                 <td>₹ @Math.Round(objorderItem.Price, 2)</td>
                                                 <td>@objorderItem.Qty</td>
+                                                <td>₹ @objorderItem.Discount</td>
                                                 <td>₹ @objorderItem.GSTAmt</td>
-                                                <td>₹ @objorderItem.IGSTAmt</td>
-                                                <td>₹ @Math.Round((objorderItem.Price * objorderItem.Qty), 2)</td>
+                                                <td>₹ @Totl</td>
                                             </tr>
                                         }
                                     }
@@ -293,6 +330,24 @@
         </div>
     </div>
 </div>
+<div class="modal fade open" id="setshipchargemodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Set Shipping Charge</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <label>Shipping Charge</label><input type="number" id="txtshipchrg" style="display:inline-block;width:150px;margin-left:12px;" class="form-control" value="" />
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="orderids" />                
+                <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
+                <button id="setshipcharge" class="btn btn-primary" type="button">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
     function changestatus(status, statusid, orderid) {
         if (statusid == 2) {
@@ -305,6 +360,11 @@
             $("#changestatustodisplatched #orderidshdn").val(orderid);
             $("#changestatustodisplatched #statusids").val(statusid);
         }
+    }
+
+    function setshipchargemodl(orderid) {
+        $("#setshipchargemodal").modal("show");
+        $("#setshipchargemodal #orderids").val(orderid);
     }
     jQuery(document).on("click", "#savestatustoconfirm", function () {
         if ($("#changestatustoconfirmed #txtdys").val().trim() == "") {
@@ -333,6 +393,7 @@
     });
 
     jQuery(document).on("click", "#savestatustodispatched", function () {
+      
         var URL = '/Admin/Order/ChangeOrderStatus';
         jQuery.ajax({
             type: 'POST',
@@ -342,6 +403,30 @@
                 alert("Order Status Change to Dispatched");
                 $("#dvorderstatus").html("Dispatched");
                  $("#btnChangeOrderStatustodispatched").hide();
+            },
+            error: function (resultData) {
+                console.log("error");
+
+            }
+        });
+
+    });
+
+    jQuery(document).on("click", "#setshipcharge", function () {
+        if($("#txtshipchrg").val() == "" || parseInt($("#txtshipchrg").val()) <= 0 ) {
+            alert("Please Enter Valid Shipping Charge");
+            return;
+        }
+        var URL = '/Admin/Order/SetShipCharge';
+        jQuery.ajax({
+            type: 'POST',
+            async: true,
+             url: URL + "?OrderId=" + $("#setshipchargemodal  #orderids").val() + "&ShippingCharge=" + $("#txtshipchrg").val(),
+            success: function (result) {
+                alert("Shipping Charge Set Successfully...");
+                $("#setshipchargemodal").modal("hide");
+                $("#btnSetShippingCharge").hide();
+                $(".spnshipchrg").html($("#txtshipchrg").val());
             },
             error: function (resultData) {
                 console.log("error");

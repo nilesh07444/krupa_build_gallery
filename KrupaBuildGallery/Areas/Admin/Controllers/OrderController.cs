@@ -80,7 +80,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                              OrderShipClientPhone = p.OrderShipClientPhone,
                              OrderStatusId = p.OrderStatusId,
                              PaymentType = p.PaymentType,
-                             OrderDate = p.CreatedDate
+                             OrderDate = p.CreatedDate,
+                             ShipmentCharge = p.ShippingCharge.HasValue ? p.ShippingCharge.Value : 0
                          }).OrderByDescending(x => x.OrderDate).FirstOrDefault();          
             if(objOrder != null)
             {   
@@ -99,7 +100,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                 Sku = p.Sku,
                                 GSTAmt = p.GSTAmt.Value,
                                 IGSTAmt = p.IGSTAmt.Value,
-                                ItemImg = c.MainImage                                                                                                
+                                ItemImg = c.MainImage,
+                                Discount = p.Discount.HasValue ? p.Discount.Value : 0
                             }).OrderByDescending(x => x.OrderItemId).ToList();
                 objOrder.OrderItems = lstOrderItms;
             }
@@ -179,6 +181,44 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 }              
             }
             
+            return "";
+        }
+
+        [HttpPost]
+        public string SetShipCharge(long OrderId,decimal ShippingCharge)
+        {
+            tbl_Orders objordr = _db.tbl_Orders.Where(o => o.OrderId == OrderId).FirstOrDefault();
+            if(objordr != null)
+            {
+                objordr.ShippingCharge = ShippingCharge;
+            }
+            long clientusrid = objordr.ClientUserId;
+            tbl_ClientUsers objclntusr = _db.tbl_ClientUsers.Where(o => o.ClientUserId == clientusrid).FirstOrDefault();
+            if (objclntusr != null)
+            {
+                using (WebClient webClient = new WebClient())
+                {
+                    string msg = "Shipping Charges for Your order no." + objordr.OrderId + " is: Rs " + ShippingCharge + ". Please pay from your order details you can find button to pay.";
+                    string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objclntusr.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    var json = webClient.DownloadString(url);
+                    if (json.Contains("invalidnumber"))
+                    {
+                        return "InvalidNumber";
+                    }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(objclntusr.Email))
+                        {
+                            string FromEmail = ConfigurationManager.AppSettings["FromEmail"];
+
+                            string msg1 = "Shipping Charges for Your order no." + objordr.OrderId + " is: Rs " + ShippingCharge + ". Please pay from your order details you can find button to pay.";
+                            clsCommon.SendEmail(objclntusr.Email, FromEmail, "Shipping Charge - Krupa Build Gallery", msg1);
+                        }
+                    }
+
+                }
+            }
+            _db.SaveChanges();
             return "";
         }
     }
