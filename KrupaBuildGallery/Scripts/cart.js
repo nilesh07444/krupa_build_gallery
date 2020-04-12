@@ -217,19 +217,30 @@ $('.product-box a .ti-heart1 , .product-box a .fa-heart1').on('click', function 
     });
 });
 
-function CheckItemExists() {
+function CheckItemExists(bypymnt,optionss,e) {
     var URL = '/Client/Checkout/CheckItemsinStock';
     jQuery.ajax({
         type: 'POST',
         async: false,
         url: URL,
         success: function (result) {
+            console.log("checkexist");
             if (result == "OutofStock") {
                 msgdisplayFail("Item is out of stock");
-                return false;
+                setTimeout(function () {
+                    location.href = location.origin + "/cart";
+                }, 500);                 
             }
             else {       
-                return true;
+                if (bypymnt == "ByOther") {
+                    var rzp1 = new Razorpay(optionss);
+                    rzp1.open();
+                    e.preventDefault();
+                }
+                else if (bypymnt == "ByCredit") {
+                    StartLoading();
+                    PlaceOrder("ByCredit", "", "");
+                }
             }
         },
         error: function (resultData) {

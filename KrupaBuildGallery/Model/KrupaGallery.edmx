@@ -211,6 +211,14 @@
           <Property Name="AddharPhoto" Type="nvarchar" MaxLength="450" />
           <Property Name="ProfilePhoto" Type="nvarchar" MaxLength="450" />
         </EntityType>
+        <EntityType Name="tbl_GeneralSetting">
+          <Key>
+            <PropertyRef Name="GeneralSettingId" />
+          </Key>
+          <Property Name="GeneralSettingId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="InitialPointCustomer" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="ShippingMessage" Type="nvarchar(max)" />
+        </EntityType>
         <EntityType Name="tbl_Godown">
           <Key>
             <PropertyRef Name="GodownId" />
@@ -322,6 +330,8 @@
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="UpdatedBy" Type="bigint" />
           <Property Name="UpdatedDate" Type="datetime" />
+          <Property Name="Discount" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="GSTPer" Type="decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="tbl_Orders">
           <Key>
@@ -348,6 +358,9 @@
           <Property Name="RazorpayOrderId" Type="nvarchar" MaxLength="300" />
           <Property Name="RazorpayPaymentId" Type="nvarchar" MaxLength="300" />
           <Property Name="RazorSignature" Type="nvarchar" MaxLength="300" />
+          <Property Name="ShippingCharge" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="ShippingStatus" Type="int" />
+          <Property Name="PointsUsed" Type="decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="tbl_PaymentHistory">
           <Key>
@@ -361,6 +374,18 @@
           <Property Name="CreatedBy" Type="bigint" />
           <Property Name="CreatedDate" Type="datetime" />
           <Property Name="PaymentBy" Type="nvarchar" MaxLength="250" />
+        </EntityType>
+        <EntityType Name="tbl_PointDetails">
+          <Key>
+            <PropertyRef Name="PointId" />
+          </Key>
+          <Property Name="PointId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Points" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="ClientUserId" Type="bigint" />
+          <Property Name="ExpiryDate" Type="datetime" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="UsedPoints" Type="decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="tbl_ProductItemImages">
           <Key>
@@ -404,6 +429,7 @@
           <Property Name="UpdatedDate" Type="datetime" />
           <Property Name="ShippingCharge" Type="decimal" Precision="18" Scale="2" />
           <Property Name="Tags" Type="nvarchar(max)" />
+          <Property Name="GodownId" Type="bigint" />
         </EntityType>
         <EntityType Name="tbl_Products">
           <Key>
@@ -481,6 +507,7 @@
           <EntitySet Name="tbl_ClientUsers" EntityType="Self.tbl_ClientUsers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ContactFormData" EntityType="Self.tbl_ContactFormData" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_DistributorRequestDetails" EntityType="Self.tbl_DistributorRequestDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_GeneralSetting" EntityType="Self.tbl_GeneralSetting" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Godown" EntityType="Self.tbl_Godown" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_GSTMaster" EntityType="Self.tbl_GSTMaster" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_HomeImages" EntityType="Self.tbl_HomeImages" Schema="dbo" store:Type="Tables" />
@@ -491,6 +518,7 @@
           <EntitySet Name="tbl_OrderItemDetails" EntityType="Self.tbl_OrderItemDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Orders" EntityType="Self.tbl_Orders" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_PaymentHistory" EntityType="Self.tbl_PaymentHistory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_PointDetails" EntityType="Self.tbl_PointDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ProductItemImages" EntityType="Self.tbl_ProductItemImages" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ProductItems" EntityType="Self.tbl_ProductItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Products" EntityType="Self.tbl_Products" Schema="dbo" store:Type="Tables" />
@@ -771,6 +799,8 @@
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="UpdatedBy" Type="Int64" />
           <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <Property Name="Discount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="GSTPer" Type="Decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="tbl_Orders">
           <Key>
@@ -797,6 +827,9 @@
           <Property Name="RazorpayOrderId" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="RazorpayPaymentId" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
           <Property Name="RazorSignature" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="ShippingCharge" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="ShippingStatus" Type="Int32" />
+          <Property Name="PointsUsed" Type="Decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="tbl_PaymentHistory">
           <Key>
@@ -853,6 +886,7 @@
           <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
           <Property Name="ShippingCharge" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="Tags" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="GodownId" Type="Int64" />
         </EntityType>
         <EntityType Name="tbl_Products">
           <Key>
@@ -929,6 +963,8 @@
             <End Role="tbl_AdminRolePermissions" EntitySet="tbl_AdminRolePermissions" />
           </AssociationSet>
           <EntitySet Name="tbl_AdminUsers" EntityType="krupagalleryModel.tbl_AdminUsers" />
+          <EntitySet Name="tbl_PointDetails" EntityType="krupagalleryModel.tbl_PointDetails" />
+          <EntitySet Name="tbl_GeneralSetting" EntityType="krupagalleryModel.tbl_GeneralSetting" />
         </EntityContainer>
         <EntityType Name="tbl_AdminRoles">
           <Key>
@@ -1012,6 +1048,26 @@
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="UpdatedBy" Type="Int64" />
           <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="tbl_PointDetails">
+          <Key>
+            <PropertyRef Name="PointId" />
+          </Key>
+          <Property Name="PointId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Points" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="ClientUserId" Type="Int64" />
+          <Property Name="ExpiryDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="UsedPoints" Type="Decimal" Precision="18" Scale="2" />
+        </EntityType>
+        <EntityType Name="tbl_GeneralSetting">
+          <Key>
+            <PropertyRef Name="GeneralSettingId" />
+          </Key>
+          <Property Name="GeneralSettingId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="InitialPointCustomer" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="ShippingMessage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -1278,6 +1334,8 @@
           <EntitySetMapping Name="tbl_OrderItemDetails">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_OrderItemDetails">
               <MappingFragment StoreEntitySet="tbl_OrderItemDetails">
+                <ScalarProperty Name="GSTPer" ColumnName="GSTPer" />
+                <ScalarProperty Name="Discount" ColumnName="Discount" />
                 <ScalarProperty Name="OrderDetailId" ColumnName="OrderDetailId" />
                 <ScalarProperty Name="OrderId" ColumnName="OrderId" />
                 <ScalarProperty Name="ProductItemId" ColumnName="ProductItemId" />
@@ -1299,6 +1357,9 @@
           <EntitySetMapping Name="tbl_Orders">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_Orders">
               <MappingFragment StoreEntitySet="tbl_Orders">
+                <ScalarProperty Name="PointsUsed" ColumnName="PointsUsed" />
+                <ScalarProperty Name="ShippingStatus" ColumnName="ShippingStatus" />
+                <ScalarProperty Name="ShippingCharge" ColumnName="ShippingCharge" />
                 <ScalarProperty Name="OrderId" ColumnName="OrderId" />
                 <ScalarProperty Name="ClientUserId" ColumnName="ClientUserId" />
                 <ScalarProperty Name="OrderAmount" ColumnName="OrderAmount" />
@@ -1355,6 +1416,7 @@
           <EntitySetMapping Name="tbl_ProductItems">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_ProductItems">
               <MappingFragment StoreEntitySet="tbl_ProductItems">
+                <ScalarProperty Name="GodownId" ColumnName="GodownId" />
                 <ScalarProperty Name="ProductItemId" ColumnName="ProductItemId" />
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
                 <ScalarProperty Name="ProductId" ColumnName="ProductId" />
@@ -1482,6 +1544,28 @@
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
                 <ScalarProperty Name="AdminRoleId" ColumnName="AdminRoleId" />
                 <ScalarProperty Name="AdminUserId" ColumnName="AdminUserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_PointDetails">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_PointDetails">
+              <MappingFragment StoreEntitySet="tbl_PointDetails">
+                <ScalarProperty Name="UsedPoints" ColumnName="UsedPoints" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ExpiryDate" ColumnName="ExpiryDate" />
+                <ScalarProperty Name="ClientUserId" ColumnName="ClientUserId" />
+                <ScalarProperty Name="Points" ColumnName="Points" />
+                <ScalarProperty Name="PointId" ColumnName="PointId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_GeneralSetting">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_GeneralSetting">
+              <MappingFragment StoreEntitySet="tbl_GeneralSetting">
+                <ScalarProperty Name="ShippingMessage" ColumnName="ShippingMessage" />
+                <ScalarProperty Name="InitialPointCustomer" ColumnName="InitialPointCustomer" />
+                <ScalarProperty Name="GeneralSettingId" ColumnName="GeneralSettingId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

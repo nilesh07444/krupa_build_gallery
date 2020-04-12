@@ -56,7 +56,7 @@
                 <table class="display" id="basic-1">
                     <thead>
                         <tr>
-                            <th></th> 
+                            <th></th>
                             <th>First Name</th>
                             <th>Last Name</th>
                             <th>Email</th>
@@ -74,7 +74,7 @@
                             foreach (KrupaBuildGallery.ViewModel.ClientUserVM objusr in Model)
                             {
                                 <tr class="gradeX">
-                                    <td>@counter.</td> 
+                                    <td>@counter.</td>
                                     <td>@objusr.FirstName</td>
                                     <td>@objusr.LastName</td>
                                     <td>@objusr.Email</td>
@@ -90,16 +90,17 @@
                                     {
                                         <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@objusr.ClientUserId','Active');">InActive</span></td>
                                     }
-                                <td>
-                                    @if (IsSA || objPermission.Customers >= (int)ModulePermission.View)
-                                    {
-                                        <a href="javascript:void(0);"><i class="fa fa-eye font-success"></i></a>
-                                    }
-                                    @if (IsSA || objPermission.Customers >= (int)ModulePermission.Full)
-                                    {
-                                        <a href="javascript:void(0);"><i class="fa fa-trash font-danger"></i></a>
-                                    }
-                                </td>
+                                    <td>
+                                        @if (IsSA || objPermission.Customers >= (int)ModulePermission.View)
+                                        {
+                                            <a href="/admin/customer/detail/@objusr.ClientUserId"><i class="fa fa-eye font-success"></i></a>
+                                        }
+                                        @if (IsSA || objPermission.Customers >= (int)ModulePermission.Full)
+                                        {
+                                            <a href="/admin/customer/points/@objusr.ClientUserId" title="points"><i class="fa fa-money font-info"></i></a>
+                                            <a href="javascript:void(0);"><i class="fa fa-trash font-danger"></i></a>
+                                        }
+                                    </td>
                                 </tr>
                                 counter++;
                             }

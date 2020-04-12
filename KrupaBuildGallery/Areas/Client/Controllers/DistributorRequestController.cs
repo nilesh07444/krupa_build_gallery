@@ -192,8 +192,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     return "AlreadyExist";
                 }
                 using (WebClient webClient = new WebClient())
-                {
-                    WebClient client = new WebClient();
+                {                  
                     Random random = new Random();
                     int num = random.Next(555555,999999);
                     string msg = "Your distributor request OTP code is " + num;

@@ -84,6 +84,21 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     clsClientSession.LastName = objClientUsr.LastName;
                     clsClientSession.ImagePath = objClientUsr.ProfilePicture;
                     clsClientSession.Email = objClientUsr.Email;
+
+                    var objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
+                    if(objGensetting != null)
+                    {
+                        tbl_PointDetails objPoint = new tbl_PointDetails();
+                        objPoint.ClientUserId = clsClientSession.UserID;
+                        objPoint.ExpiryDate = DateTime.UtcNow.AddMonths(6);
+                        objPoint.CreatedBy = clsClientSession.UserID;
+                        objPoint.CreatedDate = DateTime.UtcNow;
+                        objPoint.UsedPoints = 0;
+                        objPoint.Points = objGensetting.InitialPointCustomer;
+                        _db.tbl_PointDetails.Add(objPoint);
+                        _db.SaveChanges();
+                    }
+
                     UpdatCarts();
                     if (!string.IsNullOrEmpty(referer))
                     {

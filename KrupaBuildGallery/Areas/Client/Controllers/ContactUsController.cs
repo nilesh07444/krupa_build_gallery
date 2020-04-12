@@ -20,6 +20,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         }
         public ActionResult Index()
         {
+
             return View();
         }
         public ActionResult SendContactUsMessage(FormCollection frm)

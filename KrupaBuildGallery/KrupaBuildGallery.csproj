@@ -278,6 +278,9 @@
     <Compile Include="Model\tbl_DistributorRequestDetails.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\tbl_GeneralSetting.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\tbl_Godown.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
@@ -306,6 +309,9 @@
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\tbl_PaymentHistory.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_PointDetails.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\tbl_ProductItemImages.cs">
@@ -338,6 +344,7 @@
     <Compile Include="ViewModel\ContactUsMessageVM.cs" />
     <Compile Include="ViewModel\DashboardCountVM.cs" />
     <Compile Include="ViewModel\DistributorRequestVM.cs" />
+    <Compile Include="ViewModel\InvoiceItemVM.cs" />
     <Compile Include="ViewModel\ItemStockVM.cs" />
     <Compile Include="ViewModel\ItemTextVM.cs" />
     <Compile Include="ViewModel\LoginVM.cs" />
@@ -345,6 +352,7 @@
     <Compile Include="ViewModel\OrderItemsVM.cs" />
     <Compile Include="ViewModel\OrderVM.cs" />
     <Compile Include="ViewModel\PaymentHistoryVM.cs" />
+    <Compile Include="ViewModel\PointVM.cs" />
     <Compile Include="ViewModel\ProductItemVM.cs" />
     <Compile Include="ViewModel\ProductVM.cs" />
     <Compile Include="ViewModel\CategoryInfo.cs" />
@@ -3867,6 +3875,8 @@
     <Content Include="Areas\Admin\Views\AdminUser\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\LoginHistory\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Category\View.cshtml" />
+    <Content Include="Areas\Admin\Views\Customer\Detail.cshtml" />
+    <Content Include="Areas\Admin\Views\Customer\Points.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />

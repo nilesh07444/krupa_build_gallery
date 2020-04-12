@@ -6,10 +6,12 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using KrupaBuildGallery.ViewModel;
+using System.Net;
+using System.Configuration;
 
 namespace KrupaBuildGallery.Areas.Admin.Controllers
 {    
-    [CustomAuthorize]
+    [CustomAuthorize] 
     public class OrderController : Controller
     {
 		private readonly krupagallarydbEntities _db;
@@ -108,7 +110,76 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         {
             return Enum.GetName(typeof(OrderStatus), orderstatusid);
         }
-              
-        
+
+        [HttpPost]
+        public string ChangeOrderStatus(long OrderId,int Status,string Dispatchtime)
+        {
+            tbl_Orders objordr =  _db.tbl_Orders.Where(o => o.OrderId == OrderId).FirstOrDefault();
+            if(objordr != null)
+            {
+                objordr.OrderStatusId = Status;
+                long clientusrid = objordr.ClientUserId;
+                _db.SaveChanges();
+                if(Status == 2)
+                {
+                    tbl_ClientUsers objclntusr = _db.tbl_ClientUsers.Where(o => o.ClientUserId == clientusrid).FirstOrDefault();
+                    if (objclntusr != null)
+                    {
+                        using (WebClient webClient = new WebClient())
+                        {
+                            string msg = "Your order no."+ objordr.OrderId+" has been confirmed. We will dispatch your order within " + Dispatchtime;
+                            string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objclntusr.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                            var json = webClient.DownloadString(url);
+                            if (json.Contains("invalidnumber"))
+                            {
+                                return "InvalidNumber";
+                            }
+                            else
+                            {
+                                if (!string.IsNullOrEmpty(objclntusr.Email))
+                                {
+                                    string FromEmail = ConfigurationManager.AppSettings["FromEmail"];
+                                  
+                                    string msg1 = "Your order #" + objordr.OrderId + " has been confirmed. We will dispatch your order within " + Dispatchtime;
+                                    clsCommon.SendEmail(objclntusr.Email, FromEmail, "Your Order has been confirmed - Krupa Build Gallery", msg1);
+                                }
+                            }
+
+                        }
+                    }
+                }
+                else if(Status == 3)
+                {
+                    tbl_ClientUsers objclntusr = _db.tbl_ClientUsers.Where(o => o.ClientUserId == clientusrid).FirstOrDefault();
+                    if (objclntusr != null)
+                    {
+                        using (WebClient webClient = new WebClient())
+                        {                            
+                         
+                            string msg = "Your order no." + objordr.OrderId + " has been dispatched";
+                            string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objclntusr.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                            var json = webClient.DownloadString(url);
+                            if (json.Contains("invalidnumber"))
+                            {
+                                return "InvalidNumber";
+                            }
+                            else
+                            {
+                                if (!string.IsNullOrEmpty(objclntusr.Email))
+                                {
+                                    string FromEmail = ConfigurationManager.AppSettings["FromEmail"];
+                                  
+                                    string msg1 = "Your order #" + objordr.OrderId + " has been dispatched";
+                                    clsCommon.SendEmail(objclntusr.Email, FromEmail, "Your Order has been dispatched - Krupa Build Gallery", msg1);
+                                }
+                            }
+
+                        }
+                    }
+                }              
+            }
+            
+            return "";
+        }
     }
 }

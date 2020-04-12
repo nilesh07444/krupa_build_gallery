@@ -141,7 +141,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     string sessioncrtid = cartlist.FirstOrDefault().CartSessionId;
                     Response.Cookies["sessionkeyval"].Value = sessioncrtid;
                     Response.Cookies["sessionkeyval"].Expires = DateTime.Now.AddDays(30);
-                    var cartlistsessions = _db.tbl_Cart.Where(o => o.CartSessionId == cookiesessionval).ToList();
+                    var cartlistsessions = _db.tbl_Cart.Where(o => o.CartSessionId == cookiesessionval && o.ClientUserId == 0).ToList();
                     if (cartlistsessions != null && cartlistsessions.Count() > 0)
                     {
                         foreach (var obj in cartlistsessions)

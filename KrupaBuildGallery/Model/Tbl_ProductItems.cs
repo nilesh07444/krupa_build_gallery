@@ -38,5 +38,6 @@ namespace KrupaBuildGallery.Model
         public Nullable<System.DateTime> UpdatedDate { get; set; }
         public Nullable<decimal> ShippingCharge { get; set; }
         public string Tags { get; set; }
+        public Nullable<long> GodownId { get; set; }
     }
 }

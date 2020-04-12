@@ -1,0 +1,225 @@
+﻿@using KrupaBuildGallery.Helper;
+@using Newtonsoft.Json;
+@using KrupaBuildGallery.Model;
+
+@model List<KrupaBuildGallery.PointVM>
+@{
+    ViewBag.Title = "Points";
+
+    int counter = 1;
+}
+
+@{
+    UserPermissionVM objPermission = new UserPermissionVM();
+
+    int RoleId = Int32.Parse(clsAdminSession.RoleID.ToString());
+
+    if (RoleId != 1)
+    {
+        string strPermission = clsAdminSession.UserPermission;
+        objPermission = JsonConvert.DeserializeObject<UserPermissionVM>(strPermission, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+    }
+    bool IsSA = (RoleId == 1 ? true : false);
+}
+
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="page-header-left">
+                        <h3>
+                            Customer Point List
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Customer</li>
+                        <li class="breadcrumb-item active">Points List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h5>@ViewBag.CustomerName - Points List</h5>
+            </div>
+            <div class="card-body vendor-table">
+                <div class="btn-popup pull-right">
+                    <button type="button" class="btn btn-primary" id="btnAdd" onclick="AddPoints();">Add New Points</button>
+                </div>
+                <table class="display" id="basic-1">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Points</th>
+                            <th>Used Points</th>
+                            <th>Expiry Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            foreach (KrupaBuildGallery.PointVM objPooint in Model)
+                            {
+                                <tr class="gradeX">
+                                    <td>@counter.</td>
+                                    <td>@objPooint.Points</td>
+                                    <td>@objPooint.UsedPoints</td>
+                                    <td>@objPooint.ExpiryDate.ToString("MMM dd,yyyy")</td>
+                                    <td>
+                                        @if (IsSA || objPermission.Customers >= (int)ModulePermission.Full)
+                                        {
+                                            if (objPooint.UsedPoints == 0)
+                                            {
+                                                <a href="javascript:void(0);" onclick="fnDeletePoint('@objPooint.PointId')"><i class="fa fa-trash font-danger"></i></a>
+                                            }
+                                        }
+                                    </td>
+                                </tr>
+                                counter++;
+                            }
+
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+</div>
+<!-- Delete Modal -->
+<div class="modal fade open" id="deletePointModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete Confirm</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete ?
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="hdnDeletePoint" />
+                <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
+                <button id="btnDeletePoint" class="btn btn-primary" type="button">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Delete modal -->
+<!-- Add Point Modal -->
+<div class="modal fade open" id="addPointModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Add Points</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                Points: <input type="number" id="txtpoints" class="form-control" value="" min="1" placeholder="Enter Points" />
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="hdnClientUserId" value="@ViewBag.ClientUserId" />
+                <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
+                <button id="btnAddPoints" class="btn btn-primary" type="button">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Add Point modal -->
+<script>
+    function fnDeletePoint(pointid) {
+        jQuery("#hdnDeletePoint").val(pointid);
+        $('#deletePointModal').modal('show');
+    }
+
+    function AddPoints() {
+        $('#addPointModal').modal('show');
+        $("#txtpoints").val("");
+    }
+    //jQuery(window).on("load", function () {
+    //    StopLoading();
+    //});
+
+    jQuery(document).on("click", "#btnDeletePoint", function () {
+
+        var pointid = jQuery("#hdnDeletePoint").val();
+        if (pointid != "" && pointid != null) {
+            $('#deletePointModal').modal('hide');
+
+            StartLoading();
+
+            var URL = '@Url.Action("DeletePoints", "Customer")';
+            $.ajax({
+                type: 'POST',
+                async: true,
+                url: URL + "?PointId=" + pointid,
+                success: function (result) {
+                    if (result == "success") {
+                        alert("Points deleted successfully");
+                        window.location.reload();
+                    }
+                    else if (result == "notfound") {
+                        alert("Role Not Found");
+                    }
+                    else {
+                        alert("Something went wrong. Please try again");
+                    }
+
+                   StopLoading();
+                },
+                error: function (resultData) {
+                    StopLoading();
+                }
+            });
+        }
+    });
+
+    jQuery(document).on("click", "#btnAddPoints", function () {
+
+        var clientuserid = jQuery("#hdnClientUserId").val();
+        if ($("#txtpoints").val() == "" || parseInt($("#txtpoints").val()) <= 0) {
+            alert("Please Enter Valid Points");
+            return;
+        }
+    $('#addPointModal').modal('hide');
+
+            StartLoading();
+
+            var URL = '@Url.Action("AddPoints", "Customer")';
+            $.ajax({
+                type: 'POST',
+                async: true,
+                url: URL + "?ClientUserId=" + clientuserid+"&Points="+$("#txtpoints").val() ,
+                success: function (result) {
+                    if (result == "success") {
+                        alert("Points Added successfully");
+                        window.location.reload();
+                    }
+                    else if (result == "notfound") {
+                        alert("Role Not Found");
+                    }
+                    else {
+                        alert("Something went wrong. Please try again");
+                    }
+
+                   StopLoading();
+                },
+                error: function (resultData) {
+                    StopLoading();
+                }
+            });
+    });
+
+</script>

@@ -51,5 +51,7 @@ namespace KrupaBuildGallery.Model
         public DbSet<tbl_AdminRoles> tbl_AdminRoles { get; set; }
         public DbSet<tbl_AdminRoleModules> tbl_AdminRoleModules { get; set; }
         public DbSet<tbl_AdminUsers> tbl_AdminUsers { get; set; }
+        public DbSet<tbl_PointDetails> tbl_PointDetails { get; set; }
+        public DbSet<tbl_GeneralSetting> tbl_GeneralSetting { get; set; }
     }
 }

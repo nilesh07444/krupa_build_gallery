@@ -103,21 +103,24 @@
                                 <div class="label-wrapper"><label class="control-label">Order Status:</label></div>
                             </div>
                             <div class="col-md-9">
-                                <div class="form-text-row">@Model.OrderStatus</div>
+                                <div class="form-text-row" id="dvorderstatus" >@Model.OrderStatus</div>
                                 @*<button type="button" name="" id="cancelorder" class="btn bg-red" style="margin-right: 3px;">
-            Cancel order
-        </button>*@
+                                        Cancel order
+                                    </button>*@
                                 @if (Model.OrderStatusId == 1)
                                 {
-                            <button type="button" name="btnChangeOrderStatus" id="btnChangeOrderStatus" onclick="changestatus('Confirmed', 2,'@Model.OrderId');" class="btn btn-primary" style="display: inline-block;">
-                                Change status to Confirmed
-                            </button>
+                                    <button type="button" name="btnChangeOrderStatustoconfirm" id="btnChangeOrderStatustoconfirm" onclick="changestatus('Confirmed', 2,'@Model.OrderId');" class="btn btn-primary" style="display: inline-block;">
+                                        Change status to Confirmed
+                                    </button>
+                                    <button type="button" name="btnChangeOrderStatustodispatched" id="btnChangeOrderStatustodispatched" class="btn btn-primary" onclick="changestatus('Dispatched',3,'@Model.OrderId');" style="display: none;">
+                                        Change status to Dispatched
+                                    </button>
                                 }
                                 else if (Model.OrderStatusId == 2)
                                 {
-                            <button type="button" name="btnChangeOrderStatus" id="btnChangeOrderStatus" class="btn btn-primary" onclick="changestatus('Confirmed', 2,'@Model.OrderId');" style="display: inline-block;">
-                                Change status to Dispatched
-                            </button>
+                                    <button type="button" name="btnChangeOrderStatustodispatched" id="btnChangeOrderStatustodispatched" class="btn btn-primary" onclick="changestatus('Dispatched',3,'@Model.OrderId');" style="display: inline-block;">
+                                        Change status to Dispatched
+                                    </button>
                                 }
 
                             </div>
@@ -146,7 +149,7 @@
                                 <div class="form-text-row"></div>
                             </div>
                         </div>
-                        <br/>
+                        <br />
                         <div class="form-group">
                             <div class="col-md-3">
                                 <div class="label-wrapper"><label class="control-label">Name:</label></div>
@@ -231,14 +234,14 @@
                                                 </td>
                                                 <td>@objorderItem.ItemName</td>
                                                 <td>@objorderItem.Sku</td>
-                                                <td>₹ @Math.Round(objorderItem.Price,2)</td>
+                                                <td>₹ @Math.Round(objorderItem.Price, 2)</td>
                                                 <td>@objorderItem.Qty</td>
                                                 <td>₹ @objorderItem.GSTAmt</td>
                                                 <td>₹ @objorderItem.IGSTAmt</td>
-                                                <td>₹ @Math.Round((objorderItem.Price * objorderItem.Qty),2)</td>
+                                                <td>₹ @Math.Round((objorderItem.Price * objorderItem.Qty), 2)</td>
                                             </tr>
                                         }
-                                    }                              
+                                    }
 
                                 </tbody>
                             </table>
@@ -251,8 +254,99 @@
     <!-- Container-fluid Ends-->
 
 </div>
+<div class="modal fade open" id="changestatustoconfirmed" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Status Change to "Confirmed"</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                Order dispatch within <input type="text" id="txtdys" value="" placeholder="Enter like 3 days, 24 hours, 1 week etc" />
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="orderidshdn" />
+                <input type="hidden" id="statusids" />
+                <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
+                <button id="savestatustoconfirm" class="btn btn-primary" type="button">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade open" id="changestatustodisplatched" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Status Change to "Dispatched"</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to change status to dispatched ?
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="orderidshdn" />
+                <input type="hidden" id="statusids" />
+                <button id="savestatustodispatched" class="btn btn-primary" type="button">Yes</button>
+                <button data-dismiss="modal" class="btn btn-danger" type="button">No</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script>
-    function changestatus(status,statusid,orderid) {
-
+    function changestatus(status, statusid, orderid) {
+        if (statusid == 2) {
+            $("#changestatustoconfirmed").modal("show");
+            $("#changestatustoconfirmed #orderidshdn").val(orderid);
+            $("#changestatustoconfirmed #statusids").val(statusid);
+        }
+        else if (statusid == 3) { 
+            $("#changestatustodisplatched").modal("show");
+            $("#changestatustodisplatched #orderidshdn").val(orderid);
+            $("#changestatustodisplatched #statusids").val(statusid);
+        }
     }
+    jQuery(document).on("click", "#savestatustoconfirm", function () {
+        if ($("#changestatustoconfirmed #txtdys").val().trim() == "") {
+            alert("Please Enter displatch time");
+            return;
+        }
+        var URL = '/Admin/Order/ChangeOrderStatus';
+        jQuery.ajax({
+            type: 'POST',
+            async: true,
+            url: URL + "?OrderId=" + $("#changestatustoconfirmed  #orderidshdn").val() + "&Status=" + $("#changestatustoconfirmed #statusids").val() + "&Dispatchtime=" + $("#changestatustoconfirmed #txtdys").val(),
+            success: function (result) {
+                alert("Order Status Change to Confirmed");
+                $("#changestatustoconfirmed").modal("hide");
+                $("#btnChangeOrderStatustoconfirm").hide();
+                $("#btnChangeOrderStatustodispatched").show();
+                  $("#dvorderstatus").html("Confirmed");
+            },
+            error: function (error) {
+                console.log("error");
+                alert(error);
+              $("#changestatustoconfirmed").modal("hide");
+            }
+        });
+
+    });
+
+    jQuery(document).on("click", "#savestatustodispatched", function () {
+        var URL = '/Admin/Order/ChangeOrderStatus';
+        jQuery.ajax({
+            type: 'POST',
+            async: true,
+            url: URL + "?OrderId=" + $("#changestatustodisplatched  #orderidshdn").val() + "&Status=" + $("#changestatustodisplatched #statusids").val() + "&Dispatchtime=" + $("#changestatustodisplatched #txtdys").val(),
+            success: function (result) {
+                alert("Order Status Change to Dispatched");
+                $("#dvorderstatus").html("Dispatched");
+                 $("#btnChangeOrderStatustodispatched").hide();
+            },
+            error: function (resultData) {
+                console.log("error");
+
+            }
+        });
+
+    });
 </script>

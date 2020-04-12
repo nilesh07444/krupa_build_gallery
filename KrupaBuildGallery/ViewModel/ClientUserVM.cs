@@ -24,6 +24,11 @@ namespace KrupaBuildGallery.ViewModel
         public string PanCardNo { get; set; }
         public string GSTNo { get; set; }                  
         public List<OrderVM> OrderList { get; set; }
+        public string ShipAddress { get; set; }
+        public string ShipCity { get; set; }
+        public string ShipState { get; set; }
+        public string ShipPostalCode { get; set; }
+        public List<PointVM> PointsList { get; set; }
 
     }
 }

@@ -16,5 +16,6 @@ namespace KrupaBuildGallery
         public string shipstate { get; set; }
         public string shippincode { get; set; }
         public string Orderamount { get; set; }
+        public string shipamount { get; set; }
     }
 }

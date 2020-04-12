@@ -2,6 +2,8 @@
 
 @{
     ViewBag.Title = "Order Detail";
+    decimal SubTotl = 0;
+    decimal NetTotal = 0;
 }
 
 <style>
@@ -195,8 +197,8 @@
                                         <th>Sku</th>
                                         <th>Price</th>
                                         <th>Quantity</th>
-                                        <th>GST</th>
-                                        <th>IGST</th>
+                                        <th>Discount</th>
+                                        <th>GST</th>                                        
                                         <th>Total</th>
                                     </tr>
                                 </thead>
@@ -205,6 +207,8 @@
                                     {
                                         foreach (KrupaBuildGallery.ViewModel.OrderItemsVM objorderItem in Model.OrderItems)
                                         {
+                                            decimal Totl = Math.Round((objorderItem.Price * objorderItem.Qty) - objorderItem.Discount + objorderItem.GSTAmt, 2);
+                                            SubTotl = SubTotl + Totl;
                                             <tr>
                                                 <td>
                                                     @if (!string.IsNullOrEmpty(objorderItem.ItemImg))
@@ -227,13 +231,42 @@
                                                 <td>@objorderItem.Sku</td>
                                                 <td>₹ @Math.Round(objorderItem.Price, 2)</td>
                                                 <td>@objorderItem.Qty</td>
+                                                <td>₹ @objorderItem.Discount</td>
                                                 <td>₹ @objorderItem.GSTAmt</td>
-                                                <td>₹ @objorderItem.IGSTAmt</td>
-                                                <td>₹ @Math.Round((objorderItem.Price * objorderItem.Qty), 2)</td>
+                                                <td>₹ @Totl</td>
                                             </tr>
                                         }
                                     }
-
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>Sub Total</td>
+                                        <td>₹ @SubTotl</td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>Shipping Charge</td>
+                                        <td>₹ @Model.ShipmentCharge</td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>Total Net Amount</td>
+                                        <td>₹ @Model.OrderAmount</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>

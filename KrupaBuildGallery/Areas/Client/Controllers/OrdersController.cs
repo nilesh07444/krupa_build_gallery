@@ -80,7 +80,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             OrderShipClientPhone = p.OrderShipClientPhone,
                             OrderStatusId = p.OrderStatusId,
                             PaymentType = p.PaymentType,
-                            OrderDate = p.CreatedDate
+                            OrderDate = p.CreatedDate,
+                            ShipmentCharge = p.ShippingCharge.HasValue ? p.ShippingCharge.Value : 0
                         }).OrderByDescending(x => x.OrderDate).FirstOrDefault();
             if (objOrder != null)
             {
@@ -99,7 +100,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                                        Sku = p.Sku,
                                                        GSTAmt = p.GSTAmt.Value,
                                                        IGSTAmt = p.IGSTAmt.Value,
-                                                       ItemImg = c.MainImage
+                                                       ItemImg = c.MainImage,
+                                                       Discount = p.Discount.HasValue ? p.Discount.Value : 0
                                                    }).OrderByDescending(x => x.OrderItemId).ToList();
                 objOrder.OrderItems = lstOrderItms;
             }

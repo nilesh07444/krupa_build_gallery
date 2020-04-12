@@ -17,6 +17,7 @@ namespace KrupaBuildGallery
         public decimal GSTPer { get; set; }
         public decimal IGSTPer { get; set; }
         public int StockQty { get; set; }
+        public decimal ShippingCharge { get; set; }
 
     }
 }

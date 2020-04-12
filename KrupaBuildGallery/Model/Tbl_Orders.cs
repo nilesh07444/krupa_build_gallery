@@ -35,5 +35,8 @@ namespace KrupaBuildGallery.Model
         public string RazorpayOrderId { get; set; }
         public string RazorpayPaymentId { get; set; }
         public string RazorSignature { get; set; }
+        public Nullable<decimal> ShippingCharge { get; set; }
+        public Nullable<int> ShippingStatus { get; set; }
+        public Nullable<decimal> PointsUsed { get; set; }
     }
 }

@@ -77,12 +77,15 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 objProductItem.SubProductList = GetSubProductListByProductId(objProductItm.ProductId);
                 objProductItem.GST = GetGST();
                 objProductItem.GST_Per = objProductItm.GST_Per;
+                objProductItem.GodownList = GetGodownList();
+                objProductItem.GodownId = objProductItem.GodownId;
             }
             else
             {
                 objProductItem.CategoryList = GetCategoryList();
                 objProductItem.ProductList = new List<SelectListItem>();
                 objProductItem.SubProductList = new List<SelectListItem>();
+                objProductItem.GodownList = GetGodownList();
                 objProductItem.GST = GetGST();
             }
             //if (productItemVM != null && productItemVM.CategoryId > 0)
@@ -158,7 +161,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         objProductItem.CreatedDate = DateTime.UtcNow;
                         objProductItem.UpdatedBy = LoggedInUserId;
                         objProductItem.UpdatedDate = DateTime.UtcNow;
-
+                        objProductItem.GodownId = productItemVM.GodownId;
                         _db.tbl_ProductItems.Add(objProductItem);
                         _db.SaveChanges();
 
@@ -241,6 +244,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             productItemVM.ProductList = new List<SelectListItem>();
             productItemVM.SubProductList = new List<SelectListItem>();
             productItemVM.GST = GetGST();
+            productItemVM.GodownList = GetGodownList();
             return View(productItemVM);
         }
 
@@ -269,13 +273,15 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                   Sku = i.Sku,
                                   IsActive = i.IsActive,
                                   InitialQty = 1,
-                                  ShippingCharge = i.ShippingCharge.HasValue ? i.ShippingCharge.Value:0
+                                  ShippingCharge = i.ShippingCharge.HasValue ? i.ShippingCharge.Value:0,
+                                  GodownId = i.GodownId.HasValue ? i.GodownId.Value:0
                               }).FirstOrDefault();
 
             objProductItem.CategoryList = GetCategoryList();
             objProductItem.ProductList = GetProductListByCategoryId(objProductItem.CategoryId);
             objProductItem.SubProductList = GetSubProductListByProductId(objProductItem.ProductId);
             objProductItem.GST = GetGST();
+            objProductItem.GodownList = GetGodownList();
             return View(objProductItem);
         }
 
@@ -327,6 +333,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         objProductItem.IsPopularProduct = productItemVM.IsPopularProduct;
                         objProductItem.ShippingCharge = productItemVM.ShippingCharge;
                         objProductItem.UpdatedBy = LoggedInUserId;
+                        objProductItem.GodownId = productItemVM.GodownId;
                         objProductItem.UpdatedDate = DateTime.UtcNow;
                         _db.SaveChanges();
 
@@ -373,6 +380,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             productItemVM.ProductList = GetProductListByCategoryId(productItemVM.CategoryId);
             productItemVM.SubProductList = GetSubProductListByProductId(productItemVM.ProductId);
             productItemVM.GST = GetGST();
+            productItemVM.GodownList = GetGodownList();
             return View(productItemVM);
         }
          
@@ -522,6 +530,15 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                              }).ToList();
 
             return Json(itmtext);
+        }
+
+        public List<SelectListItem> GetGodownList()
+        {
+            var GodownList = _db.tbl_Godown.Where(x => x.IsActive && !x.IsDeleted)
+                         .Select(o => new SelectListItem { Value = SqlFunctions.StringConvert((double)o.GodownId).Trim(), Text = o.GodownName })
+                         .OrderBy(x => x.Text).ToList();
+
+            return GodownList;
         }
 
     }

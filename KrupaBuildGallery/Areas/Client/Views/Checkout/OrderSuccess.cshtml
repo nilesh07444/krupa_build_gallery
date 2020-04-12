@@ -1,6 +1,8 @@
 ﻿@model  KrupaBuildGallery.ViewModel.OrderVM
     @{ 
         decimal CartTotal = 0;
+        decimal Discount = 0;
+        decimal GSTTotal = 0;
     }
 <!-- thank-you section start -->
 <section class="section-b-space light-layout">
@@ -31,6 +33,8 @@
                         {
                             decimal ItemTotal = Convert.ToDecimal(item.Qty * item.Price);
                             CartTotal = CartTotal + ItemTotal;
+                            Discount = Discount + item.Discount;
+                            GSTTotal = GSTTotal + item.GSTAmt;
                             <div class="row product-order-detail">
                                 <div class="col-3">
                                     @if (!string.IsNullOrEmpty(item.ItemImg))
@@ -64,7 +68,7 @@
                                 <div class="col-3 order_detail">
                                     <div>
                                         <h4>price</h4>
-                                        <h5>@ItemTotal</h5>
+                                        <h5>₹ @ItemTotal</h5>
                                     </div>
                                 </div>
                             </div>                           
@@ -73,11 +77,21 @@
                     }               
                     <div class="total-sec">
                         <ul>
-                            <li>subtotal <span>@CartTotal</span></li>                                                        
+                            <li>subtotal <span>₹ @CartTotal</span></li>
+                            @if (Model.ShipmentCharge == 0)
+                            {
+                                <li>shipping charge <span>-</span></li>
+                            }
+                            else
+                            {
+                                <li>shipping charge <span>₹ @Model.ShipmentCharge</span></li>
+                            }
+                            <li>Total GST <span>₹ @GSTTotal</span></li>
+                            <li>Total Discount <span>₹ @Discount</span></li>
                         </ul>
                     </div>
                     <div class="final-total">
-                        <h3>total <span>@CartTotal</span></h3>
+                        <h3>total <span>₹ @Model.OrderAmount</span></h3>
                     </div>
                 </div>
             </div>

@@ -78,5 +78,8 @@ namespace KrupaBuildGallery
         [Display(Name = "Shipping Charge")]
         public decimal ShippingCharge { get; set; }
         public string Tags { get; set; }
+        public List<SelectListItem> GodownList { get; set; }
+        [Display(Name = "Godown")]
+        public long GodownId { get; set; }
     }
 }
