@@ -290,7 +290,7 @@
         </div>
     </div>
     <!-- Container-fluid Ends-->
-
+    <input type="hidden" id="hdnShippingStatus" value="@Model.ShippingStatus" />
 </div>
 <div class="modal fade open" id="changestatustoconfirmed" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -356,6 +356,10 @@
             $("#changestatustoconfirmed #statusids").val(statusid);
         }
         else if (statusid == 3) { 
+            if ($("#hdnShippingStatus").val() == "1") {
+                alert("Shipmment Charges Remaining");
+                return;
+            }
             $("#changestatustodisplatched").modal("show");
             $("#changestatustodisplatched #orderidshdn").val(orderid);
             $("#changestatustodisplatched #statusids").val(statusid);

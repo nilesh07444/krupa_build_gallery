@@ -81,7 +81,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                              OrderStatusId = p.OrderStatusId,
                              PaymentType = p.PaymentType,
                              OrderDate = p.CreatedDate,
-                             ShipmentCharge = p.ShippingCharge.HasValue ? p.ShippingCharge.Value : 0
+                             ShipmentCharge = p.ShippingCharge.HasValue ? p.ShippingCharge.Value : 0,
+                             ShippingStatus = p.ShippingStatus.HasValue ? p.ShippingStatus.Value : 2
                          }).OrderByDescending(x => x.OrderDate).FirstOrDefault();          
             if(objOrder != null)
             {   
