@@ -1,4 +1,5 @@
 ﻿@using KrupaBuildGallery.Model;
+@using KrupaBuildGallery.Helper;
 @model List<CartVM>
 @{
     ViewBag.Title = "Cart";
@@ -6,8 +7,8 @@
     decimal CartTotal = 0;
 }
 <style>
-    .clrerror{
-        color:red !important;
+    .clrerror {
+        color: red !important;
     }
 </style>
 
@@ -59,7 +60,7 @@
                                     decimal ItemTotal = Convert.ToDecimal(item.Qty * item.Price);
                                     CartTotal = CartTotal + ItemTotal;
                                     string clsclr = "";
-                                    if(item.Qty > item.StockQty)
+                                    if (item.Qty > item.StockQty)
                                     {
                                         clsclr = "clrerror";
                                     }
@@ -74,12 +75,12 @@
                                                 }
                                                 else
                                                 {
-                                                    <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                                    <img src="@ErrorMessage.DefaultImagePath" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
                                                 }
                                             }
                                             else
                                             {
-                                                <img src="~/Images/default_image.png" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                                <img src="@ErrorMessage.DefaultImagePath" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
                                             }
                                         </td>
                                         <td>
@@ -152,13 +153,13 @@
                     <a href="javascript:void(0);" onclick="UpdateCart();" class="btn btn-solid" style="margin-right:10px;">Update Cart</a>
                     @if (clsClientSession.UserID > 0)
                     {
-                          <a href="/checkout" class="btn btn-solid">check out</a>
+                        <a href="/checkout" class="btn btn-solid">check out</a>
                     }
                     else
                     {
                         <a href="/login?referer=checkout" class="btn btn-solid">checkout</a>
                     }
-                    
+
                 </div>
 
             }
@@ -220,8 +221,8 @@
         $(".clsttl_" + idd).attr("data-attrttls", totll);
         var ttlll = 0;
         $(".clspr").each(function () {
-          ttlll = ttlll + parseFloat($(this).attr("data-attrttls"));
+            ttlll = ttlll + parseFloat($(this).attr("data-attrttls"));
         })
-        $(".clsttlfull").html("₹ " +ttlll);
+        $(".clsttlfull").html("₹ " + ttlll);
     })
 </script>
