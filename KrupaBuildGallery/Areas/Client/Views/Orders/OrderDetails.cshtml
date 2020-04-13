@@ -1,8 +1,10 @@
 ﻿@using KrupaBuildGallery.Helper;
 @using KrupaBuildGallery.Model;
+@using KrupaBuildGallery.ViewModel;
 @model  KrupaBuildGallery.ViewModel.OrderVM
 
 @{
+    List<PaymentHistoryVM> lstpayments = ViewData["lstPaymentHist"] as List<PaymentHistoryVM>;
     ViewBag.Title = "Order Detail";
     decimal SubTotl = 0;
     decimal NetTotal = 0;
@@ -111,13 +113,12 @@
                             </div>
                             <div class="col-md-9">
                                 <div class="form-text-row">@Model.OrderStatus</div>
-                                @if (Model.OrderStatusId != 2)
+                                @if (Model.OrderStatusId != 3)
                                 {
-                                    <button type="button" name="" id="cancelorder" class="btn bg-red" style="margin-right: 3px;">
+                                    <button type="button" name="" id="cancelorder" class="btn bg-red" style="margin-right: 3px;" onclick="cancelorder('@Model.OrderId');">
                                         Cancel order
                                     </button>
                                 }
-
                             </div>
                         </div>
                         <div class="form-group">
@@ -198,7 +199,7 @@
                                 <div class="label-wrapper"><label class="control-label">Shipping Charge:</label></div>
                             </div>
                             <div class="col-md-9">
-                                @if (Model.ShippingStatus == 1)
+                                @if (Model.ShippingStatus == 1 && Model.ShipmentCharge != 0)
                                 {
                                     <button type="button" name="" id="rzp-placeorder" class="btn bg-red" style="margin-right: 3px;background-color: #bbc5ff;border-radius: 20px;">
                                         Pay Shipping Charge - ₹ @Model.ShipmentCharge
@@ -210,6 +211,20 @@
                                 }
                             </div>
                         </div>
+                        @if (clsClientSession.RoleID == 2 && Model.OrderAmountDue > 0)
+                        {
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <div class="label-wrapper"><label class="control-label">Amount Due to Pay:</label></div>
+                                </div>
+                                <div class="col-md-9">
+                                    <button type="button" name="" id="makepayment" onclick="makepayment('@Model.OrderAmountDue', '@Model.OrderId');" class="btn bg-red" style="margin-right: 3px;background-color: #bbc5ff;border-radius: 20px;">
+                                        Pay Due Amount - ₹ @Model.OrderAmountDue
+                                    </button>
+                                </div>
+                            </div>
+                        }
+
                     </div>
                     <div class="card-header">
                         <h5>Order Items</h5>
@@ -298,11 +313,76 @@
                             </table>
                         </div>
                     </div>
+                    <div class="card-header">
+                        <h5>Payment History</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-body vendor-table" style="overflow-x:auto;">
+                            <table class="table cart-table table-responsive-xs">
+                                <thead>
+                                    <tr class="table-head">
+                                        <th>Payment Date</th>
+                                        <th>Payment Mode</th>
+                                        <th>Payment Amount</th>
+                                        <th>Payment Amount Due</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (lstpayments != null && lstpayments.Count > 0)
+                                    {
+                                        foreach (KrupaBuildGallery.ViewModel.PaymentHistoryVM objpaymnt in lstpayments)
+                                        {
+                                            <tr>
+                                                <td>@objpaymnt.PaymentDate.ToString("MMM dd,yyyy")</td>
+                                                <td>@objpaymnt.Paymentthrough</td>
+                                                <td>₹ @Math.Round(objpaymnt.AmountPaid, 2)</td>
+                                                <td>₹ @Math.Round(objpaymnt.AmountDue, 2)</td>
+                                                <td>
+                                                    <a href="javascript:void(0)" onclick="printReceipt('@objpaymnt.PaymentHistoryId')"><i class="fa fa-print font-success"></i></a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td colspan="5" style="text-align:center;">
+                                                No Payment History...
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+<div class="modal fade open" id="paymentmodel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Make Payment</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <label>Due Amount</label><input type="number" id="amountdue" readonly value="@Model.OrderAmountDue" class="form-control" />
+                <label>Enter Amount to Pay</label><input type="number" id="amountopay" value="" class="form-control" />
+                <span class="field-validation-valid text-danger" id="errormsgamountpaid"></span>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="hdnOrderidsforpaymemt" />                
+                <button data-dismiss="modal" class="btn btn-danger" type="button" onclick="$('#hdnotptxt').val('');$('#otptxt').val('');">Close</button>
+                <button class="btn btn-primary" type="button" onclick="makepaymentdue();">Make Payment</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="display: none;" id="dvPrint">
+</div>
 <!--section end-->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
@@ -341,12 +421,12 @@
     }
 
     function SaveShippingCharge(razorpymentid, razororderid, razorsignature, orderid) {
-           var URL = '@Url.Action("SaveShippingCharge", "Orders")';    
+           var URL = '@Url.Action("SaveShippingCharge", "Orders")';
     jQuery.ajax({
         type: 'POST',
         async: true,
         url: URL + "?razorpymentid=" + razorpymentid + "&razororderid=" + razororderid + "&razorsignature=" + razorsignature + "&orderid=" + orderid,
-        success: function (result) {  
+        success: function (result) {
             if (result == "Success") {
                 msgdisplay("Shipping Charge Paid Successfully..");
                 location.reload();
@@ -354,13 +434,112 @@
             else {
                  msgdisplay("Problem in payment. Please contact to support");
             }
-        
+
         },
         error: function (resultData) {
             debugger;
             console.log("error");
-            
+
+        }
+     });
+   }
+
+    function cancelorder(orderid) {
+         var URL = '@Url.Action("CancelOrder", "Orders")';
+     jQuery.ajax({
+        type: 'POST',
+        async: true,
+        url: URL + "?orderid=" + orderid,
+        success: function (result) {
+            if (result == "Success") {
+                msgdisplay("Shipping Charge Paid Successfully..");
+                location.reload();
+            }
+            else {
+                 msgdisplay("Problem in payment. Please contact to support");
+            }
+
+        },
+        error: function (resultData) {
+            debugger;
+            console.log("error");
+
         }
     });
     }
+     function printReceipt(paymmentid) {
+           $("#dvPrint").load('/client/orders/GenerateReceipt?PaymentId='+paymmentid, function () {                    
+            w = window.open();
+            w.document.write($("#dvPrint").html());               
+               setTimeout(function () {
+                   w.print();
+                   w.close();
+               },50);
+            
+        });
+    }
+
+    function makepayment(dueamount,orderid) {
+        $("#paymentmodel").modal("show");
+        $("#amountopay").val(dueamount);
+        $("#hdnOrderidsforpaymemt").val(orderid);
+    }
+
+    function makepaymentdue() {
+          var amtdue = parseFloat($("#amountdue").val());        
+        if ($("#amountopay").val().trim() == "" || parseFloat($("#amountopay").val()) <= 0) {
+            $("#errormsgamountpaid").show();
+            $("#errormsgamountpaid").html("Please enter amount to pay more than 0");
+            return;
+        }
+        else if (parseFloat($("#amountopay").val()) > amtdue) {
+            $("#errormsgamountpaid").show();
+            $("#errormsgamountpaid").html("Amount to pay is more than due amount");
+            return;
+        }
+          
+          $.ajax({
+                url: '@Url.Action("CreateRazorPaymentOrder", "Orders")',
+                type: "post",
+                dataType: "html",
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({ Amount: $("#amountopay").val(),description:"Payments Order No. "+$("#hdnOrderidsforpaymemt").val()}), //add parameter
+                success: function (data) {
+                    //success
+                    $('.dvrazorpayscript').html(data); //populate the tab content.
+
+                },
+                error: function () {
+                    alert("error");
+                }
+            });
+    }
+
+     function MakepaymentSave(razorpymentid, razororderid, razorsignature) {
+           var URL = '@Url.Action("MakePayment", "Orders")';
+    jQuery.ajax({
+        type: 'POST',
+        async: true,
+        url: URL + "?razorpymentid=" + razorpymentid + "&razororderid=" + razororderid + "&razorsignature=" + razorsignature + "&orderid=" + $("#hdnOrderidsforpaymemt").val() + "&amount="+$("#amountopay").val(),
+        success: function (result) {
+            if (result == "Success") {
+                msgdisplay("Payment Successfully..");
+                location.reload();
+            }
+            else {
+                 msgdisplay("Problem in payment. Please contact to support");
+            }
+
+        },
+        error: function (resultData) {
+            debugger;
+            console.log("error");
+
+        }
+     });
+   }
+  
 </script>
+<div class="dvrazorpayscript">
+
+</div>

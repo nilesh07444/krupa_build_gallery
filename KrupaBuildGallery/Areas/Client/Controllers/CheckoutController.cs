@@ -163,7 +163,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 decimal disc = 0;// Math.Round((totalItembasicprice * 5) / 100, 2);
                                 ShippingChargeTotal = ShippingChargeTotal + (objcr.ShippingCharge * objcr.Qty);
                                 decimal beforetaxamount = Math.Round(totalItembasicprice - disc,2);
-                                decimal gstamt = Math.Round(beforetaxamount * objcr.GSTPer, 2);
+                                decimal gstamt = Math.Round((beforetaxamount * objcr.GSTPer) / 100, 2);
                                 decimal AfterTax = beforetaxamount + gstamt;
                                 InvoiceItemVM objInvItm = new InvoiceItemVM();
                                 objInvItm.ItemName = objcr.ItemName;

@@ -28,7 +28,7 @@
     };
 
     if ($("#rzp-placeorder").length > 0) {
-        $(document).on('click', '#rzp-placeorder', function (e) {
+        $(document).off('click').on('click', '#rzp-placeorder', function (e) {           
             $(".errorcls").html("");
             var flg = true;
             //$("input[name=shipfirstname]").siblings('.errorcls')

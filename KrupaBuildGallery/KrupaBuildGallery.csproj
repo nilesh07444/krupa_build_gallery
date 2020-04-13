@@ -3877,6 +3877,7 @@
     <Content Include="Areas\Admin\Views\Category\View.cshtml" />
     <Content Include="Areas\Admin\Views\Customer\Detail.cshtml" />
     <Content Include="Areas\Admin\Views\Customer\Points.cshtml" />
+    <Content Include="Areas\Client\Views\Orders\_Razorpaymentpartial.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />

@@ -122,7 +122,7 @@
                                         foreach (KrupaBuildGallery.ViewModel.PaymentHistoryVM objpaymnt in Model)
                                         {
                                             <tr>
-                                                <td>@objpaymnt.PaymentDate.ToString("MMM dd,yyyyy")</td>
+                                                <td>@objpaymnt.PaymentDate.ToString("MMM dd,yyyy")</td>
                                                 <td>@objpaymnt.Paymentthrough</td>
                                                 <td>₹ @Math.Round(objpaymnt.AmountPaid, 2)</td>
                                                 <td>₹ @Math.Round(objpaymnt.AmountDue, 2)</td>
@@ -132,7 +132,7 @@
                                             </tr>
                                         }
                                     }
-
+                                  
                                 </tbody>
                             </table>
                         </div>
