@@ -160,6 +160,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         objProductItem.CreatedBy = LoggedInUserId;
                         objProductItem.CreatedDate = DateTime.UtcNow;
                         objProductItem.UpdatedBy = LoggedInUserId;
+                        objProductItem.HSNCode = productItemVM.HSNCode;
                         objProductItem.UpdatedDate = DateTime.UtcNow;
                         objProductItem.GodownId = productItemVM.GodownId;
                         _db.tbl_ProductItems.Add(objProductItem);
@@ -273,6 +274,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                   Sku = i.Sku,
                                   IsActive = i.IsActive,
                                   InitialQty = 1,
+                                  HSNCode = i.HSNCode,
                                   ShippingCharge = i.ShippingCharge.HasValue ? i.ShippingCharge.Value:0,
                                   GodownId = i.GodownId.HasValue ? i.GodownId.Value:0
                               }).FirstOrDefault();
@@ -334,6 +336,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         objProductItem.ShippingCharge = productItemVM.ShippingCharge;
                         objProductItem.UpdatedBy = LoggedInUserId;
                         objProductItem.GodownId = productItemVM.GodownId;
+                        objProductItem.HSNCode = productItemVM.HSNCode;
                         objProductItem.UpdatedDate = DateTime.UtcNow;
                         _db.SaveChanges();
 

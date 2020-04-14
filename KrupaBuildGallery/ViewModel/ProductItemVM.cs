@@ -81,5 +81,8 @@ namespace KrupaBuildGallery
         public List<SelectListItem> GodownList { get; set; }
         [Display(Name = "Godown")]
         public long GodownId { get; set; }
+
+        [Display(Name = "HSN Code")]
+        public string HSNCode { get; set; }
     }
 }

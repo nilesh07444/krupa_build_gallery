@@ -18,7 +18,7 @@ namespace KrupaBuildGallery.ViewModel
         public decimal IGSTAmt { get; set; }
         public string ItemImg { get; set; }
         public decimal GST_Per { get; set; }
-
+        public string HSNCode { get;set; }
         public decimal Discount { get; set; }
     }
 }

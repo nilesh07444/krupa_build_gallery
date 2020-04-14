@@ -388,7 +388,11 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             OrderShipClientPhone = p.OrderShipClientPhone,
                             OrderStatusId = p.OrderStatusId,
                             PaymentType = p.PaymentType,
-                            OrderDate = p.CreatedDate
+                            OrderDate = p.CreatedDate,
+                            InvoiceNo = p.InvoiceNo.Value,
+                            InvoiceYear = p.InvoiceYear,
+                            ShipmentCharge = p.ShippingCharge.HasValue ? p.ShippingCharge.Value :0,
+                            ShippingStatus = p.ShippingStatus.HasValue ? p.ShippingStatus.Value : 2
                         }).OrderByDescending(x => x.OrderDate).FirstOrDefault();
             if (objOrder != null)
             {
@@ -408,7 +412,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                                        GSTAmt = p.GSTAmt.Value,
                                                        IGSTAmt = p.IGSTAmt.Value,
                                                        ItemImg = c.MainImage,
-                                                       GST_Per = c.GST_Per
+                                                       GST_Per = c.GST_Per,
+                                                       Discount = p.Discount.HasValue ? p.Discount.Value : 0
                                                    }).OrderByDescending(x => x.OrderItemId).ToList();
                 objOrder.OrderItems = lstOrderItms;
                 string file = Server.MapPath("~/Invoice.html");
@@ -417,12 +422,13 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 FileInfo fi = new FileInfo(file);
                 sr = System.IO.File.OpenText(file);
                 htmldata += sr.ReadToEnd();
-                string InvoiceNo = "INV-" + objOrder.OrderId;
+                string InvoiceNo = "S&S/" + objOrder.InvoiceYear+"/"+objOrder.InvoiceNo;
                 string DateOfInvoice = objOrder.OrderDate.ToString("dd-MM-yyyy");
                 string orderNo = objOrder.OrderId.ToString(); ;
                 string ClientUserName = objOrder.ClientUserName;
                 string ItemHtmls = "";
                 decimal TotalFinal = 0;
+                decimal SubTotal = 0;
                 StringBuilder srBuild = new StringBuilder();
                 if (lstOrderItms != null && lstOrderItms.Count() > 0)
                 {
@@ -430,21 +436,23 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
                     foreach (var objItem in lstOrderItms)
                     {
-                        decimal InclusiveGST = Math.Round(objItem.Price - objItem.Price * (100 / (100 + objItem.GST_Per)), 2);
-                        decimal PreGSTPrice = Math.Round(objItem.Price - InclusiveGST, 2);
-                        decimal basicTotalPrice = Math.Round(PreGSTPrice * objItem.Qty, 2);
+                       // decimal InclusiveGST = Math.Round(objItem.Price - objItem.Price * (100 / (100 + objItem.GST_Per)), 2);
+                     //   decimal PreGSTPrice = Math.Round(objItem.Price - InclusiveGST, 2);
+                        decimal basicTotalPrice = Math.Round(objItem.Price * objItem.Qty, 2);
                         decimal SGST = Math.Round(Convert.ToDecimal(objItem.GST_Per / 2), 2);
                         decimal CGST = Math.Round(Convert.ToDecimal(objItem.GST_Per / 2), 2);
-                        decimal SGSTAmt = Math.Round((basicTotalPrice * SGST) / 100, 2);
-                        decimal CGSTAmt = Math.Round((basicTotalPrice * CGST) / 100, 2);
-                        decimal FinalPrice = Math.Round(basicTotalPrice + SGSTAmt + CGSTAmt, 2);
+                        decimal SGSTAmt = Math.Round(objItem.GSTAmt/2, 2);
+                        decimal CGSTAmt = Math.Round(objItem.GSTAmt/2, 2);
+                        decimal FinalPrice = Math.Round(basicTotalPrice + objItem.GSTAmt - objItem.Discount, 2);
                         TotalFinal = TotalFinal + FinalPrice;
                         srBuild.Append("<tr>");
                         srBuild.Append("<td>" + cntsrNo + "</td>");
                         srBuild.Append("<td>" + objItem.ItemName + "</td>");
+                        srBuild.Append("<td>" + objItem.HSNCode + "</td>");
                         srBuild.Append("<td class=\"text-center\">" + objItem.Qty + "</td>");
-                        srBuild.Append("<td class=\"text-center\">" + PreGSTPrice + "</td>");
+                        srBuild.Append("<td class=\"text-center\">" + objItem.Price + "</td>");
                         srBuild.Append("<td class=\"text-center\">" + basicTotalPrice + "</td>");
+                        srBuild.Append("<td class=\"text-center\">" + objItem.Discount + "</td>");
                         srBuild.Append("<td class=\"text-center\">" + CGST + "</td>");
                         srBuild.Append("<td class=\"text-center\">" + CGSTAmt + "</td>");
                         srBuild.Append("<td class=\"text-center\">" + SGST + "</td>");
@@ -456,8 +464,10 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
                     }
                 }
+                SubTotal = TotalFinal;
+                TotalFinal = TotalFinal + objOrder.ShipmentCharge;
                 ItemHtmls = srBuild.ToString();
-                newhtmldata = htmldata.Replace("--INVOICENO--", InvoiceNo).Replace("--INVOICEDATE--", DateOfInvoice).Replace("--ORDERNO--", orderNo).Replace("--CLIENTUSERNAME--", ClientUserName).Replace("--CLIENTUSERADDRESS--", objOrder.ClientAddress).Replace("--CLIENTUSEREMAIL--", objOrder.ClientEmail).Replace("--CLIENTUSERMOBILE--", objOrder.ClientMobileNo).Replace("--ITEMLIST--", ItemHtmls).Replace("--TOTAL--", Math.Round(TotalFinal, 2).ToString());
+                newhtmldata = htmldata.Replace("--INVOICENO--", InvoiceNo).Replace("--INVOICEDATE--", DateOfInvoice).Replace("--ORDERNO--", orderNo).Replace("--CLIENTUSERNAME--", ClientUserName).Replace("--CLIENTUSERADDRESS--", objOrder.ClientAddress).Replace("--CLIENTUSEREMAIL--", objOrder.ClientEmail).Replace("--CLIENTUSERMOBILE--", objOrder.ClientMobileNo).Replace("--ITEMLIST--", ItemHtmls).Replace("--SHIPPING--", Math.Round(objOrder.ShipmentCharge, 2).ToString()).Replace("--SUBTOTAL--", Math.Round(SubTotal, 2).ToString()).Replace("--TOTAL--", Math.Round(TotalFinal, 2).ToString());
 
             }
 

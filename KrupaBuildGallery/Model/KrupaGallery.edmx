@@ -361,6 +361,8 @@
           <Property Name="ShippingCharge" Type="decimal" Precision="18" Scale="2" />
           <Property Name="ShippingStatus" Type="int" />
           <Property Name="PointsUsed" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="InvoiceNo" Type="bigint" />
+          <Property Name="InvoiceYear" Type="nvarchar" MaxLength="150" />
         </EntityType>
         <EntityType Name="tbl_PaymentHistory">
           <Key>
@@ -434,6 +436,7 @@
           <Property Name="ShippingCharge" Type="decimal" Precision="18" Scale="2" />
           <Property Name="Tags" Type="nvarchar(max)" />
           <Property Name="GodownId" Type="bigint" />
+          <Property Name="HSNCode" Type="nvarchar" MaxLength="150" />
         </EntityType>
         <EntityType Name="tbl_Products">
           <Key>
@@ -834,6 +837,8 @@
           <Property Name="ShippingCharge" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="ShippingStatus" Type="Int32" />
           <Property Name="PointsUsed" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="InvoiceNo" Type="Int64" />
+          <Property Name="InvoiceYear" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_PaymentHistory">
           <Key>
@@ -895,6 +900,7 @@
           <Property Name="ShippingCharge" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="Tags" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="GodownId" Type="Int64" />
+          <Property Name="HSNCode" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_Products">
           <Key>
@@ -1365,6 +1371,8 @@
           <EntitySetMapping Name="tbl_Orders">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_Orders">
               <MappingFragment StoreEntitySet="tbl_Orders">
+                <ScalarProperty Name="InvoiceYear" ColumnName="InvoiceYear" />
+                <ScalarProperty Name="InvoiceNo" ColumnName="InvoiceNo" />
                 <ScalarProperty Name="PointsUsed" ColumnName="PointsUsed" />
                 <ScalarProperty Name="ShippingStatus" ColumnName="ShippingStatus" />
                 <ScalarProperty Name="ShippingCharge" ColumnName="ShippingCharge" />
@@ -1428,6 +1436,7 @@
           <EntitySetMapping Name="tbl_ProductItems">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_ProductItems">
               <MappingFragment StoreEntitySet="tbl_ProductItems">
+                <ScalarProperty Name="HSNCode" ColumnName="HSNCode" />
                 <ScalarProperty Name="GodownId" ColumnName="GodownId" />
                 <ScalarProperty Name="ProductItemId" ColumnName="ProductItemId" />
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />

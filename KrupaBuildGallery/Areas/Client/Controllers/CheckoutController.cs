@@ -297,7 +297,28 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price); });
                     // List<tbl_Cart> lstCarts = _db.tbl_Cart.Where(o => o.ClientUserId == clientusrid).ToList();
                     string paymentmethod = "ByCredit";
+
+                    int year = DateTime.Now.Year;
+                    int toyear = year + 1;
+                    if (DateTime.UtcNow.Month <= 3)
+                    {
+                        year = year - 1;
+                        toyear = year;
+                    }
+                    DateTime dtfincialyear = new DateTime(year,4,1);
+                    DateTime dtendyear = new DateTime(toyear,3,31);
+                    var objOrdertemp = _db.tbl_Orders.Where(o => o.CreatedDate >= dtfincialyear && o.CreatedDate <= dtendyear).OrderByDescending(o => o.CreatedDate).FirstOrDefault();
+                    long Invno = 1;
+                    if(objOrdertemp != null)
+                    {
+                        if (objOrdertemp.InvoiceNo == null)
+                        {
+                            objOrdertemp.InvoiceNo = 1;
+                        }
+                        Invno = objOrdertemp.InvoiceNo.Value + 1;
+                    }
                     
+
                     tbl_Orders objOrder = new tbl_Orders();
                     objOrder.ClientUserId = clientusrid;
                     objOrder.OrderAmount = Convert.ToDecimal(objCheckout.Orderamount);
@@ -318,6 +339,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     objOrder.AmountDue = Convert.ToDecimal(objCheckout.Orderamount); 
                     objOrder.RazorpayOrderId = razorpay_order_id;
                     objOrder.RazorpayPaymentId = "";
+                    objOrder.InvoiceNo = Invno;
+                    objOrder.InvoiceYear = year + "-" + toyear;
                     objOrder.RazorSignature = "";
                     if(objCheckout.shippincode == "389001")
                     {
@@ -439,6 +462,26 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                     paymentdetails = objcard["network"] + " ****" + objcard["last4"];
                                 }
                             }
+                            int year = DateTime.Now.Year;
+                            int toyear = year + 1;
+                            if (DateTime.UtcNow.Month <= 3)
+                            {
+                                year = year - 1;
+                                toyear = year;
+                            }
+                            DateTime dtfincialyear = new DateTime(year, 4, 1);
+                            DateTime dtendyear = new DateTime(toyear, 3, 31);
+                            var objOrdertemp = _db.tbl_Orders.Where(o => o.CreatedDate >= dtfincialyear && o.CreatedDate <= dtendyear).OrderByDescending(o => o.CreatedDate).FirstOrDefault();
+                            long Invno = 1;
+                            if (objOrdertemp != null)
+                            {
+                                if(objOrdertemp.InvoiceNo == null)
+                                {
+                                    objOrdertemp.InvoiceNo = 1;
+                                }
+                                Invno = objOrdertemp.InvoiceNo.Value + 1;
+                            }
+
                             tbl_Orders objOrder = new tbl_Orders();
                             objOrder.ClientUserId = clientusrid;
                             objOrder.OrderAmount = Convert.ToDecimal(objCheckout.Orderamount);
@@ -457,6 +500,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             objOrder.UpdatedBy = clientusrid;
                             objOrder.UpdatedDate = DateTime.UtcNow;
                             objOrder.AmountDue = 0;
+                            objOrder.InvoiceNo = Invno;
+                            objOrder.InvoiceYear = year + "-" + toyear;
                             objOrder.RazorpayOrderId = razorpay_order_id;
                             objOrder.RazorpayPaymentId = razorpay_payment_id;
                             objOrder.RazorSignature = razorpay_signature;

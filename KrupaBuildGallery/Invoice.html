@@ -237,9 +237,11 @@
                                             <tr>
                                                 <td style="width:50px"><strong>Sr No.</strong></td>
                                                 <td style="width:300px;"><strong>Item</strong></td>
+                                                <td style="width:300px;"><strong>HSN Code</strong></td>
                                                 <td class="text-center"><strong>Qty</strong></td>
                                                 <td class="text-right"><strong>Price</strong></td>
                                                 <td class="text-right"><strong>Basic Amt.</strong></td>
+                                                <td class="text-right"><strong>Discount</strong></td>
                                                 <td class="text-right"><strong>CGST</strong></td>
                                                 <td class="text-right"><strong>CGST Amt.</strong></td>
                                                 <td class="text-right"><strong>SGST</strong></td>
@@ -249,19 +251,49 @@
                                         </thead>
                                         <tbody>
                                             <!-- foreach ($order->lineItems as $line) or some such thing here -->
-                                            --ITEMLIST--                                          
+                                            --ITEMLIST--
                                             <tr>
                                                 <td></td>
                                                 <td></td>
                                                 <td class="thick-liner"></td>
                                                 <td class="thick-line"></td>
+                                                <td class="thick-liner"></td>
                                                 <td class="thick-line"></td>
                                                 <td class="thick-line"></td>
                                                 <td class="thick-line"></td>
-                                                <td class="thick-line"></td>                                                
+                                                <td class="thick-line"></td>
+                                                <td class="thick-line"></td>
+                                                <td class="thick-line text-center"><strong>Sub Total</strong></td>
+                                                <td class="thick-line text-right">--SUBTOTAL--</td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td class="thick-liner"></td>
+                                                <td class="thick-line"></td>
+                                                <td class="thick-liner"></td>
+                                                <td class="thick-line"></td>
+                                                <td class="thick-line"></td>
+                                                <td class="thick-line"></td>
+                                                <td class="thick-line"></td>
+                                                <td class="thick-line"></td>
+                                                <td class="thick-line text-center"><strong>Shipping Charge</strong></td>
+                                                <td class="thick-line text-right">--SHIPPING--</td>
+                                            </tr>
+                                            <tr>
+                                                <td></td>
+                                                <td></td>
+                                                <td class="thick-liner"></td>
+                                                <td class="thick-line"></td>
+                                                <td class="thick-liner"></td>
+                                                <td class="thick-line"></td>
+                                                <td class="thick-line"></td>
+                                                <td class="thick-line"></td>
+                                                <td class="thick-line"></td>
+                                                <td class="thick-line"></td>
                                                 <td class="thick-line text-center"><strong>Total</strong></td>
                                                 <td class="thick-line text-right">--TOTAL--</td>
-                                            </tr>                                            
+                                            </tr>
                                         </tbody>
                                     </table>
                                 </div>

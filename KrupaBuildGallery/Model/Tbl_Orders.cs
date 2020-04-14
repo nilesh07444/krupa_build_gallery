@@ -38,5 +38,7 @@ namespace KrupaBuildGallery.Model
         public Nullable<decimal> ShippingCharge { get; set; }
         public Nullable<int> ShippingStatus { get; set; }
         public Nullable<decimal> PointsUsed { get; set; }
+        public Nullable<long> InvoiceNo { get; set; }
+        public string InvoiceYear { get; set; }
     }
 }

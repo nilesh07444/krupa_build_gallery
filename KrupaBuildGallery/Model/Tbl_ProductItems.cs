@@ -39,5 +39,6 @@ namespace KrupaBuildGallery.Model
         public Nullable<decimal> ShippingCharge { get; set; }
         public string Tags { get; set; }
         public Nullable<long> GodownId { get; set; }
+        public string HSNCode { get; set; }
     }
 }
