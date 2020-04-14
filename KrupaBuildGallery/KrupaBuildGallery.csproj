@@ -3878,6 +3878,8 @@
     <Content Include="Areas\Admin\Views\Customer\Detail.cshtml" />
     <Content Include="Areas\Admin\Views\Customer\Points.cshtml" />
     <Content Include="Areas\Client\Views\Orders\_Razorpaymentpartial.cshtml" />
+    <Content Include="Areas\Admin\Views\AdminUser\View.cshtml" />
+    <Content Include="Areas\Admin\Views\Role\View.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />

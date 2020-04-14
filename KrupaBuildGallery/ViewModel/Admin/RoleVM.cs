@@ -16,5 +16,11 @@ namespace KrupaBuildGallery
         public string AdminRoleDescription { get; set; }
         public bool IsActive { get; set; } 
         public List<RoleModuleVM> lstRoleModules { get; set; }
+
+        // Additional fields
+        public string strCreatedBy { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public string strModifiedBy { get; set; }
+        public DateTime? UpdatedDate { get; set; }
     }
 }

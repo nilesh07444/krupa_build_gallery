@@ -82,25 +82,34 @@
                                     <td>@counter.</td>
                                     <td>@obj.AdminRoleName</td>
                                     <td>@obj.AdminRoleDescription</td>
-                                    @if (obj.IsActive == true)
-                                    {
-                                        if (obj.AdminRoleId != 1)
+                                    <td>
+                                        @if (IsSA || objPermission.Role == (int)ModulePermission.Full)
                                         {
-                                            <td><span class="badge badge-success" style="cursor:pointer;" title="Click to Inactive" onclick="fnChangeStatus('@obj.AdminRoleId','InActive');">Active</span></td>
-                                        }
-                                        else
-                                        {
-                                            <td><span class="badge badge-success">Active</span></td>
-                                        }
-                                    }
-                                    else
-                                    {
-                                        <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@obj.AdminRoleId','Active');">InActive</span></td>
-                                    }
 
+                                            if (obj.IsActive == true)
+                                            {
+                                                if (obj.AdminRoleId != 1)
+                                                {
+                                                    <span class="badge badge-success" style="cursor:pointer;" title="Click to Inactive" onclick="fnChangeStatus('@obj.AdminRoleId','InActive');">Active</span>
+                                                }
+                                                else
+                                                {
+                                                    <span class="badge badge-success">Active</span>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@obj.AdminRoleId','Active');">InActive</span>
+                                            }
+                                        }
+                                    </td>
                                     <td>
                                         @if (obj.AdminRoleId != 1)
                                         {
+                                            if (IsSA || objPermission.Role >= (int)ModulePermission.View)
+                                            {
+                                                <a href="/admin/role/view/@obj.AdminRoleId"><i class="fa fa-eye mr-2 font-success"></i></a>
+                                            }
                                             if (IsSA || objPermission.Role >= (int)ModulePermission.Edit)
                                             {
                                                 <a href="/admin/role/edit/@obj.AdminRoleId"><i class="fa fa-edit mr-2 font-success"></i></a>

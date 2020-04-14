@@ -244,10 +244,10 @@
     </div>
 </section>
 <div class="modal fade open" id="checkoutdetails" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog" style="max-width: 80%;">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title"></h4>
+                <h4 class="modal-title">Payment Calculation</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             </div>
             <div class="modal-body">
@@ -255,33 +255,33 @@
                 {
                     int countr = 1;
                     decimal totalamts = 0;
-                    <table style="width:100%;">
+                    <table class="table table-bordered table-border-radius" style="width:100%;">
                         <thead>
                             <tr>
-                                <td>
+                                <th>
                                     Sr.
-                                </td>
-                                <td>
+                                </th>
+                                <th>
                                     Item
-                                </td>
-                                <td>
+                                </th>
+                                <th>
                                     Amount
-                                </td>
-                                <td>
+                                </th>
+                                <th>
                                     Qty
-                                </td>
-                                <td>
+                                </th>
+                                <th>
                                     Discount
-                                </td>
-                                <td>
+                                </th>
+                                <th>
                                     Taxable Amount
-                                </td>
-                                <td>
+                                </th>
+                                <th>
                                     GST
-                                </td>
-                                <td>
+                                </th>
+                                <th>
                                     Total
-                                </td>
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -326,7 +326,7 @@
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                                <td>Grand Total</td>
+                                <th>Grand Total</th>
                                 <td>@totalamts</td>
                             </tr>
                             <tr class="shipexist">
@@ -336,7 +336,7 @@
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                                <td>Shipping Charge</td>
+                                <th>Shipping Charge</th>
                                 <td>@ViewBag.ShippingChargeTotal</td>
                             </tr>
                             <tr class="shipnotexist">
@@ -346,7 +346,7 @@
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                                <td>Shipping Charge</td>
+                                <th>Shipping Charge</th>
                                 <td>@ViewBag.ShippingMsg</td>
                             </tr>
                             <tr class="shipexist">
@@ -356,7 +356,7 @@
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                                <td>Net Amount</td>
+                                <th>Net Amount</th>
                                 <td>@totlnetamount</td>
                             </tr>
                             <tr class="shipnotexist">
@@ -366,7 +366,7 @@
                                 <td></td>
                                 <td></td>
                                 <td></td>
-                                <td>Net Amount</td>
+                                <th>Net Amount</th>
                                 <td>@totalamts</td>
                             </tr>
                         </tbody>

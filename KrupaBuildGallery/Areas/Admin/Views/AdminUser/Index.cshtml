@@ -77,13 +77,14 @@
                                         <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@obj.AdminUserId','Active');">InActive</span></td>
                                     }
 
-                                    <td>
-                                        <a href="/admin/adminuser/edit/@obj.AdminUserId"><i class="fa fa-edit mr-2 font-success"></i></a>
-                                        @if (obj.AdminRoleId != 1)
-                                        {
-                                            <a href="javascript:void(0);" onclick="fnDeleteAdminUser('@obj.AdminUserId')"><i class="fa fa-trash font-danger"></i></a>
-                                        }
-                                    </td>
+                                <td>
+                                    <a title="View" href="/admin/adminuser/view/@obj.AdminUserId"><i class="fa fa-eye mr-2 font-success"></i></a>
+                                    <a title="Edit" href="/admin/adminuser/edit/@obj.AdminUserId"><i class="fa fa-edit mr-2 font-success"></i></a>
+                                    @if (obj.AdminRoleId != 1)
+                                    {
+                                        <a title="Delete" href="javascript:void(0);" onclick="fnDeleteAdminUser('@obj.AdminUserId')"><i class="fa fa-trash font-danger"></i></a>
+                                    }
+                                </td>
                                 </tr>
                                 counter++;
                             }

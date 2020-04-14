@@ -327,5 +327,55 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return ReturnMessage;
         }
 
+
+        public ActionResult View(int Id)
+        {
+            RoleVM objRole = new RoleVM();
+            try
+            {
+                objRole = (from r in _db.tbl_AdminRoles
+                           join uC in _db.tbl_AdminUsers on r.CreatedBy equals uC.AdminUserId into outerCreated
+                           from uC in outerCreated.DefaultIfEmpty()
+                           join uM in _db.tbl_AdminUsers on r.UpdatedBy equals uM.AdminUserId into outerModified
+                           from uM in outerModified.DefaultIfEmpty()
+                           where r.AdminRoleId == Id
+                           select new RoleVM
+                           {
+                               AdminRoleId = r.AdminRoleId,
+                               AdminRoleName = r.AdminRoleName,
+                               AdminRoleDescription = r.AdminRoleDescription,
+                               IsActive = r.IsActive,
+
+                               CreatedDate = r.CreatedDate,
+                               UpdatedDate = r.UpdatedDate,
+                               strCreatedBy = (uC != null ? uC.FirstName + " " + uC.LastName : ""),
+                               strModifiedBy = (uM != null ? uM.FirstName + " " + uM.LastName : "")
+
+                           }).FirstOrDefault();
+
+                objRole.lstRoleModules = (from m in _db.tbl_AdminRoleModules
+                                          join p in _db.tbl_AdminRolePermissions on m.AdminRoleModuleId equals p.AdminRoleModuleId into outerJoinPerm
+                                          from p in outerJoinPerm.DefaultIfEmpty()
+                                          where p.AdminRoleId == Id
+                                          select new RoleModuleVM
+                                          {
+                                              AdminRoleModuleId = m.AdminRoleModuleId,
+                                              ModuleName = m.ModuleName,
+                                              DisplayOrder = m.DisplayOrder,
+                                              None = m.None,
+                                              Add = m.Add,
+                                              Edit = m.Edit,
+                                              Full = m.Full,
+                                              SelectedValue = p.Permission,
+                                              AdminRolePermissionId = p.AdminRolePermissionId
+                                          }).ToList();
+            }
+            catch (Exception ex)
+            {
+                string ErrorMessage = ex.Message.ToString();
+            }
+            return View(objRole);
+        }
+
     }
 }
