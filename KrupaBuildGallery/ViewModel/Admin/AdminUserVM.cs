@@ -61,5 +61,10 @@ namespace KrupaBuildGallery
         public DateTime? dtDateOfJoin { get; set; }
         public DateTime? dtDob { get; set; }
         public string RoleName { get; set; }
+         
+        public string strCreatedBy { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public string strModifiedBy { get; set; }
+        public DateTime? UpdatedDate { get; set; }
     }
 }
