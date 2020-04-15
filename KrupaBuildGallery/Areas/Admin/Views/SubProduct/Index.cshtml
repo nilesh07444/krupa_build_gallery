@@ -108,16 +108,20 @@
                                     {
                                         <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@product.SubProductId','Active');">InActive</span></td>
                                     }
-                                    <td>
-                                        @if (IsSA || objPermission.SubProduct >= (int)ModulePermission.Edit)
-                                        {
-                                            <a href="/admin/subproduct/edit/@product.SubProductId"><i class="fa fa-edit mr-2 font-success"></i></a>
-                                        }
-                                        @if (IsSA || objPermission.SubProduct == (int)ModulePermission.Full)
-                                        {
-                                            <a href="javascript:void(0);" onclick="fnDeleteSubProduct('@product.SubProductId')"><i class="fa fa-trash font-danger"></i></a>
-                                        }
-                                    </td>
+                                <td>
+                                    @if (IsSA || objPermission.SubProduct >= (int)ModulePermission.View)
+                                    {
+                                        <a href="/admin/subproduct/view/@product.SubProductId"><i class="fa fa-eye mr-2 font-success"></i></a>
+                                    }
+                                    @if (IsSA || objPermission.SubProduct >= (int)ModulePermission.Edit)
+                                    {
+                                        <a href="/admin/subproduct/edit/@product.SubProductId"><i class="fa fa-edit mr-2 font-success"></i></a>
+                                    }
+                                    @if (IsSA || objPermission.SubProduct == (int)ModulePermission.Full)
+                                    {
+                                        <a href="javascript:void(0);" onclick="fnDeleteSubProduct('@product.SubProductId')"><i class="fa fa-trash font-danger"></i></a>
+                                    }
+                                </td>
                                 </tr>
                                 counter++;
                             }

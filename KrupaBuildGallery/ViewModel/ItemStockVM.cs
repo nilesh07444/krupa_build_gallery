@@ -38,6 +38,13 @@ namespace KrupaBuildGallery
         public string ProductName { get; set; }
         public string SubProductName { get; set; }
         public string ProductItemName { get; set; }
+
+        // Additional fields
+        public string strCreatedBy { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public string strModifiedBy { get; set; }
+        public DateTime? UpdatedDate { get; set; }
+
     }
 
 

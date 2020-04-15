@@ -270,8 +270,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             return Json(CategoryList, JsonRequestBehavior.AllowGet);
         }
-
-
+         
         [HttpPost]
         public string ChangeStatus(long Id, string Status)
         {
@@ -308,6 +307,38 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return ReturnMessage;
         }
 
+        public ActionResult View(int Id)
+        {
+            SubProductVM subcategoryVM = (from s in _db.tbl_SubProducts
+                                          join c in _db.tbl_Categories on s.CategoryId equals c.CategoryId
+                                          join p in _db.tbl_Products on s.ProductId equals p.Product_Id
+
+                                          join uC in _db.tbl_AdminUsers on s.CreatedBy equals uC.AdminUserId into outerCreated
+                                          from uC in outerCreated.DefaultIfEmpty()
+
+                                          join uM in _db.tbl_AdminUsers on s.UpdatedBy equals uM.AdminUserId into outerModified
+                                          from uM in outerModified.DefaultIfEmpty()
+
+                                          where s.SubProductId == Id
+                                          select new SubProductVM
+                                          {
+                                              SubProductId = s.SubProductId,
+                                              CategoryId = s.CategoryId,
+                                              ProductId = s.ProductId,
+                                              SubProductName = s.SubProductName,
+                                              SubProductImage = s.SubProductImage,
+                                              CategoryName = c.CategoryName,
+                                              ProductName = p.ProductName,
+
+                                              CreatedDate = p.CreatedDate,
+                                              UpdatedDate = p.UpdatedDate,
+                                              strCreatedBy = (uC != null ? uC.FirstName + " " + uC.LastName : ""),
+                                              strModifiedBy = (uM != null ? uM.FirstName + " " + uM.LastName : "")
+
+                                          }).FirstOrDefault();
+              
+            return View(subcategoryVM);
+        }
 
     }
 }
