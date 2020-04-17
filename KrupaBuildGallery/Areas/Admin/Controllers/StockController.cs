@@ -278,5 +278,49 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             }
             return Convert.ToInt32(TotalSold);
         }
+
+        public ActionResult View(int id)
+        {
+            ItemStockVM objProductItemStock = new ItemStockVM();
+
+            objProductItemStock = (from i in _db.tbl_ItemStocks
+                                   join c in _db.tbl_Categories on i.CategoryId equals c.CategoryId
+                                   join p in _db.tbl_Products on i.ProductId equals p.Product_Id
+                                   join s in _db.tbl_SubProducts on i.SubProductId equals s.SubProductId into outerJoinSub
+                                   from s in outerJoinSub.DefaultIfEmpty()
+
+                                   join itm in _db.tbl_ProductItems on i.ProductItemId equals itm.ProductItemId
+
+                                   join uC in _db.tbl_AdminUsers on i.CreatedBy equals uC.AdminUserId into outerCreated
+                                   from uC in outerCreated.DefaultIfEmpty()
+                                   join uM in _db.tbl_AdminUsers on i.UpdatedBy equals uM.AdminUserId into outerModified
+                                   from uM in outerModified.DefaultIfEmpty()
+
+                                   where i.StockId == id
+                                   select new ItemStockVM
+                                   {
+                                       StockId = i.StockId,
+                                       ProductItemId = i.ProductItemId,
+                                       CategoryId = i.CategoryId,
+                                       ProductId = i.ProductId,
+                                       SubProductId = i.SubProductId,
+                                       Quantity = i.Qty,
+                                       IsActive = i.IsActive,
+
+                                       CategoryName = c.CategoryName,
+                                       ProductName = p.ProductName,
+                                       SubProductName = s.SubProductName,
+                                       ProductItemName = itm.ItemName,
+
+                                       CreatedDate = i.CreatedDate,
+                                       UpdatedDate = i.UpdatedDate,
+                                       strCreatedBy = (uC != null ? uC.FirstName + " " + uC.LastName : ""),
+                                       strModifiedBy = (uM != null ? uM.FirstName + " " + uM.LastName : "")
+
+                                   }).FirstOrDefault();
+             
+            return View(objProductItemStock);
+        }
+
     }
 }

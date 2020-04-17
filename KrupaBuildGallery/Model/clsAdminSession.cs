@@ -89,6 +89,18 @@ namespace KrupaBuildGallery.Model
             }
         }
 
+        public static string MobileNumber
+        {
+            get
+            {
+                return HttpContext.Current.Session["AdminMobileNumber"] != null ? Convert.ToString(HttpContext.Current.Session["AdminMobileNumber"]) : string.Empty;
+            }
+            set
+            {
+                HttpContext.Current.Session["AdminMobileNumber"] = value;
+            }
+        }
+
         public static string UserPermission
         {
             get

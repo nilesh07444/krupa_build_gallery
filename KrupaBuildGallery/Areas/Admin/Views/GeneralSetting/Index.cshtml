@@ -1,0 +1,122 @@
+﻿@using KrupaBuildGallery.Model;
+@model tbl_GeneralSetting
+@{
+    ViewBag.Title = "General Settings";
+}
+
+<style>
+    .clserror {
+        color: red;
+    }
+</style>
+
+<div class="page-body"> 
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col">
+                    <div class="page-header-left">
+                        <h3>
+                            General Settings
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item active">General Settings</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>General Settings</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="frmgensettings">
+
+                            <div class="form-group row">
+                                <label for="txtpointinitial" class="col-xl-3 col-md-4">Intial Points for Customer</label>
+                                <input type="number" class="form-control col-md-8" id="txtpointinitial" value="@Model.InitialPointCustomer" name="txtpointinitial" placeholder="Intial Points">
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                <span id="spn_Intialpoints" class="clserror"></span>
+                            </div>
+                            <div class="form-group row">
+                                <label for="txtshippingmsg" class="col-xl-3 col-md-4">Shipping Charge Message</label>
+                                <input type="text" class="form-control col-md-8" id="txtshippingmsg" value="@Model.ShippingMessage" name="txtshippingmsg" placeholder="Enter Shipping Message">
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                <span id="spn_shippingmsg" class="clserror"></span>
+                            </div>
+                            <button id="btnSavesettings" type="button" class="btn btn-primary">Save Settings</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+</div>
+
+<script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+<script>
+
+    jQuery(document).on("click", "#btnSavesettings", function () {
+        var requiredMessage = 'This field is required';
+        var flag = true;
+        jQuery(".clserror").hide();
+
+        var intialpoints = jQuery.trim(jQuery("#txtpointinitial").val());
+        var shippingmsg = jQuery.trim(jQuery("#txtshippingmsg").val());
+       
+        if (intialpoints == "" || intialpoints == null) {
+            jQuery("#spn_Intialpoints").text(requiredMessage);
+            jQuery("#spn_Intialpoints").show();
+            flag = false;
+        }
+        if (shippingmsg == "" || shippingmsg == null) {
+            jQuery("#spn_shippingmsg").text(requiredMessage);
+            jQuery("#spn_shippingmsg").show();
+            flag = false;
+        }       
+
+        if (flag) {
+            $.blockUI({ message: "<h4>Please Wait...</h4>" });
+            var URL = '@Url.Action("SaveGeneralSetting", "GeneralSetting")';
+            jQuery.ajax({
+                url: URL,
+                type: 'POST',
+                data: jQuery('#frmgensettings').serialize(),
+                success: function (data) {
+                    $.unblockUI();
+                    if (data == "Success") {
+                        alert("Settings Save successfully");
+                      }
+                    else {
+                        alert("Error: Something went wrong. Please try again.");
+                    }
+                },
+                error: function (data) {
+                    alert("Something went wrong. Please try again.");
+                }
+
+            });
+        }
+
+
+    });
+</script>

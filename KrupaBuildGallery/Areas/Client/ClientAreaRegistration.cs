@@ -112,6 +112,21 @@ namespace KrupaBuildGallery.Areas.Client
                "login/signout",
                new { controller = "login", action = "signout", id = UrlParameter.Optional }
            );
+            context.MapRoute(
+             "Client_forgotpassword",
+             "forgotpassword",
+             new { controller = "ForgotPassword", action = "Index", id = UrlParameter.Optional }
+         );
+            context.MapRoute(
+               "Client_MyProfile",
+               "myprofile",
+               new { controller = "MyProfile", action = "Index", id = UrlParameter.Optional }
+           );
+            context.MapRoute(
+            "Client_changepassword",
+            "myprofile/changepassword",
+            new { controller = "MyProfile", action = "ChangePassword", id = UrlParameter.Optional }
+        );
 
             context.MapRoute(
                "Client_default",

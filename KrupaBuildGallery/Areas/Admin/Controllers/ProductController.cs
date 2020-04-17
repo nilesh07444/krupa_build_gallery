@@ -278,5 +278,47 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return ReturnMessage;
         }
 
+        public ActionResult View(int Id)
+        {
+            ProductVM objProduct = new ProductVM();
+
+            try
+            {
+                objProduct = (from p in _db.tbl_Products
+                              join c in _db.tbl_Categories on p.CategoryId equals c.CategoryId
+
+                              join uC in _db.tbl_AdminUsers on p.CreatedBy equals uC.AdminUserId into outerCreated
+                              from uC in outerCreated.DefaultIfEmpty()
+
+                              join uM in _db.tbl_AdminUsers on p.UpdatedBy equals uM.AdminUserId into outerModified
+                              from uM in outerModified.DefaultIfEmpty()
+
+                              where p.Product_Id == Id
+                              select new ProductVM
+                              {
+                                  CategoryId = p.CategoryId,
+                                  ProductId = p.Product_Id,
+                                  ProductName = p.ProductName,
+                                  ProductImage = p.ProductImage,
+                                  CategoryName = c.CategoryName,
+                                  IsActive = p.IsActive,
+
+                                  CreatedDate = p.CreatedDate,
+                                  UpdatedDate = p.UpdatedDate,
+                                  strCreatedBy = (uC != null ? uC.FirstName + " " + uC.LastName : ""),
+                                  strModifiedBy = (uM != null ? uM.FirstName + " " + uM.LastName : "")
+                                   
+                              }).FirstOrDefault();
+                 
+            }
+            catch (Exception ex)
+            {
+                string ErrorMessage = ex.Message.ToString();
+            }
+
+            return View(objProduct);
+        }
+
+
     }
 }

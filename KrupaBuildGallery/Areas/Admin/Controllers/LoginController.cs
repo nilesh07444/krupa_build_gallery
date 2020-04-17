@@ -66,7 +66,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     clsAdminSession.RoleName = roleData.AdminRoleName;
                     clsAdminSession.UserName = data.FirstName + " " + data.LastName;
                     clsAdminSession.ImagePath = data.ProfilePicture;
-
+                    clsAdminSession.MobileNumber = data.MobileNo;
                     // Get Role Permissions
                     if (data.AdminRoleId != 1)
                     {

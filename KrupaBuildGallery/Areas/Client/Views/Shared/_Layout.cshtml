@@ -99,24 +99,33 @@
                                 <li class="mobile-wishlist"><a href="/wishlist"><i class="fa fa-heart" aria-hidden="true"></i></a></li>
                             }
 
-                            <li class="onhover-dropdown mobile-account">
-                                <i class="fa fa-user" aria-hidden="true"></i> My Account
-                                <ul class="onhover-show-div">
-                                    @if (clsClientSession.UserID == 0)
+                        <li class="onhover-dropdown mobile-account">
+                            @if (clsClientSession.UserID > 0)
                                     {
-                                        <li><a href="/login" data-lng="en">Login</a></li>
-                                        <li><a href="/register" data-lng="en">Register</a></li>
+                                        string strnm = clsClientSession.FirstName + " " + clsClientSession.LastName;
+                                <i class="fa fa-user" aria-hidden="true"></i> @strnm
+                            }
+                            else
+                            {
+                                <i class="fa fa-user" aria-hidden="true"></i><span>My Account</span>
+                            }
+                        <ul class="onhover-show-div">
+                            @if (clsClientSession.UserID == 0)
+                            {
+                                <li><a href="/login" data-lng="en">Login</a></li>
+                                <li><a href="/register" data-lng="en">Register</a></li>
 
-                                    }
-                                    else
-                                    {
-                                        <li><a href="/orders" data-lng="es">My Orders</a></li>
+                            }
+                            else
+                            {
+                                <li><a href="/myprofile" data-lng="es">My Profile</a></li>
+                                <li><a href="/myprofile/changepassword" data-lng="es">Change Password</a></li>
+                                <li><a href="/orders" data-lng="es">My Orders</a></li>
+                                <li><a href="/login/signout" data-lng="es">Logout</a></li>
+                            }
 
-                                        <li><a href="/login/signout" data-lng="es">Logout</a></li>
-                                    }
-
-                                </ul>
-                            </li>
+                        </ul>
+                        </li>
                         </ul>
                     </div>
                 </div>
