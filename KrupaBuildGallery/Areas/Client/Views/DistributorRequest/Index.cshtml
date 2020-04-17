@@ -35,12 +35,12 @@
                     {
                         <div class="form-row">
                             <div class="col-md-6">
-                                <label for="photofile">Photo *</label>
-                                <input type="file" id="photofile" name="photofile" />
+                                <label for="photofile">Distributor Photo *</label>
+                                <input class="form-control" type="file" id="photofile" name="photofile" />
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-6 select_input">
                                 <label for="prefix">Prefix *</label>
-                                <select class="form-control" name="prefix" id="prefix" required="">
+                                <select class="form-control" name="prefix" id="prefix" required="" size="1">
                                     <option value="">Select</option>
                                     <option value="Mr">Mr</option>
                                     <option value="Mrs">Mrs</option>
@@ -93,9 +93,9 @@
                                 <label for="city">City *</label>
                                 <input type="text" class="form-control" id="city" name="city" value="@TempData["city"]" placeholder="City" required="">
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-6 select_input">
                                 <label for="state">State *</label>
-                                <select class="form-control" name="state" id="state" required="">
+                                <select class="form-control" name="state" id="state" required="" size="1">
                                     <option value="">Select State</option>
                                     <option value="Andhra Pradesh">Andhra Pradesh</option>
                                     <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
@@ -153,27 +153,31 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="pancardnophoto">Pan Card Photo.</label>
-                                <input type="file" id="pancardnophoto" name="pancardnophoto" required/>
+                                <input type="file" class="form-control" id="pancardnophoto" name="pancardnophoto" required />
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="col-md-6">
                                 <label for="aadhharphoto">Aadhaar Card Photo.</label>
-                                <input type="file" id="aadhharphoto" name="aadhharphoto" required />
+                                <input type="file" class="form-control" id="aadhharphoto" name="aadhharphoto" required />
                             </div>
                             <div class="col-md-6">
                                 <label for="gstphoto">GST Photo.</label>
-                                <input type="file" id="gstphoto" name="gstphoto" />
+                                <input type="file" class="form-control" id="gstphoto" name="gstphoto" />
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="col-md-6">
                                 <label for="aadhharphoto">Shop Photo.</label>
-                                <input type="file" id="shopphoto" name="shopphoto" required />
+                                <input type="file" class="form-control" id="shopphoto" name="shopphoto" required />
+                            </div> 
+                        </div>
+                        <div class="form-row">
+                            <div class="col-md-6">
+                                <input type="hidden" id="hdnotptxt" value="" />
+                                <input type="hidden" id="hdnotpemailtxt" value="" />
+                                <input type="submit" value="Submit" class="btn btn-solid" />
                             </div>
-                            <input type="hidden" id="hdnotptxt" value="" />
-                            <input type="hidden" id="hdnotpemailtxt" value="" />
-                            <input type="submit" value="Submit" class="btn btn-solid" />
                         </div>
 
                     }
