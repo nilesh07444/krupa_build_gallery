@@ -208,6 +208,7 @@
     <Compile Include="Areas\Client\Controllers\FaqController.cs" />
     <Compile Include="Areas\Client\Controllers\ForgotPasswordController.cs" />
     <Compile Include="Areas\Client\Controllers\LoginController.cs" />
+    <Compile Include="Areas\Client\Controllers\MyProfileController.cs" />
     <Compile Include="Areas\Client\Controllers\OrdersController.cs" />
     <Compile Include="Areas\Client\Controllers\PrivacyPolicyController.cs" />
     <Compile Include="Areas\Client\Controllers\ProductsController.cs" />
@@ -3880,6 +3881,8 @@
     <Content Include="Areas\Client\Views\Orders\_Razorpaymentpartial.cshtml" />
     <Content Include="Areas\Admin\Views\AdminUser\View.cshtml" />
     <Content Include="Areas\Admin\Views\Role\View.cshtml" />
+    <Content Include="Areas\Client\Views\MyProfile\Index.cshtml" />
+    <Content Include="Areas\Client\Views\MyProfile\ChangePassword.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />
