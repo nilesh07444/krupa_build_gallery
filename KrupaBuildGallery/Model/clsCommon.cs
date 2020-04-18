@@ -46,31 +46,38 @@ namespace KrupaBuildGallery.Model
         }
         public static void SendEmail(string To, string from, string subject, string body)
         {
-            MailMessage mailMessage = new MailMessage(
-                       from, // From field
-                       To, // Recipient field
-                      subject, // Subject of the email message
-                       body // Email message body
-            );
-            string SMTPHost = ConfigurationManager.AppSettings["SMTPHost"];
-            string SMTpPort = ConfigurationManager.AppSettings["SMTPPort"];
-            string SMTPEMail = ConfigurationManager.AppSettings["SMTPEmail"];
-            string SMTPPwd = ConfigurationManager.AppSettings["SMTPPwd"];
-            mailMessage.IsBodyHtml = true;
-            // System.Net.Mail.MailMessage mailMessage = (System.Net.Mail.MailMessage)mailMsg;
-
-            /* Setting should be kept somewhere so no need to 
-               pass as a parameter (might be in web.config)       */
-            using (SmtpClient client = new SmtpClient(SMTPHost, Convert.ToInt32(SMTpPort)))
+            try
             {
-                // Configure the client
-                client.EnableSsl = true;
-                client.Credentials = new NetworkCredential(SMTPEMail, SMTPPwd);
-
-                client.DeliveryMethod = SmtpDeliveryMethod.Network;
+                MailMessage mailMessage = new MailMessage(
+                      from, // From field
+                      To, // Recipient field
+                     subject, // Subject of the email message
+                      body // Email message body
+           );
+                string SMTPHost = ConfigurationManager.AppSettings["SMTPHost"];
+                string SMTpPort = ConfigurationManager.AppSettings["SMTPPort"];
+                string SMTPEMail = ConfigurationManager.AppSettings["SMTPEmail"];
+                string SMTPPwd = ConfigurationManager.AppSettings["SMTPPwd"];
                 mailMessage.IsBodyHtml = true;
-                client.Send(mailMessage);
+                // System.Net.Mail.MailMessage mailMessage = (System.Net.Mail.MailMessage)mailMsg;
+
+                /* Setting should be kept somewhere so no need to 
+                   pass as a parameter (might be in web.config)       */
+                using (SmtpClient client = new SmtpClient(SMTPHost, Convert.ToInt32(SMTpPort)))
+                {
+                    // Configure the client
+                    client.EnableSsl = true;
+                    client.Credentials = new NetworkCredential(SMTPEMail, SMTPPwd);
+
+                    client.DeliveryMethod = SmtpDeliveryMethod.Network;
+                    mailMessage.IsBodyHtml = true;
+                    client.Send(mailMessage);
+                }
             }
+            catch(Exception e)
+            {
+
+            }           
         }
 
     }

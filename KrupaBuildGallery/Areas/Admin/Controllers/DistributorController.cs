@@ -246,7 +246,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             if (objPymt != null)
             {
                 StreamReader sr;
-                string file = Server.MapPath("~/ReceiptLatest.html");
+                string file = Server.MapPath("~/templates/ReceiptLatest.html");
                 string htmldata = "";
 
                 FileInfo fi = new FileInfo(file);
@@ -416,7 +416,11 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                                        Discount = p.Discount.HasValue ? p.Discount.Value : 0
                                                    }).OrderByDescending(x => x.OrderItemId).ToList();
                 objOrder.OrderItems = lstOrderItms;
-                string file = Server.MapPath("~/Invoice.html");
+                string file = Server.MapPath("~/templates/Invoice.html");
+                if(objOrder.OrderShipState != "Gujarat")
+                {
+                    file = Server.MapPath("~/templates/InvoiceIGST.html");
+                }
                 string htmldata = "";
 
                 FileInfo fi = new FileInfo(file);
@@ -443,6 +447,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         decimal CGST = Math.Round(Convert.ToDecimal(objItem.GST_Per / 2), 2);
                         decimal SGSTAmt = Math.Round(objItem.GSTAmt/2, 2);
                         decimal CGSTAmt = Math.Round(objItem.GSTAmt/2, 2);
+                        decimal IGSTAmt = Math.Round(objItem.GSTAmt);
+                        decimal IGST = Math.Round(Convert.ToDecimal(objItem.GST_Per));
                         decimal FinalPrice = Math.Round(basicTotalPrice + objItem.GSTAmt - objItem.Discount, 2);
                         TotalFinal = TotalFinal + FinalPrice;
                         srBuild.Append("<tr>");
@@ -453,10 +459,19 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         srBuild.Append("<td class=\"text-center\">" + objItem.Price + "</td>");
                         srBuild.Append("<td class=\"text-center\">" + basicTotalPrice + "</td>");
                         srBuild.Append("<td class=\"text-center\">" + objItem.Discount + "</td>");
-                        srBuild.Append("<td class=\"text-center\">" + CGST + "</td>");
-                        srBuild.Append("<td class=\"text-center\">" + CGSTAmt + "</td>");
-                        srBuild.Append("<td class=\"text-center\">" + SGST + "</td>");
-                        srBuild.Append("<td class=\"text-center\">" + SGSTAmt + "</td>");
+                        if (objOrder.OrderShipState != "Gujarat")
+                        {
+                            srBuild.Append("<td class=\"text-center\">" + IGST + "</td>");
+                            srBuild.Append("<td class=\"text-center\">" + IGSTAmt + "</td>");
+                        }
+                        else
+                        {
+                            srBuild.Append("<td class=\"text-center\">" + CGST + "</td>");
+                            srBuild.Append("<td class=\"text-center\">" + CGSTAmt + "</td>");
+                            srBuild.Append("<td class=\"text-center\">" + SGST + "</td>");
+                            srBuild.Append("<td class=\"text-center\">" + SGSTAmt + "</td>");
+
+                        }
                         srBuild.Append("<td class=\"text-center\">" + Math.Round(FinalPrice, 2) + "</td>");
                         srBuild.Append("</tr>");
                         cntsrNo = cntsrNo + 1;

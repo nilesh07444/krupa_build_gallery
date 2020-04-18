@@ -217,6 +217,8 @@
     <Compile Include="Areas\Client\Controllers\TermsConditionController.cs" />
     <Compile Include="Areas\Client\Controllers\WishlistController.cs" />
     <Compile Include="Areas\WebAPI\Controllers\CategoryController.cs" />
+    <Compile Include="Areas\WebAPI\Controllers\LoginController.cs" />
+    <Compile Include="Areas\WebAPI\Controllers\RegisterController.cs" />
     <Compile Include="Areas\WebAPI\WebAPIAreaRegistration.cs" />
     <Compile Include="Filters\CustomAuthorize.cs" />
     <Compile Include="Helper\CommonMethod.cs" />
@@ -3926,6 +3928,8 @@
     <Folder Include="Areas\Client\Models\" />
     <Folder Include="Areas\WebAPI\Models\" />
     <Folder Include="Areas\WebAPI\Views\Category\" />
+    <Folder Include="Areas\WebAPI\Views\Login\" />
+    <Folder Include="Areas\WebAPI\Views\Register\" />
     <Folder Include="Areas\WebAPI\Views\Shared\" />
     <Folder Include="Images\AdminUserMedia\" />
     <Folder Include="Images\CategoryMedia\" />

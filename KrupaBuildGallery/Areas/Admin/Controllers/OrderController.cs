@@ -213,7 +213,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             string FromEmail = ConfigurationManager.AppSettings["FromEmail"];
 
                             string msg1 = "Shipping Charges for Your order no." + objordr.OrderId + " is: Rs " + ShippingCharge + ". Please pay from your order details you can find button to pay.";
-                            clsCommon.SendEmail(objclntusr.Email, FromEmail, "Shipping Charge - Krupa Build Gallery", msg1);
+                             clsCommon.SendEmail(objclntusr.Email, FromEmail, "Shipping Charge - Krupa Build Gallery", msg1);
+                           
                         }
                     }
 

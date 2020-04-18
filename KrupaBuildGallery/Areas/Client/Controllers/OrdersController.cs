@@ -267,7 +267,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             if (objPymt != null)
             {
                 StreamReader sr;
-                string file = Server.MapPath("~/ReceiptLatest.html");
+                string file = Server.MapPath("~/templates/ReceiptLatest.html");
                 string htmldata = "";
 
                 FileInfo fi = new FileInfo(file);
