@@ -313,7 +313,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         objWish = new tbl_WishList();
                         objWish.ClientUserId = UserId;
                         objWish.ItemId = ItemId;
-                        objWish.CreatedDate = DateTime.Now;
+                        objWish.CreatedDate = DateTime.UtcNow;
                         _db.tbl_WishList.Add(objWish);
                         _db.SaveChanges();
                     }
