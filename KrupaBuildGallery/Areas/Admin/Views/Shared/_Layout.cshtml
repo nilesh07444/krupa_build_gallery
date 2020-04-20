@@ -365,14 +365,20 @@
                         @if (IsSA || objPermission.ManagePageContent >= (int)ModulePermission.View)
                         {
                             <li>
-                                <a class="sidebar-header" href=""><i data-feather="shopping-bag"></i><span>Masters</span><i class="fa fa-angle-right pull-right"></i></a>
+                                <a class="sidebar-header" href=""><i data-feather="shopping-bag"></i><span>Common Content</span><i class="fa fa-angle-right pull-right"></i></a>
                                 <ul class="sidebar-submenu">
                                     <li><a href="/admin/homeimages"><i class="fa fa-circle"></i>Home Images</a></li>
-                                    <li><a href="/admin/godown"><i class="fa fa-circle"></i>Godown</a></li>
-                                    @if (IsSA)
-                                    {
-                                        <li><a href="/admin/loginhistory"><i class="fa fa-circle"></i>Login History</a></li>
-                                    }
+                                    <li><a href="/admin/godown"><i class="fa fa-circle"></i>Godown</a></li> 
+                                </ul>
+                            </li>
+                        }
+
+                        @if (IsSA)
+                        {
+                            <li>
+                                <a class="sidebar-header" href=""><i data-feather="log-out"></i><span>Login History</span><i class="fa fa-angle-right pull-right"></i></a>
+                                <ul class="sidebar-submenu">
+                                    <li><a href="/admin/loginhistory"><i class="fa fa-circle"></i>Login History List</a></li>
                                 </ul>
                             </li>
                         }

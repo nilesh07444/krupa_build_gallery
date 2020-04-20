@@ -388,6 +388,7 @@
     <Content Include="Content\assets\css\color16.css" />
     <Content Include="Content\assets\css\color17.css" />
     <Content Include="Content\assets\css\color18.css" />
+    <Content Include="Content\assets\css\color19.css" />
     <Content Include="Content\assets\css\color2.css" />
     <Content Include="Content\assets\css\color3.css" />
     <Content Include="Content\assets\css\color4.css" />
@@ -399,6 +400,7 @@
     <Content Include="Content\assets\css\data-table.css" />
     <Content Include="Content\assets\css\datatables.css" />
     <Content Include="Content\assets\css\date-picker.css" />
+    <Content Include="Content\assets\css\datepicker.min.css" />
     <Content Include="Content\assets\css\dropzone.css" />
     <Content Include="Content\assets\css\flag-icon.css" />
     <Content Include="Content\assets\css\fontawesome.css" />

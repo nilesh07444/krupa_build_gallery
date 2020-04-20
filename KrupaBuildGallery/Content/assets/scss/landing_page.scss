@@ -233,7 +233,7 @@ header {
 ==========================*/
 .main-img {
     position: relative;
-    background-image: url("../images/landing-Page/home.jpg");
+    background-image: url("../images/landing-page/home.jpg");
     height:93vh;
     width: 100%;
     background-position: center;
@@ -422,6 +422,7 @@ header {
     }
 }
 .feature_row {
+    margin-bottom: -30px;
     .feature-box {
         padding: 0 15px;
         p {
@@ -476,9 +477,7 @@ header {
         }
     }
     > div{
-        &:nth-child(-n + 4) {
-            margin-bottom: 30px;
-        }
+        margin-bottom: 30px;
     }
 }
 .admin-title {
@@ -495,7 +494,7 @@ header {
     background: url("../images/landing-page/f-bg.jpg");
     height: 50vh;
     background-repeat: no-repeat;
-    background-size: contain;
+    background-size: cover;
     .demo-contain {
         position: absolute;
         justify-content: center;
@@ -1016,7 +1015,7 @@ ul.tabs {
         }
     }
     .responsive-img {
-        background: url("../images/landing-Page/respnsive-img.jpg");
+        background: url("../images/landing-page/respnsive-img.jpg");
         background-blend-mode: overlay;
         background-color: rgba(241, 241, 241, 0.88);
     }

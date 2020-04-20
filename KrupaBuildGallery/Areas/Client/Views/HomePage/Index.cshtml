@@ -215,6 +215,8 @@
 }
 <!-- Popular Products List end -->
 <!-- New Arrival Product start-->
+@if (lstNewItems != null && lstNewItems.Count() > 0)
+{ 
 <div class="title1 section-t-space">
     <div class="title4">
         <h2 class="title-inner4">New Arrival</h2>
@@ -306,6 +308,7 @@
         </div>
     </div>
 </section>
+}
 <!-- New Arrival Product end -->
 <!-- Offer Product List start-->
 @if (lstOffers != null && lstOffers.Count() > 0)

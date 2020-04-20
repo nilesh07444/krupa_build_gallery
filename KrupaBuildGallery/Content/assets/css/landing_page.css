@@ -223,7 +223,7 @@ header {
 ==========================*/
 .main-img {
   position: relative;
-  background-image: url("../images/landing-Page/home.jpg");
+  background-image: url("../images/landing-page/home.jpg");
   height: 93vh;
   width: 100%;
   background-position: center;
@@ -396,55 +396,54 @@ header {
   max-width: 40%;
   margin: 0 auto 20px; }
 
-.feature_row .feature-box {
-  padding: 0 15px; }
-  .feature_row .feature-box p {
-    margin-bottom: 0; }
-  .feature_row .feature-box .bottom {
+.feature_row {
+  margin-bottom: -30px; }
+  .feature_row .feature-box {
+    padding: 0 15px; }
+    .feature_row .feature-box p {
+      margin-bottom: 0; }
+    .feature_row .feature-box .bottom {
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      margin-top: 10px; }
+      .feature_row .feature-box .bottom h5 {
+        margin-bottom: 0;
+        color: #000000;
+        font-weight: 600;
+        text-transform: capitalize; }
+        .feature_row .feature-box .bottom h5 i {
+          margin-right: 10px; }
+        .feature_row .feature-box .bottom h5 + h5 {
+          margin-left: 15px; }
+    .feature_row .feature-box .icon {
+      margin-top: 10px; }
+      .feature_row .feature-box .icon img + img {
+        margin-left: 5px; }
+    .feature_row .feature-box:hover .feature-image {
+      -webkit-transform: scale(1.01);
+              transform: scale(1.01); }
+  .feature_row .feature-image {
+    border-radius: 25px;
+    -webkit-box-shadow: 0 0 40px 0 rgba(51, 51, 51, 0.06);
+            box-shadow: 0 0 40px 0 rgba(51, 51, 51, 0.06);
+    -webkit-transition: all 0.5s ease;
+    transition: all 0.5s ease; }
+    .feature_row .feature-image img {
+      border-radius: 25px;
+      -webkit-box-shadow: 3px 5px 25px 0 rgba(0, 0, 0, 0.04);
+              box-shadow: 3px 5px 25px 0 rgba(0, 0, 0, 0.04); }
+  .feature_row .feature-content {
     display: -webkit-box;
     display: -ms-flexbox;
     display: flex;
-    margin-top: 10px; }
-    .feature_row .feature-box .bottom h5 {
-      margin-bottom: 0;
-      color: #000000;
+    padding-top: 25px; }
+    .feature_row .feature-content h6 {
+      padding-left: 18px;
       font-weight: 600;
       text-transform: capitalize; }
-      .feature_row .feature-box .bottom h5 i {
-        margin-right: 10px; }
-      .feature_row .feature-box .bottom h5 + h5 {
-        margin-left: 15px; }
-  .feature_row .feature-box .icon {
-    margin-top: 10px; }
-    .feature_row .feature-box .icon img + img {
-      margin-left: 5px; }
-  .feature_row .feature-box:hover .feature-image {
-    -webkit-transform: scale(1.01);
-            transform: scale(1.01); }
-
-.feature_row .feature-image {
-  border-radius: 25px;
-  -webkit-box-shadow: 0 0 40px 0 rgba(51, 51, 51, 0.06);
-          box-shadow: 0 0 40px 0 rgba(51, 51, 51, 0.06);
-  -webkit-transition: all 0.5s ease;
-  transition: all 0.5s ease; }
-  .feature_row .feature-image img {
-    border-radius: 25px;
-    -webkit-box-shadow: 3px 5px 25px 0 rgba(0, 0, 0, 0.04);
-            box-shadow: 3px 5px 25px 0 rgba(0, 0, 0, 0.04); }
-
-.feature_row .feature-content {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  padding-top: 25px; }
-  .feature_row .feature-content h6 {
-    padding-left: 18px;
-    font-weight: 600;
-    text-transform: capitalize; }
-
-.feature_row > div:nth-child(-n + 4) {
-  margin-bottom: 30px; }
+  .feature_row > div {
+    margin-bottom: 30px; }
 
 .admin-title h4 {
   font-weight: 700;
@@ -458,7 +457,7 @@ header {
   background: url("../images/landing-page/f-bg.jpg");
   height: 50vh;
   background-repeat: no-repeat;
-  background-size: contain; }
+  background-size: cover; }
   .demo-slider .demo-contain {
     position: absolute;
     -webkit-box-pack: center;
@@ -871,7 +870,7 @@ ul.tabs {
     .key-feature > div:nth-child(-n + 6) {
       margin-top: 0; }
   .responsive-img {
-    background: url("../images/landing-Page/respnsive-img.jpg");
+    background: url("../images/landing-page/respnsive-img.jpg");
     background-blend-mode: overlay;
     background-color: rgba(241, 241, 241, 0.88); }
   .main-demo {

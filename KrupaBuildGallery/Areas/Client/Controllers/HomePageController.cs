@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.IO;
+using System.Configuration;
 
 namespace KrupaBuildGallery.Areas.Client.Controllers
 {
@@ -19,6 +20,9 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         }
         public ActionResult Index()
         {
+
+            //clsCommon.SendEmail("prajapati.nileshbhai@gmail.com", "" , "Test email by Nilesh", "Test");
+
             List<ProductItemVM> lstNewProductItem = new List<ProductItemVM>();
             List<ProductItemVM> lstPopularProductItem = new List<ProductItemVM>();
             List<ProductItemVM> lstOfferItems = new List<ProductItemVM>();

@@ -1,5 +1,7 @@
 @import 'theme/variables';
-$theme-deafult: #e4604a;
+:root {
+    --theme-deafult: #e4604a;
+}
 @import 'theme/style';
 @import 'theme/theme-dark';
 @import 'theme/menu';

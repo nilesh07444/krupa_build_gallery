@@ -2074,6 +2074,124 @@ body {
       }
     }
   }
+  .vendor-profile {
+    .profile-left {
+      background-color: $dark-top;
+      .profile-image {
+        h3 {
+          color: $white-3;
+        }
+      }
+      .profile-detail {
+        border-color: $dark-border;
+      }
+      .vendor-contact {
+        border-color: $dark-border;
+        h6 {
+          color: $white-5;
+        }
+      }
+    }
+    .collection-product-wrapper {
+      .product-top-filter {
+        background-color: $dark-top;
+      }
+    }
+    .product-pagination {
+      background-color: $dark-top;
+    }
+    .page-link {
+      background-color: $dark-top;
+    }
+    .profile-title {
+      h3 {
+        color: $white-2;
+      }
+      h4 {
+        color: $white-3;
+      }
+    }
+    .collection-filter-block {
+      border-color: transparent;
+      background-color: $dark-top;
+    }
+  }
+  .become-vendor {
+    background-color: $dark-top;
+    .step-bg {
+      .step-box {
+        background-color: $dark-body;
+        .steps {
+          background-color: $dark-top;
+        }
+      }
+    }
+  }
+  .dashboard-section {
+    .apexcharts-svg {
+      text, .apexcharts-legend-text {
+        fill: $white-2;
+        color: $white-2 !important;
+      }
+    }
+    .apexcharts-tooltip {
+      &.apexcharts-theme-light {
+        background: $dark-body;
+        border-color: $dark-border;
+        box-shadow: none;
+        .apexcharts-tooltip-title {
+          background: $dark-top;
+          border-color: $dark-border;
+        }
+      }
+    }
+    .dashboard-sidebar {
+      background-color: $dark-top;
+    }
+    .faq-content {
+      .card {
+        background-color: $dark-top;
+      }
+    }
+    .counter-section {
+      .counter-box {
+        background-color: $dark-top;
+      }
+    }
+    .dashboard-table {
+      h3 {
+        color: $white-2;
+      }
+    }
+    .dashboard-box {
+      .dashboard-detail {
+        ul {
+          li {
+            .details {
+              .left {
+                h6 {
+                  color: #9c9c9c;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  .faq-tab {
+    .nav-tabs {
+      .nav-item {
+        .nav-link {
+          background-color: $dark-top;
+          color: $white-5;
+          &.active {
+            background-color: $dark-top;
+          }
+        }
+      }
+    }
+  }
 }
 
 
