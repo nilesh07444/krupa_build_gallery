@@ -58,6 +58,8 @@ namespace KrupaBuildGallery.Model
                 string SMTpPort = ConfigurationManager.AppSettings["SMTPPort"];
                 string SMTPEMail = ConfigurationManager.AppSettings["SMTPEmail"];
                 string SMTPPwd = ConfigurationManager.AppSettings["SMTPPwd"];
+                string EnablSSL = ConfigurationManager.AppSettings["EnableSSL"];
+
                 mailMessage.IsBodyHtml = true;
                 // System.Net.Mail.MailMessage mailMessage = (System.Net.Mail.MailMessage)mailMsg;
 
@@ -66,18 +68,26 @@ namespace KrupaBuildGallery.Model
                 using (SmtpClient client = new SmtpClient(SMTPHost, Convert.ToInt32(SMTpPort)))
                 {
                     // Configure the client
-                    client.EnableSsl = true;
-                    client.Credentials = new NetworkCredential(SMTPEMail, SMTPPwd);
+                    if (EnablSSL == "true")
+                    {
+                        client.EnableSsl = true;
+                    }
+                    else
+                    {
+                        client.EnableSsl = false;
+                    }
 
+                    client.Credentials = new NetworkCredential(SMTPEMail, SMTPPwd);
+                    client.UseDefaultCredentials = false;
                     client.DeliveryMethod = SmtpDeliveryMethod.Network;
                     mailMessage.IsBodyHtml = true;
                     client.Send(mailMessage);
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
 
-            }           
+            }
         }
 
     }

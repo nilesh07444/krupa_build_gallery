@@ -74,9 +74,9 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     if (objGensetting != null)
                     {
                         tbl_PointDetails objPoint = new tbl_PointDetails();
-                        objPoint.ClientUserId = clsClientSession.UserID;
+                        objPoint.ClientUserId = objclientuser.ClientUserId;
                         objPoint.ExpiryDate = DateTime.UtcNow.AddMonths(6);
-                        objPoint.CreatedBy = clsClientSession.UserID;
+                        objPoint.CreatedBy = objclientuser.ClientUserId;
                         objPoint.CreatedDate = DateTime.UtcNow;
                         objPoint.UsedPoints = 0;
                         objPoint.Points = objGensetting.InitialPointCustomer;
