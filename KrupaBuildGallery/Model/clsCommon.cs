@@ -55,7 +55,7 @@ namespace KrupaBuildGallery.Model
                       body // Email message body
            );
                 string SMTPHost = ConfigurationManager.AppSettings["SMTPHost"];
-                string SMTpPort = ConfigurationManager.AppSettings["SMTPPort"];
+                string SMTPPort = ConfigurationManager.AppSettings["SMTPPort"];
                 string SMTPEMail = ConfigurationManager.AppSettings["SMTPEmail"];
                 string SMTPPwd = ConfigurationManager.AppSettings["SMTPPwd"];
                 mailMessage.IsBodyHtml = true;
@@ -63,20 +63,28 @@ namespace KrupaBuildGallery.Model
 
                 /* Setting should be kept somewhere so no need to 
                    pass as a parameter (might be in web.config)       */
-                using (SmtpClient client = new SmtpClient(SMTPHost, Convert.ToInt32(SMTpPort)))
+                using (SmtpClient client = new SmtpClient())
                 {
+                    
                     // Configure the client
-                    client.EnableSsl = true;
+                    client.UseDefaultCredentials = false;
+                    client.EnableSsl = false;
+
+                    client.Host = SMTPHost;
+                    client.Port = Convert.ToInt32(SMTPPort);
+
                     client.Credentials = new NetworkCredential(SMTPEMail, SMTPPwd);
 
                     client.DeliveryMethod = SmtpDeliveryMethod.Network;
                     mailMessage.IsBodyHtml = true;
+
+                    client.Timeout = 10000;
                     client.Send(mailMessage);
                 }
             }
             catch(Exception e)
             {
-
+                string ErrorMessage = e.Message.ToString();
             }           
         }
 

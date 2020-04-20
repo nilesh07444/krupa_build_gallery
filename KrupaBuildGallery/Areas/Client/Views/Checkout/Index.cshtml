@@ -13,8 +13,9 @@
     .errorcls {
         color: red;
     }
-    body{
-        overflow:auto !important;
+
+    body {
+        overflow: auto !important;
     }
 </style>
 
@@ -128,7 +129,7 @@
                                     </div>
                                     <div class="form-group col-md-12 col-sm-6 col-xs-12">
                                         <div class="field-label">Postal Code *</div>
-                                        <input type="text" name="shippincode" required value="@objClientOther.ShipPostalcode" placeholder="" onblur="pincodechange();" >
+                                        <input type="text" name="shippincode" required value="@objClientOther.ShipPostalcode" placeholder="" onblur="pincodechange();">
                                         <span class="errorcls"></span>
                                     </div>
                                 </div>
@@ -159,13 +160,13 @@
                                                     <span id="spnshipmsg">@ViewBag.ShippingMsg</span>
                                                     <span id="spnshipamt" style="display:none;">&#8377; @ViewBag.ShippingChargeTotal</span>
                                                     @*<div class="shopping-option">
-                            <input type="checkbox" name="free-shipping" id="free-shipping">
-                            <label for="free-shipping">Free Shipping</label>
-                        </div>
-                        <div class="shopping-option">
-                            <input type="checkbox" name="local-pickup" id="local-pickup">
-                            <label for="local-pickup">Local Pickup</label>
-                        </div>*@
+                                                            <input type="checkbox" name="free-shipping" id="free-shipping">
+                                                            <label for="free-shipping">Free Shipping</label>
+                                                        </div>
+                                                        <div class="shopping-option">
+                                                            <input type="checkbox" name="local-pickup" id="local-pickup">
+                                                            <label for="local-pickup">Local Pickup</label>
+                                                        </div>*@
                                                 </div>
                                             </li>
                                         </ul>
@@ -271,13 +272,19 @@
                                     Qty
                                 </th>
                                 <th>
+                                    Final Amount
+                                </th>
+                                <th>
                                     Discount
                                 </th>
                                 <th>
                                     Taxable Amount
                                 </th>
                                 <th>
-                                    GST
+                                    GST(%)
+                                </th>
+                                <th>
+                                    GST Amount
                                 </th>
                                 <th>
                                     Total
@@ -288,87 +295,103 @@
                             @foreach (var objj in lstInvoiceItemVM)
                             {
                                 totalamts = totalamts + objj.ItemAmount;
-                                <tr>
-                                    <td>
-                                        @countr.
-                                    </td>
-                                    <td>
-                                        @objj.ItemName
-                                    </td>
-                                    <td>
-                                        @objj.BasicAmount
-                                    </td>
-                                    <td>
-                                        @objj.Qty
-                                    </td>
-                                    <td>
-                                        @objj.Discount
-                                    </td>
-                                    <td>
-                                        @objj.beforetaxamount
-                                    </td>
-                                    <td>
-                                        @objj.GSTAmount  (@objj.GSTPer %)
-                                    </td>
-                                    <td>
-                                        @objj.ItemAmount
-                                    </td>
-                                </tr>
+                            <tr>
+                                <td>
+                                    @countr.
+                                </td>
+                                <td>
+                                    @objj.ItemName
+                                </td>
+                                <td>
+                                    ₹ @objj.BasicAmount
+                                </td>
+                                <td>
+                                    @objj.Qty
+                                </td>
+                                <td>
+                                    ₹ @(objj.Qty * objj.BasicAmount)
+                                </td>
+                                <td>
+                                    ₹ @objj.Discount
+                                </td>
+                                <td>
+                                    ₹ @objj.beforetaxamount
+                                </td>
+                                <td>
+                                    @objj.GSTPer.ToString("0.##") %
+                                </td>
+                                <td>
+                                    ₹ @objj.GSTAmount
+                                </td>
+                                <td>
+                                    ₹ @objj.ItemAmount
+                                </td>
+                            </tr>
                                 countr++;
                             }
                             @{
                                 decimal totlnetamount = Convert.ToDecimal(ViewBag.ShippingChargeTotal) + totalamts;
                             }
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <th>Grand Total</th>
-                                <td>@totalamts</td>
-                            </tr>
-                            <tr class="shipexist">
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <th>Shipping Charge</th>
-                                <td>@ViewBag.ShippingChargeTotal</td>
-                            </tr>
-                            <tr class="shipnotexist">
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <th>Shipping Charge</th>
-                                <td>@ViewBag.ShippingMsg</td>
-                            </tr>
-                            <tr class="shipexist">
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <th>Net Amount</th>
-                                <td>@totlnetamount</td>
-                            </tr>
-                            <tr class="shipnotexist">
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <th>Net Amount</th>
-                                <td>@totalamts</td>
-                            </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <th>Grand Total</th>
+                            <td>₹ @totalamts</td>
+                        </tr>
+                        <tr class="shipexist">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <th>Shipping Charge</th>
+                            <td>@ViewBag.ShippingChargeTotal</td>
+                        </tr>
+                        <tr class="shipnotexist">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <th>Shipping Charge</th>
+                            <td>@ViewBag.ShippingMsg</td>
+                        </tr>
+                        <tr class="shipexist">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <th>Net Amount</th>
+                            <td>₹ @totlnetamount</td>
+                        </tr>
+                        <tr class="shipnotexist">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <th>Net Amount</th>
+                            <td>₹ @totalamts</td>
+                        </tr>
                         </tbody>
                     </table>
                 }
@@ -412,11 +435,11 @@
 
         //});
     });
-    
+
     function ViewDetails() {
         if ($("input[name=shippincode]").val() == "" || $("input[name=shippincode]").val() != "389001") {
             $(".shipnotexist").show();
-            $(".shipexist").hide();            
+            $(".shipexist").hide();
         }
         else {
             $(".shipnotexist").hide();
@@ -465,7 +488,7 @@
                      $(".creditremainingcls").hide();
                  }
             }
-        }       
+        }
 
           var amt = $("#Orderamout").val();
         if ($("#Orderamout").length > 0 && amt != "" && amt != "0") {

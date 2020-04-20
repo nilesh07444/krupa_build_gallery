@@ -40,8 +40,17 @@
     /*=====================
      01.Pre loader
      ==========================*/
-    $('.loader-wrapper').fadeOut('slow', function() {
-        $(this).remove();
+    $(window).on('load', function () {
+        setTimeout(function(){
+            $('.loader_skeleton').fadeOut('slow');
+            $('body').css({
+                'overflow': 'auto'
+            });
+        }, 500);
+        $('.loader_skeleton').remove('slow');
+        $('body').css({
+            'overflow': 'hidden'
+        });
     });
     $('#preloader').fadeOut('slow', function() {
         $(this).remove();
@@ -419,7 +428,39 @@
                 }
             }
         ]
-    });   
+    });
+
+    $('.product-4').slick({
+        infinite: true,
+        speed: 300,
+        slidesToShow: 4,
+        slidesToScroll: 4,
+        autoplay: true,
+        autoplaySpeed: 3000,
+        responsive: [
+            {
+                breakpoint: 1200,
+                settings: {
+                    slidesToShow: 3,
+                    slidesToScroll: 3
+                }
+            },
+            {
+                breakpoint: 991,
+                settings: {
+                    slidesToShow:2,
+                    slidesToScroll: 2
+                }
+            },
+            {
+                breakpoint: 420,
+                settings: {
+                    slidesToShow: 1,
+                    slidesToScroll: 1
+                }
+            }
+        ]
+    });
 
     $('.tools-product-4').slick({
         infinite: true,
@@ -949,7 +990,7 @@
         var currunt_href = $(this).attr("href");
         $('#' + currunt_href).show();
         $(this).parent().parent().parent().find(".tab-content").not('#' + currunt_href).css("display", "none");
-        var slider_class = $(this).parent().parent().parent().find(".tab-content").children().attr("class").split(' ').pop();
+        // var slider_class = $(this).parent().parent().parent().find(".tab-content").children().attr("class").split(' ').pop();
         $(".product-5").slick({
             arrows: true,
             dots: false,
@@ -1141,7 +1182,7 @@
     /*=====================
      18.Add to cart
      ==========================*/
-    $('.product-box button .ti-shopping-cart1').on('click', function () {
+    $('.product-box button .ti-shopping-cart').on('click', function () {
         $.notify({
             icon: 'fa fa-check',
             title: 'Success!',
@@ -1183,88 +1224,55 @@
     /*=====================
      19.Add to wishlist
      ==========================*/
-    
+    $('.product-box a .ti-heart , .product-box a .fa-heart').on('click', function () {
+
+        $.notify({
+            icon: 'fa fa-check',
+            title: 'Success!',
+            message: 'Item Successfully added in wishlist'
+        },{
+            element: 'body',
+            position: null,
+            type: "info",
+            allow_dismiss: true,
+            newest_on_top: false,
+            showProgressbar: true,
+            placement: {
+                from: "top",
+                align: "right"
+            },
+            offset: 20,
+            spacing: 10,
+            z_index: 1031,
+            delay: 5000,
+            animate: {
+                enter: 'animated fadeInDown',
+                exit: 'animated fadeOutUp'
+            },
+            icon_type: 'class',
+            template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
+            '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+            '<span data-notify="icon"></span> ' +
+            '<span data-notify="title">{1}</span> ' +
+            '<span data-notify="message">{2}</span>' +
+            '<div class="progress" data-notify="progressbar">' +
+            '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
+            '</div>' +
+            '<a href="{3}" target="{4}" data-notify="url"></a>' +
+            '</div>'
+        });
+    });
 
 
     /*=====================
      20. Color Picker
      ==========================*/
-    var body_event = $("body");
-    body_event.on("click", ".color1", function() {
-        $("#color" ).attr("href", "../assets/css/color1.css" );
-        return false;
-
-    });
-    body_event.on("click", ".color2", function() {
-        $("#color" ).attr("href", "../assets/css/color2.css" );
-        return false;
-    });
-    body_event.on("click", ".color3", function() {
-        $("#color" ).attr("href", "../assets/css/color3.css" );
-        return false;
-    });
-    body_event.on("click", ".color4", function() {
-        $("#color" ).attr("href", "../assets/css/color4.css" );
-        return false;
-    });
-    body_event.on("click", ".color5", function() {
-        $("#color" ).attr("href", "../assets/css/color1.css" );
-        return false;
-    });
-    body_event.on("click", ".color6", function() {
-        $("#color" ).attr("href", "../assets/css/color6.css" );
-        return false;
-    });
-    body_event.on("click", ".color7", function() {
-        $("#color" ).attr("href", "../assets/css/color7.css" );
-        $("#color-admin" ).attr("href", "../assets/css/color7.css" );
-        return false;
-    });
-    body_event.on("click", ".color8", function() {
-        $("#color" ).attr("href", "../assets/css/color8.css" );
-        return false;
-    });
-    body_event.on("click", ".color9", function() {
-        $("#color" ).attr("href", "../assets/css/color9.css" );
-        return false;
-    });
-    body_event.on("click", ".color10", function() {
-        $("#color" ).attr("href", "../assets/css/color10.css" );
-        return false;
-    });
-    body_event.on("click", ".color11", function() {
-        $("#color" ).attr("href", "../assets/css/color11.css" );
-        return false;
-    });
-    body_event.on("click", ".color12", function() {
-        $("#color" ).attr("href", "../assets/css/color12.css" );
-        return false;
-    });
-    body_event.on("click", ".color13", function() {
-        $("#color" ).attr("href", "../assets/css/color13.css" );
-        return false;
-    });
-    body_event.on("click", ".color14", function() {
-        $("#color" ).attr("href", "../assets/css/color14.css" );
-        return false;
-    });
-    body_event.on("click", ".color15", function() {
-        $("#color" ).attr("href", "../assets/css/color15.css" );
-        return false;
-    });
-    body_event.on("click", ".color16", function() {
-        $("#color" ).attr("href", "../assets/css/color16.css" );
-        return false;
-    });
-    body_event.on("click", ".color17", function() {
-        $("#color" ).attr("href", "../assets/css/color17.css" );
-        return false;
-    });
-    body_event.on("click", ".color18", function() {
-        $("#color" ).attr("href", "../assets/css/color18.css" );
-        return false;
-    });
-
+     //var color_picker1 = document.getElementById("ColorPicker1").value;
+     //document.getElementById("ColorPicker1").onchange = function() {
+     //    color_picker1 = this.value;
+     //    document.documentElement.style.setProperty('--theme-deafult', color_picker1);
+     //};
+     
 
 })(jQuery);
 
@@ -1297,20 +1305,20 @@ $(".color-box li").click(function(){
 //        '</div>').appendTo($('body'));
 //})();
 
-//var body_event = $("body");
-//body_event.on("click", ".theme-layout-version" , function(){
-//    $(this).toggleClass('dark');
-//    $('body').removeClass('dark');
-//    if($('.theme-layout-version').hasClass('dark')){
-//        $('.theme-layout-version').text('Light');
-//        $('body').addClass('dark');
-//    }else{
-//        $('#theme-dark').remove();
-//        $('.theme-layout-version').text('Dark');
-//    }
+var body_event = $("body");
+body_event.on("click", ".theme-layout-version" , function(){
+    $(this).toggleClass('dark');
+    $('body').removeClass('dark');
+    if($('.theme-layout-version').hasClass('dark')){
+        $('.theme-layout-version').text('Light');
+        $('body').addClass('dark');
+    }else{
+        $('#theme-dark').remove();
+        $('.theme-layout-version').text('Dark');
+    }
 
-//    return false;
-//});
+    return false;
+});
 
 
 /*=====================
@@ -1374,6 +1382,7 @@ function closeCart() {
 $(window).on('load', function() {
     $('[data-toggle="tooltip"]').tooltip()
 });
+
 
 
 
