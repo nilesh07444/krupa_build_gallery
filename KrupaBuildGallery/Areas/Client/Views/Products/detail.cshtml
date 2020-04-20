@@ -7,7 +7,7 @@
     {
         clswishlist = "wishlistcls";
     }
-    if(Model.OtherImages != null)
+    if (Model.OtherImages != null)
     {
         Model.OtherImages.Add(Model.MainImage);
     }
@@ -15,6 +15,10 @@
 <style>
     .wishlistcls {
         color: #ff4c3b !important;
+    }
+
+    .imgmain1 img {
+        cursor: crosshair;
     }
 </style>
 <!-- breadcrumb start -->
@@ -65,7 +69,7 @@
                                 {
                                     imgpath = @ErrorMessage.DefaultImagePath;
                                 }
-                                <div><img src="@imgpath" alt="" class="img-fluid blur-up lazyload image_zoom_cls-0" style="cursor: pointer;"></div>
+                                <div class="imgmain1"><img src="@imgpath" alt="" class="img-fluid blur-up lazyload image_zoom_cls-0" data-zoom-image="@imgpath" style="cursor: crosshair;"></div>
                             }
                         }
                     </div>
@@ -129,7 +133,7 @@
                             else
                             {
                                 <a href="/login?referer=checkout" class="btn btn-solid">checkout</a>
-                            }                            
+                            }
                         </div>
                         <div class="border-product">
                             <h6 class="product-title">SKU</h6>
@@ -248,5 +252,10 @@
                 '</div>'
         });
     }
+
+</script>
+<script src="~/Content/assets/js/jquery.zoom.js"></script>
+<script>
+    $('.imgmain1').zoom();
 
 </script>

@@ -3426,6 +3426,7 @@
     <Content Include="Content\assets\js\jquery.lazyloadxt.js" />
     <Content Include="Content\assets\js\jquery.magnific-popup.js" />
     <Content Include="Content\assets\js\jquery.vide.min.js" />
+    <Content Include="Content\assets\js\jquery.zoom.js" />
     <Content Include="Content\assets\js\jsgrid\griddata-digital-sub.js" />
     <Content Include="Content\assets\js\jsgrid\griddata-digital.js" />
     <Content Include="Content\assets\js\jsgrid\griddata-discount-coupon.js" />
