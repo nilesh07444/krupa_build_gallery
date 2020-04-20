@@ -217,8 +217,12 @@
     <Compile Include="Areas\Client\Controllers\TermsConditionController.cs" />
     <Compile Include="Areas\Client\Controllers\WishlistController.cs" />
     <Compile Include="Areas\WebAPI\Controllers\CategoryController.cs" />
+    <Compile Include="Areas\WebAPI\Controllers\ForgotPasswordController.cs" />
     <Compile Include="Areas\WebAPI\Controllers\LoginController.cs" />
+    <Compile Include="Areas\WebAPI\Controllers\MyProfileController.cs" />
+    <Compile Include="Areas\WebAPI\Controllers\ProductsController.cs" />
     <Compile Include="Areas\WebAPI\Controllers\RegisterController.cs" />
+    <Compile Include="Areas\WebAPI\Controllers\WishListController.cs" />
     <Compile Include="Areas\WebAPI\WebAPIAreaRegistration.cs" />
     <Compile Include="Filters\CustomAuthorize.cs" />
     <Compile Include="Helper\CommonMethod.cs" />
@@ -348,6 +352,8 @@
     <Compile Include="ViewModel\ContactUsMessageVM.cs" />
     <Compile Include="ViewModel\DashboardCountVM.cs" />
     <Compile Include="ViewModel\DistributorRequestVM.cs" />
+    <Compile Include="ViewModel\GeneralVM.cs" />
+    <Compile Include="ViewModel\HomePageVM.cs" />
     <Compile Include="ViewModel\InvoiceItemVM.cs" />
     <Compile Include="ViewModel\ItemStockVM.cs" />
     <Compile Include="ViewModel\ItemTextVM.cs" />
@@ -355,11 +361,14 @@
     <Compile Include="ViewModel\OfferVM.cs" />
     <Compile Include="ViewModel\OrderItemsVM.cs" />
     <Compile Include="ViewModel\OrderVM.cs" />
+    <Compile Include="ViewModel\OtpVM.cs" />
     <Compile Include="ViewModel\PaymentHistoryVM.cs" />
     <Compile Include="ViewModel\PointVM.cs" />
     <Compile Include="ViewModel\ProductItemVM.cs" />
     <Compile Include="ViewModel\ProductVM.cs" />
     <Compile Include="ViewModel\CategoryInfo.cs" />
+    <Compile Include="ViewModel\PwdVM.cs" />
+    <Compile Include="ViewModel\RegisterVM.cs" />
     <Compile Include="ViewModel\SubProductVM.cs" />
     <Compile Include="ViewModel\WishListVM.cs" />
   </ItemGroup>
@@ -3930,9 +3939,13 @@
     <Folder Include="Areas\Client\Models\" />
     <Folder Include="Areas\WebAPI\Models\" />
     <Folder Include="Areas\WebAPI\Views\Category\" />
+    <Folder Include="Areas\WebAPI\Views\ForgotPassword\" />
     <Folder Include="Areas\WebAPI\Views\Login\" />
+    <Folder Include="Areas\WebAPI\Views\MyProfile\" />
+    <Folder Include="Areas\WebAPI\Views\Products\" />
     <Folder Include="Areas\WebAPI\Views\Register\" />
     <Folder Include="Areas\WebAPI\Views\Shared\" />
+    <Folder Include="Areas\WebAPI\Views\WishList\" />
     <Folder Include="Images\AdminUserMedia\" />
     <Folder Include="Images\CategoryMedia\" />
     <Folder Include="Images\ClientUser\" />

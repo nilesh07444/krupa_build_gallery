@@ -405,6 +405,7 @@
             url: URL + "?OrderId=" + $("#changestatustodisplatched  #orderidshdn").val() + "&Status=" + $("#changestatustodisplatched #statusids").val() + "&Dispatchtime=" + $("#changestatustodisplatched #txtdys").val(),
             success: function (result) {
                 alert("Order Status Change to Dispatched");
+                 $("#changestatustodisplatched").modal("hide");
                 $("#dvorderstatus").html("Dispatched");
                  $("#btnChangeOrderStatustodispatched").hide();
             },

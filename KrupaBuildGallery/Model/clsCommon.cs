@@ -55,37 +55,39 @@ namespace KrupaBuildGallery.Model
                       body // Email message body
            );
                 string SMTPHost = ConfigurationManager.AppSettings["SMTPHost"];
-                string SMTPPort = ConfigurationManager.AppSettings["SMTPPort"];
+                string SMTpPort = ConfigurationManager.AppSettings["SMTPPort"];
                 string SMTPEMail = ConfigurationManager.AppSettings["SMTPEmail"];
                 string SMTPPwd = ConfigurationManager.AppSettings["SMTPPwd"];
+                string EnablSSL = ConfigurationManager.AppSettings["EnableSSL"];
+
                 mailMessage.IsBodyHtml = true;
                 // System.Net.Mail.MailMessage mailMessage = (System.Net.Mail.MailMessage)mailMsg;
 
                 /* Setting should be kept somewhere so no need to 
                    pass as a parameter (might be in web.config)       */
-                using (SmtpClient client = new SmtpClient())
+                using (SmtpClient client = new SmtpClient(SMTPHost, Convert.ToInt32(SMTpPort)))
                 {
-                    
                     // Configure the client
-                    client.UseDefaultCredentials = false;
-                    client.EnableSsl = false;
-
-                    client.Host = SMTPHost;
-                    client.Port = Convert.ToInt32(SMTPPort);
+                    if (EnablSSL == "true")
+                    {
+                        client.EnableSsl = true;
+                    }
+                    else
+                    {
+                        client.EnableSsl = false;
+                    }
 
                     client.Credentials = new NetworkCredential(SMTPEMail, SMTPPwd);
-
+                    client.UseDefaultCredentials = false;
                     client.DeliveryMethod = SmtpDeliveryMethod.Network;
                     mailMessage.IsBodyHtml = true;
-
-                    client.Timeout = 10000;
                     client.Send(mailMessage);
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                string ErrorMessage = e.Message.ToString();
-            }           
+
+            }
         }
 
     }
