@@ -351,6 +351,10 @@
 <script>
     function changestatus(status, statusid, orderid) {
         if (statusid == 2) {
+            if ($("#hdnShippingStatus").val() == "1") {
+                alert("Shipmment Charges Remaining");
+                return;
+            }
             $("#changestatustoconfirmed").modal("show");
             $("#changestatustoconfirmed #orderidshdn").val(orderid);
             $("#changestatustoconfirmed #statusids").val(statusid);

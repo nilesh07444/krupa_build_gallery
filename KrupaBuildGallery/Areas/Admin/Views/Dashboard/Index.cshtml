@@ -3,94 +3,161 @@
     ViewBag.Title = "Dashboard";
 }
 
-<div class="page-body">
+    <div class="page-body">
 
-    <!-- Container-fluid starts-->
-    <div class="container-fluid">
-        <div class="page-header">
+        <!-- Container-fluid starts-->
+        <div class="container-fluid">
+            <div class="page-header">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="page-header-left">
+                            <h3>
+                                Dashboard
+                            </h3>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <ol class="breadcrumb pull-right">
+                            <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
+                            <li class="breadcrumb-item active">Dashboard</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Container-fluid Ends-->
+        <!-- Container-fluid starts-->
+        <div class="container-fluid">
             <div class="row">
-                <div class="col-lg-6">
-                    <div class="page-header-left">
-                        <h3>
-                            Dashboard
-                        </h3>
+                <div class="col-xl-3 col-md-6 xl-50">
+                    <div class="card o-hidden widget-cards">
+                        <div class="bg-warning card-body">
+                            <div class="media static-top-widget row">
+                                <div class="icons-widgets col-4">
+                                    <div class="align-self-center text-center"><i data-feather="navigation" class="font-warning"></i></div>
+                                </div>
+                                <div class="media-body col-8" style="cursor:pointer;" onclick="location.href='/admin/order'">
+                                    <span class="m-0">Orders</span>
+                                    <h3 class="mb-0"><span class="counter">@Model.TotalOrders</span></h3>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="col-lg-6">
-                    <ol class="breadcrumb pull-right">
-                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
-                        <li class="breadcrumb-item active">Dashboard</li>
-                    </ol>
+                <div class="col-xl-3 col-md-6 xl-50">
+                    <div class="card o-hidden  widget-cards">
+                        <div class="bg-secondary card-body">
+                            <div class="media static-top-widget row">
+                                <div class="icons-widgets col-4">
+                                    <div class="align-self-center text-center"><i data-feather="box" class="font-secondary"></i></div>
+                                </div>
+                                <div class="media-body col-8" style="cursor:pointer;" onclick="location.href='/admin/productitem'">
+                                    <span class="m-0">Product Items</span>
+                                    <h3 class="mb-0"><span class="counter">@Model.TotalProductItems</span></h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6 xl-50">
+                    <div class="card o-hidden widget-cards">
+                        <div class="bg-primary card-body">
+                            <div class="media static-top-widget row">
+                                <div class="icons-widgets col-4">
+                                    <div class="align-self-center text-center"><i data-feather="message-square" class="font-primary"></i></div>
+                                </div>
+                                <div class="media-body col-8" style="cursor:pointer;" onclick="location.href='/admin/distributor'">
+                                    <span class="m-0">Distrubutors</span>
+                                    <h3 class="mb-0"><span class="counter">@Model.TotalDistributors</span></h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6 xl-50">
+                    <div class="card o-hidden widget-cards">
+                        <div class="bg-danger card-body">
+                            <div class="media static-top-widget row">
+                                <div class="icons-widgets col-4">
+                                    <div class="align-self-center text-center"><i data-feather="users" class="font-danger"></i></div>
+                                </div>
+                                <div class="media-body col-8" style="cursor:pointer;" onclick="location.href='/admin/customer'">
+                                    <span class="m-0">Customers</span>
+                                    <h3 class="mb-0"> <span class="counter">@Model.TotalCustomers</span></h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-    <!-- Container-fluid Ends-->
-    <!-- Container-fluid starts-->
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-xl-3 col-md-6 xl-50">
-                <div class="card o-hidden widget-cards">
-                    <div class="bg-warning card-body">
-                        <div class="media static-top-widget row">
-                            <div class="icons-widgets col-4">
-                                <div class="align-self-center text-center"><i data-feather="navigation" class="font-warning"></i></div>
-                            </div>
-                            <div class="media-body col-8" style="cursor:pointer;" onclick="location.href='/admin/order'" >
-                                <span class="m-0">Orders</span>
-                                <h3 class="mb-0" ><span class="counter" >@Model.TotalOrders</span></h3>
-                            </div>
+        <!-- Container-fluid Ends-->
+        <!-- Container-fluid starts-->
+        <div class="container-fluid">
+            <div class="page-header">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="page-header-left">
+                            <h3>
+                                Order Status
+                            </h3>
                         </div>
+                    </div>
+                    <div class="col-lg-6">
+                        
                     </div>
                 </div>
             </div>
-            <div class="col-xl-3 col-md-6 xl-50">
-                <div class="card o-hidden  widget-cards">
-                    <div class="bg-secondary card-body">
-                        <div class="media static-top-widget row">
-                            <div class="icons-widgets col-4">
-                                <div class="align-self-center text-center"><i data-feather="box" class="font-secondary"></i></div>
-                            </div>
-                            <div class="media-body col-8" style="cursor:pointer;" onclick="location.href='/admin/productitem'">
-                                <span class="m-0">Product Items</span>
-                                <h3 class="mb-0"><span class="counter" >@Model.TotalProductItems</span></h3>
+        </div>
+        <!-- Container-fluid Ends-->
+        <!-- Container-fluid starts-->
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xl-3 col-md-6 xl-50">
+                    <div class="card o-hidden widget-cards">
+                        <div class="bg-warning card-body">
+                            <div class="media static-top-widget row">
+                                <div class="icons-widgets col-4">
+                                    <div class="align-self-center text-center"><i data-feather="navigation" class="font-warning"></i></div>
+                                </div>
+                                <div class="media-body col-8" style="cursor:pointer;" onclick="location.href='/admin/order'">
+                                    <span class="m-0">New Orders</span>
+                                    <h3 class="mb-0"><span class="counter">@Model.TotalNewOrder</span></h3>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <div class="col-xl-3 col-md-6 xl-50">
+                    <div class="card o-hidden  widget-cards">
+                        <div class="bg-secondary card-body">
+                            <div class="media static-top-widget row">
+                                <div class="icons-widgets col-4">
+                                    <div class="align-self-center text-center"><i data-feather="box" class="font-secondary"></i></div>
+                                </div>
+                                <div class="media-body col-8" style="cursor:pointer;" onclick="location.href='/admin/order'">
+                                    <span class="m-0">Confirm Orders</span>
+                                    <h3 class="mb-0"><span class="counter">@Model.TotalConfirmOrder</span></h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-md-6 xl-50">
+                    <div class="card o-hidden widget-cards">
+                        <div class="bg-primary card-body">
+                            <div class="media static-top-widget row">
+                                <div class="icons-widgets col-4">
+                                    <div class="align-self-center text-center"><i data-feather="message-square" class="font-primary"></i></div>
+                                </div>
+                                <div class="media-body col-8" style="cursor:pointer;" onclick="location.href='/admin/order'">
+                                    <span class="m-0">Dispatched Orders</span>
+                                    <h3 class="mb-0"><span class="counter">@Model.TotalDispatchedOrder</span></h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>                
             </div>
-            <div class="col-xl-3 col-md-6 xl-50">
-                <div class="card o-hidden widget-cards">
-                    <div class="bg-primary card-body">
-                        <div class="media static-top-widget row">
-                            <div class="icons-widgets col-4">
-                                <div class="align-self-center text-center"><i data-feather="message-square" class="font-primary"></i></div>
-                            </div>
-                            <div class="media-body col-8" style="cursor:pointer;" onclick="location.href='/admin/distributor'">
-                                <span class="m-0">Distrubutors</span>
-                                <h3 class="mb-0"><span class="counter" >@Model.TotalDistributors</span></h3>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-xl-3 col-md-6 xl-50">
-                <div class="card o-hidden widget-cards">
-                    <div class="bg-danger card-body">
-                        <div class="media static-top-widget row">
-                            <div class="icons-widgets col-4">
-                                <div class="align-self-center text-center"><i data-feather="users" class="font-danger"></i></div>
-                            </div>
-                            <div class="media-body col-8" style="cursor:pointer;" onclick="location.href='/admin/customer'">
-                                <span class="m-0">Customers</span>
-                                <h3 class="mb-0"> <span class="counter" >@Model.TotalCustomers</span></h3>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div> 
         </div>
     </div>
-    <!-- Container-fluid Ends-->
-
-</div>
