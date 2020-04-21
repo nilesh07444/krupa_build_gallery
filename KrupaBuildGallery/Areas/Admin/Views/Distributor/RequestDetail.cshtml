@@ -144,7 +144,15 @@
                                 <div class="label-wrapper"><label class="control-label">GST No</label></div>
                             </div>
                             <div class="col-md-9">
-                                <div class="form-text-row">@Model.GSTNo</div>
+                                @if (!string.IsNullOrEmpty(Model.GSTNo))
+                                {
+                                    <div class="form-text-row">@Model.GSTNo</div>
+                                }
+                                else
+                                {
+                                    <div class="form-text-row">N/A</div>
+                                }
+
                             </div>
                         </div>
                         <div class="form-group">
@@ -152,7 +160,14 @@
                                 <div class="label-wrapper"><label class="control-label">Aadhaar No:</label></div>
                             </div>
                             <div class="col-md-9">
+                                @if (!string.IsNullOrEmpty(Model.AddharCardNo))
+                                {
                                 <div class="form-text-row">@Model.AddharCardNo</div>
+                                }
+                                else
+                                {
+                                    <div class="form-text-row">N/A</div>
+                                }                               
                             </div>
                         </div>
                         <div class="form-group">
@@ -160,7 +175,14 @@
                                 <div class="label-wrapper"><label class="control-label">PanCard No:</label></div>
                             </div>
                             <div class="col-md-9">
+                                @if (!string.IsNullOrEmpty(Model.PanCardNo))
+                                {
                                 <div class="form-text-row">@Model.PanCardNo</div>
+                                }
+                                else
+                                {
+                                    <div class="form-text-row">N/A</div>
+                                }                             
                             </div>
                         </div>
                         <div class="form-group">
@@ -178,8 +200,15 @@
                                             </a>
 
                                         }
+                                        else
+                                        {
+                                            <span>-</span>
+                                        }
                                     }
-
+                                    else
+                                    {
+                                        <span>-</span>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -198,6 +227,14 @@
                                             </a>
 
                                         }
+                                        else
+                                        {
+                                            <span>-</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span>-</span>
                                     }
                                 </div>
                             </div>
@@ -217,6 +254,14 @@
                                             </a>
 
                                         }
+                                        else
+                                        {
+                                            <span>-</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span>-</span>
                                     }
                                 </div>
                             </div>
@@ -236,6 +281,14 @@
                                             </a>
 
                                         }
+                                        else
+                                        {
+                                            <span>-</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span>-</span>
                                     }
                                 </div>
                             </div>
@@ -255,6 +308,14 @@
                                             </a>
 
                                         }
+                                        else
+                                        {
+                                            <span>-</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span>-</span>
                                     }
                                 </div>
                             </div>
@@ -276,7 +337,7 @@
                                 <div class="label-wrapper"><label class="control-label">Credit Limit:</label></div>
                             </div>
                             <div class="col-md-8">
-                                <input type="number" name="txtcreditlimit" id="txtcreditlimit" style="width:150px;height:30px;" class="form-control" />
+                                <input type="number" name="txtcreditlimit" id="txtcreditlimit" autocomplete="off" style="width:150px;height:30px;" class="form-control" />
                             </div>
                         </div>
                         <div class="row distributorinfo" style="margin-top:5px;display:none;">
@@ -284,7 +345,7 @@
                                 <div class="label-wrapper"><label class="control-label">Password:</label></div>
                             </div>
                             <div class="col-md-8">
-                                <input type="password" name="txtpassword" id="txtpassword" style="width:400px;height:30px;" class="form-control" />
+                                <input type="password" name="txtpassword" id="txtpassword" autocomplete="off" style="width:400px;height:30px;" class="form-control" />
                             </div>
                         </div>
                         <div class="row distributorinfo" style="margin-top:10px;display:none;">
@@ -300,7 +361,7 @@
                                 <div class="label-wrapper"><label class="control-label">Reason:</label></div>
                             </div>
                             <div class="col-md-8">
-                                <input type="text" name="txtreason" id="txtreason" style="width:150px;height:30px;" class="form-control" />
+                                <input type="text" name="txtreason" id="txtreason" autocomplete="off" style="width:150px;height:30px;" class="form-control" />
                             </div>
                         </div>
                         <div class="row distributorinforeject" style="margin-top:5px;display:none;">
