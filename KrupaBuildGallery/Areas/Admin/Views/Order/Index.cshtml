@@ -52,12 +52,13 @@
                             {
                                 foreach (KrupaBuildGallery.ViewModel.OrderVM objorder in Model)
                                 {
-                                     decimal shippingchrge = 0;
+                                    decimal shippingchrge = 0;
                                     if(objorder.ShippingStatus == 2)
                                     {
                                         shippingchrge = objorder.ShipmentCharge;
                                     }
-                                    decimal OrdAmt = @Math.Round(objorder.OrderAmount + shippingchrge, 2); 
+                                    decimal OrdAmt = Math.Round(objorder.OrderAmount + shippingchrge, 2); 
+                                   
                                     string stauscolor = "badge-secondary";
                                     if (objorder.OrderStatusId == 1)
                                     {
