@@ -54,7 +54,7 @@
                                     {
                                         shippingchrge = objorder.ShipmentCharge;
                                     }
-                                    decimal OrdAmt = @Math.Round(objorder.OrderAmount + shippingchrge, 2); 
+                                    decimal OrdAmt = Math.Round(objorder.OrderAmount + shippingchrge, 2); 
                                     if (objorder.OrderStatusId == 1)
                                     {
                                         stauscolor = "badge-danger";
