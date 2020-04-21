@@ -44,7 +44,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                    OrderShipClientPhone = p.OrderShipClientPhone,
                                    OrderStatusId =  p.OrderStatusId,       
                                    PaymentType = p.PaymentType,
-                                   OrderDate = p.CreatedDate                                   
+                                   OrderDate = p.CreatedDate,
+                                   ShipmentCharge = p.ShippingCharge.HasValue ? p.ShippingCharge.Value : 0,
+                                   ShippingStatus = p.ShippingStatus.HasValue ? p.ShippingStatus.Value : 2
                                }).OrderByDescending(x => x.OrderDate).ToList();
 
                 if(lstOrders != null && lstOrders.Count() > 0)

@@ -10,7 +10,7 @@ namespace KrupaBuildGallery
     {
         public long CategoryId { get; set; }
         [Required]
-        [Display(Name = "Category Name")]
+        [Display(Name = "Category Name *")]
         public string CategoryName { get; set; }
         public bool IsActive { get; set; }
         public string CategoryImage { get; set; }

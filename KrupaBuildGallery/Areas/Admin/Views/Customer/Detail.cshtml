@@ -130,6 +130,12 @@
                                     {
                                         foreach (KrupaBuildGallery.ViewModel.OrderVM objorder in Model.OrderList)
                                         {
+                                             decimal shippingchrge = 0;
+                                    if(objorder.ShippingStatus == 2)
+                                    {
+                                        shippingchrge = objorder.ShipmentCharge;
+                                    }
+                                    decimal OrdAmt = @Math.Round(objorder.OrderAmount + shippingchrge, 2); 
                                             string stauscolor = "badge-secondary";
                                             if (objorder.OrderStatusId == 1)
                                             {
@@ -146,7 +152,7 @@
                                             <tr>
                                                 <td>@objorder.OrderId</td>
                                                 <td>@objorder.OrderDate.ToString("MMM dd,yyyyy")</td>
-                                                <td>₹ @Math.Round(objorder.OrderAmount, 2)</td>
+                                                <td>₹ @Math.Round(OrdAmt, 2)</td>
                                                 <td><span class="badge @stauscolor">@objorder.OrderStatus</span></td>
                                                 <td>@objorder.PaymentType</td>
                                                 <td>₹ @objorder.OrderAmountDue</td>

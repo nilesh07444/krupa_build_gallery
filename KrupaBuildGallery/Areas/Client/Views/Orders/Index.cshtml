@@ -39,7 +39,7 @@
                                 <th scope="col">Order Date</th>
                                 <th scope="col">Order Amount</th>
                                 <th scope="col">Order Status</th>
-                                <th scope="col">Payment Type</th>
+                                <th scope="col">Payment Type</th>                                
                                 <th scope="col">Action</th>
                             </tr>
                         </thead>
@@ -49,6 +49,12 @@
                                 foreach (KrupaBuildGallery.ViewModel.OrderVM objorder in Model)
                                 {
                                     string stauscolor = "badge-secondary";
+                                    decimal shippingchrge = 0;
+                                    if(objorder.ShippingStatus == 2)
+                                    {
+                                        shippingchrge = objorder.ShipmentCharge;
+                                    }
+                                    decimal OrdAmt = @Math.Round(objorder.OrderAmount + shippingchrge, 2); 
                                     if (objorder.OrderStatusId == 1)
                                     {
                                         stauscolor = "badge-danger";
@@ -64,7 +70,7 @@
                                     <tr>
                                         <td># @objorder.OrderId</td>
                                         <td>@objorder.OrderDate.ToString("MMM dd,yyyy")</td>
-                                        <td>₹ @Math.Round(objorder.OrderAmount, 2)</td>
+                                        <td>₹ @Math.Round(OrdAmt)</td>
                                         <td><span class="badge @stauscolor">@objorder.OrderStatus</span></td>
                                         <td>@objorder.PaymentType</td>
                                         <td> <a href="/orders/orderdetails/@objorder.OrderId"><i class="fa fa-eye font-success"></i></a></td>

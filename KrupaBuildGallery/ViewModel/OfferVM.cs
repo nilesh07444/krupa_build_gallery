@@ -30,7 +30,7 @@ namespace KrupaBuildGallery
         public decimal CustomerOfferPrice { get; set; }
 
         [Required]
-        [Range(1, int.MaxValue, ErrorMessage = "Offer Price must be greater than 0")]
+        [Range(1, int.MaxValue, ErrorMessage = "Distributor Price must be greater than 0")]
         [Display(Name = "Distributor Offer Price")]
         public decimal DistributorOfferPrice { get; set; }
 
@@ -46,12 +46,14 @@ namespace KrupaBuildGallery
         public string SubProductName { get; set; }
         public string ProductItemName { get; set; }
 
+        [Display(Name = "Offer Title")]
         [Required]
         public string OfferTitle { get; set; }
-
+        [Display(Name = "Offer Start Date")]
         [Required]       
         public DateTime OfferStartDate { get; set; }
 
+        [Display(Name = "Offer End Date")]
         [Required]
         public DateTime OfferEndDate { get; set; }
 

@@ -11,21 +11,21 @@ namespace KrupaBuildGallery
     {
         public long StockId { get; set; }        
         [Required]
-        [Display(Name = "Category Name")]
+        [Display(Name = "Category Name *")]
         public long CategoryId { get; set; }
         [Required]
-        [Display(Name = "Product Name")]
+        [Display(Name = "Product Name *")]
         public long ProductId { get; set; }
         [Display(Name = "Sub Product Name")]
         public long? SubProductId { get; set; }
 
         [Required]
-        [Display(Name = "Product Item")]
+        [Display(Name = "Product Item *")]
         public long ProductItemId { get; set; }
       
         [Required]
         [Range(1,int.MaxValue, ErrorMessage = "Quatity must be greater than 0")]
-        [Display(Name = "Quantity")]
+        [Display(Name = "Quantity *")]
         public long Quantity { get; set; }
         public bool IsActive { get; set; }
         

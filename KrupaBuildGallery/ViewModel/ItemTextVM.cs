@@ -10,7 +10,7 @@ namespace KrupaBuildGallery
     {
         public long ItemTextId { get; set; }
         [Required]
-        [Display(Name = "Item Text")]
+        [Display(Name = "Item Text *")]
         public string  ItemText { get; set; }
     }
 }

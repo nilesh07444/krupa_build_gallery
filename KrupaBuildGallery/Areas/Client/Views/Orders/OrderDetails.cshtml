@@ -279,6 +279,9 @@
                                             </tr>
                                         }
                                     }
+                                    @{
+                                       decimal NetTotals =  Math.Round(Model.OrderAmount + Model.ShipmentCharge,2);
+                                    }
                                     <tr>
                                         <td></td>
                                         <td></td>
@@ -287,7 +290,7 @@
                                         <td></td>
                                         <td></td>
                                         <td>Sub Total</td>
-                                        <td>₹ @SubTotl</td>
+                                        <td>₹ @Model.OrderAmount</td>
                                     </tr>
                                     <tr>
                                         <td></td>
@@ -307,7 +310,7 @@
                                         <td></td>
                                         <td></td>
                                         <td>Total Net Amount</td>
-                                        <td>₹ @Model.OrderAmount</td>
+                                        <td>₹ @NetTotal</td>
                                     </tr>
                                 </tbody>
                             </table>

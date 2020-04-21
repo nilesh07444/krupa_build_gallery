@@ -10,7 +10,7 @@ namespace KrupaBuildGallery
     {
         public int AdminRoleId { get; set; }
         [Required]
-        [Display(Name = "Role Name")]
+        [Display(Name = "Role Name *")]
         public string AdminRoleName { get; set; }
         [Display(Name = "Role Description")]
         public string AdminRoleDescription { get; set; }

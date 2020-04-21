@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using KrupaBuildGallery.Model;
@@ -321,7 +323,14 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
 
                     tbl_Orders objOrder = new tbl_Orders();
                     objOrder.ClientUserId = clientusrid;
-                    objOrder.OrderAmount = Convert.ToDecimal(objCheckout.Orderamount);
+                    decimal ordramt = Convert.ToDecimal(objCheckout.Orderamount);
+                    decimal shippingcharge = 0;
+                    if (objCheckout.shippincode == "389001")
+                    {
+                        shippingcharge = Convert.ToDecimal(objCheckout.shipamount);
+                        ordramt = ordramt - shippingcharge;
+                    }
+                    objOrder.OrderAmount = ordramt;
                     objOrder.OrderShipCity = objCheckout.shipcity+" - "+ objCheckout.shippincode;
                     objOrder.OrderShipAddress = objCheckout.shipaddress;
                     objOrder.OrderShipState = objCheckout.shipstate;
@@ -336,7 +345,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     objOrder.CreatedDate = DateTime.UtcNow;
                     objOrder.UpdatedBy = clientusrid;
                     objOrder.UpdatedDate = DateTime.UtcNow;
-                    objOrder.AmountDue = Convert.ToDecimal(objCheckout.Orderamount); 
+                    objOrder.AmountDue = ordramt;
                     objOrder.RazorpayOrderId = razorpay_order_id;
                     objOrder.RazorpayPaymentId = "";
                     objOrder.InvoiceNo = Invno;
@@ -365,7 +374,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             amtdue = objotherdetails.AmountDue.Value;
                             
                         }
-                        objotherdetails.AmountDue = amtdue + Convert.ToDecimal(objCheckout.Orderamount);
+                        objotherdetails.AmountDue = amtdue + ordramt;
                         objotherdetails.ShipAddress = objCheckout.shipaddress;
                         objotherdetails.ShipCity = objCheckout.shipcity;
                         objotherdetails.ShipFirstName = objCheckout.shipfirstname;
@@ -406,7 +415,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             decimal originalbasicprice = Math.Round(((objCart.Price / (100 + objCart.GSTPer)) * 100), 2);
                             decimal totalItembasicprice = originalbasicprice * objCart.Qty;
                             decimal disc = 0;
-                            decimal beforetaxamount = Math.Round(totalItembasicprice - disc);
+                            decimal beforetaxamount = Math.Round(totalItembasicprice - disc,2);
                             decimal gstamt = Math.Round((beforetaxamount * objCart.GSTPer) / 100, 2);
                             decimal AfterTax = beforetaxamount + gstamt;
                             objOrderItem.GSTPer = objCart.GSTPer;
@@ -481,10 +490,16 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 }
                                 Invno = objOrdertemp.InvoiceNo.Value + 1;
                             }
-
+                            decimal ordramt = Convert.ToDecimal(objCheckout.Orderamount);
+                            decimal shippingcharge = 0;
+                            if (objCheckout.shippincode == "389001")
+                            {
+                                shippingcharge = Convert.ToDecimal(objCheckout.shipamount);
+                                ordramt = ordramt - shippingcharge;
+                            }
                             tbl_Orders objOrder = new tbl_Orders();
                             objOrder.ClientUserId = clientusrid;
-                            objOrder.OrderAmount = Convert.ToDecimal(objCheckout.Orderamount);
+                            objOrder.OrderAmount = ordramt;
                             objOrder.OrderShipCity = objCheckout.shipcity;
                             objOrder.OrderShipAddress = objCheckout.shipaddress;
                             objOrder.OrderShipState = objCheckout.shipstate;
@@ -507,7 +522,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             objOrder.RazorSignature = razorpay_signature;
                             if (objCheckout.shippincode == "389001")
                             {
-                                objOrder.ShippingCharge = Convert.ToDecimal(objCheckout.shipamount);
+                                objOrder.ShippingCharge = shippingcharge;
                                 objOrder.ShippingStatus = 2;
                             }
                             else
@@ -520,8 +535,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             tbl_PaymentHistory objPyment = new tbl_PaymentHistory();
                             objPyment.OrderId = objOrder.OrderId; 
                             objPyment.PaymentBy = paymentmethod;
-                            objPyment.AmountDue = Convert.ToDecimal(objCheckout.Orderamount);
-                            objPyment.AmountPaid = Convert.ToDecimal(objCheckout.Orderamount);
+                            objPyment.AmountDue = Convert.ToDecimal(ordramt);
+                            objPyment.AmountPaid = Convert.ToDecimal(ordramt);
                             objPyment.DateOfPayment = DateTime.UtcNow; 
                             objPyment.CreatedBy = clientusrid;
                             objPyment.CreatedDate = DateTime.UtcNow;
@@ -583,7 +598,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                     }
                                    
                                     TotalDiscount = TotalDiscount + disc;
-                                    decimal beforetaxamount = Math.Round(totalItembasicprice - disc);
+                                    decimal beforetaxamount = Math.Round(totalItembasicprice - disc,2);
                                     decimal gstamt = Math.Round((beforetaxamount * objCart.GSTPer) / 100, 2);
                                     decimal AfterTax = beforetaxamount + gstamt;
                                     objOrderItem.GSTPer = objCart.GSTPer;
@@ -640,11 +655,17 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             }
                             string orderid = clsCommon.EncryptString(objOrder.OrderId.ToString());
                             ReturnMessage = "Success^" + orderid;
+                            string AdminMobileNumber = ConfigurationManager.AppSettings["AdminSMSNumber"];
+                            string msgsms = "New Order Received - Order No " + objOrder.OrderId + " - Krupa Build Gallery";
+                            string msgsmscustomer = "Thank you for the Order. You order number is " + objOrder.OrderId + " - Krupa Build Gallery";
+                            SendSMSForNewOrder(AdminMobileNumber, msgsms);
+                            SendSMSForNewOrder(clsClientSession.MobileNumber, msgsmscustomer);
                         }
                         else
                         {
                             ReturnMessage = "Payment " + objpymn["status"];
                         }
+
                     }
                     else
                     {
@@ -762,6 +783,28 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             }
             long remiaing = TotalStock.Value - TotalSold.Value;
             return Convert.ToInt32(remiaing);
+        }
+
+        public string SendSMSForNewOrder(string MobileNumber,string Msg)
+        {
+            try
+            {
+                using (WebClient webClient = new WebClient())
+                { 
+                    string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + Msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + MobileNumber + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    var json = webClient.DownloadString(url);
+                    if (json.Contains("invalidnumber"))
+                    {
+                        return "InvalidNumber";
+                    }
+
+                    return "Success";
+                }
+            }
+            catch (WebException ex)
+            {
+                return "Fail";
+            }
         }
     }
 }

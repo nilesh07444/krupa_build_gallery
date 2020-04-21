@@ -14,46 +14,46 @@ namespace KrupaBuildGallery
         [Display(Name = "Category Name")]
         public long CategoryId { get; set; }
         [Required]
-        [Display(Name = "Product Name")]
+        [Display(Name = "Product Name *")]
         public long ProductId { get; set; }
-        [Display(Name = "Sub Product Name")]
+        [Display(Name = "Sub Product Name *")]
         public long? SubProductId { get; set; }
         [Required]
-        [Display(Name = "Item Name")]
+        [Display(Name = "Item Name *")]
         public string ItemName { get; set; }
         [Required]
-        [Display(Name = "Item Description")]
+        [Display(Name = "Item Description *")]
         public string ItemDescription { get; set; }
         [Required]
         [Range(1, int.MaxValue, ErrorMessage = "MRP Price must be greater than 0")]
-        [Display(Name = "MRP Price")]
+        [Display(Name = "MRP Price *")]
         public decimal MRPPrice { get; set; }
 
         [Required]
         [Range(1, int.MaxValue, ErrorMessage = "Customer Price must be greater than 0")]
-        [Display(Name = "Customer Price")]
+        [Display(Name = "Customer Price *")]
         public decimal CustomerPrice { get; set; }
 
         [Required]
         [Range(1, int.MaxValue, ErrorMessage = "Distributor Price must be greater than 0")]
-        [Display(Name = "Distributor Price")]
+        [Display(Name = "Distributor Price *")]
         public decimal DistributorPrice { get; set; }
         [Required]
-        [Display(Name = "GST Per")]
+        [Display(Name = "GST Per *")]
         public decimal GST_Per { get; set; }
-        [Display(Name = "IGST Per")]
+        [Display(Name = "IGST Per *")]
         public decimal IGST_Per { get; set; } 
         public string MainImage { get; set; }
         [Required]
-        [Display(Name = "Notification Text")]
+        [Display(Name = "Notification Text *")]
         public string Notification { get; set; }
         [Display(Name = "Sku")]
         public string Sku { get; set; }
         public bool IsActive { get; set; }
-        [Display(Name = "Item Main Image")]
+        [Display(Name = "Item Main Image *")]
         public HttpPostedFileBase ItemMainImageFile { get; set; }
 
-        [Display(Name = "Item Gallery Images")]
+        [Display(Name = "Item Gallery Images *")]
         public HttpPostedFileBase[] ItemGalleryImageFile { get; set; }
 
         [Display(Name = "Popular Product Item")]
@@ -72,14 +72,14 @@ namespace KrupaBuildGallery
         public int Sold { get; set; }
         [Required]
         [Range(1, int.MaxValue, ErrorMessage = "Quatity must be greater than 0")]
-        [Display(Name = "Initial Qty")]
+        [Display(Name = "Initial Qty *")]
         public int InitialQty { get; set; }
         [Required]
-        [Display(Name = "Shipping Charge")]
+        [Display(Name = "Shipping Charge *")]
         public decimal ShippingCharge { get; set; }
         public string Tags { get; set; }
         public List<SelectListItem> GodownList { get; set; }
-        [Display(Name = "Godown")]
+        [Display(Name = "Godown *")]
         public long GodownId { get; set; }
 
         [Display(Name = "HSN Code")]

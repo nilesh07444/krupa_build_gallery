@@ -11,10 +11,10 @@ namespace KrupaBuildGallery
     {
         public long ProductId { get; set; }
         [Required]
-        [Display(Name = "Category Name")]
+        [Display(Name = "Category Name *")]
         public long CategoryId { get; set; }
         [Required]
-        [Display(Name = "Product Name")]
+        [Display(Name = "Product Name *")]
         public string ProductName { get; set; }
         public bool IsActive { get; set; }
         public string ProductImage { get; set; }
