@@ -77,8 +77,9 @@ namespace KrupaBuildGallery.Model
                         client.EnableSsl = false;
                     }
 
-                    client.Credentials = new NetworkCredential(SMTPEMail, SMTPPwd);
                     client.UseDefaultCredentials = false;
+                    client.Credentials = new NetworkCredential(SMTPEMail, SMTPPwd);
+                  
                     client.DeliveryMethod = SmtpDeliveryMethod.Network;
                     mailMessage.IsBodyHtml = true;
                     client.Send(mailMessage);
