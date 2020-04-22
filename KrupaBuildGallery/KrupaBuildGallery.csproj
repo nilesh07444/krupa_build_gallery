@@ -3916,6 +3916,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\lightbox-plus-jquery.min.js" />
+    <Content Include="Scripts\lightbox.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\prism.min.js" />
     <Content Include="Web.config" />

@@ -1,4 +1,5 @@
 ﻿@model  KrupaBuildGallery.ViewModel.ClientUserVM
+<link href="~/Content/lightbox.min.css" rel="stylesheet" />
 <style>
     .label-wrapper {
         display: table;
@@ -311,6 +312,32 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Credit Limit</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">
+                                    <div class="form-text-row">
+                                        ₹ @Model.CreditLimit
+                                        <br />
+                                        <button type="button" name="btnChangeCreditLimit" id="btnChangeCreditLimit" onclick="changecreditlimit('@Model.AmountDue','@Model.ClientUserId');" class="btn btn-primary" style="display: inline-block;">
+                                            Change Credit Limit
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Amount Due</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">
+                                    <div class="form-text-row">₹ @Model.AmountDue</div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-header">
                         <h5>Order List</h5>
@@ -381,8 +408,29 @@
     <div style="display: none;" id="dvPrint">
     </div>
 </div>
+<div class="modal fade open" id="changecreditlimitmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Change Credit Limit</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                Enter Credit Limit <input type="number" id="txtcredt" value="" />
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="clientusrid" value="" />
+                <input type="hidden" id="amountdue" value="" />
+                <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
+                <button id="savecreditlimit" class="btn btn-primary" type="button">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="~/Scripts/prism.min.js"></script>
-<script src="~/Scripts/lightbox-plus-jquery.min.js"></script>
+<script src="~/Scripts/lightbox.js"></script>
+@*<script src="~/Scripts/lightbox-plus-jquery.min.js"></script>*@
+
 <script>
     function invoiceprint(orderid) {
         $("#dvPrint").load('/admin/Distributor/PrintInvoice?OrderId=' + orderid, function () {
@@ -394,4 +442,40 @@
             }, 100);
         });
     }
+
+    function changecreditlimit(amtdue, clientuserid) {
+        $("#changecreditlimitmodal").modal("show");
+        $("#amountdue").val(amtdue);
+        $("#clientusrid").val(clientuserid);
+    }
+
+    jQuery(document).on("click", "#savecreditlimit", function () {
+        if ($("#txtcredt").val().trim() == "") {
+            alert("Please Enter Credit Limit");
+            return;
+        }
+
+        var amountdue = parseFloat($("#amountdue").val());
+        if (parseFloat($("#txtcredt").val().trim()) < parseFloat($("#amountdue").val())) {
+            alert("Amount Due is more than Credit Limit");
+            return;
+        }
+        var URL = '/Admin/Distributor/ChangeCreditLimit';
+        jQuery.ajax({
+            type: 'POST',
+            async: true,
+            url: URL + "?ClientUserId=" + $("#clientusrid").val() + "&CreditLimit=" + $("#txtcredt").val().trim(),
+            success: function (result) {
+                alert("Credit Limit Changed Successfully");
+                $("#changecreditlimitmodal").modal("hide");
+                location.reload();
+            },
+            error: function (error) {
+                console.log("error");
+                alert(error);
+                $("#changecreditlimitmodal").modal("hide");
+            }
+        });
+
+    });
 </script>

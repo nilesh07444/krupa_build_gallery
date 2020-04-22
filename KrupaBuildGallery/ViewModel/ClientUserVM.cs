@@ -36,7 +36,8 @@ namespace KrupaBuildGallery.ViewModel
         public string PancardPhoto { get; set; }
         public string GSTPhoto { get; set; }
         public string ProfilePhoto { get; set; }
-
         public string ShopName { get; set; }
+        public decimal CreditLimit { get; set; }
+        public decimal AmountDue { get; set; }
     }
 }

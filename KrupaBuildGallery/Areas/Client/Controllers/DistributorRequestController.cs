@@ -24,7 +24,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         }
 
         [HttpPost]
-        public ActionResult NewDistributorRequest(FormCollection frm,HttpPostedFileBase aadhharphoto, HttpPostedFileBase gstphoto, HttpPostedFileBase pancardphoto, HttpPostedFileBase photofile, HttpPostedFileBase shopphoto)
+        public ActionResult NewDistributorRequest(FormCollection frm,HttpPostedFileBase aadhharphoto, HttpPostedFileBase gstphoto, HttpPostedFileBase pancardnophoto, HttpPostedFileBase photofile, HttpPostedFileBase shopphoto)
         {
             try
             {
@@ -97,10 +97,10 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         addharphoto = Guid.NewGuid() + "-" + Path.GetFileName(aadhharphoto.FileName);
                         aadhharphoto.SaveAs(path + addharphoto);
                     }
-                    if (pancardphoto != null)
+                    if (pancardnophoto != null)
                     {
-                        pancardphotoname = Guid.NewGuid() + "-" + Path.GetFileName(pancardphoto.FileName);
-                        pancardphoto.SaveAs(path + pancardphotoname);
+                        pancardphotoname = Guid.NewGuid() + "-" + Path.GetFileName(pancardnophoto.FileName);
+                        pancardnophoto.SaveAs(path + pancardphotoname);
                     }
                     if (gstphoto != null)
                     {
@@ -111,6 +111,12 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     {
                         photo = Guid.NewGuid() + "-" + Path.GetFileName(photofile.FileName);
                         photofile.SaveAs(path + photo);
+                    }
+
+                    if (shopphoto != null)
+                    {
+                        shopphotoname = Guid.NewGuid() + "-" + Path.GetFileName(shopphoto.FileName);
+                        shopphoto.SaveAs(path + shopphotoname);
                     }
                     objRequest = new tbl_DistributorRequestDetails();
                                                      

@@ -31,7 +31,7 @@
             <div class="col-lg-12">
                 <h3>Distributor Request</h3>
                 <div class="theme-card">
-                    @using (Html.BeginForm("NewDistributorRequest", "DistributorRequest", FormMethod.Post, new { ID = "theFormId", enctype = "multipart/form-data", @class = "theme-form", onsubmit = "return checkdetails();" }))
+                    @using (Html.BeginForm("NewDistributorRequest", "DistributorRequest", FormMethod.Post, new { ID = "theFormId", enctype = "multipart/form-data",autocomplete="off", @class = "theme-form", onsubmit = "return checkdetails();" }))
                     {
                         <div class="form-row">
                             <div class="col-md-6">
@@ -168,7 +168,7 @@
                         </div>
                         <div class="form-row">
                             <div class="col-md-6">
-                                <label for="aadhharphoto">Shop Photo.</label>
+                                <label for="shopphoto">Shop Photo.</label>
                                 <input type="file" class="form-control" id="shopphoto" name="shopphoto" required />
                             </div> 
                         </div>
@@ -222,7 +222,7 @@
 <script>
       $(document).ready(function () {
         $("#dob").datepicker({
-             format: "mm/dd/yyyy",
+             format: "dd/mm/yyyy",
         });
     });
     function checkdetails() {

@@ -126,7 +126,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                                 GSTPhoto = co.GSTPhoto,
                                                 PancardPhoto = co.PanCardPhoto,
                                                 ShopPhoto = co.ShopPhoto,
-                                                Prefix = cu.Prefix
+                                                Prefix = cu.Prefix,
+                                                CreditLimit = co.CreditLimitAmt.HasValue ? co.CreditLimitAmt.Value : 0,
+                                                AmountDue = co.AmountDue.HasValue ? co.AmountDue.Value : 0
                                             }).FirstOrDefault();
 
             List<OrderVM> lstOrders = new List<OrderVM>();
@@ -752,6 +754,61 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             }
 
             return ReturnMessage;
+        }
+
+
+        [HttpPost]
+        public string ChangeCreditLimit(long ClientUserId,string CreditLimit)
+        {
+            try
+            {
+                string Mobilenum = "";
+                tbl_ClientUsers objClient = _db.tbl_ClientUsers.Where(o => o.ClientUserId == ClientUserId).FirstOrDefault();
+                if(objClient != null)
+                {
+                    Mobilenum = objClient.MobileNo;
+                }
+                tbl_ClientOtherDetails objclientother = _db.tbl_ClientOtherDetails.Where(o => o.ClientUserId == ClientUserId).FirstOrDefault();
+                if(objclientother != null)
+                {
+                    decimal Credit = Convert.ToDecimal(CreditLimit);
+                    objclientother.CreditLimitAmt = Credit;
+                    _db.SaveChanges();
+                    string msg = "Your Credit limit has changed to Rs" + CreditLimit + " - Krupa Build Gallery";
+                    SendSMSmsg(Mobilenum, msg);
+                }
+                return "Success";
+            }
+            catch(Exception e)
+            {
+                return "";
+            }
+           
+        }
+
+        public string SendSMSmsg(string MobileNumber,string msg)
+        {
+            try
+            {               
+                using (WebClient webClient = new WebClient())
+                {
+                    string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + MobileNumber + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    var json = webClient.DownloadString(url);
+                    if (json.Contains("invalidnumber"))
+                    {
+                        return "InvalidNumber";
+                    }
+                    else
+                    {
+                        return "Success";
+                    }
+
+                }
+            }
+            catch (WebException ex)
+            {
+                return "Error";
+            }
         }
     }
 }
