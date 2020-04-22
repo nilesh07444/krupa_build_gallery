@@ -163,7 +163,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     bodyhtml += "GST No: " + objRequest.GSTNo + "<br/>";              
 
                     clsCommon.SendEmail(AdminEmail, FromEmail, Subject, bodyhtml);
-                    TempData["RegisterError"] = "Request recieve Successfully.We will contact you asap.";
+                    TempData["RegisterError"] = "Request receive Successfully.We will contact you asap.";
                     return RedirectToAction("Index", "DistributorRequest", new { area = "Client" });
                 }
             }

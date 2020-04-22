@@ -29,6 +29,14 @@ namespace KrupaBuildGallery.ViewModel
         public string ShipState { get; set; }
         public string ShipPostalCode { get; set; }
         public List<PointVM> PointsList { get; set; }
+        public string Prefix { get; set; }
+        public string AlternateMobileNo { get; set; }
+        public string ShopPhoto { get; set; }
+        public string AddharPhoto { get; set; }
+        public string PancardPhoto { get; set; }
+        public string GSTPhoto { get; set; }
+        public string ProfilePhoto { get; set; }
 
+        public string ShopName { get; set; }
     }
 }

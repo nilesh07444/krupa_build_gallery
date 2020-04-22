@@ -57,7 +57,7 @@
                 <div class="col-lg-6">
                     <ol class="breadcrumb pull-right">
                         <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
-                        <li class="breadcrumb-item"><a href="/admin/category">Distributor</a></li>
+                        <li class="breadcrumb-item"><a href="/admin/distributor">Distributor</a></li>
                         <li class="breadcrumb-item active">Distributor Detail</li>
                     </ol>
                 </div>
@@ -76,18 +76,18 @@
                     <div class="card-body form-horizontal">
                         <div class="form-group">
                             <div class="col-md-3">
-                                <div class="label-wrapper"><label class="control-label">Company Name</label></div>
+                                <div class="label-wrapper"><label class="control-label">Name</label></div>
                             </div>
                             <div class="col-md-9">
-                                <div class="form-text-row">@Model.CompanyName</div>
+                                <div class="form-text-row">@Model.Prefix @Model.FirstName @Model.LastName</div>
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="col-md-3">
-                                <div class="label-wrapper"><label class="control-label">Name</label></div>
+                                <div class="label-wrapper"><label class="control-label">Company Name</label></div>
                             </div>
                             <div class="col-md-9">
-                                <div class="form-text-row">@Model.FirstName @Model.LastName</div>
+                                <div class="form-text-row">@Model.CompanyName</div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -108,6 +108,22 @@
                         </div>
                         <div class="form-group">
                             <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Alternate Mobile No.:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                @if (!string.IsNullOrEmpty(Model.AlternateMobileNo))
+                                {
+                                    <div class="form-text-row">@Model.AlternateMobileNo</div>
+                                }
+                                else
+                                {
+                                    <div class="form-text-row">N/A</div>
+                                }
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
                                 <div class="label-wrapper"><label class="control-label">Address</label></div>
                             </div>
                             <div class="col-md-9">
@@ -119,7 +135,180 @@
                                 <div class="label-wrapper"><label class="control-label">GST No</label></div>
                             </div>
                             <div class="col-md-9">
-                                <div class="form-text-row"></div>
+                                @if (!string.IsNullOrEmpty(Model.GSTNo))
+                                {
+                                    <div class="form-text-row">@Model.GSTNo</div>
+                                }
+                                else
+                                {
+                                    <div class="form-text-row">N/A</div>
+                                }
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Aadhaar No:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                @if (!string.IsNullOrEmpty(Model.AddharCardNo))
+                                {
+                                    <div class="form-text-row">@Model.AddharCardNo</div>
+                                }
+                                else
+                                {
+                                    <div class="form-text-row">N/A</div>
+                                }
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">PanCard No:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                @if (!string.IsNullOrEmpty(Model.PanCardNo))
+                                {
+                                    <div class="form-text-row">@Model.PanCardNo</div>
+                                }
+                                else
+                                {
+                                    <div class="form-text-row">N/A</div>
+                                }
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Profile Photo:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">
+                                    @if (!string.IsNullOrEmpty(Model.ProfilePhoto))
+                                    {
+                                        if (File.Exists(Server.MapPath("~/Images/UsersDocuments/" + (Model.ProfilePhoto))))
+                                        {
+                                            <a class="example-image-link" href="~/Images/UsersDocuments/@Model.ProfilePhoto" data-lightbox="ProfilePhoto">
+                                                <img src="~/Images/UsersDocuments/@Model.ProfilePhoto" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                            </a>
+
+                                        }
+                                        else
+                                        {
+                                            <span>-</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span>-</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Addhar Card Photo:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">
+                                    @if (!string.IsNullOrEmpty(Model.AddharPhoto))
+                                    {
+                                        if (File.Exists(Server.MapPath("~/Images/UsersDocuments/" + (Model.AddharPhoto))))
+                                        {
+                                            <a class="example-image-link" href="~/Images/UsersDocuments/@Model.AddharPhoto" data-lightbox="AddharPhoto">
+                                                <img src="~/Images/UsersDocuments/@Model.AddharPhoto" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                            </a>
+
+                                        }
+                                        else
+                                        {
+                                            <span>-</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span>-</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Shop Photo:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">
+                                    @if (!string.IsNullOrEmpty(Model.ShopPhoto))
+                                    {
+                                        if (File.Exists(Server.MapPath("~/Images/UsersDocuments/" + (Model.ShopPhoto))))
+                                        {
+                                            <a class="example-image-link" href="~/Images/UsersDocuments/@Model.ShopPhoto" data-lightbox="ShopPhoto">
+                                                <img src="~/Images/UsersDocuments/@Model.ShopPhoto" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                            </a>
+
+                                        }
+                                        else
+                                        {
+                                            <span>-</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span>-</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">GST Photo:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">
+                                    @if (!string.IsNullOrEmpty(Model.GSTPhoto))
+                                    {
+                                        if (File.Exists(Server.MapPath("~/Images/UsersDocuments/" + (Model.GSTPhoto))))
+                                        {
+                                            <a class="example-image-link" href="~/Images/UsersDocuments/@Model.GSTPhoto" data-lightbox="GSTPhoto">
+                                                <img src="~/Images/UsersDocuments/@Model.GSTPhoto" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                            </a>
+
+                                        }
+                                        else
+                                        {
+                                            <span>-</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span>-</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Pan Card Photo:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">
+                                    @if (!string.IsNullOrEmpty(Model.PancardPhoto))
+                                    {
+                                        if (File.Exists(Server.MapPath("~/Images/UsersDocuments/" + (Model.PancardPhoto))))
+                                        {
+                                            <a class="example-image-link" href="~/Images/UsersDocuments/@Model.PancardPhoto" data-lightbox="panphoto">
+                                                <img src="~/Images/UsersDocuments/@Model.PancardPhoto" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                            </a>
+
+                                        }
+                                        else
+                                        {
+                                            <span>-</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span>-</span>
+                                    }
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -145,12 +334,12 @@
                                     {
                                         foreach (KrupaBuildGallery.ViewModel.OrderVM objorder in Model.OrderList)
                                         {
-                                             decimal shippingchrge = 0;
-                                                if(objorder.ShippingStatus == 2)
-                                                {
-                                                  shippingchrge = objorder.ShipmentCharge;
-                                                }
-                                             decimal OrdAmt = @Math.Round(objorder.OrderAmount + shippingchrge, 2); 
+                                            decimal shippingchrge = 0;
+                                            if (objorder.ShippingStatus == 2)
+                                            {
+                                                shippingchrge = objorder.ShipmentCharge;
+                                            }
+                                            decimal OrdAmt = Math.Round(objorder.OrderAmount + shippingchrge, 2);
 
                                             string stauscolor = "badge-secondary";
                                             if (objorder.OrderStatusId == 1)
@@ -192,15 +381,17 @@
     <div style="display: none;" id="dvPrint">
     </div>
 </div>
-<script>  
+<script src="~/Scripts/prism.min.js"></script>
+<script src="~/Scripts/lightbox-plus-jquery.min.js"></script>
+<script>
     function invoiceprint(orderid) {
-          $("#dvPrint").load('/admin/Distributor/PrintInvoice?OrderId='+orderid, function () {                    
-             w = window.open();
+        $("#dvPrint").load('/admin/Distributor/PrintInvoice?OrderId=' + orderid, function () {
+            w = window.open();
             w.document.write($("#dvPrint").html());
-               setTimeout(function () {
-                   w.print();
-            w.close();
-               },100);
+            setTimeout(function () {
+                w.print();
+                w.close();
+            }, 100);
         });
     }
 </script>

@@ -118,7 +118,15 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                                 State = co.State,
                                                 AddharCardNo = co.Addharcardno,
                                                 PanCardNo = co.Pancardno,
-                                                GSTNo = co.GSTno == "" ? "N/A" : co.GSTno
+                                                GSTNo = co.GSTno == "" ? "N/A" : co.GSTno,
+                                                ProfilePhoto = cu.ProfilePicture,
+                                                AddharPhoto = co.AddharPhoto,
+                                                AlternateMobileNo = cu.AlternateMobileNo,                                                
+                                                ShopName = co.ShopName,
+                                                GSTPhoto = co.GSTPhoto,
+                                                PancardPhoto = co.PanCardPhoto,
+                                                ShopPhoto = co.ShopPhoto,
+                                                Prefix = cu.Prefix
                                             }).FirstOrDefault();
 
             List<OrderVM> lstOrders = new List<OrderVM>();
