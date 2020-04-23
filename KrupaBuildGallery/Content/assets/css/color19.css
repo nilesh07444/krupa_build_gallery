@@ -6584,7 +6584,7 @@ footer {
   position: relative;
   display: inherit;
   padding-top: 13px;
-  text-transform: capitalize;
+  /*text-transform: capitalize;*/
   font-size: 14px;
   color: #777777; }
   .footer-theme .sub-title li a {
@@ -10299,21 +10299,22 @@ footer {
     24.Tab to top CSS start
 ==========================*/
 .tap-top {
-  width: 50px;
-  height: 50px;
-  border-radius: 100%;
-  position: fixed;
-  bottom: 50px;
-  right: 30px;
-  z-index: 8;
-  display: none;
-  color: #fff;
-  text-align: center;
-  background: var(--theme-deafult);
-  border: none;
-  font-size: 22px;
-  padding: 7px;
-  cursor: pointer; }
+    width: 50px;
+    height: 50px;
+    border-radius: 100%;
+    position: fixed;
+    bottom: 50px;
+    right: 30px;
+    z-index: 8;
+    display: none;
+    color: #fff;
+    text-align: center;
+    background: #F38634;
+    border: none;
+    font-size: 22px;
+    padding: 7px;
+    cursor: pointer;
+}
   .tap-top.top-cls {
     bottom: 130px; }
 
@@ -13788,13 +13789,17 @@ body.dark {
 
 .up-text {
   position: relative; }
-  .up-text span {
-    position: absolute;
-    top: -5px;
-    right: -10px;
-    color: var(--theme-deafult);
-    font-size: 12px;
-    font-weight: 700; }
+    .up-text span {
+        position: absolute;
+        top: -20px;
+        right: -11px;
+        color: white;
+        font-size: 12px;
+        font-weight: 700;
+        background: #F38634;
+        border-radius: 8px;
+        padding: 3px 5px 3px 5px;
+    }
 
 .pixelstrap.sm-vertical a .sub-arrow {
   margin-top: -22px;
