@@ -64,14 +64,14 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(lstClientUser);
         }
 
-        public ActionResult RequestList()
+        public ActionResult RequestList(int Status = 0)
         {
             List<DistributorRequestVM> lstDistriRequest = new List<DistributorRequestVM>();
             try
             {
 
                 lstDistriRequest = (from cu in _db.tbl_DistributorRequestDetails
-                                    where !cu.IsDelete.Value
+                                    where !cu.IsDelete.Value && (Status == -1 || cu.Status == Status)
                                     select new DistributorRequestVM
                                     {
                                         DistributorRequestId = cu.DistributorRequestId,
@@ -84,8 +84,11 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                         State = cu.State,
                                         AddharCardNo = cu.AddharcardNo,
                                         PanCardNo = cu.PanCardNo,
-                                        GSTNo = cu.GSTNo
+                                        GSTNo = cu.GSTNo,
+                                        Status = cu.Status.HasValue ? cu.Status.Value : 0                                        
                                     }).OrderBy(x => x.FirstName).ToList();
+                
+                ViewBag.Status = Status;
 
             }
             catch (Exception ex)
@@ -530,7 +533,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                                        GSTPhoto = cu.GSTPhoto,
                                                        PancardPhoto = cu.PanCardPhoto,
                                                        ShopPhoto = cu.ShopPhoto,
-                                                       Prefix = cu.Prefix
+                                                       Prefix = cu.Prefix,
+                                                       Status = cu.Status.HasValue ? cu.Status.Value : 0,
+                                                       Reason = cu.Reason                                                       
                                                    }).FirstOrDefault();
 
             }
@@ -553,7 +558,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 {
                     if(IsApprove == "false")
                     {
-                        objReq.IsDelete = true;
+                        objReq.Status = 2; //   0 For Pending  1 For Accept 2 For Reject
+                        objReq.Reason = Reason;
                         _db.SaveChanges();
                         try
                         {
@@ -594,6 +600,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     }
                     else
                     {
+
                         tbl_ClientUsers objClient = new tbl_ClientUsers();
                         objClient.FirstName = objReq.FirstName;
                         objClient.LastName = objReq.LastName;
@@ -634,9 +641,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         objClientOther.ShopPhoto = objReq.ShopPhoto;
                         objClientOther.DistributorCode = "KBG/" + DateTime.Now.ToString("ddMMyyyy") + "/" + objClient.ClientUserId;
                         _db.tbl_ClientOtherDetails.Add(objClientOther);
-                        objReq.IsDelete = true;                        
+                        objReq.Status = 1;
                         _db.SaveChanges();
-
                         try
                         {
                             string ToEmail = objReq.Email;

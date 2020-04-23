@@ -28,7 +28,8 @@ namespace KrupaBuildGallery.ViewModel
         public string PancardPhoto { get; set; }
         public string GSTPhoto { get; set; }
         public string ProfilePhoto { get; set; }
-        
-
+        public int Status { get; set; }        
+        public string StatusString { get; set; }
+        public string Reason { get; set; }
     }  
 }

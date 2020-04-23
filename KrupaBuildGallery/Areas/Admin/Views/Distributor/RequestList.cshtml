@@ -35,6 +35,13 @@
                 <h5>Distributor Request List</h5>
             </div>
             <div class="card-body vendor-table">
+                <select class="form-control" id="selectstatus" style="width:150px;" onchange="changestatus();">
+                    <option value="-1">All</option>
+                    <option value="0">Pending</option>
+                    <option value="1">Accepted</option>
+                    <option value="2">Rejected</option>
+                </select>
+                <br/>
                 <table class="display" id="basic-1">
                     <thead>
                         <tr>
@@ -46,6 +53,7 @@
                             <th>City</th>
                             <th>State</th>
                             <th>Company</th>
+                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -54,20 +62,38 @@
                         {
                             foreach (KrupaBuildGallery.ViewModel.DistributorRequestVM objreq in Model)
                             {
-                                <tr class="gradeX">
-                                    <td>@counter.</td>
-                                    <td>@objreq.FirstName</td>
-                                    <td>@objreq.LastName</td>
-                                    <td>@objreq.Email</td>
-                                    <td>@objreq.MobileNo</td>
-                                    <td>@objreq.City</td>
-                                    <td>@objreq.State</td>
-                                    <td>@objreq.CompanyName</td>
-                                    <td>
-                                        <a href="/admin/distributor/requestdetail/@objreq.DistributorRequestId"><i class="fa fa-eye font-success"></i></a>
-                                        <a href="javascript:void(0);" onclick="fnDeleteReq('@objreq.DistributorRequestId');"><i class="fa fa-trash font-danger"></i></a>
-                                    </td>
-                                </tr>
+                                string stauscolor = "badge-secondary";
+                                string statunm = "";
+                                if (objreq.Status == 2)
+                                {
+                                    stauscolor = "badge-danger";
+                                    statunm = "Rejected";
+                                }
+                                else if (objreq.Status == 0)
+                                {
+                                    stauscolor = "badge-warning";
+                                    statunm = "Pending";
+                                }
+                                else if (objreq.Status == 1)
+                                {
+                                    stauscolor = "badge-success";
+                                    statunm = "Accepted";
+                                }
+                        <tr class="gradeX">
+                            <td>@counter.</td>
+                            <td>@objreq.FirstName</td>
+                            <td>@objreq.LastName</td>
+                            <td>@objreq.Email</td>
+                            <td>@objreq.MobileNo</td>
+                            <td>@objreq.City</td>
+                            <td>@objreq.State</td>
+                            <td>@objreq.CompanyName</td>
+                            <td><span class="badge @stauscolor">@statunm</span></td>
+                            <td>
+                                <a href="/admin/distributor/requestdetail/@objreq.DistributorRequestId"><i class="fa fa-eye font-success"></i></a>
+                                <a href="javascript:void(0);" onclick="fnDeleteReq('@objreq.DistributorRequestId');"><i class="fa fa-trash font-danger"></i></a>
+                            </td>
+                        </tr>
                                 counter++;
                             }
 
@@ -137,6 +163,14 @@
                 }
             });
         }
+      });
+
+     $(document).ready(function () {
+        $("#selectstatus").val("@ViewBag.Status");
     });
+    function changestatus() {       
+        var statusid = $("#selectstatus").val();
+        location.href = "/admin/distributor/requestlist?Status="+statusid;       
+    }
 
 </script>

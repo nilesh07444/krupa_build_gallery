@@ -170,12 +170,12 @@
                             <div class="col-md-9">
                                 @if (!string.IsNullOrEmpty(Model.AddharCardNo))
                                 {
-                                <div class="form-text-row">@Model.AddharCardNo</div>
+                                    <div class="form-text-row">@Model.AddharCardNo</div>
                                 }
                                 else
                                 {
                                     <div class="form-text-row">N/A</div>
-                                }                               
+                                }
                             </div>
                         </div>
                         <div class="form-group">
@@ -185,12 +185,12 @@
                             <div class="col-md-9">
                                 @if (!string.IsNullOrEmpty(Model.PanCardNo))
                                 {
-                                <div class="form-text-row">@Model.PanCardNo</div>
+                                    <div class="form-text-row">@Model.PanCardNo</div>
                                 }
                                 else
                                 {
                                     <div class="form-text-row">N/A</div>
-                                }                             
+                                }
                             </div>
                         </div>
                         <div class="form-group">
@@ -328,18 +328,51 @@
                                 </div>
                             </div>
                         </div>
-
+                        @if (Model.Status == 1)
+                        {
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <div class="label-wrapper"><label class="control-label">Status:</label></div>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="form-text-row">Accepted</div>
+                                </div>
+                            </div>
+                        }
+                        @if (Model.Status == 2)
+                        {
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <div class="label-wrapper"><label class="control-label">Status:</label></div>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="form-text-row">Rejected</div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <div class="label-wrapper"><label class="control-label">Reason:</label></div>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="form-text-row">@Model.Reason</div>
+                                </div>
+                            </div>
+                        }
                         <br />
                         <input type="hidden" value="@Model.DistributorRequestId" id="requestid" />
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="label-wrapper"><label class="control-label">Do you want to Approve/Reject?</label></div>
+                        @if (Model.Status == 0)
+                        {
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="label-wrapper"><label class="control-label">Do you want to Approve/Reject?</label></div>
+                                </div>
+                                <div class="col-md-8">
+                                    <label class="radio-inline"><input type="radio" value="Approve" name="optradioapprove">Approve</label>
+                                    <label class="radio-inline"><input type="radio" value="Reject" name="optradioapprove">Reject</label>
+                                </div>
                             </div>
-                            <div class="col-md-8">
-                                <label class="radio-inline"><input type="radio" value="Approve" name="optradioapprove">Approve</label>
-                                <label class="radio-inline"><input type="radio" value="Reject" name="optradioapprove">Reject</label>
-                            </div>
-                        </div>
+                        }
+
                         <div class="row distributorinfo" style="display:none;">
                             <div class="col-md-4">
                                 <div class="label-wrapper"><label class="control-label">Credit Limit:</label></div>

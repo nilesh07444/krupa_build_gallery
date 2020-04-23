@@ -38,5 +38,7 @@ namespace KrupaBuildGallery.Model
         public string GSTPhoto { get; set; }
         public string AddharPhoto { get; set; }
         public string ProfilePhoto { get; set; }
+        public Nullable<int> Status { get; set; }
+        public string Reason { get; set; }
     }
 }

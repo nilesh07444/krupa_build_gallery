@@ -36,7 +36,7 @@
                         <div class="form-row">
                             <div class="col-md-6">
                                 <label for="photofile">Distributor Photo *</label>
-                                <input class="form-control" type="file" id="photofile" name="photofile" />
+                                <input class="form-control" type="file" id="photofile" name="photofile"   required=""/>
                             </div>
                             <div class="col-md-6 select_input">
                                 <label for="prefix">Prefix *</label>
@@ -143,7 +143,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="gstno">GST No </label>
-                                <input type="text" class="form-control" id="gstno" name="gstno" value="@TempData["gstno"]" placeholder="GST No.">
+                                <input type="text" class="form-control" id="gstno" name="gstno" value="@TempData["gstno"]" placeholder="GST No."  required="">
                             </div>
                         </div>
                         <div class="form-row">
@@ -158,17 +158,17 @@
                         </div>
                         <div class="form-row">
                             <div class="col-md-6">
-                                <label for="aadhharphoto">Aadhaar Card Photo.</label>
+                                <label for="aadhharphoto">Aadhaar Card Photo.*</label>
                                 <input type="file" class="form-control" id="aadhharphoto" name="aadhharphoto" required />
                             </div>
                             <div class="col-md-6">
-                                <label for="gstphoto">GST Photo.</label>
-                                <input type="file" class="form-control" id="gstphoto" name="gstphoto" />
+                                <label for="gstphoto">GST Photo. *</label>
+                                <input type="file" class="form-control" id="gstphoto" name="gstphoto" required />
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="col-md-6">
-                                <label for="shopphoto">Shop Photo.</label>
+                                <label for="shopphoto">Shop Photo.*</label>
                                 <input type="file" class="form-control" id="shopphoto" name="shopphoto" required />
                             </div> 
                         </div>
@@ -211,7 +211,8 @@
 {
     <script>
     setTimeout(function(){
-    alert('@TempData["RegisterError"]');
+        alert('@TempData["RegisterError"]');
+        window.location.href = "/home";
     }, 1000);
 
     </script>

@@ -210,6 +210,8 @@
           <Property Name="GSTPhoto" Type="nvarchar(max)" />
           <Property Name="AddharPhoto" Type="nvarchar" MaxLength="450" />
           <Property Name="ProfilePhoto" Type="nvarchar" MaxLength="450" />
+          <Property Name="Status" Type="int" />
+          <Property Name="Reason" Type="nvarchar" MaxLength="800" />
         </EntityType>
         <EntityType Name="tbl_GeneralSetting">
           <Key>
@@ -694,6 +696,8 @@
           <Property Name="GSTPhoto" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="AddharPhoto" Type="String" MaxLength="450" FixedLength="false" Unicode="true" />
           <Property Name="ProfilePhoto" Type="String" MaxLength="450" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Int32" />
+          <Property Name="Reason" Type="String" MaxLength="800" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_Godown">
           <Key>
@@ -1219,6 +1223,8 @@
           <EntitySetMapping Name="tbl_DistributorRequestDetails">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_DistributorRequestDetails">
               <MappingFragment StoreEntitySet="tbl_DistributorRequestDetails">
+                <ScalarProperty Name="Reason" ColumnName="Reason" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="DistributorRequestId" ColumnName="DistributorRequestId" />
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
                 <ScalarProperty Name="LastName" ColumnName="LastName" />

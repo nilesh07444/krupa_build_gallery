@@ -48,7 +48,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 string addharphoto = string.Empty;
                 string shopphotoname = string.Empty;
 
-                tbl_DistributorRequestDetails objRequest = _db.tbl_DistributorRequestDetails.Where(o => (o.Email.ToLower() == email.ToLower() || o.MobileNo.ToLower() == mobileno.ToLower()) && o.IsDelete == false).FirstOrDefault();
+                tbl_DistributorRequestDetails objRequest = _db.tbl_DistributorRequestDetails.Where(o => (o.Email.ToLower() == email.ToLower() || o.MobileNo.ToLower() == mobileno.ToLower()) && o.IsDelete == false && o.Status == 0).FirstOrDefault();
                 if(objRequest != null)
                 {
                     TempData["email"] = frm["email"].ToString();
@@ -141,7 +141,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     objRequest.GSTPhoto = gstphotoname;
                     objRequest.Dob = Convert.ToDateTime(dob);
                     objRequest.IsDelete = false;
-                    
+                    objRequest.Status = 0;
+                    objRequest.Reason = "";
                     _db.tbl_DistributorRequestDetails.Add(objRequest);
                     _db.SaveChanges();
                     string AdminEmail = ConfigurationManager.AppSettings["AdminEmail"];
@@ -187,7 +188,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         {
             try
             {
-                tbl_DistributorRequestDetails objRequest = _db.tbl_DistributorRequestDetails.Where(o => (o.Email.ToLower() == Email.ToLower() || o.MobileNo.ToLower() == MobileNumber.ToLower()) && o.IsDelete == false).FirstOrDefault();
+                tbl_DistributorRequestDetails objRequest = _db.tbl_DistributorRequestDetails.Where(o => (o.Email.ToLower() == Email.ToLower() || o.MobileNo.ToLower() == MobileNumber.ToLower()) && o.IsDelete == false && o.Status == 0).FirstOrDefault();
                 if(objRequest != null )
                 {
                     return "AlreadySent";
