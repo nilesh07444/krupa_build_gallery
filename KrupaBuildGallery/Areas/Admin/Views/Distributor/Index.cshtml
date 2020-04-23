@@ -53,6 +53,12 @@
                 <h5>Distributor List</h5>
             </div>
             <div class="card-body vendor-table">
+                <select class="form-control" id="selectstatus" style="width:150px;" onchange="changestatus();">
+                    <option value="-1">All</option>
+                    <option value="1">Pending Shipping Charge</option>
+                    <option value="2">Pending Order Payment</option>                    
+                </select>
+                <br />
                 <table class="display" id="basic-1">
                     <thead>
                         <tr>
@@ -179,5 +185,13 @@
                 }
             });
         }
+       });
+     
+     $(document).ready(function () {
+        $("#selectstatus").val("@ViewBag.Status");
     });
+    function changestatus() {       
+        var statusid = $("#selectstatus").val();
+        location.href = "/admin/distributor?Status="+statusid;       
+    }
 </script>

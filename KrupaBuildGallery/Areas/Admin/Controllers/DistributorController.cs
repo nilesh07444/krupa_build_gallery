@@ -24,9 +24,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         public DistributorController()
         {
             _db = new krupagallarydbEntities();
-        }
+        } 
         // GET: Admin/Distributor
-        public ActionResult Index()
+        public ActionResult Index(int Status = -1)
         {
             List<ClientUserVM> lstClientUser = new List<ClientUserVM>();
             try
@@ -52,9 +52,21 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                      State = co.State,
                                      AddharCardNo = co.Addharcardno,
                                      PanCardNo = co.Pancardno,
-                                     GSTNo = co.GSTno
+                                     GSTNo = co.GSTno,
+                                     AmountDue = co.AmountDue.HasValue ? co.AmountDue.Value : 0
                                  }).OrderBy(x => x.FirstName).ToList();
 
+                if(Status == 2)
+                {
+                    lstClientUser = lstClientUser.Where(o => o.AmountDue > 0).ToList();
+                } 
+                else if(Status == 1)
+                {
+                    List<long> clientuserids = lstClientUser.Select(o => o.ClientUserId).ToList();
+                    List<long> pendingshippingdistri = _db.tbl_Orders.Where(o => o.ShippingStatus == 1 && clientuserids.Contains(o.ClientUserId)).Select(o => o.ClientUserId).Distinct().ToList();
+                    lstClientUser = lstClientUser.Where(o => pendingshippingdistri.Contains(o.ClientUserId)).ToList();
+                }
+                ViewBag.Status = Status;
             }
             catch (Exception ex)
             {

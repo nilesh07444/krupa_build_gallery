@@ -18,12 +18,12 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             _db = new krupagallarydbEntities();
         }
         // GET: Admin/Customer
-        public ActionResult Index()
+        public ActionResult Index(int Status = -1)
         {
             List<ClientUserVM> lstClientUser = new List<ClientUserVM>();
             try
             {
-
+                
                 lstClientUser = (from cu in _db.tbl_ClientUsers
                              join co in _db.tbl_ClientOtherDetails on cu.ClientUserId equals co.ClientUserId
                              where !cu.IsDelete && cu.ClientRoleId == 1
@@ -46,6 +46,13 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                  PanCardNo = co.Pancardno,
                                  GSTNo = co.GSTno
                              }).OrderBy(x => x.FirstName).ToList();
+                if (Status == 1)
+                {
+                    List<long> clientuserids = lstClientUser.Select(o => o.ClientUserId).ToList();
+                    List<long> pendingshippingdistri = _db.tbl_Orders.Where(o => o.ShippingStatus == 1 && clientuserids.Contains(o.ClientUserId)).Select(o => o.ClientUserId).Distinct().ToList();
+                    lstClientUser = lstClientUser.Where(o => pendingshippingdistri.Contains(o.ClientUserId)).ToList();
+                }
+                ViewBag.Status = Status;
 
             }
             catch (Exception ex)
