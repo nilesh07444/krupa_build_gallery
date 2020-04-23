@@ -9,6 +9,7 @@
     ViewBag.Title = "Cart";
     int counter = 1;
     decimal CartTotal = 0;
+    int TotalCartItem = Model.Count;
 }
 @if (Model != null && Model.Count > 0)
 {
@@ -73,6 +74,17 @@ else
 }
 
 <script>
+    var countts = '@TotalCartItem';
+    $(document).ready(function () {
+        if (countts == "0") {
+            $(".clscartcount").hide();
+        }
+        else {
+            $(".clscartcount").show();
+            $(".clscartcount").html(countts);
+        }
+     
+    });
     function removecartfromtop(CartItemId,objthis) {
         var URL = '/Client/Cart/Removecartitem';
         jQuery.ajax({

@@ -120,7 +120,7 @@
                                 <div class="icons-widgets col-4">
                                     <div class="align-self-center text-center"><i data-feather="navigation" class="font-warning"></i></div>
                                 </div>
-                                <div class="media-body col-8" style="cursor:pointer;" onclick="location.href='/admin/order'">
+                                <div class="media-body col-8" style="cursor:pointer;" onclick="location.href='/admin/order?Status=1'">
                                     <span class="m-0">New Orders</span>
                                     <h3 class="mb-0"><span class="counter">@Model.TotalNewOrder</span></h3>
                                 </div>
@@ -135,7 +135,7 @@
                                 <div class="icons-widgets col-4">
                                     <div class="align-self-center text-center"><i data-feather="box" class="font-secondary"></i></div>
                                 </div>
-                                <div class="media-body col-8" style="cursor:pointer;" onclick="location.href='/admin/order'">
+                                <div class="media-body col-8" style="cursor:pointer;" onclick="location.href='/admin/order?Status=2'">
                                     <span class="m-0">Confirm Orders</span>
                                     <h3 class="mb-0"><span class="counter">@Model.TotalConfirmOrder</span></h3>
                                 </div>
@@ -150,7 +150,7 @@
                                 <div class="icons-widgets col-4">
                                     <div class="align-self-center text-center"><i data-feather="message-square" class="font-primary"></i></div>
                                 </div>
-                                <div class="media-body col-8" style="cursor:pointer;" onclick="location.href='/admin/order'">
+                                <div class="media-body col-8" style="cursor:pointer;" onclick="location.href='/admin/order?Status=3'">
                                     <span class="m-0">Dispatched Orders</span>
                                     <h3 class="mb-0"><span class="counter">@Model.TotalDispatchedOrder</span></h3>
                                 </div>

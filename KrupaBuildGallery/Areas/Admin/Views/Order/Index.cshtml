@@ -35,11 +35,18 @@
                     <h5>Order List</h5>
                 </div>
                 <div class="card-body vendor-table">
+                    <select class="form-control" id="selectstatus" style="width:150px;" onchange="changestatus();">
+                        <option value="-1">All</option>
+                        <option value="1">New Order</option>
+                        <option value="2">Confirmed</option>
+                        <option value="3">Dispatched</option>
+                    </select>
+                    <br/>
                     <table class="display" id="basic-1">
                         <thead>
                             <tr>
                                 <th>Order #</th>
-                                <th>Customer/Distributor Name</th> 
+                                <th>Customer/Distributor Name</th>
                                 <th>Order Date</th>
                                 <th>Order Amount</th>
                                 <th>Order Status</th>
@@ -53,12 +60,12 @@
                                 foreach (KrupaBuildGallery.ViewModel.OrderVM objorder in Model)
                                 {
                                     decimal shippingchrge = 0;
-                                    if(objorder.ShippingStatus == 2)
+                                    if (objorder.ShippingStatus == 2)
                                     {
                                         shippingchrge = objorder.ShipmentCharge;
                                     }
-                                    decimal OrdAmt = Math.Round(objorder.OrderAmount + shippingchrge, 2); 
-                                   
+                                    decimal OrdAmt = Math.Round(objorder.OrderAmount + shippingchrge, 2);
+
                                     string stauscolor = "badge-secondary";
                                     if (objorder.OrderStatusId == 1)
                                     {
@@ -74,7 +81,7 @@
                                     }
                                     <tr class="gradeX">
                                         <td>@objorder.OrderId</td>
-                                        <td>@objorder.ClientUserName</td> 
+                                        <td>@objorder.ClientUserName</td>
                                         <td>@objorder.OrderDate.ToString("dd/MM/yyyy")</td>
                                         <td>₹ @Math.Round(OrdAmt, 2)</td>
                                         <td><span class="badge @stauscolor">@objorder.OrderStatus</span></td>
@@ -109,5 +116,14 @@
             w.close();
                },100);
         });
+    }
+
+    
+     $(document).ready(function () {
+        $("#selectstatus").val("@ViewBag.Status");
+    });
+    function changestatus() {       
+        var statusid = $("#selectstatus").val();
+        location.href = "/admin/order?Status="+statusid;       
     }
 </script>

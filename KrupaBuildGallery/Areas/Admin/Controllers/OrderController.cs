@@ -20,7 +20,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             _db = new krupagallarydbEntities();
         }
         // GET: Admin/Order
-        public ActionResult Index()
+        public ActionResult Index(int Status = -1)
         {
             
             List<OrderVM> lstOrders = new List<OrderVM>();
@@ -29,8 +29,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
                 lstOrders = (from p in _db.tbl_Orders
                              join c in _db.tbl_ClientUsers on p.ClientUserId equals c.ClientUserId
-                               where !p.IsDelete
-                               select new OrderVM
+                               where !p.IsDelete && (Status == -1 || p.OrderStatusId == Status)
+                             select new OrderVM
                                {
                                    OrderId = p.OrderId,
                                    ClientUserName = c.FirstName+" "+c.LastName,
@@ -53,6 +53,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 {
                     lstOrders.ForEach(x => x.OrderStatus = GetOrderStatus(x.OrderStatusId));
                 }
+                ViewBag.Status = Status;
             }
             catch (Exception ex)
             {
