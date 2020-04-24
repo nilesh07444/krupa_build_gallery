@@ -21,6 +21,9 @@
         objPermission = JsonConvert.DeserializeObject<UserPermissionVM>(strPermission, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
     }
     bool IsSA = (RoleId == 1 ? true : false);
+    List<SelectListItem> lstCats = ViewData["CategoryList"] as List<SelectListItem>;
+    List<SelectListItem> lstProdts = ViewData["ProductList"] as List<SelectListItem>;
+    List<SelectListItem> lstSubProdts = ViewData["SubProductList"] as List<SelectListItem>;
 }
 
 <div class="page-body">
@@ -59,6 +62,61 @@
                         <button type="button" class="btn btn-primary" id="btnAdd">Add Product Item</button>
                     </div>
                 }
+                <br/>
+                <div class="row" style="margin-top:25px;">
+                    <div class="col-md-4" style="margin-right:15px">
+                        <label>Categories</label>
+                        <select id="selectcat" class="form-control" style="width:250px;" onchange="selectcatchange();">
+                            <option value="-1">All</option>
+                            @if (lstCats != null && lstCats.Count() > 0)
+                            {
+                                foreach (var objc in lstCats)
+                                {
+                                    <option value="@objc.Value">@objc.Text</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-4" style="margin-right:15px">
+                        <label>Products</label>
+                        <select id="selectprod" class="form-control" style="width:250px;" onchange="selectprodchange();">
+                            <option value="-1">All</option>
+                            @if (lstProdts != null && lstProdts.Count() > 0)
+                            {
+                                foreach (var objc in lstProdts)
+                                {
+                                    <option value="@objc.Value">@objc.Text</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label>Sub Products</label>
+                        <select id="selectsubprod" class="form-control" style="width:250px;" onchange="selectsubprodchange();">
+                            <option value="-1">All</option>
+                            @if (lstSubProdts != null && lstSubProdts.Count() > 0)
+                            {
+                                foreach (var objc in lstSubProdts)
+                                {
+                                    <option value="@objc.Value">@objc.Text</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+            <div class="row" style="margin-top:10px;margin-left: 5px;margin-bottom:10px;">               
+                <div class="col-md-4">
+                    <label>Status</label>  
+                    <select id="selectstatus" class="form-control" style="width:250px;">
+                        <option value="-1">All</option>
+                        <option value="1">Active</option>
+                        <option value="0">Inactive</option>
+                    </select>
+                </div>
+                <div class="col-md-6" style="margin-top: 25px;">
+                    <input type="button" value="Filter" class="btn btn-primary" onclick="filteritems();" />
+                </div>
+            </div>          
                 <table class="display" id="basic-1">
                     <thead>
                         <tr>
@@ -279,5 +337,82 @@
                 }
             });
         }
+       });
+
+     $(document).ready(function () {
+         $("#selectcat").val("@ViewBag.CatId");
+         $("#selectprod").val("@ViewBag.ProductId");
+         $("#selectsubprod").val("@ViewBag.SubProductId");
+         $("#selectstatus").val('@ViewBag.Active');
     });
+
+    function selectcatchange() {
+          var CategoryId = jQuery("#selectcat option:selected").val();
+
+        if (CategoryId != "" && CategoryId != null) {
+             
+            var URL = '@Url.Action("GetProductListByCategoryId", "SubProduct")';
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: URL + "/" + CategoryId,
+                success: function (result) {
+                    var htmlData = "<option value='-1'>All</option>";
+                    if (result && result.length > 0) {
+                        jQuery.each(result, function (i, item) {
+                             htmlData += "<option value='"+ item.Value +"'> "+ item.Text +" </option>";                          
+                          });                        
+                    }
+                    $("#selectprod").html(htmlData); 
+                },
+                error: function (error) { 
+                }
+            });
+        }
+        else {
+             var htmlData = "<option value='-1'>All</option>";
+            $("#selectprod").html(htmlData);
+
+           var htmlData = "<option value='-1'>All</option>";
+            $("#selectsubprod").html(htmlSubData);
+        }
+    }
+
+    function selectprodchange() {
+        var ProductId = jQuery("#selectprod option:selected").val();
+
+        if (ProductId != "" && ProductId != null) {
+             
+            var URL = '@Url.Action("GetSubProductListByProductId", "SubProduct")';
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: URL + "/" + ProductId,
+                success: function (result) {
+                   var htmlData = "<option value='-1'>All</option>";
+                    if (result && result.length > 0) {
+                        jQuery.each(result, function (i, item) {
+                             htmlData += "<option value='"+ item.Value +"'> "+ item.Text +" </option>";                          
+                          });       
+                    }
+                    $("#selectsubprod").html(htmlData); 
+                },
+                error: function (error) { 
+                }
+            });
+        }
+        else {
+            var htmlData = "<option value='-1'>All</option>";
+            $("#selectsubprod").html(htmlSubData);
+        }
+    }
+
+    function filteritems() {
+           var statusid = $("#selectstatus").val();
+        var catid = $("#selectcat").val();
+        var prodtid = $("#selectprod").val();
+        var subproductid = $("#selectsubprod").val();
+        location.href = "/admin/productitem?CategoryId="+catid+"&ProductId="+prodtid+"&SubProductId="+subproductid+"&Active="+statusid;       
+    }
+   
 </script>

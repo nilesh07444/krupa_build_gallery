@@ -18,7 +18,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             _db = new krupagallarydbEntities();
         }
         // GET: Client/Orders
-        public ActionResult Index()
+        public ActionResult Index(int Status = -1)
         {
             
             List<OrderVM> lstOrders = new List<OrderVM>();
@@ -43,6 +43,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                  OrderStatusId = p.OrderStatusId,
                                  PaymentType = p.PaymentType,
                                  OrderDate = p.CreatedDate,
+                                 OrderAmountDue = p.AmountDue.HasValue ? p.AmountDue.Value : 0,
                                  ShipmentCharge = p.ShippingCharge.HasValue ? p.ShippingCharge.Value : 0,
                                  ShippingStatus = p.ShippingStatus.HasValue ? p.ShippingStatus.Value : 2
                              }).OrderByDescending(x => x.OrderDate).ToList();
@@ -51,6 +52,17 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 {
                     lstOrders.ForEach(x => x.OrderStatus = GetOrderStatus(x.OrderStatusId));
                 }
+
+                if(Status == 1)
+                {
+                    lstOrders = lstOrders.Where(o => o.ShippingStatus == 1).ToList();
+                }
+                else if(Status == 2)
+                {
+                    lstOrders = lstOrders.Where(o => o.OrderAmountDue > 0).ToList();
+                }
+
+                ViewBag.Status = Status;
             }
             catch (Exception ex)
             {

@@ -20,18 +20,26 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             _db = new krupagallarydbEntities();
         }
 
-        public ActionResult Index()
+        public ActionResult Index(int CategoryId = -1,int ProductId = -1,int SubProductId = -1,int Active = -1)
         {
             List<ProductItemVM> lstProductItem = new List<ProductItemVM>();
 
             try
             {
+                bool IsActv = false;
+                if(Active != -1)
+                {
+                    if(Active == 1)
+                    {
+                        IsActv = true;
+                    }
+                }
                 lstProductItem = (from i in _db.tbl_ProductItems
                                   join c in _db.tbl_Categories on i.CategoryId equals c.CategoryId
                                   join p in _db.tbl_Products on i.ProductId equals p.Product_Id
                                   join s in _db.tbl_SubProducts on i.SubProductId equals s.SubProductId into outerJoinSubProduct
                                   from s in outerJoinSubProduct.DefaultIfEmpty()
-                                  where !i.IsDelete && !c.IsDelete && !p.IsDelete
+                                  where !i.IsDelete && !c.IsDelete && !p.IsDelete && (CategoryId == -1 || i.CategoryId == CategoryId) && (ProductId == -1 || i.ProductId == ProductId) && (SubProductId == -1 || i.SubProductId == SubProductId) && (Active == -1 || i.IsActive == IsActv)
                                   select new ProductItemVM
                                   {
                                       ProductItemId = i.ProductItemId,
@@ -52,6 +60,14 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 {
                     lstProductItem.ForEach(x => { x.Sold = SoldItems(x.ProductItemId); x.InStock = ItemStock(x.ProductItemId) - x.Sold;});
                 }
+                
+                 ViewData["CategoryList"] = GetCategoryList();
+                 ViewData["ProductList"] = GetProductListByCategoryId(CategoryId);
+                 ViewData["SubProductList"] = GetSubProductListByProductId(ProductId);
+                ViewBag.CatId = CategoryId;
+                ViewBag.ProductId = ProductId;
+                ViewBag.SubProductId = SubProductId;
+                ViewBag.Active = Active;
 
             }
             catch (Exception ex)
@@ -450,7 +466,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
         public List<SelectListItem> GetProductListByCategoryId(long Id)
         {
-            var ProductList = _db.tbl_Products.Where(x => x.IsActive && !x.IsDelete && x.CategoryId == Id)
+            var ProductList = _db.tbl_Products.Where(x => x.IsActive && !x.IsDelete && (Id == -1 || x.CategoryId == Id))
                          .Select(o => new SelectListItem { Value = SqlFunctions.StringConvert((double)o.Product_Id).Trim(), Text = o.ProductName })
                          .OrderBy(x => x.Text).ToList();
 
@@ -459,7 +475,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
         public List<SelectListItem> GetSubProductListByProductId(long Id)
         {
-            var ProductList = _db.tbl_SubProducts.Where(x => x.IsActive && !x.IsDelete && x.ProductId == Id)
+            var ProductList = _db.tbl_SubProducts.Where(x => x.IsActive && !x.IsDelete && (Id == -1 || x.ProductId == Id))
                          .Select(o => new SelectListItem { Value = SqlFunctions.StringConvert((double)o.SubProductId).Trim(), Text = o.SubProductName })
                          .OrderBy(x => x.Text).ToList();
 
