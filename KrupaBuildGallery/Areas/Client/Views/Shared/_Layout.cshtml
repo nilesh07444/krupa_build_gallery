@@ -68,12 +68,26 @@
 
     <!-- latest jquery-->
     <script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>
+     
+    <style>
+    .divHideScroll::-webkit-scrollbar {
+        width: 0 !important
+    }
+
+    .divHideScroll {
+        overflow: -moz-scrollbars-none;
+    }
+
+    .divHideScroll {
+        -ms-overflow-style: none;
+    }
+
+  </style>
 
 </head>
 
-<body>
-
-
+<body class="divHideScroll">
+     
     <!-- header start -->
     <header class="header-tools marketplace">
         <div class="mobile-fix-option"></div>
@@ -84,7 +98,7 @@
                         <div class="header-contact">
                             <ul>
                                 <li>WELCOME TO SHOPPING & SAVING</li>
-                                <li><i class="fa fa-phone" aria-hidden="true"></i>Toll Free No: 9824643334</li>
+                                <li><i class="fa fa-phone" aria-hidden="true"></i>Toll Free No: +91 98246 43334</li>
                             </ul>
                         </div>
                     </div>
@@ -299,12 +313,13 @@
                                                 </div>
                                             </div>
                                         </li>
-                                        <li class="onhover-div mobile-cart" style="max-height:250px;">
+                                        <li class="onhover-div mobile-cart" style="        max-height: 250px;">
                                             <div class="up-text">
                                                 <img src="~/Content/assets/images/icon/shopping-cart.png" class="img-fluid blur-up lazyload" alt=""> <i class="ti-shopping-cart"></i>
                                                 <span class="clscartcount" style="display:none;"></span>
                                             </div>
-                                            <ul class="show-div shopping-cart" id="ulCartitems" style="max-height:250px;overflow:auto;"></ul>
+                                            <ul class="show-div shopping-cart" id="ulCartitems" style="        max-height: 250px;
+        overflow: auto;"></ul>
                                         </li>
                                     </ul>
                                 </div>
@@ -348,7 +363,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col offset-xl-1 ">
+                    <div class="col" style="        padding-left: 5%;">
                         <div class="sub-title">
                             <div class="footer-title">
                                 <h4>my account</h4>
@@ -378,7 +393,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col">
+                    <div class="col-lg-3 col-md-6">
                         <div class="sub-title">
                             <div class="footer-title">
                                 <h4>store information</h4>
@@ -388,14 +403,17 @@
                                     <li>
                                         <i class="fa fa-map-marker"></i><b>Krupa Build Gallery, </b> <br />
                                         <b>Nr. Vasupujya Society, </b> <br />
-                                        <b>Gadukpur Chokadi, </b> <br />
-                                        <b>Bamroli Road, </b> <br />
-                                        <b>Vavdi Buzarg, </b> <br />
-                                        <b>Godhra-389001 (P.M.S) </b> <br />
+                                        <b>Gadukpur Chokadi, Bamroli Road, </b> <br />
+                                        <b>Vavdi Buzarg, Godhra-389001 (P.M.S) </b> <br />
                                         <b>Gujarat - INDIA. </b>
                                     </li>
-                                    <li><i class="fa fa-phone"></i>Call Us: 9824243334, 9824643334</li>
-                                    <li><i class="fa fa-envelope-o"></i>Email Us: <a href="#">admin@shopping-saving.com</a></li> 
+                                    <li>
+                                        <i class="fa fa-phone"></i>
+                                        Call Us: +91 98242 43334 <br />
+                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                        +91 98246 43334
+                                    </li>
+                                    <li><i class="fa fa-envelope-o"></i>Email Us: <a href="#">admin@shopping-saving.com</a></li>
                                 </ul>
                             </div>
                         </div>
@@ -441,23 +459,24 @@
     <!-- footer section end -->
     <!--modal popup start-->
     @*<div class="modal fade bd-example-modal-lg theme-modal" id="exampleModal" tabindex="-1" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-body modal1">
-                    <div class="container-fluid p-0">
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="modal-bg">
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                                    <div class="offer-content">
-                                        <img src="~/Content/assets/images/Offer-banner.png" class="img-fluid blur-up lazyload" alt="">
-                                        <h2>newsletter</h2>
-                                        <form action="https://pixelstrap.us19.list-manage.com/subscribe/post?u=5a128856334b598b395f1fc9b&amp;id=082f74cbda" class="auth-form needs-validation" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" target="_blank">
-                                            <div class="form-group mx-sm-3">
-                                                <input type="email" class="form-control" name="EMAIL" id="mce-EMAIL1" placeholder="Enter your email" required="required">
-                                                <button type="submit" class="btn btn-solid" id="mc-submit1">subscribe</button>
-                                            </div>
-                                        </form>
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-body modal1">
+                        <div class="container-fluid p-0">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="modal-bg">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <div class="offer-content">
+                                            <img src="~/Content/assets/images/Offer-banner.png" class="img-fluid blur-up lazyload" alt="">
+                                            <h2>newsletter</h2>
+                                            <form action="https://pixelstrap.us19.list-manage.com/subscribe/post?u=5a128856334b598b395f1fc9b&amp;id=082f74cbda" class="auth-form needs-validation" method="post" id="mc-embedded-subscribe-form" name="mc-embedded-subscribe-form" target="_blank">
+                                                <div class="form-group mx-sm-3">
+                                                    <input type="email" class="form-control" name="EMAIL" id="mce-EMAIL1" placeholder="Enter your email" required="required">
+                                                    <button type="submit" class="btn btn-solid" id="mc-submit1">subscribe</button>
+                                                </div>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -465,8 +484,7 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>*@
+        </div>*@
     <!--modal popup end-->
     <!-- Quick-view modal popup start-->
     <div class="modal fade bd-example-modal-lg theme-modal" id="quick-view" tabindex="-1" role="dialog" aria-hidden="true">
@@ -607,9 +625,9 @@
         }
     </script>
     <script src="~/Scripts/jquery.blockUI.js"></script>
-
+      
     <script>
-
+     
         function StartLoading() {
             jQuery.blockUI({ message: "<h4>Please Wait...</h4>" });
         }
