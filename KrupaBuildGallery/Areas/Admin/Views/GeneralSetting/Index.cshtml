@@ -10,7 +10,7 @@
     }
 </style>
 
-<div class="page-body"> 
+<div class="page-body">
 
     <!-- Container-fluid starts-->
     <div class="container-fluid">
@@ -58,6 +58,65 @@
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 <span id="spn_shippingmsg" class="clserror"></span>
                             </div>
+                            <div class="form-group row">
+                                <label for="txtSmtpHost" class="col-xl-3 col-md-4">SMTP Host</label>
+                                <input type="text" class="form-control col-md-8" id="txtSmtpHost" value="@Model.SMTPHost" name="txtSmtpHost" placeholder="Enter SMTP Host">
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                <span id="spn_smtphostmsg" class="clserror"></span>
+                            </div>
+                            <div class="form-group row">
+                                <label for="txtSmtpPort" class="col-xl-3 col-md-4">SMTP Port</label>
+                                <input type="text" class="form-control col-md-8" id="txtSmtpPort" value="@Model.SMTPPort" name="txtSmtpPort" placeholder="Enter SMTP Port">
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                <span id="spn_smtpportmsg" class="clserror"></span>
+                            </div>
+                            <div class="form-group row">
+                                <label for="txtSmtpEmail" class="col-xl-3 col-md-4">SMTP Email</label>
+                                <input type="text" class="form-control col-md-8" id="txtSmtpEmail" value="@Model.SMTPEmail" name="txtSmtpEmail" placeholder="Enter SMTP Email">
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                <span id="spn_smtpemailmsg" class="clserror"></span>
+                            </div>
+                            <div class="form-group row">
+                                <label for="txtSmtpPwd" class="col-xl-3 col-md-4">SMTP Password</label>
+                                <input type="text" class="form-control col-md-8" id="txtSmtpPwd" value="@Model.SMTPPwd" name="txtSmtpPwd" placeholder="Enter SMTP Pwd">
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                <span id="spn_smtppwdmsg" class="clserror"></span>
+                            </div>
+                            <div class="form-group row">
+                                <label for="txtenablessl" class="col-xl-3 col-md-4">Enable SSL</label>
+                                @if (Model.EnableSSL == true)
+                                {
+                                    <label class="radio-inline"><input type="radio" name="rdbSSL" value="Yes" checked>Yes</label>
+                                    <label class="radio-inline"><input type="radio" name="rdbSSL" value="No">No</label>
+                                }
+                                else
+                                {
+                                    <label class="radio-inline"><input type="radio" name="rdbSSL" value="Yes">Yes</label>
+                                    <label class="radio-inline"><input type="radio" name="rdbSSL" value="No" checked>No</label>
+                                }
+                                <lable class="col-xl-3 col-md-4"></lable>
+                            </div>
+                            <div class="form-group row">
+                                <label for="txtadminemail" class="col-xl-3 col-md-4">Admin Email</label>
+                                <input type="text" class="form-control col-md-8" id="txtadminemail" value="@Model.AdminEmail" name="txtadminemail" placeholder="Enter Admin Email">
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                <span id="spn_admnemailmsg" class="clserror"></span>
+                            </div>
+                            <div class="form-group row">
+                                <label for="txtfrommail" class="col-xl-3 col-md-4">From Email</label>
+                                <input type="text" class="form-control col-md-8" id="txtfrommail" value="@Model.FromEmail" name="txtfrommail" placeholder="Enter From Email">
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                <span id="spn_fromemailmsg" class="clserror"></span>
+                            </div>
+                            <div class="form-group row">
+                                <label for="txtsmsmobil" class="col-xl-3 col-md-4">Admin SMS Mobile Number</label>
+                                <input type="text" class="form-control col-md-8" id="txtsmsmobil" value="@Model.AdminSMSNumber" name="txtsmsmobil" placeholder="Enter Admin SMS Mobile Number">
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                <span id="spn_smsmobilemsg" class="clserror"></span>
+                            </div>
                             <button id="btnSavesettings" type="button" class="btn btn-primary">Save Settings</button>
                         </form>
                     </div>
@@ -82,7 +141,7 @@
 
         var intialpoints = jQuery.trim(jQuery("#txtpointinitial").val());
         var shippingmsg = jQuery.trim(jQuery("#txtshippingmsg").val());
-       
+
         if (intialpoints == "" || intialpoints == null) {
             jQuery("#spn_Intialpoints").text(requiredMessage);
             jQuery("#spn_Intialpoints").show();
@@ -92,7 +151,7 @@
             jQuery("#spn_shippingmsg").text(requiredMessage);
             jQuery("#spn_shippingmsg").show();
             flag = false;
-        }       
+        }
 
         if (flag) {
             $.blockUI({ message: "<h4>Please Wait...</h4>" });

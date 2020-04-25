@@ -37,10 +37,11 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 objContactform.FromWhere = "Web";
                 objContactform.ClientUserId = clsClientSession.UserID;
                 _db.tbl_ContactFormData.Add(objContactform);
-                string AdminEmail = ConfigurationManager.AppSettings["AdminEmail"];
+                tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
+                string AdminEmail = objGensetting.AdminEmail;
 
                 _db.SaveChanges();
-                string FromEmail = ConfigurationManager.AppSettings["FromEmail"];
+                string FromEmail = objGensetting.FromEmail;
                 if (!string.IsNullOrEmpty(objContactform.Email))
                 {
                     FromEmail = objContactform.Email;

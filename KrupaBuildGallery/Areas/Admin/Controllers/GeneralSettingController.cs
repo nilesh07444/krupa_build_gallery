@@ -29,9 +29,30 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             {
                 string intialpoints = frm["txtpointinitial"];
                 string shippingmsg = frm["txtshippingmsg"];
+                string txtSmtpHost = frm["txtSmtpHost"];
+                string txtSmtpPort = frm["txtSmtpPort"];
+                string txtSmtpEmail = frm["txtSmtpEmail"];
+                string txtSmtpPwd = frm["txtSmtpPwd"];
+                string txtadminemail = frm["txtadminemail"];
+                string txtfrommail = frm["txtfrommail"];
+                string txtsmsmobil = frm["txtsmsmobil"];
+                bool EnableSSL = false;
+                if(frm["rdbSSL"].ToString() == "Yes")
+                {
+                    EnableSSL = true;
+                }
+                
                 tbl_GeneralSetting objGenSetting = _db.tbl_GeneralSetting.FirstOrDefault();
                 objGenSetting.InitialPointCustomer = Convert.ToDecimal(intialpoints);
                 objGenSetting.ShippingMessage = shippingmsg;
+                objGenSetting.SMTPEmail = txtSmtpEmail;
+                objGenSetting.SMTPHost = txtSmtpHost;
+                objGenSetting.SMTPPort = txtSmtpPort;
+                objGenSetting.SMTPPwd = txtSmtpPwd;
+                objGenSetting.AdminEmail = txtadminemail;
+                objGenSetting.AdminSMSNumber = txtsmsmobil.ToString();
+                objGenSetting.FromEmail = txtfrommail;
+                objGenSetting.EnableSSL = EnableSSL;
                 _db.SaveChanges();
                 return "Success";
             }

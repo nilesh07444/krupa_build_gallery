@@ -655,7 +655,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             }
                             string orderid = clsCommon.EncryptString(objOrder.OrderId.ToString());
                             ReturnMessage = "Success^" + orderid;
-                            string AdminMobileNumber = ConfigurationManager.AppSettings["AdminSMSNumber"];
+                            tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
+                            string AdminMobileNumber = objGensetting.AdminSMSNumber;
                             string msgsms = "New Order Received - Order No " + objOrder.OrderId + " - Krupa Build Gallery";
                             string msgsmscustomer = "Thank you for the Order. You order number is " + objOrder.OrderId + " - Krupa Build Gallery";
                             SendSMSForNewOrder(AdminMobileNumber, msgsms);

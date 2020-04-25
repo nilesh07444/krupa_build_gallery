@@ -48,18 +48,23 @@ namespace KrupaBuildGallery.Model
         {
             try
             {
+                krupagallarydbEntities _db = new krupagallarydbEntities();
                 MailMessage mailMessage = new MailMessage(
                       from, // From field
                       To, // Recipient field
                      subject, // Subject of the email message
                       body // Email message body
            );
-                string SMTPHost = ConfigurationManager.AppSettings["SMTPHost"];
-                string SMTpPort = ConfigurationManager.AppSettings["SMTPPort"];
-                string SMTPEMail = ConfigurationManager.AppSettings["SMTPEmail"];
-                string SMTPPwd = ConfigurationManager.AppSettings["SMTPPwd"];
-                string EnablSSL = ConfigurationManager.AppSettings["EnableSSL"];
-
+                tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
+                string SMTPHost = objGensetting.SMTPHost;
+                string SMTpPort = objGensetting.SMTPPort;
+                string SMTPEMail = objGensetting.SMTPEmail;
+                string SMTPPwd = objGensetting.SMTPPwd;
+                string EnablSSL = "false";
+                if(objGensetting.EnableSSL == true)
+                {
+                    EnablSSL = "true";
+                }
                 mailMessage.IsBodyHtml = true;
                 // System.Net.Mail.MailMessage mailMessage = (System.Net.Mail.MailMessage)mailMsg;
 

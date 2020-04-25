@@ -145,10 +145,11 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     objRequest.Reason = "";
                     _db.tbl_DistributorRequestDetails.Add(objRequest);
                     _db.SaveChanges();
-                    string AdminEmail = ConfigurationManager.AppSettings["AdminEmail"];
+                    tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
+                    string AdminEmail = objGensetting.AdminEmail;
 
                     _db.SaveChanges();
-                    string FromEmail = ConfigurationManager.AppSettings["FromEmail"];
+                    string FromEmail = objGensetting.FromEmail;
                     if (!string.IsNullOrEmpty(objRequest.Email))
                     {
                         FromEmail = objRequest.Email;
@@ -211,7 +212,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     }
                     else
                     {
-                        string FromEmail = ConfigurationManager.AppSettings["FromEmail"];
+                        tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
+                        string FromEmail = objGensetting.FromEmail;
                         Random random1 = new Random();
                         int num1 = random1.Next(111566,499999);
                         string msg1 = "Your distributor request OTP code is " + num1;

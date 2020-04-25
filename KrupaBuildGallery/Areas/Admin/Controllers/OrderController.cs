@@ -144,7 +144,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             {
                                 if (!string.IsNullOrEmpty(objclntusr.Email))
                                 {
-                                    string FromEmail = ConfigurationManager.AppSettings["FromEmail"];
+                                    tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
+                                    string FromEmail = objGensetting.FromEmail;
                                   
                                     string msg1 = "Your order #" + objordr.OrderId + " has been confirmed. We will dispatch your order within " + Dispatchtime;
                                     clsCommon.SendEmail(objclntusr.Email, FromEmail, "Your Order has been confirmed - Krupa Build Gallery", msg1);
@@ -173,7 +174,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             {
                                 if (!string.IsNullOrEmpty(objclntusr.Email))
                                 {
-                                    string FromEmail = ConfigurationManager.AppSettings["FromEmail"];
+                                    tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
+                                    string FromEmail = objGensetting.FromEmail;
                                   
                                     string msg1 = "Your order #" + objordr.OrderId + " has been dispatched";
                                     clsCommon.SendEmail(objclntusr.Email, FromEmail, "Your Order has been dispatched - Krupa Build Gallery", msg1);
@@ -213,7 +215,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     {
                         if (!string.IsNullOrEmpty(objclntusr.Email))
                         {
-                            string FromEmail = ConfigurationManager.AppSettings["FromEmail"];
+                            tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
+                            string FromEmail = objGensetting.FromEmail;
 
                             string msg1 = "Shipping Charges for Your order no." + objordr.OrderId + " is: Rs " + ShippingCharge + ". Please pay from your order details you can find button to pay.";
                              clsCommon.SendEmail(objclntusr.Email, FromEmail, "Shipping Charge - Krupa Build Gallery", msg1);

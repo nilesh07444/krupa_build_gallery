@@ -129,7 +129,7 @@
                                     </div>
                                     <div class="form-group col-md-12 col-sm-6 col-xs-12">
                                         <div class="field-label">Postal Code *</div>
-                                        <input type="text" name="shippincode" required value="@objClientOther.ShipPostalcode" placeholder="" onblur="pincodechange();">
+                                        <input type="number" name="shippincode" id="shippincode" required value="@objClientOther.ShipPostalcode" placeholder="" onblur="pincodechange();">
                                         <span class="errorcls"></span>
                                     </div>
                                 </div>
@@ -448,7 +448,11 @@
         $("#checkoutdetails").modal("show");
     }
 
-    function pincodechange() {
+    function pincodechange() {    
+        if ($("input[name=shippincode]").val() != '' && $("input[name=shippincode]").val().length != 6) {
+            alert("Please Enter Valid Postalcode");
+            return;
+        }
         if ($("input[name=shippincode]").val() == "389001") {
             $("#spnshipmsg").hide();
             $("#spnshipamt").show();

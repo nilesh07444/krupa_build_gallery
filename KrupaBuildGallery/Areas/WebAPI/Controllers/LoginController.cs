@@ -139,7 +139,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         }
                         else
                         {
-                            string FromEmail = ConfigurationManager.AppSettings["FromEmail"];
+                            tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
+                            string FromEmail = objGensetting.FromEmail;
                             string msg1 = "Your Otp code for Login is " + num;
                             try
                             {

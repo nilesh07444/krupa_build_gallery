@@ -220,6 +220,14 @@
           <Property Name="GeneralSettingId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="InitialPointCustomer" Type="decimal" Precision="18" Scale="2" />
           <Property Name="ShippingMessage" Type="nvarchar(max)" />
+          <Property Name="SMTPHost" Type="nvarchar" MaxLength="400" />
+          <Property Name="SMTPPort" Type="nvarchar" MaxLength="10" />
+          <Property Name="EnableSSL" Type="bit" />
+          <Property Name="SMTPEmail" Type="nvarchar" MaxLength="200" />
+          <Property Name="SMTPPwd" Type="nvarchar" MaxLength="100" />
+          <Property Name="AdminSMSNumber" Type="nvarchar" MaxLength="20" />
+          <Property Name="AdminEmail" Type="nvarchar" MaxLength="150" />
+          <Property Name="FromEmail" Type="nvarchar" MaxLength="150" />
         </EntityType>
         <EntityType Name="tbl_Godown">
           <Key>
@@ -1086,6 +1094,14 @@
           <Property Name="GeneralSettingId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="InitialPointCustomer" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="ShippingMessage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="SMTPHost" Type="String" MaxLength="400" FixedLength="false" Unicode="true" />
+          <Property Name="SMTPPort" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="EnableSSL" Type="Boolean" />
+          <Property Name="SMTPEmail" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="SMTPPwd" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="AdminSMSNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="AdminEmail" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="FromEmail" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -1590,6 +1606,14 @@
           <EntitySetMapping Name="tbl_GeneralSetting">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_GeneralSetting">
               <MappingFragment StoreEntitySet="tbl_GeneralSetting">
+                <ScalarProperty Name="FromEmail" ColumnName="FromEmail" />
+                <ScalarProperty Name="AdminEmail" ColumnName="AdminEmail" />
+                <ScalarProperty Name="AdminSMSNumber" ColumnName="AdminSMSNumber" />
+                <ScalarProperty Name="SMTPPwd" ColumnName="SMTPPwd" />
+                <ScalarProperty Name="SMTPEmail" ColumnName="SMTPEmail" />
+                <ScalarProperty Name="EnableSSL" ColumnName="EnableSSL" />
+                <ScalarProperty Name="SMTPPort" ColumnName="SMTPPort" />
+                <ScalarProperty Name="SMTPHost" ColumnName="SMTPHost" />
                 <ScalarProperty Name="ShippingMessage" ColumnName="ShippingMessage" />
                 <ScalarProperty Name="InitialPointCustomer" ColumnName="InitialPointCustomer" />
                 <ScalarProperty Name="GeneralSettingId" ColumnName="GeneralSettingId" />

@@ -118,7 +118,7 @@
                         </div>
                         <div class="col-md-4">
                             <label for="shippincode">Pin Code</label>
-                            <input type="text" class="form-control" id="shippincode" name="shippincode" value="@objclientother.ShipPostalcode" placeholder="Pin Code" required  />
+                            <input type="text" class="form-control" id="shippincode" name="shippincode" value="@objclientother.ShipPostalcode" placeholder="Pin Code" required  onblur="pincodechange();" />
                         </div>
                         <div class="col-md-4">
                             <label for="shipstate">State</label>
@@ -176,7 +176,13 @@
     var prefx = '@objclient.Prefix';
     $("#shipstate").val(statenm);
     $("#prefix").val(prefx);
-
+    function pincodechange() {
+          if ($("input[name=shippincode]").val() != '' && $("input[name=shippincode]").val().length != 6) {
+            alert("Please Enter Valid Postalcode");
+              $("input[name=shippincode]").val("");
+            return;
+        }
+    }
     function SaveProfile() {
          $.blockUI({ message: "<h4>Please Wait...</h4>" });
             var URL = '@Url.Action("SaveProfile", "MyProfile")';

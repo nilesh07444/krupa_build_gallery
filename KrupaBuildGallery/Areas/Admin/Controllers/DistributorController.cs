@@ -576,7 +576,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         try
                         {
                             string ToEmail = objReq.Email;
-                            string FromEmail = ConfigurationManager.AppSettings["FromEmail"];
+                            tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
+                            string FromEmail = objGensetting.FromEmail;
                             string Subject = "Your Registration as a Distributor Rejected - Krupa Build Gallery";
                             string bodyhtml = "Following is the reason<br/>";                            
                             bodyhtml += "===============================<br/>";
@@ -658,7 +659,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         try
                         {
                             string ToEmail = objReq.Email;
-                            string FromEmail = ConfigurationManager.AppSettings["FromEmail"];
+                            tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
+                            string FromEmail = objGensetting.FromEmail;
                             string Subject = "Your Registration as a Distributor Created - Krupa Build Gallery";
                             string bodyhtml = "Thank you for become a valuable distributor of Krupa Build Gallery<br/>";
                             bodyhtml += "Following are the login details<br/>";

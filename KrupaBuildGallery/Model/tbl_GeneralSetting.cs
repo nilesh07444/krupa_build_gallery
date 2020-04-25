@@ -17,5 +17,13 @@ namespace KrupaBuildGallery.Model
         public long GeneralSettingId { get; set; }
         public Nullable<decimal> InitialPointCustomer { get; set; }
         public string ShippingMessage { get; set; }
+        public string SMTPHost { get; set; }
+        public string SMTPPort { get; set; }
+        public Nullable<bool> EnableSSL { get; set; }
+        public string SMTPEmail { get; set; }
+        public string SMTPPwd { get; set; }
+        public string AdminSMSNumber { get; set; }
+        public string AdminEmail { get; set; }
+        public string FromEmail { get; set; }
     }
 }
