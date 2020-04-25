@@ -14,6 +14,7 @@ using iTextSharp.text.html.simpleparser;
 using System.Text;
 using System.Configuration;
 using System.Net;
+using System.Globalization;
 
 namespace KrupaBuildGallery.Areas.Admin.Controllers
 {
@@ -24,7 +25,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         public DistributorController()
         {
             _db = new krupagallarydbEntities();
-        } 
+        }
         // GET: Admin/Distributor
         public ActionResult Index(int Status = -1)
         {
@@ -56,11 +57,11 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                      AmountDue = co.AmountDue.HasValue ? co.AmountDue.Value : 0
                                  }).OrderBy(x => x.FirstName).ToList();
 
-                if(Status == 2)
+                if (Status == 2)
                 {
                     lstClientUser = lstClientUser.Where(o => o.AmountDue > 0).ToList();
-                } 
-                else if(Status == 1)
+                }
+                else if (Status == 1)
                 {
                     List<long> clientuserids = lstClientUser.Select(o => o.ClientUserId).ToList();
                     List<long> pendingshippingdistri = _db.tbl_Orders.Where(o => o.ShippingStatus == 1 && clientuserids.Contains(o.ClientUserId)).Select(o => o.ClientUserId).Distinct().ToList();
@@ -97,9 +98,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                         AddharCardNo = cu.AddharcardNo,
                                         PanCardNo = cu.PanCardNo,
                                         GSTNo = cu.GSTNo,
-                                        Status = cu.Status.HasValue ? cu.Status.Value : 0                                        
+                                        Status = cu.Status.HasValue ? cu.Status.Value : 0
                                     }).OrderBy(x => x.FirstName).ToList();
-                
+
                 ViewBag.Status = Status;
 
             }
@@ -136,7 +137,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                                 GSTNo = co.GSTno == "" ? "N/A" : co.GSTno,
                                                 ProfilePhoto = cu.ProfilePicture,
                                                 AddharPhoto = co.AddharPhoto,
-                                                AlternateMobileNo = cu.AlternateMobileNo,                                                
+                                                AlternateMobileNo = cu.AlternateMobileNo,
                                                 ShopName = co.ShopName,
                                                 GSTPhoto = co.GSTPhoto,
                                                 PancardPhoto = co.PanCardPhoto,
@@ -418,7 +419,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             OrderDate = p.CreatedDate,
                             InvoiceNo = p.InvoiceNo.Value,
                             InvoiceYear = p.InvoiceYear,
-                            ShipmentCharge = p.ShippingCharge.HasValue ? p.ShippingCharge.Value :0,
+                            ShipmentCharge = p.ShippingCharge.HasValue ? p.ShippingCharge.Value : 0,
                             ShippingStatus = p.ShippingStatus.HasValue ? p.ShippingStatus.Value : 2
                         }).OrderByDescending(x => x.OrderDate).FirstOrDefault();
             if (objOrder != null)
@@ -444,7 +445,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                                    }).OrderByDescending(x => x.OrderItemId).ToList();
                 objOrder.OrderItems = lstOrderItms;
                 string file = Server.MapPath("~/templates/Invoice.html");
-                if(objOrder.OrderShipState != "Gujarat")
+                if (objOrder.OrderShipState != "Gujarat")
                 {
                     file = Server.MapPath("~/templates/InvoiceIGST.html");
                 }
@@ -453,7 +454,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 FileInfo fi = new FileInfo(file);
                 sr = System.IO.File.OpenText(file);
                 htmldata += sr.ReadToEnd();
-                string InvoiceNo = "S&S/" + objOrder.InvoiceYear+"/"+objOrder.InvoiceNo;
+                string InvoiceNo = "S&S/" + objOrder.InvoiceYear + "/" + objOrder.InvoiceNo;
                 string DateOfInvoice = objOrder.OrderDate.ToString("dd-MM-yyyy");
                 string orderNo = objOrder.OrderId.ToString(); ;
                 string ClientUserName = objOrder.ClientUserName;
@@ -467,13 +468,13 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
                     foreach (var objItem in lstOrderItms)
                     {
-                       // decimal InclusiveGST = Math.Round(objItem.Price - objItem.Price * (100 / (100 + objItem.GST_Per)), 2);
-                     //   decimal PreGSTPrice = Math.Round(objItem.Price - InclusiveGST, 2);
+                        // decimal InclusiveGST = Math.Round(objItem.Price - objItem.Price * (100 / (100 + objItem.GST_Per)), 2);
+                        //   decimal PreGSTPrice = Math.Round(objItem.Price - InclusiveGST, 2);
                         decimal basicTotalPrice = Math.Round(objItem.Price * objItem.Qty, 2);
                         decimal SGST = Math.Round(Convert.ToDecimal(objItem.GST_Per / 2), 2);
                         decimal CGST = Math.Round(Convert.ToDecimal(objItem.GST_Per / 2), 2);
-                        decimal SGSTAmt = Math.Round(objItem.GSTAmt/2, 2);
-                        decimal CGSTAmt = Math.Round(objItem.GSTAmt/2, 2);
+                        decimal SGSTAmt = Math.Round(objItem.GSTAmt / 2, 2);
+                        decimal CGSTAmt = Math.Round(objItem.GSTAmt / 2, 2);
                         decimal IGSTAmt = Math.Round(objItem.GSTAmt);
                         decimal IGST = Math.Round(Convert.ToDecimal(objItem.GST_Per));
                         decimal FinalPrice = Math.Round(basicTotalPrice + objItem.GSTAmt - objItem.Discount, 2);
@@ -522,33 +523,33 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             DistributorRequestVM objDistReq = new DistributorRequestVM();
             try
             {
-                 objDistReq = (from cu in _db.tbl_DistributorRequestDetails
-                                                   where !cu.IsDelete.Value && cu.DistributorRequestId == Id
-                                                   select new DistributorRequestVM
-                                                   {
-                                                       DistributorRequestId = cu.DistributorRequestId,
-                                                       FirstName = cu.FirstName,
-                                                       LastName = cu.LastName,
-                                                       Email = cu.Email,
-                                                       CompanyName = cu.CompanyName,
-                                                       MobileNo = cu.MobileNo,
-                                                       City = cu.City,
-                                                       State = cu.State,
-                                                       AddharCardNo = cu.AddharcardNo,
-                                                       PanCardNo = cu.PanCardNo,
-                                                       GSTNo = cu.GSTNo,
-                                                       ProfilePhoto = cu.ProfilePhoto,
-                                                       AddharPhoto = cu.AddharPhoto,
-                                                       AlternateMobile = cu.AlternateMobileNo,
-                                                       Dob = cu.Dob.Value,
-                                                       ShopName = cu.ShopName,
-                                                       GSTPhoto = cu.GSTPhoto,
-                                                       PancardPhoto = cu.PanCardPhoto,
-                                                       ShopPhoto = cu.ShopPhoto,
-                                                       Prefix = cu.Prefix,
-                                                       Status = cu.Status.HasValue ? cu.Status.Value : 0,
-                                                       Reason = cu.Reason                                                       
-                                                   }).FirstOrDefault();
+                objDistReq = (from cu in _db.tbl_DistributorRequestDetails
+                              where !cu.IsDelete.Value && cu.DistributorRequestId == Id
+                              select new DistributorRequestVM
+                              {
+                                  DistributorRequestId = cu.DistributorRequestId,
+                                  FirstName = cu.FirstName,
+                                  LastName = cu.LastName,
+                                  Email = cu.Email,
+                                  CompanyName = cu.CompanyName,
+                                  MobileNo = cu.MobileNo,
+                                  City = cu.City,
+                                  State = cu.State,
+                                  AddharCardNo = cu.AddharcardNo,
+                                  PanCardNo = cu.PanCardNo,
+                                  GSTNo = cu.GSTNo,
+                                  ProfilePhoto = cu.ProfilePhoto,
+                                  AddharPhoto = cu.AddharPhoto,
+                                  AlternateMobile = cu.AlternateMobileNo,
+                                  Dob = cu.Dob.Value,
+                                  ShopName = cu.ShopName,
+                                  GSTPhoto = cu.GSTPhoto,
+                                  PancardPhoto = cu.PanCardPhoto,
+                                  ShopPhoto = cu.ShopPhoto,
+                                  Prefix = cu.Prefix,
+                                  Status = cu.Status.HasValue ? cu.Status.Value : 0,
+                                  Reason = cu.Reason
+                              }).FirstOrDefault();
 
             }
             catch (Exception ex)
@@ -559,16 +560,16 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public string ApproveRejectDistributorRequest(long RequestId,string IsApprove,string CreditLimit = "0",string Password = "",string Reason="")
+        public string ApproveRejectDistributorRequest(long RequestId, string IsApprove, string CreditLimit = "0", string Password = "", string Reason = "")
         {
             string ReturnMessage = "";
 
             try
             {
                 var objReq = _db.tbl_DistributorRequestDetails.Where(o => o.DistributorRequestId == RequestId).FirstOrDefault();
-                if(objReq != null)
+                if (objReq != null)
                 {
-                    if(IsApprove == "false")
+                    if (IsApprove == "false")
                     {
                         objReq.Status = 2; //   0 For Pending  1 For Accept 2 For Reject
                         objReq.Reason = Reason;
@@ -579,9 +580,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
                             string FromEmail = objGensetting.FromEmail;
                             string Subject = "Your Registration as a Distributor Rejected - Krupa Build Gallery";
-                            string bodyhtml = "Following is the reason<br/>";                            
+                            string bodyhtml = "Following is the reason<br/>";
                             bodyhtml += "===============================<br/>";
-                            bodyhtml += Reason;                          
+                            bodyhtml += Reason;
                             clsCommon.SendEmail(ToEmail, FromEmail, Subject, bodyhtml);
                         }
                         catch (Exception e)
@@ -596,7 +597,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             int num = random.Next(111566, 999999);
                             string msg = "Your Registration as a Distributor Rejected - Krupa Build Gallery\n";
                             msg += "Following is the reason:\n";
-                            msg += Reason;                            
+                            msg += Reason;
                             string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objReq.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
                             var json = webClient.DownloadString(url);
                             if (json.Contains("invalidnumber"))
@@ -628,7 +629,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         objClient.CreatedDate = DateTime.Now;
                         objClient.AlternateMobileNo = objReq.AlternateMobileNo;
                         objClient.Prefix = objReq.Prefix;
-                        objClient.ProfilePicture = objReq.ProfilePhoto;                      
+                        objClient.ProfilePicture = objReq.ProfilePhoto;
                         objClient.ClientRoleId = 2;
                         _db.tbl_ClientUsers.Add(objClient);
                         _db.SaveChanges();
@@ -636,6 +637,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         objClientOther.ClientUserId = objClient.ClientUserId;
                         objClientOther.Addharcardno = objReq.AddharcardNo;
                         objClientOther.GSTno = objReq.GSTNo;
+                        objClientOther.Pancardno = objReq.PanCardNo;
                         objClientOther.CreditLimitAmt = Convert.ToDecimal(CreditLimit);
                         objClientOther.AmountDue = 0;
                         objClientOther.IsActive = true;
@@ -669,17 +671,17 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             bodyhtml += "Password: " + Password + "<br/>";
                             clsCommon.SendEmail(ToEmail, FromEmail, Subject, bodyhtml);
                         }
-                        catch(Exception e)
+                        catch (Exception e)
                         {
                             string ErrorMessage = e.Message.ToString();
-                        }                        
+                        }
 
                         using (WebClient webClient = new WebClient())
                         {
                             WebClient client = new WebClient();
                             Random random = new Random();
                             int num = random.Next(111566, 999999);
-                            string msg = "Thank you for become a valuable distributor of Krupa Build Gallery\n" ;
+                            string msg = "Thank you for become a valuable distributor of Krupa Build Gallery\n";
                             msg += "Login Details:\n";
                             msg += "Email:" + objReq.Email + "\n";
                             msg += "Password:" + Password + "\n";
@@ -687,11 +689,11 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             var json = webClient.DownloadString(url);
                             if (json.Contains("invalidnumber"))
                             {
-                               /// return "InvalidNumber";
+                                /// return "InvalidNumber";
                             }
                             else
                             {
-                              //  return num.ToString();
+                                //  return num.ToString();
                             }
 
                         }
@@ -778,18 +780,18 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
 
         [HttpPost]
-        public string ChangeCreditLimit(long ClientUserId,string CreditLimit)
+        public string ChangeCreditLimit(long ClientUserId, string CreditLimit)
         {
             try
             {
                 string Mobilenum = "";
                 tbl_ClientUsers objClient = _db.tbl_ClientUsers.Where(o => o.ClientUserId == ClientUserId).FirstOrDefault();
-                if(objClient != null)
+                if (objClient != null)
                 {
                     Mobilenum = objClient.MobileNo;
                 }
                 tbl_ClientOtherDetails objclientother = _db.tbl_ClientOtherDetails.Where(o => o.ClientUserId == ClientUserId).FirstOrDefault();
-                if(objclientother != null)
+                if (objclientother != null)
                 {
                     decimal Credit = Convert.ToDecimal(CreditLimit);
                     objclientother.CreditLimitAmt = Credit;
@@ -799,17 +801,17 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 }
                 return "Success";
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return "";
             }
-           
+
         }
 
-        public string SendSMSmsg(string MobileNumber,string msg)
+        public string SendSMSmsg(string MobileNumber, string msg)
         {
             try
-            {               
+            {
                 using (WebClient webClient = new WebClient())
                 {
                     string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + MobileNumber + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
@@ -830,5 +832,154 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 return "Error";
             }
         }
+
+        public ActionResult Edit(int Id)
+        {
+            ClientUserVM objClientUserVM = (from cu in _db.tbl_ClientUsers
+                                            join co in _db.tbl_ClientOtherDetails on cu.ClientUserId equals co.ClientUserId
+                                            where !cu.IsDelete && cu.ClientUserId == Id
+                                            select new ClientUserVM
+                                            {
+                                                ClientUserId = cu.ClientUserId,
+                                                FirstName = cu.FirstName,
+                                                LastName = cu.LastName,
+                                                UserName = cu.UserName,
+                                                Email = cu.Email,
+                                                Password = cu.Password,
+                                                RoleId = cu.ClientRoleId,
+                                                CompanyName = cu.CompanyName,
+                                                ProfilePic = cu.ProfilePicture,
+                                                MobileNo = cu.MobileNo,
+                                                IsActive = cu.IsActive,
+                                                City = co.City,
+                                                State = co.State,
+                                                AddharCardNo = co.Addharcardno,
+                                                PanCardNo = co.Pancardno,
+                                                GSTNo = co.GSTno,
+                                                ProfilePhoto = cu.ProfilePicture,
+                                                AddharPhoto = co.AddharPhoto,
+                                                AlternateMobileNo = cu.AlternateMobileNo,
+                                                ShopName = co.ShopName,
+                                                GSTPhoto = co.GSTPhoto,
+                                                PancardPhoto = co.PanCardPhoto,
+                                                ShopPhoto = co.ShopPhoto,
+                                                Prefix = cu.Prefix,
+                                                BirthDate = co.Dob.HasValue ? co.Dob.Value : DateTime.MinValue,
+                                                CreditLimit = co.CreditLimitAmt.HasValue ? co.CreditLimitAmt.Value : 0,
+                                                AmountDue = co.AmountDue.HasValue ? co.AmountDue.Value : 0
+                                            }).FirstOrDefault();
+            return View(objClientUserVM);
+        }
+
+        [HttpPost]
+        public ActionResult EditDistributor(FormCollection frm, HttpPostedFileBase aadhharphoto, HttpPostedFileBase gstphoto, HttpPostedFileBase pancardnophoto, HttpPostedFileBase photofile, HttpPostedFileBase shopphoto)
+        {
+            try
+            {
+                string email = frm["email"].ToString();
+                string firstnm = frm["fname"].ToString();
+                string lastnm = frm["lname"].ToString();
+                string mobileno = frm["mobileno"].ToString();
+                string businessname = frm["bussinessname"].ToString();
+                string addharno = frm["addharno"].ToString();
+                string city = frm["city"].ToString();
+                string state = frm["state"].ToString();
+                string gstno = frm["gstno"].ToString();
+                string prefix = frm["prefix"].ToString();
+                string dob = frm["dob"].ToString();
+                string alternatemobileno = frm["alternatemobileno"].ToString();
+                string shopname = frm["shopname"].ToString();
+                string pancardno = frm["pancardno"].ToString();
+                string photo = string.Empty;
+                string pancardphotoname = string.Empty;
+                string gstphotoname = string.Empty;
+                string addharphoto = string.Empty;
+                string shopphotoname = string.Empty;
+                long ClientUserId = Convert.ToInt64(frm["clientuserid"].ToString());
+
+                string path = Server.MapPath("~/Images/UsersDocuments/");
+                if (aadhharphoto != null)
+                {
+                    addharphoto = Guid.NewGuid() + "-" + Path.GetFileName(aadhharphoto.FileName);
+                    aadhharphoto.SaveAs(path + addharphoto);
+                }
+                if (pancardnophoto != null)
+                {
+                    pancardphotoname = Guid.NewGuid() + "-" + Path.GetFileName(pancardnophoto.FileName);
+                    pancardnophoto.SaveAs(path + pancardphotoname);
+                }
+                if (gstphoto != null)
+                {
+                    gstphotoname = Guid.NewGuid() + "-" + Path.GetFileName(gstphoto.FileName);
+                    gstphoto.SaveAs(path + gstphotoname);
+                }
+                if (photofile != null)
+                {
+                    photo = Guid.NewGuid() + "-" + Path.GetFileName(photofile.FileName);
+                    photofile.SaveAs(path + photo);
+                }
+
+                if (shopphoto != null)
+                {
+                    shopphotoname = Guid.NewGuid() + "-" + Path.GetFileName(shopphoto.FileName);
+                    shopphoto.SaveAs(path + shopphotoname);
+                }
+
+                tbl_ClientUsers objclient = _db.tbl_ClientUsers.Where(o => o.ClientUserId == ClientUserId).FirstOrDefault();
+                if (objclient != null)
+                {
+                    objclient.FirstName = firstnm;
+                    objclient.LastName = lastnm;
+                    objclient.UserName = firstnm + lastnm;
+                    //objclient.Email = email;
+                    //objclient.MobileNo = mobileno;
+                    objclient.CompanyName = businessname;
+                    objclient.AlternateMobileNo = alternatemobileno;
+                    objclient.Prefix = prefix;
+                    if (!string.IsNullOrEmpty(photo))
+                    {
+                        objclient.ProfilePicture = photo;
+                    }
+                }
+                tbl_ClientOtherDetails objclientoth = _db.tbl_ClientOtherDetails.Where(o => o.ClientUserId == ClientUserId).FirstOrDefault();
+                objclientoth.City = city;
+                objclientoth.State = state;
+                objclientoth.Addharcardno = addharno;
+                objclientoth.GSTno = gstno;
+                objclientoth.Pancardno = pancardno;
+                objclientoth.ShopName = shopname;
+                DateTime dt = DateTime.ParseExact(dob, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                objclientoth.Dob = dt;
+                if (!string.IsNullOrEmpty(shopphotoname))
+                {                    
+                    objclientoth.ShopPhoto = shopphotoname;
+                }
+                if (!string.IsNullOrEmpty(addharphoto))
+                {
+                    objclientoth.AddharPhoto = addharphoto;
+                }
+                if (!string.IsNullOrEmpty(gstphotoname))
+                {
+                    objclientoth.GSTPhoto = gstphotoname;
+                }
+                if (!string.IsNullOrEmpty(pancardphotoname))
+                {
+                    objclientoth.PanCardPhoto = pancardphotoname;
+                }
+                _db.SaveChanges();
+                return RedirectToAction("Index");
+
+            }
+            catch (Exception ex)
+            {
+                string ErrorMessage = ex.Message.ToString();
+                TempData["RegisterError"] = ErrorMessage;
+            }
+
+            return RedirectToAction("Index");
+
+        }
+
+
     }
 }

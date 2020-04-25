@@ -39,5 +39,6 @@ namespace KrupaBuildGallery.ViewModel
         public string ShopName { get; set; }
         public decimal CreditLimit { get; set; }
         public decimal AmountDue { get; set; }
+        public DateTime BirthDate { get; set; }
     }
 }

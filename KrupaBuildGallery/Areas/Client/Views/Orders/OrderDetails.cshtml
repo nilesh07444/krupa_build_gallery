@@ -115,7 +115,7 @@
                                 <div class="form-text-row">@Model.OrderStatus</div>
                                 @if (Model.OrderStatusId != 3)
                                 {
-                                    <button type="button" name="" id="cancelorder" class="btn bg-red" style="margin-right: 3px;" onclick="cancelorder('@Model.OrderId');">
+                                    <button type="button" name="" id="cancelorder" class="btn bg-red" style="margin-right: 3px;display:none;" onclick="cancelorder('@Model.OrderId');">
                                         Cancel order
                                     </button>
                                 }
@@ -310,7 +310,7 @@
                                         <td></td>
                                         <td></td>
                                         <td>Total Net Amount</td>
-                                        <td>₹ @NetTotal</td>
+                                        <td>₹ @NetTotals</td>
                                     </tr>
                                 </tbody>
                             </table>

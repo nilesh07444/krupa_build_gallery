@@ -100,16 +100,20 @@
                                     {
                                         <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@objusr.ClientUserId','Active');">InActive</span></td>
                                     }
-                                    <td>
-                                        @if (IsSA || objPermission.Distibutors >= (int)ModulePermission.View)
-                                        {
-                                            <a href="/admin/distributor/detail/@objusr.ClientUserId"><i class="fa fa-eye font-success"></i></a>
-                                        }
-                                        @if (IsSA || objPermission.Distibutors == (int)ModulePermission.Full)
-                                        {
-                                            <a href="javascript:void(0);"><i class="fa fa-trash font-danger"></i></a>
-                                        }
-                                    </td>
+                                <td>
+                                    @if (IsSA || objPermission.Distibutors >= (int)ModulePermission.View)
+                                    {
+                                        <a href="/admin/distributor/detail/@objusr.ClientUserId"><i class="fa fa-eye font-success"></i></a>
+                                    }
+                                    @if (IsSA || objPermission.Distibutors >= (int)ModulePermission.Edit)
+                                    {
+                                        <a href="/admin/distributor/edit/@objusr.ClientUserId"><i class="fa fa-edit mr-2 font-success"></i></a>
+                                    }
+                                    @if (IsSA || objPermission.Distibutors == (int)ModulePermission.Full)
+                                    {
+                                        <a href="javascript:void(0);" style="display:none;"><i class="fa fa-trash font-danger"></i></a>
+                                    }
+                                </td>
                                 </tr>
                                 counter++;
                             }

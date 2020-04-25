@@ -1,0 +1,243 @@
+﻿@model KrupaBuildGallery.ViewModel.ClientUserVM
+@{
+    ViewBag.Title = "Edit Distributor";
+}
+<link href="~/Content/lightbox.min.css" rel="stylesheet" />
+<style>
+    .select_input select {
+        padding: 8px;
+        margin-bottom: 0px;
+    }
+
+    .form-row {
+        margin-bottom: 15px;
+    }
+</style>
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col">
+                    <div class="page-header-left">
+                        <h3>
+                            Edit Distributor
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="/admin/distributor">Offer</a></li>
+                        <li class="breadcrumb-item active">Edit Distributor</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Edit Distributor</h5>
+                    </div>
+                    <div class="card-body">
+                        @using (Html.BeginForm("EditDistributor", "Distributor", FormMethod.Post, new { ID = "theFormId", enctype = "multipart/form-data", autocomplete = "off", @class = "theme-form", onsubmit = "return checkdetails();" }))
+                        {
+                            string birthstring = Model.BirthDate.ToString("dd/MM/yyyy");
+                            <div class="form-row">
+                                <div class="col-md-6">
+                                    <label for="photofile">Distributor Photo *</label>
+                                    <input class="form-control" type="file" id="photofile" name="photofile" />
+                                    <a class="example-image-link" href="~/Images/UsersDocuments/@Model.ProfilePhoto" data-lightbox="photofile">
+                                       Click To View Image
+                                    </a>
+                                </div>
+                                <div class="col-md-6 select_input">
+                                    <label for="prefix">Prefix *</label>
+                                    <select class="form-control" name="prefix" id="prefix" required="" size="1">
+                                        <option value="">Select</option>
+                                        <option value="Mr">Mr</option>
+                                        <option value="Mrs">Mrs</option>
+                                        <option value="Miss">Miss</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-6">
+                                    <label for="fname">First Name *</label>
+                                    <input type="text" class="form-control" id="fname" name="fname" value="@Model.FirstName" placeholder="First Name" required="">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="lname">Last Name *</label>
+                                    <input type="text" class="form-control" id="lname" name="lname" value="@Model.LastName" placeholder="Last Name" required="">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-6">
+                                    <label for="dob">Date Of Birth *</label>
+                                    <input type="text" class="form-control" id="dob" name="dob" value="@birthstring" placeholder="Date of Birth" required="">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="email">Email *</label>
+                                    <input type="email" class="form-control" id="email" name="email" readonly value="@Model.Email" placeholder="Email">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-6">
+                                    <label for="mobileno">Mobile No *</label>
+                                    <input type="text" class="form-control" id="mobileno" name="mobileno" readonly value="@Model.MobileNo" placeholder="Enter Mobile No">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="alternatemobileno">Alternate Mobile No</label>
+                                    <input type="text" class="form-control" id="alternatemobileno" name="alternatemobileno" value="@Model.AlternateMobileNo" placeholder="Enter Alternate Mobile No">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-6">
+                                    <label for="bussinessname">Bussiness Name *</label>
+                                    <input type="text" class="form-control" id="bussinessname" value="@Model.CompanyName" name="bussinessname" placeholder="Enter bussiness name" required="">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="shopname">Shop Name *</label>
+                                    <input type="text" class="form-control" id="shopname" name="shopname" value="@Model.ShopName" placeholder="Enter Shop Name" required="">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-6">
+                                    <label for="city">City *</label>
+                                    <input type="text" class="form-control" id="city" name="city" value="@Model.City" placeholder="City" required="">
+                                </div>
+                                <div class="col-md-6 select_input">
+                                    <label for="state">State *</label>
+                                    <select class="form-control" name="state" id="state" required="" size="1">
+                                        <option value="">Select State</option>
+                                        <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                        <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
+                                        <option value="Arunachal Pradesh">Arunachal Pradesh</option>
+                                        <option value="Assam">Assam</option>
+                                        <option value="Bihar">Bihar</option>
+                                        <option value="Chandigarh">Chandigarh</option>
+                                        <option value="Chhattisgarh">Chhattisgarh</option>
+                                        <option value="Dadar and Nagar Haveli">Dadar and Nagar Haveli</option>
+                                        <option value="Daman and Diu">Daman and Diu</option>
+                                        <option value="Delhi">Delhi</option>
+                                        <option value="Lakshadweep">Lakshadweep</option>
+                                        <option value="Puducherry">Puducherry</option>
+                                        <option value="Goa">Goa</option>
+                                        <option value="Gujarat">Gujarat</option>
+                                        <option value="Haryana">Haryana</option>
+                                        <option value="Himachal Pradesh">Himachal Pradesh</option>
+                                        <option value="Jammu and Kashmir">Jammu and Kashmir</option>
+                                        <option value="Jharkhand">Jharkhand</option>
+                                        <option value="Karnataka">Karnataka</option>
+                                        <option value="Kerala">Kerala</option>
+                                        <option value="Madhya Pradesh">Madhya Pradesh</option>
+                                        <option value="Maharashtra">Maharashtra</option>
+                                        <option value="Manipur">Manipur</option>
+                                        <option value="Meghalaya">Meghalaya</option>
+                                        <option value="Mizoram">Mizoram</option>
+                                        <option value="Nagaland">Nagaland</option>
+                                        <option value="Odisha">Odisha</option>
+                                        <option value="Punjab">Punjab</option>
+                                        <option value="Rajasthan">Rajasthan</option>
+                                        <option value="Sikkim">Sikkim</option>
+                                        <option value="Tamil Nadu">Tamil Nadu</option>
+                                        <option value="Telangana">Telangana</option>
+                                        <option value="Tripura">Tripura</option>
+                                        <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                        <option value="Uttarakhand">Uttarakhand</option>
+                                        <option value="West Bengal">West Bengal</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-6">
+                                    <label for="addharno">Aadhaar Card No. *</label>
+                                    <input type="text" class="form-control" id="addharno" name="addharno" value="@Model.AddharCardNo" placeholder="Aadhaar Number" required="">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="gstno">GST No *</label>
+                                    <input type="text" class="form-control" id="gstno" name="gstno" value="@Model.GSTNo" placeholder="GST No." required="">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-6">
+                                    <label for="pancardno">Pan Card No. *</label>
+                                    <input type="text" class="form-control" id="pancardno" name="pancardno" value="@Model.PanCardNo" placeholder="Pan Card Number" required="">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="pancardnophoto">Pan Card Photo. *</label>
+                                    <input type="file" class="form-control" id="pancardnophoto" name="pancardnophoto" />
+                                    <a class="example-image-link" href="~/Images/UsersDocuments/@Model.PancardPhoto" data-lightbox="pancardnophoto">
+                                        Click To View Image
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-6">
+                                    <label for="aadhharphoto">Aadhaar Card Photo.*</label>
+                                    <input type="file" class="form-control" id="aadhharphoto" name="aadhharphoto" />
+                                    <a class="example-image-link" href="~/Images/UsersDocuments/@Model.AddharPhoto" data-lightbox="aadhharphoto">
+                                        Click To View Image
+                                    </a>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="gstphoto">GST Photo. *</label>
+                                    <input type="file" class="form-control" id="gstphoto" name="gstphoto" />
+                                    <a class="example-image-link" href="~/Images/UsersDocuments/@Model.GSTPhoto" data-lightbox="gstphoto">
+                                        Click To View Image
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-6">
+                                    <label for="shopphoto">Shop Photo.*</label>
+                                    <input type="file" class="form-control" id="shopphoto" name="shopphoto" />
+                                    <a class="example-image-link" href="~/Images/UsersDocuments/@Model.ShopPhoto" data-lightbox="shopphoto">
+                                        Click To View Image
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-6">
+                                    <input type="hidden" id="clientuserid" name="clientuserid" value="@Model.ClientUserId" />
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                    <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
+                                </div>
+                            </div>
+
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+</div>
+<script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/Scripts/prism.min.js"></script>
+<script src="~/Scripts/lightbox.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.css" />
+<script>
+    $(document).ready(function () {
+        $("#dob").datepicker({
+             format: "dd/mm/yyyy",
+        });
+
+        $("#state").val('@Model.State');
+        $("#prefix").val('@Model.Prefix');
+    });
+
+    function checkdetails() {
+        return true;
+    }
+</script>

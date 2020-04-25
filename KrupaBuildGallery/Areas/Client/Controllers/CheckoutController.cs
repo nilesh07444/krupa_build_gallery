@@ -331,7 +331,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         ordramt = ordramt - shippingcharge;
                     }
                     objOrder.OrderAmount = ordramt;
-                    objOrder.OrderShipCity = objCheckout.shipcity+" - "+ objCheckout.shippincode;
+                    objOrder.OrderShipCity = objCheckout.shipcity;
                     objOrder.OrderShipAddress = objCheckout.shipaddress;
                     objOrder.OrderShipState = objCheckout.shipstate;
                     objOrder.OrderShipClientName = objCheckout.shipfirstname + " " + objCheckout.shiplastname;

@@ -88,7 +88,7 @@
                                 <div class="label-wrapper"><label class="control-label">Order Date:</label></div>
                             </div>
                             <div class="col-md-9">
-                                <div class="form-text-row">@Model.OrderDate.ToString("MMM dd,yyyy hh:mm:ss")</div>
+                                <div class="form-text-row">@CommonMethod.ConvertFromUTC(Model.OrderDate)</div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -136,7 +136,7 @@
                         </div>
                         <div class="form-group" style="border-bottom: 1px solid #eff2f7;">
                             <div class="col-md-3">
-                                <div class="label-wrapper"><label class="control-label">Order Total Amount(shipping charge not included):</label></div>
+                                <div class="label-wrapper"><label class="control-label">Order Total Amount:</label></div>
                             </div>
                             <div class="col-md-9">
                                 <div class="form-text-row">₹ @Model.OrderAmount</div>
@@ -144,7 +144,7 @@
                         </div>
                         <div class="form-group">
                             <div class="col-md-3">
-                                <div class="label-wrapper"><label class="control-label">Shipping Address:</label></div>
+                                <div class="label-wrapper"><label class="control-label" style="font-size:17px;">Shipping Address</label></div>
                             </div>
                             <div class="col-md-9">
                                 <div class="form-text-row"></div>
@@ -222,7 +222,7 @@
                                 }
                                 else
                                 {
-                                    <div class="form-text-row">@Model.ShipmentCharge</div>
+                                 <div class="form-text-row">₹ @Model.ShipmentCharge</div>
                                 }
 
                             </div>
