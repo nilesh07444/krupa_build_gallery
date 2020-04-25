@@ -1,0 +1,238 @@
+﻿@using KrupaBuildGallery.Model;
+@using KrupaBuildGallery.Helper;
+
+@model List<ProductItemVM>
+
+@{
+    ViewBag.Title = "Product List";
+}
+
+<style>
+    .wishlistcls {
+        color: #ff4c3b !important;
+    }
+</style>
+<div class="breadcrumb-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="page-title">
+                    <h2>Search</h2>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <nav aria-label="breadcrumb" class="theme-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Search</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<section class="p-t-0 j-box ratio_square">
+    <div class="collection-wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="collection-content col">
+                    <div class="page-main-content">
+                   
+                        <div class="row">
+                            <h4 style="margin-top:10px;">Search result of "@ViewBag.Search"</h4>
+                            @if (Model != null && Model.Count > 0)
+                            {
+                                <div class="col-sm-12">
+                                    <div class="collection-product-wrapper">
+                                        <div class="product-wrapper-grid">
+                                            <div class="row">
+                                                <div class="col">
+                                                    <div class="theme-tab">
+                                                        <div class="tab-content-cls">
+                                                            <div id="tab-4" class="tab-content active default" style="display: block;">
+                                                                <div class=" no-slider row">
+                                                                    @if (Model != null && Model.Count > 0)
+                                                                    {
+                                                                        foreach (ProductItemVM item in Model)
+                                                                        {
+                                                                            string imgpath = "";
+                                                                            string clswishlist = "";
+                                                                            if (!string.IsNullOrEmpty(item.MainImage))
+                                                                            {
+                                                                                if (File.Exists(Server.MapPath("~/Images/ProductItemMedia/" + item.MainImage)))
+                                                                                {
+                                                                                    imgpath = "/Images/ProductItemMedia/" + item.MainImage;
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    imgpath = @ErrorMessage.DefaultImagePath;
+                                                                                }
+                                                                            }
+                                                                            else
+                                                                            {
+                                                                                imgpath = @ErrorMessage.DefaultImagePath;
+                                                                            }
+                                                                            if (item.IsWishListItem)
+                                                                            {
+                                                                                clswishlist = "wishlistcls";
+                                                                            }
+                                                                            <div class="product-box" style="width: 100%; display: inline-block;">
+                                                                                <div class="img-wrapper">
+                                                                                    <!-- front image -->
+                                                                                    <div class="front">
+                                                                                        <a href="/client/products/detail/@item.ProductItemId" class="bg-size blur-up lazyloaded" style="background-image: url(@imgpath); background-size: cover; background-position: center center; display: block;" tabindex="0"><img src="@imgpath" class="img-fluid blur-up lazyload bg-img" alt="" style="display: none;"></a>
+                                                                                    </div>
+                                                                                    <div class="cart-info cart-wrap">
+                                                                                        <button data-toggle="modal" data-target="#addtocart" title="Add to cart" tabindex="0" style="cursor:pointer;" onclick="AddtoCartfunc(@item.ProductItemId, 1);"><i class="ti-shopping-cart"></i></button>
+                                                                                        @if (clsClientSession.UserID > 0)
+                                                                                        {
+                                                                                            <a href="javascript:void(0)" title="Add to Wishlist" tabindex="0" onclick="addremovewishlist('@item.ProductItemId',this);"><i class="fa fa-heart @clswishlist" aria-hidden="true"></i></a>
+                                                                                        }
+                                                                                        else
+                                                                                        {
+                                                                                            <a href="javascript:void(0)" title="Add to Wishlist" tabindex="0" onclick="alert('Please login for add item to wishlist');"><i class="fa fa-heart @clswishlist" aria-hidden="true"></i></a>
+                                                                                        }
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div class="product-detail" style="height:100%;">
+                                                                                    <div class="rating">
+                                                                                        <i class="fa fa-star"></i>
+                                                                                        <i class="fa fa-star"></i>
+                                                                                        <i class="fa fa-star"></i>
+                                                                                        <i class="fa fa-star"></i>
+                                                                                        <i class="fa fa-star"></i>
+                                                                                    </div>
+                                                                                    <a href="/client/products/detail/@item.ProductItemId" tabindex="0">
+                                                                                        <h6>@item.ItemName</h6>
+                                                                                    </a>
+                                                                                    @if (clsClientSession.UserID == 0 || (clsClientSession.UserID > 0 && clsClientSession.RoleID == 1))
+                                                                                    {
+                                                                                        <h4>₹ @item.CustomerPrice <del>₹ @item.MRPPrice</del></h4>
+
+                                                                                    }
+                                                                                    else
+                                                                                    {
+                                                                                        <h4>₹ @item.DistributorPrice <del>₹ @item.MRPPrice</del></h4>
+                                                                                    }
+
+                                                                                </div>
+                                                                            </div>
+                                                                        }
+
+                                                                    }
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br />
+                                        <div class="product-pagination" style="display:none;">
+                                            <div class="theme-paggination-block">
+                                                <div class="row">
+                                                    <div class="col-xl-6 col-md-6 col-sm-12">
+                                                        <nav aria-label="Page navigation">
+                                                            <ul class="pagination">
+                                                                <li class="page-item"><a class="page-link" href="#" aria-label="Previous"><span aria-hidden="true"><i class="fa fa-chevron-left" aria-hidden="true"></i></span> <span class="sr-only">Previous</span></a></li>
+                                                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                                                <li class="page-item"><a class="page-link" href="#" aria-label="Next"><span aria-hidden="true"><i class="fa fa-chevron-right" aria-hidden="true"></i></span> <span class="sr-only">Next</span></a></li>
+                                                            </ul>
+                                                        </nav>
+                                                    </div>
+                                                    <div class="col-xl-6 col-md-6 col-sm-12">
+                                                        <div class="product-search-count-bottom">
+                                                            <h5>Showing Products 1-24 of 10 Result</h5>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div style="height:250px;width: 100%;">
+                                    <h4 style="margin-top:80px;margin-left: 40%;">No Product Items....</h4>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    $(document).ready(function () {
+
+    });
+    
+
+    function addremovewishlist(itemid,objthis) {
+    var URL = '/Client/Products/AddRemoveWishList';
+    jQuery.ajax({
+        type: 'POST',
+        async: true,
+        url: URL + "?ItemId=" + itemid,
+        success: function (result) {
+            if (result == "Success") {
+                if ($(objthis).find('.fa-heart').hasClass("wishlistcls")) {
+                    $(objthis).find('.fa-heart').removeClass("wishlistcls");
+                    msgsuccess('Item Successfully removed from wishlist');
+                }
+                else {
+                    $(objthis).find('.fa-heart').addClass("wishlistcls");
+                    msgsuccess('Item Successfully added in wishlist');
+                }
+            }
+        },
+        error: function (resultData) {
+            console.log("error");
+
+        }
+    });
+   }
+    function msgsuccess(msg) {
+          $.notify({
+        icon: 'fa fa-check',
+        title: 'Success!',
+        message: msg
+    }, {
+        element: 'body',
+        position: null,
+        type: "info",
+        allow_dismiss: true,
+        newest_on_top: false,
+        showProgressbar: true,
+        placement: {
+            from: "top",
+            align: "right"
+        },
+        offset: 20,
+        spacing: 10,
+        z_index: 1031,
+        delay: 5000,
+        animate: {
+            enter: 'animated fadeInDown',
+            exit: 'animated fadeOutUp'
+        },
+        icon_type: 'class',
+        template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
+            '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+            '<span data-notify="icon"></span> ' +
+            '<span data-notify="title">{1}</span> ' +
+            '<span data-notify="message">{2}</span>' +
+            '<div class="progress" data-notify="progressbar">' +
+            '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
+            '</div>' +
+            '<a href="{3}" target="{4}" data-notify="url"></a>' +
+            '</div>'
+    });
+    }
+
+</script>

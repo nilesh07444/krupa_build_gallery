@@ -75,7 +75,13 @@ namespace KrupaBuildGallery.Areas.Client
                 "wishlist",
                 new { controller = "Wishlist", action = "Index", id = UrlParameter.Optional }
             );
-             
+
+            context.MapRoute(
+              "Client_search",
+              "search",
+              new { controller = "search", action = "Index", id = UrlParameter.Optional }
+          );
+
             context.MapRoute(
                 "Client_Privacy",
                 "privacy",

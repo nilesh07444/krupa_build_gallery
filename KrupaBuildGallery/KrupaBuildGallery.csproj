@@ -214,6 +214,7 @@
     <Compile Include="Areas\Client\Controllers\PrivacyPolicyController.cs" />
     <Compile Include="Areas\Client\Controllers\ProductsController.cs" />
     <Compile Include="Areas\Client\Controllers\RegisterController.cs" />
+    <Compile Include="Areas\Client\Controllers\SearchController.cs" />
     <Compile Include="Areas\Client\Controllers\TermsConditionController.cs" />
     <Compile Include="Areas\Client\Controllers\WishlistController.cs" />
     <Compile Include="Areas\WebAPI\Controllers\CategoryController.cs" />
@@ -3902,6 +3903,7 @@
     <Content Include="Areas\Admin\Views\SubProduct\View.cshtml" />
     <Content Include="Areas\Admin\Views\Stock\View.cshtml" />
     <Content Include="Areas\Admin\Views\GeneralSetting\Index.cshtml" />
+    <Content Include="Areas\Client\Views\Search\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />
