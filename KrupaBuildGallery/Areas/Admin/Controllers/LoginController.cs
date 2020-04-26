@@ -94,7 +94,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         objUserPermission.ContactRequest = lstPermissions.Where(x => x.AdminRoleModuleId == (int)RoleModules.ContactRequest).First().SelectedValue;
                         objUserPermission.Setting = lstPermissions.Where(x => x.AdminRoleModuleId == (int)RoleModules.Setting).First().SelectedValue;
                         objUserPermission.ManagePageContent = lstPermissions.Where(x => x.AdminRoleModuleId == (int)RoleModules.ManagePageContent).First().SelectedValue;
-                         
+                        objUserPermission.ItemText = lstPermissions.Where(x => x.AdminRoleModuleId == (int)RoleModules.ItemText).First().SelectedValue;
+
                         string jsonPermissionValues = JsonConvert.SerializeObject(objUserPermission, Formatting.Indented, new JsonSerializerSettings
                         {
                             NullValueHandling = NullValueHandling.Ignore

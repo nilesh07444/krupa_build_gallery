@@ -21,5 +21,6 @@ namespace KrupaBuildGallery
         public int ContactRequest { get; set; }
         public int Setting { get; set; }
         public int ManagePageContent { get; set; }
+        public int ItemText { get; set; }
     }
 }

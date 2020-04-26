@@ -42,10 +42,12 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
 
                 _db.SaveChanges();
                 string FromEmail = objGensetting.FromEmail;
-                if (!string.IsNullOrEmpty(objContactform.Email))
-                {
-                    FromEmail = objContactform.Email;
-                }
+
+                //if (!string.IsNullOrEmpty(objContactform.Email))
+                //{
+                //    FromEmail = objContactform.Email;
+                //}
+
                 string Subject = "Message From Krupa Build Gallery";
                 string bodyhtml = "Following are the message details:<br/>";
                 bodyhtml += "Name: " + objContactform.Name +"<br/>";

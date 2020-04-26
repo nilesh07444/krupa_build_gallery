@@ -321,9 +321,9 @@
     /*=====================
      13. slick slider
      ==========================*/
-    $('.slide-1').slick({
-        // autoplay: true,
-        // autoplaySpeed: 5000
+    $('.home-slider').slick({
+         autoplay: true,
+         autoplaySpeed: 2000
     });
 
     $('.slide-2').slick({
@@ -854,7 +854,10 @@
         slidesToScroll: 1,
         arrows: true,
         fade: true,
-        asNavFor: '.slider-nav'
+        asNavFor: '.slider-nav',
+        autoplay: true,
+        autoplaySpeed: 2500,
+        infinite: true,
     });
 
     $('.slider-nav').slick({

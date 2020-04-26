@@ -1,9 +1,25 @@
-﻿@using KrupaBuildGallery.Model;
+﻿@using KrupaBuildGallery.Helper;
+@using Newtonsoft.Json;
+@using KrupaBuildGallery.Model;
+
 @model List<ItemTextVM>
 @{
     ViewBag.Title = "Item Text";
 
     int counter = 1;
+}
+
+@{
+    UserPermissionVM objPermission = new UserPermissionVM();
+
+    int RoleId = Int32.Parse(clsAdminSession.RoleID.ToString());
+
+    if (RoleId != 1)
+    {
+        string strPermission = clsAdminSession.UserPermission;
+        objPermission = JsonConvert.DeserializeObject<UserPermissionVM>(strPermission, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+    }
+    bool IsSA = (RoleId == 1 ? true : false);
 }
 
 <div class="page-body">
@@ -21,7 +37,7 @@
                 </div>
                 <div class="col-lg-6">
                     <ol class="breadcrumb pull-right">
-                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li> 
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
                         <li class="breadcrumb-item active">Item Text List</li>
                     </ol>
                 </div>
@@ -36,15 +52,17 @@
                 <h5>Item Text List</h5>
             </div>
             <div class="card-body vendor-table">
-
-                <div class="btn-popup pull-right">
-                    <button type="button" class="btn btn-primary" id="btnAdd">Add Item Text</button>
-                </div>
+                @if (IsSA || objPermission.ItemText >= (int)ModulePermission.Add)
+                {
+                    <div class="btn-popup pull-right">
+                        <button type="button" class="btn btn-primary" id="btnAdd">Add Item Text</button>
+                    </div>
+                }
 
                 <table class="display" id="basic-1">
                     <thead>
                         <tr>
-                            <th width="10%;">#</th>                            
+                            <th width="10%;">#</th>
                             <th>Item Text</th>
                             <th width="15%;">Action</th>
                         </tr>
@@ -56,11 +74,17 @@
                             foreach (ItemTextVM itmtxt in Model)
                             {
                                 <tr class="gradeX">
-                                    <td>@counter.</td>                                    
+                                    <td>@counter.</td>
                                     <td>@itmtxt.ItemText</td>
                                     <td>
-                                        <a href="/admin/itemtext/edit/@itmtxt.ItemTextId"><i class="fa fa-edit mr-2 font-success"></i></a>
-                                        <a href="javascript:void(0);" onclick="fnDeleteItemtext('@itmtxt.ItemTextId')"><i class="fa fa-trash font-danger"></i></a>
+                                        @if (IsSA || objPermission.ItemText >= (int)ModulePermission.Edit)
+                                        {
+                                            <a href="/admin/itemtext/edit/@itmtxt.ItemTextId"><i class="fa fa-edit mr-2 font-success"></i></a>
+                                        }
+                                        @if (IsSA || objPermission.ItemText >= (int)ModulePermission.Full)
+                                        {
+                                            <a href="javascript:void(0);" onclick="fnDeleteItemtext('@itmtxt.ItemTextId')"><i class="fa fa-trash font-danger"></i></a>
+                                        }
                                     </td>
                                 </tr>
                                 counter++;

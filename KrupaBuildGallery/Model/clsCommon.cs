@@ -55,6 +55,8 @@ namespace KrupaBuildGallery.Model
                      subject, // Subject of the email message
                       body // Email message body
            );
+                mailMessage.From = new MailAddress(from, "Shopping & Saving");
+
                 tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
                 string SMTPHost = objGensetting.SMTPHost;
                 string SMTpPort = objGensetting.SMTPPort;

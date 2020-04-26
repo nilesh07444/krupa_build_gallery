@@ -27,6 +27,7 @@ namespace KrupaBuildGallery.Helper
         ContactRequest = 12,
         Setting = 13,
         ManagePageContent = 14,
+        ItemText = 15
     }
 
     public enum Modules
@@ -44,7 +45,8 @@ namespace KrupaBuildGallery.Helper
         DistibutorRequest = 11,
         ContactRequest = 12,
         Setting = 13,
-        ManagePageContent = 14
+        ManagePageContent = 14,
+        ItemText = 15
     }
 
     public enum ModulePermission

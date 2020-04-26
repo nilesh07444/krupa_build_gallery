@@ -58,7 +58,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                               Add = m.Add,
                                               Edit = m.Edit,
                                               Full = m.Full
-                                          }).ToList();
+                                          }).OrderBy(x=>x.ModuleName).ToList();
             }
             catch (Exception ex)
             {
@@ -167,7 +167,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                               Full = m.Full,
                                               SelectedValue = p.Permission,
                                               AdminRolePermissionId = p.AdminRolePermissionId
-                                          }).ToList();
+                                          }).OrderBy(x => x.ModuleName).ToList();
             }
             catch (Exception ex)
             {
@@ -326,8 +326,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             return ReturnMessage;
         }
-
-
+         
         public ActionResult View(int Id)
         {
             RoleVM objRole = new RoleVM();

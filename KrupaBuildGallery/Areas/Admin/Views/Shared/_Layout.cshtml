@@ -93,13 +93,7 @@
                 </div>
                 <div class="nav-right col">
                     <ul class="nav-menus">
-                        <li>
-                            <form class="form-inline search-form">
-                                <div class="form-group">
-                                    <input class="form-control-plaintext" type="search" placeholder="Search.."><span class="d-sm-none mobile-search"><i data-feather="search"></i></span>
-                                </div>
-                            </form>
-                        </li>
+                        
                         <li><a class="text-dark" href="#!" onclick="javascript:toggleFullScreen()"><i data-feather="maximize-2"></i></a></li>
 
                         @*<li class="onhover-dropdown">
@@ -279,12 +273,15 @@
                             </li>
                         }
 
-                        @if (IsSA)
+                        @if (IsSA || objPermission.ItemText >= (int)ModulePermission.View)
                         {
                             <li>
                                 <a class="sidebar-header" href=""><i data-feather="download"></i><span>Item Text</span><i class="fa fa-angle-right pull-right"></i></a>
                                 <ul class="sidebar-submenu">
-                                    <li><a href="/admin/itemtext/add"><i class="fa fa-circle"></i>Add New Item Text</a></li>
+                                    @if (IsSA || objPermission.ItemText >= (int)ModulePermission.Add)
+                                    {
+                                        <li><a href="/admin/itemtext/add"><i class="fa fa-circle"></i>Add New Item Text</a></li>
+                                    }
                                     <li><a href="/admin/itemtext"><i class="fa fa-circle"></i>Item Text List</a></li>
                                 </ul>
                             </li>
@@ -368,7 +365,7 @@
                                 <a class="sidebar-header" href=""><i data-feather="shopping-bag"></i><span>Common Content</span><i class="fa fa-angle-right pull-right"></i></a>
                                 <ul class="sidebar-submenu">
                                     <li><a href="/admin/homeimages"><i class="fa fa-circle"></i>Home Images</a></li>
-                                    <li><a href="/admin/godown"><i class="fa fa-circle"></i>Godown</a></li> 
+                                    <li><a href="/admin/godown"><i class="fa fa-circle"></i>Godown</a></li>
                                 </ul>
                             </li>
                         }
@@ -447,8 +444,8 @@
 
     <!--Datepicker jquery-->
     @*<script src="~/Content/assets/js/datepicker/datepicker.js"></script>
-    <script src="~/Content/assets/js/datepicker/datepicker.en.js"></script>
-    <script src="~/Content/assets/js/datepicker/datepicker.custom.js"></script>*@
+        <script src="~/Content/assets/js/datepicker/datepicker.en.js"></script>
+        <script src="~/Content/assets/js/datepicker/datepicker.custom.js"></script>*@
 
     <!-- Datatables js-->
     <script src="~/Content/assets/js/datatables/jquery.dataTables.min.js"></script>
