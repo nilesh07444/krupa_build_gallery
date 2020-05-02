@@ -71,13 +71,19 @@
                             if (!string.IsNullOrEmpty(Model.HomeImageName))
                             {
                                 <div class="form-group row">
+                                    <lable class="col-xl-3 col-md-4"></lable>
                                     <p><a target="_blank" href="@ErrorMessage.HomeDirectoryPath/@Model.HomeImageName"> Click here to view image </a></p>
                                 </div>
                             }
 
-                            @Html.HiddenFor(x => x.HomeImageId)
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                            <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
+                            <div class="form-group row">
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.HiddenFor(x => x.HomeImageId)
+                                <button type="submit" class="btn btn-primary" style="margin-right:10px;">Submit</button>
+                                <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
+                            </div>
+
+
                         }
                     </div>
                 </div>

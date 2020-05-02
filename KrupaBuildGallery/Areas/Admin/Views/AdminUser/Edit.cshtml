@@ -5,6 +5,13 @@
     ViewBag.Title = "AdminUser";
 }
 
+<style>
+
+    body {
+        padding-top: 60px;
+    }
+</style>
+
 <div class="page-body">
 
     <!-- Container-fluid starts-->
@@ -126,7 +133,7 @@
 
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.Dob, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
-                                @Html.EditorFor(model => model.Dob, new { htmlAttributes = new { @class = "form-control col-md-8 datepicker-here", @placeholder = "DD/MM/YYYY", @data_language = "en" } })
+                                @Html.EditorFor(model => model.Dob, new { htmlAttributes = new { @class = "form-control col-md-8 clsDatePicker", @placeholder = "DD/MM/YYYY", @data_language = "en", @readonly = "readonly" } })
 
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.Dob, "", new { @class = "text-danger" })
@@ -142,7 +149,7 @@
 
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.DateOfJoin, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
-                                @Html.EditorFor(model => model.DateOfJoin, new { htmlAttributes = new { @class = "form-control col-md-8 datepicker-here", @placeholder = "DD/MM/YYYY", @data_language = "en" } })
+                                @Html.EditorFor(model => model.DateOfJoin, new { htmlAttributes = new { @class = "form-control col-md-8 clsDatePicker", @placeholder = "DD/MM/YYYY", @data_language = "en", @readonly = "readonly" } })
 
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.DateOfJoin, "", new { @class = "text-danger" })
@@ -174,7 +181,7 @@
 
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.DateOfIdCardExpiry, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
-                                @Html.EditorFor(model => model.DateOfIdCardExpiry, new { htmlAttributes = new { @class = "form-control col-md-8 datepicker-here", @placeholder = "DD/MM/YYYY", @data_language = "en" } })
+                                @Html.EditorFor(model => model.DateOfIdCardExpiry, new { htmlAttributes = new { @class = "form-control col-md-8 clsDatePicker", @placeholder = "DD/MM/YYYY", @data_language = "en", @readonly = "readonly" } })
 
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.DateOfIdCardExpiry, "", new { @class = "text-danger" })
@@ -204,10 +211,14 @@
                                 @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
                             </div>
 
-                            @Html.HiddenFor(x => x.AdminUserId)
-                            @Html.HiddenFor(x => x.AdminRoleId)
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                            <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
+                            <div class="form-group row">
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.HiddenFor(x => x.AdminUserId)
+                                @Html.HiddenFor(x => x.AdminRoleId)
+                                <button type="submit" class="btn btn-primary" style="        margin-right: 10px;">Submit</button>
+                                <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
+                            </div>
+
                         }
                     </div>
                 </div>

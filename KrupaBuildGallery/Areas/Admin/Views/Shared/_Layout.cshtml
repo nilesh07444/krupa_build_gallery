@@ -59,6 +59,7 @@
 
     <!-- Datepicker css-->
     @*<link rel="stylesheet" type="text/css" href="~/Content/assets/css/date-picker.css">*@
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.css" />
 
     <!-- latest jquery-->
     <script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>
@@ -93,7 +94,7 @@
                 </div>
                 <div class="nav-right col">
                     <ul class="nav-menus">
-                        
+
                         <li><a class="text-dark" href="#!" onclick="javascript:toggleFullScreen()"><i data-feather="maximize-2"></i></a></li>
 
                         @*<li class="onhover-dropdown">
@@ -446,6 +447,7 @@
     @*<script src="~/Content/assets/js/datepicker/datepicker.js"></script>
         <script src="~/Content/assets/js/datepicker/datepicker.en.js"></script>
         <script src="~/Content/assets/js/datepicker/datepicker.custom.js"></script>*@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
 
     <!-- Datatables js-->
     <script src="~/Content/assets/js/datatables/jquery.dataTables.min.js"></script>
@@ -455,6 +457,15 @@
     <script src="~/Scripts/jquery.blockUI.js"></script>
 
     <script>
+
+        jQuery(document).ready(function () {
+
+            jQuery(".clsDatePicker").datepicker({
+                format: "dd/mm/yyyy",
+                autoclose: true
+            });
+
+        });
 
         function StartLoading() {
             jQuery.blockUI({ message: "<h4>Please Wait...</h4>" });

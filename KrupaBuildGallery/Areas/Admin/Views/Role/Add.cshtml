@@ -89,7 +89,7 @@
                                                         <label>@Html.RadioButtonFor(m => m.lstRoleModules[cnt].SelectedValue, 4, new { @class = "radio_animated" }) Full</label>
                                                     </td>
                                                 </tr>
-                                                
+
                                                 @Html.HiddenFor(m => m.lstRoleModules[cnt].AdminRoleModuleId)
                                                 @Html.HiddenFor(m => m.lstRoleModules[cnt].ModuleName)
 
@@ -101,8 +101,12 @@
 
                             </div>
 
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                            <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
+                            <div class="form-group row">
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                <button type="submit" class="btn btn-primary" style="margin-right:10px;">Submit</button>
+                                <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
+                            </div>
+
                         }
                     </div>
                 </div>

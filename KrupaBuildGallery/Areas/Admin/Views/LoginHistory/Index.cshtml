@@ -21,7 +21,7 @@
                 </div>
                 <div class="col-lg-6">
                     <ol class="breadcrumb pull-right">
-                        <li class="breadcrumb-item"><a href="/"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
                         <li class="breadcrumb-item active">Login History List</li>
                     </ol>
                 </div>
@@ -52,11 +52,11 @@
                     </div>
                     <div class="col-md-2">
                         <label>Start Date</label>
-                        <input type="text" class="form-control" value="@ViewBag.StartDate" id="txtStartDate" />
+                        <input type="text" class="form-control" value="@ViewBag.StartDate" id="txtStartDate" placeholder="DD/MM/YYYY" />
                     </div>
                     <div class="col-md-2">
                         <label>End Date</label>
-                        <input type="text" class="form-control" value="@ViewBag.EndDate" id="txtEndDate" />
+                        <input type="text" class="form-control" value="@ViewBag.EndDate" id="txtEndDate" placeholder="DD/MM/YYYY" />
                     </div>
                     <div class="col-md-2" style="margin-top:25px;">
                         <input type="button" value="Filter" class="btn btn-primary" onclick="filterdata();" />

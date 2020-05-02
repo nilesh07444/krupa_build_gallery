@@ -47,7 +47,7 @@
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.CategoryId, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.DropDownList("CategoryId", new SelectList(Model.CategoryList, "Value", "Text"), "- Select Category -", new { @class = "form-control col-md-8", style = "" })
-                                
+
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.CategoryId, "", new { @class = "text-danger" })
                             </div>
@@ -71,13 +71,17 @@
                             if (!string.IsNullOrEmpty(Model.ProductImage))
                             {
                                 <div class="form-group row">
+                                    <lable class="col-xl-3 col-md-4"></lable>
                                     <p><a target="_blank" href="~/Images/ProductMedia/@Model.ProductImage"> Click here to view image </a></p>
                                 </div>
                             }
 
-                            @Html.HiddenFor(x => x.ProductId)
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                            <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
+                            <div class="form-group row">
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.HiddenFor(x => x.ProductId)
+                                <button type="submit" class="btn btn-primary" style="margin-right:10px;">Submit</button>
+                                <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
+                            </div>
 
                         }
                     </div>

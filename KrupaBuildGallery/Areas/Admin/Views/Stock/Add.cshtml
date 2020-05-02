@@ -45,7 +45,7 @@
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.CategoryId, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.DropDownListFor(model => model.CategoryId, new SelectList(Model.CategoryList, "Value", "Text"), "- Select Category -", new { @class = "form-control col-md-8", style = "" })
-                                
+
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.CategoryId, "", new { @class = "text-danger" })
                             </div>
@@ -53,7 +53,7 @@
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.ProductId, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.DropDownListFor(model => model.ProductId, new SelectList(Model.ProductList, "Value", "Text"), "- Select Product -", new { @class = "form-control col-md-8", style = "" })
-                                
+
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.ProductId, "", new { @class = "text-danger" })
                             </div>
@@ -67,7 +67,7 @@
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.ProductItemId, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.DropDownListFor(model => model.ProductItemId, new SelectList(Model.ProductItemList, "Value", "Text"), "- Select Product Item -", new { @class = "form-control col-md-8", style = "" })
-                                
+
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.ProductItemId, "", new { @class = "text-danger" })
                             </div>
@@ -75,13 +75,17 @@
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.Quantity, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.EditorFor(model => model.Quantity, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Quantity", maxlength = "200" } })
-                                
+
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.Quantity, "", new { @class = "text-danger" })
                             </div>
 
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                            <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
+                            <div class="form-group row">
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                <button type="submit" class="btn btn-primary" style="margin-right:10px;">Submit</button>
+                                <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
+                            </div>
+
                         }
                     </div>
                 </div>
@@ -107,7 +111,7 @@
         var CategoryId = jQuery("#CategoryId option:selected").val();
 
         if (CategoryId != "" && CategoryId != null) {
-             
+
             var URL = '@Url.Action("GetProductListByCategoryId", "SubProduct")';
             $.ajax({
                 type: 'GET',
@@ -120,9 +124,9 @@
                             htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
                         });
                     }
-                    $("#ProductId").html(htmlData); 
+                    $("#ProductId").html(htmlData);
                 },
-                error: function (error) { 
+                error: function (error) {
                 }
             });
         }
@@ -137,7 +141,7 @@
         var ProductId = jQuery("#ProductId option:selected").val();
 
         if (ProductId != "" && ProductId != null) {
-             
+
             var URL = '@Url.Action("GetSubProductListByProductId", "SubProduct")';
             $.ajax({
                 type: 'GET',
@@ -150,9 +154,9 @@
                             htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
                         });
                     }
-                    $("#SubProductId").html(htmlData); 
+                    $("#SubProductId").html(htmlData);
                 },
-                error: function (error) { 
+                error: function (error) {
                 }
             });
         }
@@ -167,7 +171,7 @@
         var ProductId = jQuery("#ProductId option:selected").val();
         var SubProductId = jQuery("#SubProductId option:selected").val();
 
-        if ((ProductId != "" && ProductId != null) || (SubProductId != "" && SubProductId != null)) { 
+        if ((ProductId != "" && ProductId != null) || (SubProductId != "" && SubProductId != null)) {
             var URL = '@Url.Action("GetItemList", "Stock")';
             $.ajax({
                 type: 'GET',
@@ -180,9 +184,9 @@
                             htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
                         });
                     }
-                    $("#ProductItemId").html(htmlData); 
+                    $("#ProductItemId").html(htmlData);
                 },
-                error: function (error) { 
+                error: function (error) {
                 }
             });
         }
