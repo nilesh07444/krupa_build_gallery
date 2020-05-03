@@ -45,8 +45,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                       ProductName = p.ProductName,
                                       SubProductName = s.SubProductName,
                                       OfferTitle = stk.OfferName,
-                                      OfferStartDate = stk.StartDate,
-                                      OfferEndDate = stk.EndDate,
+                                      dtOfferStartDate = stk.StartDate,
+                                      dtOfferEndDate = stk.EndDate,
                                       CustomerOfferPrice = stk.OfferPrice,
                                       DistributorOfferPrice = stk.OfferPriceforDistributor.Value,
                                       IsActive = stk.IsActive
@@ -59,8 +59,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             return View(lstOfferVm);
         }
-
-
+         
         public ActionResult Add()
         {
             OfferVM objOffer = new OfferVM();
@@ -71,6 +70,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             objOffer.ProductItemList = new List<SelectListItem>();
             return View(objOffer);
         }
+
         public ActionResult Edit(int id)
         {
             OfferVM objOffer = new OfferVM();
@@ -87,10 +87,14 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                        CustomerOfferPrice = i.OfferPrice,
                                        DistributorOfferPrice = i.OfferPriceforDistributor.Value,
                                        OfferTitle = i.OfferName,
-                                       OfferStartDate = i.StartDate,
-                                       OfferEndDate = i.EndDate,
+                                       dtOfferStartDate = i.StartDate,
+                                       dtOfferEndDate = i.EndDate,
                                        IsActive = i.IsActive
                                    }).FirstOrDefault();
+
+            objOffer.OfferStartDate = Convert.ToDateTime(objOffer.dtOfferStartDate).ToString("dd/MM/yyyy");
+            objOffer.OfferEndDate = Convert.ToDateTime(objOffer.dtOfferEndDate).ToString("dd/MM/yyyy");
+
 
             objOffer.CategoryList = GetCategoryList();
             objOffer.ProductList = GetProductListByCategoryId(objOffer.CategoryId);
@@ -99,6 +103,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             return View(objOffer);
         }
+
         private List<SelectListItem> GetCategoryList()
         {
             var CategoryList = _db.tbl_Categories.Where(x => x.IsActive && !x.IsDelete)
@@ -135,7 +140,10 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
 
                     //}
+
                     long LoggedInUserId = Int64.Parse(clsAdminSession.UserID.ToString());
+
+                    
 
                     tbl_Offers objtbl_Offers = new tbl_Offers();
                     objtbl_Offers.CategoryId = objOffer.CategoryId;
@@ -144,9 +152,21 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     objtbl_Offers.ProductItemId = objOffer.ProductItemId;
                     objtbl_Offers.OfferPrice = objOffer.CustomerOfferPrice;
                     objtbl_Offers.OfferPriceforDistributor = objOffer.DistributorOfferPrice;
-                    objtbl_Offers.StartDate = objOffer.OfferStartDate;
-                    objtbl_Offers.EndDate = objOffer.OfferEndDate;
+                    //objtbl_Offers.StartDate = objOffer.OfferStartDate;
+                    //objtbl_Offers.EndDate = objOffer.OfferEndDate;
                     objtbl_Offers.OfferName = objOffer.OfferTitle;
+
+                    if (!string.IsNullOrEmpty(objOffer.OfferStartDate))
+                    {
+                        DateTime dtStart = DateTime.ParseExact(objOffer.OfferStartDate, "dd/MM/yyyy", null);
+                        objtbl_Offers.StartDate = dtStart;
+                    }
+
+                    if (!string.IsNullOrEmpty(objOffer.OfferEndDate))
+                    {
+                        DateTime dtEnd = DateTime.ParseExact(objOffer.OfferEndDate, "dd/MM/yyyy", null);
+                        objtbl_Offers.EndDate = dtEnd;
+                    }
 
                     objtbl_Offers.IsActive = true;
                     objtbl_Offers.IsDelete = false;
@@ -187,9 +207,21 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     objtbl_Offers.ProductItemId = objOffer.ProductItemId;
                     objtbl_Offers.OfferPrice = objOffer.CustomerOfferPrice;
                     objtbl_Offers.OfferPriceforDistributor = objOffer.DistributorOfferPrice;
-                    objtbl_Offers.StartDate = objOffer.OfferStartDate;
                     objtbl_Offers.OfferName = objOffer.OfferTitle;
-                    objtbl_Offers.EndDate = objOffer.OfferEndDate;
+
+                    if (!string.IsNullOrEmpty(objOffer.OfferStartDate))
+                    {
+                        DateTime dtStart = DateTime.ParseExact(objOffer.OfferStartDate, "dd/MM/yyyy", null);
+                        objtbl_Offers.StartDate = dtStart;
+                    }
+
+                    if (!string.IsNullOrEmpty(objOffer.OfferEndDate))
+                    {
+                        DateTime dtEnd = DateTime.ParseExact(objOffer.OfferEndDate, "dd/MM/yyyy", null);
+                        objtbl_Offers.EndDate = dtEnd;
+                    }
+
+
                     objtbl_Offers.UpdatedBy = LoggedInUserId;
                     objtbl_Offers.UpdatedDate = DateTime.UtcNow;
                     _db.SaveChanges();
@@ -205,7 +237,6 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             return View(objOffer);
         }
-
 
         [HttpPost]
         public string DeleteOffer(long offerid)
@@ -303,5 +334,6 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             return ReturnMessage;
         }
+
     }
 }

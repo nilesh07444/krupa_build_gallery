@@ -19,8 +19,7 @@
                 </div>
                 <div class="col-lg-6">
                     <ol class="breadcrumb pull-right">
-                        <li class="breadcrumb-item"><a href="/"><i data-feather="home"></i></a></li>
-                        <li class="breadcrumb-item">Distributor</li>
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
                         <li class="breadcrumb-item active">Distributor Request List</li>
                     </ol>
                 </div>
@@ -35,13 +34,21 @@
                 <h5>Distributor Request List</h5>
             </div>
             <div class="card-body vendor-table">
-                <select class="form-control" id="selectstatus" style="width:150px;" onchange="changestatus();">
-                    <option value="-1">All</option>
-                    <option value="0">Pending</option>
-                    <option value="1">Accepted</option>
-                    <option value="2">Rejected</option>
-                </select>
-                <br/>
+
+                <h3>Filter:</h3>
+                <div class="row" style="margin-top:25px; border-bottom: 2px solid #f8f8f9; padding-bottom: 25px; margin-bottom: 10px;">
+                    <div class="col-md-2">
+                        <label>Status</label>
+                        <select class="form-control" id="selectstatus" style="width:150px;" onchange="changestatus();">
+                            <option value="-1">All</option>
+                            <option value="0">Pending</option>
+                            <option value="1">Accepted</option>
+                            <option value="2">Rejected</option>
+                        </select>
+                    </div>
+                </div>
+
+                <br />
                 <table class="display" id="basic-1">
                     <thead>
                         <tr>
@@ -79,21 +86,21 @@
                                     stauscolor = "badge-success";
                                     statunm = "Accepted";
                                 }
-                        <tr class="gradeX">
-                            <td>@counter.</td>
-                            <td>@objreq.FirstName</td>
-                            <td>@objreq.LastName</td>
-                            <td>@objreq.Email</td>
-                            <td>@objreq.MobileNo</td>
-                            <td>@objreq.City</td>
-                            <td>@objreq.State</td>
-                            <td>@objreq.CompanyName</td>
-                            <td><span class="badge @stauscolor">@statunm</span></td>
-                            <td>
-                                <a href="/admin/distributor/requestdetail/@objreq.DistributorRequestId"><i class="fa fa-eye font-success"></i></a>
-                                <a href="javascript:void(0);" onclick="fnDeleteReq('@objreq.DistributorRequestId');"><i class="fa fa-trash font-danger"></i></a>
-                            </td>
-                        </tr>
+                                <tr class="gradeX">
+                                    <td>@counter.</td>
+                                    <td>@objreq.FirstName</td>
+                                    <td>@objreq.LastName</td>
+                                    <td>@objreq.Email</td>
+                                    <td>@objreq.MobileNo</td>
+                                    <td>@objreq.City</td>
+                                    <td>@objreq.State</td>
+                                    <td>@objreq.CompanyName</td>
+                                    <td><span class="badge @stauscolor">@statunm</span></td>
+                                    <td>
+                                        <a href="/admin/distributor/requestdetail/@objreq.DistributorRequestId"><i class="fa fa-eye font-success"></i></a>
+                                        <a href="javascript:void(0);" onclick="fnDeleteReq('@objreq.DistributorRequestId');"><i class="fa fa-trash font-danger"></i></a>
+                                    </td>
+                                </tr>
                                 counter++;
                             }
 
@@ -168,9 +175,9 @@
      $(document).ready(function () {
         $("#selectstatus").val("@ViewBag.Status");
     });
-    function changestatus() {       
+    function changestatus() {
         var statusid = $("#selectstatus").val();
-        location.href = "/admin/distributor/requestlist?Status="+statusid;       
+        location.href = "/admin/distributor/requestlist?Status="+statusid;
     }
 
 </script>

@@ -56,17 +56,12 @@
                 <h5>Product Item List</h5>
             </div>
             <div class="card-body vendor-table">
-                @if (IsSA || objPermission.ProductItem >= (int)ModulePermission.Add)
-                {
-                    <div class="btn-popup pull-right">
-                        <button type="button" class="btn btn-primary" id="btnAdd">Add Product Item</button>
-                    </div>
-                }
-                <br/>
-                <div class="row" style="margin-top:25px;">
-                    <div class="col-md-4" style="margin-right:15px">
+                <h3>Filter:</h3>
+                <div class="row" style="margin-top:25px;border-bottom: 2px solid #f8f8f9;padding-bottom: 25px;margin-bottom: 10px;">
+
+                    <div class="col-sm-2">
                         <label>Categories</label>
-                        <select id="selectcat" class="form-control" style="width:250px;" onchange="selectcatchange();">
+                        <select id="selectcat" class="form-control" onchange="selectcatchange();">
                             <option value="-1">All</option>
                             @if (lstCats != null && lstCats.Count() > 0)
                             {
@@ -77,9 +72,9 @@
                             }
                         </select>
                     </div>
-                    <div class="col-md-4" style="margin-right:15px">
+                    <div class="col-sm-2">
                         <label>Products</label>
-                        <select id="selectprod" class="form-control" style="width:250px;" onchange="selectprodchange();">
+                        <select id="selectprod" class="form-control" onchange="selectprodchange();">
                             <option value="-1">All</option>
                             @if (lstProdts != null && lstProdts.Count() > 0)
                             {
@@ -90,9 +85,9 @@
                             }
                         </select>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-sm-2">
                         <label>Sub Products</label>
-                        <select id="selectsubprod" class="form-control" style="width:250px;" onchange="selectsubprodchange();">
+                        <select id="selectsubprod" class="form-control" onchange="selectsubprodchange();">
                             <option value="-1">All</option>
                             @if (lstSubProdts != null && lstSubProdts.Count() > 0)
                             {
@@ -103,20 +98,29 @@
                             }
                         </select>
                     </div>
+                    <div class="col-sm-2">
+                        <label>Status</label>
+                        <select id="selectstatus" class="form-control">
+                            <option value="-1">All</option>
+                            <option value="1">Active</option>
+                            <option value="0">Inactive</option>
+                        </select>
+                    </div>
+
+                    <div class="col-sm-2">
+                        <input type="button" value="Filter" class="btn btn-info" onclick="filteritems();" style="position: absolute; bottom: 0;" />
+                    </div>
                 </div>
-            <div class="row" style="margin-top:10px;margin-left: 5px;margin-bottom:10px;">               
-                <div class="col-md-4">
-                    <label>Status</label>  
-                    <select id="selectstatus" class="form-control" style="width:250px;">
-                        <option value="-1">All</option>
-                        <option value="1">Active</option>
-                        <option value="0">Inactive</option>
-                    </select>
-                </div>
-                <div class="col-md-6" style="margin-top: 25px;">
-                    <input type="button" value="Filter" class="btn btn-primary" onclick="filteritems();" />
-                </div>
-            </div>          
+
+
+                @if (IsSA || objPermission.ProductItem >= (int)ModulePermission.Add)
+                {
+                    <div class="btn-popup pull-right">
+                        <button type="button" class="btn btn-primary" id="btnAdd">Add Product Item</button>
+                    </div>
+                }
+                <br />
+
                 <table class="display" id="basic-1">
                     <thead>
                         <tr>
@@ -179,6 +183,10 @@
                                         <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@item.ProductItemId','Active');">InActive</span></td>
                                     }
                                     <td>
+                                        @if (IsSA || objPermission.ProductItem >= (int)ModulePermission.View)
+                                        {
+                                            <a href="/admin/productitem/view/@item.ProductItemId"><i class="fa fa-eye mr-2 font-success"></i></a>
+                                        }
                                         @if (IsSA || objPermission.ProductItem >= (int)ModulePermission.Edit)
                                         {
                                             <a href="/admin/productitem/edit/@item.ProductItemId"><i class="fa fa-edit mr-2 font-success"></i></a>
@@ -350,7 +358,7 @@
           var CategoryId = jQuery("#selectcat option:selected").val();
 
         if (CategoryId != "" && CategoryId != null) {
-             
+
             var URL = '@Url.Action("GetProductListByCategoryId", "SubProduct")';
             $.ajax({
                 type: 'GET',
@@ -360,12 +368,12 @@
                     var htmlData = "<option value='-1'>All</option>";
                     if (result && result.length > 0) {
                         jQuery.each(result, function (i, item) {
-                             htmlData += "<option value='"+ item.Value +"'> "+ item.Text +" </option>";                          
-                          });                        
+                             htmlData += "<option value='"+ item.Value +"'> "+ item.Text +" </option>";
+                          });
                     }
-                    $("#selectprod").html(htmlData); 
+                    $("#selectprod").html(htmlData);
                 },
-                error: function (error) { 
+                error: function (error) {
                 }
             });
         }
@@ -382,7 +390,7 @@
         var ProductId = jQuery("#selectprod option:selected").val();
 
         if (ProductId != "" && ProductId != null) {
-             
+
             var URL = '@Url.Action("GetSubProductListByProductId", "SubProduct")';
             $.ajax({
                 type: 'GET',
@@ -392,12 +400,12 @@
                    var htmlData = "<option value='-1'>All</option>";
                     if (result && result.length > 0) {
                         jQuery.each(result, function (i, item) {
-                             htmlData += "<option value='"+ item.Value +"'> "+ item.Text +" </option>";                          
-                          });       
+                             htmlData += "<option value='"+ item.Value +"'> "+ item.Text +" </option>";
+                          });
                     }
-                    $("#selectsubprod").html(htmlData); 
+                    $("#selectsubprod").html(htmlData);
                 },
-                error: function (error) { 
+                error: function (error) {
                 }
             });
         }
@@ -412,7 +420,7 @@
         var catid = $("#selectcat").val();
         var prodtid = $("#selectprod").val();
         var subproductid = $("#selectsubprod").val();
-        location.href = "/admin/productitem?CategoryId="+catid+"&ProductId="+prodtid+"&SubProductId="+subproductid+"&Active="+statusid;       
+        location.href = "/admin/productitem?CategoryId="+catid+"&ProductId="+prodtid+"&SubProductId="+subproductid+"&Active="+statusid;
     }
-   
+
 </script>

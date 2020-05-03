@@ -20,16 +20,16 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             _db = new krupagallarydbEntities();
         }
 
-        public ActionResult Index(int CategoryId = -1,int ProductId = -1,int SubProductId = -1,int Active = -1)
+        public ActionResult Index(int CategoryId = -1, int ProductId = -1, int SubProductId = -1, int Active = -1)
         {
             List<ProductItemVM> lstProductItem = new List<ProductItemVM>();
 
             try
             {
                 bool IsActv = false;
-                if(Active != -1)
+                if (Active != -1)
                 {
-                    if(Active == 1)
+                    if (Active == 1)
                     {
                         IsActv = true;
                     }
@@ -58,12 +58,12 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                   }).OrderByDescending(x => x.ProductItemId).ToList();
                 if (lstProductItem != null && lstProductItem.Count() > 0)
                 {
-                    lstProductItem.ForEach(x => { x.Sold = SoldItems(x.ProductItemId); x.InStock = ItemStock(x.ProductItemId) - x.Sold;});
+                    lstProductItem.ForEach(x => { x.Sold = SoldItems(x.ProductItemId); x.InStock = ItemStock(x.ProductItemId) - x.Sold; });
                 }
-                
-                 ViewData["CategoryList"] = GetCategoryList();
-                 ViewData["ProductList"] = GetProductListByCategoryId(CategoryId);
-                 ViewData["SubProductList"] = GetSubProductListByProductId(ProductId);
+
+                ViewData["CategoryList"] = GetCategoryList();
+                ViewData["ProductList"] = GetProductListByCategoryId(CategoryId);
+                ViewData["SubProductList"] = GetSubProductListByProductId(ProductId);
                 ViewBag.CatId = CategoryId;
                 ViewBag.ProductId = ProductId;
                 ViewBag.SubProductId = SubProductId;
@@ -82,9 +82,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         public ActionResult Add(long Id = 0)
         {
             ProductItemVM objProductItem = new ProductItemVM();
-            if(Id > 0)
+            if (Id > 0)
             {
-                var objProductItm =  _db.tbl_ProductItems.Where(o => o.ProductItemId == Id).FirstOrDefault();
+                var objProductItm = _db.tbl_ProductItems.Where(o => o.ProductItemId == Id).FirstOrDefault();
                 objProductItem.CategoryId = objProductItm.CategoryId;
                 objProductItem.ProductId = objProductItm.ProductId;
                 objProductItem.SubProductId = objProductItm.SubProductId;
@@ -117,9 +117,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             //}
             //else
             //{
-            
-           // }
-           
+
+            // }
+
             return View(objProductItem);
         }
 
@@ -140,7 +140,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     if (existProductItem != null)
                     {
                         ModelState.AddModelError("ItemName", ErrorMessage.ItemNameExists);
-                    }                  
+                    }
                     else
                     {
                         string fileName = string.Empty;
@@ -248,8 +248,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         //productItemVM.GST = GetGST();
                         //return RedirectToAction("Add", productItemVM);
                         //return View(productItemVM);
-                        return RedirectToAction("Add",new {Id= objProductItem .ProductItemId});
-                    }                  
+                        return RedirectToAction("Add", new { Id = objProductItem.ProductItemId });
+                    }
 
                 }
             }
@@ -269,7 +269,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         {
             ProductItemVM objProductItem = new ProductItemVM();
 
-            objProductItem = (from i in _db.tbl_ProductItems 
+            objProductItem = (from i in _db.tbl_ProductItems
                               where i.ProductItemId == Id
                               select new ProductItemVM
                               {
@@ -277,7 +277,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                   CategoryId = i.CategoryId,
                                   ProductId = i.ProductId,
                                   SubProductId = i.SubProductId,
-                                  ItemName = i.ItemName, 
+                                  ItemName = i.ItemName,
                                   ItemDescription = i.ItemDescription,
                                   MainImage = i.MainImage,
                                   MRPPrice = i.MRPPrice,
@@ -291,8 +291,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                   IsActive = i.IsActive,
                                   InitialQty = 1,
                                   HSNCode = i.HSNCode,
-                                  ShippingCharge = i.ShippingCharge.HasValue ? i.ShippingCharge.Value:0,
-                                  GodownId = i.GodownId.HasValue ? i.GodownId.Value:0
+                                  ShippingCharge = i.ShippingCharge.HasValue ? i.ShippingCharge.Value : 0,
+                                  GodownId = i.GodownId.HasValue ? i.GodownId.Value : 0
                               }).FirstOrDefault();
 
             objProductItem.CategoryList = GetCategoryList();
@@ -312,7 +312,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 if (ModelState.IsValid)
                 {
                     long LoggedInUserId = Int64.Parse(clsAdminSession.UserID.ToString());
-                    var existProductItem = _db.tbl_ProductItems.Where(x => x.ProductItemId != productItemVM.ProductItemId &&  x.ItemName.ToLower() == productItemVM.ItemName.ToLower()
+                    var existProductItem = _db.tbl_ProductItems.Where(x => x.ProductItemId != productItemVM.ProductItemId && x.ItemName.ToLower() == productItemVM.ItemName.ToLower()
                       && x.CategoryId == productItemVM.CategoryId && x.ProductId == productItemVM.ProductId
                       && !x.IsDelete).FirstOrDefault();
 
@@ -402,7 +402,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             productItemVM.GodownList = GetGodownList();
             return View(productItemVM);
         }
-         
+
         [HttpPost]
         public string DeleteProductItem(long ProductItemId)
         {
@@ -448,11 +448,11 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
         public List<SelectListItem> GetGST()
         {
-           var lstGST =  _db.tbl_GSTMaster.OrderBy(x => x.GSTPer).ToList();
+            var lstGST = _db.tbl_GSTMaster.OrderBy(x => x.GSTPer).ToList();
             List<SelectListItem> lstselc = new List<SelectListItem>();
-           if (lstGST != null && lstGST.Count() > 0)
+            if (lstGST != null && lstGST.Count() > 0)
             {
-                foreach(var objj in lstGST)
+                foreach (var objj in lstGST)
                 {
                     SelectListItem obb = new SelectListItem();
                     obb.Value = objj.GSTPer.ToString();
@@ -460,7 +460,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     lstselc.Add(obb);
                 }
             }
-        
+
             return lstselc;
         }
 
@@ -484,17 +484,17 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
         public int ItemStock(long ItemId)
         {
-           long? TotalStock = _db.tbl_ItemStocks.Where(o => o.IsActive == true && o.IsDelete == false && o.ProductItemId == ItemId).Sum(o => (long?) o.Qty);
-           if(TotalStock == null)
+            long? TotalStock = _db.tbl_ItemStocks.Where(o => o.IsActive == true && o.IsDelete == false && o.ProductItemId == ItemId).Sum(o => (long?)o.Qty);
+            if (TotalStock == null)
             {
                 TotalStock = 0;
             }
-           return Convert.ToInt32(TotalStock);
+            return Convert.ToInt32(TotalStock);
         }
         public int SoldItems(long ItemId)
         {
             long? TotalSold = _db.tbl_OrderItemDetails.Where(o => o.ProductItemId == ItemId && o.IsDelete == false).Sum(o => (long?)o.Qty.Value);
-            if(TotalSold == null)
+            if (TotalSold == null)
             {
                 TotalSold = 0;
             }
@@ -539,14 +539,14 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
         [HttpPost]
         public JsonResult GetItemText(string prefix)
-        {           
+        {
             var itmtext = (from txt in _db.tbl_Itemtext_master
-                             where txt.ItemText.ToLower().Contains(prefix.ToLower())
-                             select new
-                             {
-                                 label = txt.ItemText,
-                                 val = txt.ItemText
-                             }).ToList();
+                           where txt.ItemText.ToLower().Contains(prefix.ToLower())
+                           select new
+                           {
+                               label = txt.ItemText,
+                               val = txt.ItemText
+                           }).ToList();
 
             return Json(itmtext);
         }
@@ -558,6 +558,76 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                          .OrderBy(x => x.Text).ToList();
 
             return GodownList;
+        }
+
+        public ActionResult View(int Id)
+        {
+            ProductItemVM objProductItem = new ProductItemVM();
+
+            try
+            {
+
+                objProductItem = (from i in _db.tbl_ProductItems
+                                  join c in _db.tbl_Categories on i.CategoryId equals c.CategoryId
+                                  join p in _db.tbl_Products on i.ProductId equals p.Product_Id
+
+                                  join sub in _db.tbl_SubProducts on i.SubProductId equals sub.SubProductId into outerSub
+                                  from sub in outerSub.DefaultIfEmpty()
+
+                                  join uG in _db.tbl_Godown on i.GodownId equals uG.GodownId into outerGodown
+                                  from uG in outerGodown.DefaultIfEmpty()
+
+                                  join uC in _db.tbl_AdminUsers on i.CreatedBy equals uC.AdminUserId into outerCreated
+                                  from uC in outerCreated.DefaultIfEmpty()
+
+                                  join uM in _db.tbl_AdminUsers on i.UpdatedBy equals uM.AdminUserId into outerModified
+                                  from uM in outerModified.DefaultIfEmpty()
+
+                                  where i.ProductItemId == Id
+                                  select new ProductItemVM
+                                  {
+                                      ProductItemId = i.ProductItemId,
+                                      CategoryId = i.CategoryId,
+                                      CategoryName = c.CategoryName,
+                                      ProductId = i.ProductId,
+                                      ProductName = p.ProductName,
+                                      SubProductId = i.SubProductId,
+                                      SubProductName = (sub != null ? sub.SubProductName : ""),
+                                      ItemName = i.ItemName,
+                                      ItemDescription = i.ItemDescription,
+                                      MainImage = i.MainImage,
+                                      MRPPrice = i.MRPPrice,
+                                      CustomerPrice = i.CustomerPrice,
+                                      DistributorPrice = i.DistributorPrice,
+                                      GST_Per = i.GST_Per,
+                                      IGST_Per = i.IGST_Per,
+                                      Notification = i.Notification,
+                                      IsPopularProduct = i.IsPopularProduct,
+                                      Sku = i.Sku,
+                                      IsActive = i.IsActive,
+                                      InitialQty = 1,
+                                      HSNCode = i.HSNCode,
+                                      ShippingCharge = i.ShippingCharge.HasValue ? i.ShippingCharge.Value : 0,
+                                      GodownId = i.GodownId.HasValue ? i.GodownId.Value : 0,
+
+                                      CreatedDate = i.CreatedDate,
+                                      UpdatedDate = i.UpdatedDate,
+                                      strCreatedBy = (uC != null ? uC.FirstName + " " + uC.LastName : ""),
+                                      strModifiedBy = (uM != null ? uM.FirstName + " " + uM.LastName : ""),
+                                      GodownName = (uG != null ? uG.GodownName : ""),
+
+                                      GalleryImagesList = _db.tbl_ProductItemImages.Where(x => x.ProductItemId == i.ProductItemId)
+                                                                .Select(galry => new SelectListItem { Value = galry.ItemImage }).ToList()
+
+                                  }).FirstOrDefault();
+
+            }
+            catch (Exception ex)
+            {
+                string ErrorMessage = ex.Message.ToString();
+            }
+
+            return View(objProductItem);
         }
 
     }

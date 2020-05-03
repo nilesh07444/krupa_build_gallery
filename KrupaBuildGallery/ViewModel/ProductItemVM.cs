@@ -65,8 +65,7 @@ namespace KrupaBuildGallery
         public string CategoryName { get; set; }
         public string ProductName { get; set; }
         public string SubProductName { get; set; }
-        public bool IsWishListItem { get; set; }
-        public DateTime CreatedDate { get; set; }
+        public bool IsWishListItem { get; set; } 
         public List<string> OtherImages { get; set; }
         public int InStock { get; set; }        
         public int Sold { get; set; }
@@ -84,5 +83,14 @@ namespace KrupaBuildGallery
 
         [Display(Name = "HSN Code")]
         public string HSNCode { get; set; }
+
+        // Additional fields
+        public string strCreatedBy { get; set; }
+        public DateTime CreatedDate { get; set; }
+        public string strModifiedBy { get; set; }
+        public DateTime? UpdatedDate { get; set; }
+        public string GodownName { get; set; }
+        public List<SelectListItem> GalleryImagesList { get; set; }
+
     }
 }
