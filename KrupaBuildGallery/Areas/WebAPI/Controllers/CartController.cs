@@ -99,7 +99,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     cookiesessionval = objcart.SessionUniqueId;
                 }
                 
-                if (clsClientSession.UserID == 0)
+                if (objcart.ClientUserId == 0)
                 {
                     var cartlist = _db.tbl_Cart.Where(o => o.CartSessionId == cookiesessionval).ToList();
                     if (cartlist != null && cartlist.Count() > 0)

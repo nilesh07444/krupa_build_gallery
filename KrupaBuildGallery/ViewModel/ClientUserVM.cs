@@ -40,5 +40,7 @@ namespace KrupaBuildGallery.ViewModel
         public decimal CreditLimit { get; set; }
         public decimal AmountDue { get; set; }
         public DateTime BirthDate { get; set; }
+        public string SessionUniqueId { get; set; }
+        public int CartCount { get; set; }
     }
 }

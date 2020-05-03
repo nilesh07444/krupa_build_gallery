@@ -46,6 +46,19 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         objclientuser.RoleId = data.ClientRoleId;
                         objclientuser.Email = data.Email;
                         objclientuser.ClientUserId = data.ClientUserId;
+                        objclientuser.CartCount = 0;
+                        long ClientUsrId = data.ClientUserId;                        
+                        UpdatCarts(objLogin.SessionUniqueId, objclientuser.ClientUserId);
+                        var cartlist = _db.tbl_Cart.Where(o => o.ClientUserId == ClientUsrId).ToList();
+                        if (cartlist != null && cartlist.Count() > 0)
+                        {
+                            objclientuser.SessionUniqueId = cartlist.FirstOrDefault().CartSessionId;
+                            objclientuser.CartCount = cartlist.Count();
+                        }
+                        else
+                        {
+                            objclientuser.SessionUniqueId = "cust" + objclientuser.ClientUserId;
+                        }
                         response.Data = objclientuser;
                     }
                 }
@@ -91,6 +104,19 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         objclientuser.RoleId = data.ClientRoleId;
                         objclientuser.Email = data.Email;
                         objclientuser.ClientUserId = data.ClientUserId;
+                        objclientuser.CartCount = 0;
+                        long ClientUsrId = data.ClientUserId;                     
+                        UpdatCarts(objLogin.SessionUniqueId, objclientuser.ClientUserId);
+                        var cartlist = _db.tbl_Cart.Where(o => o.ClientUserId == ClientUsrId).ToList();
+                        if (cartlist != null && cartlist.Count() > 0)
+                        {
+                            objclientuser.SessionUniqueId = cartlist.FirstOrDefault().CartSessionId;
+                            objclientuser.CartCount = cartlist.Count();
+                        }
+                        else
+                        {
+                            objclientuser.SessionUniqueId = "cust" + objclientuser.ClientUserId;
+                        }
                         response.Data = objclientuser;
                     }
                 }
@@ -167,6 +193,74 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             return response;
 
         }
+        public void UpdatCarts(string SessionIdUniq,long ClientUserId)
+        {
+
+            string GuidNew = "cust" + ClientUserId; 
+            string cookiesessionval = "";
+            if (!string.IsNullOrEmpty(SessionIdUniq))
+            {
+                cookiesessionval = SessionIdUniq;
+            }
+            
+            if (ClientUserId > 0)
+            {
+                if (string.IsNullOrEmpty(cookiesessionval))
+                {
+                    cookiesessionval = GuidNew;
+                }
+                long clientusrid = Convert.ToInt64(ClientUserId);
+                var cartlist = _db.tbl_Cart.Where(o => o.ClientUserId == clientusrid).ToList();
+                if (cartlist != null && cartlist.Count() > 0)
+                {
+                    string sessioncrtid = cartlist.FirstOrDefault().CartSessionId;
+                    var cartlistsessions = _db.tbl_Cart.Where(o => o.CartSessionId == cookiesessionval && o.ClientUserId == 0).ToList();
+                    if (cartlistsessions != null && cartlistsessions.Count() > 0)
+                    {
+                        foreach (var obj in cartlistsessions)
+                        {
+                            var objcrtsession = cartlist.Where(o => o.CartItemId == obj.CartItemId).FirstOrDefault();
+                            if (objcrtsession != null)
+                            {
+                                objcrtsession.CartItemQty = objcrtsession.CartItemQty + obj.CartItemQty;
+                                _db.tbl_Cart.Remove(obj);
+                            }
+                            else
+                            {
+                                var crtobj1 = new tbl_Cart();
+                                crtobj1.CartItemId = obj.CartItemId;
+                                crtobj1.CartItemQty = obj.CartItemQty;
+                                crtobj1.CartSessionId = sessioncrtid;
+                                crtobj1.ClientUserId = clientusrid;
+                                crtobj1.CreatedDate = DateTime.Now;
+                                _db.tbl_Cart.Add(crtobj1);
+                                _db.tbl_Cart.Remove(obj);
+                            }
+                            _db.SaveChanges();
+                        }
+                    }
+                }
+                else
+                {
+                    var cartlistsessions = _db.tbl_Cart.Where(o => o.CartSessionId == cookiesessionval).ToList();
+                    foreach (var obj in cartlistsessions)
+                    {
+                        var objcrtsession = cartlist.Where(o => o.CartItemId == obj.CartItemId).FirstOrDefault();
+                        var crtobj1 = new tbl_Cart();
+                        crtobj1.CartItemId = obj.CartItemId;
+                        crtobj1.CartItemQty = obj.CartItemQty;
+                        crtobj1.CartSessionId = GuidNew;
+                        crtobj1.ClientUserId = clientusrid;
+                        crtobj1.CreatedDate = DateTime.Now;
+                        _db.tbl_Cart.Add(crtobj1);
+                        _db.tbl_Cart.Remove(obj);
+                        _db.SaveChanges();
+                    }
+                }
+
+            }
+        }
+        
 
     }
 }

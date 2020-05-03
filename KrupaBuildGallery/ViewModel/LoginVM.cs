@@ -13,5 +13,7 @@ namespace KrupaBuildGallery.ViewModel
 
         [Required]
         public string Password { get; set; }
+
+        public string SessionUniqueId { get; set; }
     }
 }
