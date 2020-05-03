@@ -51,11 +51,15 @@ namespace KrupaBuildGallery
         public string OfferTitle { get; set; }
         [Display(Name = "Offer Start Date")]
         [Required]       
-        public DateTime OfferStartDate { get; set; }
+        public string OfferStartDate { get; set; }
 
         [Display(Name = "Offer End Date")]
         [Required]
-        public DateTime OfferEndDate { get; set; }
+        public string OfferEndDate { get; set; }
+
+        //
+        public DateTime? dtOfferStartDate { get; set; }
+        public DateTime? dtOfferEndDate { get; set; }
 
     }
 }
