@@ -15,6 +15,8 @@ namespace KrupaBuildGallery
         public string SortBy { get; set; }
         public string ProductId { get; set; }
         public string SubProductId { get; set; }
-
+        public string SessionUniqueId { get; set; }
+        public string StrCartItems { get; set; }
+        public string OrderId { get; set; }
     }
 }

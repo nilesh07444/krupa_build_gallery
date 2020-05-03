@@ -398,7 +398,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                      CreatedDate = i.CreatedDate
                                  }).OrderByDescending(x => x.CreatedDate).ToList().Take(10).ToList();
 
-                if (clsClientSession.UserID != 0)
+                if (UserId != 0)
                 {
                     lstOfferItems.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
                 }
@@ -409,6 +409,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 objHome.PopularProducts = lstPopularProductItem;
                 objHome.NewArrivalProducts = lstNewProductItem;
                 objHome.OfferProducts = lstOfferItems;
+                objHome.HomePageSlider = GetHomeImages();
                 response.Data = objHome;
 
             }
@@ -472,6 +473,37 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             {
                 return false;
             }
+        }
+
+        public List<HomeImageVM> GetHomeImages()
+        {
+            List<HomeImageVM> lstImages = new List<HomeImageVM>();
+
+            try
+            {
+                List<tbl_HomeImages> lst = _db.tbl_HomeImages.Where(x => x.IsActive).ToList();
+                if (lst.Count > 0)
+                {
+                    lst.ForEach(obj =>
+                    {
+                        if (!string.IsNullOrEmpty(obj.HomeImageName))
+                        {
+                            lstImages.Add(new HomeImageVM
+                            {
+                                HomeImageName = obj.HomeImageName,
+                                HeadingText1 = obj.HeadingText1,
+                                HeadingText2 = obj.HeadingText2
+                            });
+                        }
+
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+
+            return lstImages;
         }
 
     }

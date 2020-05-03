@@ -23,5 +23,7 @@ namespace KrupaBuildGallery
         public string strModifiedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
 
+        public int TotalItems { get; set; }
+
     }
 }

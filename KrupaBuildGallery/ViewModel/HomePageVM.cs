@@ -14,6 +14,8 @@ namespace KrupaBuildGallery
 
         public List<ProductItemVM> NewArrivalProducts { get; set; }
 
+        public List<HomeImageVM> HomePageSlider { get; set; }
+
 
     }
 }

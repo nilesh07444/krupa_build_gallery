@@ -32,8 +32,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                    CategoryName = c.CategoryName,
                                    CategoryImage = c.CategoryImage,
                                    IsActive = c.IsActive
-                               }).OrderByDescending(x => x.CategoryId).ToList();
-
+                               }).OrderBy(x => x.CategoryName).ToList();
+                lstCategory.ForEach(x => x.TotalItems = TotalItemsinCategory(x.CategoryId));
                 response.Data = lstCategory;
 
             }
@@ -48,15 +48,15 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
         }
 
         [Route("GetProductListByCategoryId"), HttpGet]
-        public ResponseDataModel<List<ProductVM>> GetProductListByCategoryId(GeneralVM objGen)
+        public ResponseDataModel<List<ProductVM>> GetProductListByCategoryId(string CategoryId)
         {
             ResponseDataModel<List<ProductVM>> response = new ResponseDataModel<List<ProductVM>>();
             List<ProductVM> lstProducts = new List<ProductVM>();
             try
             {
-                long CategoryId = Convert.ToInt64(objGen.CategoryId);
+                long CategoryId64 = Convert.ToInt64(CategoryId);
                 lstProducts = (from c in _db.tbl_Products
-                               where !c.IsDelete && c.IsActive && c.CategoryId == CategoryId
+                               where !c.IsDelete && c.IsActive && c.CategoryId == CategoryId64
                                select new ProductVM
                                {
                                    ProductId = c.Product_Id,
@@ -80,16 +80,16 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
 
 
         [Route("GetSubProductListByProductId"), HttpGet]
-        public ResponseDataModel<List<SubProductVM>> GetSubProductListByProductId(GeneralVM objGen)
+        public ResponseDataModel<List<SubProductVM>> GetSubProductListByProductId(string ProductId)
         {
             ResponseDataModel<List<SubProductVM>> response = new ResponseDataModel<List<SubProductVM>>();
             List<SubProductVM> lstSubProducts = new List<SubProductVM>();
             try
             {
-                long ProductId = Convert.ToInt64(objGen.ProductId);
+                long ProductId64 = Convert.ToInt64(ProductId);
                 lstSubProducts = (from c in _db.tbl_SubProducts
-                               where !c.IsDelete && c.IsActive && c.ProductId == ProductId
-                               select new SubProductVM
+                               where !c.IsDelete && c.IsActive && c.ProductId == ProductId64
+                                  select new SubProductVM
                                 {
                                    ProductId = c.ProductId,
                                    SubProductName = c.SubProductName,
@@ -109,6 +109,11 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
 
             return response;
 
+        }
+
+        public int TotalItemsinCategory(long CatId)
+        {
+            return _db.tbl_ProductItems.Where(o => o.CategoryId == CatId && o.IsDelete == false && o.IsActive == true).ToList().Count;
         }
 
     }
