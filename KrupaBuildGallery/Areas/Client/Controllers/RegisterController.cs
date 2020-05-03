@@ -166,7 +166,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         public void UpdatCarts()
         {
 
-            string GuidNew = Guid.NewGuid().ToString();
+            string GuidNew = "cust" + clsClientSession.UserID; 
             string cookiesessionval = "";
             if (Request.Cookies["sessionkeyval"] != null)
             {

@@ -117,7 +117,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         public void UpdatCarts()
         {
 
-            string GuidNew = Guid.NewGuid().ToString();
+            string GuidNew = "cust" + clsClientSession.UserID; 
             string cookiesessionval = "";
             if (Request.Cookies["sessionkeyval"] != null)
             {
@@ -170,7 +170,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 else
                 {
                     var cartlistsessions = _db.tbl_Cart.Where(o => o.CartSessionId == cookiesessionval).ToList();
-                    Response.Cookies["sessionkeyval"].Value = GuidNew;
+                    Response.Cookies["sessionkeyval"].Value = "cust" + clsClientSession.UserID;
                     Response.Cookies["sessionkeyval"].Expires = DateTime.Now.AddDays(30);
                     foreach (var obj in cartlistsessions)
                     {
@@ -178,7 +178,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         var crtobj1 = new tbl_Cart();
                         crtobj1.CartItemId = obj.CartItemId;
                         crtobj1.CartItemQty = obj.CartItemQty;
-                        crtobj1.CartSessionId = GuidNew;
+                        crtobj1.CartSessionId = "cust"+clsClientSession.UserID;
                         crtobj1.ClientUserId = clientusrid;
                         crtobj1.CreatedDate = DateTime.Now;
                         _db.tbl_Cart.Add(crtobj1);
