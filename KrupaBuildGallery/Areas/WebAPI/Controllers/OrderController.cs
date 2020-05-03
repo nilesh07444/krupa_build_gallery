@@ -50,7 +50,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
 
                 if (lstOrders != null && lstOrders.Count() > 0)
                 {
-                    lstOrders.ForEach(x => x.OrderStatus = GetOrderStatus(x.OrderStatusId));
+                    lstOrders.ForEach(x => {x.OrderStatus = GetOrderStatus(x.OrderStatusId);x.OrderDateString = CommonMethod.ConvertFromUTC(x.OrderDate); });
                 }
 
                 response.Data = lstOrders;

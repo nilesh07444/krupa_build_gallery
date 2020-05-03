@@ -31,6 +31,7 @@ namespace KrupaBuildGallery.ViewModel
         public int ShippingStatus { get; set; }
         public long InvoiceNo { get; set; }
         public string InvoiceYear { get;set; }
+        public string OrderDateString { get; set; }
         public List<PaymentHistoryVM> PaymentHistory { get; set; }
     }
 }

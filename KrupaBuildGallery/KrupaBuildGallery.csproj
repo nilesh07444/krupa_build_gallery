@@ -219,6 +219,7 @@
     <Compile Include="Areas\Client\Controllers\WishlistController.cs" />
     <Compile Include="Areas\WebAPI\Controllers\CartController.cs" />
     <Compile Include="Areas\WebAPI\Controllers\CategoryController.cs" />
+    <Compile Include="Areas\WebAPI\Controllers\CheckoutController.cs" />
     <Compile Include="Areas\WebAPI\Controllers\ForgotPasswordController.cs" />
     <Compile Include="Areas\WebAPI\Controllers\LoginController.cs" />
     <Compile Include="Areas\WebAPI\Controllers\MyProfileController.cs" />
@@ -3947,6 +3948,7 @@
     <Folder Include="Areas\WebAPI\Models\" />
     <Folder Include="Areas\WebAPI\Views\Cart\" />
     <Folder Include="Areas\WebAPI\Views\Category\" />
+    <Folder Include="Areas\WebAPI\Views\Checkout\" />
     <Folder Include="Areas\WebAPI\Views\ForgotPassword\" />
     <Folder Include="Areas\WebAPI\Views\Login\" />
     <Folder Include="Areas\WebAPI\Views\MyProfile\" />
