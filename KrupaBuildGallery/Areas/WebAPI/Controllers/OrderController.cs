@@ -71,7 +71,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             return Enum.GetName(typeof(OrderStatus), orderstatusid);
         }
 
-        [Route("GetOrderList"), HttpPost]
+        [Route("GetOrderDetails"), HttpPost]
         public ResponseDataModel<OrderVM> GetOrderDetails(GeneralVM objGen)
         {
             ResponseDataModel<OrderVM> response = new ResponseDataModel<OrderVM>();

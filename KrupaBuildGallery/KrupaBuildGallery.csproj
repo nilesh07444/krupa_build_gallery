@@ -351,6 +351,7 @@
     <Compile Include="ViewModel\Admin\UserPermissionVM.cs" />
     <Compile Include="ViewModel\CartVM.cs" />
     <Compile Include="ViewModel\CategoryVM.cs" />
+    <Compile Include="ViewModel\CheckoutGenVM.cs" />
     <Compile Include="ViewModel\CheckoutVM.cs" />
     <Compile Include="ViewModel\ClientUserVM.cs" />
     <Compile Include="ViewModel\ContactUsMessageVM.cs" />
@@ -367,6 +368,7 @@
     <Compile Include="ViewModel\OrderVM.cs" />
     <Compile Include="ViewModel\OtpVM.cs" />
     <Compile Include="ViewModel\PaymentHistoryVM.cs" />
+    <Compile Include="ViewModel\PlaceOrderVM.cs" />
     <Compile Include="ViewModel\PointVM.cs" />
     <Compile Include="ViewModel\ProductItemVM.cs" />
     <Compile Include="ViewModel\ProductVM.cs" />
