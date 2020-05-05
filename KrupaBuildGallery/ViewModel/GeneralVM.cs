@@ -18,5 +18,8 @@ namespace KrupaBuildGallery
         public string SessionUniqueId { get; set; }
         public string StrCartItems { get; set; }
         public string OrderId { get; set; }
+        public string Amount { get; set; }
+        public string RazorPaymentId { get; set; }
+        public string RazorOrderid { get; set; }
     }
 }

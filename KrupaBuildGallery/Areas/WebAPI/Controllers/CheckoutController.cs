@@ -1,5 +1,6 @@
 ﻿using KrupaBuildGallery.Model;
 using KrupaBuildGallery.ViewModel;
+using Razorpay.Api;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -176,14 +177,15 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
         }
 
         [Route("CheckItemsinStock"), HttpPost]
-        public ResponseDataModel<string> CheckItemsinStock(GeneralVM objGen)
+        public ResponseDataModel<List<string>> CheckItemsinStock(GeneralVM objGen)
         {
-            ResponseDataModel<string> response = new ResponseDataModel<string>();
-         
+            ResponseDataModel<List<string>> response = new ResponseDataModel<List<string>>();
+            List<string> strlst = new List<string>();
             bool isOutofStock = false;
             try
             {
                 long UserId = Convert.ToInt64(objGen.ClientUserId);
+                decimal amt = Convert.ToDecimal(objGen.Amount);
                 if (UserId > 0)
                 {
                     var cartlist = _db.tbl_Cart.Where(o => o.ClientUserId == UserId).ToList();
@@ -209,7 +211,21 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 }
                 else
                 {
-                    response.Data = "Success";
+                    Dictionary<string, object> input = new Dictionary<string, object>();
+                    input.Add("amount", amt * 100); // this amount should be same as transaction amount
+                    input.Add("currency", "INR");
+                    input.Add("receipt", "rec_"+ UserId+"_"+ DateTime.Now.ToString("ddmmyyyy"));
+                    input.Add("payment_capture", 1);
+
+                    string key = "rzp_test_DMsPlGIBp3SSnI";
+                    string secret = "YMkpd9LbnaXViePncLLXhqms";
+
+                    RazorpayClient client = new RazorpayClient(key, secret);
+                    Razorpay.Api.Order order = client.Order.Create(input);
+                    strlst.Add("Success");
+                    strlst.Add(Convert.ToString(order["id"]));
+                    response.Data = strlst;
+                        
                 }
             }
             catch (Exception ex)
@@ -713,6 +729,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 return "Fail";
             }
         }
+      
 
     }
 }
