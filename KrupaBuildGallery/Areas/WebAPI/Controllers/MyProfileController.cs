@@ -1,4 +1,5 @@
 ﻿using KrupaBuildGallery.Model;
+using KrupaBuildGallery.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -90,6 +91,53 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         response.AddError("Current Password not match");
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+
+        [Route("SendContactUsMessage"), HttpPost]
+        public ResponseDataModel<string> SendContactUsMessage(ContactUsMessageVM objContact)
+        {
+            ResponseDataModel<string> response = new ResponseDataModel<string>();
+            try
+            {
+                
+                tbl_ContactFormData objContactform = new tbl_ContactFormData();
+                objContactform.Name = objContact.Name;
+                objContactform.Email = objContact.Email;
+                objContactform.PhoneNumber = objContact.MobileNumber;
+                objContactform.Message = objContact.Message;
+                objContactform.MessageDate = DateTime.UtcNow;
+                objContactform.IsDelete = false;
+                objContactform.FromWhere = "Mobile";
+                objContactform.ClientUserId = Convert.ToInt64(objContact.ClientUserId);
+                _db.tbl_ContactFormData.Add(objContactform);
+                tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
+                string AdminEmail = objGensetting.AdminEmail;
+
+                _db.SaveChanges();
+                string FromEmail = objGensetting.FromEmail;
+
+                //if (!string.IsNullOrEmpty(objContactform.Email))
+                //{
+                //    FromEmail = objContactform.Email;
+                //}
+
+                string Subject = "Message From Krupa Build Gallery";
+                string bodyhtml = "Following are the message details:<br/>";
+                bodyhtml += "Name: " + objContactform.Name + "<br/>";
+                bodyhtml += "Email: " + objContactform.Email + "<br/>";
+                bodyhtml += "PhoneNumber: " + objContactform.PhoneNumber + "<br/>";
+                bodyhtml += "Message: " + objContactform.Message + "<br/>";
+                clsCommon.SendEmail(AdminEmail, FromEmail, Subject, bodyhtml);
+                response.Data = "Message Sent Successfully...";
             }
             catch (Exception ex)
             {

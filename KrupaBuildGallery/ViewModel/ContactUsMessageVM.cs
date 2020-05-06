@@ -13,6 +13,8 @@ namespace KrupaBuildGallery.ViewModel
         public string MobileNumber { get; set; }
         public string Email { get; set; }
         public string FromWhere { get; set; }
-        public DateTime MessageDate { get; set; }      
+        public DateTime MessageDate { get; set; }             
+        public string ClientUserId { get; set; }
+        
     }
 }
