@@ -3911,6 +3911,8 @@
     <Content Include="Areas\Client\Views\Search\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Distributor\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\ProductItem\View.cshtml" />
+    <Content Include="Areas\Admin\Views\Customer\PointAssignment.cshtml" />
+    <Content Include="Areas\Admin\Views\Customer\_PointAssignmentData.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />

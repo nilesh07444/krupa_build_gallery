@@ -346,6 +346,10 @@
                                         <li><a href="/admin/distributor/requestlist" class="distributorreqlist"><i class="fa fa-circle"></i>Distributor Request List</a></li>
                                     }
 
+                                    @if (IsSA || objPermission.Customers >= (int)ModulePermission.View)
+                                    {
+                                        <li><a href="/admin/customer/pointassignment"><i class="fa fa-circle"></i>Point Assignment</a></li>
+                                    }
                                 </ul>
                             </li>
                         }

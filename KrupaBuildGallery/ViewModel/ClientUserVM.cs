@@ -42,5 +42,7 @@ namespace KrupaBuildGallery.ViewModel
         public DateTime BirthDate { get; set; }
         public string SessionUniqueId { get; set; }
         public int CartCount { get; set; }
+        public decimal TotalAmountOfOrderPlaced { get; set; }
+        public decimal PointRemaining { get; set; }
     }
 }

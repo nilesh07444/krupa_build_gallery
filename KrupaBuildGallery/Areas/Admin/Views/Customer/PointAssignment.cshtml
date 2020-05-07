@@ -1,0 +1,198 @@
+﻿@{
+    ViewBag.Title = "Point ";
+}
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="page-header-left">
+                        <h3>
+                            Point Assignment
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Customer</li>
+                        <li class="breadcrumb-item active">Point Assignment</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h5>Point Assignment</h5>
+            </div>
+            <div class="card-body vendor-table">
+                <div class="row" style="margin-top:25px;border-bottom: 2px solid #f8f8f9;padding-bottom: 25px;margin-bottom: 10px;">
+
+                    <div class="col-sm-2">
+                        <label>Financial Year</label>
+                        <select class="form-control" id="selectfinancialyear" style="width:150px;">
+                            <option value="2020-2021">2020-21</option>
+                            @if (DateTime.Now >= new DateTime(2021, 4, 1))
+                            {
+                                <option value="2021-2022">2021-22</option>
+                            }
+                            @if (DateTime.Now >= new DateTime(2022, 4, 1))
+                            {
+                                <option value="2022-2023">2022-23</option>
+                            }
+                            @if (DateTime.Now >= new DateTime(2023, 4, 1))
+                            {
+                                <option value="2023-2024">2023-24</option>
+                            }
+                            @if (DateTime.Now >= new DateTime(2024, 4, 1))
+                            {
+                                <option value="2024-2025">2024-25</option>
+                            }
+                            @if (DateTime.Now >= new DateTime(2025, 4, 1))
+                            {
+                                <option value="2025-2026">2025-26</option>
+                            }
+                            @if (DateTime.Now >= new DateTime(2026, 4, 1))
+                            {
+                                <option value="2026-2027">2026-27</option>
+                            }
+                            @if (DateTime.Now >= new DateTime(2027, 4, 1))
+                            {
+                                <option value="2027-2028">2027-28</option>
+                            }
+                            @if (DateTime.Now >= new DateTime(2028, 4, 1))
+                            {
+                                <option value="2028-2029">2028-29</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <label>Minimum Order Amount</label>
+                        <input type="number" class="form-control" id="txtminamt" />
+                    </div>
+                    <div class="col-sm-3">
+                        <label>Maximum Order Amount</label>
+                        <input type="number" class="form-control" id="txtmaxamt" />
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="button" value="Filter" class="btn btn-info" onclick="filterdata();" style="position: absolute; bottom: 0;" />
+                    </div>                
+                </div>                
+               
+                <br />
+                <div id="dvpoints">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+</div>
+<!-- Add Point Modal -->
+<div class="modal fade open" id="addPointModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Add Points</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                Points: <input type="number" id="txtpoints" class="form-control" value="" min="1" placeholder="Enter Points" />
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="hdnClientUserId" value="" />
+                <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
+                <button id="btnAddPoints" class="btn btn-primary" type="button">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Add Point modal -->
+<script>
+      function AddPoints() {
+        $('#addPointModal').modal('show');
+        $("#txtpoints").val("");
+    }
+      jQuery(document).on("click", "#btnAddPoints", function () {
+
+          var clientuserid = jQuery("#hdnClientUserId").val();
+
+        if ($("#txtpoints").val() == "" || parseInt($("#txtpoints").val()) <= 0) {
+            alert("Please Enter Valid Points");
+            return;
+        }
+    $('#addPointModal').modal('hide');
+
+            StartLoading();
+
+            var URL = '@Url.Action("AddMultiplePoints", "Customer")';
+            $.ajax({
+                type: 'POST',
+                async: true,
+                url: URL + "?ClientUserIds=" + clientuserid+"&Points="+$("#txtpoints").val() ,
+                success: function (result) {
+                    if (result == "success") {
+                        alert("Points Added successfully");
+                         var minamt = $("#txtminamt").val();
+        var maxamt = $("#txtmaxamt").val();
+                         $("#dvpoints").load('@Url.Action("GetPointAssignmentClientList", "Customer")', 
+            { Year: $("#selectfinancialyear").val(), MinAmount: minamt,MaxAmount:maxamt }, function () {
+
+            });
+                    }
+                    else if (result == "notfound") {                        
+                    }
+                    else {
+                        alert("Something went wrong. Please try again");
+                    }
+
+                   StopLoading();
+                },
+                error: function (resultData) {
+                    StopLoading();
+                }
+            });
+      });
+    function AddPoints() {
+        if ($(".chksingle:checked").length == 0) {
+            alert("Please select atleast 1 customer");
+            return;
+        }
+        $('#addPointModal').modal('show');
+        $("#txtpoints").val("");
+        var arr = [];
+$('.chksingle:checked').each(function () {
+    arr.push($(this).attr("data-attrid"));
+});
+        $("#hdnClientUserId").val(arr.join(","));
+    }
+    function filterdata() {
+        var minamt = $("#txtminamt").val();
+        var maxamt = $("#txtmaxamt").val();
+        if (minamt == "") {
+            alert("Please Enter Minimum Amount");
+            return;
+        }
+        if (maxamt == "") {
+            alert("Please Enter Maximum Amount");
+            return;
+        }
+
+        if (parseFloat(minamt) > parseFloat(maxamt)) {
+                 alert("Please Enter Maximum Amount More than Minimum Amount");
+            return;
+        }
+        $("#dvpoints").load('@Url.Action("GetPointAssignmentClientList", "Customer")', 
+            { Year: $("#selectfinancialyear").val(), MinAmount: minamt,MaxAmount:maxamt }, function () {
+
+            });
+    }
+
+</script>
