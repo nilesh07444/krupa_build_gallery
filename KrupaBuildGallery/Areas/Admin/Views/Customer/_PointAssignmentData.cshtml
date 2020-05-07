@@ -1,7 +1,18 @@
 ﻿@using KrupaBuildGallery.Helper;
 @using Newtonsoft.Json;
 @using KrupaBuildGallery.Model;
+@{
+    UserPermissionVM objPermission = new UserPermissionVM();
 
+    int RoleId = Int32.Parse(clsAdminSession.RoleID.ToString());
+
+    if (RoleId != 1)
+    {
+        string strPermission = clsAdminSession.UserPermission;
+        objPermission = JsonConvert.DeserializeObject<UserPermissionVM>(strPermission, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+    }
+    bool IsSA = (RoleId == 1 ? true : false);
+}
 @model List<KrupaBuildGallery.ViewModel.ClientUserVM>
 @{
 
@@ -11,66 +22,66 @@
 {
     <button type="button" class="btn btn-primary" id="btnAdd" onclick="AddPoints();">Add New Points</button>
 }
-    <table class="display" id="basic-11">
-        <thead>
-            <tr>
-                <th style="width:30px;">#</th>
-                <th class="nosort"><input type="checkbox" class="chk chkall" /></th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Email</th>
-                <th>Mobile No.</th>
-                <th>UserName</th>
-                <th>City</th>
-                <th>State</th>
-                <th width="15%;">Active</th>
-                <th>Total Order Amt</th>
-                <th>Point Balance</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (Model != null && Model.Count > 0)
+<table class="display" id="basic-11">
+    <thead>
+        <tr>
+            <th style="width:30px;">#</th>
+            <th class="nosort"><input type="checkbox" class="chk chkall" /></th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Mobile No.</th>
+            <th>UserName</th>
+            <th>City</th>
+            <th>State</th>
+            <th width="15%;">Active</th>
+            <th>Total Order Amt</th>
+            <th>Point Balance</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null && Model.Count > 0)
+        {
+            foreach (KrupaBuildGallery.ViewModel.ClientUserVM objusr in Model)
             {
-                foreach (KrupaBuildGallery.ViewModel.ClientUserVM objusr in Model)
-                {
-                    <tr class="gradeX">
-                        <td style="width:30px;">@counter.</td>
-                        <td><input type="checkbox" class="chk chksingle" data-attrid="@objusr.ClientUserId" /></td>
-                        <td>@objusr.FirstName</td>
-                        <td>@objusr.LastName</td>
-                        <td>@objusr.Email</td>
-                        <td>@objusr.MobileNo</td>
-                        <td>@objusr.UserName</td>
-                        <td>@objusr.City</td>
-                        <td>@objusr.State</td>
-                        @if (objusr.IsActive == true)
-                        {
-                            <td><span class="badge badge-success" style="cursor:pointer;">Active</span></td>
-                        }
-                        else
-                        {
-                            <td><span class="badge badge-danger" style="cursor:pointer;">InActive</span></td>
-                        }
-                        <td>@objusr.TotalAmountOfOrderPlaced</td>
-                        <td>@objusr.PointRemaining</td>
-                    </tr>
-                    counter++;
-                }
-
+                <tr class="gradeX">
+                    <td style="width:30px;">@counter.</td>
+                    <td><input type="checkbox" class="chk chksingle" data-attrid="@objusr.ClientUserId" /></td>
+                    <td>@objusr.FirstName</td>
+                    <td>@objusr.LastName</td>
+                    <td>@objusr.Email</td>
+                    <td>@objusr.MobileNo</td>
+                    <td>@objusr.UserName</td>
+                    <td>@objusr.City</td>
+                    <td>@objusr.State</td>
+                    @if (objusr.IsActive == true)
+                    {
+                        <td><span class="badge badge-success" style="cursor:pointer;">Active</span></td>
+                    }
+                    else
+                    {
+                        <td><span class="badge badge-danger" style="cursor:pointer;">InActive</span></td>
+                    }
+                    <td>@objusr.TotalAmountOfOrderPlaced</td>
+                    <td><a href="/admin/customer/points/@objusr.ClientUserId" title="points">@objusr.PointRemaining</a></td>
+                </tr>
+                counter++;
             }
-        </tbody>
-    </table>
-    <script>
 
-        var table = $('#basic-11').DataTable({
-            "paging": false,
-            'aoColumnDefs': [{
-                'bSortable': false,
-                'aTargets': ['nosort']
-            }]
-        });
+        }
+    </tbody>
+</table>
+<script>
 
-        $(".chkall").click(function () {
-            $('.chk').not(this).prop('checked', this.checked);
-        });
-    </script>
+    var table = $('#basic-11').DataTable({
+        "paging": false,
+        'aoColumnDefs': [{
+            'bSortable': false,
+            'aTargets': ['nosort']
+        }]
+    });
+
+    $(".chkall").click(function () {
+        $('.chk').not(this).prop('checked', this.checked);
+    });
+</script>
