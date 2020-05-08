@@ -40,5 +40,8 @@ namespace KrupaBuildGallery.Model
         public string Tags { get; set; }
         public Nullable<long> GodownId { get; set; }
         public string HSNCode { get; set; }
+        public Nullable<int> ItemType { get; set; }
+        public Nullable<bool> IsReturnable { get; set; }
+        public Nullable<decimal> PayAdvancePer { get; set; }
     }
 }

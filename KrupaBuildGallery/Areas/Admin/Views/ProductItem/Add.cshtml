@@ -15,7 +15,7 @@
                         <h3>
                             Add Product Item
                         </h3>
-                    </div>
+                    </div> 
                 </div>
                 <div class="col-lg-6">
                     <ol class="breadcrumb pull-right">
@@ -96,6 +96,17 @@
 
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.ItemName, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.ItemType, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.RadioButtonFor(model => model.ItemType, 1, htmlAttributes: new { @checked = "cheched" })
+                                <label style="margin-right:10px;">Packed Item</label>
+                                @Html.RadioButtonFor(model => model.ItemType, 2)
+                                <label>UnPacked Item</label>
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.ItemType, "", new { @class = "text-danger" })
                             </div>
 
                             <div class="form-group row">
@@ -188,6 +199,20 @@
                             </div>
 
                             <div class="form-group row">
+                                @Html.LabelFor(model => model.IsReturnableItem, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.CheckBoxFor(model => model.IsReturnableItem, new { htmlAttributes = new { @class = "form-control col-md-8" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.IsReturnableItem, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.PayAdvancePer, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.EditorFor(model => model.PayAdvancePer, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Advance Payment Percentage", maxlength = "10" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.PayAdvancePer, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group row">
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 <button type="submit" class="btn btn-primary" style="margin-right:10px;">Submit</button>
                                 <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
@@ -208,8 +233,7 @@
 <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
 <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.0.min.js" type="text/javascript"></script>
 <script src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/jquery-ui.min.js" type="text/javascript"></script>
-<link href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/themes/blitzer/jquery-ui.css"
-      rel="Stylesheet" type="text/css" />
+<link href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/themes/blitzer/jquery-ui.css" rel="Stylesheet" type="text/css" />
 <script>
 
     $(document).on("click", "#btnCancel", function () {

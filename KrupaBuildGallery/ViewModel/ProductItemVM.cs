@@ -92,5 +92,15 @@ namespace KrupaBuildGallery
         public string GodownName { get; set; }
         public List<SelectListItem> GalleryImagesList { get; set; }
 
+        [Display(Name = "Returnable Item")]
+        public bool IsReturnableItem { get; set; }
+
+        [Display(Name = "Advance Payment Percentage")]
+        public decimal PayAdvancePer { get; set; }
+
+        [Display(Name = "Item Type")]
+        public int ItemType { get; set; }
+
+
     }
 }

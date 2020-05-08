@@ -122,7 +122,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             return View(objProductItem);
         }
-
+         
         [HttpPost]
         public ActionResult Add(ProductItemVM productItemVM, HttpPostedFileBase ItemMainImageFile, HttpPostedFileBase[] ItemGalleryImageFile)
         {
@@ -179,6 +179,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         objProductItem.HSNCode = productItemVM.HSNCode;
                         objProductItem.UpdatedDate = DateTime.UtcNow;
                         objProductItem.GodownId = productItemVM.GodownId;
+                        objProductItem.IsReturnable = productItemVM.IsReturnableItem;
+                        objProductItem.PayAdvancePer = productItemVM.PayAdvancePer;
+                        objProductItem.ItemType = productItemVM.ItemType;
                         _db.tbl_ProductItems.Add(objProductItem);
                         _db.SaveChanges();
 
@@ -291,6 +294,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                   IsActive = i.IsActive,
                                   InitialQty = 1,
                                   HSNCode = i.HSNCode,
+                                  IsReturnableItem = i.IsReturnable.HasValue ? i.IsReturnable.Value : false,
+                                  ItemType = i.ItemType.HasValue ? i.ItemType.Value : 1,
+                                  PayAdvancePer = i.PayAdvancePer.HasValue ? i.PayAdvancePer.Value : 0,
                                   ShippingCharge = i.ShippingCharge.HasValue ? i.ShippingCharge.Value : 0,
                                   GodownId = i.GodownId.HasValue ? i.GodownId.Value : 0
                               }).FirstOrDefault();
@@ -354,6 +360,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         objProductItem.GodownId = productItemVM.GodownId;
                         objProductItem.HSNCode = productItemVM.HSNCode;
                         objProductItem.UpdatedDate = DateTime.UtcNow;
+                        objProductItem.IsReturnable = productItemVM.IsReturnableItem;
+                        objProductItem.PayAdvancePer = productItemVM.PayAdvancePer;
+                        objProductItem.ItemType = productItemVM.ItemType;
                         _db.SaveChanges();
 
                         //iterating through multiple file collection   
@@ -609,7 +618,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                       HSNCode = i.HSNCode,
                                       ShippingCharge = i.ShippingCharge.HasValue ? i.ShippingCharge.Value : 0,
                                       GodownId = i.GodownId.HasValue ? i.GodownId.Value : 0,
-
+                                      IsReturnableItem = i.IsReturnable.HasValue ? i.IsReturnable.Value : false,
+                                      ItemType = i.ItemType.HasValue ? i.ItemType.Value : 1,
+                                      PayAdvancePer = i.PayAdvancePer.HasValue ? i.PayAdvancePer.Value : 0,
                                       CreatedDate = i.CreatedDate,
                                       UpdatedDate = i.UpdatedDate,
                                       strCreatedBy = (uC != null ? uC.FirstName + " " + uC.LastName : ""),
