@@ -616,8 +616,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                       strModifiedBy = (uM != null ? uM.FirstName + " " + uM.LastName : ""),
                                       GodownName = (uG != null ? uG.GodownName : ""),
 
-                                      GalleryImagesList = _db.tbl_ProductItemImages.Where(x => x.ProductItemId == i.ProductItemId)
-                                                                .Select(galry => new SelectListItem { Value = galry.ItemImage }).ToList()
+                                      //GalleryImagesList = _db.tbl_ProductItemImages.Where(x => x.ProductItemId == i.ProductItemId)
+                                      //                          .Select(galry => new SelectListItem { Value = galry.ItemImage }).ToList()
 
                                   }).FirstOrDefault();
 

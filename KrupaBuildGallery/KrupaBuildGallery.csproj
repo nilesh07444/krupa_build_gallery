@@ -190,6 +190,7 @@
     <Compile Include="Areas\Admin\Controllers\GeneralSettingController.cs" />
     <Compile Include="Areas\Admin\Controllers\GodownController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeImagesController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ImportExcelController.cs" />
     <Compile Include="Areas\Admin\Controllers\ItemTextController.cs" />
     <Compile Include="Areas\Admin\Controllers\LoginController.cs" />
     <Compile Include="Areas\Admin\Controllers\LoginHistoryController.cs" />
@@ -345,6 +346,7 @@
     <Compile Include="ViewModel\Admin\AdminUserVM.cs" />
     <Compile Include="ViewModel\Admin\GodownVM.cs" />
     <Compile Include="ViewModel\Admin\HomeImageVM.cs" />
+    <Compile Include="ViewModel\Admin\ImportExcelDataVM.cs" />
     <Compile Include="ViewModel\Admin\LoginHistoryVM.cs" />
     <Compile Include="ViewModel\Admin\RoleModuleVM.cs" />
     <Compile Include="ViewModel\Admin\RoleVM.cs" />
@@ -3913,6 +3915,10 @@
     <Content Include="Areas\Admin\Views\ProductItem\View.cshtml" />
     <Content Include="Areas\Admin\Views\Customer\PointAssignment.cshtml" />
     <Content Include="Areas\Admin\Views\Customer\_PointAssignmentData.cshtml" />
+    <Content Include="Areas\Admin\Views\ImportExcel\Category.cshtml" />
+    <Content Include="Areas\Admin\Views\ImportExcel\Product.cshtml" />
+    <Content Include="Areas\Admin\Views\ImportExcel\SubProduct.cshtml" />
+    <Content Include="Areas\Admin\Views\ImportExcel\ProductItem.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />

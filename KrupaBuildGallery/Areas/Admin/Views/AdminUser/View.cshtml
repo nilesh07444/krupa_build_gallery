@@ -67,10 +67,10 @@
                                             <td>
                                                 @if (!string.IsNullOrEmpty(Model.ProfilePicture))
                                                 {
-                                                    if (File.Exists(Server.MapPath("~/Images/CategoryMedia/" + Model.ProfilePicture)))
+                                                    if (File.Exists(Server.MapPath("~/Images/AdminUserMedia/" + Model.ProfilePicture)))
                                                     {
-                                                        <a target="_blank" href="~/Images/UserMedia/@Model.ProfilePicture">
-                                                            <img src="~/Images/UserMedia/@Model.ProfilePicture" style="width: 50px; height: 50px;" />
+                                                        <a target="_blank" href="~/Images/AdminUserMedia/@Model.ProfilePicture">
+                                                            <img src="~/Images/AdminUserMedia/@Model.ProfilePicture" style="width: 50px; height: 50px;" />
                                                         </a>
                                                     }
                                                     else

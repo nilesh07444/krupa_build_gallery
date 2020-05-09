@@ -22,7 +22,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/02/2020 12:00:50</publishTime>
     </File>
     <File Include="Areas/Admin/Views/AdminUser/View.cshtml">
-      <publishTime>05/02/2020 00:29:13</publishTime>
+      <publishTime>05/04/2020 09:27:21</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Category/Add.cshtml">
       <publishTime>05/02/2020 00:37:41</publishTime>
@@ -142,7 +142,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/02/2020 00:48:33</publishTime>
     </File>
     <File Include="Areas/Admin/Views/ProductItem/Index.cshtml">
-      <publishTime>05/02/2020 20:27:13</publishTime>
+      <publishTime>03/05/2020 22:32:46</publishTime>
+    </File>
+    <File Include="Areas/Admin/Views/ProductItem/View.cshtml">
+      <publishTime>03/05/2020 22:41:06</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Role/Add.cshtml">
       <publishTime>05/02/2020 00:43:17</publishTime>
@@ -199,7 +202,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/24/2020 09:01:11</publishTime>
     </File>
     <File Include="Areas/Client/Views/Checkout/Index.cshtml">
-      <publishTime>04/25/2020 14:19:01</publishTime>
+      <publishTime>05/07/2020 10:23:57</publishTime>
     </File>
     <File Include="Areas/Client/Views/Checkout/OrderSuccess.cshtml">
       <publishTime>04/21/2020 21:20:05</publishTime>
@@ -295,10 +298,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>03/01/2020 10:00:03</publishTime>
     </File>
     <File Include="bin/KrupaBuildGallery.dll">
-      <publishTime>05/03/2020 09:26:25</publishTime>
+      <publishTime>05/07/2020 10:25:39</publishTime>
     </File>
     <File Include="bin/KrupaBuildGallery.pdb">
-      <publishTime>05/03/2020 09:26:25</publishTime>
+      <publishTime>05/07/2020 10:25:39</publishTime>
     </File>
     <File Include="bin/Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll">
       <publishTime>05/24/2018 13:38:22</publishTime>
@@ -10852,7 +10855,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/30/2020 23:04:36</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>04/22/2020 00:46:43</publishTime>
+      <publishTime>05/07/2020 10:25:41</publishTime>
     </File>
   </ItemGroup>
 </Project>
