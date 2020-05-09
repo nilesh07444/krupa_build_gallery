@@ -447,6 +447,9 @@
           <Property Name="Tags" Type="nvarchar(max)" />
           <Property Name="GodownId" Type="bigint" />
           <Property Name="HSNCode" Type="nvarchar" MaxLength="150" />
+          <Property Name="ItemType" Type="int" />
+          <Property Name="IsReturnable" Type="bit" />
+          <Property Name="PayAdvancePer" Type="decimal" Precision="6" Scale="2" />
         </EntityType>
         <EntityType Name="tbl_Products">
           <Key>
@@ -913,6 +916,9 @@
           <Property Name="Tags" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="GodownId" Type="Int64" />
           <Property Name="HSNCode" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="ItemType" Type="Int32" />
+          <Property Name="IsReturnable" Type="Boolean" />
+          <Property Name="PayAdvancePer" Type="Decimal" Precision="6" Scale="2" />
         </EntityType>
         <EntityType Name="tbl_Products">
           <Key>
@@ -1458,6 +1464,9 @@
           <EntitySetMapping Name="tbl_ProductItems">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_ProductItems">
               <MappingFragment StoreEntitySet="tbl_ProductItems">
+                <ScalarProperty Name="PayAdvancePer" ColumnName="PayAdvancePer" />
+                <ScalarProperty Name="IsReturnable" ColumnName="IsReturnable" />
+                <ScalarProperty Name="ItemType" ColumnName="ItemType" />
                 <ScalarProperty Name="HSNCode" ColumnName="HSNCode" />
                 <ScalarProperty Name="GodownId" ColumnName="GodownId" />
                 <ScalarProperty Name="ProductItemId" ColumnName="ProductItemId" />

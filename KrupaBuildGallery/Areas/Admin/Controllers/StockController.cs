@@ -55,7 +55,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(lstItemStockVM);
         }
 
-        public ActionResult Add()
+        public ActionResult Add() 
         {
             ItemStockVM objItemStock = new ItemStockVM();
 
@@ -70,6 +70,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             ItemStockVM objProductItemStock = new ItemStockVM();
 
             objProductItemStock = (from i in _db.tbl_ItemStocks
+                                   join utm in _db.tbl_ProductItems on i.ProductItemId equals utm.ProductItemId
                                    where i.StockId == id
                                    select new ItemStockVM
                                    {
@@ -79,6 +80,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                        ProductId = i.ProductId,
                                        SubProductId = i.SubProductId,
                                        Quantity = i.Qty,
+                                       ItemType = utm.ItemType.HasValue ? utm.ItemType.Value : 1,
                                        IsActive = i.IsActive
                                    }).FirstOrDefault();
 
@@ -98,9 +100,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return CategoryList;
         }
 
-        public JsonResult GetItemList(long ProductId, long? SubProductId)
+        public JsonResult GetItemList(long ProductId, long? SubProductId,int ItemType = 1)
         {
-            var ProductItemList = _db.tbl_ProductItems.Where(x => x.ProductId == ProductId && (SubProductId == 0 || x.SubProductId == SubProductId) && x.IsActive && !x.IsDelete)
+            var ProductItemList = _db.tbl_ProductItems.Where(x => x.ProductId == ProductId && (SubProductId == 0 || x.SubProductId == SubProductId) && x.IsActive && !x.IsDelete && ((ItemType == 1 && x.ItemType == null)|| x.ItemType == ItemType))
                          .Select(o => new SelectListItem { Value = SqlFunctions.StringConvert((double)o.ProductItemId).Trim(), Text = o.ItemName })
                          .OrderBy(x => x.Text).ToList();
 

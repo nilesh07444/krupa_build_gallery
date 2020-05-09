@@ -319,6 +319,19 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(objProduct);
         }
 
+        [HttpPost]
+        public JsonResult GetProductNameText(string prefix,long CatId)
+        {
+            var itmtext = (from txt in _db.tbl_Products
+                           where txt.ProductName.ToLower().Contains(prefix.ToLower()) && (CatId == 0 || txt.CategoryId == CatId)
+                           select new
+                           {
+                               label = txt.ProductName,
+                               val = txt.ProductName
+                           }).ToList();
+
+            return Json(itmtext);
+        }
 
     }
 }

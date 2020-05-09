@@ -67,6 +67,16 @@
                                 @Html.ValidationMessageFor(model => model.SubProductId, "", new { @class = "text-danger" })
                             </div>
                             <div class="form-group row">
+                                @Html.LabelFor(model => model.ItemType, htmlAttributes: new { @class = "col-xl-3 col-md-4 " })
+                                @Html.RadioButtonFor(model => model.ItemType, 1, htmlAttributes: new { @checked = "cheched", @class = "chkitemtype" })
+                                <label style="margin-right:10px;">Packed Item</label>
+                                @Html.RadioButtonFor(model => model.ItemType, 2,htmlAttributes: new { @class = "chkitemtype" })
+                                <label>UnPacked Item</label>
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.ItemType, "", new { @class = "text-danger" })
+                            </div> 
+                            <div class="form-group row">
                                 @Html.LabelFor(model => model.ProductItemId, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.DropDownListFor(model => model.ProductItemId, new SelectList(Model.ProductItemList, "Value", "Text"), "- Select Item -", new { @class = "form-control col-md-8", style = "" })
 
@@ -173,6 +183,39 @@
         }
     });
     jQuery(document).on("change", "#ProductId,#SubProductId", function () {
+
+        var ProductId = jQuery("#ProductId option:selected").val();
+        var SubProductId = jQuery("#SubProductId option:selected").val();
+
+        if ((ProductId != "" && ProductId != null) || (SubProductId != "" && SubProductId != null)) {
+            StartLoading();
+            var URL = '@Url.Action("GetItemList", "Stock")';
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: URL + "?ProductId=" + ProductId + "&SubProductId=" + SubProductId,
+                success: function (result) {
+                    var htmlData = "<option value='0'>-Select Product Item-</option>";
+                    if (result && result.length > 0) {
+                        result.forEach(element => {
+                            htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
+                        });
+                    }
+                    $("#ProductItemId").html(htmlData);
+                    StopLoading();
+                },
+                error: function (error) {
+                    $.unblockUI();
+                }
+            });
+        }
+       else {
+            var htmlSubData = "<option value='0'>- Select Product Item -</option>";
+            $("#ProductItemId").html(htmlSubData);
+        }
+    });
+
+     jQuery(document).on("change", ".chkitemtype", function () {
 
         var ProductId = jQuery("#ProductId option:selected").val();
         var SubProductId = jQuery("#SubProductId option:selected").val();

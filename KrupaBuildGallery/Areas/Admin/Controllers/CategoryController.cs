@@ -211,7 +211,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return ReturnMessage;
         }
 
-        [HttpPost]
+        [HttpPost] 
         public string ChangeStatus(long Id, string Status)
         {
             string ReturnMessage = "";
@@ -282,6 +282,21 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             return View(objCategory);
         }
+
+        [HttpPost]
+        public JsonResult GetCategoryNameText(string prefix)
+        {
+            var itmtext = (from txt in _db.tbl_Categories
+                           where txt.CategoryName.ToLower().Contains(prefix.ToLower())
+                           select new
+                           {
+                               label = txt.CategoryName,
+                               val = txt.CategoryName
+                           }).ToList();
+
+            return Json(itmtext);
+        }
+
 
     }
 }

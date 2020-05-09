@@ -17,7 +17,7 @@
         font-size: 14px;
         color: #000000;
         padding-left: 15px;
-    }
+    } 
 
     .profile-table table tbody tr td:first-child {
         min-width: 150px;
@@ -72,8 +72,8 @@
                                                     if (File.Exists(Server.MapPath("~/Images/ProductItemMedia/" + Model.MainImage)))
                                                     {
                                                         @*<a target="_blank" href="@ErrorMessage.ProductItemDirectoryPath/@Model.MainImage">
-                                                                <img src="@ErrorMessage.ProductItemDirectoryPath/@Model.MainImage" style="width: 50px; height: 50px;" />
-                                                            </a>*@
+                            <img src="@ErrorMessage.ProductItemDirectoryPath/@Model.MainImage" style="width: 50px; height: 50px;" />
+                        </a>*@
 
                                                         <a class="example-image-link" href="@ErrorMessage.ProductItemDirectoryPath/@Model.MainImage" data-lightbox="ProfilePhoto">
                                                             <img src="@ErrorMessage.ProductItemDirectoryPath/@Model.MainImage" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 50px; height:50px;" />
@@ -106,6 +106,19 @@
                                         <tr>
                                             <td>Item Name:</td>
                                             <td>@Model.ItemName</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Item Type:</td>
+                                            @if (Model.ItemType == 1)
+                                            {
+                                                <td>Packed</td>
+
+                                            }
+                                            else
+                                            {
+                                                <td>UnPacked</td>
+                                            }
+
                                         </tr>
                                         <tr>
                                             <td>Item Description:</td>
@@ -143,6 +156,15 @@
                                             <td>Is Popular Product:</td>
                                             <td>@(Model.IsPopularProduct ? "Yes" : "No")</td>
                                         </tr>
+                                        <tr>
+                                            <td>Is Returnable Product:</td>
+                                            <td>@(Model.IsReturnableItem ? "Yes" : "No")</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Advance Payment (%):</td>
+                                            <td>@Model.PayAdvancePer</td>
+                                        </tr>
+                                        
                                         <tr>
                                             <td>Shipping Charge:</td>
                                             <td>@Model.ShippingCharge</td>

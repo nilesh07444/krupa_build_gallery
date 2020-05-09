@@ -340,5 +340,19 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(subcategoryVM);
         }
 
+        [HttpPost]
+        public JsonResult GetSubProductNameText(string prefix, long CatId,long ProductId)
+        {
+            var itmtext = (from txt in _db.tbl_SubProducts
+                           where txt.SubProductName.ToLower().Contains(prefix.ToLower()) && (CatId == 0 || txt.CategoryId == CatId) && txt.ProductId == ProductId
+                           select new
+                           {
+                               label = txt.SubProductName,
+                               val = txt.SubProductName
+                           }).ToList();
+
+            return Json(itmtext);
+        }
+
     }
 }
