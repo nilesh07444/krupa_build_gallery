@@ -20,6 +20,7 @@
         objPermission = JsonConvert.DeserializeObject<UserPermissionVM>(strPermission, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
     }
     bool IsSA = (RoleId == 1 ? true : false);
+      List<SelectListItem> lstCats = ViewData["CategoryList"] as List<SelectListItem>;
 }
 
 <div class="page-body">
@@ -52,7 +53,35 @@
                 <h5>Product List</h5>
             </div>
             <div class="card-body vendor-table">
+                <h3>Filter:</h3>
+                <div class="row" style="margin-top:25px;border-bottom: 2px solid #f8f8f9;padding-bottom: 25px;margin-bottom: 10px;">
 
+                    <div class="col-sm-2">
+                        <label>Categories</label>
+                        <select id="selectcat" class="form-control">
+                            <option value="-1">All</option>
+                            @if (lstCats != null && lstCats.Count() > 0)
+                            {
+                                foreach (var objc in lstCats)
+                                {
+                                    <option value="@objc.Value">@objc.Text</option>
+                                }
+                            }
+                        </select>
+                    </div>                               
+                    <div class="col-sm-2">
+                        <label>Status</label>
+                        <select id="selectstatus" class="form-control">
+                            <option value="-1">All</option>
+                            <option value="1">Active</option>
+                            <option value="0">Inactive</option>
+                        </select>
+                    </div>
+
+                    <div class="col-sm-2">
+                        <input type="button" value="Filter" class="btn btn-info" onclick="filteritems();" style="position: absolute; bottom: 0;" />
+                    </div>
+                </div>
                 @if (IsSA || objPermission.Product >= (int)ModulePermission.Add)
                 {
                     <div class="btn-popup pull-right">
@@ -106,20 +135,20 @@
                                     {
                                         <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@product.ProductId','Active');">InActive</span></td>
                                     }
-                                <td>
-                                    @if (IsSA || objPermission.Product >= (int)ModulePermission.View)
-                                    {
-                                        <a href="/admin/product/view/@product.ProductId"><i class="fa fa-eye mr-2 font-success"></i></a>
-                                    }
-                                    @if (IsSA || objPermission.Product >= (int)ModulePermission.Edit)
-                                    {
-                                        <a href="/admin/product/edit/@product.ProductId"><i class="fa fa-edit mr-2 font-success"></i></a>
-                                    }
-                                    @if (IsSA || objPermission.Product >= (int)ModulePermission.Full)
-                                    {
-                                        <a href="javascript:void(0);" onclick="fnDeleteProduct('@product.ProductId')"><i class="fa fa-trash font-danger"></i></a>
-                                    }
-                                </td>
+                                    <td>
+                                        @if (IsSA || objPermission.Product >= (int)ModulePermission.View)
+                                        {
+                                            <a href="/admin/product/view/@product.ProductId"><i class="fa fa-eye mr-2 font-success"></i></a>
+                                        }
+                                        @if (IsSA || objPermission.Product >= (int)ModulePermission.Edit)
+                                        {
+                                            <a href="/admin/product/edit/@product.ProductId"><i class="fa fa-edit mr-2 font-success"></i></a>
+                                        }
+                                        @if (IsSA || objPermission.Product >= (int)ModulePermission.Full)
+                                        {
+                                            <a href="javascript:void(0);" onclick="fnDeleteProduct('@product.ProductId')"><i class="fa fa-trash font-danger"></i></a>
+                                        }
+                                    </td>
                                 </tr>
                                 counter++;
                             }
@@ -181,7 +210,10 @@
     $(document).on("click", "#btnAdd", function () {
         window.location.href = "/admin/product/add";
     });
-
+      $(document).ready(function () {
+         $("#selectcat").val("@ViewBag.CatId");       
+         $("#selectstatus").val('@ViewBag.Active');
+    });
     //jQuery(document).ready(function () {
     //    StartLoading();
     //    jQuery('html, body').animate({ scrollTop: 0 }, 1000);
@@ -270,5 +302,13 @@
                 }
             });
         }
-    });
+       });
+
+    
+    function filteritems() {
+           var statusid = $("#selectstatus").val();
+        var catid = $("#selectcat").val();
+        
+        location.href = "/admin/product?CategoryId="+catid+"&Active="+statusid;
+    }
 </script>

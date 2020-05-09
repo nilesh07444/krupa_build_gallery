@@ -21,14 +21,22 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             _db = new krupagallarydbEntities();
         }
 
-        public ActionResult Index()
+        public ActionResult Index(int CategoryId = -1, int Active = -1)
         {
             List<ProductVM> lstProducts = new List<ProductVM>();
             try
             {
+                bool IsActv = false;
+                if (Active != -1)
+                {
+                    if (Active == 1)
+                    {
+                        IsActv = true;
+                    }
+                }
                 lstProducts = (from p in _db.tbl_Products
                                join c in _db.tbl_Categories on p.CategoryId equals c.CategoryId
-                               where !p.IsDelete
+                               where !p.IsDelete && (CategoryId == -1 || p.CategoryId == CategoryId) && (Active == -1 || p.IsActive == IsActv)
                                select new ProductVM
                                {
                                    ProductId = p.Product_Id,
@@ -38,7 +46,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                    ProductName = p.ProductName,
                                    IsActive = p.IsActive
                                }).OrderByDescending(x => x.ProductId).ToList();
-
+                ViewData["CategoryList"] = GetCategoryList();
+                ViewBag.CatId = CategoryId;
+                ViewBag.Active = Active;
             }
             catch (Exception ex)
             {

@@ -21,6 +21,8 @@
         objPermission = JsonConvert.DeserializeObject<UserPermissionVM>(strPermission, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
     }
     bool IsSA = (RoleId == 1 ? true : false);
+     List<SelectListItem> lstCats = ViewData["CategoryList"] as List<SelectListItem>;
+    List<SelectListItem> lstProdts = ViewData["ProductList"] as List<SelectListItem>;
 }
 
 <div class="page-body">
@@ -53,6 +55,49 @@
                 <h5>Sub Product List</h5>
             </div>
             <div class="card-body vendor-table">
+                <h3>Filter:</h3>
+                <div class="row" style="margin-top:25px;border-bottom: 2px solid #f8f8f9;padding-bottom: 25px;margin-bottom: 10px;">
+
+                    <div class="col-sm-3">
+                        <label>Categories</label>
+                        <select id="selectcat" class="form-control" onchange="selectcatchange();">
+                            <option value="-1">All</option>
+                            @if (lstCats != null && lstCats.Count() > 0)
+                            {
+                                foreach (var objc in lstCats)
+                                {
+                                    <option value="@objc.Value">@objc.Text</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <label>Products</label>
+                        <select id="selectprod" class="form-control">
+                            <option value="-1">All</option>
+                            @if (lstProdts != null && lstProdts.Count() > 0)
+                            {
+                                foreach (var objc in lstProdts)
+                                {
+                                    <option value="@objc.Value">@objc.Text</option>
+                                }
+                            }
+                        </select>
+                    </div>                  
+                    <div class="col-sm-2">
+                        <label>Status</label>
+                        <select id="selectstatus" class="form-control">
+                            <option value="-1">All</option>
+                            <option value="1">Active</option>
+                            <option value="0">Inactive</option>
+                        </select>
+                    </div>
+
+                    <div class="col-sm-2">
+                        <input type="button" value="Filter" class="btn btn-info" onclick="filteritems();" style="position: absolute; bottom: 0;" />
+                    </div>
+                </div>
+
                 @if (IsSA || objPermission.SubProduct >= (int)ModulePermission.Add)
                 {
                     <div class="btn-popup pull-right">
@@ -108,20 +153,20 @@
                                     {
                                         <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@product.SubProductId','Active');">InActive</span></td>
                                     }
-                                <td>
-                                    @if (IsSA || objPermission.SubProduct >= (int)ModulePermission.View)
-                                    {
-                                        <a href="/admin/subproduct/view/@product.SubProductId"><i class="fa fa-eye mr-2 font-success"></i></a>
-                                    }
-                                    @if (IsSA || objPermission.SubProduct >= (int)ModulePermission.Edit)
-                                    {
-                                        <a href="/admin/subproduct/edit/@product.SubProductId"><i class="fa fa-edit mr-2 font-success"></i></a>
-                                    }
-                                    @if (IsSA || objPermission.SubProduct == (int)ModulePermission.Full)
-                                    {
-                                        <a href="javascript:void(0);" onclick="fnDeleteSubProduct('@product.SubProductId')"><i class="fa fa-trash font-danger"></i></a>
-                                    }
-                                </td>
+                                    <td>
+                                        @if (IsSA || objPermission.SubProduct >= (int)ModulePermission.View)
+                                        {
+                                            <a href="/admin/subproduct/view/@product.SubProductId"><i class="fa fa-eye mr-2 font-success"></i></a>
+                                        }
+                                        @if (IsSA || objPermission.SubProduct >= (int)ModulePermission.Edit)
+                                        {
+                                            <a href="/admin/subproduct/edit/@product.SubProductId"><i class="fa fa-edit mr-2 font-success"></i></a>
+                                        }
+                                        @if (IsSA || objPermission.SubProduct == (int)ModulePermission.Full)
+                                        {
+                                            <a href="javascript:void(0);" onclick="fnDeleteSubProduct('@product.SubProductId')"><i class="fa fa-trash font-danger"></i></a>
+                                        }
+                                    </td>
                                 </tr>
                                 counter++;
                             }
@@ -177,11 +222,20 @@
 </div>
 @*<script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>*@
 <script type="text/javascript" charset="utf-8">
-
+    var prodid = '-1';
     $(document).on("click", "#btnAdd", function () {
         window.location.href = "/admin/subproduct/add";
     });
-
+    $(document).ready(function () {
+        console.log("redy");
+        console.log("@ViewBag.CatId");
+        console.log("@ViewBag.ProductId");
+        $("#selectcat").val("@ViewBag.CatId");
+        selectcatchange();
+        prodid = "@ViewBag.ProductId";
+         $("#selectprod").val("@ViewBag.ProductId");        
+         $("#selectstatus").val('@ViewBag.Active');
+    });
     //jQuery(document).ready(function () {
     //    StartLoading();
     //    jQuery('html, body').animate({ scrollTop: 0 }, 1000);
@@ -269,5 +323,51 @@
                 }
             });
         }
-    });
+       });
+
+    function selectcatchange() {    
+          console.log("change called");
+          var CategoryId = jQuery("#selectcat option:selected").val();
+
+        if (CategoryId != "" && CategoryId != null) {
+
+            var URL = '@Url.Action("GetProductListByCategoryId", "SubProduct")';
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: URL + "/" + CategoryId,
+                success: function (result) {
+                    console.log("catid"+CategoryId);
+                    var htmlData = "<option value='-1'>All</option>";
+                    if (result && result.length > 0) {
+                        jQuery.each(result, function (i, item) {
+                             htmlData += "<option value='"+ item.Value +"'> "+ item.Text +" </option>";
+                          });
+                    }
+                    $("#selectprod").html(htmlData);
+                    $("#selectprod").val(prodid);
+                    prodid = "-1";
+
+                },
+                error: function (error) {
+                }
+            });
+        }
+        else {
+              console.log("else catid"+CategoryId);
+             var htmlData = "<option value='-1'>All</option>";
+            $("#selectprod").html(htmlData);
+
+           var htmlData = "<option value='-1'>All</option>";
+            $("#selectsubprod").html(htmlSubData);
+        }
+    }
+
+     function filteritems() {
+           var statusid = $("#selectstatus").val();
+        var catid = $("#selectcat").val();
+        var prodtid = $("#selectprod").val();        
+        location.href = "/admin/subproduct?CategoryId="+catid+"&ProductId="+prodtid+"&Active="+statusid;
+    }
+
 </script>
