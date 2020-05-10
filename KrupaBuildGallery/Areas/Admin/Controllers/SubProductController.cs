@@ -20,16 +20,23 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             _db = new krupagallarydbEntities();
         }
 
-        public ActionResult Index()
+        public ActionResult Index(int CategoryId = -1, int ProductId = -1,int Active = -1)
         {
             List<SubProductVM> lstSubProducts = new List<SubProductVM>();
             try
             {
-
+                bool IsActv = false;
+                if (Active != -1)
+                {
+                    if (Active == 1)
+                    {
+                        IsActv = true;
+                    }
+                }
                 lstSubProducts = (from s in _db.tbl_SubProducts
                                   join c in _db.tbl_Categories on s.CategoryId equals c.CategoryId
                                   join p in _db.tbl_Products on s.ProductId equals p.Product_Id
-                                  where !s.IsDelete && !c.IsDelete && !p.IsDelete
+                                  where !s.IsDelete && !c.IsDelete && !p.IsDelete && (CategoryId == -1 || s.CategoryId == CategoryId) && (ProductId == -1 || s.ProductId == ProductId) && (Active == -1 || s.IsActive == IsActv)
                                   select new SubProductVM
                                   {
                                       SubProductId = s.SubProductId,
@@ -41,6 +48,12 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                       ProductName = p.ProductName,
                                       IsActive = s.IsActive
                                   }).OrderByDescending(x => x.ProductId).ToList();
+
+                ViewData["CategoryList"] = GetCategoryList();
+                ViewData["ProductList"] = GetProductListByCategoryId(CategoryId);
+                ViewBag.CatId = CategoryId;
+                ViewBag.ProductId = ProductId;               
+                ViewBag.Active = Active;
 
             }
             catch (Exception ex)
