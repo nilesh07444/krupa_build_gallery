@@ -11,6 +11,14 @@ namespace KrupaBuildGallery.Helper
         Distributor = 2
     }
 
+    public enum AdminRoles
+    {
+        SuperAdmin = 1,
+        Agent = 2,
+        DeliveryUser = 3,
+        ChannelPartner = 4
+    }
+
     public enum RoleModules
     {
         Role = 1,
@@ -56,6 +64,12 @@ namespace KrupaBuildGallery.Helper
         Add = 2,
         Edit = 3,
         Full = 4
+    }
+
+    public enum ItemTypes
+    {
+        PackedItem = 1,
+        UnPackedItem = 2
     }
 
 }

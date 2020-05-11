@@ -80,8 +80,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             }
 
             lstUnpackProductItem = (from i in _db.tbl_ProductItems
-                                     where !i.IsDelete && i.IsActive == true && i.ItemType == 2
-                                     select new ProductItemVM
+                                     where !i.IsDelete && i.IsActive == true && i.ItemType == (int)ItemTypes.UnPackedItem
+                                    select new ProductItemVM
                                      {
                                          ProductItemId = i.ProductItemId,
                                          ProductId = i.ProductId,

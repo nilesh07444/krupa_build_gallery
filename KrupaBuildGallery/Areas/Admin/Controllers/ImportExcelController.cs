@@ -1,4 +1,5 @@
-﻿using KrupaBuildGallery.Helper;
+﻿using ConstructionDiary.Models;
+using KrupaBuildGallery.Helper;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,6 +9,7 @@ using System.Web.Mvc;
 
 namespace KrupaBuildGallery.Areas.Admin.Controllers
 {
+    [CustomAuthorize]
     public class ImportExcelController : Controller
     {
         public ActionResult Category()

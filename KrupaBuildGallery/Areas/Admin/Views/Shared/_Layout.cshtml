@@ -204,6 +204,17 @@
                             </li>
                         }
 
+                        @if (IsSA)
+                        {
+                            <li>
+                                <a class="sidebar-header" href=""><i data-feather="lock"></i><span>Agent</span><i class="fa fa-angle-right pull-right"></i></a>
+                                <ul class="sidebar-submenu">
+                                    <li class="@(ViewBag.Title == "Agent" ? "active" : "")"><a href="/admin/agent/add"><i class="fa fa-circle"></i>Add Agent</a></li>
+                                    <li><a href="/admin/agent"><i class="fa fa-circle"></i>Agent List</a></li>
+                                </ul>
+                            </li>
+                        }
+
                         @if (IsSA || (objPermission != null && objPermission.Role >= (int)ModulePermission.View))
                         {
                             <li>

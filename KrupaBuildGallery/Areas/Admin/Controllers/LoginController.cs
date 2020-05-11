@@ -39,6 +39,11 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
                 if (data != null)
                 {
+                    if (data.AdminRoleId == (int)AdminRoles.Agent || data.AdminRoleId == (int)AdminRoles.DeliveryUser || data.AdminRoleId == (int)AdminRoles.ChannelPartner)
+                    {
+                        TempData["LoginError"] = "You are not authorize to access Admin panel";
+                        return View();
+                    }
 
                     if (!data.IsActive)
                     {

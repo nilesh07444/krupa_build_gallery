@@ -1,25 +1,8 @@
-﻿@using KrupaBuildGallery.Helper;
-@using Newtonsoft.Json;
-@using KrupaBuildGallery.Model;
-
-@model List<RoleVM>
+﻿@model List<AdminUserVM>
 @{
-    ViewBag.Title = "Role";
+    ViewBag.Title = "Agent";
 
     int counter = 1;
-}
-
-@{
-    UserPermissionVM objPermission = new UserPermissionVM();
-
-    int RoleId = Int32.Parse(clsAdminSession.RoleID.ToString());
-
-    if (RoleId != 1)
-    {
-        string strPermission = clsAdminSession.UserPermission;
-        objPermission = JsonConvert.DeserializeObject<UserPermissionVM>(strPermission, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-    }
-    bool IsSA = (RoleId == 1 ? true : false);
 }
 
 <div class="page-body">
@@ -31,15 +14,14 @@
                 <div class="col-lg-6">
                     <div class="page-header-left">
                         <h3>
-                            Role List
+                            Agent List
                         </h3>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <ol class="breadcrumb pull-right">
-                        <li class="breadcrumb-item"><a href="/"><i data-feather="home"></i></a></li>
-                        <li class="breadcrumb-item">Role</li>
-                        <li class="breadcrumb-item active">Role List</li>
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item active">Agent List</li>
                     </ol>
                 </div>
             </div>
@@ -50,24 +32,23 @@
     <div class="container-fluid">
         <div class="card">
             <div class="card-header">
-                <h5>Role List</h5>
+                <h5>Agent List</h5>
             </div>
             <div class="card-body vendor-table">
 
-                @if (IsSA || objPermission.Role >= (int)ModulePermission.Add)
-                {
-
-                    <div class="btn-popup pull-right">
-                        <button type="button" class="btn btn-primary" id="btnAdd">Add New Role</button>
-                    </div>
-                }
+                <div class="btn-popup pull-right">
+                    <button type="button" class="btn btn-primary" id="btnAdd">Add Agent</button>
+                </div>
 
                 <table class="display" id="basic-1">
                     <thead>
                         <tr>
                             <th width="10%;">#</th>
-                            <th width="15%;">Role Name</th>
-                            <th>Role Description</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Email Id</th>
+                            <th>Mobile No</th>
+                            <th>City</th>
                             <th width="15%;">Active</th>
                             <th width="15%;">Action</th>
                         </tr>
@@ -76,49 +57,29 @@
 
                         @if (Model != null && Model.Count > 0)
                         {
-                            foreach (RoleVM obj in Model)
+                            foreach (AdminUserVM obj in Model)
                             {
-                                <tr class="gradeX">
+                                <tr class="grade">
                                     <td>@counter.</td>
-                                    <td>@obj.AdminRoleName</td>
-                                    <td>@obj.AdminRoleDescription</td>
-                                    <td>
-                                        @if (IsSA || objPermission.Role == (int)ModulePermission.Full)
-                                        {
+                                    <td>@obj.FirstName</td>
+                                    <td>@obj.LastName</td>
+                                    <td>@obj.Email</td>
+                                    <td>@obj.MobileNo</td>
+                                    <td>@obj.City</td>
 
-                                            if (obj.IsActive == true)
-                                            {
-                                                if (obj.AdminRoleId != 1)
-                                                {
-                                                    <span class="badge badge-success" style="cursor:pointer;" title="Click to Inactive" onclick="fnChangeStatus('@obj.AdminRoleId','InActive');">Active</span>
-                                                }
-                                                else
-                                                {
-                                                    <span class="badge badge-success">Active</span>
-                                                }
-                                            }
-                                            else
-                                            {
-                                                <span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@obj.AdminRoleId','Active');">InActive</span>
-                                            }
-                                        }
-                                    </td>
+                                    @if (obj.IsActive == true)
+                                    {
+                                        <td><span class="badge badge-success" style="cursor:pointer;" title="Click to Inactive" onclick="fnChangeStatus('@obj.AdminUserId','InActive');">Active</span></td>
+                                    }
+                                    else
+                                    {
+                                        <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@obj.AdminUserId','Active');">InActive</span></td>
+                                    }
+
                                     <td>
-                                        @if (!obj.IsDefaultRole)
-                                        {
-                                            if (IsSA || objPermission.Role >= (int)ModulePermission.View)
-                                            {
-                                                <a href="/admin/role/view/@obj.AdminRoleId"><i class="fa fa-eye mr-2 font-success"></i></a>
-                                            }
-                                            if (IsSA || objPermission.Role >= (int)ModulePermission.Edit)
-                                            {
-                                                <a href="/admin/role/edit/@obj.AdminRoleId"><i class="fa fa-edit mr-2 font-success"></i></a>
-                                            }
-                                            if (IsSA || objPermission.Role == (int)ModulePermission.Full)
-                                            {
-                                                <a href="javascript:void(0);" onclick="fnDeleteRole('@obj.AdminRoleId')"><i class="fa fa-trash font-danger"></i></a>
-                                            }
-                                        }
+                                        <a title="View" href="/admin/agent/view/@obj.AdminUserId"><i class="fa fa-eye mr-2 font-success"></i></a>
+                                        <a title="Edit" href="/admin/agent/edit/@obj.AdminUserId"><i class="fa fa-edit mr-2 font-success"></i></a>
+                                        <a title="Delete" href="javascript:void(0);" onclick="fnDeleteAdminUser('@obj.AdminUserId')"><i class="fa fa-trash font-danger"></i></a>
                                     </td>
                                 </tr>
                                 counter++;
@@ -135,7 +96,7 @@
 </div>
 
 <!-- Delete Modal -->
-<div class="modal fade open" id="deleteRoleModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade open" id="deleteAdminUserModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -146,9 +107,9 @@
                 Are you sure you want to delete ?
             </div>
             <div class="modal-footer">
-                <input type="hidden" id="hdnDeleteRole" />
+                <input type="hidden" id="hdnDeleteAdminUser" />
                 <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
-                <button id="btnDeleteRole" class="btn btn-primary" type="button">Delete</button>
+                <button id="btnDeleteAdminUser" class="btn btn-primary" type="button">Delete</button>
             </div>
         </div>
     </div>
@@ -185,38 +146,38 @@
     //});
 
     $(document).on("click", "#btnAdd", function () {
-        window.location.href = "/admin/role/add";
+        window.location.href = "/admin/agent/add";
     });
 
-    function fnDeleteRole(cat_id) {
-        jQuery("#hdnDeleteRole").val(cat_id);
-        $('#deleteRoleModal').modal('show');
+    function fnDeleteAdminUser(cat_id) {
+        jQuery("#hdnDeleteAdminUser").val(cat_id);
+        $('#deleteAdminUserModal').modal('show');
     }
 
     //jQuery(window).on("load", function () {
     //    StopLoading();
     //});
 
-    jQuery(document).on("click", "#btnDeleteRole", function () {
+    jQuery(document).on("click", "#btnDeleteAdminUser", function () {
 
-        var Role_id = jQuery("#hdnDeleteRole").val();
-        if (Role_id != "" && Role_id != null) {
-            $('#deleteRoleModal').modal('hide');
+        var AdminUser_id = jQuery("#hdnDeleteAdminUser").val();
+        if (AdminUser_id != "" && AdminUser_id != null) {
+            $('#deleteAdminUserModal').modal('hide');
 
             StartLoading();
 
-            var URL = '@Url.Action("DeleteRole", "Role")';
+            var URL = '@Url.Action("DeleteAdminUser", "Agent")';
             $.ajax({
                 type: 'POST',
                 async: true,
-                url: URL + "?RoleId=" + Role_id,
+                url: URL + "?AdminUserId=" + AdminUser_id,
                 success: function (result) {
                     if (result == "success") {
-                        alert("Role deleted successfully");
+                        alert("Agent deleted successfully");
                         window.location.reload();
                     }
                     else if (result == "notfound") {
-                        alert("Role Not Found");
+                        alert("Agent Not Found");
                     }
                     else {
                         alert("Something went wrong. Please try again");
@@ -230,9 +191,6 @@
             });
         }
     });
-
-
-
 
      function fnChangeStatus(cat_id,status) {
          jQuery("#hdndataId").val(cat_id);
@@ -254,14 +212,14 @@
 
             StartLoading();
 
-            var URL = '@Url.Action("ChangeStatus", "Role")';
+            var URL = '@Url.Action("ChangeStatus", "Agent")';
             $.ajax({
                 type: 'POST',
                 async: true,
                 url: URL + "?Id=" + Id+"&Status="+jQuery("#hdnstatus").val(),
                 success: function (result) {
                     if (result == "success") {
-                        alert("Status change Successfully...");
+                        alert("Status change successfully...");
                         window.location.reload();
                     }
                     else {

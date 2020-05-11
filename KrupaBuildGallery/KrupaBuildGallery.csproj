@@ -182,6 +182,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminUserController.cs" />
+    <Compile Include="Areas\Admin\Controllers\AgentController.cs" />
     <Compile Include="Areas\Admin\Controllers\CategoryController.cs" />
     <Compile Include="Areas\Admin\Controllers\ContactUsMessageController.cs" />
     <Compile Include="Areas\Admin\Controllers\CustomerController.cs" />
@@ -218,6 +219,7 @@
     <Compile Include="Areas\Client\Controllers\SearchController.cs" />
     <Compile Include="Areas\Client\Controllers\TermsConditionController.cs" />
     <Compile Include="Areas\Client\Controllers\WishlistController.cs" />
+    <Compile Include="Areas\WebAPI\Controllers\AgentController.cs" />
     <Compile Include="Areas\WebAPI\Controllers\CartController.cs" />
     <Compile Include="Areas\WebAPI\Controllers\CategoryController.cs" />
     <Compile Include="Areas\WebAPI\Controllers\CheckoutController.cs" />
@@ -3919,6 +3921,10 @@
     <Content Include="Areas\Admin\Views\ImportExcel\Product.cshtml" />
     <Content Include="Areas\Admin\Views\ImportExcel\SubProduct.cshtml" />
     <Content Include="Areas\Admin\Views\ImportExcel\ProductItem.cshtml" />
+    <Content Include="Areas\Admin\Views\Agent\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Agent\Add.cshtml" />
+    <Content Include="Areas\Admin\Views\Agent\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Agent\View.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />
@@ -3957,6 +3963,7 @@
     <Folder Include="Areas\Admin\Views\ClientUser\" />
     <Folder Include="Areas\Client\Models\" />
     <Folder Include="Areas\WebAPI\Models\" />
+    <Folder Include="Areas\WebAPI\Views\Agent\" />
     <Folder Include="Areas\WebAPI\Views\Cart\" />
     <Folder Include="Areas\WebAPI\Views\Category\" />
     <Folder Include="Areas\WebAPI\Views\Checkout\" />
