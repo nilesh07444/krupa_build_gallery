@@ -95,7 +95,7 @@
                 <div class="nav-right col">
                     <ul class="nav-menus">
 
-                        <li><a class="text-dark" href="#!" onclick="javascript:toggleFullScreen()"><i data-feather="maximize-2"></i></a></li>
+                        <li><a class="text-dark" href="#!" onclick="javascript: toggleFullScreen()"><i data-feather="maximize-2"></i></a></li>
 
                         @*<li class="onhover-dropdown">
                                 <i data-feather="bell"></i><span class="badge badge-pill badge-primary pull-right notification-badge">3</span><span class="dot"></span>
@@ -398,15 +398,15 @@
 
                         @if (IsSA)
                         {
-                            <li>
-                                <a class="sidebar-header" href=""><i data-feather="log-out"></i><span>Excel Import</span><i class="fa fa-angle-right pull-right"></i></a>
-                                <ul class="sidebar-submenu">
-                                    <li><a href="/admin/importexcel/category"><i class="fa fa-circle"></i>Import Category</a></li>
-                                    <li><a href="/admin/importexcel/product"><i class="fa fa-circle"></i>Import Product</a></li>
-                                    <li><a href="/admin/importexcel/subproduct"><i class="fa fa-circle"></i>Import Sub Product</a></li>
-                                    <li><a href="/admin/importexcel/productitem"><i class="fa fa-circle"></i>Import Product Item</a></li>
-                                </ul>
-                            </li>
+                            @*<li>
+                                    <a class="sidebar-header" href=""><i data-feather="log-out"></i><span>Excel Import</span><i class="fa fa-angle-right pull-right"></i></a>
+                                    <ul class="sidebar-submenu">
+                                        <li><a href="/admin/importexcel/category"><i class="fa fa-circle"></i>Import Category</a></li>
+                                        <li><a href="/admin/importexcel/product"><i class="fa fa-circle"></i>Import Product</a></li>
+                                        <li><a href="/admin/importexcel/subproduct"><i class="fa fa-circle"></i>Import Sub Product</a></li>
+                                        <li><a href="/admin/importexcel/productitem"><i class="fa fa-circle"></i>Import Product Item</a></li>
+                                    </ul>
+                                </li>*@
                         }
 
                     </ul>
@@ -502,7 +502,29 @@
         function StopLoading() {
             jQuery.unblockUI();
         }
-     
+      
+        $(".lowercase").keyup(function () {
+            this.value = this.value.toLowerCase();
+        });
+
+        $(".uppercase").keyup(function () {
+            this.value = this.value.toLocaleUpperCase();
+        });
+
+        $(".sentensecase").keyup(function () {
+            this.value = this.value.toLowerCase();
+            this.value = this.value.replace(/(?:^|\s)\w/g, function (match) {
+                return match.toUpperCase();
+            });
+        });
+
+        function toTitleCase(str) {
+            var lcStr = str.toLowerCase();
+            return lcStr.replace(/(?:^|\s)\w/g, function (match) {
+                return match.toUpperCase();
+            });
+        }
+
     </script>
 
 </body>

@@ -89,6 +89,12 @@ namespace KrupaBuildGallery.Areas.Client
             );
 
             context.MapRoute(
+                "Client_CancelAndRefundPolicy",
+                "cancelandrefundpolicy",
+                new { controller = "CancelAndRefundPolicy", action = "Index", id = UrlParameter.Optional }
+            );
+
+            context.MapRoute(
                 "Client_TermsCondition",
                 "termscondition",
                 new { controller = "TermsCondition", action = "Index", id = UrlParameter.Optional }

@@ -204,6 +204,7 @@
     <Compile Include="Areas\Admin\Controllers\StockController.cs" />
     <Compile Include="Areas\Admin\Controllers\SubProductController.cs" />
     <Compile Include="Areas\Client\Controllers\AboutUsController.cs" />
+    <Compile Include="Areas\Client\Controllers\CancelAndRefundPolicyController.cs" />
     <Compile Include="Areas\Client\Controllers\CartController.cs" />
     <Compile Include="Areas\Client\Controllers\CheckoutController.cs" />
     <Compile Include="Areas\Client\Controllers\ContactUsController.cs" />
@@ -3925,6 +3926,7 @@
     <Content Include="Areas\Admin\Views\Agent\Add.cshtml" />
     <Content Include="Areas\Admin\Views\Agent\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Agent\View.cshtml" />
+    <Content Include="Areas\Client\Views\CancelAndRefundPolicy\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />

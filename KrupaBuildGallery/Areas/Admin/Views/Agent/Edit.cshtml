@@ -46,7 +46,7 @@
 
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
-                                @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter First Name", maxlength = "100" } })
+                                @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control col-md-8 sentensecase", @placeholder = "Enter First Name", maxlength = "100" } })
 
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
@@ -54,7 +54,7 @@
 
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
-                                @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Last Name", maxlength = "100" } })
+                                @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control col-md-8 sentensecase", @placeholder = "Enter Last Name", maxlength = "100" } })
 
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
@@ -62,7 +62,7 @@
                               
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
-                                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Email Id", maxlength = "100" } })
+                                @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control col-md-8 lowercase", @placeholder = "Enter Email Id", maxlength = "100" } })
 
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.Email, "", new { @class = "text-danger" })
@@ -94,7 +94,7 @@
 
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
-                                @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Address", maxlength = "200" } })
+                                @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control col-md-8 uppercase", @placeholder = "Enter Address", maxlength = "200" } })
 
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
@@ -102,7 +102,7 @@
 
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.City, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
-                                @Html.EditorFor(model => model.City, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter City", maxlength = "100" } })
+                                @Html.EditorFor(model => model.City, new { htmlAttributes = new { @class = "form-control col-md-8 uppercase", @placeholder = "Enter City", maxlength = "100" } })
 
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.City, "", new { @class = "text-danger" })

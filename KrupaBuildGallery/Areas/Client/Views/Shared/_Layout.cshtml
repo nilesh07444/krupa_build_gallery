@@ -68,26 +68,25 @@
 
     <!-- latest jquery-->
     <script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>
-     
+
     <style>
-    .divHideScroll::-webkit-scrollbar {
-        width: 0 !important
-    }
+        .divHideScroll::-webkit-scrollbar {
+            width: 0 !important
+        }
 
-    .divHideScroll {
-        overflow: -moz-scrollbars-none;
-    }
+        .divHideScroll {
+            overflow: -moz-scrollbars-none;
+        }
 
-    .divHideScroll {
-        -ms-overflow-style: none;
-    }
-
-  </style>
+        .divHideScroll {
+            -ms-overflow-style: none;
+        }
+    </style>
 
 </head>
 
 <body class="divHideScroll">
-     
+
     <!-- header start -->
     <header class="header-tools marketplace">
         <div class="mobile-fix-option"></div>
@@ -372,6 +371,7 @@
                                     <li><a href="/orders">My Orders</a></li>
                                     <li><a href="/wishlist">Wishlist</a></li>
                                     <li><a href="/privacy">Privacy Policy</a></li>
+                                    <li><a href="/cancelandrefundpolicy">Cancellation & Refund Policy</a></li>
                                     <li><a href="/termscondition">Terms & Conditions</a></li>
                                 </ul>
                             </div>
@@ -624,9 +624,9 @@
         }
     </script>
     <script src="~/Scripts/jquery.blockUI.js"></script>
-      
+
     <script>
-     
+
         function StartLoading() {
             jQuery.blockUI({ message: "<h4>Please Wait...</h4>" });
         }
@@ -654,8 +654,32 @@
 
         function searchitems() {
             var strsearchh = $("#txtsearchprod").val();
-             location.href = "/search?q="+strsearchh;     
-        }
+             location.href = "/search?q="+strsearchh;
+            }
+
+
+        $(".lowercase").keyup(function () {
+            this.value = this.value.toLowerCase();
+        });
+
+        $(".uppercase").keyup(function () {
+            this.value = this.value.toLocaleUpperCase();
+        });
+
+        $(".sentensecase").keyup(function () {
+            this.value = this.value.toLowerCase();
+            this.value = this.value.replace(/(?:^|\s)\w/g, function (match) {
+                return match.toUpperCase();
+            });
+        });
+
+        function toTitleCase(str) {
+            var lcStr = str.toLowerCase();
+            return lcStr.replace(/(?:^|\s)\w/g, function (match) {
+                return match.toUpperCase();
+            });
+         }
+
     </script>
 </body>
 

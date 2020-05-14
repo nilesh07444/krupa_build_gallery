@@ -16,7 +16,7 @@ namespace KrupaBuildGallery
         [Required]
         [Display(Name = "Product Name *")]
         public long ProductId { get; set; }
-        [Display(Name = "Sub Product Name *")]
+        [Display(Name = "Sub Product Name")]
         public long? SubProductId { get; set; }
         [Required]
         [Display(Name = "Item Name *")]
