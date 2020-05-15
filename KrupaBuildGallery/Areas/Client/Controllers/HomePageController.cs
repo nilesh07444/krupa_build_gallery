@@ -20,40 +20,18 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         }
         public ActionResult Index()
         {
-
-            //clsCommon.SendEmail("prajapati.nileshbhai@gmail.com", "" , "Test email by Nilesh", "Test");
-
-            List<ProductItemVM> lstNewProductItem = new List<ProductItemVM>();
+             
             List<ProductItemVM> lstPopularProductItem = new List<ProductItemVM>();
             List<ProductItemVM> lstUnpackProductItem = new List<ProductItemVM>();
             List<ProductItemVM> lstOfferItems = new List<ProductItemVM>();
             List<long> wishlistitemsId = new List<long>();
-            lstNewProductItem = (from i in _db.tbl_ProductItems
-                                 where !i.IsDelete && i.IsActive == true && i.IsPopularProduct == false
-                                 select new ProductItemVM
-                                 {
-                                     ProductItemId = i.ProductItemId,
-                                     ProductId = i.ProductId,
-                                     SubProductId = i.SubProductId,
-                                     ItemName = i.ItemName,
-                                     MainImage = i.MainImage,
-                                     MRPPrice = i.MRPPrice,
-                                     CustomerPrice = i.CustomerPrice,
-                                     DistributorPrice = i.DistributorPrice,
-                                     IsActive = i.IsActive,
-                                     CreatedDate = i.CreatedDate
-                                 }).OrderByDescending(x => x.CreatedDate).ToList().Take(10).ToList();
-
+              
             if (clsClientSession.UserID != 0)
             {
                 long UserId = clsClientSession.UserID;
                 wishlistitemsId = _db.tbl_WishList.Where(o => o.ClientUserId == UserId).Select(o => o.ItemId.Value).ToList();
-                lstNewProductItem.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
             }
-            else
-            {
-                lstNewProductItem.ForEach(x => { x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
-            }
+             
             lstPopularProductItem = (from i in _db.tbl_ProductItems
                                      where !i.IsDelete && i.IsActive == true && i.IsPopularProduct == true
                                      select new ProductItemVM
@@ -146,8 +124,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                                   CategoryImage = c.CategoryImage 
                                               }).OrderByDescending(x => x.CategoryId).ToList();
 
-            ViewData["lstPopularProductItem"] = lstPopularProductItem;
-            ViewData["lstNewProductItem"] = lstNewProductItem;
+            ViewData["lstPopularProductItem"] = lstPopularProductItem; 
             ViewData["lstOfferItems"] = lstOfferItems;
             ViewData["lstImages"] = lstImages;
             ViewData["lstCategory"] = lstCategory;
