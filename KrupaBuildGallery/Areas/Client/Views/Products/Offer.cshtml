@@ -1,1 +1,130 @@
-﻿
+﻿@using KrupaBuildGallery.Model;
+@using KrupaBuildGallery.Helper;
+@{
+    ViewBag.Title = "Offer Products";
+}
+
+@model List<ProductItemVM>
+
+<!-- breadcrumb start -->
+<div class="breadcrumb-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="page-title">
+                    <h2>Offer Products</h2>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <nav aria-label="breadcrumb" class="theme-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Offer Products</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- breadcrumb end -->
+
+<!-- section start -->
+<section class="section-b-space ratio_asos">
+    <div class="collection-wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="collection-content col">
+                    <div class="page-main-content">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="collection-product-wrapper">
+                                    <div class="product-wrapper-grid">
+                                        <div class="row">
+                                            @if (Model != null && Model.Count() > 0)
+                                            {
+                                                foreach (var objItem in Model)
+                                                {
+                                                    string imgpath = "";
+                                                    string clswishlist = "";
+                                                    if (!string.IsNullOrEmpty(objItem.MainImage))
+                                                    {
+                                                        if (File.Exists(Server.MapPath("~/Images/ProductItemMedia/" + objItem.MainImage)))
+                                                        {
+                                                            imgpath = "/Images/ProductItemMedia/" + objItem.MainImage;
+                                                        }
+                                                        else
+                                                        {
+                                                            imgpath = @ErrorMessage.DefaultImagePath;
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        imgpath = @ErrorMessage.DefaultImagePath;
+                                                    }
+                                                    if (objItem.IsWishListItem)
+                                                    {
+                                                        clswishlist = "wishlistcls";
+                                                    }
+
+                                                    <div class="col-lg-2 col-md-6 col-grid-box">
+                                                        <div class="product-box">
+                                                            <div class="img-wrapper">
+                                                                <div class="front">
+                                                                    <a href="/products/detail/@objItem.ProductItemId">
+                                                                        <img src="@imgpath" class="img-fluid blur-up lazyload bg-img" alt="">
+                                                                    </a>
+                                                                </div>
+                                                                <div class="back">
+                                                                    <a href="/products/detail/@objItem.ProductItemId">
+                                                                        <img src="@imgpath" class="img-fluid blur-up lazyload bg-img" alt="">
+                                                                    </a>
+                                                                </div>
+                                                                <div class="cart-info cart-wrap">
+                                                                    <button data-toggle="modal" data-target="#addtocart" title="Add to cart" onclick="AddtoCartfunc(@objItem.ProductItemId, 1);">
+                                                                        <i class="ti-shopping-cart"></i>
+                                                                    </button>
+                                                                    @if (clsClientSession.UserID > 0)
+                                                                    {
+                                                                        <a href="javascript:void(0)" title="Add to Wishlist" tabindex="0" onclick="addremovewishlist('@objItem.ProductItemId',this);"><i class="fa fa-heart @clswishlist" aria-hidden="true"></i></a>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <a href="javascript:void(0)" title="Add to Wishlist" tabindex="0" onclick="alert('Please login for add item to wishlist');"><i class="fa fa-heart @clswishlist" aria-hidden="true"></i></a>
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                            <div class="product-detail">
+                                                                <div>
+                                                                    <div class="rating">
+                                                                        <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                                                                    </div>
+                                                                    <a href="/products/detail/@objItem.ProductItemId">
+                                                                        <h6>@objItem.ItemName </h6>
+                                                                    </a>
+                                                                    @if (clsClientSession.UserID == 0 || (clsClientSession.UserID > 0 && clsClientSession.RoleID == 1))
+                                                                    {
+                                                                        <h4>₹ @objItem.CustomerPrice <del>₹ @objItem.MRPPrice</del></h4>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <h4>₹ @objItem.DistributorPrice <del>₹ @objItem.MRPPrice</del></h4>
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- section End -->

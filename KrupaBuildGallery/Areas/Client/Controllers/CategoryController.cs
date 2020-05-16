@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KrupaBuildGallery.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,10 +9,32 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
 {
     public class CategoryController : Controller
     {
-        // GET: Client/Category
+        private readonly krupagallarydbEntities _db;
+        public CategoryController()
+        {
+            _db = new krupagallarydbEntities();
+        }
         public ActionResult Index()
         {
-            return View();
+            List<CategoryVM> lstCategory = new List<CategoryVM>();
+            try
+            {
+                lstCategory = (from c in _db.tbl_Categories
+                               where !c.IsDelete && c.IsActive
+                               select new CategoryVM
+                               {
+                                   CategoryId = c.CategoryId,
+                                   CategoryName = c.CategoryName,
+                                   CategoryImage = c.CategoryImage,
+                                   IsActive = c.IsActive
+                               }).OrderByDescending(x => x.CategoryId).ToList();
+            }
+            catch (Exception ex)
+            {
+                string ErrorMessage = ex.Message.ToString();
+            }
+
+            return View(lstCategory);
         }
     }
 }

@@ -1,0 +1,70 @@
+﻿@using KrupaBuildGallery.Helper;
+@using Newtonsoft.Json;
+@using KrupaBuildGallery.Model;
+
+@model List<CategoryVM>
+
+@{
+    ViewBag.Title = "Category";
+}
+
+<!-- breadcrumb start -->
+<div class="breadcrumb-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="page-title">
+                    <h2>Category</h2>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <nav aria-label="breadcrumb" class="theme-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Category</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- breadcrumb end -->
+<!-- absolute banner -->
+<section class="banner-furniture absolute_banner ratio3_2">
+    <div class="container">
+        <div class="row partition3">
+            @if (Model != null && Model.Count > 0)
+            {
+                foreach (CategoryVM category in Model)
+                {
+                    <div class="col-md-4" style="margin-bottom: 50px;">
+                        <a href="/products/bycategory/@category.CategoryId">
+                            <div class="collection-banner p-left text-left">
+                                @if (!string.IsNullOrEmpty(category.CategoryImage))
+                                {
+                                    if (File.Exists(Server.MapPath(@ErrorMessage.CategoryDirectoryPath + category.CategoryImage)))
+                                    {
+                                        <img src="~/Images/CategoryMedia/@category.CategoryImage" alt="" class="img-fluid blur-up lazyload bg-img">
+                                    }
+                                    else
+                                    {
+                                        <img src="~/Content/assets/images/cat1.png" alt="" class="img-fluid img-40 blur-up lazyloaded" />
+                                    }
+                                }
+                                else
+                                {
+                                    <img src="~/Content/assets/images/cat1.png" alt="" class="img-fluid img-40 blur-up lazyloaded" />
+                                }
+                                <div class="absolute-contain">
+                                    <h3>@category.CategoryName</h3>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                }
+            }
+        </div>
+
+    </div>
+</section>
+<!-- absolute banner -->

@@ -27,6 +27,7 @@ namespace KrupaBuildGallery.Helper
         // Folder Directory Path
         public static string HomeDirectoryPath = "/Images/HomeMedia/";
         public static string AdminUserDirectoryPath = "/Images/AdminUserMedia/";
+        public static string CategoryDirectoryPath = "/Images/CategoryMedia/";
         public static string ProductItemDirectoryPath = "/Images/ProductItemMedia/";
         public static string DefaultImagePath = "/Images/default_image.jpg";
 
