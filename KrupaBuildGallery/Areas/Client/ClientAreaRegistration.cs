@@ -71,6 +71,12 @@ namespace KrupaBuildGallery.Areas.Client
             );
 
             context.MapRoute(
+                "Client_CheckoutCash",
+                "checkoutcash",
+                new { controller = "Checkout", action = "Index",id = UrlParameter.Optional,type = "Cash"}
+            );
+
+            context.MapRoute(
                 "Client_SecondCheckout",
                 "checkout/secondcart",
                 new { controller = "Checkout", action = "secondcartcheckout", id = UrlParameter.Optional }

@@ -1,10 +1,14 @@
 ﻿@using KrupaBuildGallery.Model;
 @using KrupaBuildGallery.Helper;
-@model List<CartVM>
+
 @{
     ViewBag.Title = "Cart";
     int counter = 1;
     decimal CartTotal = 0;
+    decimal CashCartTotal = 0;
+      List<CartVM> lstCashItms = ViewData["CashCartItems"] as List<CartVM>;
+    List<CartVM> lstOnliItms = ViewData["OnlinePaymentCartItems"] as List<CartVM>;
+      int TotalCartItem = lstCashItms.Count + lstOnliItms.Count;
 }
 <style>
     .clrerror {
@@ -36,11 +40,12 @@
 <!--section start-->
 <section class="cart-section section-b-space">
     <div class="container">
-        <div class="row">
+        <div class="row">         
             <div class="col-sm-12">
-                @if (Model != null && Model.Count > 0)
+                @if (lstCashItms != null && lstCashItms.Count > 0)
                 {
-                    <table class="table cart-table table-responsive-xs">
+                    <h3 style="margin-bottom: 20px;">Cash on Delivery Items</h3>
+                    <table class="table cart-table table-responsive-xs clsCash">
                         <thead>
                             <tr class="table-head">
 
@@ -53,9 +58,136 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @if (Model != null && Model.Count > 0)
+                            @if (lstCashItms != null && lstCashItms.Count > 0)
                             {
-                                foreach (CartVM item in Model)
+                                foreach (CartVM item in lstCashItms)
+                                {
+                                    decimal ItemTotal = Convert.ToDecimal(item.Qty * item.Price);
+                                    CashCartTotal = CashCartTotal + ItemTotal;
+                                    string clsclr = "";
+                                    if (item.Qty > item.StockQty)
+                                    {
+                                        clsclr = "clrerror";
+                                    }
+                                    <tr class="trcart" data-trid="@item.CartId">
+
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(item.ItemImage))
+                                            {
+                                                if (File.Exists(Server.MapPath("~/Images/ProductItemMedia/" + item.ItemImage)))
+                                                {
+                                                    <img src="~/Images/ProductItemMedia/@item.ItemImage" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                                }
+                                                else
+                                                {
+                                                    <img src="@ErrorMessage.DefaultImagePath" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <img src="@ErrorMessage.DefaultImagePath" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                            }
+                                        </td>
+                                        <td>
+                                            <a href="#">@item.ItemName</a>
+                                            <span class="@clsclr">(In Stock: @item.StockQty)</span>
+                                            <div class="mobile-cart-content row">
+                                                <div class="col-xs-3">
+                                                    <div class="qty-box">
+                                                        <div class="input-group">
+                                                            <input type="text" name="quantity" class="form-control input-number" value="@item.Qty">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-3">
+                                                    <h2 class="td-color">₹ @item.Price</h2>
+                                                </div>
+                                                <div class="col-xs-3">
+                                                    <h2 class="td-color"><a href="javascript:void(0);" onclick="removecart('@item.CartId');" class="icon"><i class="ti-close"></i></a></h2>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <h2 class="clsprc_@item.CartId" data-attrpprc="@item.Price">₹ @item.Price</h2>
+                                        </td>
+                                        <td>
+                                            <div class="qty-box">
+                                                <div class="input-group">
+                                                    <input type="number" name="quantity" data-attrcrtidd="@item.CartId" min="1" class="form-control input-number clsq clsqty_@item.CartId" value="@item.Qty">
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><a href="javascript:void(0);" class="icon" onclick="removecart('@item.CartId');"><i class="ti-close"></i></a></td>
+                                        <td>
+                                            <h2 class="td-color clspr clsttl_@item.CartId" data-attrttls="@ItemTotal">₹ @ItemTotal</h2>
+                                        </td>
+                                    </tr>
+                                    counter = counter + 1;
+                                }
+
+                            }
+
+                        </tbody>
+                    </table>
+                    <table class="table cart-table table-responsive-md clsCash1">
+                        <tfoot>
+                            <tr>
+                                <td>total price :</td>
+                                <td>
+                                    <h2 class="clsttlfull" style="width:143px;">₹ @CashCartTotal</h2>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                }
+                else
+                {
+
+                }
+
+            </div>
+        </div>
+        <div class="row cart-buttons">
+            @if (lstCashItms != null && lstCashItms.Count > 0)
+            {
+                <div class="col-6"></div>
+                <div class="col-6">
+                    <a href="javascript:void(0);" onclick="UpdateCart('clsCash');" class="btn btn-solid" style="margin-right:10px;">Update Cart</a>
+                    @if (clsClientSession.UserID > 0)
+                    {
+                        <a href="/checkoutcash" class="btn btn-solid">check out</a>
+                    }
+                    else
+                    {
+                        <a href="/login?referer=checkoutcash" class="btn btn-solid">checkout</a>
+                    }
+
+                </div>
+
+            }
+        </div>
+        <br />
+        <div class="row">
+            <div class="col-sm-12">
+                @if (lstOnliItms != null && lstOnliItms.Count > 0)
+                {
+                    <h3 style="margin-bottom: 20px;">Online Pay Delivery Items</h3>
+                    <table class="table cart-table table-responsive-xs clsonline">
+                        <thead>
+                            <tr class="table-head">
+
+                                <th scope="col">image</th>
+                                <th scope="col">product name</th>
+                                <th scope="col">price</th>
+                                <th scope="col">quantity</th>
+                                <th scope="col">action</th>
+                                <th scope="col">total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (lstOnliItms != null && lstOnliItms.Count > 0)
+                            {
+                                foreach (CartVM item in lstOnliItms)
                                 {
                                     decimal ItemTotal = Convert.ToDecimal(item.Qty * item.Price);
                                     CartTotal = CartTotal + ItemTotal;
@@ -124,12 +256,12 @@
 
                         </tbody>
                     </table>
-                    <table class="table cart-table table-responsive-md">
+                    <table class="table cart-table table-responsive-md clsonline1">
                         <tfoot>
                             <tr>
                                 <td>total price :</td>
                                 <td>
-                                    <h2 class="clsttlfull" style="width:143px;" >₹ @CartTotal</h2>
+                                    <h2 class="clsttlfull" style="width:143px;">₹ @CartTotal</h2>
                                 </td>
                             </tr>
                         </tfoot>
@@ -146,11 +278,11 @@
             </div>
         </div>
         <div class="row cart-buttons">
-            @if (Model != null && Model.Count > 0)
+            @if (lstOnliItms != null && lstOnliItms.Count > 0)
             {
-                <div class="col-6"><a href="/" class="btn btn-solid">continue shopping</a></div>
+                <div class="col-6"></div>
                 <div class="col-6">
-                    <a href="javascript:void(0);" onclick="UpdateCart();" class="btn btn-solid" style="margin-right:10px;">Update Cart</a>
+                    <a href="javascript:void(0);" onclick="UpdateCart('clsonline');" class="btn btn-solid" style="margin-right:10px;">Update Cart</a>
                     @if (clsClientSession.UserID > 0)
                     {
                         <a href="/checkout" class="btn btn-solid">check out</a>
@@ -164,6 +296,13 @@
 
             }
         </div>
+        @if (TotalCartItem == 0)
+        {
+            <div style="text-align:center;">
+                <p>Your cart is currently empty.</p>
+                <a href="/" class="btn btn-solid">continue shopping</a>
+            </div>
+        }
     </div>
 </section>
 <!--section end-->
@@ -185,10 +324,10 @@
         });
     }
 
-    function UpdateCart() {
+    function UpdateCart(cls) {
         var strcart = "";
         var arrycart = new Array();
-        $(".trcart").each(function () {
+        $("."+cls+" .trcart").each(function () {
             var crtId = $(this).attr("data-trid");
             var qty = $(this).find("input[name=quantity]:visible").val();
             arrycart.push(crtId + "^" + qty);
@@ -220,9 +359,23 @@
         $(".clsttl_" + idd).html("₹" + totll);
         $(".clsttl_" + idd).attr("data-attrttls", totll);
         var ttlll = 0;
-        $(".clspr").each(function () {
+        if ($(this).parents('.clsCash').length > 0) {
+             $(".clsCash .clspr").each(function () {
             ttlll = ttlll + parseFloat($(this).attr("data-attrttls"));
-        })
-        $(".clsttlfull").html("₹ " + ttlll);
+         })
+        }
+        else {
+             $(".clsonline .clspr").each(function () {
+            ttlll = ttlll + parseFloat($(this).attr("data-attrttls"));
+          })
+        }
+       
+        if ($(this).parents('.clsCash').length > 0) {
+             $(".clsCash1 .clsttlfull").html("₹ " + ttlll);
+        }
+        else {
+             $(".clsonline1 .clsttlfull").html("₹ " + ttlll);
+        }
+       
     })
 </script>

@@ -28,7 +28,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 ItemName = i.ItemName,
                                 ItemId = i.ProductItemId,
                                 Price = clsClientSession.RoleID == 1 ? i.CustomerPrice : i.DistributorPrice,
-                                ItemImage = i.MainImage                                
+                                ItemImage = i.MainImage,
+                                IsCashonDelieveryuse = i.IsCashonDeliveryUse.HasValue ? i.IsCashonDeliveryUse.Value : false
                             }).OrderByDescending(x => x.WishListId).ToList();
             lstWishItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price); });
             return View(lstWishItems);

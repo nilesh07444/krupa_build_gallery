@@ -8,6 +8,7 @@
     tbl_ClientOtherDetails objClientOther = ViewData["objotherdetails"] as tbl_ClientOtherDetails;
     List<InvoiceItemVM> lstInvoiceItemVM = ViewData["lstInvItem"] as List<InvoiceItemVM>;
     decimal TotalOrderamtt = Convert.ToDecimal(ViewBag.ShippingChargeTotal) + Convert.ToDecimal(ViewBag.TotalOrder);
+     decimal WalletAmt = Convert.ToDecimal(ViewBag.WalletAmt);
 }
 <style>
     .errorcls {
@@ -187,29 +188,68 @@
                                                 {
                                                     <h4 style="margin-bottom:5px;" class="creditremainingcls">Payment</h4>
                                                     <ul class="creditremainingcls">
-                                                        <li>
-                                                            <div class="radio-option">
-                                                                <input type="radio" name="payment-group" value="ByCredit" id="payment-1">
-                                                                <label for="payment-1">By Credit<span class="small-text">Current Credit Remaining(@ViewBag.CreditRemaining)</span></label>
-                                                            </div>
-                                                        </li>
-                                                        <li>
-                                                            <div class="radio-option">
-                                                                <input type="radio" name="payment-group" value="ByOther" id="payment-2">
-                                                                <label for="payment-2">By Other Payment Sources<span class="small-text">Select to pay by credit card, upi, net banking etc</span></label>
-                                                            </div>
-                                                        </li>
+                                                        @if (Convert.ToBoolean(ViewBag.IsCashOnDelivery) == true)
+                                                        {
+                                                            <li>
+                                                                <div class="radio-option">
+                                                                    <input type="checkbox" checked readonly="readonly"  name="payment-group" style="padding-left: 5px;pointer-events:none;" value="Cash" id="payment-4">
+                                                                    <label for="payment-4" style="padding-left: 5px;pointer-events:none;">Cash On Delivery</label>
+                                                                </div>
+                                                            </li>
+                                                        }
+                                                        else
+                                                        {
+                                                            <li>
+                                                                <div class="radio-option">
+                                                                    <input type="checkbox" name="payment-group" style="padding-left: 5px;" value="Bywallet" id="payment-3">
+                                                                    <label for="payment-3" style="padding-left: 5px;">By Wallet(Balance: ₹ @WalletAmt)</label>
+                                                                </div>
+                                                            </li>
+                                                            <li>
+                                                                <div class="radio-option">
+                                                                    <input type="checkbox" name="payment-group" style="padding-left: 5px;" value="ByCredit" id="payment-1">
+                                                                    <label for="payment-1" style="padding-left: 5px;">By Credit - Current Credit Remaining(₹ @ViewBag.CreditRemaining)</label>
+                                                                </div>
+                                                            </li>
+                                                            <li>
+                                                                <div class="radio-option">
+                                                                    <input type="checkbox" name="payment-group" style="padding-left: 5px;" value="ByOther" id="payment-2">
+                                                                    <label for="payment-2" style="padding-left: 5px;">Online Payments<span class="small-text">Select to pay by credit card, upi, net banking etc</span></label>
+                                                                </div>
+                                                            </li>
+                                                        }
+
                                                     </ul>
                                                 }
                                                 else if (clsClientSession.UserID == 0 || clsClientSession.UserID > 0 && clsClientSession.RoleID == 1)
                                                 {
-                                                    <ul style="display:none;">
-                                                        <li>
-                                                            <div class="radio-option">
-                                                                <input type="radio" name="payment-group" value="ByOther" id="payment-2" checked>
-                                                                <label for="payment-2">By Other Payment Sources<span class="small-text">Select to pay by credit card, upi, net banking etc</span></label>
-                                                            </div>
-                                                        </li>
+                                                    <h4 style="margin-bottom:5px;">Payment</h4>
+                                                    <ul>
+                                                        @if (Convert.ToBoolean(ViewBag.IsCashOnDelivery) == true)
+                                                        {
+                                                            <li>
+                                                                <div class="radio-option">
+                                                                    <input type="checkbox" readonly="readonly" name="payment-group" checked style="padding-left: 5px;pointer-events:none;" value="Cash" id="payment-4">
+                                                                    <label for="payment-4" style="padding-left: 5px;pointer-events:none;">Cash On Delivery</label>
+                                                                </div>
+                                                            </li>
+                                                        }
+                                                        else
+                                                        {
+                                                            <li>
+                                                                <div class="radio-option">
+                                                                    <input type="checkbox" name="payment-group" style="padding-left: 5px;" value="Bywallet" id="payment-3">
+                                                                    <label for="payment-3" style="padding-left: 5px;">By Wallet(Balance: ₹ @WalletAmt)</label>
+                                                                </div>
+                                                            </li>                                                          
+                                                            <li>
+                                                                <div class="radio-option">
+                                                                    <input type="checkbox" name="payment-group" style="padding-left: 5px;" value="ByOther" id="payment-2">
+                                                                    <label for="payment-2" style="padding-left: 5px;">Online Payments<span class="small-text">Select to pay by credit card, upi, net banking etc</span></label>
+                                                                </div>
+                                                            </li>
+                                                        }
+
                                                     </ul>
                                                 }
 

@@ -18,7 +18,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             _db = new krupagallarydbEntities();
         }
         // GET: Client/Checkout
-        public ActionResult Index()
+        public ActionResult Index(string type = "Online")
         {
             List<CartVM> lstCartItems = new List<CartVM>();          
             try
@@ -28,7 +28,11 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 decimal TotalDiscount = 0;
                 decimal TotalOrder = 0;
                 ViewBag.WebsiteOrderId = "1";
-
+                bool IsCashOrd = false;
+                if(type == "Cash")
+                {
+                    IsCashOrd = true;
+                }
                
                 string GuidNew = Guid.NewGuid().ToString();
                 string cookiesessionval = "";
@@ -47,7 +51,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     long ClientUserId = Convert.ToInt64(clsClientSession.UserID);
                     lstCartItems = (from crt in _db.tbl_Cart
                                     join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
-                                    where crt.ClientUserId == ClientUserId
+                                    where crt.ClientUserId == ClientUserId && crt.IsCashonDelivery == IsCashOrd
                                     select new CartVM
                                     {
                                         CartId = crt.Cart_Id,
@@ -57,7 +61,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                         ItemImage = i.MainImage,
                                         Qty = crt.CartItemQty.Value,
                                         ShippingCharge = i.ShippingCharge.HasValue ? i.ShippingCharge.Value : 0,
-                                        GSTPer = i.GST_Per
+                                        GSTPer = i.GST_Per,
+                                        IsCashonDelivery = crt.IsCashonDelivery.HasValue ? crt.IsCashonDelivery.Value : false
                                     }).OrderByDescending(x => x.CartId).ToList();
                     lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price); });
                 }
@@ -65,7 +70,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 {
                     lstCartItems = (from crt in _db.tbl_Cart
                                     join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
-                                    where crt.CartSessionId == cookiesessionval
+                                    where crt.CartSessionId == cookiesessionval && crt.IsCashonDelivery == IsCashOrd
                                     select new CartVM
                                     {
                                         CartId = crt.Cart_Id,
@@ -75,6 +80,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                         ItemImage = i.MainImage,
                                         Qty = crt.CartItemQty.Value,
                                         ShippingCharge = i.ShippingCharge.HasValue ? i.ShippingCharge.Value : 0,
+                                        IsCashonDelivery = crt.IsCashonDelivery.HasValue ? crt.IsCashonDelivery.Value : false,
                                         GSTPer = i.GST_Per
                                     }).OrderByDescending(x => x.CartId).ToList();
                     lstCartItems.ForEach(x => { x.Price = GetOfferPrice(x.ItemId, x.Price); });
@@ -198,6 +204,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 }
                 //_db.tbl_ClientOtherDetails.Where(o => o.ClientUserId == clsClientSession.UserID).FirstOrDefault();
                 ViewBag.WalletAmt = WalletAmt;
+                ViewBag.IsCashOnDelivery = IsCashOrd;
             }
             catch (Exception ex)
             {

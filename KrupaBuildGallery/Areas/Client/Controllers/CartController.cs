@@ -47,7 +47,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                      ItemId = i.ProductItemId,
                                      Price = clsClientSession.RoleID == 1 ? i.CustomerPrice : i.DistributorPrice,                                     
                                      ItemImage = i.MainImage,
-                                     Qty = crt.CartItemQty.Value                                    
+                                     Qty = crt.CartItemQty.Value,
+                                     IsCashonDelivery = crt.IsCashonDelivery.HasValue ? crt.IsCashonDelivery.Value : false
                                  }).OrderByDescending(x => x.CartId).ToList();
                     lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price);x.StockQty = RemainingStock(x.ItemId);});
                 }
@@ -63,7 +64,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                         ItemId = i.ProductItemId,
                                         Price = i.CustomerPrice,
                                         ItemImage = i.MainImage,
-                                        Qty = crt.CartItemQty.Value
+                                        Qty = crt.CartItemQty.Value,
+                                        IsCashonDelivery = crt.IsCashonDelivery.HasValue ? crt.IsCashonDelivery.Value : false
                                     }).OrderByDescending(x => x.CartId).ToList();
                     lstCartItems.ForEach(x => { x.Price = GetOfferPrice(x.ItemId, x.Price); x.StockQty = RemainingStock(x.ItemId);});
                 }
@@ -73,15 +75,21 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             {
                 string ErrorMessage = ex.Message.ToString();
             }
-
-            return View(lstCartItems);
+            ViewData["CashCartItems"] = lstCartItems.Where(o => o.IsCashonDelivery == true).ToList();
+            ViewData["OnlinePaymentCartItems"] = lstCartItems.Where(o => o.IsCashonDelivery == false).ToList();
+            return View();
         }
 
         [HttpPost]
-        public string AddtoCart(long ItemId, long Qty)
+        public string AddtoCart(long ItemId, long Qty,string IsCash)
         {
             string ReturnMessage = "";
             bool isOutofStock = false;
+            bool IsCashOrdr = false;
+            if(IsCash == "true")
+            {
+                IsCashOrdr = true;
+            }
             try
             {
                 int TotalStk = ItemStock(ItemId);
@@ -103,31 +111,47 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     var cartlist = _db.tbl_Cart.Where(o => o.CartSessionId == cookiesessionval).ToList();
                     if(cartlist != null && cartlist.Count() > 0)
                     {
-                       var crtobj = cartlist.Where(o => o.CartItemId == ItemId).FirstOrDefault();
-                       if(crtobj != null)
-                       {                            
-                            crtobj.CartItemQty = crtobj.CartItemQty + Qty;
-                          
-                            if (InStock < crtobj.CartItemQty)
+                        //var crtobj = cartlist.Where(o => o.CartItemId == ItemId).FirstOrDefault();
+                        var lstcrt = cartlist.Where(o => o.CartItemId == ItemId).ToList();
+                        if(lstcrt != null && lstcrt.Count() > 0)
+                        {
+                            long TotlQty = lstcrt.Sum(x => x.CartItemQty).Value + Qty;
+                            var crtobj1 = lstcrt.Where(o => o.IsCashonDelivery == IsCashOrdr).FirstOrDefault();
+                            if(crtobj1 != null)
+                            {
+                                crtobj1.CartItemQty = crtobj1.CartItemQty + Qty;
+                            }
+                            else
+                            {
+                                tbl_Cart crtobj = new tbl_Cart();
+                                crtobj.CartItemId = ItemId;
+                                crtobj.CartItemQty = Qty;
+                                crtobj.CartSessionId = cookiesessionval;
+                                crtobj.ClientUserId = 0;
+                                crtobj.IsCashonDelivery = IsCashOrdr;
+                                crtobj.CreatedDate = DateTime.Now;
+                                _db.tbl_Cart.Add(crtobj);
+                            }
+                            if (InStock < TotlQty)
                             {
                                 isOutofStock = true;
                             }
                         }
-                       else
-                       {
-                            crtobj = new tbl_Cart();
+                        else
+                        {
+                            tbl_Cart crtobj = new tbl_Cart();
                             crtobj.CartItemId = ItemId;
                             crtobj.CartItemQty = Qty;
                             crtobj.CartSessionId = cookiesessionval;
                             crtobj.ClientUserId = 0;
+                            crtobj.IsCashonDelivery = IsCashOrdr;
                             crtobj.CreatedDate = DateTime.Now;
                             _db.tbl_Cart.Add(crtobj);
                             if (InStock < crtobj.CartItemQty)
                             {
                                 isOutofStock = true;
                             }
-                        }
-                       
+                        }             
                     }
                     else
                     {
@@ -137,6 +161,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         crtobj.CartSessionId = cookiesessionval;
                         crtobj.ClientUserId = 0;
                         crtobj.CreatedDate = DateTime.Now;
+                        crtobj.IsCashonDelivery = IsCashOrdr;
                         _db.tbl_Cart.Add(crtobj);
                         if (InStock < crtobj.CartItemQty)
                         {
@@ -152,30 +177,46 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     var cartlist = _db.tbl_Cart.Where(o => o.ClientUserId == clientusrid).ToList();
                     if(cartlist != null && cartlist.Count() > 0)
                     {
-                        var crtobj = cartlist.Where(o => o.CartItemId == ItemId).FirstOrDefault();
-                        if (crtobj != null)
+                        var lstcrt = cartlist.Where(o => o.CartItemId == ItemId).ToList();
+                        if (lstcrt != null && lstcrt.Count() > 0)
                         {
-                            crtobj.CartItemQty = crtobj.CartItemQty + Qty;
-                            if (InStock < crtobj.CartItemQty)
+                            long TotlQty = lstcrt.Sum(x => x.CartItemQty).Value + Qty;
+                            var crtobj1 = lstcrt.Where(o => o.IsCashonDelivery == IsCashOrdr).FirstOrDefault();
+                            if (crtobj1 != null)
+                            {
+                                crtobj1.CartItemQty = crtobj1.CartItemQty + Qty;
+                            }
+                            else
+                            {
+                                tbl_Cart crtobj11 = new tbl_Cart();
+                                crtobj11.CartItemId = ItemId;
+                                crtobj11.CartItemQty = Qty;
+                                crtobj11.CartSessionId = cartlist.FirstOrDefault().CartSessionId;
+                                crtobj11.ClientUserId = clientusrid;
+                                crtobj11.IsCashonDelivery = IsCashOrdr;
+                                crtobj11.CreatedDate = DateTime.Now;
+                                _db.tbl_Cart.Add(crtobj11);
+                            }
+                            if (InStock < TotlQty)
                             {
                                 isOutofStock = true;
                             }
                         }
                         else
                         {
-                            crtobj = new tbl_Cart();
-                            crtobj.CartItemId = ItemId;
-                            crtobj.CartItemQty = Qty;
-                            crtobj.CartSessionId = cartlist.FirstOrDefault().CartSessionId;
-                            crtobj.ClientUserId = clientusrid;
-                            crtobj.CreatedDate = DateTime.Now;
-                            _db.tbl_Cart.Add(crtobj);
-                            if (InStock < crtobj.CartItemQty)
+                            tbl_Cart crtobj2 = new tbl_Cart();
+                            crtobj2.CartItemId = ItemId;
+                            crtobj2.CartItemQty = Qty;
+                            crtobj2.CartSessionId = cartlist.FirstOrDefault().CartSessionId;
+                            crtobj2.ClientUserId = clientusrid;
+                            crtobj2.IsCashonDelivery = IsCashOrdr;
+                            crtobj2.CreatedDate = DateTime.Now;
+                            _db.tbl_Cart.Add(crtobj2);
+                            if (InStock < crtobj2.CartItemQty)
                             {
                                 isOutofStock = true;
                             }
                         }
-                        
                     }
                     else
                     {
@@ -184,6 +225,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         crtobj.CartItemQty = Qty;
                         crtobj.CartSessionId = cookiesessionval;
                         crtobj.ClientUserId = clientusrid;
+                        crtobj.IsCashonDelivery = IsCashOrdr;
                         crtobj.CreatedDate = DateTime.Now;
                         _db.tbl_Cart.Add(crtobj);
                         if (InStock < crtobj.CartItemQty)
@@ -322,7 +364,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                         ItemId = i.ProductItemId,
                                         Price = clsClientSession.RoleID == 1 ? i.CustomerPrice : i.DistributorPrice,
                                         ItemImage = i.MainImage,
-                                        Qty = crt.CartItemQty.Value
+                                        Qty = crt.CartItemQty.Value,
+                                        IsCashonDelivery = crt.IsCashonDelivery.HasValue ? crt.IsCashonDelivery.Value : false
                                     }).OrderByDescending(x => x.CartId).ToList();
                     lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price); });
                 }
@@ -338,7 +381,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                         ItemId = i.ProductItemId,
                                         Price = i.CustomerPrice,
                                         ItemImage = i.MainImage,
-                                        Qty = crt.CartItemQty.Value
+                                        Qty = crt.CartItemQty.Value,
+                                        IsCashonDelivery = crt.IsCashonDelivery.HasValue ? crt.IsCashonDelivery.Value : false
                                     }).OrderByDescending(x => x.CartId).ToList();
                     lstCartItems.ForEach(x => { x.Price = GetOfferPrice(x.ItemId, x.Price); });
                 }
@@ -348,7 +392,9 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             {
                 string ErrorMessage = ex.Message.ToString();
             }
-            return PartialView("~/Areas/Client/Views/Cart/_CartItemsTop.cshtml", lstCartItems);
+            ViewData["CashCartItems"] = lstCartItems.Where(o => o.IsCashonDelivery == true).ToList();
+            ViewData["OnlinePaymentCartItems"] = lstCartItems.Where(o => o.IsCashonDelivery == false).ToList();
+            return PartialView("~/Areas/Client/Views/Cart/_CartItemsTop.cshtml");
         }
 
         [HttpPost]

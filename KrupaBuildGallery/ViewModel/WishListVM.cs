@@ -14,5 +14,6 @@ namespace KrupaBuildGallery
         public decimal Price { get; set; }
         public string ItemImage { get; set; }
         public string ItemSku { get; set; }
+        public bool IsCashonDelieveryuse { get; set; }
     }
 }

@@ -177,7 +177,7 @@
                                             <a href="/client/products/detail/@objItem.ProductItemId"><img src="@imgpath" class="img-fluid blur-up lazyload bg-img" alt=""></a>
                                         </div>
                                         <div class="cart-info cart-wrap">
-                                            <button data-toggle="modal" data-target="#addtocart" title="Add to cart" onclick="AddtoCartfunc(@objItem.ProductItemId, 1);">
+                                            <button data-toggle="modal" data-target="#addtocart" title="Add to cart" onclick="AddtoCartfunc(@objItem.ProductItemId, 1,'@objItem.IsCashonDelieveryuse.ToString()');">
                                                 <i class="ti-shopping-cart"></i>
                                             </button>
                                             @if (clsClientSession.UserID > 0)
@@ -280,7 +280,7 @@
                                             <a href="/client/products/detail/@objItem.ProductItemId"><img src="@imgpath" class="img-fluid blur-up lazyload bg-img" alt=""></a>
                                         </div>
                                         <div class="cart-info cart-wrap">
-                                            <button data-toggle="modal" data-target="#addtocart" title="Add to cart" onclick="AddtoCartfunc(@objItem.ProductItemId, 1);">
+                                            <button data-toggle="modal" data-target="#addtocart" title="Add to cart" onclick="AddtoCartfunc(@objItem.ProductItemId, 1,'@objItem.IsCashonDelieveryuse.ToString()');">
                                                 <i class="ti-shopping-cart"></i>
                                             </button>
                                             @if (clsClientSession.UserID > 0)
@@ -384,7 +384,7 @@
                                             <a href="/client/products/detail/@objItem.ProductItemId"><img src="@imgpath" class="img-fluid blur-up lazyload bg-img" alt=""></a>
                                         </div>
                                         <div class="cart-info cart-wrap">
-                                            <button data-toggle="modal" data-target="#addtocart" title="Add to cart" onclick="AddtoCartfunc(@objItem.ProductItemId, 1);">
+                                            <button data-toggle="modal" data-target="#addtocart" title="Add to cart" onclick="AddtoCartfunc(@objItem.ProductItemId, 1,'@objItem.IsCashonDelieveryuse.ToString()');">
                                                 <i class="ti-shopping-cart"></i>
                                             </button>
                                             @if (clsClientSession.UserID > 0)
