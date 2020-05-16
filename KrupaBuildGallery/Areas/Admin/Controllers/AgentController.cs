@@ -13,12 +13,12 @@ using System.Net;
 namespace KrupaBuildGallery.Areas.Admin.Controllers
 {
     [CustomAuthorize]
-    public class AdminUserController : Controller
+    public class AgentController : Controller
     {
         private readonly krupagallarydbEntities _db;
         public string AdminUserDirectoryPath = "";
 
-        public AdminUserController()
+        public AgentController()
         {
             _db = new krupagallarydbEntities();
             AdminUserDirectoryPath = ErrorMessage.AdminUserDirectoryPath;
@@ -32,7 +32,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             {
                 lstAdminUsers = (from a in _db.tbl_AdminUsers
                                  join r in _db.tbl_AdminRoles on a.AdminRoleId equals r.AdminRoleId
-                                 where !a.IsDeleted
+                                 where !a.IsDeleted && a.AdminRoleId == (int)AdminRoles.Agent
                                  select new AdminUserVM
                                  {
                                      AdminUserId = a.AdminUserId,
@@ -42,6 +42,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                      LastName = a.LastName,
                                      Email = a.Email,
                                      MobileNo = a.MobileNo,
+                                     City = a.City,
                                      ProfilePicture = a.ProfilePicture,
                                      IsActive = a.IsActive
                                  }).ToList();
@@ -55,10 +56,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
         public ActionResult Add()
         {
-            AdminUserVM objAdminUser = new AdminUserVM();
-
-            objAdminUser.RoleList = GetActiveRoleList();
-
+            AdminUserVM objAdminUser = new AdminUserVM(); 
             return View(objAdminUser);
         }
 
@@ -78,8 +76,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     tbl_AdminUsers duplicateMobile = _db.tbl_AdminUsers.Where(x => x.MobileNo.ToLower() == userVM.MobileNo && !x.IsDeleted).FirstOrDefault();
                     if (duplicateMobile != null)
                     {
-                        ModelState.AddModelError("MobileNo", ErrorMessage.MobileNoExists);
-                        userVM.RoleList = GetActiveRoleList();
+                        ModelState.AddModelError("MobileNo", ErrorMessage.MobileNoExists); 
                         return View(userVM);
                     }
 
@@ -109,7 +106,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
                     tbl_AdminUsers objAdminUser = new tbl_AdminUsers();
 
-                    objAdminUser.AdminRoleId = userVM.AdminRoleId;
+                    objAdminUser.AdminRoleId = (int)AdminRoles.Agent;
                     objAdminUser.FirstName = userVM.FirstName;
                     objAdminUser.LastName = userVM.LastName;
                     objAdminUser.Email = userVM.Email;
@@ -117,32 +114,10 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     objAdminUser.Password = userVM.Password;
                     objAdminUser.AlternateMobile = userVM.AlternateMobile;
                     objAdminUser.Address = userVM.Address;
-                    objAdminUser.City = userVM.City;
-                    objAdminUser.Designation = userVM.Designation;
-                    objAdminUser.BloodGroup = userVM.BloodGroup;
-                    objAdminUser.AdharCardNo = userVM.AdharCardNo;
-                    objAdminUser.WorkingTime = userVM.WorkingTime;
+                    objAdminUser.City = userVM.City; 
                     objAdminUser.Remarks = userVM.Remarks;
                     objAdminUser.ProfilePicture = fileName;
-
-                    if (!string.IsNullOrEmpty(userVM.Dob))
-                    {
-                        DateTime exp_Dob = DateTime.ParseExact(userVM.Dob, "dd/MM/yyyy", null);
-                        objAdminUser.Dob = exp_Dob;
-                    }
-
-                    if (!string.IsNullOrEmpty(userVM.DateOfJoin))
-                    {
-                        DateTime exp_Join = DateTime.ParseExact(userVM.DateOfJoin, "dd/MM/yyyy", null);
-                        objAdminUser.DateOfJoin = exp_Join;
-                    }
-
-                    if (!string.IsNullOrEmpty(userVM.DateOfIdCardExpiry))
-                    {
-                        DateTime exp_CardExpiry = DateTime.ParseExact(userVM.DateOfIdCardExpiry, "dd/MM/yyyy", null);
-                        objAdminUser.DateOfIdCardExpiry = exp_CardExpiry;
-                    }
-
+                     
                     objAdminUser.IsActive = true;
                     objAdminUser.IsDeleted = false;
                     objAdminUser.CreatedDate = DateTime.Now;
@@ -163,9 +138,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 string ErrorMessage = ex.Message.ToString();
                 throw ex;
             }
-
-            userVM.RoleList = GetActiveRoleList();
-
+              
             return View(userVM);
         }
 
@@ -188,42 +161,12 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                     Password = a.Password,
                                     AlternateMobile = a.AlternateMobile,
                                     Address = a.Address,
-                                    City = a.City,
-                                    Designation = a.Designation,
-                                    dtDateOfIdCardExpiry = a.DateOfIdCardExpiry,
-                                    dtDob = a.Dob,
-                                    dtDateOfJoin = a.DateOfJoin,
-                                    BloodGroup = a.BloodGroup,
-                                    WorkingTime = a.WorkingTime,
-                                    AdharCardNo = a.AdharCardNo,
+                                    City = a.City, 
                                     Remarks = a.Remarks,
                                     ProfilePicture = a.ProfilePicture,
                                     IsActive = a.IsActive
                                 }).FirstOrDefault();
-
-                if (objAdminUser.dtDob != null)
-                {
-                    objAdminUser.Dob = Convert.ToDateTime(objAdminUser.dtDob).ToString("dd/MM/yyyy");
-                }
-
-                if (objAdminUser.dtDateOfJoin != null)
-                {
-                    objAdminUser.DateOfJoin = Convert.ToDateTime(objAdminUser.dtDateOfJoin).ToString("dd/MM/yyyy");
-                }
-
-                if (objAdminUser.dtDateOfIdCardExpiry != null)
-                {
-                    objAdminUser.DateOfIdCardExpiry = Convert.ToDateTime(objAdminUser.dtDateOfIdCardExpiry).ToString("dd/MM/yyyy");
-                }
-
-                if (objAdminUser.AdminRoleId == 1 || objAdminUser.AdminRoleId == 2 || objAdminUser.AdminRoleId == 3 || objAdminUser.AdminRoleId == 4)
-                {
-                    objAdminUser.RoleList = GetActiveRoleListWithAdminRole();
-                }
-                else
-                {
-                    objAdminUser.RoleList = GetActiveRoleList();
-                }
+                 
 
             }
             catch (Exception ex)
@@ -281,7 +224,6 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
                     #region UpdateUser
                      
-                    objAdminUser.AdminRoleId = userVM.AdminRoleId;
                     objAdminUser.FirstName = userVM.FirstName;
                     objAdminUser.LastName = userVM.LastName;
                     objAdminUser.Email = userVM.Email;
@@ -289,49 +231,15 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     objAdminUser.Password = userVM.Password;
                     objAdminUser.AlternateMobile = userVM.AlternateMobile;
                     objAdminUser.Address = userVM.Address;
-                    objAdminUser.City = userVM.City;
-                    objAdminUser.Designation = userVM.Designation;
-                    objAdminUser.BloodGroup = userVM.BloodGroup;
-                    objAdminUser.AdharCardNo = userVM.AdharCardNo;
-                    objAdminUser.WorkingTime = userVM.WorkingTime;
+                    objAdminUser.City = userVM.City; 
                     objAdminUser.Remarks = userVM.Remarks;
                     objAdminUser.ProfilePicture = fileName;
-
-                    if (!string.IsNullOrEmpty(userVM.Dob))
-                    {
-                        DateTime exp_Dob = DateTime.ParseExact(userVM.Dob, "dd/MM/yyyy", null);
-                        objAdminUser.Dob = exp_Dob;
-                    }
-                    else
-                    {
-                        objAdminUser.Dob = null;
-                    }
-
-                    if (!string.IsNullOrEmpty(userVM.DateOfJoin))
-                    {
-                        DateTime exp_Join = DateTime.ParseExact(userVM.DateOfJoin, "dd/MM/yyyy", null);
-                        objAdminUser.DateOfJoin = exp_Join;
-                    }
-                    else
-                    {
-                        objAdminUser.DateOfJoin = null;
-                    }
-
-                    if (!string.IsNullOrEmpty(userVM.DateOfIdCardExpiry))
-                    {
-                        DateTime exp_CardExpiry = DateTime.ParseExact(userVM.DateOfIdCardExpiry, "dd/MM/yyyy", null);
-                        objAdminUser.DateOfIdCardExpiry = exp_CardExpiry;
-                    }
-                    else
-                    {
-                        objAdminUser.DateOfIdCardExpiry = null;
-                    }
-
+                      
                     objAdminUser.UpdatedDate = DateTime.Now;
                     objAdminUser.UpdatedBy = LoggedInUserId;
-                    
+
                     _db.SaveChanges();
-                     
+
                     return RedirectToAction("Index");
 
                     #endregion UpdateUser
@@ -341,55 +249,10 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             {
                 string ErrorMessage = ex.Message.ToString();
             }
-
-            userVM.RoleList = GetActiveRoleList();
-
+             
             return View(userVM);
         }
-
-        public ActionResult ChangePassword()
-        {
-            return View();
-        }
-
-        [HttpPost]
-        public string ChangePassword(FormCollection frm)
-        {
-            string ReturnMessage = "";
-            try
-            {
-                string CurrentPassword = frm["currentpwd"];
-                string NewPassword = frm["newpwd"];
-
-                long LoggedInUserId = Int64.Parse(clsAdminSession.UserID.ToString());
-                tbl_AdminUsers objUser = _db.tbl_AdminUsers.Where(x => x.AdminUserId == LoggedInUserId).FirstOrDefault();
-
-                if (objUser != null)
-                {
-                    string EncryptedCurrentPassword = CurrentPassword; // CoreHelper.Encrypt(CurrentPassword);
-                    if (objUser.Password == EncryptedCurrentPassword)
-                    {
-                        objUser.Password = NewPassword; //CoreHelper.Encrypt(NewPassword);
-                        _db.SaveChanges();
-
-                        ReturnMessage = "SUCCESS";
-                        Session.Clear();
-                    }
-                    else
-                    {
-                        ReturnMessage = "CP_NOT_MATCHED";
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                string ErrorMessage = ex.Message.ToString();
-                ReturnMessage = "ERROR";
-            }
-
-            return ReturnMessage;
-        }
-
+            
         public string SendSMSOfCreateUser(AdminUserVM userVM)
         {
             try
@@ -524,14 +387,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                     Password = a.Password,
                                     AlternateMobile = a.AlternateMobile,
                                     Address = a.Address,
-                                    City = a.City,
-                                    Designation = a.Designation,
-                                    dtDateOfIdCardExpiry = a.DateOfIdCardExpiry,
-                                    dtDob = a.Dob,
-                                    dtDateOfJoin = a.DateOfJoin,
-                                    BloodGroup = a.BloodGroup,
-                                    WorkingTime = a.WorkingTime,
-                                    AdharCardNo = a.AdharCardNo,
+                                    City = a.City, 
                                     Remarks = a.Remarks,
                                     ProfilePicture = a.ProfilePicture,
                                     IsActive = a.IsActive,
@@ -542,22 +398,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                     strModifiedBy = (uM != null ? uM.FirstName + " " + uM.LastName : "")
 
                                 }).FirstOrDefault();
-
-                if (objAdminUser.dtDob != null)
-                {
-                    objAdminUser.Dob = Convert.ToDateTime(objAdminUser.dtDob).ToString("dd/MM/yyyy");
-                }
-
-                if (objAdminUser.dtDateOfJoin != null)
-                {
-                    objAdminUser.DateOfJoin = Convert.ToDateTime(objAdminUser.dtDateOfJoin).ToString("dd/MM/yyyy");
-                }
-
-                if (objAdminUser.dtDateOfIdCardExpiry != null)
-                {
-                    objAdminUser.DateOfIdCardExpiry = Convert.ToDateTime(objAdminUser.dtDateOfIdCardExpiry).ToString("dd/MM/yyyy");
-                }
                  
+
             }
             catch (Exception ex)
             {
@@ -566,25 +408,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             return View(objAdminUser);
         }
-
-        private List<SelectListItem> GetActiveRoleList()
-        {
-            var RoleList = _db.tbl_AdminRoles.Where(x => x.IsActive && !x.IsDelete && !x.IsDefaultRole)
-                         .Select(o => new SelectListItem { Value = SqlFunctions.StringConvert((double)o.AdminRoleId).Trim(), Text = o.AdminRoleName })
-                         .OrderBy(x => x.Text).ToList();
-
-            return RoleList;
-        }
-
-        private List<SelectListItem> GetActiveRoleListWithAdminRole()
-        {
-            var RoleList = _db.tbl_AdminRoles.Where(x => x.IsActive && !x.IsDelete)
-                         .Select(o => new SelectListItem { Value = SqlFunctions.StringConvert((double)o.AdminRoleId).Trim(), Text = o.AdminRoleName })
-                         .OrderBy(x => x.Text).ToList();
-
-            return RoleList;
-        }
-
+         
         public string SendOTP(string MobileNumber)
         {
             try

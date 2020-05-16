@@ -2,7 +2,7 @@
 @model AdminUserVM
 
 @{
-    ViewBag.Title = "AdminUser";
+    ViewBag.Title = "Agent";
 }
 
 <style>
@@ -33,14 +33,14 @@
                 <div class="col">
                     <div class="page-header-left">
                         <h3>
-                            Admin User - @Model.FirstName  @Model.LastName
+                            Agent - @Model.FirstName  @Model.LastName
                         </h3>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <ol class="breadcrumb pull-right">
                         <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
-                        <li class="breadcrumb-item"><a href="/admin/adminuser">Admin User</a></li>
+                        <li class="breadcrumb-item"><a href="/admin/agent">Agent</a></li>
                         <li class="breadcrumb-item active">View</li>
                     </ol>
                 </div>
@@ -54,7 +54,7 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5>Admin User</h5>
+                        <h5>Agent</h5>
                     </div>
                     <div class="card-body">
 
@@ -115,35 +115,7 @@
                                         <tr>
                                             <td>City:</td>
                                             <td>@Model.City</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Designation:</td>
-                                            <td>@Model.Designation</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Date Of Birth:</td>
-                                            <td>@Model.Dob</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Date Of Joining:</td>
-                                            <td>@Model.DateOfJoin</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Blood Group:</td>
-                                            <td>@Model.BloodGroup</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Working Time:</td>
-                                            <td>@Model.WorkingTime</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Adhar Card No:</td>
-                                            <td>@Model.AdharCardNo</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Id Card Expiry Date:</td>
-                                            <td>@Model.DateOfIdCardExpiry</td>
-                                        </tr>
+                                        </tr> 
                                         <tr>
                                             <td>Remarks:</td>
                                             <td>@Model.Remarks</td>
@@ -173,7 +145,7 @@
                                 </table>
                             </div>
                         </div>
-                             
+
                     </div>
                 </div>
             </div>

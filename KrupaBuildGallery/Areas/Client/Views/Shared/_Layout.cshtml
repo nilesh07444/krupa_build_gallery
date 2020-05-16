@@ -68,21 +68,20 @@
 
     <!-- latest jquery-->
     <script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>
-     
+
     <style>
-    .divHideScroll::-webkit-scrollbar {
-        width: 0 !important
-    }
+        .divHideScroll::-webkit-scrollbar {
+            width: 0 !important
+        }
 
-    .divHideScroll {
-        overflow: -moz-scrollbars-none;
-    }
+        .divHideScroll {
+            overflow: -moz-scrollbars-none;
+        }
 
-    .divHideScroll {
-        -ms-overflow-style: none;
-    }
-
-  </style>
+        .divHideScroll {
+            -ms-overflow-style: none;
+        }
+    </style>
 
 </head>
 
@@ -106,11 +105,11 @@
                         <ul class="header-dropdown">
                             @if (clsClientSession.UserID == 0)
                             {
-                                <li class="mobile-wishlist"><a href="javascript:void(0);" onclick="alert('Please login to see wishlist items');"><i class="fa fa-heart" aria-hidden="true"></i> Wishlist</a></li>
+                                <li class="mobile-wishlist"><a href="javascript:void(0);" onclick="alert('Please login to see wishlist items');"><i class="fa fa-heart" aria-hidden="true"></i></a></li>
                             }
                             else
                             {
-                                <li class="mobile-wishlist"><a href="/wishlist"><i class="fa fa-heart" aria-hidden="true"></i> Wishlist</a></li>
+                                <li class="mobile-wishlist"><a href="/wishlist"><i class="fa fa-heart" aria-hidden="true"></i></a></li>
                             }
 
                             <li class="onhover-dropdown mobile-account">
@@ -355,7 +354,7 @@
                             <div class="footer-logo">
                                 <img style="width: 210px; height: 80px;" src="~/Content/assets/images/kbg/footer-logo.png" alt="">
                             </div>
-                            <p>
+                            <p style="text-align: justify;">
                                 Krupa Build Gallery In Godhra Has a Wide Range Of Products And Services To Cater To The Varied Requirements Of Their Customers. The Staff At This Establishment Are Courteous And Prompt At Providing Any Assistance.
                             </p>
                             <div class="footer-social">
@@ -379,6 +378,7 @@
                                     <li><a href="/orders">My Orders</a></li>
                                     <li><a href="/wishlist">Wishlist</a></li>
                                     <li><a href="/privacy">Privacy Policy</a></li>
+                                    <li><a href="/cancelandrefundpolicy">Cancellation & Refund Policy</a></li>
                                     <li><a href="/termscondition">Terms & Conditions</a></li>
                                 </ul>
                             </div>
@@ -430,34 +430,14 @@
         <div class="sub-footer dark-subfooter">
             <div class="container">
                 <div class="row">
-                    <div class="col-xl-6 col-md-6 col-sm-12">
+                    <div class="col-xl-12 col-md-12 col-sm-12">
                         <div class="footer-end">
-                            <p>
+                            <p style="text-align: center;">
                                 <i class="fa fa-copyright" aria-hidden="true"></i> 2019-20 Copyright - Krupa Build Gallery
                             </p>
                         </div>
                     </div>
-                    <div class="col-xl-6 col-md-6 col-sm-12">
-                        <div class="payment-card-bottom">
-                            <ul>
-                                <li>
-                                    <a href="#"><img src="~/Content/assets/images/icon/visa.png" alt=""></a>
-                                </li>
-                                <li>
-                                    <a href="#"><img src="~/Content/assets/images/icon/mastercard.png" alt=""></a>
-                                </li>
-                                <li>
-                                    <a href="#"><img src="~/Content/assets/images/icon/paypal.png" alt=""></a>
-                                </li>
-                                <li>
-                                    <a href="#"><img src="~/Content/assets/images/icon/american-express.png" alt=""></a>
-                                </li>
-                                <li>
-                                    <a href="#"><img src="~/Content/assets/images/icon/discover.png" alt=""></a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+                     
                 </div>
             </div>
         </div>
@@ -696,7 +676,31 @@
         function searchitems() {
             var strsearchh = $("#txtsearchprod").val();
              location.href = "/search?q="+strsearchh;
-        }
+            }
+
+
+        $(".lowercase").keyup(function () {
+            this.value = this.value.toLowerCase();
+        });
+
+        $(".uppercase").keyup(function () {
+            this.value = this.value.toLocaleUpperCase();
+        });
+
+        $(".sentensecase").keyup(function () {
+            this.value = this.value.toLowerCase();
+            this.value = this.value.replace(/(?:^|\s)\w/g, function (match) {
+                return match.toUpperCase();
+            });
+        });
+
+        function toTitleCase(str) {
+            var lcStr = str.toLowerCase();
+            return lcStr.replace(/(?:^|\s)\w/g, function (match) {
+                return match.toUpperCase();
+            });
+         }
+
     </script>
 </body>
 

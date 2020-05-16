@@ -125,6 +125,8 @@
             src = el.attr('src'),
             parent = el.parent();
 
+        src = src.replace(/ /g, '%20');
+
         parent.css({
             'background-image': 'url(' + src + ')',
             'background-size': 'cover',

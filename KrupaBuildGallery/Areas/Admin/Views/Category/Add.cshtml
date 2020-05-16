@@ -45,7 +45,7 @@
 
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.CategoryName, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
-                                @Html.EditorFor(model => model.CategoryName, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Category", maxlength = "200" } })
+                                @Html.EditorFor(model => model.CategoryName, new { htmlAttributes = new { @class = "form-control col-md-8 uppercase", @placeholder = "Enter Category", maxlength = "100" } })
 
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.CategoryName, "", new { @class = "text-danger" })
@@ -80,8 +80,8 @@
 
 <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.10.0.min.js" type="text/javascript"></script>
 <script src="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/jquery-ui.min.js" type="text/javascript"></script>
-<link href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/themes/blitzer/jquery-ui.css"
-      rel="Stylesheet" type="text/css" />
+<link href="http://ajax.aspnetcdn.com/ajax/jquery.ui/1.9.2/themes/blitzer/jquery-ui.css" rel="Stylesheet" type="text/css" />
+
 <script>
     $(document).on("click", "#btnCancel", function () {
         window.location.href = "/admin/category";

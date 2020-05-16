@@ -182,6 +182,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminUserController.cs" />
+    <Compile Include="Areas\Admin\Controllers\AgentController.cs" />
     <Compile Include="Areas\Admin\Controllers\CategoryController.cs" />
     <Compile Include="Areas\Admin\Controllers\ContactUsMessageController.cs" />
     <Compile Include="Areas\Admin\Controllers\CustomerController.cs" />
@@ -190,6 +191,7 @@
     <Compile Include="Areas\Admin\Controllers\GeneralSettingController.cs" />
     <Compile Include="Areas\Admin\Controllers\GodownController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeImagesController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ImportExcelController.cs" />
     <Compile Include="Areas\Admin\Controllers\ItemTextController.cs" />
     <Compile Include="Areas\Admin\Controllers\LoginController.cs" />
     <Compile Include="Areas\Admin\Controllers\LoginHistoryController.cs" />
@@ -202,7 +204,9 @@
     <Compile Include="Areas\Admin\Controllers\StockController.cs" />
     <Compile Include="Areas\Admin\Controllers\SubProductController.cs" />
     <Compile Include="Areas\Client\Controllers\AboutUsController.cs" />
+    <Compile Include="Areas\Client\Controllers\CancelAndRefundPolicyController.cs" />
     <Compile Include="Areas\Client\Controllers\CartController.cs" />
+    <Compile Include="Areas\Client\Controllers\CategoryController.cs" />
     <Compile Include="Areas\Client\Controllers\CheckoutController.cs" />
     <Compile Include="Areas\Client\Controllers\ContactUsController.cs" />
     <Compile Include="Areas\Client\Controllers\DistributorRequestController.cs" />
@@ -217,6 +221,7 @@
     <Compile Include="Areas\Client\Controllers\SearchController.cs" />
     <Compile Include="Areas\Client\Controllers\TermsConditionController.cs" />
     <Compile Include="Areas\Client\Controllers\WishlistController.cs" />
+    <Compile Include="Areas\WebAPI\Controllers\AgentController.cs" />
     <Compile Include="Areas\WebAPI\Controllers\CartController.cs" />
     <Compile Include="Areas\WebAPI\Controllers\CategoryController.cs" />
     <Compile Include="Areas\WebAPI\Controllers\CheckoutController.cs" />
@@ -354,6 +359,7 @@
     <Compile Include="ViewModel\Admin\AdminUserVM.cs" />
     <Compile Include="ViewModel\Admin\GodownVM.cs" />
     <Compile Include="ViewModel\Admin\HomeImageVM.cs" />
+    <Compile Include="ViewModel\Admin\ImportExcelDataVM.cs" />
     <Compile Include="ViewModel\Admin\LoginHistoryVM.cs" />
     <Compile Include="ViewModel\Admin\RoleModuleVM.cs" />
     <Compile Include="ViewModel\Admin\RoleVM.cs" />
@@ -3925,6 +3931,18 @@
     <Content Include="Areas\Client\Views\Cart\SecondCart.cshtml" />
     <Content Include="Areas\Client\Views\Cart\_SecondCartItemsTop.cshtml" />
     <Content Include="Areas\Client\Views\Checkout\secondcartcheckout.cshtml" />
+    <Content Include="Areas\Admin\Views\ImportExcel\Category.cshtml" />
+    <Content Include="Areas\Admin\Views\ImportExcel\Product.cshtml" />
+    <Content Include="Areas\Admin\Views\ImportExcel\SubProduct.cshtml" />
+    <Content Include="Areas\Admin\Views\ImportExcel\ProductItem.cshtml" />
+    <Content Include="Areas\Admin\Views\Agent\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Agent\Add.cshtml" />
+    <Content Include="Areas\Admin\Views\Agent\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Agent\View.cshtml" />
+    <Content Include="Areas\Client\Views\CancelAndRefundPolicy\Index.cshtml" />
+    <Content Include="Areas\Client\Views\Products\Popular.cshtml" />
+    <Content Include="Areas\Client\Views\Products\UnPacked.cshtml" />
+    <Content Include="Areas\Client\Views\Products\Offer.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />
@@ -3962,7 +3980,9 @@
     <Folder Include="Areas\Admin\Models\" />
     <Folder Include="Areas\Admin\Views\ClientUser\" />
     <Folder Include="Areas\Client\Models\" />
+    <Folder Include="Areas\Client\Views\Category\" />
     <Folder Include="Areas\WebAPI\Models\" />
+    <Folder Include="Areas\WebAPI\Views\Agent\" />
     <Folder Include="Areas\WebAPI\Views\Cart\" />
     <Folder Include="Areas\WebAPI\Views\Category\" />
     <Folder Include="Areas\WebAPI\Views\Checkout\" />

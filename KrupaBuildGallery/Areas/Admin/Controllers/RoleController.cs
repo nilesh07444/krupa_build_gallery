@@ -26,12 +26,14 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             {
                 lstRoles = (from r in _db.tbl_AdminRoles
                             where !r.IsDelete
+                            && r.AdminRoleId != (int)AdminRoles.ChannelPartner
                             select new RoleVM
                             {
                                 AdminRoleId = r.AdminRoleId,
                                 AdminRoleName = r.AdminRoleName,
                                 AdminRoleDescription = r.AdminRoleDescription,
-                                IsActive = r.IsActive
+                                IsActive = r.IsActive,
+                                IsDefaultRole = r.IsDefaultRole
                             }).OrderByDescending(x => x.AdminRoleId).ToList();
             }
             catch (Exception ex)
@@ -89,6 +91,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     tbl_AdminRoles objRole = new tbl_AdminRoles();
                     objRole.AdminRoleName = roleVM.AdminRoleName;
                     objRole.AdminRoleDescription = roleVM.AdminRoleDescription;
+                    objRole.IsDefaultRole = false;
                     objRole.IsActive = true;
                     objRole.IsDelete = false;
                     objRole.CreatedBy = LoggedInUserId;
@@ -149,7 +152,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                AdminRoleId = r.AdminRoleId,
                                AdminRoleName = r.AdminRoleName,
                                AdminRoleDescription = r.AdminRoleDescription,
-                               IsActive = r.IsActive
+                               IsActive = r.IsActive,
+                               IsDefaultRole = r.IsDefaultRole
                            }).FirstOrDefault();
 
                 objRole.lstRoleModules = (from m in _db.tbl_AdminRoleModules
@@ -344,7 +348,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                AdminRoleName = r.AdminRoleName,
                                AdminRoleDescription = r.AdminRoleDescription,
                                IsActive = r.IsActive,
-
+                               IsDefaultRole = r.IsDefaultRole,
                                CreatedDate = r.CreatedDate,
                                UpdatedDate = r.UpdatedDate,
                                strCreatedBy = (uC != null ? uC.FirstName + " " + uC.LastName : ""),

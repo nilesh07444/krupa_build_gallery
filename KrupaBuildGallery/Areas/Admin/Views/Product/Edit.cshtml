@@ -54,7 +54,7 @@
 
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.ProductName, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
-                                @Html.EditorFor(model => model.ProductName, new { htmlAttributes = new { @class = "form-control col-md-8", style = "width:350px;", @placeholder = "Enter Product Name", maxlength = "200" } })
+                                @Html.EditorFor(model => model.ProductName, new { htmlAttributes = new { @class = "form-control col-md-8 uppercase", style = "width:350px;", @placeholder = "Enter Product Name", maxlength = "200" } })
 
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.ProductName, "", new { @class = "text-danger" })

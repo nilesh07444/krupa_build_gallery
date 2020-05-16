@@ -18,6 +18,7 @@ namespace KrupaBuildGallery
         public List<RoleModuleVM> lstRoleModules { get; set; }
 
         // Additional fields
+        public bool IsDefaultRole { get; set; }
         public string strCreatedBy { get; set; }
         public DateTime CreatedDate { get; set; }
         public string strModifiedBy { get; set; }

@@ -28,6 +28,7 @@ namespace KrupaBuildGallery.Model
         public System.DateTime CreatedDate { get; set; }
         public Nullable<long> UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDate { get; set; }
+        public bool IsDefaultRole { get; set; }
     
         public virtual ICollection<tbl_AdminRolePermissions> tbl_AdminRolePermissions { get; set; }
     }

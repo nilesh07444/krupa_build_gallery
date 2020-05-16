@@ -45,7 +45,7 @@
 
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.CategoryName, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
-                                @Html.EditorFor(model => model.CategoryName, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Category", maxlength = "200" } })
+                                @Html.EditorFor(model => model.CategoryName, new { htmlAttributes = new { @class = "form-control col-md-8 uppercase", @placeholder = "Enter Category", maxlength = "200" } })
 
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.CategoryName, "", new { @class = "text-danger" })
@@ -115,7 +115,7 @@
                         // alert(response.responseText);
                     },
                     failure: function (response) {
-                        console.log(response.responseText); 
+                        console.log(response.responseText);
                         // alert(response.responseText);
                     }
                 });

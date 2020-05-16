@@ -1,8 +1,8 @@
-﻿@using KrupaBuildGallery.ViewModel
-@model ItemTextVM
+﻿
+@model ImportExcelDataVM
 
 @{
-    ViewBag.Title = "Edit Item Text";
+    ViewBag.Title = "Import Category";
 }
 
 <div class="page-body">
@@ -14,15 +14,14 @@
                 <div class="col">
                     <div class="page-header-left">
                         <h3>
-                            Edit Item Text
+                            Import Category
                         </h3>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <ol class="breadcrumb pull-right">
-                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
-                        <li class="breadcrumb-item"><a href="/admin/itemtext">Item Text</a></li>
-                        <li class="breadcrumb-item active">Edit Item Text</li>
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li> 
+                        <li class="breadcrumb-item active">Import Category</li>
                     </ol>
                 </div>
             </div>
@@ -35,28 +34,26 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5>Edit Item Text</h5>
+                        <h5>Import Category</h5>
                     </div>
                     <div class="card-body">
-                        @using (Html.BeginForm("Edit", "ItemText", FormMethod.Post, new { @id = "Itemtextformid", @class = "needs-validation", enctype = "multipart/form-data", role = "form" }))
+                        @using (Html.BeginForm("Category", "ImportExcel", FormMethod.Post, new { @id = "ImportExcelFormId", @class = "needs-validation", enctype = "multipart/form-data", role = "form" }))
                         {
+
                             @Html.AntiForgeryToken()
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
+                              
                             <div class="form-group row">
-                                @Html.LabelFor(model => model.ItemText, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
-                                @Html.EditorFor(model => model.ItemText, new { htmlAttributes = new { @class = "form-control col-md-8 sentensecase", @placeholder = "Enter Item Text", maxlength = "200" } })
+                                @Html.LabelFor(model => model.ExcelFile, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.TextBoxFor(model => model.ExcelFile, new { type = "file", @class = "form-control col-md-8" })
 
                                 <lable class="col-xl-3 col-md-4"></lable>
-                                @Html.ValidationMessageFor(model => model.ItemText, "", new { @class = "text-danger" })
+                                @Html.ValidationMessageFor(model => model.ExcelFile, "", new { @class = "text-danger" })
                             </div>
 
                             <div class="form-group row">
                                 <lable class="col-xl-3 col-md-4"></lable>
-
-                                @Html.HiddenFor(x => x.ItemTextId)
-                                <button type="submit" class="btn btn-primary" style="margin-right:10px;">Submit</button>
-                                <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
+                                <button type="submit" class="btn btn-primary" style="margin-right:10px;">Submit</button> 
                             </div>
                         }
                     </div>
@@ -71,10 +68,4 @@
 <script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>
 <script src="~/Scripts/jquery.validate.min.js"></script>
 <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
-
-<script>
-
-    $(document).on("click", "#btnCancel", function () {
-        window.location.href = "/admin/itemtext";
-    });
-</script>
+ 

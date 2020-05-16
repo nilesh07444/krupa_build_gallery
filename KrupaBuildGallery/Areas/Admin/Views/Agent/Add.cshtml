@@ -1,15 +1,9 @@
 ﻿@model AdminUserVM
 
 @{
-    ViewBag.Title = "AdminUser";
+    ViewBag.Title = "AddAgent";
 }
-
-    <style> 
-    body {
-        padding-top: 60px;
-    } 
-  </style>
-
+ 
 <div class="page-body">
 
     <!-- Container-fluid starts-->
@@ -19,15 +13,15 @@
                 <div class="col">
                     <div class="page-header-left">
                         <h3>
-                            Add Admin User
+                            Add Agent
                         </h3>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <ol class="breadcrumb pull-right">
                         <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
-                        <li class="breadcrumb-item"><a href="/admin/adminuser">Admin User</a></li>
-                        <li class="breadcrumb-item active">Add Admin User</li>
+                        <li class="breadcrumb-item"><a href="/admin/agent">Agent</a></li>
+                        <li class="breadcrumb-item active">Add Agent</li>
                     </ol>
                 </div>
             </div>
@@ -40,10 +34,10 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5>Add Admin User</h5>
+                        <h5>Add Agent</h5>
                     </div>
                     <div class="card-body">
-                        @using (Html.BeginForm("Add", "AdminUser", FormMethod.Post, new { @id = "AdminUserFormId", @class = "needs-validation", enctype = "multipart/form-data", role = "form" }))
+                        @using (Html.BeginForm("Add", "Agent", FormMethod.Post, new { @id = "AdminUserFormId", @class = "needs-validation", enctype = "multipart/form-data", role = "form" }))
                         {
 
                             @Html.AntiForgeryToken()
@@ -63,14 +57,6 @@
 
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
-                            </div>
-
-                            <div class="form-group row">
-                                @Html.LabelFor(model => model.AdminRoleId, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
-                                @Html.DropDownListFor(model => model.AdminRoleId, new SelectList(Model.RoleList, "Value", "Text"), "- Select Role -", new { @class = "form-control col-md-8", style = "" })
-
-                                <lable class="col-xl-3 col-md-4"></lable>
-                                @Html.ValidationMessageFor(model => model.AdminRoleId, "", new { @class = "text-danger" })
                             </div>
 
                             <div class="form-group row">
@@ -122,62 +108,6 @@
                             </div>
 
                             <div class="form-group row">
-                                @Html.LabelFor(model => model.Dob, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
-                                @Html.EditorFor(model => model.Dob, new { htmlAttributes = new { @class = "form-control col-md-8 clsDatePicker", @placeholder = "DD/MM/YYYY", @data_language = "en", @readonly = "readonly" } })
-
-                                <lable class="col-xl-3 col-md-4"></lable>
-                                @Html.ValidationMessageFor(model => model.Dob, "", new { @class = "text-danger" })
-                            </div>
-
-                            <div class="form-group row">
-                                @Html.LabelFor(model => model.Designation, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
-                                @Html.EditorFor(model => model.Designation, new { htmlAttributes = new { @class = "form-control col-md-8 uppercase", @placeholder = "Enter Designation", maxlength = "200" } })
-
-                                <lable class="col-xl-3 col-md-4"></lable>
-                                @Html.ValidationMessageFor(model => model.Designation, "", new { @class = "text-danger" })
-                            </div>
-
-                            <div class="form-group row">
-                                @Html.LabelFor(model => model.DateOfJoin, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
-                                @Html.EditorFor(model => model.DateOfJoin, new { htmlAttributes = new { @class = "form-control col-md-8 clsDatePicker", @placeholder = "DD/MM/YYYY", @data_language = "en", @readonly = "readonly" } })
-
-                                <lable class="col-xl-3 col-md-4"></lable>
-                                @Html.ValidationMessageFor(model => model.DateOfJoin, "", new { @class = "text-danger" })
-                            </div>
-
-                            <div class="form-group row">
-                                @Html.LabelFor(model => model.WorkingTime, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
-                                @Html.EditorFor(model => model.WorkingTime, new { htmlAttributes = new { @class = "form-control col-md-8 uppercase", @placeholder = "Enter Working Time", maxlength = "50" } })
-
-                                <lable class="col-xl-3 col-md-4"></lable>
-                                @Html.ValidationMessageFor(model => model.Designation, "", new { @class = "text-danger" })
-                            </div>
-
-                            <div class="form-group row">
-                                @Html.LabelFor(model => model.BloodGroup, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
-                                @Html.EditorFor(model => model.BloodGroup, new { htmlAttributes = new { @class = "form-control col-md-8 uppercase", @placeholder = "Enter Blood Group", maxlength = "10" } })
-
-                                <lable class="col-xl-3 col-md-4"></lable>
-                                @Html.ValidationMessageFor(model => model.BloodGroup, "", new { @class = "text-danger" })
-                            </div>
-
-                            <div class="form-group row">
-                                @Html.LabelFor(model => model.AdharCardNo, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
-                                @Html.EditorFor(model => model.AdharCardNo, new { htmlAttributes = new { @class = "form-control col-md-8 uppercase", @placeholder = "Enter Aadhar Card No", maxlength = "20" } })
-
-                                <lable class="col-xl-3 col-md-4"></lable>
-                                @Html.ValidationMessageFor(model => model.AdharCardNo, "", new { @class = "text-danger" })
-                            </div>
-
-                            <div class="form-group row">
-                                @Html.LabelFor(model => model.DateOfIdCardExpiry, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
-                                @Html.EditorFor(model => model.DateOfIdCardExpiry, new { htmlAttributes = new { @class = "form-control col-md-8 clsDatePicker", @placeholder = "DD/MM/YYYY", @data_language = "en", @readonly = "readonly" } })
-
-                                <lable class="col-xl-3 col-md-4"></lable>
-                                @Html.ValidationMessageFor(model => model.DateOfIdCardExpiry, "", new { @class = "text-danger" })
-                            </div>
-
-                            <div class="form-group row">
                                 @Html.LabelFor(model => model.ProfilePictureFile, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.TextBoxFor(model => model.ProfilePictureFile, new { type = "file", @class = "form-control col-md-8" })
 
@@ -195,7 +125,7 @@
 
                             <div class="form-group row">
                                 <lable class="col-xl-3 col-md-4"></lable>
-                                <button type="submit" class="btn btn-primary" style="        margin-right: 10px;">Submit</button>
+                                <button type="submit" class="btn btn-primary" style="margin-right: 10px;">Submit</button>
                                 <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
                             </div>
 
@@ -212,12 +142,11 @@
 <script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>
 <script src="~/Scripts/jquery.validate.min.js"></script>
 <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
- 
-<script>
-     
-    $(document).on("click", "#btnCancel", function () {
-        window.location.href = "/admin/adminuser";
-    });
 
+<script>
+
+    $(document).on("click", "#btnCancel", function () {
+        window.location.href = "/admin/agent";
+    });
 
 </script>

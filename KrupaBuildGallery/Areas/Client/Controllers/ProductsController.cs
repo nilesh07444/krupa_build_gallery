@@ -413,5 +413,21 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             }
             return Convert.ToInt32(TotalSold);
         }
+
+        public ActionResult Popular()
+        {
+            return View();
+        }
+
+        public ActionResult UnPacked()
+        {
+            return View();
+        }
+
+        public ActionResult Offer()
+        {
+            return View();
+        }
+
     }
 }
