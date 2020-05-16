@@ -93,23 +93,37 @@
         <div class="top-header">
             <div class="container-fluid custom-container">
                 <div class="row">
-                    <div class="col-lg-6">
+                    <div class="col-lg-3">
                         <div class="header-contact">
                             <ul>
                                 <li>WELCOME TO SHOPPING & SAVING</li>
-                                <li><i class="fa fa-phone" aria-hidden="true"></i>Toll Free No: +91 98246 43334</li>
                             </ul>
                         </div>
                     </div>
-                    <div class="col-lg-6 text-right">
+                    <div class="col-lg-2">
+                        <div class="header-contact">
+                            <ul>
+                                <li><i class="fa fa-phone" aria-hidden="true"></i>Toll Free: 1800 200 7003</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <ul class="header-dropdown"> 
+                            <li class="" style="width: 100%;">
+                                <input type="text" placeholder="Search any products.." style="width: 100%; padding: 5px; border-radius: 5px; border: none;" />
+                            </li> 
+                        </ul>
+                    </div>
+                    <div class="col-lg-2 text-right">
                         <ul class="header-dropdown">
+                              
                             @if (clsClientSession.UserID == 0)
                             {
-                                <li class="mobile-wishlist"><a href="javascript:void(0);" onclick="alert('Please login to see wishlist items');"><i class="fa fa-heart" aria-hidden="true"></i></a></li>
+                                <li class="mobile-wishlist" style="padding: 0px 0px;"><a href="javascript:void(0);" title="WishList" onclick="alert('Please login to see wishlist items');"><i class="fa fa-heart" aria-hidden="true"></i></a></li>
                             }
                             else
                             {
-                                <li class="mobile-wishlist"><a href="/wishlist"><i class="fa fa-heart" aria-hidden="true"></i></a></li>
+                                <li class="mobile-wishlist" style="padding: 0px 0px;"><a href="/wishlist" title="WishList"><i class="fa fa-heart" aria-hidden="true"></i></a></li>
                             }
 
                             <li class="onhover-dropdown mobile-account">

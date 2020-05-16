@@ -3943,6 +3943,7 @@
     <Content Include="Areas\Client\Views\Products\Popular.cshtml" />
     <Content Include="Areas\Client\Views\Products\UnPacked.cshtml" />
     <Content Include="Areas\Client\Views\Products\Offer.cshtml" />
+    <Content Include="Areas\Client\Views\Category\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />
@@ -3980,7 +3981,6 @@
     <Folder Include="Areas\Admin\Models\" />
     <Folder Include="Areas\Admin\Views\ClientUser\" />
     <Folder Include="Areas\Client\Models\" />
-    <Folder Include="Areas\Client\Views\Category\" />
     <Folder Include="Areas\WebAPI\Models\" />
     <Folder Include="Areas\WebAPI\Views\Agent\" />
     <Folder Include="Areas\WebAPI\Views\Cart\" />
