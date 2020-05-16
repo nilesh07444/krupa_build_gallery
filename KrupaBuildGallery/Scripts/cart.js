@@ -7,6 +7,9 @@
         success: function (result) {
             if (result == "OutofStock") {
                 msgdisplayFail("Item is out of stock can not add to cart");
+                $("#outofstockmodl").modal("show");
+                $("#outofstockmodl #hdnsecndcartitmid").val(itemid);
+                $("#outofstockmodl #hdnsecndcartqty").val(qty);
                 return false;
             }
             else {
@@ -246,6 +249,43 @@ function CheckItemExists(bypymnt,optionss,e) {
         error: function (resultData) {
             console.log("error");
             return false;
+        }
+    });
+}
+
+function addtosecondcart() {
+    var itemid = $("#outofstockmodl #hdnsecndcartitmid").val();
+    var qty = $("#outofstockmodl #hdnsecndcartqty").val();    
+    var URL = '/Client/Cart/AddtoSecondCart';
+    $("#outofstockmodl").modal("hide");
+    jQuery.ajax({
+        type: 'POST',
+        async: true,
+        url: URL + "?ItemId=" + itemid + "&Qty=" + qty,
+        success: function (result) {            
+                msgdisplay("Item Successfully added to your second cart");            
+         
+            // if (result == "notfound") {
+            //  alert("Product Not Found");
+            // }         
+            $.ajax({
+                url: '/Client/Cart/SecondCartItemsListTop',
+                type: "post",
+                dataType: "html",
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    //success
+                    $("#ulCartitemssecond").html(data); //populate the tab content.
+
+                },
+                error: function (e) {
+                    alert("error");
+                }
+            });
+        },
+        error: function (resultData) {
+            console.log("error");
+
         }
     });
 }

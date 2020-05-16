@@ -40,5 +40,10 @@ namespace KrupaBuildGallery.Model
         public Nullable<decimal> PointsUsed { get; set; }
         public Nullable<long> InvoiceNo { get; set; }
         public string InvoiceYear { get; set; }
+        public Nullable<int> OrderType { get; set; }
+        public Nullable<decimal> CreditAmountUsed { get; set; }
+        public Nullable<decimal> WalletAmountUsed { get; set; }
+        public Nullable<decimal> AmountByRazorPay { get; set; }
+        public Nullable<bool> IsCashOnDelivery { get; set; }
     }
 }

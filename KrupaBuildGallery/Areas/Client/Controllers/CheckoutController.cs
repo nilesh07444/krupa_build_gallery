@@ -190,6 +190,14 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 ViewBag.ShippingChargeTotal = ShippingChargeTotal;
                 ViewBag.TotalDiscount = TotalDiscount;
                 ViewBag.TotalOrder = TotalOrder;
+                decimal WalletAmt = 0;
+                var objuserclient =_db.tbl_ClientUsers.Where(o => o.ClientUserId == clsClientSession.UserID).FirstOrDefault();
+                if(objuserclient != null)
+                {
+                    WalletAmt = objuserclient.WalletAmt.HasValue ? objuserclient.WalletAmt.Value : 0;
+                }
+                //_db.tbl_ClientOtherDetails.Where(o => o.ClientUserId == clsClientSession.UserID).FirstOrDefault();
+                ViewBag.WalletAmt = WalletAmt;
             }
             catch (Exception ex)
             {
@@ -806,6 +814,207 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             {
                 return "Fail";
             }
+        }
+
+        public ActionResult secondcartcheckout()
+        {
+            List<CartVM> lstCartItems = new List<CartVM>();
+            try
+            {
+
+                decimal ShippingChargeTotal = 0;
+                decimal TotalDiscount = 0;
+                decimal TotalOrder = 0;
+                ViewBag.WebsiteOrderId = "1";
+                decimal AdvancePaymentAmt = 0;
+
+                string GuidNew = Guid.NewGuid().ToString();
+                string cookiesessionval = "";
+                if (Request.Cookies["sessionkeyval"] != null)
+                {
+                    cookiesessionval = Request.Cookies["sessionkeyval"].Value;
+                }
+                else
+                {
+                    cookiesessionval = GuidNew;
+                    Response.Cookies["sessionkeyval"].Value = GuidNew;
+                    Response.Cookies["sessionkeyval"].Expires = DateTime.Now.AddDays(30);
+                }
+                if (clsClientSession.UserID > 0)
+                {
+                    long ClientUserId = Convert.ToInt64(clsClientSession.UserID);
+                    lstCartItems = (from crt in _db.tbl_SecondCart
+                                    join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
+                                    where crt.ClientUserId == ClientUserId
+                                    select new CartVM
+                                    {
+                                        CartId = crt.SecondCartId,
+                                        ItemName = i.ItemName,
+                                        ItemId = i.ProductItemId,
+                                        Price = clsClientSession.RoleID == 1 ? i.CustomerPrice : i.DistributorPrice,
+                                        ItemImage = i.MainImage,
+                                        Qty = crt.CartItemQty.Value,
+                                        ShippingCharge = i.ShippingCharge.HasValue ? i.ShippingCharge.Value : 0,
+                                        GSTPer = i.GST_Per,
+                                        IsCashonDelivery = i.IsCashonDeliveryUse.HasValue?i.IsCashonDeliveryUse.Value : false,
+                                        AdvncePayPer = i.PayAdvancePer.HasValue ? i.PayAdvancePer.Value : 0
+                                    }).OrderByDescending(x => x.CartId).ToList();
+                    lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price); });
+                }
+                else
+                {
+                    lstCartItems = (from crt in _db.tbl_SecondCart
+                                    join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
+                                    where crt.CartSessionId == cookiesessionval
+                                    select new CartVM
+                                    {
+                                        CartId = crt.SecondCartId,
+                                        ItemName = i.ItemName,
+                                        ItemId = i.ProductItemId,
+                                        Price = i.CustomerPrice,
+                                        ItemImage = i.MainImage,
+                                        Qty = crt.CartItemQty.Value,
+                                        ShippingCharge = i.ShippingCharge.HasValue ? i.ShippingCharge.Value : 0,
+                                        IsCashonDelivery = i.IsCashonDeliveryUse.HasValue ? i.IsCashonDeliveryUse.Value : false,
+                                        GSTPer = i.GST_Per,
+                                        AdvncePayPer = i.PayAdvancePer.HasValue ? i.PayAdvancePer.Value : 0
+                                    }).OrderByDescending(x => x.CartId).ToList();
+                    lstCartItems.ForEach(x => { x.Price = GetOfferPrice(x.ItemId, x.Price); });
+                }
+
+                decimal creditlimitreminng = 0;
+                if (clsClientSession.UserID > 0 && clsClientSession.RoleID == 2)
+                {
+                    long UserID = clsClientSession.UserID;
+                    tbl_ClientOtherDetails objclientothr = _db.tbl_ClientOtherDetails.Where(o => o.ClientUserId == UserID).FirstOrDefault();
+                    if (objclientothr != null && objclientothr.CreditLimitAmt != null && objclientothr.CreditLimitAmt > 0)
+                    {
+                        decimal amountdue = 0;
+                        if (objclientothr.AmountDue != null)
+                        {
+                            amountdue = objclientothr.AmountDue.Value;
+                        }
+                        creditlimitreminng = objclientothr.CreditLimitAmt.Value - amountdue;
+                    }
+                }
+                List<InvoiceItemVM> lstInvItem = new List<InvoiceItemVM>();
+                if (clsClientSession.RoleID == 1)
+                {
+                    var lstCartItemsnew = lstCartItems.OrderByDescending(o => o.GSTPer).ToList();
+                    DateTime dtNow = DateTime.UtcNow;
+                    long clientusrrId = clsClientSession.UserID;
+                    List<tbl_PointDetails> lstpoints = _db.tbl_PointDetails.Where(o => o.ClientUserId == clientusrrId && o.ExpiryDate >= dtNow && o.Points.Value > o.UsedPoints.Value).ToList().OrderBy(x => x.ExpiryDate).ToList();
+                    decimal pointreamining = 0;
+                    if (lstpoints != null && lstpoints.Count() > 0)
+                    {
+                        pointreamining = lstpoints.Sum(x => (x.Points - x.UsedPoints).Value);
+                    }
+                    decimal totalremining = pointreamining;
+                    if (lstCartItemsnew.Count() > 0)
+                    {
+                        foreach (var objcr in lstCartItemsnew)
+                        {
+                            if (objcr != null)
+                            {
+                                //decimal InclusiveGST = Math.Round(objcr.Price - objcr.Price * (100 / (100 + objcr.GSTPer)), 2);
+                                //decimal PreGSTPrice = Math.Round(objcr.Price - InclusiveGST, 2);
+                                decimal originalbasicprice = Math.Round(((objcr.Price / (100 + objcr.GSTPer)) * 100), 2);
+                                decimal totalItembasicprice = originalbasicprice * objcr.Qty;
+                                decimal disc = Math.Round((totalItembasicprice * 5) / 100, 2);
+                                if (disc <= totalremining)
+                                {
+                                    totalremining = totalremining - disc;
+                                }
+                                else
+                                {
+                                    disc = totalremining;
+                                    totalremining = totalremining - disc;
+                                }
+                                TotalDiscount = TotalDiscount + disc;
+                                ShippingChargeTotal = ShippingChargeTotal + (objcr.ShippingCharge * objcr.Qty);
+                                decimal beforetaxamount = Math.Round(totalItembasicprice - disc, 2);
+                                decimal gstamt = Math.Round((beforetaxamount * objcr.GSTPer) / 100, 2);
+                                decimal AfterTax = beforetaxamount + gstamt;
+                                InvoiceItemVM objInvItm = new InvoiceItemVM();
+                                objInvItm.ItemName = objcr.ItemName;
+                                objInvItm.GSTPer = objcr.GSTPer;
+                                objInvItm.GSTAmount = gstamt;
+                                objInvItm.Qty = Convert.ToInt32(objcr.Qty);
+                                objInvItm.BasicAmount = originalbasicprice;
+                                objInvItm.Discount = disc;
+                                objInvItm.ItemAmount = AfterTax;
+                                objInvItm.beforetaxamount = beforetaxamount;
+                                TotalOrder = TotalOrder + AfterTax;
+                                objInvItm.AdvncePayAMt = Math.Round((AfterTax * objcr.AdvncePayPer) / 100, 2);
+                                AdvancePaymentAmt = objInvItm.AdvncePayAMt + AdvancePaymentAmt;
+                                lstInvItem.Add(objInvItm);
+                            }
+                        }
+                    }
+                }
+                else if (clsClientSession.RoleID == 2)
+                {
+                    var lstCartItemsnew = lstCartItems.OrderByDescending(o => o.GSTPer).ToList();
+                    decimal pointreamining = 0;
+                    decimal totalremining = pointreamining;
+
+                    if (lstCartItemsnew.Count() > 0)
+                    {
+                        foreach (var objcr in lstCartItemsnew)
+                        {
+                            if (objcr != null)
+                            {
+                                decimal originalbasicprice = Math.Round(((objcr.Price / (100 + objcr.GSTPer)) * 100), 2);
+                                decimal totalItembasicprice = originalbasicprice * objcr.Qty;
+                                decimal disc = 0;// Math.Round((totalItembasicprice * 5) / 100, 2);
+                                ShippingChargeTotal = ShippingChargeTotal + (objcr.ShippingCharge * objcr.Qty);
+                                decimal beforetaxamount = Math.Round(totalItembasicprice - disc, 2);
+                                decimal gstamt = Math.Round((beforetaxamount * objcr.GSTPer) / 100, 2);
+                                decimal AfterTax = beforetaxamount + gstamt;
+                                InvoiceItemVM objInvItm = new InvoiceItemVM();
+                                objInvItm.ItemName = objcr.ItemName;
+                                objInvItm.GSTPer = objcr.GSTPer;
+                                objInvItm.GSTAmount = gstamt;
+                                objInvItm.Qty = Convert.ToInt32(objcr.Qty);
+                                objInvItm.BasicAmount = originalbasicprice;
+                                objInvItm.Discount = disc;
+                                objInvItm.ItemAmount = AfterTax;
+                                objInvItm.beforetaxamount = beforetaxamount;
+                                TotalOrder = TotalOrder + AfterTax;
+                                objInvItm.AdvncePayAMt = Math.Round((AfterTax * objcr.AdvncePayPer) / 100, 2);
+                                AdvancePaymentAmt = objInvItm.AdvncePayAMt + AdvancePaymentAmt;
+                                lstInvItem.Add(objInvItm);
+                            }
+                        }
+                    }
+                }
+
+                ViewBag.CreditRemaining = creditlimitreminng;
+                tbl_ClientOtherDetails objotherdetails = _db.tbl_ClientOtherDetails.Where(o => o.ClientUserId == clsClientSession.UserID).FirstOrDefault();
+                ViewData["objotherdetails"] = objotherdetails;
+                ViewData["lstInvItem"] = lstInvItem;
+                ViewBag.ShippingChargeTotal = ShippingChargeTotal;
+                ViewBag.TotalDiscount = TotalDiscount;
+                ViewBag.TotalOrder = TotalOrder;
+                decimal WalletAmt = 0;
+                var objuserclient = _db.tbl_ClientUsers.Where(o => o.ClientUserId == clsClientSession.UserID).FirstOrDefault();
+                if (objuserclient != null)
+                {
+                    WalletAmt = objuserclient.WalletAmt.HasValue ? objuserclient.WalletAmt.Value : 0;
+                }
+                //_db.tbl_ClientOtherDetails.Where(o => o.ClientUserId == clsClientSession.UserID).FirstOrDefault();
+                ViewBag.WalletAmt = WalletAmt;
+                ViewBag.AdvancePaymentAmt = AdvancePaymentAmt;
+            }
+            catch (Exception ex)
+            {
+                string ErrorMessage = ex.Message.ToString();
+            }
+            ViewData["lstCartItems"] = lstCartItems;
+            var objGenralsetting = _db.tbl_GeneralSetting.FirstOrDefault();
+            ViewBag.ShippingMsg = objGenralsetting.ShippingMessage;
+           
+            return View();
         }
     }
 }

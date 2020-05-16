@@ -39,7 +39,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     long ClientUserId = Convert.ToInt64(clsClientSession.UserID);
                     lstCartItems = (from crt in _db.tbl_Cart
                                  join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
-                                 where crt.ClientUserId == ClientUserId
+                                 where crt.ClientUserId == ClientUserId 
                                  select new CartVM
                                  {
                                      CartId = crt.Cart_Id,
@@ -463,6 +463,301 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             }
             long remiaing = TotalStock.Value - TotalSold.Value;
             return Convert.ToInt32(remiaing);
+        }
+
+        public ActionResult SecondCart()
+        {
+            List<CartVM> lstCartItems = new List<CartVM>();
+
+            try
+            {
+                string GuidNew = Guid.NewGuid().ToString();
+                string cookiesessionval = "";
+                if (Request.Cookies["sessionkeyval"] != null)
+                {
+                    cookiesessionval = Request.Cookies["sessionkeyval"].Value;
+                }
+                else
+                {
+                    cookiesessionval = GuidNew;
+                    Response.Cookies["sessionkeyval"].Value = GuidNew;
+                    Response.Cookies["sessionkeyval"].Expires = DateTime.Now.AddDays(30);
+                }
+                if (clsClientSession.UserID > 0)
+                {
+                    long ClientUserId = Convert.ToInt64(clsClientSession.UserID);
+                    lstCartItems = (from crt in _db.tbl_SecondCart
+                                    join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
+                                    where crt.ClientUserId == ClientUserId
+                                    select new CartVM
+                                    {
+                                        CartId = crt.SecondCartId,
+                                        ItemName = i.ItemName,
+                                        ItemId = i.ProductItemId,
+                                        Price = clsClientSession.RoleID == 1 ? i.CustomerPrice : i.DistributorPrice,
+                                        ItemImage = i.MainImage,
+                                        Qty = crt.CartItemQty.Value
+                                    }).OrderByDescending(x => x.CartId).ToList();
+                    lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price); x.StockQty = RemainingStock(x.ItemId); });
+                }
+                else
+                {
+                    lstCartItems = (from crt in _db.tbl_SecondCart
+                                    join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
+                                    where crt.CartSessionId == cookiesessionval
+                                    select new CartVM
+                                    {
+                                        CartId = crt.SecondCartId,
+                                        ItemName = i.ItemName,
+                                        ItemId = i.ProductItemId,
+                                        Price = i.CustomerPrice,
+                                        ItemImage = i.MainImage,
+                                        Qty = crt.CartItemQty.Value
+                                    }).OrderByDescending(x => x.CartId).ToList();
+                    lstCartItems.ForEach(x => { x.Price = GetOfferPrice(x.ItemId, x.Price); x.StockQty = RemainingStock(x.ItemId); });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                string ErrorMessage = ex.Message.ToString();
+            }
+
+            return View(lstCartItems);
+        }
+
+        [HttpPost]
+        public string AddtoSecondCart(long ItemId, long Qty)
+        {
+            string ReturnMessage = "";
+            bool isOutofStock = false;
+            try
+            {
+                int TotalStk = ItemStock(ItemId);
+                int TotalSold = SoldItems(ItemId);
+                int InStock = TotalStk - TotalSold;
+                string GuidNew = Guid.NewGuid().ToString();
+                string cookiesessionval = "";
+                if (Request.Cookies["sessionkeyval"] != null)
+                {
+                    cookiesessionval = Request.Cookies["sessionkeyval"].Value;
+                }
+                else
+                {
+                    Response.Cookies["sessionkeyval"].Value = GuidNew;
+                    Response.Cookies["sessionkeyval"].Expires = DateTime.Now.AddDays(30);
+                }
+                if (clsClientSession.UserID == 0)
+                {
+                    var cartlist = _db.tbl_SecondCart.Where(o => o.CartSessionId == cookiesessionval).ToList();
+                    if (cartlist != null && cartlist.Count() > 0)
+                    {
+                        var crtobj = cartlist.Where(o => o.CartItemId == ItemId).FirstOrDefault();
+                        if (crtobj != null)
+                        {
+                            crtobj.CartItemQty = crtobj.CartItemQty + Qty;
+
+                           
+                        }
+                        else
+                        {
+                            crtobj = new tbl_SecondCart();
+                            crtobj.CartItemId = ItemId;
+                            crtobj.CartItemQty = Qty;
+                            crtobj.CartSessionId = cookiesessionval;
+                            crtobj.ClientUserId = 0;
+                            crtobj.CreatedDate = DateTime.Now;
+                            _db.tbl_SecondCart.Add(crtobj);                            
+                        }
+
+                    }
+                    else
+                    {
+                        tbl_SecondCart crtobj = new tbl_SecondCart();
+                        crtobj.CartItemId = ItemId;
+                        crtobj.CartItemQty = Qty;
+                        crtobj.CartSessionId = cookiesessionval;
+                        crtobj.ClientUserId = 0;
+                        crtobj.CreatedDate = DateTime.Now;
+                        _db.tbl_SecondCart.Add(crtobj);
+                     }
+
+                }
+                else
+                {
+                    long clientusrid = Convert.ToInt64(clsClientSession.UserID);
+                    var cartlist = _db.tbl_SecondCart.Where(o => o.ClientUserId == clientusrid).ToList();
+                    if (cartlist != null && cartlist.Count() > 0)
+                    {
+                        var crtobj = cartlist.Where(o => o.CartItemId == ItemId).FirstOrDefault();
+                        if (crtobj != null)
+                        {
+                            crtobj.CartItemQty = crtobj.CartItemQty + Qty;
+                          
+                        }
+                        else
+                        {
+                            crtobj = new tbl_SecondCart();
+                            crtobj.CartItemId = ItemId;
+                            crtobj.CartItemQty = Qty;
+                            crtobj.CartSessionId = cartlist.FirstOrDefault().CartSessionId;
+                            crtobj.ClientUserId = clientusrid;
+                            crtobj.CreatedDate = DateTime.Now;
+                            _db.tbl_SecondCart.Add(crtobj);
+                         
+                        }
+
+                    }
+                    else
+                    {
+                        var crtobj = new tbl_SecondCart();
+                        crtobj.CartItemId = ItemId;
+                        crtobj.CartItemQty = Qty;
+                        crtobj.CartSessionId = cookiesessionval;
+                        crtobj.ClientUserId = clientusrid;
+                        crtobj.CreatedDate = DateTime.Now;
+                        _db.tbl_SecondCart.Add(crtobj);                      
+
+                    }
+                }
+                if (isOutofStock == false)
+                {
+                    _db.SaveChanges();
+                    ReturnMessage = "Success";
+                }
+                else
+                {
+                    ReturnMessage = "OutofStock";
+                }
+
+            }
+            catch (Exception ex)
+            {
+                string msg = ex.Message.ToString();
+                ReturnMessage = "exception";
+            }
+
+            return ReturnMessage;
+        }
+
+        [HttpPost]
+        public string UpdateSecondCart(string CartItems)
+        {
+            string ReturnMessage = "";
+
+            try
+            {
+                if (!string.IsNullOrEmpty(CartItems))
+                {
+                    string[] arrycrtitems = CartItems.Split('|');
+                    if (arrycrtitems != null && arrycrtitems.Count() > 0)
+                    {
+                        foreach (string str in arrycrtitems)
+                        {
+                            string[] arrstr = str.Split('^');
+                            if (arrstr != null && arrstr.Count() > 0)
+                            {
+                                long cartids = Convert.ToInt64(arrstr[0]);
+                                if (!string.IsNullOrEmpty(arrstr[1].ToString()))
+                                {
+                                    var objCart = _db.tbl_SecondCart.Where(o => o.SecondCartId == cartids).FirstOrDefault();
+                                    objCart.CartItemQty = Convert.ToInt32(arrstr[1]);
+                                    _db.SaveChanges();
+                                }
+                            }
+                        }
+                    }
+                }
+                ReturnMessage = "Success";
+            }
+            catch (Exception ex)
+            {
+                string msg = ex.Message.ToString();
+                ReturnMessage = "exception";
+            }
+
+            return ReturnMessage;
+        }
+
+        [HttpPost]
+        public string Removesecondcartitem(long CartItemId)
+        {
+            string ReturnMessage = "";
+
+            try
+            {
+                var objCart = _db.tbl_SecondCart.Where(o => o.SecondCartId == CartItemId).FirstOrDefault();
+                _db.tbl_SecondCart.Remove(objCart);
+                _db.SaveChanges();
+                ReturnMessage = "Success";
+            }
+            catch (Exception ex)
+            {
+                string msg = ex.Message.ToString();
+                ReturnMessage = "exception";
+            }
+
+            return ReturnMessage;
+        }
+
+        public ActionResult SecondCartItemsListTop()
+        {
+            List<CartVM> lstCartItems = new List<CartVM>();
+            try
+            {
+
+                string GuidNew = Guid.NewGuid().ToString();
+                string cookiesessionval = "";
+                if (Request.Cookies["sessionkeyval"] != null)
+                {
+                    cookiesessionval = Request.Cookies["sessionkeyval"].Value;
+                }
+                else
+                {
+                    cookiesessionval = GuidNew;
+                    Response.Cookies["sessionkeyval"].Value = GuidNew;
+                    Response.Cookies["sessionkeyval"].Expires = DateTime.Now.AddDays(30);
+                }
+                if (clsClientSession.UserID > 0)
+                {
+                    long ClientUserId = Convert.ToInt64(clsClientSession.UserID);
+                    lstCartItems = (from crt in _db.tbl_SecondCart
+                                    join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
+                                    where crt.ClientUserId == ClientUserId
+                                    select new CartVM
+                                    {
+                                        CartId = crt.SecondCartId,
+                                        ItemName = i.ItemName,
+                                        ItemId = i.ProductItemId,
+                                        Price = clsClientSession.RoleID == 1 ? i.CustomerPrice : i.DistributorPrice,
+                                        ItemImage = i.MainImage,
+                                        Qty = crt.CartItemQty.Value
+                                    }).OrderByDescending(x => x.CartId).ToList();
+                    lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price); });
+                }
+                else
+                {
+                    lstCartItems = (from crt in _db.tbl_SecondCart
+                                    join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
+                                    where crt.CartSessionId == cookiesessionval
+                                    select new CartVM
+                                    {
+                                        CartId = crt.SecondCartId,
+                                        ItemName = i.ItemName,
+                                        ItemId = i.ProductItemId,
+                                        Price = i.CustomerPrice,
+                                        ItemImage = i.MainImage,
+                                        Qty = crt.CartItemQty.Value
+                                    }).OrderByDescending(x => x.CartId).ToList();
+                    lstCartItems.ForEach(x => { x.Price = GetOfferPrice(x.ItemId, x.Price); });
+                }
+
+            }
+            catch (Exception ex)
+            {
+                string ErrorMessage = ex.Message.ToString();
+            }
+            return PartialView("~/Areas/Client/Views/Cart/_SecondCartItemsTop.cshtml", lstCartItems);
         }
     }
 }

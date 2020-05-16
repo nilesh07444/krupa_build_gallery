@@ -61,7 +61,15 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     UpdatCarts();
                     if(!string.IsNullOrEmpty(referer))
                     {
-                        return RedirectToAction("Index", "Checkout");
+                        if(referer == "checkout")
+                        {
+                            return RedirectToAction("Index", "Checkout");
+                        }
+                        else
+                        {
+                            return RedirectToAction("secondcartcheckout", "Checkout");
+                        }
+                        
                     }
                     else
                     {
@@ -187,7 +195,62 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     }
                 }
 
+                var cartlistsecond = _db.tbl_SecondCart.Where(o => o.ClientUserId == clientusrid).ToList();
+                if (cartlistsecond != null && cartlistsecond.Count() > 0)
+                {
+                    string sessioncrtid = cartlistsecond.FirstOrDefault().CartSessionId;
+                    Response.Cookies["sessionkeyval"].Value = sessioncrtid;
+                    Response.Cookies["sessionkeyval"].Expires = DateTime.Now.AddDays(30);
+                    var cartlistsessions = _db.tbl_SecondCart.Where(o => o.CartSessionId == cookiesessionval && o.ClientUserId == 0).ToList();
+                    if (cartlistsessions != null && cartlistsessions.Count() > 0)
+                    {
+                        foreach (var obj in cartlistsessions)
+                        {
+                            var objcrtsession = cartlistsecond.Where(o => o.CartItemId == obj.CartItemId).FirstOrDefault();
+                            if (objcrtsession != null)
+                            {
+                                objcrtsession.CartItemQty = objcrtsession.CartItemQty + obj.CartItemQty;
+                                _db.tbl_SecondCart.Remove(obj);
+                            }
+                            else
+                            {
+                                var crtobj1 = new tbl_SecondCart();
+                                crtobj1.CartItemId = obj.CartItemId;
+                                crtobj1.CartItemQty = obj.CartItemQty;
+                                crtobj1.CartSessionId = sessioncrtid;
+                                crtobj1.ClientUserId = clientusrid;
+                                crtobj1.CreatedDate = DateTime.Now;
+                                _db.tbl_SecondCart.Add(crtobj1);
+                                _db.tbl_SecondCart.Remove(obj);
+                            }
+                            _db.SaveChanges();
+                        }
+                    }
+                }
+                else
+                {
+                    var cartlistsessions = _db.tbl_SecondCart.Where(o => o.CartSessionId == cookiesessionval).ToList();
+                    Response.Cookies["sessionkeyval"].Value = "cust" + clsClientSession.UserID;
+                    Response.Cookies["sessionkeyval"].Expires = DateTime.Now.AddDays(30);
+                    foreach (var obj in cartlistsessions)
+                    {
+                        var objcrtsession = cartlistsecond.Where(o => o.CartItemId == obj.CartItemId).FirstOrDefault();
+                        var crtobj1 = new tbl_SecondCart();
+                        crtobj1.CartItemId = obj.CartItemId;
+                        crtobj1.CartItemQty = obj.CartItemQty;
+                        crtobj1.CartSessionId = "cust" + clsClientSession.UserID;
+                        crtobj1.ClientUserId = clientusrid;
+                        crtobj1.CreatedDate = DateTime.Now;
+                        _db.tbl_SecondCart.Add(crtobj1);
+                        _db.tbl_SecondCart.Remove(obj);
+                        _db.SaveChanges();
+                    }
+                }
+
+
             }
+
+
         }
 
         public ActionResult Distributor(string referer = "")
@@ -277,7 +340,15 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     UpdatCarts();
                     if (!string.IsNullOrEmpty(referer))
                     {
-                        return RedirectToAction("Index", "Checkout");
+
+                        if (referer == "checkout")
+                        {
+                            return RedirectToAction("Index", "Checkout");
+                        }
+                        else
+                        {
+                            return RedirectToAction("secondcartcheckout", "Checkout");
+                        }
                     }
                     else
                     {

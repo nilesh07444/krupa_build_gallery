@@ -121,7 +121,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                                        GSTAmt = p.GSTAmt.Value,
                                                        IGSTAmt = p.IGSTAmt.Value,
                                                        ItemImg = c.MainImage,
-                                                       Discount = p.Discount.HasValue ? p.Discount.Value : 0
+                                                       Discount = p.Discount.HasValue ? p.Discount.Value : 0,
+                                                       ItemStatus = p.ItemStatus.HasValue ? p.ItemStatus.Value : 1
                                                    }).OrderByDescending(x => x.OrderItemId).ToList();
                 objOrder.OrderItems = lstOrderItms;
             }

@@ -43,5 +43,6 @@ namespace KrupaBuildGallery.Model
         public Nullable<int> ItemType { get; set; }
         public Nullable<bool> IsReturnable { get; set; }
         public Nullable<decimal> PayAdvancePer { get; set; }
+        public Nullable<bool> IsCashonDeliveryUse { get; set; }
     }
 }

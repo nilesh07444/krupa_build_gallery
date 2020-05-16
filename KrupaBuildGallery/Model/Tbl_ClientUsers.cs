@@ -32,5 +32,6 @@ namespace KrupaBuildGallery.Model
         public Nullable<System.DateTime> UpdatedDate { get; set; }
         public string AlternateMobileNo { get; set; }
         public string Prefix { get; set; }
+        public Nullable<decimal> WalletAmt { get; set; }
     }
 }

@@ -302,6 +302,9 @@
     <Compile Include="Model\tbl_HomeImages.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\tbl_ItemReturnCancelReplace.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\tbl_ItemStocks.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
@@ -335,7 +338,13 @@
     <Compile Include="Model\tbl_Products.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\tbl_SecondCart.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\tbl_SubProducts.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_Wallet.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\tbl_WishList.cs">
@@ -3913,6 +3922,9 @@
     <Content Include="Areas\Admin\Views\ProductItem\View.cshtml" />
     <Content Include="Areas\Admin\Views\Customer\PointAssignment.cshtml" />
     <Content Include="Areas\Admin\Views\Customer\_PointAssignmentData.cshtml" />
+    <Content Include="Areas\Client\Views\Cart\SecondCart.cshtml" />
+    <Content Include="Areas\Client\Views\Cart\_SecondCartItemsTop.cshtml" />
+    <Content Include="Areas\Client\Views\Checkout\secondcartcheckout.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />

@@ -182,6 +182,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         objProductItem.IsReturnable = productItemVM.IsReturnableItem;
                         objProductItem.PayAdvancePer = productItemVM.PayAdvancePer;
                         objProductItem.ItemType = productItemVM.ItemType;
+                        objProductItem.IsCashonDeliveryUse = productItemVM.IsCashonDelieveryuse;
                         _db.tbl_ProductItems.Add(objProductItem);
                         _db.SaveChanges();
 
@@ -298,6 +299,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                   ItemType = i.ItemType.HasValue ? i.ItemType.Value : 1,
                                   PayAdvancePer = i.PayAdvancePer.HasValue ? i.PayAdvancePer.Value : 0,
                                   ShippingCharge = i.ShippingCharge.HasValue ? i.ShippingCharge.Value : 0,
+                                  IsCashonDelieveryuse = i.IsCashonDeliveryUse.HasValue ? i.IsCashonDeliveryUse.Value : false,
                                   GodownId = i.GodownId.HasValue ? i.GodownId.Value : 0
                               }).FirstOrDefault();
 
@@ -362,6 +364,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         objProductItem.UpdatedDate = DateTime.UtcNow;
                         objProductItem.IsReturnable = productItemVM.IsReturnableItem;
                         objProductItem.PayAdvancePer = productItemVM.PayAdvancePer;
+                        objProductItem.IsCashonDeliveryUse = productItemVM.IsCashonDelieveryuse;
                         objProductItem.ItemType = productItemVM.ItemType;
                         _db.SaveChanges();
 
