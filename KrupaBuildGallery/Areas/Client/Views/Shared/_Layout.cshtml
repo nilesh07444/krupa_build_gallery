@@ -275,6 +275,13 @@
                                             </div>
                                             <ul class="show-div shopping-cart" id="ulCartitems" style="max-height: 250px;overflow: auto;"></ul>
                                         </li>
+                                        <li class="onhover-div mobile-cart" style="max-height: 250px;">
+                                            <div class="up-text">
+                                                <img src="~/Content/assets/images/icon/shopping-cart.png" class="img-fluid blur-up lazyload" alt=""> <i class="ti-shopping-cart"></i>
+                                                <span class="clscartcountsecond" style="display:none;"></span>
+                                            </div>
+                                            <ul class="show-div shopping-cart" id="ulCartitemssecond" style="max-height: 250px;overflow: auto;"></ul>
+                                        </li>
                                     </ul>
                                 </div>
                             </div>
@@ -505,6 +512,45 @@
             </div>
         </div>*@
     <!-- Add to cart modal popup end-->
+    <div class="modal fade open" id="outofstockmodl" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Item Out of Stock</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    Item is out of stock. Do you want to add to second cart ?
+                    <input type="hidden" id="hdnsecndcartitmid" value="" />
+                    <input type="hidden" id="hdnsecndcartqty" value="" />
+                </div>
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-danger" type="button">No</button>
+                    <button id="btnaddtosecondcrt" class="btn btn-primary" type="button" onclick="addtosecondcart();">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Add to cart modal popup end-->
+    <div class="modal fade open" id="cashondeliverymodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    This is Cash on Delivery Item. Are you want to buy with Cash on Delivery ? 
+                    <input type="hidden" id="hdncscartitmid" value="" />
+                    <input type="hidden" id="hdncscartqty" value="" />
+                </div>
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-danger" type="button" onclick="addtoCartCashOndelivery('no');">No</button>
+                    <button id="btnCashOnDelivery" class="btn btn-primary" type="button" onclick="addtoCartCashOndelivery('yes');">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- tap to top -->
     <div class="tap-top top-cls">
         <div>
@@ -579,6 +625,21 @@
                 success: function (data) {
                     //success
                     $("#ulCartitems").html(data); //populate the tab content.
+
+                },
+                error: function () {
+                    alert("error");
+                }
+              });
+
+              $.ajax({
+                url: '@Url.Action("SecondCartItemsListTop", "Cart")',
+                type: "post",
+                dataType: "html",
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    //success
+                    $("#ulCartitemssecond").html(data); //populate the tab content.
 
                 },
                 error: function () {

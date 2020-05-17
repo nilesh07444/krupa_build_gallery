@@ -45,7 +45,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                          CustomerPrice = i.CustomerPrice,
                                          DistributorPrice = i.DistributorPrice,
                                          IsActive = i.IsActive,
-                                         CreatedDate = i.CreatedDate
+                                         CreatedDate = i.CreatedDate,
+                                         IsCashonDelieveryuse = i.IsCashonDeliveryUse.HasValue ? i.IsCashonDeliveryUse.Value : false
                                      }).OrderByDescending(x => x.CreatedDate).ToList().Take(10).ToList();
 
             if (clsClientSession.UserID != 0)
@@ -70,8 +71,9 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                          CustomerPrice = i.CustomerPrice,
                                          DistributorPrice = i.DistributorPrice,
                                          IsActive = i.IsActive,
-                                         CreatedDate = i.CreatedDate
-                                     }).OrderByDescending(x => x.CreatedDate).ToList().Take(10).ToList();
+                                         CreatedDate = i.CreatedDate,
+                                        IsCashonDelieveryuse = i.IsCashonDeliveryUse.HasValue ? i.IsCashonDeliveryUse.Value : false
+                                    }).OrderByDescending(x => x.CreatedDate).ToList().Take(10).ToList();
 
             if (clsClientSession.UserID != 0)
             {
@@ -102,7 +104,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                  CustomerPrice = i.CustomerPrice,
                                  DistributorPrice = i.DistributorPrice,
                                  IsActive = i.IsActive,
-                                 CreatedDate = i.CreatedDate
+                                 CreatedDate = i.CreatedDate,
+                                 IsCashonDelieveryuse = i.IsCashonDeliveryUse.HasValue ? i.IsCashonDeliveryUse.Value : false
                              }).OrderByDescending(x => x.CreatedDate).ToList().Take(10).ToList();
 
             if (clsClientSession.UserID != 0)

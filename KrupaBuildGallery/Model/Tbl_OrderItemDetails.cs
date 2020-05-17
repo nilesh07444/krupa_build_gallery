@@ -31,5 +31,7 @@ namespace KrupaBuildGallery.Model
         public Nullable<System.DateTime> UpdatedDate { get; set; }
         public Nullable<decimal> Discount { get; set; }
         public Nullable<decimal> GSTPer { get; set; }
+        public Nullable<int> ItemStatus { get; set; }
+        public Nullable<decimal> FinalItemPrice { get; set; }
     }
 }

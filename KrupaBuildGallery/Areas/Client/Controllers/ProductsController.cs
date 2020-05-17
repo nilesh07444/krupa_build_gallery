@@ -49,7 +49,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                       MRPPrice = i.MRPPrice,
                                       CustomerPrice = i.CustomerPrice,
                                       DistributorPrice = i.DistributorPrice,
-                                      IsActive = i.IsActive
+                                      IsActive = i.IsActive,
+                                      IsCashonDelieveryuse = i.IsCashonDeliveryUse.HasValue ? i.IsCashonDeliveryUse.Value : false
                                   }).OrderBy(x => x.ItemName).ToList();
 
                 if (clsClientSession.UserID != 0)
@@ -136,7 +137,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                       MRPPrice = i.MRPPrice,
                                       CustomerPrice = i.CustomerPrice,
                                       DistributorPrice = i.DistributorPrice,
-                                      IsActive = i.IsActive
+                                      IsActive = i.IsActive,
+                                      IsCashonDelieveryuse = i.IsCashonDeliveryUse.HasValue ? i.IsCashonDeliveryUse.Value : false
                                   }).OrderBy(x => x.ItemName).ToList();
 
                 if (clsClientSession.UserID != 0)
@@ -223,7 +225,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                       MRPPrice = i.MRPPrice,
                                       CustomerPrice = i.CustomerPrice,
                                       DistributorPrice = i.DistributorPrice,
-                                      IsActive = i.IsActive
+                                      IsActive = i.IsActive,
+                                      IsCashonDelieveryuse = i.IsCashonDeliveryUse.HasValue ? i.IsCashonDeliveryUse.Value : false
                                   }).OrderBy(x => x.ItemName).ToList();
 
                 if (clsClientSession.UserID != 0)
@@ -356,7 +359,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                   IsPopularProduct = i.IsPopularProduct,
                                   Sku = i.Sku,
                                   OtherImages = lstimages,
-                                  IsActive = i.IsActive
+                                  IsActive = i.IsActive,
+                                  IsCashonDelieveryuse = i.IsCashonDeliveryUse.HasValue ? i.IsCashonDeliveryUse.Value : false
                               }).FirstOrDefault();
             if (clsClientSession.UserID != 0)
             {

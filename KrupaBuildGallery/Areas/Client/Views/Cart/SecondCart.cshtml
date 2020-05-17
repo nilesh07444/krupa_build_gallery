@@ -1,0 +1,228 @@
+﻿@using KrupaBuildGallery.Model;
+@using KrupaBuildGallery.Helper;
+@model List<CartVM>
+@{
+    ViewBag.Title = "Cart";
+    int counter = 1;
+    decimal CartTotal = 0;
+}
+<style>
+    .clrerror {
+        color: red !important;
+    }
+</style>
+
+<!-- breadcrumb start -->
+<div class="breadcrumb-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="page-title">
+                    <h2>Second cart</h2>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <nav aria-label="breadcrumb" class="theme-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active">Second cart</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- breadcrumb End -->
+<!--section start-->
+<section class="cart-section section-b-space">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                @if (Model != null && Model.Count > 0)
+                {
+                    <table class="table cart-table table-responsive-xs">
+                        <thead>
+                            <tr class="table-head">
+
+                                <th scope="col">image</th>
+                                <th scope="col">product name</th>
+                                <th scope="col">price</th>
+                                <th scope="col">quantity</th>
+                                <th scope="col">action</th>
+                                <th scope="col">total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.Count > 0)
+                            {
+                                foreach (CartVM item in Model)
+                                {
+                                    decimal ItemTotal = Convert.ToDecimal(item.Qty * item.Price);
+                                    CartTotal = CartTotal + ItemTotal;
+                                    string clsclr = "";
+                                    if (item.Qty > item.StockQty)
+                                    {
+                                        clsclr = "clrerror";
+                                    }
+                                    <tr class="trcart" data-trid="@item.CartId">
+
+                                        <td>
+                                            @if (!string.IsNullOrEmpty(item.ItemImage))
+                                            {
+                                                if (File.Exists(Server.MapPath("~/Images/ProductItemMedia/" + item.ItemImage)))
+                                                {
+                                                    <img src="~/Images/ProductItemMedia/@item.ItemImage" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                                }
+                                                else
+                                                {
+                                                    <img src="@ErrorMessage.DefaultImagePath" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <img src="@ErrorMessage.DefaultImagePath" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                            }
+                                        </td>
+                                        <td>
+                                            <a href="#">@item.ItemName</a>
+                                            <span class="@clsclr">(In Stock: @item.StockQty)</span>
+                                            <div class="mobile-cart-content row">
+                                                <div class="col-xs-3">
+                                                    <div class="qty-box">
+                                                        <div class="input-group">
+                                                            <input type="text" name="quantity" class="form-control input-number" value="@item.Qty">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-xs-3">
+                                                    <h2 class="td-color">₹ @item.Price</h2>
+                                                </div>
+                                                <div class="col-xs-3">
+                                                    <h2 class="td-color"><a href="javascript:void(0);" onclick="removecart('@item.CartId');" class="icon"><i class="ti-close"></i></a></h2>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <h2 class="clsprc_@item.CartId" data-attrpprc="@item.Price">₹ @item.Price</h2>
+                                        </td>
+                                        <td>
+                                            <div class="qty-box">
+                                                <div class="input-group">
+                                                    <input type="number" name="quantity" data-attrcrtidd="@item.CartId" min="1" class="form-control input-number clsq clsqty_@item.CartId" value="@item.Qty">
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td><a href="javascript:void(0);" class="icon" onclick="removecart('@item.CartId');"><i class="ti-close"></i></a></td>
+                                        <td>
+                                            <h2 class="td-color clspr clsttl_@item.CartId" data-attrttls="@ItemTotal">₹ @ItemTotal</h2>
+                                        </td>
+                                    </tr>
+                                    counter = counter + 1;
+                                }
+
+                            }
+
+                        </tbody>
+                    </table>
+                    <table class="table cart-table table-responsive-md">
+                        <tfoot>
+                            <tr>
+                                <td>total price :</td>
+                                <td>
+                                    <h2 class="clsttlfull" style="width:143px;">₹ @CartTotal</h2>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                }
+                else
+                {
+                    <div style="text-align:center;">
+                        <p>Your cart is currently empty.</p>
+                        <a href="/" class="btn btn-solid">continue shopping</a>
+                    </div>
+                }
+
+            </div>
+        </div>
+        <div class="row cart-buttons">
+            @if (Model != null && Model.Count > 0)
+            {
+                <div class="col-6"><a href="/" class="btn btn-solid">continue shopping</a></div>
+                <div class="col-6">
+                    <a href="javascript:void(0);" onclick="UpdateCart();" class="btn btn-solid" style="margin-right:10px;">Update Cart</a>
+                    @if (clsClientSession.UserID > 0)
+                    {
+                        <a href="/checkout/secondcart" class="btn btn-solid">check out</a>
+                    }
+                    else
+                    {
+                        <a href="/login?referer=checkout/secondcart" class="btn btn-solid">checkout</a>
+                    }
+
+                </div>
+
+            }
+        </div>
+    </div>
+</section>
+<!--section end-->
+<script>
+    function removecart(CartItemId) {
+        var URL = '/Client/Cart/Removesecondcartitem';
+        jQuery.ajax({
+            type: 'POST',
+            async: true,
+            url: URL + "?CartItemId=" + CartItemId,
+            success: function (result) {
+                alert("Item removed successfully..");
+                location.reload();
+            },
+            error: function (resultData) {
+                console.log("error");
+
+            }
+        });
+    }
+
+    function UpdateCart() {
+        var strcart = "";
+        var arrycart = new Array();
+        $(".trcart").each(function () {
+            var crtId = $(this).attr("data-trid");
+            var qty = $(this).find("input[name=quantity]:visible").val();
+            arrycart.push(crtId + "^" + qty);
+        })
+        strcart = arrycart.join("|");
+        var URL = '/Client/Cart/UpdateSecondCart';
+        jQuery.ajax({
+            type: 'POST',
+            async: true,
+            url: URL + "?CartItems=" + strcart,
+            success: function (result) {
+
+                location.reload();
+            },
+            error: function (resultData) {
+                console.log("error");
+
+            }
+        });
+    }
+
+    $(".clsq").change(function () {
+        debugger;
+        var qty = parseFloat($(this).val());
+        var idd = $(this).attr("data-attrcrtidd");
+        var prrcc = $(".clsprc_" + idd).attr("data-attrpprc");
+        var prc = parseFloat(prrcc);
+        var totll = prc * qty;
+        $(".clsttl_" + idd).html("₹" + totll);
+        $(".clsttl_" + idd).attr("data-attrttls", totll);
+        var ttlll = 0;
+        $(".clspr").each(function () {
+            ttlll = ttlll + parseFloat($(this).attr("data-attrttls"));
+        })
+        $(".clsttlfull").html("₹ " + ttlll);
+    })
+</script>

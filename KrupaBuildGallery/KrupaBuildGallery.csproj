@@ -307,6 +307,9 @@
     <Compile Include="Model\tbl_HomeImages.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\tbl_ItemReturnCancelReplace.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\tbl_ItemStocks.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
@@ -340,7 +343,13 @@
     <Compile Include="Model\tbl_Products.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\tbl_SecondCart.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\tbl_SubProducts.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_Wallet.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\tbl_WishList.cs">
@@ -3919,6 +3928,9 @@
     <Content Include="Areas\Admin\Views\ProductItem\View.cshtml" />
     <Content Include="Areas\Admin\Views\Customer\PointAssignment.cshtml" />
     <Content Include="Areas\Admin\Views\Customer\_PointAssignmentData.cshtml" />
+    <Content Include="Areas\Client\Views\Cart\SecondCart.cshtml" />
+    <Content Include="Areas\Client\Views\Cart\_SecondCartItemsTop.cshtml" />
+    <Content Include="Areas\Client\Views\Checkout\secondcartcheckout.cshtml" />
     <Content Include="Areas\Admin\Views\ImportExcel\Category.cshtml" />
     <Content Include="Areas\Admin\Views\ImportExcel\Product.cshtml" />
     <Content Include="Areas\Admin\Views\ImportExcel\SubProduct.cshtml" />

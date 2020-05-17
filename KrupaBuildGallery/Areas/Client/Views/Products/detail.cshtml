@@ -187,7 +187,7 @@
 <script>
     function addtocrt(itmid) {
         var qtyy = $("#txtqty").val();
-        AddtoCartfunc(itmid, qtyy);
+        AddtoCartfunc(itmid, qtyy,'@Model.IsCashonDelieveryuse.ToString()');
     }
 
 

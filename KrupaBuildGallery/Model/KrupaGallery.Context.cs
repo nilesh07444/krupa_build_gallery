@@ -53,5 +53,8 @@ namespace KrupaBuildGallery.Model
         public DbSet<tbl_AdminUsers> tbl_AdminUsers { get; set; }
         public DbSet<tbl_PointDetails> tbl_PointDetails { get; set; }
         public DbSet<tbl_GeneralSetting> tbl_GeneralSetting { get; set; }
+        public DbSet<tbl_ItemReturnCancelReplace> tbl_ItemReturnCancelReplace { get; set; }
+        public DbSet<tbl_SecondCart> tbl_SecondCart { get; set; }
+        public DbSet<tbl_Wallet> tbl_Wallet { get; set; }
     }
 }

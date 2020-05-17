@@ -1,41 +1,12 @@
-﻿function AddtoCartfunc(itemid,qty) {
-    var URL = '/Client/Cart/AddtoCart';
-    jQuery.ajax({
-        type: 'POST',
-        async: true,
-        url: URL + "?ItemId=" + itemid + "&Qty=" + qty,
-        success: function (result) {
-            if (result == "OutofStock") {
-                msgdisplayFail("Item is out of stock can not add to cart");
-                return false;
-            }
-            else {
-                msgdisplay("Item Successfully added to your cart");
-            }
-            
-           // if (result == "notfound") {
-             //  alert("Product Not Found");
-           // }         
-            $.ajax({
-                url: '/Client/Cart/CartItemsListTop',
-                type: "post",
-                dataType: "html",
-                contentType: 'application/json; charset=utf-8',
-                success: function (data) {
-                    //success
-                    $("#ulCartitems").html(data); //populate the tab content.
-
-                },
-                error: function (e) {
-                    alert("error");
-                }
-            });
-        },
-        error: function (resultData) {
-            console.log("error");
-            
-        }
-    });
+﻿function AddtoCartfunc(itemid,qty,iscash) {
+    if (iscash == "False") {
+        addtoCart(itemid, qty,"false");        
+    }
+    else {
+        $("#cashondeliverymodal").modal("show");
+        $("#cashondeliverymodal #hdncscartitmid").val(itemid);
+        $("#cashondeliverymodal #hdncscartqty").val(qty);
+    }
 }
 
 function PlaceOrder(razorpay_payment_id, razorpay_order_id, razorpay_signature) {
@@ -248,4 +219,97 @@ function CheckItemExists(bypymnt,optionss,e) {
             return false;
         }
     });
+}
+
+function addtosecondcart() {
+    var itemid = $("#outofstockmodl #hdnsecndcartitmid").val();
+    var qty = $("#outofstockmodl #hdnsecndcartqty").val();    
+    var URL = '/Client/Cart/AddtoSecondCart';
+    $("#outofstockmodl").modal("hide");
+    jQuery.ajax({
+        type: 'POST',
+        async: true,
+        url: URL + "?ItemId=" + itemid + "&Qty=" + qty,
+        success: function (result) {            
+                msgdisplay("Item Successfully added to your second cart");            
+         
+            // if (result == "notfound") {
+            //  alert("Product Not Found");
+            // }         
+            $.ajax({
+                url: '/Client/Cart/SecondCartItemsListTop',
+                type: "post",
+                dataType: "html",
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    //success
+                    $("#ulCartitemssecond").html(data); //populate the tab content.
+
+                },
+                error: function (e) {
+                    alert("error");
+                }
+            });
+        },
+        error: function (resultData) {
+            console.log("error");
+
+        }
+    });
+}
+
+function addtoCart(itemid, qty, iscash) {
+    var URL = '/Client/Cart/AddtoCart';
+    jQuery.ajax({
+        type: 'POST',
+        async: true,
+        url: URL + "?ItemId=" + itemid + "&Qty=" + qty + "&IsCash=" + iscash,
+        success: function (result) {
+            if (result == "OutofStock") {
+                msgdisplayFail("Item is out of stock can not add to cart");
+                $("#outofstockmodl").modal("show");
+                $("#outofstockmodl #hdnsecndcartitmid").val(itemid);
+                $("#outofstockmodl #hdnsecndcartqty").val(qty);
+                return false;
+            }
+            else {
+                msgdisplay("Item Successfully added to your cart");
+            }
+
+            // if (result == "notfound") {
+            //  alert("Product Not Found");
+            // }         
+            $.ajax({
+                url: '/Client/Cart/CartItemsListTop',
+                type: "post",
+                dataType: "html",
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    //success
+                    $("#ulCartitems").html(data); //populate the tab content.
+
+                },
+                error: function (e) {
+                    alert("error");
+                }
+            });
+        },
+        error: function (resultData) {
+            console.log("error");
+
+        }
+    });
+}
+
+function addtoCartCashOndelivery(iscash) {
+    var itemid = $("#cashondeliverymodal #hdncscartitmid").val();
+    var qty = $("#cashondeliverymodal #hdncscartqty").val();    
+    if (iscash == "yes") {
+        $("#cashondeliverymodal").modal("hide");
+        addtoCart(itemid, qty,"true");      
+    }
+    else {
+        $("#cashondeliverymodal").modal("hide");
+        addtoCart(itemid, qty,"false");      
+    }
 }

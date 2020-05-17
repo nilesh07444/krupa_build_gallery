@@ -20,5 +20,9 @@ namespace KrupaBuildGallery
         public decimal ShippingCharge { get; set; }
         public long ClientUserId { get; set; }
         public string SessionUniqueId { get; set; }
+        public int CartType { get; set; }
+        public decimal AdvncePayPer { get; set; }
+        public decimal ItmAdvncePayAmt { get; set; }
+        public bool IsCashonDelivery { get; set; }
     }
 }

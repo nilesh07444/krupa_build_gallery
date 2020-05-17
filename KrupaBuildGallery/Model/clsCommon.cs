@@ -106,4 +106,16 @@ namespace KrupaBuildGallery.Model
         Confirmed = 2,
         Dispatched = 3
     }
+
+    enum OrderItemStatus
+    {
+        NewOrder = 1,
+        Confirmed = 2,
+        Dispatched = 3,
+        Delivered = 4,
+        Cancelled = 5,
+        Return = 6,
+        Replace = 7,
+        Exchange = 8
+    }
 }

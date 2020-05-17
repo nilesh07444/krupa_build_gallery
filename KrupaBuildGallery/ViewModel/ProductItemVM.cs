@@ -101,6 +101,8 @@ namespace KrupaBuildGallery
         [Display(Name = "Item Type")]
         public int ItemType { get; set; }
 
+        [Display(Name = "Cash On Delivery Use")]
+        public bool IsCashonDelieveryuse { get; set; }
 
     }
 }

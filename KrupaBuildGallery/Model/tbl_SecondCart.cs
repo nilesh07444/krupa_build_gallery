@@ -12,14 +12,13 @@ namespace KrupaBuildGallery.Model
     using System;
     using System.Collections.Generic;
     
-    public partial class tbl_Cart
+    public partial class tbl_SecondCart
     {
-        public long Cart_Id { get; set; }
+        public long SecondCartId { get; set; }
         public Nullable<long> CartItemId { get; set; }
         public Nullable<long> CartItemQty { get; set; }
         public string CartSessionId { get; set; }
         public Nullable<long> ClientUserId { get; set; }
         public Nullable<System.DateTime> CreatedDate { get; set; }
-        public Nullable<bool> IsCashonDelivery { get; set; }
     }
 }

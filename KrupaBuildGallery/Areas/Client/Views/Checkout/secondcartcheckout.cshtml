@@ -8,8 +8,8 @@
     tbl_ClientOtherDetails objClientOther = ViewData["objotherdetails"] as tbl_ClientOtherDetails;
     List<InvoiceItemVM> lstInvoiceItemVM = ViewData["lstInvItem"] as List<InvoiceItemVM>;
     decimal TotalOrderamtt = Convert.ToDecimal(ViewBag.ShippingChargeTotal) + Convert.ToDecimal(ViewBag.TotalOrder);
-     decimal WalletAmt = Convert.ToDecimal(ViewBag.WalletAmt);
-    string iscashondelivery = Convert.ToString(ViewBag.IsCashOnDelivery);
+    decimal AdvncePayment = Convert.ToDecimal(ViewBag.AdvancePaymentAmt);
+    decimal WalletAmt = Convert.ToDecimal(ViewBag.WalletAmt);
 }
 <style>
     .errorcls {
@@ -162,13 +162,13 @@
                                                     <span id="spnshipmsg">@ViewBag.ShippingMsg</span>
                                                     <span id="spnshipamt" style="display:none;">&#8377; @ViewBag.ShippingChargeTotal</span>
                                                     @*<div class="shopping-option">
-                            <input type="checkbox" name="free-shipping" id="free-shipping">
-                            <label for="free-shipping">Free Shipping</label>
-                        </div>
-                        <div class="shopping-option">
-                            <input type="checkbox" name="local-pickup" id="local-pickup">
-                            <label for="local-pickup">Local Pickup</label>
-                        </div>*@
+                                                            <input type="checkbox" name="free-shipping" id="free-shipping">
+                                                            <label for="free-shipping">Free Shipping</label>
+                                                        </div>
+                                                        <div class="shopping-option">
+                                                            <input type="checkbox" name="local-pickup" id="local-pickup">
+                                                            <label for="local-pickup">Local Pickup</label>
+                                                        </div>*@
                                                 </div>
                                             </li>
                                         </ul>
@@ -182,86 +182,48 @@
                                     <input type="hidden" name="Orderdesc" id="Orderdesc" value="Total @lstCartItmms.Count() items" />
                                     <input type="hidden" id="creditremaining" value="@ViewBag.CreditRemaining" />
                                     <input type="hidden" id="shipamount" name="shipamount" value="@ViewBag.ShippingChargeTotal" />
-                                    <input type="hidden" id="walletamtinorder" name="walletamtinorder" value="0" />
-                                    <input type="hidden" id="creditamtinorder" name="creditamtinorder" value="0" />
-                                    <input type="hidden" id="onlineamtinorder" name="onlineamtinorder" value="0" />
-                                    <input type="hidden" id="ordertype" name="ordertype" value="1" />                                    
-                                    <input type="hidden" id="isCashondelivery" name="isCashondelivery" value="@iscashondelivery" />
                                     <div class="payment-box">
                                         <div class="upper-box">
                                             <div class="payment-options">
                                                 @if (clsClientSession.UserID > 0 && clsClientSession.RoleID == 2)
                                                 {
-                                                    <h4 style="margin-bottom:5px;">Payment</h4>
-                                                    <ul>
-                                                        @if (Convert.ToBoolean(ViewBag.IsCashOnDelivery) == true)
-                                                        {
-                                                            <li>
-                                                                <div class="radio-option">
-                                                                    <input type="checkbox" checked readonly="readonly" name="payment-group" style="padding-left: 5px;pointer-events:none;" value="Cash" id="payment-4">
-                                                                    <label for="payment-4" style="padding-left: 5px;pointer-events:none;">Cash On Delivery</label>
-                                                                </div>
-                                                            </li>
-                                                        }
-                                                        else
-                                                        {
-                                                            if (WalletAmt > 0)
-                                                            {
-                                                                <li>
-                                                                    <div class="radio-option">
-                                                                        <input type="checkbox" name="payment-group" data-attrblns="@WalletAmt" style="padding-left: 5px;" value="Bywallet" id="payment-3">
-                                                                        <label for="payment-3" style="padding-left: 5px;">By Wallet(Balance: ₹ @WalletAmt) <span id="wltamtused"></span> </label>
-                                                                    </div>
-                                                                </li>
-                                                            }
-                                                            <li>
-                                                                <div class="radio-option">
-                                                                    <input type="checkbox" name="payment-group" data-attrblns="@ViewBag.CreditRemaining" style="padding-left: 5px;" value="ByCredit" id="payment-1">
-                                                                    <label for="payment-1" style="padding-left: 5px;">By Credit - Current Credit Remaining(₹ @ViewBag.CreditRemaining) <span id="crdttused"></span></label>
-                                                                </div>
-                                                            </li>
-                                                            <li>
-                                                                <div class="radio-option">
-                                                                    <input type="checkbox" name="payment-group" data-attrblns="0" style="padding-left: 5px;" value="ByOther" id="payment-2">
-                                                                    <label for="payment-2" style="padding-left: 5px;">Online Payments <span id="onlinepymt"></span><span class="small-text">Select to pay by credit card, upi, net banking etc</span></label>
-                                                                </div>
-                                                            </li>
-                                                        }
-
+                                                    <h4 style="margin-bottom:5px;" class="creditremainingcls">Payment</h4>
+                                                    <ul class="creditremainingcls">
+                                                        <li>
+                                                            <div class="radio-option">
+                                                                <input type="checkbox" name="payment-group" style="padding-left: 5px;" value="Bywallet" id="payment-4">
+                                                                <label for="payment-4" style="padding-left: 5px;">Cash On Delivery</label>
+                                                            </div>
+                                                        </li>
+                                                        <li>
+                                                            <div class="radio-option">
+                                                                <input type="checkbox" name="payment-group" style="padding-left: 5px;" value="Bywallet" id="payment-3">
+                                                                <label for="payment-3" style="padding-left: 5px;">By Wallet(Balance: ₹ @WalletAmt)</label>
+                                                            </div>
+                                                        </li>
+                                                        <li>
+                                                            <div class="radio-option">
+                                                                <input type="checkbox" name="payment-group" style="padding-left: 5px;" value="ByCredit" id="payment-1">
+                                                                <label for="payment-1"  style="padding-left: 5px;">By Credit - Current Credit Remaining(₹ @ViewBag.CreditRemaining)</label>
+                                                            </div>
+                                                        </li>
+                                                        <li>
+                                                            <div class="radio-option">
+                                                                <input type="checkbox" name="payment-group" style="padding-left: 5px;" value="ByOther" id="payment-2">
+                                                                <label for="payment-2"  style="padding-left: 5px;">By Other Payment Sources<span class="small-text">Select to pay by credit card, upi, net banking etc</span></label>
+                                                            </div>
+                                                        </li>
                                                     </ul>
                                                 }
                                                 else if (clsClientSession.UserID == 0 || clsClientSession.UserID > 0 && clsClientSession.RoleID == 1)
                                                 {
-                                                    <h4 style="margin-bottom:5px;">Payment</h4>
-                                                    <ul>
-                                                        @if (Convert.ToBoolean(ViewBag.IsCashOnDelivery) == true)
-                                                        {
-                                                            <li>
-                                                                <div class="radio-option">
-                                                                    <input type="checkbox" readonly="readonly" name="payment-group" checked style="padding-left: 5px;pointer-events:none;" value="Cash" id="payment-4">
-                                                                    <label for="payment-4" style="padding-left: 5px;pointer-events:none;">Cash On Delivery</label>
-                                                                </div>
-                                                            </li>
-                                                        }
-                                                        else
-                                                        {
-                                                            if (WalletAmt > 0)
-                                                            {
-                                                                <li>
-                                                                    <div class="radio-option">
-                                                                        <input type="checkbox" name="payment-group" data-attrblns="@WalletAmt" style="padding-left: 5px;" value="Bywallet" id="payment-3">
-                                                                        <label for="payment-3" style="padding-left: 5px;">By Wallet(Balance: ₹ @WalletAmt) <span id="wltamtused"></span></label>
-                                                                    </div>
-                                                                </li>
-                                                            }
-                                                            <li>
-                                                                <div class="radio-option">
-                                                                    <input type="checkbox" name="payment-group" data-attrblns="0" style="padding-left: 5px;" value="ByOther" id="payment-2">
-                                                                    <label for="payment-2" style="padding-left: 5px;">Online Payments <span id="onlinepymt"></span><span class="small-text">Select to pay by credit card, upi, net banking etc</span></label>
-                                                                </div>
-                                                            </li>
-                                                        }
-
+                                                    <ul style="display:none;">
+                                                        <li>
+                                                            <div class="radio-option">
+                                                                <input type="radio" name="payment-group" value="ByOther" id="payment-2" checked>
+                                                                <label for="payment-2">By Other Payment Sources<span class="small-text">Select to pay by credit card, upi, net banking etc</span></label>
+                                                            </div>
+                                                        </li>
                                                     </ul>
                                                 }
 
@@ -345,103 +307,103 @@
                             @foreach (var objj in lstInvoiceItemVM)
                             {
                                 totalamts = totalamts + objj.ItemAmount;
-                            <tr>
-                                <td>
-                                    @countr.
-                                </td>
-                                <td>
-                                    @objj.ItemName
-                                </td>
-                                <td>
-                                    ₹ @objj.BasicAmount
-                                </td>
-                                <td>
-                                    @objj.Qty
-                                </td>
-                                <td>
-                                    ₹ @(objj.Qty * objj.BasicAmount)
-                                </td>
-                                <td>
-                                    ₹ @objj.Discount
-                                </td>
-                                <td>
-                                    ₹ @objj.beforetaxamount
-                                </td>
-                                <td>
-                                    @objj.GSTPer.ToString("0.##") %
-                                </td>
-                                <td>
-                                    ₹ @objj.GSTAmount
-                                </td>
-                                <td>
-                                    ₹ @objj.ItemAmount
-                                </td>
-                            </tr>
+                                <tr>
+                                    <td>
+                                        @countr.
+                                    </td>
+                                    <td>
+                                        @objj.ItemName
+                                    </td>
+                                    <td>
+                                        ₹ @objj.BasicAmount
+                                    </td>
+                                    <td>
+                                        @objj.Qty
+                                    </td>
+                                    <td>
+                                        ₹ @(objj.Qty * objj.BasicAmount)
+                                    </td>
+                                    <td>
+                                        ₹ @objj.Discount
+                                    </td>
+                                    <td>
+                                        ₹ @objj.beforetaxamount
+                                    </td>
+                                    <td>
+                                        @objj.GSTPer.ToString("0.##") %
+                                    </td>
+                                    <td>
+                                        ₹ @objj.GSTAmount
+                                    </td>
+                                    <td>
+                                        ₹ @objj.ItemAmount
+                                    </td>
+                                </tr>
                                 countr++;
                             }
                             @{
                                 decimal totlnetamount = Convert.ToDecimal(ViewBag.ShippingChargeTotal) + totalamts;
                             }
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <th>Grand Total</th>
-                            <td>₹ @totalamts</td>
-                        </tr>
-                        <tr class="shipexist">
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <th>Shipping Charge</th>
-                            <td>@ViewBag.ShippingChargeTotal</td>
-                        </tr>
-                        <tr class="shipnotexist">
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <th>Shipping Charge</th>
-                            <td>@ViewBag.ShippingMsg</td>
-                        </tr>
-                        <tr class="shipexist">
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <th>Net Amount</th>
-                            <td>₹ @totlnetamount</td>
-                        </tr>
-                        <tr class="shipnotexist">
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <th>Net Amount</th>
-                            <td>₹ @totalamts</td>
-                        </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <th>Grand Total</th>
+                                <td>₹ @totalamts</td>
+                            </tr>
+                            <tr class="shipexist">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <th>Shipping Charge</th>
+                                <td>@ViewBag.ShippingChargeTotal</td>
+                            </tr>
+                            <tr class="shipnotexist">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <th>Shipping Charge</th>
+                                <td>@ViewBag.ShippingMsg</td>
+                            </tr>
+                            <tr class="shipexist">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <th>Net Amount</th>
+                                <td>₹ @totlnetamount</td>
+                            </tr>
+                            <tr class="shipnotexist">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <th>Net Amount</th>
+                                <td>₹ @totalamts</td>
+                            </tr>
                         </tbody>
                     </table>
                 }
@@ -460,6 +422,7 @@
 </div>
 <script>
     var strstate = '@objClientOther.ShipState'
+    var advncepyment = '@AdvncePayment';
     $("#shipstate").val(strstate);
     $(document).ready(function () {
         var amt = $("#Orderamout").val();
@@ -498,7 +461,7 @@
         $("#checkoutdetails").modal("show");
     }
 
-    function pincodechange() {    
+    function pincodechange() {
         if ($("input[name=shippincode]").val() != '' && $("input[name=shippincode]").val().length != 6) {
             alert("Please Enter Valid Postalcode");
             return;
@@ -538,16 +501,13 @@
                  }
                  else {
                      $("#payment-2").click();
-                     $("#payment-2").attr("checked", "checked");
+                     $("#payment-2").att("checked", "checked");
                      $(".creditremainingcls").hide();
                  }
             }
         }
 
-        var amt = $("#Orderamout").val();
-        if ($("#isCashondelivery").val() != "True") {
-            $("input[name=payment-group]").prop("checked", false).trigger("change"); 
-        }        
+          var amt = $("#Orderamout").val();
         if ($("#Orderamout").length > 0 && amt != "" && amt != "0") {
              $.ajax({
                 url: '@Url.Action("CreateRazorPaymentOrder", "Checkout")',
@@ -565,112 +525,6 @@
                 }
             });
         }
-    }
-
-    $(document).on("change", 'input[name=payment-group]', function () {        
-        var ordeamt = parseFloat($("#Orderamout").val());
-        var wallamt = 0;
-        var isfullothr = false;
-        if ($("#payment-3").length > 0) {
-            wallamt = parseFloat($("#payment-3").attr("data-attrblns"));
-        }        
-        var credtamt = 0;
-        if ($("#payment-1").length > 0) {
-           credtamt = parseFloat($("#payment-1").attr("data-attrblns"));
-        }
-        
-        if ($(this).val() == "Bywallet" && $(this).is(":checked")) {
-            if (parseFloat($(this).attr("data-attrblns")) >= ordeamt) {
-                $("input[name=payment-group]").not(this).prop("checked", false);         
-                isfullothr = true;
-                $("#onlinepymt").html("₹ 0");
-            }            
-        }
-        if ($(this).val() == "ByCredit" && $(this).is(":checked")) {
-            if (parseFloat($(this).attr("data-attrblns")) >= ordeamt) {
-                $("input[name=payment-group]").not(this).prop("checked", false);
-                isfullothr = true;
-                $("#onlinepymt").html("₹ 0");
-            }
-            else {
-                if ($("#payment-3").is(":checked") && wallamt >= ordeamt) {
-                    $("#payment-3").prop("checked", false);
-                }
-            }
-        }     
-
-        if ($(this).val() == "ByOther" && $(this).is(":checked")) {
-            if (parseFloat($(this).attr("data-attrblns")) == 0) {
-                $("input[name=payment-group]").not(this).prop("checked", false);                
-                $("#onlinepymt").html("₹ "+ordeamt);
-            }
-        }
-
-        var onlinepymnt = getOnlinePrice(wallamt, credtamt, ordeamt);
-        if (onlinepymnt < 0) {
-            onlinepymnt = 0;
-            $("#payment-2").prop("checked", false);
-        }
-        $("#onlinepymt").html("₹" + onlinepymnt);
-        $("#payment-2").attr("data-attrblns", onlinepymnt);
-        $("#onlineamtinorder").val(onlinepymnt);
-        if ($("#payment-2").is(":checked") && onlinepymnt > 0) {
-            $.ajax({
-                url: '@Url.Action("CreateRazorPaymentOrder", "Checkout")',
-                type: "post",
-                dataType: "html",
-                contentType: 'application/json; charset=utf-8',
-                data: JSON.stringify({ Amount: onlinepymnt,description:$("#Orderdesc").val()}), //add parameter
-                success: function (data) {
-                    //success
-                    $('.dvrazorpayscript').html(data); //populate the tab content.
-
-                },
-                error: function () {
-                    alert("error");
-                }
-            });
-        }
-    });
-
-    function getOnlinePrice(wltamt, credit, ordeamt) {
-        var amtttl = 0;
-        var wltused = 0;
-        var credtused = 0;
-        var reminord = ordeamt;
-           $("#crdttused").html("₹" + credtused);
-            $("#wltamtused").html("₹" + wltused);
-          if ($("#payment-3").length > 0 && $("#payment-3").is(":checked")) {
-            amtttl = wltamt + amtttl;
-            if (wltamt < reminord) {
-                reminord = reminord - wltamt;
-                wltused = wltamt;
-            }
-            else {
-                wltused = ordeamt;
-            }
-        }
-        
-        if ($("#payment-1").length > 0 && $("#payment-1").is(":checked")) {
-            amtttl = credit + amtttl;
-            if (credit < reminord) {
-                credtused = credit;
-            }
-            else {
-                credtused = reminord;
-            }
-        }
-        
-        var onlinpy = ordeamt - amtttl;
-        if(onlinpy < 0) {
-           
-        }
-        $("#walletamtinorder").val(wltused.toFixed(2));
-        $("#creditamtinorder").val(credtused.toFixed(2));
-        $("#crdttused").html("₹" + credtused.toFixed(2));
-        $("#wltamtused").html("₹" + wltused.toFixed(2));
-        
-        return onlinpy.toFixed(2);
     }
 </script>
 <script src="~/Scripts/cart.js"></script>
