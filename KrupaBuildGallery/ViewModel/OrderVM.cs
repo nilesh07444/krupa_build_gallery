@@ -36,5 +36,7 @@ namespace KrupaBuildGallery.ViewModel
         public decimal WalletAmtUsed { get; set; }
         public decimal CreditUsed { get; set; }
         public decimal OnlineUsed { get; set; }
+        public int OrderTypeId { get; set; }
+        public bool IsCashOnDelivery { get; set; }
     }
 }

@@ -22,5 +22,6 @@ namespace KrupaBuildGallery.ViewModel
         public decimal Discount { get; set; }
         public int ItemStatus { get; set; }
         public string ItemStatustxt { get; set; }
+        public bool IsReturnable { get; set; }
     }
 }

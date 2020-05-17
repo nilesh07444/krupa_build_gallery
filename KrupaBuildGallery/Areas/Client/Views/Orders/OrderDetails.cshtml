@@ -240,12 +240,21 @@
                                     <div class="label-wrapper"><label class="control-label">Amount Due to Pay:</label></div>
                                 </div>
                                 <div class="col-md-9">
-                                    <button type="button" name="" id="makepayment" onclick="makepayment('@Model.OrderAmountDue', '@Model.OrderId');" class="btn bg-red" style="margin-right: 3px;background-color: #bbc5ff;border-radius: 20px;">
-                                        Pay Due Amount - ₹ @Model.OrderAmountDue
-                                    </button>
+                                    @if (Model.IsCashOnDelivery == true)
+                                    {
+                                        <span>Due Amount - ₹ @Model.OrderAmountDue</span>
+                                    }
+                                    else
+                                    {
+                                        <button type="button" name="" id="makepayment" onclick="makepayment('@Model.OrderAmountDue', '@Model.OrderId');" class="btn bg-red" style="margin-right: 3px;background-color: #bbc5ff;border-radius: 20px;">
+                                            Pay Due Amount - ₹ @Model.OrderAmountDue
+                                        </button>
+                                    }
+
                                 </div>
                             </div>
                         }
+
 
                     </div>
                     <div class="card-header">
@@ -264,6 +273,8 @@
                                         <th>Discount</th>
                                         <th>GST</th>
                                         <th>Total</th>
+                                        <th>Status</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -298,11 +309,18 @@
                                                 <td>₹ @objorderItem.Discount</td>
                                                 <td>₹ @objorderItem.GSTAmt</td>
                                                 <td>₹ @Totl</td>
+                                                <td>@objorderItem.ItemStatustxt</td>
+                                                <td>
+                                                    @if (((objorderItem.ItemStatus == 1 || objorderItem.ItemStatus == 2) && Model.OrderTypeId == 1) || objorderItem.ItemStatus == 4)
+                                                    {
+                                                        <a href="javascript:void(0)" onclick="itemaction('@objorderItem.OrderItemId','@Model.OrderTypeId','@objorderItem.ItemStatus','@objorderItem.IsReturnable.ToString()');"><i class="fa fa-wrench font-success"></i></a>
+                                                    }
+                                                </td>
                                             </tr>
                                         }
                                     }
                                     @{
-                                       decimal NetTotals =  Math.Round(Model.OrderAmount + Model.ShipmentCharge,2);
+                                        decimal NetTotals = Math.Round(Model.OrderAmount + Model.ShipmentCharge, 2);
                                     }
                                     <tr>
                                         <td></td>
@@ -313,6 +331,8 @@
                                         <td></td>
                                         <td>Sub Total</td>
                                         <td>₹ @Model.OrderAmount</td>
+                                        <td></td>
+                                        <td></td>
                                     </tr>
                                     <tr>
                                         <td></td>
@@ -323,6 +343,8 @@
                                         <td></td>
                                         <td>Shipping Charge</td>
                                         <td>₹ @Model.ShipmentCharge</td>
+                                        <td></td>
+                                        <td></td>
                                     </tr>
                                     <tr>
                                         <td></td>
@@ -333,6 +355,8 @@
                                         <td></td>
                                         <td>Total Net Amount</td>
                                         <td>₹ @NetTotals</td>
+                                        <td></td>
+                                        <td></td>
                                     </tr>
                                 </tbody>
                             </table>
@@ -386,6 +410,7 @@
         </div>
     </div>
 </section>
+<input type="hidden" id="hdnotptxt" value="" />
 <div class="modal fade open" id="paymentmodel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -399,9 +424,55 @@
                 <span class="field-validation-valid text-danger" id="errormsgamountpaid"></span>
             </div>
             <div class="modal-footer">
-                <input type="hidden" id="hdnOrderidsforpaymemt" />                
+                <input type="hidden" id="hdnOrderidsforpaymemt" />
                 <button data-dismiss="modal" class="btn btn-danger" type="button" onclick="$('#hdnotptxt').val('');$('#otptxt').val('');">Close</button>
                 <button class="btn btn-primary" type="button" onclick="makepaymentdue();">Make Payment</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade open" id="itemactionmodal" tabindex="-1" role="dialog" aria-labelledby="itemactionmodal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Item Return/Replace/Cancel/Exchange</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <span>Please select from below if you want cancel, replace, return or exchange item.</span>
+                <select id="itmstatusselect" class="form-control">
+                    <option value="0">Select Option</option>
+                    <option value="5">Cancel</option>
+                    <option value="6">Return</option>
+                    <option value="7">Replace</option>
+                    <option value="8">Exchange</option>
+                </select>
+                <label>Reason</label>
+                <textarea class="form-control" id="txtresn"></textarea>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="hdnOrdritmid" />
+                <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
+                <button class="btn btn-primary" type="button" onclick="takeactionforitem();">Take Action</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade open" id="otpmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Otp For Take Action Of Item</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="$('#hdnotptxt').val('');$('#otptxt').val('');">&times;</button>
+            </div>
+            <div class="modal-body">
+                <label>Enter Otp from Registered Mobile</label><input type="text" id="otptxt" value="" class="form-control" />                
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="hdnDeleteProductItem" />
+                <button data-dismiss="modal" class="btn btn-danger" type="button" onclick="$('#hdnotptxt').val('');$('#otptxt').val('');">Close</button>
+                <button class="btn btn-primary" type="button" onclick="submitotpforitem();">Submit</button>
             </div>
         </div>
     </div>
@@ -493,14 +564,14 @@
     });
     }
      function printReceipt(paymmentid) {
-           $("#dvPrint").load('/client/orders/GenerateReceipt?PaymentId='+paymmentid, function () {                    
+           $("#dvPrint").load('/client/orders/GenerateReceipt?PaymentId='+paymmentid, function () {
             w = window.open();
-            w.document.write($("#dvPrint").html());               
+            w.document.write($("#dvPrint").html());
                setTimeout(function () {
                    w.print();
                    w.close();
                },50);
-            
+
         });
     }
 
@@ -511,7 +582,7 @@
     }
 
     function makepaymentdue() {
-          var amtdue = parseFloat($("#amountdue").val());        
+          var amtdue = parseFloat($("#amountdue").val());
         if ($("#amountopay").val().trim() == "" || parseFloat($("#amountopay").val()) <= 0) {
             $("#errormsgamountpaid").show();
             $("#errormsgamountpaid").html("Please enter amount to pay more than 0");
@@ -522,7 +593,7 @@
             $("#errormsgamountpaid").html("Amount to pay is more than due amount");
             return;
         }
-          
+
           $.ajax({
                 url: '@Url.Action("CreateRazorPaymentOrder", "Orders")',
                 type: "post",
@@ -563,7 +634,112 @@
         }
      });
    }
-  
+
+    function itemaction(ordritmid,ordertypeid,itmstatusid,isreturnable) {
+        if (isreturnable != "True" || itmstatusid != "4" || ordertypeid == "2") {
+            $("#itmstatusselect option[value=6]").hide();
+        }
+        else {
+            $("#itmstatusselect option[value=6]").show();
+        }
+
+        if ((itmstatusid == "1" || itmstatusid == "2") && ordertypeid != "2") {
+            $("#itmstatusselect option[value=5]").show();
+        }
+        else {
+            $("#itmstatusselect option[value=5]").hide();
+        }
+
+        if (itmstatusid == "4" && ordertypeid == "1") {
+            $("#itmstatusselect option[value=7]").show();
+            $("#itmstatusselect option[value=8]").show();
+        }
+        else {
+            $("#itmstatusselect option[value=7]").hide();
+            $("#itmstatusselect option[value=8]").hide();
+        }
+        if (itmstatusid == "4" && ordertypeid == "2") {
+              $("#itmstatusselect option[value=7]").show();
+        }
+        $("#itmstatusselect").val("0");
+        $("#hdnOrdritmid").val(ordritmid);
+        $("#txtresn").val("");
+        $("#itemactionmodal").modal("show");
+
+    }
+
+    function takeactionforitem() {
+        if ($("#itmstatusselect").val() == "0") {
+            alert("Please select action option for item");
+            return;
+        }
+        if ($("#txtresn").val().trim() == "") {
+            alert("Please enter reason for above action");
+            return;
+        }
+          if ($('#hdnotptxt').val() == "") {
+               var URL = '@Url.Action("SendOTPForItemAction", "Orders")';
+               $.ajax({
+                type: 'POST',
+                async: true,
+                url: URL,
+                success: function (result) {
+                    if (result == "InvalidNumber") {
+                        alert("Mobile Number is invalid");
+                        return false;
+                    }
+                    else {                        
+                        $('#hdnotptxt').val(result);                
+                        $("#otpmodal").modal();
+                    }
+                },
+                error: function (resultData) {
+                }
+            });
+                return false;
+         }
+        
+    }
+
+     function submitotpforitem() {
+        if ($("#otptxt").val() == "" || $("#otpemiltxt").val() == "") {
+            alert("Please enter otp");
+            return false;
+        }
+
+        if ($("#otptxt").val() != $('#hdnotptxt').val()) {
+             alert("Invalid Mobile OTP");
+            return false;
+        }
+         var ststuid = $("#itmstatusselect").val();
+         var ordritmid = $("#hdnOrdritmid").val();
+         var strreson = encodeURIComponent($("#txtresn").val());
+         
+         $("#otpmodal").modal('hide');
+         $("#itemactionmodal").modal("hide");
+         
+          StartLoading();
+          var URL = '@Url.Action("SaveItemAction", "Orders")';
+        jQuery.ajax({
+        type: 'POST',
+        async: true,
+        url: URL + "?orderitemid=" + ordritmid + "&status=" + ststuid+"&reason="+strreson ,
+        success: function (result) {
+            if (result == "Success") {              
+                location.reload();
+            }
+            else {                 
+            }
+               StopLoading();
+        },
+        error: function (resultData) {
+            StopLoading();
+            console.log("error");
+
+        }
+     });
+        
+    }
 </script>
 <div class="dvrazorpayscript">
 

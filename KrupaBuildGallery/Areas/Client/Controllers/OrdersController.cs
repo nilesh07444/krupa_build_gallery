@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Web;
 using System.Web.Mvc;
 
@@ -76,6 +77,10 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         {
             return Enum.GetName(typeof(OrderStatus), orderstatusid);
         }
+        public string GetItemStatus(long itemstatusid)
+        {
+            return Enum.GetName(typeof(OrderItemStatus), itemstatusid);
+        }
         public ActionResult OrderDetails(int Id)
         {
             OrderVM objOrder = new OrderVM();
@@ -105,6 +110,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             WalletAmtUsed = p.WalletAmountUsed.HasValue ? p.WalletAmountUsed.Value : 0,
                             CreditUsed = p.CreditAmountUsed.HasValue ? p.CreditAmountUsed.Value : 0,
                             OnlineUsed = p.AmountByRazorPay.HasValue ? p.AmountByRazorPay.Value : 0,
+                            OrderTypeId = p.OrderType.HasValue ? p.OrderType.Value : 1,
+                            IsCashOnDelivery = p.IsCashOnDelivery.HasValue ? p.IsCashOnDelivery.Value : false
                         }).OrderByDescending(x => x.OrderDate).FirstOrDefault();
             if (objOrder != null)
             {
@@ -125,8 +132,13 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                                        IGSTAmt = p.IGSTAmt.Value,
                                                        ItemImg = c.MainImage,
                                                        Discount = p.Discount.HasValue ? p.Discount.Value : 0,
-                                                       ItemStatus = p.ItemStatus.HasValue ? p.ItemStatus.Value : 1
+                                                       ItemStatus = p.ItemStatus.HasValue ? p.ItemStatus.Value : 1,
+                                                       IsReturnable = c.IsReturnable.HasValue ? c.IsReturnable.Value : false
                                                    }).OrderByDescending(x => x.OrderItemId).ToList();
+                if (lstOrderItms != null && lstOrderItms.Count() > 0)
+                {
+                    lstOrderItms.ForEach(x => x.ItemStatustxt = GetItemStatus(x.ItemStatus));
+                }
                 objOrder.OrderItems = lstOrderItms;
             }
 
@@ -399,6 +411,154 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 }
             }
             return words;
+        }
+
+        [HttpPost]
+        public string SaveItemAction(string orderitemid,string status,string reason)
+        {
+            long OrderItmID64 = Convert.ToInt64(orderitemid);
+            decimal amtrefund = 0;
+            bool IsApprov = false;
+            string msgsms = "";
+            string mobilenum = "";
+            string adminmobilenumber = _db.tbl_GeneralSetting.FirstOrDefault().AdminSMSNumber;
+            tbl_OrderItemDetails objitm = _db.tbl_OrderItemDetails.Where(o => o.OrderDetailId == OrderItmID64).FirstOrDefault();          
+            if(objitm != null)
+            {
+                long proditmid = objitm.ProductItemId.Value;
+                long ordrid = objitm.OrderId.Value;
+                string resn = HttpContext.Server.UrlDecode(reason);
+                tbl_Orders objordr = _db.tbl_Orders.Where(o => o.OrderId == ordrid).FirstOrDefault();
+                var objproditm = _db.tbl_ProductItems.Where(o => o.ProductItemId == proditmid).FirstOrDefault();
+                if (status == "5")
+                {
+                    IsApprov = true;
+                     amtrefund = objitm.FinalItemPrice.Value;
+                    if (objordr.OrderShipPincode == "389001")
+                    {
+                        decimal shipchrge = Math.Round(objproditm.ShippingCharge.Value * objitm.Qty.Value,2);
+                        amtrefund = shipchrge + amtrefund;
+                    }
+                    objitm.ItemStatus = 5;
+                    objitm.IsDelete = true;
+                    if (objordr.IsCashOnDelivery.Value == true)
+                    {
+                        objordr.AmountDue = objordr.AmountDue - amtrefund;
+                    }
+                    else
+                    {
+                        tbl_Wallet objWlt = new tbl_Wallet();
+                        objWlt.Amount = amtrefund;
+                        objWlt.CreditDebit = "Credit";
+                        objWlt.ItemId = objitm.OrderDetailId;
+                        objWlt.OrderId = objitm.OrderId;
+                        objWlt.ClientUserId = objordr.ClientUserId;
+                        objWlt.WalletDate = DateTime.UtcNow;
+                        objWlt.Description = "Amount Refund to Wallet Order #" + objitm.OrderId;
+                        _db.tbl_Wallet.Add(objWlt);
+                        var objClient =_db.tbl_ClientUsers.Where(o => o.ClientUserId == objordr.ClientUserId).FirstOrDefault();
+                        if(objClient != null)
+                        {
+                            decimal amtwlt = objClient.WalletAmt.HasValue ? objClient.WalletAmt.Value : 0;
+                            amtwlt = amtwlt + amtrefund;
+                        }
+                        msgsms = "You Item is Cancelled for Order No." + objitm.OrderId + " . Amount Rs." + amtrefund + " Refunded to your wallet";
+                        SendMessageSMS(objClient.MobileNo, msgsms);
+                        msgsms = "Items has been Cancelled for Order No." + objitm.OrderId;
+                        SendMessageSMS(adminmobilenumber, msgsms);
+                        
+                        //SendMessageSMS(objClient.MobileNo,);
+                        _db.SaveChanges();                        
+                    }
+                }
+                else if(status == "6")
+                {
+                    objitm.ItemStatus = 6;
+                    IsApprov = false;
+                    msgsms = "Item Return Request Received for Order No." + objitm.OrderId;
+                    SendMessageSMS(adminmobilenumber, msgsms);
+                }
+                else if (status == "7")
+                {
+                    objitm.ItemStatus = 7;
+                    IsApprov = false;
+                    msgsms = "Item Replace Request Received for Order No." + objitm.OrderId;
+                    SendMessageSMS(adminmobilenumber, msgsms);
+                }
+                else if (status == "8")
+                {
+                    objitm.ItemStatus = 7;
+                    IsApprov = false;
+                    msgsms = "Item Exchange Request Received for Order No." + objitm.OrderId;
+                    SendMessageSMS(adminmobilenumber, msgsms);
+                }
+                tbl_ItemReturnCancelReplace objitmreplce = new tbl_ItemReturnCancelReplace();
+                objitmreplce.ItemId = objitm.OrderDetailId;
+                objitmreplce.OrderId = objitm.OrderId;
+                objitmreplce.Amount = amtrefund;
+                objitmreplce.Reason = resn;
+                objitmreplce.ItemStatus = Convert.ToInt32(status);
+                objitmreplce.ClientUserId = objordr.ClientUserId;
+                objitmreplce.IsApproved = IsApprov;
+                objitmreplce.DateCreated = DateTime.UtcNow;
+                _db.tbl_ItemReturnCancelReplace.Add(objitmreplce);
+                _db.SaveChanges();
+            }
+         
+            return "Success";
+        }
+
+        public string SendOTPForItemAction()
+        {
+            try
+            {              
+                using (WebClient webClient = new WebClient())
+                {
+                    Random random = new Random();
+                    int num = random.Next(353535,666666);
+                    string msg = "Your OTP code for Item action is " + num;
+                    string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + clsClientSession.MobileNumber + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    var json = webClient.DownloadString(url);
+                    if (json.Contains("invalidnumber"))
+                    {
+                        return "InvalidNumber";
+                    }
+                    else
+                    {
+                        return num.ToString();
+                    }
+
+                }
+            }
+            catch (WebException ex)
+            {
+                throw ex;
+            }
+        }
+
+        public string SendMessageSMS(string mobile,string msg)
+        {
+            try
+            {
+                using (WebClient webClient = new WebClient())
+                {
+                    string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + mobile + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    var json = webClient.DownloadString(url);
+                    if (json.Contains("invalidnumber"))
+                    {
+                        return "InvalidNumber";
+                    }
+                    else
+                    {
+                        return "success";
+                    }
+
+                }
+            }
+            catch (WebException ex)
+            {
+                return "fail";
+            }
         }
     }
 }
