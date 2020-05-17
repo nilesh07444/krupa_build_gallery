@@ -62,17 +62,20 @@
             }
             if ($("input[name=payment-group]:checked").length == 0) {
                 alert("Please select payment method");
-                  flg = false;
+                flg = false;
+            }
+            else if (parseFloat($("#payment-2").attr("data-attrblns")) > 0 && !$("#payment-2").is(":checked")) {
+                alert("Please select online payment method");
+                flg = false;
             }
 
             if (flg == true) {
-                if ($("input[name=payment-group]:checked").val() == "ByOther") {
-                    var isitemexists = CheckItemExists("ByOther",options,e);
-
+                if ($("#payment-2").is(":checked") && parseFloat($("#onlineamtinorder").val()) > 0) {
+                      var isitemexists = CheckItemExists("ByOther",options,e);
                 }
                 else {
-                      var isitemexists = CheckItemExists("ByCredit");
-                }
+                     var isitemexists = CheckItemExists("ByCredit");
+                }             
             }
         });
     }

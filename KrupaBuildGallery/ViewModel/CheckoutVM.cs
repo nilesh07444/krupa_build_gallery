@@ -17,5 +17,10 @@ namespace KrupaBuildGallery
         public string shippincode { get; set; }
         public string Orderamount { get; set; }
         public string shipamount { get; set; }
+        public string walletamtinorder { get; set; }
+        public string creditamtinorder { get; set; }
+        public string onlineamtinorder { get; set; }
+        public string ordertype { get; set; }
+        public string isCashondelivery { get; set; }
     }
 }

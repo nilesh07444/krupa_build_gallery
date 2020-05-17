@@ -101,7 +101,10 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             ClientMobileNo = c.MobileNo,
                             OrderAmountDue = p.AmountDue.HasValue ?p.AmountDue.Value : 0,
                             ShipmentCharge = p.ShippingCharge.HasValue ? p.ShippingCharge.Value : 0,
-                            ShippingStatus = p.ShippingStatus.HasValue ? p.ShippingStatus.Value : 2                            
+                            ShippingStatus = p.ShippingStatus.HasValue ? p.ShippingStatus.Value : 2,
+                            WalletAmtUsed = p.WalletAmountUsed.HasValue ? p.WalletAmountUsed.Value : 0,
+                            CreditUsed = p.CreditAmountUsed.HasValue ? p.CreditAmountUsed.Value : 0,
+                            OnlineUsed = p.AmountByRazorPay.HasValue ? p.AmountByRazorPay.Value : 0,
                         }).OrderByDescending(x => x.OrderDate).FirstOrDefault();
             if (objOrder != null)
             {

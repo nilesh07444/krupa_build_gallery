@@ -33,5 +33,8 @@ namespace KrupaBuildGallery.ViewModel
         public string InvoiceYear { get;set; }
         public string OrderDateString { get; set; }
         public List<PaymentHistoryVM> PaymentHistory { get; set; }
+        public decimal WalletAmtUsed { get; set; }
+        public decimal CreditUsed { get; set; }
+        public decimal OnlineUsed { get; set; }
     }
 }
