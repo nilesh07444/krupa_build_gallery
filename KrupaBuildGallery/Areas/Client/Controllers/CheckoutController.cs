@@ -307,21 +307,44 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         paymentmethod = "Cash on Delivery";
                         Iscashondelivery = true;
                     }
-                    List<CartVM> lstCartItems = (from crt in _db.tbl_Cart
-                                                 join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
-                                                 where crt.ClientUserId == clientusrid && crt.IsCashonDelivery == Iscashondelivery
-                                                 select new CartVM
-                                                 {
-                                                     CartId = crt.Cart_Id,
-                                                     ItemName = i.ItemName,
-                                                     ItemId = i.ProductItemId,
-                                                     Price = clsClientSession.RoleID == 1 ? i.CustomerPrice : i.DistributorPrice,
-                                                     ItemImage = i.MainImage,
-                                                     Qty = crt.CartItemQty.Value,
-                                                     ItemSku = i.Sku,
-                                                     GSTPer = i.GST_Per,
-                                                     IGSTPer = i.IGST_Per
-                                                 }).OrderByDescending(x => x.CartId).ToList();
+                    List<CartVM> lstCartItems = new List<CartVM>();
+                    if (objCheckout.ordertype == "1")
+                    {
+                        lstCartItems = (from crt in _db.tbl_Cart
+                                                     join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
+                                                     where crt.ClientUserId == clientusrid && crt.IsCashonDelivery == Iscashondelivery
+                                                     select new CartVM
+                                                     {
+                                                         CartId = crt.Cart_Id,
+                                                         ItemName = i.ItemName,
+                                                         ItemId = i.ProductItemId,
+                                                         Price = clsClientSession.RoleID == 1 ? i.CustomerPrice : i.DistributorPrice,
+                                                         ItemImage = i.MainImage,
+                                                         Qty = crt.CartItemQty.Value,
+                                                         ItemSku = i.Sku,
+                                                         GSTPer = i.GST_Per,
+                                                         IGSTPer = i.IGST_Per
+                                                     }).OrderByDescending(x => x.CartId).ToList();
+                    }
+                    else
+                    {
+                        lstCartItems = (from crt in _db.tbl_SecondCart
+                                        join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
+                                        where crt.ClientUserId == clientusrid 
+                                        select new CartVM
+                                        {
+                                            CartId = crt.SecondCartId,
+                                            ItemName = i.ItemName,
+                                            ItemId = i.ProductItemId,
+                                            Price = clsClientSession.RoleID == 1 ? i.CustomerPrice : i.DistributorPrice,
+                                            ItemImage = i.MainImage,
+                                            Qty = crt.CartItemQty.Value,
+                                            ItemSku = i.Sku,
+                                            GSTPer = i.GST_Per,
+                                            IGSTPer = i.IGST_Per
+                                        }).OrderByDescending(x => x.CartId).ToList();
+                    }
+                 
                     lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price); });
                     // List<tbl_Cart> lstCarts = _db.tbl_Cart.Where(o => o.ClientUserId == clientusrid).ToList();
                    
@@ -373,7 +396,21 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         {
                             paymentmethod = "Credit";
                         }
-                        amtorderdue = amtcredit;                       
+                        if (objCheckout.ordertype == "1")
+                        {
+                            amtorderdue = amtcredit;
+                        }                       
+                        else
+                        {
+                            decimal advncpay = 0;
+                            if(!string.IsNullOrEmpty(objCheckout.advanceamtpay))
+                            {
+                                advncpay = Convert.ToDecimal(objCheckout.advanceamtpay);
+                                decimal totlordewithship = ordramt + shippingcharge;
+                                decimal remaingammt = totlordewithship - advncpay;
+                                amtorderdue = remaingammt + amtcredit;
+                            }
+                        }
                     }
                     objOrder.OrderAmount = ordramt;
                     objOrder.OrderShipCity = objCheckout.shipcity;
@@ -500,8 +537,16 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             objOrderItem.ItemStatus = 1;
                             objOrderItem.FinalItemPrice = AfterTax;
                             _db.tbl_OrderItemDetails.Add(objOrderItem);
-                            var objCartforremove = _db.tbl_Cart.Where(o => o.Cart_Id == objCart.CartId).FirstOrDefault();
-                            _db.tbl_Cart.Remove(objCartforremove);
+                            if (objCheckout.ordertype == "1")
+                            {
+                                var objCartforremove = _db.tbl_Cart.Where(o => o.Cart_Id == objCart.CartId).FirstOrDefault();
+                                _db.tbl_Cart.Remove(objCartforremove);
+                            }
+                            else
+                            {
+                                var objCartforremove = _db.tbl_SecondCart.Where(o => o.SecondCartId == objCart.CartId).FirstOrDefault();
+                                _db.tbl_SecondCart.Remove(objCartforremove);
+                            }
                         }
                         _db.SaveChanges();
                     }
@@ -544,27 +589,52 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     ReturnMessage = "Success^" + orderid;
                 }
                 else
-                {                  
+                {
+                    decimal amountdue = 0;
                     Razorpay.Api.Payment objpymn = new Razorpay.Api.Payment().Fetch(razorpay_payment_id);
                     if (objpymn != null)
                     {
                         if (objpymn["status"] != null && Convert.ToString(objpymn["status"]) == "captured")
                         {
-                            List<CartVM> lstCartItems = (from crt in _db.tbl_Cart
-                                                         join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
-                                                         where crt.ClientUserId == clientusrid && crt.IsCashonDelivery == false
-                                                         select new CartVM
-                                                         {
-                                                             CartId = crt.Cart_Id,
-                                                             ItemName = i.ItemName,
-                                                             ItemId = i.ProductItemId,
-                                                             Price = clsClientSession.RoleID == 1 ? i.CustomerPrice : i.DistributorPrice,
-                                                             ItemImage = i.MainImage,
-                                                             Qty = crt.CartItemQty.Value,
-                                                             ItemSku = i.Sku,
-                                                             GSTPer = i.GST_Per,
-                                                             IGSTPer = i.IGST_Per
-                                                         }).OrderByDescending(x => x.CartId).ToList();
+                            List<CartVM> lstCartItems = new List<CartVM>();
+                            if(objCheckout.ordertype == "1")
+                            {
+                                
+                                lstCartItems = (from crt in _db.tbl_Cart
+                                                             join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
+                                                             where crt.ClientUserId == clientusrid && crt.IsCashonDelivery == false
+                                                             select new CartVM
+                                                             {
+                                                                 CartId = crt.Cart_Id,
+                                                                 ItemName = i.ItemName,
+                                                                 ItemId = i.ProductItemId,
+                                                                 Price = clsClientSession.RoleID == 1 ? i.CustomerPrice : i.DistributorPrice,
+                                                                 ItemImage = i.MainImage,
+                                                                 Qty = crt.CartItemQty.Value,
+                                                                 ItemSku = i.Sku,
+                                                                 GSTPer = i.GST_Per,
+                                                                 IGSTPer = i.IGST_Per
+                                                             }).OrderByDescending(x => x.CartId).ToList();
+                            }
+                            else
+                            {
+                                lstCartItems = (from crt in _db.tbl_SecondCart
+                                                join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
+                                                where crt.ClientUserId == clientusrid 
+                                                select new CartVM
+                                                {
+                                                    CartId = crt.SecondCartId,
+                                                    ItemName = i.ItemName,
+                                                    ItemId = i.ProductItemId,
+                                                    Price = clsClientSession.RoleID == 1 ? i.CustomerPrice : i.DistributorPrice,
+                                                    ItemImage = i.MainImage,
+                                                    Qty = crt.CartItemQty.Value,
+                                                    ItemSku = i.Sku,
+                                                    GSTPer = i.GST_Per,
+                                                    IGSTPer = i.IGST_Per
+                                                }).OrderByDescending(x => x.CartId).ToList();
+                            }
+                          
                             lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price); });
                             // List<tbl_Cart> lstCarts = _db.tbl_Cart.Where(o => o.ClientUserId == clientusrid).ToList();
                             string paymentmethod = objpymn["method"];
@@ -623,6 +693,22 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             {
                                 lstpymenymthod.Add(paymentmethod);
                             }
+
+                            if (objCheckout.ordertype == "1")
+                            {
+                                amountdue = amtcredit;
+                            }
+                            else
+                            {
+                                decimal advncpay = 0;
+                                if (!string.IsNullOrEmpty(objCheckout.advanceamtpay))
+                                {
+                                    advncpay = Convert.ToDecimal(objCheckout.advanceamtpay);
+                                    decimal totlordewithship = ordramt + shippingcharge;
+                                    decimal remaingammt = totlordewithship - advncpay;
+                                    amountdue = remaingammt + amtcredit;
+                                }
+                            }
                             paymentmethod = string.Join(",", lstpymenymthod);
                             tbl_Orders objOrder = new tbl_Orders();
                             objOrder.ClientUserId = clientusrid;
@@ -641,7 +727,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             objOrder.CreatedDate = DateTime.UtcNow;
                             objOrder.UpdatedBy = clientusrid;
                             objOrder.UpdatedDate = DateTime.UtcNow;
-                            objOrder.AmountDue = amtcredit;
+                            objOrder.AmountDue = amountdue;
                             objOrder.InvoiceNo = Invno;
                             objOrder.InvoiceYear = year + "-" + toyear;
                             objOrder.RazorpayOrderId = razorpay_order_id;
@@ -780,8 +866,17 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                     objOrderItem.FinalItemPrice = AfterTax;
                                     objOrderItem.ItemStatus = 1;
                                     _db.tbl_OrderItemDetails.Add(objOrderItem);
-                                    var objCartforremove = _db.tbl_Cart.Where(o => o.Cart_Id == objCart.CartId).FirstOrDefault();
-                                    _db.tbl_Cart.Remove(objCartforremove);
+                                    if (objCheckout.ordertype == "1")
+                                    {
+                                        var objCartforremove = _db.tbl_Cart.Where(o => o.Cart_Id == objCart.CartId).FirstOrDefault();
+                                        _db.tbl_Cart.Remove(objCartforremove);
+                                    }
+                                    else
+                                    {
+                                        var objCartforremove = _db.tbl_SecondCart.Where(o => o.SecondCartId == objCart.CartId).FirstOrDefault();
+                                        _db.tbl_SecondCart.Remove(objCartforremove);
+                                    }
+                                    
                                 }
                                 _db.SaveChanges();
                             }
@@ -999,7 +1094,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 decimal TotalOrder = 0;
                 ViewBag.WebsiteOrderId = "1";
                 decimal AdvancePaymentAmt = 0;
-
+                bool IsCashOrd = false;
+                ViewBag.IsCashOnDelivery = IsCashOrd;
                 string GuidNew = Guid.NewGuid().ToString();
                 string cookiesessionval = "";
                 if (Request.Cookies["sessionkeyval"] != null)
