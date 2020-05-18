@@ -35,9 +35,10 @@
         <EntityTypeShape EntityType="krupagalleryModel.tbl_AdminUsers" Width="1.5" PointX="0.75" PointY="4.75" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_PointDetails" Width="1.5" PointX="3.375" PointY="7.75" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_GeneralSetting" Width="1.5" PointX="7.375" PointY="16.75" />
-        <EntityTypeShape EntityType="krupagalleryModel.tbl_ItemReturnCancelReplace" Width="1.5" PointX="9.375" PointY="16.75" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_SecondCart" Width="1.5" PointX="3.375" PointY="17.75" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_Wallet" Width="1.5" PointX="17.375" PointY="4.75" />
+        <EntityTypeShape EntityType="krupagalleryModel.tbl_OrderItemDelivery" Width="1.5" PointX="17.375" PointY="8.75" />
+        <EntityTypeShape EntityType="krupagalleryModel.tbl_ItemReturnCancelReplace" Width="1.5" PointX="9.375" PointY="16.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

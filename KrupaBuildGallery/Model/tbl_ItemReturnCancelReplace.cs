@@ -23,7 +23,7 @@ namespace KrupaBuildGallery.Model
         public Nullable<bool> IsApproved { get; set; }
         public Nullable<System.DateTime> DateCreated { get; set; }
         public Nullable<long> ClientUserId { get; set; }
-        public Nullable<bool> DateModified { get; set; }
+        public Nullable<System.DateTime> DateModified { get; set; }
         public Nullable<long> ModifiedBy { get; set; }
     }
 }

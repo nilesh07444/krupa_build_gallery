@@ -322,6 +322,9 @@
     <Compile Include="Model\tbl_Offers.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\tbl_OrderItemDelivery.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\tbl_OrderItemDetails.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
@@ -379,6 +382,7 @@
     <Compile Include="ViewModel\ItemTextVM.cs" />
     <Compile Include="ViewModel\LoginVM.cs" />
     <Compile Include="ViewModel\OfferVM.cs" />
+    <Compile Include="ViewModel\OrderItemRequestsVM.cs" />
     <Compile Include="ViewModel\OrderItemsVM.cs" />
     <Compile Include="ViewModel\OrderVM.cs" />
     <Compile Include="ViewModel\OtpVM.cs" />
@@ -3944,6 +3948,7 @@
     <Content Include="Areas\Client\Views\Products\UnPacked.cshtml" />
     <Content Include="Areas\Client\Views\Products\Offer.cshtml" />
     <Content Include="Areas\Client\Views\Category\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Order\OrderItemClientRequests.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />

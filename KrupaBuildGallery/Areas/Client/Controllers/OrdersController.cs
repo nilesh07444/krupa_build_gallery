@@ -461,6 +461,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         {
                             decimal amtwlt = objClient.WalletAmt.HasValue ? objClient.WalletAmt.Value : 0;
                             amtwlt = amtwlt + amtrefund;
+                            objClient.WalletAmt = amtwlt;
+                            _db.SaveChanges();
                         }
                         msgsms = "You Item is Cancelled for Order No." + objitm.OrderId + " . Amount Rs." + amtrefund + " Refunded to your wallet";
                         SendMessageSMS(objClient.MobileNo, msgsms);
@@ -473,23 +475,23 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 }
                 else if(status == "6")
                 {
-                    objitm.ItemStatus = 6;
-                    IsApprov = false;
+                    objitm.ItemStatus = 6;                    
                     msgsms = "Item Return Request Received for Order No." + objitm.OrderId;
+                    amtrefund = objitm.FinalItemPrice.Value;
                     SendMessageSMS(adminmobilenumber, msgsms);
                 }
                 else if (status == "7")
                 {
-                    objitm.ItemStatus = 7;
-                    IsApprov = false;
+                    objitm.ItemStatus = 7;                    
                     msgsms = "Item Replace Request Received for Order No." + objitm.OrderId;
+                    amtrefund = objitm.FinalItemPrice.Value;
                     SendMessageSMS(adminmobilenumber, msgsms);
                 }
                 else if (status == "8")
                 {
-                    objitm.ItemStatus = 7;
-                    IsApprov = false;
+                    objitm.ItemStatus = 8;                    
                     msgsms = "Item Exchange Request Received for Order No." + objitm.OrderId;
+                    amtrefund = objitm.FinalItemPrice.Value;                   
                     SendMessageSMS(adminmobilenumber, msgsms);
                 }
                 tbl_ItemReturnCancelReplace objitmreplce = new tbl_ItemReturnCancelReplace();
@@ -499,7 +501,10 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 objitmreplce.Reason = resn;
                 objitmreplce.ItemStatus = Convert.ToInt32(status);
                 objitmreplce.ClientUserId = objordr.ClientUserId;
-                objitmreplce.IsApproved = IsApprov;
+                if(status == "5")
+                {
+                    objitmreplce.IsApproved = IsApprov;
+                }                
                 objitmreplce.DateCreated = DateTime.UtcNow;
                 _db.tbl_ItemReturnCancelReplace.Add(objitmreplce);
                 _db.SaveChanges();

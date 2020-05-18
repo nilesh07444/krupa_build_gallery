@@ -229,5 +229,142 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             _db.SaveChanges();
             return "";
         }
+
+        public ActionResult OrderItemClientRequests(int Status = 0)
+        {
+
+            List<OrderItemRequestsVM> lstItemClientRequests = new List<OrderItemRequestsVM>();
+            try
+            {
+                lstItemClientRequests = (from p in _db.tbl_ItemReturnCancelReplace
+                             join c in _db.tbl_ClientUsers on p.ClientUserId equals c.ClientUserId
+                             join ordritems in _db.tbl_OrderItemDetails on p.ItemId equals ordritems.OrderDetailId
+                             join Itm in _db.tbl_ProductItems on ordritems.ProductItemId equals Itm.ProductItemId
+                             where (Status == 0 && p.IsApproved == null) || (p.ItemStatus == Status && p.IsApproved == true)
+                             select new OrderItemRequestsVM
+                             {
+                                 OrderItemRequestId = p.ItemReturnCancelReplaceId,
+                                 OrderId = p.OrderId.Value,                                 
+                                 ItemName = Itm.ItemName,
+                                 Amount = p.Amount.Value,
+                                 Reason = p.Reason,
+                                 OrderItemId = p.ItemId.Value,
+                                 ItemStatus = p.ItemStatus.Value,                              
+                                 DateCreated = p.DateCreated.Value
+                             }).OrderByDescending(x => x.DateCreated).ToList();
+
+              
+                ViewBag.Status = Status;
+            }
+            catch (Exception ex)
+            {
+                string ErrorMessage = ex.Message.ToString();
+            }
+
+            return View(lstItemClientRequests);
+        }
+
+        [HttpPost]
+        public string ApproveRejectItemRequest(string requestid,string aprprovereject)
+        {
+            long ItmRequestId = Convert.ToInt64(requestid);
+            string msgsms = "";
+            tbl_ItemReturnCancelReplace objReq =_db.tbl_ItemReturnCancelReplace.Where(o => o.ItemReturnCancelReplaceId == ItmRequestId).FirstOrDefault();
+            tbl_ClientUsers objClient = _db.tbl_ClientUsers.Where(o => o.ClientUserId == objReq.ClientUserId).FirstOrDefault();
+            tbl_OrderItemDetails objOrderItm = _db.tbl_OrderItemDetails.Where(o => o.OrderDetailId == objReq.ItemId).FirstOrDefault();
+
+            if (aprprovereject == "reject")
+            {
+                objReq.IsApproved = false;
+                string mobilenumber = objClient.MobileNo;
+                if (objReq.ItemStatus == 6)
+                {
+                    msgsms = "Item Return Request Rejected for Order No." + objReq.OrderId;
+                    objOrderItm.ItemStatus = 4;                    
+                }
+                else if (objReq.ItemStatus == 7)
+                {
+                    objOrderItm.ItemStatus = 4;
+                    msgsms = "Item Replace Request Rejected for Order No." + objReq.OrderId;                   
+                }
+                else if (objReq.ItemStatus == 8)
+                {
+                    objOrderItm.ItemStatus = 4;
+                    msgsms = "Item Exchange Request Rejected for Order No." + objReq.OrderId;                   
+                }
+                _db.SaveChanges();
+                SendMessageSMS(mobilenumber, msgsms);
+
+            }
+            else
+            {
+                string mobilenumber = objClient.MobileNo;
+                if (objReq.ItemStatus == 6)
+                {
+                    objReq.IsApproved = true;
+                    _db.SaveChanges();
+                }
+                else if (objReq.ItemStatus == 7)
+                {
+                    objReq.IsApproved = true;
+                    _db.SaveChanges();
+                }
+                else if (objReq.ItemStatus == 8)
+                {
+                    objReq.IsApproved = true;
+                    objOrderItm.IsDelete = true;
+                    decimal amt = objReq.Amount.Value;
+                    decimal deprc = Math.Round((objReq.Amount.Value * 3) / 100, 2);
+                    decimal amtredund = amt - deprc;
+                    tbl_Wallet objWlt = new tbl_Wallet();
+                    objWlt.Amount = amtredund;
+                    objWlt.CreditDebit = "Credit";
+                    objWlt.ItemId = objReq.ItemId;
+                    objWlt.OrderId = objReq.OrderId;
+                    objWlt.ClientUserId = objReq.ClientUserId;
+                    objWlt.WalletDate = DateTime.UtcNow;
+                    objWlt.Description = "Amount Refund to Wallet Order #" + objReq.OrderId;
+                    _db.tbl_Wallet.Add(objWlt);                   
+                    if (objClient != null)
+                    {
+                        decimal amtwlt = objClient.WalletAmt.HasValue ? objClient.WalletAmt.Value : 0;
+                        amtwlt = amtwlt + amtredund;
+                        objClient.WalletAmt = amtwlt;
+                        _db.SaveChanges();
+                    }
+                    _db.SaveChanges();
+                    msgsms = "You Item is Exchanged for Order No." + objReq.OrderId + " . Amount Rs." + amtredund + " Refunded to your wallet";
+                    SendMessageSMS(mobilenumber, msgsms);
+                }
+            }
+             
+
+            return "Success";
+        }
+
+        public string SendMessageSMS(string mobile, string msg)
+        {
+            try
+            {
+                using (WebClient webClient = new WebClient())
+                {
+                    string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + mobile + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    var json = webClient.DownloadString(url);
+                    if (json.Contains("invalidnumber"))
+                    {
+                        return "InvalidNumber";
+                    }
+                    else
+                    {
+                        return "success";
+                    }
+
+                }
+            }
+            catch (WebException ex)
+            {
+                return "fail";
+            }
+        }
     }
 }
