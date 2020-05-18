@@ -91,73 +91,70 @@
     <header class="header-tools marketplace">
         <div class="mobile-fix-option"></div>
         <div class="top-header">
-            <div class="container-fluid custom-container">
-                <div class="row">
-                    <div class="col-lg-3">
-                        <div class="header-contact">
-                            <ul>
-                                <li>WELCOME TO SHOPPING & SAVING</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-lg-2">
-                        <div class="header-contact">
-                            <ul>
-                                <li><i class="fa fa-phone" aria-hidden="true"></i>Toll Free: 1800 200 7003</li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-lg-5">
-                        <ul class="header-dropdown"> 
-                            <li class="" style="width: 100%;">
-                                <input type="text" placeholder="Search any products.." style="width: 100%; padding: 5px; border-radius: 5px; border: none;" />
-                            </li> 
+
+            <div class="container-fluid " style="background-color: #67255A; color: white; font-size: 17px;float: left;">
+
+                <div class="row  p-2">
+                    <div class="col-md-9 ml-5">
+                        <ul>
+                            <li style="padding-left: 15px;">&nbsp;&nbsp;Welcome To Shopping & Saving</li>
+                            <li style="padding-left: 15px;">&nbsp;&nbsp;Toll Free   : 1800 - 200 - 7003</li>
+                            <li>&nbsp;&nbsp;    <input class="clsSearchText" type="text" name="" placeholder="Search Any Product.." size="34" style="padding: 5px;"></li>
                         </ul>
                     </div>
-                    <div class="col-lg-2 text-right">
-                        <ul class="header-dropdown">
-                              
-                            @if (clsClientSession.UserID == 0)
-                            {
-                                <li class="mobile-wishlist" style="padding: 0px 0px;"><a href="javascript:void(0);" title="WishList" onclick="alert('Please login to see wishlist items');"><i class="fa fa-heart" aria-hidden="true"></i></a></li>
-                            }
-                            else
-                            {
-                                <li class="mobile-wishlist" style="padding: 0px 0px;"><a href="/wishlist" title="WishList"><i class="fa fa-heart" aria-hidden="true"></i></a></li>
-                            }
-
-                            <li class="onhover-dropdown mobile-account">
-                                @if (clsClientSession.UserID > 0)
-                                {
-                                    string strnm = clsClientSession.FirstName + " " + clsClientSession.LastName;
-                                    <i class="fa fa-user" aria-hidden="true"></i> @strnm
-                                }
-                                else
-                                {
-                                    <i class="fa fa-user" aria-hidden="true"></i><span>My Account</span>
-                                }
-                                <ul class="onhover-show-div">
-                                    @if (clsClientSession.UserID == 0)
+                    <div class="col-md-* mt-2 pull-right">
+                        @if (clsClientSession.UserID == 0)
+                        {
+                            <a class="text-white" href="javascript:void(0);" title="WishList" onclick="alert('Please login to see wishlist items');"><i class="fa fa-heart" aria-hidden="true"></i>&nbsp; Wishlist</a>
+                        }
+                        else
+                        {
+                            <a class="text-white" href="/wishlist" title="WishList"><i class="fa fa-heart" aria-hidden="true"></i>&nbsp; Wishlist</a>
+                        }
+                    </div>
+                    <div class="dropdown col-md-* ml-1 pull-right">
+                        <ul class="nav navbar-nav ml-auto" style="padding-left: 25px;">
+                            <li class="nav-item dropdown">
+                                @{
+                                    string strnm = "";
+                                    if (clsClientSession.UserID > 0)
                                     {
-                                        <li><a href="/login" data-lng="en">Login</a></li>
-                                        <li><a href="/register" data-lng="en">Register</a></li>
-
+                                        strnm = clsClientSession.FirstName + " " + clsClientSession.LastName;
                                     }
                                     else
                                     {
-                                        <li><a href="/myprofile" data-lng="es">My Profile</a></li>
-                                        <li><a href="/myprofile/changepassword" data-lng="es">Change Password</a></li>
-                                        <li><a href="/orders" data-lng="es">My Orders</a></li>
-                                        <li><a href="/login/signout" data-lng="es">Logout</a></li>
+                                        strnm = "My Account";
+                                    }
+                                }
+                                <a href="#" class="nav-link dropdown-toggle text-white" data-toggle="dropdown"><i class="fa fa-user" aria-hidden="true"></i><span>&nbsp;  @strnm</span></a>
+                                <div class="dropdown-menu dropdown-menu-right">
+                                    @if (clsClientSession.UserID == 0)
+                                    {
+                                        <a class="dropdown-item" href="/login" data-lng="en">Login</a>
+                                        <a class="dropdown-item" href="/register" data-lng="en">Register</a>
+                                    }
+                                    else
+                                    {
+                                        <a href="/myprofile" class="dropdown-item">My Profile</a>
+                                        <a href="/myprofile/changepassword" class="dropdown-item">Change Password</a>
+                                        <a href="/orders" class="dropdown-item">My Orders</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="/login/signout" class="dropdown-item">Logout</a>
                                     }
 
-                                </ul>
+                                    @*<a href="#" class="dropdown-item">Reports</a>
+                                        <a href="#" class="dropdown-item">Settings</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="#" class="dropdown-item">Logout</a>*@
+                                </div>
                             </li>
 
                         </ul>
                     </div>
                 </div>
+
             </div>
+
         </div>
         <div class="container-fluid custom-container">
             <div class="row">
@@ -295,37 +292,6 @@
                             <div>
                                 <div class="icon-nav">
                                     <ul>
-                                        <li class="onhover-div mobile-search">
-                                            <div>
-                                                <img src="~/Content/assets/images/icon/search.png" onclick="openSearch()"
-                                                     class="img-fluid blur-up lazyload" alt=""> <i class="ti-search"
-                                                                                                   onclick="openSearch()"></i>
-                                            </div>
-                                            <div id="search-overlay" class="search-overlay">
-                                                <div>
-                                                    <span class="closebtn" onclick="closeSearch()"
-                                                          title="Close Overlay">×</span>
-                                                    <div class="overlay-content">
-                                                        <div class="container">
-                                                            <div class="row">
-                                                                <div class="col-xl-12">
-                                                                    <form action="/search">
-                                                                        <div class="form-group">
-                                                                            <input type="text" class="form-control"
-                                                                                   id="txtsearchprod" name="q"
-                                                                                   placeholder="Search a Product">
-                                                                        </div>
-                                                                        <button type="button" class="btn btn-primary" id="btnsearch" onclick="searchitems();">
-                                                                            <i class="fa fa-search" style="display:block;"></i>
-                                                                        </button>
-                                                                    </form>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </li>
                                         <li class="onhover-div mobile-cart" style="max-height: 250px;">
                                             <div class="up-text">
                                                 <img src="~/Content/assets/images/icon/shopping-cart.png" class="img-fluid blur-up lazyload" alt=""> <i class="ti-shopping-cart"></i>
@@ -707,6 +673,13 @@
 
         });
 
+        $(document).on("keypress", ".clsSearchText", function(e) {
+             if (e.which == 13) {
+                 //do some stuff
+                 var strsearchh = $(this).val();
+                 location.href = "/search?q="+strsearchh;
+             }
+        });
         function searchitems() {
             var strsearchh = $("#txtsearchprod").val();
              location.href = "/search?q="+strsearchh;

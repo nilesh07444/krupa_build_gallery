@@ -47,7 +47,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                          IsActive = i.IsActive,
                                          CreatedDate = i.CreatedDate,
                                          IsCashonDelieveryuse = i.IsCashonDeliveryUse.HasValue ? i.IsCashonDeliveryUse.Value : false
-                                     }).OrderByDescending(x => x.CreatedDate).ToList().Take(10).ToList();
+                                     }).OrderByDescending(x => x.CreatedDate).ToList().Take(8).ToList();
 
             if (clsClientSession.UserID != 0)
             {
@@ -73,7 +73,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                          IsActive = i.IsActive,
                                          CreatedDate = i.CreatedDate,
                                         IsCashonDelieveryuse = i.IsCashonDeliveryUse.HasValue ? i.IsCashonDeliveryUse.Value : false
-                                    }).OrderByDescending(x => x.CreatedDate).ToList().Take(10).ToList();
+                                    }).OrderByDescending(x => x.CreatedDate).ToList().Take(8).ToList();
 
             if (clsClientSession.UserID != 0)
             {
@@ -106,7 +106,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                  IsActive = i.IsActive,
                                  CreatedDate = i.CreatedDate,
                                  IsCashonDelieveryuse = i.IsCashonDeliveryUse.HasValue ? i.IsCashonDeliveryUse.Value : false
-                             }).OrderByDescending(x => x.CreatedDate).ToList().Take(10).ToList();
+                             }).OrderByDescending(x => x.CreatedDate).ToList().Take(8).ToList();
 
             if (clsClientSession.UserID != 0)
             {
@@ -125,7 +125,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                                   CategoryId = c.CategoryId,
                                                   CategoryName = c.CategoryName,
                                                   CategoryImage = c.CategoryImage 
-                                              }).OrderByDescending(x => x.CategoryId).ToList();
+                                              }).OrderByDescending(x => x.CategoryId).ToList().Take(9).ToList();
 
             ViewData["lstPopularProductItem"] = lstPopularProductItem; 
             ViewData["lstOfferItems"] = lstOfferItems;
