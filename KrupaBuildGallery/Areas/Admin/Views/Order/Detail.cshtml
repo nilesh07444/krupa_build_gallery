@@ -211,7 +211,7 @@
                                 <div class="label-wrapper"><label class="control-label">Shipping Charge:</label></div>
                             </div>
                             <div class="col-md-9">
-                                @if (Model.ShipmentCharge == 0)
+                                @if (Model.OrderPincode != "389001")
                                 {
                                 <div class="form-text-row">
                                     <button type="button" name="btnSetShippingCharge" id="btnSetShippingCharge" class="btn btn-primary" onclick="setshipchargemodl('@Model.OrderId');" style="display: inline-block;">
