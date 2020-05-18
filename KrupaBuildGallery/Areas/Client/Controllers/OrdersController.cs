@@ -506,6 +506,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     objitmreplce.IsApproved = IsApprov;
                 }                
                 objitmreplce.DateCreated = DateTime.UtcNow;
+                objitmreplce.ModifiedBy = objordr.ClientUserId;
+                objitmreplce.DateModified = DateTime.UtcNow;
                 _db.tbl_ItemReturnCancelReplace.Add(objitmreplce);
                 _db.SaveChanges();
             }

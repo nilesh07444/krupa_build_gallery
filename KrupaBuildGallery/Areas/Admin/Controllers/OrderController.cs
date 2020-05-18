@@ -292,6 +292,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     objOrderItm.ItemStatus = 4;
                     msgsms = "Item Exchange Request Rejected for Order No." + objReq.OrderId;                   
                 }
+                objReq.DateModified = DateTime.UtcNow;
+                objReq.ModifiedBy = clsAdminSession.UserID;
                 _db.SaveChanges();
                 SendMessageSMS(mobilenumber, msgsms);
 
@@ -302,11 +304,15 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 if (objReq.ItemStatus == 6)
                 {
                     objReq.IsApproved = true;
+                    objReq.DateModified = DateTime.UtcNow;
+                    objReq.ModifiedBy = clsAdminSession.UserID;
                     _db.SaveChanges();
                 }
                 else if (objReq.ItemStatus == 7)
                 {
                     objReq.IsApproved = true;
+                    objReq.DateModified = DateTime.UtcNow;
+                    objReq.ModifiedBy = clsAdminSession.UserID;
                     _db.SaveChanges();
                 }
                 else if (objReq.ItemStatus == 8)
@@ -332,6 +338,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         objClient.WalletAmt = amtwlt;
                         _db.SaveChanges();
                     }
+                    objReq.DateModified = DateTime.UtcNow;
+                    objReq.ModifiedBy = clsAdminSession.UserID;
                     _db.SaveChanges();
                     msgsms = "You Item is Exchanged for Order No." + objReq.OrderId + " . Amount Rs." + amtredund + " Refunded to your wallet";
                     SendMessageSMS(mobilenumber, msgsms);
