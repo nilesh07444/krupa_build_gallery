@@ -57,5 +57,6 @@ namespace KrupaBuildGallery.Model
         public DbSet<tbl_Wallet> tbl_Wallet { get; set; }
         public DbSet<tbl_OrderItemDelivery> tbl_OrderItemDelivery { get; set; }
         public DbSet<tbl_ItemReturnCancelReplace> tbl_ItemReturnCancelReplace { get; set; }
+        public DbSet<tbl_Transactions> tbl_Transactions { get; set; }
     }
 }

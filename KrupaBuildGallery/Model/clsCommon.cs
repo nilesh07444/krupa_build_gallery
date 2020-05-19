@@ -98,6 +98,22 @@ namespace KrupaBuildGallery.Model
             }
         }
 
+        public void SaveTransaction(long ProductItemId,long OrderItemId,long OrderId,string Description,decimal Amount,long CreatedByUser,long CreadtedByAdmin,DateTime CreatedDate,string TypeOfTransaction)
+        {
+            krupagallarydbEntities _db = new krupagallarydbEntities();
+            tbl_Transactions objTrans = new tbl_Transactions();
+            objTrans.ProductItemId = ProductItemId;
+            objTrans.OrderItemId = OrderItemId;
+            objTrans.OrderId = OrderId;
+            objTrans.Description = Description;
+            objTrans.CreatedByUserId = CreatedByUser;
+            objTrans.CreatedByAdminId = CreadtedByAdmin;
+            objTrans.CreatedDate = DateTime.UtcNow;
+            objTrans.TypeOfTransaction = TypeOfTransaction;
+            _db.tbl_Transactions.Add(objTrans);
+            _db.SaveChanges();
+        }
+
     }
 
     enum OrderStatus

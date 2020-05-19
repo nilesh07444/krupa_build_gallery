@@ -39,6 +39,7 @@
         <EntityTypeShape EntityType="krupagalleryModel.tbl_Wallet" Width="1.5" PointX="17.375" PointY="4.75" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_OrderItemDelivery" Width="1.5" PointX="17.375" PointY="8.75" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_ItemReturnCancelReplace" Width="1.5" PointX="9.375" PointY="16.75" />
+        <EntityTypeShape EntityType="krupagalleryModel.tbl_Transactions" Width="1.5" PointX="17.375" PointY="12.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

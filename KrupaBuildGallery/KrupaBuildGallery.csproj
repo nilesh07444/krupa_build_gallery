@@ -352,6 +352,9 @@
     <Compile Include="Model\tbl_SubProducts.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\tbl_Transactions.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\tbl_Wallet.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>

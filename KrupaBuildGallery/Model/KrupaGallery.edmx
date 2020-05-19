@@ -414,6 +414,9 @@
           <Property Name="WalletAmountUsed" Type="decimal" Precision="18" Scale="2" />
           <Property Name="AmountByRazorPay" Type="decimal" Precision="18" Scale="2" />
           <Property Name="IsCashOnDelivery" Type="bit" />
+          <Property Name="CreditAmountRefund" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="WalletAmountRefund" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="OnlinePaymentAmtRefund" Type="decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="tbl_PaymentHistory">
           <Key>
@@ -535,6 +538,21 @@
           <Property Name="UpdatedBy" Type="bigint" />
           <Property Name="UpdatedDate" Type="datetime" />
         </EntityType>
+        <EntityType Name="tbl_Transactions">
+          <Key>
+            <PropertyRef Name="PK_Transacation_Id" />
+          </Key>
+          <Property Name="PK_Transacation_Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProductItemId" Type="bigint" />
+          <Property Name="OrderItemId" Type="bigint" />
+          <Property Name="OrderId" Type="bigint" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="Amount" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="CreatedByUserId" Type="bigint" />
+          <Property Name="CreatedByAdminId" Type="bigint" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="TypeOfTransaction" Type="nvarchar" MaxLength="550" />
+        </EntityType>
         <EntityType Name="tbl_Wallet">
           <Key>
             <PropertyRef Name="WalletId" />
@@ -612,6 +630,7 @@
           <EntitySet Name="tbl_Products" EntityType="Self.tbl_Products" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_SecondCart" EntityType="Self.tbl_SecondCart" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_SubProducts" EntityType="Self.tbl_SubProducts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Transactions" EntityType="Self.tbl_Transactions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Wallet" EntityType="Self.tbl_Wallet" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_WishList" EntityType="Self.tbl_WishList" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_tbl_AdminRolePermissions_tbl_AdminRoleModules" Association="Self.FK_tbl_AdminRolePermissions_tbl_AdminRoleModules">
@@ -933,6 +952,9 @@
           <Property Name="WalletAmountUsed" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="AmountByRazorPay" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="IsCashOnDelivery" Type="Boolean" />
+          <Property Name="CreditAmountRefund" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="WalletAmountRefund" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="OnlinePaymentAmtRefund" Type="Decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="tbl_PaymentHistory">
           <Key>
@@ -1081,6 +1103,7 @@
           <EntitySet Name="tbl_Wallet" EntityType="krupagalleryModel.tbl_Wallet" />
           <EntitySet Name="tbl_OrderItemDelivery" EntityType="krupagalleryModel.tbl_OrderItemDelivery" />
           <EntitySet Name="tbl_ItemReturnCancelReplace" EntityType="krupagalleryModel.tbl_ItemReturnCancelReplace" />
+          <EntitySet Name="tbl_Transactions" EntityType="krupagalleryModel.tbl_Transactions" />
         </EntityContainer>
         <EntityType Name="tbl_AdminRoles">
           <Key>
@@ -1248,6 +1271,21 @@
           <Property Name="ClientUserId" Type="Int64" />
           <Property Name="DateModified" Type="DateTime" Precision="3" />
           <Property Name="ModifiedBy" Type="Int64" />
+        </EntityType>
+        <EntityType Name="tbl_Transactions">
+          <Key>
+            <PropertyRef Name="PK_Transacation_Id" />
+          </Key>
+          <Property Name="PK_Transacation_Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductItemId" Type="Int64" />
+          <Property Name="OrderItemId" Type="Int64" />
+          <Property Name="OrderId" Type="Int64" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Amount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="CreatedByUserId" Type="Int64" />
+          <Property Name="CreatedByAdminId" Type="Int64" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="TypeOfTransaction" Type="String" MaxLength="550" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -1543,6 +1581,9 @@
           <EntitySetMapping Name="tbl_Orders">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_Orders">
               <MappingFragment StoreEntitySet="tbl_Orders">
+                <ScalarProperty Name="OnlinePaymentAmtRefund" ColumnName="OnlinePaymentAmtRefund" />
+                <ScalarProperty Name="WalletAmountRefund" ColumnName="WalletAmountRefund" />
+                <ScalarProperty Name="CreditAmountRefund" ColumnName="CreditAmountRefund" />
                 <ScalarProperty Name="IsCashOnDelivery" ColumnName="IsCashOnDelivery" />
                 <ScalarProperty Name="AmountByRazorPay" ColumnName="AmountByRazorPay" />
                 <ScalarProperty Name="WalletAmountUsed" ColumnName="WalletAmountUsed" />
@@ -1836,6 +1877,22 @@
                 <ScalarProperty Name="OrderId" ColumnName="OrderId" />
                 <ScalarProperty Name="ItemId" ColumnName="ItemId" />
                 <ScalarProperty Name="ItemReturnCancelReplaceId" ColumnName="ItemReturnCancelReplaceId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Transactions">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_Transactions">
+              <MappingFragment StoreEntitySet="tbl_Transactions">
+                <ScalarProperty Name="TypeOfTransaction" ColumnName="TypeOfTransaction" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedByAdminId" ColumnName="CreatedByAdminId" />
+                <ScalarProperty Name="CreatedByUserId" ColumnName="CreatedByUserId" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
+                <ScalarProperty Name="OrderItemId" ColumnName="OrderItemId" />
+                <ScalarProperty Name="ProductItemId" ColumnName="ProductItemId" />
+                <ScalarProperty Name="PK_Transacation_Id" ColumnName="PK_Transacation_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
