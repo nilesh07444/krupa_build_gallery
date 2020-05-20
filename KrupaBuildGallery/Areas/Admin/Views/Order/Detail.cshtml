@@ -442,7 +442,8 @@
                 alert("Order Status Change to Dispatched");
                  $("#changestatustodisplatched").modal("hide");
                 $("#dvorderstatus").html("Dispatched");
-                 $("#btnChangeOrderStatustodispatched").hide();
+                $("#btnChangeOrderStatustodispatched").hide();
+                location.reload();
             },
             error: function (resultData) {
                 console.log("error");
