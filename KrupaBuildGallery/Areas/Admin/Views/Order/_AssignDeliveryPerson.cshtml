@@ -1,0 +1,55 @@
+﻿@{ 
+  List<AdminUserVM> lstAdminUsers = ViewData["lstAdminUsers"] as List<AdminUserVM>;
+}
+<div class="form-group row">
+    <label class="col-xl-3 col-md-4 " for="ItemType"></label>
+    <input checked="checked" class="chkitemtype" data-val="true" id="persontype" name="persontype" type="radio" value="Staff" style="margin-right: 5px;margin-top: 3px;">
+    <label style="margin-right:10px;">Staff</label>
+    <input class="chkitemtype" id="persontype" name="persontype" type="radio" value="Agent" style="margin-top: 3px;margin-right: 5px;">
+    <label>Agent</label>
+    <lable class="col-xl-3 col-md-4"></lable>
+</div>
+<div class="form-group row">
+    <label class="col-xl-3 col-md-4" for="Personname">Person Name</label>
+    <select class="form-control col-md-8" data-val="true" id="Personname" name="Personname" style="">
+        <option value="0">Select</option>
+        @if(lstAdminUsers != null && lstAdminUsers.Count() > 0)
+        {
+            foreach(var objusr in lstAdminUsers)
+            {
+              <option data-attrrole="@objusr.AdminRoleId" value="@objusr.AdminUserId">@objusr.FirstName @objusr.LastName ( @objusr.MobileNo )</option>
+            }
+        }
+    </select>
+</div>
+<input type="hidden" id="orderidd" />
+<input type="hidden" id="orderitmidd" />
+<input type="hidden" id="proditmidd" />
+<script>
+    $(document).ready(function () {
+        persontypechange();
+    });
+    $("input[name=persontype").change(function () {
+        $("#Personname").val("0");
+        persontypechange();
+    });
+    function persontypechange() {
+          $("#Personname option").each(function () {
+            var rolid = $(this).attr("data-attrrole");
+            if ($(this).val() != 0) {
+                $(this).hide();
+                if ($("input[name=persontype]:checked").val() == "Staff") {
+                    if (rolid != 2 && rolid != 3) {
+                        $(this).show();
+                    }
+                }
+                else {
+                    if (rolid == 2) {
+                        $(this).show();
+                    }
+                }
+
+            }
+        });
+    }
+</script>
