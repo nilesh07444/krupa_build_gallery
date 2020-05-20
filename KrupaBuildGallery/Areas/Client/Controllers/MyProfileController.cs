@@ -21,11 +21,35 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         {
             ViewData["clientdetails"] = new tbl_ClientUsers();
             ViewData["clientotherdetails"] = new tbl_ClientOtherDetails();
+            ViewBag.OrderCount = 0;
+            ViewBag.WalletAmt = 0;
+            ViewBag.CreditBls = 0;
+            ViewBag.PointsRemaining = 0;
             if (clsClientSession.UserID > 0)
             {
                 long userid = clsClientSession.UserID;
-                ViewData["clientdetails"] = _db.tbl_ClientUsers.Where(o => o.ClientUserId == userid).FirstOrDefault();
-                ViewData["clientotherdetails"] = _db.tbl_ClientOtherDetails.Where(o => o.ClientUserId == userid).FirstOrDefault();
+                ViewBag.OrderCount = _db.tbl_Orders.Where(o => o.ClientUserId == userid).ToList().Count;
+                tbl_ClientUsers objClientUser = _db.tbl_ClientUsers.Where(o => o.ClientUserId == userid).FirstOrDefault();
+                tbl_ClientOtherDetails objClientOtherdetails =_db.tbl_ClientOtherDetails.Where(o => o.ClientUserId == userid).FirstOrDefault();
+                decimal waltamt = objClientUser.WalletAmt.HasValue ? objClientUser.WalletAmt.Value : 0;
+                decimal credit = objClientOtherdetails.CreditLimitAmt.HasValue ? objClientOtherdetails.CreditLimitAmt.Value : 0;
+                if(credit > 0)
+                {
+                    decimal amtdue = objClientOtherdetails.AmountDue.HasValue ? objClientOtherdetails.AmountDue.Value : 0;
+                    ViewBag.CreditBls = credit - amtdue;
+                }
+                DateTime dtNow = DateTime.UtcNow;
+              
+                List<tbl_PointDetails> lstpoints = _db.tbl_PointDetails.Where(o => o.ClientUserId == userid && o.ExpiryDate >= dtNow && o.Points.Value > o.UsedPoints.Value).ToList().OrderBy(x => x.ExpiryDate).ToList();
+                decimal pointreamining = 0;
+                if (lstpoints != null && lstpoints.Count() > 0)
+                {
+                    pointreamining = lstpoints.Sum(x => (x.Points - x.UsedPoints).Value);
+                }
+                ViewBag.PointsRemaining = pointreamining;
+                ViewBag.WalletAmt = waltamt;               
+                ViewData["clientdetails"] = objClientUser;
+                ViewData["clientotherdetails"] = objClientOtherdetails;
             }
             return View();
         }

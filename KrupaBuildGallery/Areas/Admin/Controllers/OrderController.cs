@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using KrupaBuildGallery.ViewModel;
 using System.Net;
 using System.Configuration;
+using Razorpay.Api;
 
 namespace KrupaBuildGallery.Areas.Admin.Controllers
 {    
@@ -228,6 +229,329 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             }
             _db.SaveChanges();
             return "";
+        }
+
+        public ActionResult OrderItemClientRequests(int Status = 0)
+        {
+
+            List<OrderItemRequestsVM> lstItemClientRequests = new List<OrderItemRequestsVM>();
+            try
+            {
+                lstItemClientRequests = (from p in _db.tbl_ItemReturnCancelReplace
+                             join c in _db.tbl_ClientUsers on p.ClientUserId equals c.ClientUserId
+                             join ordritems in _db.tbl_OrderItemDetails on p.ItemId equals ordritems.OrderDetailId
+                             join Itm in _db.tbl_ProductItems on ordritems.ProductItemId equals Itm.ProductItemId
+                             where (Status == 0 && p.IsApproved == null) || (p.ItemStatus == Status && p.IsApproved == true)
+                             select new OrderItemRequestsVM
+                             {
+                                 OrderItemRequestId = p.ItemReturnCancelReplaceId,
+                                 OrderId = p.OrderId.Value,                                 
+                                 ItemName = Itm.ItemName,
+                                 Amount = p.Amount.Value,
+                                 Reason = p.Reason,
+                                 OrderItemId = p.ItemId.Value,
+                                 ItemStatus = p.ItemStatus.Value,                              
+                                 DateCreated = p.DateCreated.Value
+                             }).OrderByDescending(x => x.DateCreated).ToList();
+
+              
+                ViewBag.Status = Status;
+            }
+            catch (Exception ex)
+            {
+                string ErrorMessage = ex.Message.ToString();
+            }
+
+            return View(lstItemClientRequests);
+        }
+
+        [HttpPost]
+        public string ApproveRejectItemRequest(string requestid,string aprprovereject)
+        {
+            long ItmRequestId = Convert.ToInt64(requestid);
+            string msgsms = "";
+            tbl_ItemReturnCancelReplace objReq =_db.tbl_ItemReturnCancelReplace.Where(o => o.ItemReturnCancelReplaceId == ItmRequestId).FirstOrDefault();
+            tbl_ClientUsers objClient = _db.tbl_ClientUsers.Where(o => o.ClientUserId == objReq.ClientUserId).FirstOrDefault();
+            tbl_OrderItemDetails objOrderItm = _db.tbl_OrderItemDetails.Where(o => o.OrderDetailId == objReq.ItemId).FirstOrDefault();
+            clsCommon objCommon = new clsCommon();
+            if (aprprovereject == "reject")
+            {
+                objReq.IsApproved = false;
+                string mobilenumber = objClient.MobileNo;
+                if (objReq.ItemStatus == 6)
+                {
+                    msgsms = "Item Return Request Rejected for Order No." + objReq.OrderId;
+                    objCommon.SaveTransaction(objOrderItm.ProductItemId.Value, objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, "Item Return Request Rejected", 0, 0, clsAdminSession.UserID, DateTime.UtcNow, "Reject Return Item Request");
+                    objOrderItm.ItemStatus = 4;                    
+                }
+                else if (objReq.ItemStatus == 7)
+                {
+                    objOrderItm.ItemStatus = 4;
+                    objCommon.SaveTransaction(objOrderItm.ProductItemId.Value, objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, "Item Replace Request Rejected", 0, 0, clsAdminSession.UserID, DateTime.UtcNow, "Reject Replace Item Request");
+                    msgsms = "Item Replace Request Rejected for Order No." + objReq.OrderId;                   
+                }
+                else if (objReq.ItemStatus == 8)
+                {
+                    objOrderItm.ItemStatus = 4;
+                    objCommon.SaveTransaction(objOrderItm.ProductItemId.Value, objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, "Item Exchange Request Rejected", 0, 0, clsAdminSession.UserID, DateTime.UtcNow, "Reject Exchange Item Request");
+                    msgsms = "Item Exchange Request Rejected for Order No." + objReq.OrderId;                   
+                }
+                objReq.DateModified = DateTime.UtcNow;
+                objReq.ModifiedBy = clsAdminSession.UserID;
+                _db.SaveChanges();
+                SendMessageSMS(mobilenumber, msgsms);
+
+            }
+            else
+            {
+                string mobilenumber = objClient.MobileNo;
+                if (objReq.ItemStatus == 6)
+                {
+                    decimal amtCrd = 0;
+                    decimal amronl = 0;
+                    decimal amtwlt1 = 0;
+                    tbl_Orders objtbl_Orders = _db.tbl_Orders.Where(o => o.OrderId == objReq.OrderId).FirstOrDefault();
+                    if(objtbl_Orders != null)
+                    {
+                        decimal amtcut = 0;
+                        if(objtbl_Orders.OrderShipPincode == "389001")
+                        {
+                            amtcut = Math.Round((objOrderItm.FinalItemPrice.Value * 5) / 100, 2);
+                        }
+                        else
+                        {
+                            amtcut = Math.Round((objOrderItm.FinalItemPrice.Value * 7) / 100, 2);
+                        }
+                        decimal refundamtt = objOrderItm.FinalItemPrice.Value - amtcut;
+                        decimal remaing = refundamtt;
+                      
+                        if(objtbl_Orders.CreditAmountUsed > 0 && remaing > 0 && objtbl_Orders.IsCashOnDelivery == false)
+                        {
+                            decimal credtrefuned = objtbl_Orders.CreditAmountRefund.HasValue ? objtbl_Orders.CreditAmountRefund.Value : 0;
+                            decimal remaingtorefund = objtbl_Orders.CreditAmountUsed.Value - credtrefuned;
+                            decimal refndToCredit = 0;
+                            tbl_ClientOtherDetails objClientOthr = _db.tbl_ClientOtherDetails.Where(o => o.ClientUserId == objtbl_Orders.ClientUserId).FirstOrDefault();
+                            if (objClientOthr != null)
+                            {
+                                if (remaing <= remaingtorefund)
+                                {
+                                    refndToCredit = remaing;
+                                    if(objtbl_Orders.AmountDue >= refndToCredit)
+                                    {
+                                        objtbl_Orders.AmountDue = objtbl_Orders.AmountDue - refndToCredit;
+                                        objClientOthr.AmountDue = objClientOthr.AmountDue - refndToCredit;
+                                        objtbl_Orders.CreditAmountRefund = credtrefuned + refndToCredit;
+                                        amtCrd = refndToCredit;
+                                        remaing = 0;
+                                    }
+                                    else
+                                    {
+                                        decimal amtduee = objtbl_Orders.AmountDue.Value;
+                                        objClientOthr.AmountDue = objClientOthr.AmountDue - amtduee;
+                                        objtbl_Orders.AmountDue = 0;                                      
+                                        objtbl_Orders.CreditAmountRefund = credtrefuned + amtduee;
+                                        remaing = remaing - amtduee;
+                                        amtCrd = amtduee;
+                                    }
+                                 
+                                }
+                                else
+                                {
+                                    if (objtbl_Orders.AmountDue >= remaingtorefund)
+                                    {
+                                        objtbl_Orders.AmountDue = objtbl_Orders.AmountDue - remaingtorefund;
+                                        objClientOthr.AmountDue = objClientOthr.AmountDue - remaingtorefund;
+                                        objtbl_Orders.CreditAmountRefund = credtrefuned + remaingtorefund;
+                                        remaing = remaing - remaingtorefund;
+                                        amtCrd = remaingtorefund;
+                                    }
+                                    else
+                                    {
+                                        decimal amtduee = objtbl_Orders.AmountDue.Value;
+                                        objClientOthr.AmountDue = objClientOthr.AmountDue - amtduee;
+                                        objtbl_Orders.AmountDue = 0;
+                                        objtbl_Orders.CreditAmountRefund = credtrefuned + amtduee;
+                                        remaing = remaing - amtduee;
+                                        amtCrd = amtduee;
+                                    }                                  
+                                }                                                             
+                            }
+                        }
+                        if ((objtbl_Orders.WalletAmountUsed > 0 && remaing > 0) || (objtbl_Orders.IsCashOnDelivery == true))
+                        {
+                            decimal wltamtrefuned = objtbl_Orders.WalletAmountRefund.HasValue ? objtbl_Orders.WalletAmountRefund.Value : 0;
+                            decimal remaingtorefund = objtbl_Orders.WalletAmountUsed.Value - wltamtrefuned;
+                            decimal refndTowallet = 0;
+                            if(remaing <= remaingtorefund)
+                            {
+                                refndTowallet = remaing;
+                                remaing = 0;
+                            }
+                            else
+                            {
+                                remaing = remaing - remaingtorefund;
+                                refndTowallet = remaingtorefund;
+                            }
+                            objtbl_Orders.WalletAmountRefund = wltamtrefuned + refndTowallet;
+                            tbl_Wallet objWlt = new tbl_Wallet();
+                            objWlt.Amount = refndTowallet;
+                            objWlt.CreditDebit = "Credit";
+                            objWlt.ItemId = objReq.ItemId;
+                            objWlt.OrderId = objReq.OrderId;
+                            objWlt.ClientUserId = objReq.ClientUserId;
+                            objWlt.WalletDate = DateTime.UtcNow;
+                            objWlt.Description = "Amount Refund to Wallet Order #" + objReq.OrderId;
+                            _db.tbl_Wallet.Add(objWlt);
+                            if (objClient != null)
+                            {
+                                decimal amtwlt = objClient.WalletAmt.HasValue ? objClient.WalletAmt.Value : 0;
+                                amtwlt = amtwlt + refndTowallet;
+                                objClient.WalletAmt = amtwlt;
+                                amtwlt1 = refndTowallet;
+                                _db.SaveChanges();
+                            }
+                        }
+                        if (remaing > 0 && objtbl_Orders.IsCashOnDelivery == false)
+                        {
+                            //decimal onlnamtrefuned = objtbl_Orders.OnlinePaymentAmtRefund.HasValue ? objtbl_Orders.OnlinePaymentAmtRefund.Value : 0;
+                            //decimal remaingtorefund = objtbl_Orders.AmountByRazorPay.Value - onlnamtrefuned;
+                            //decimal refndToonlin = 0;
+                            //if (remaing <= remaingtorefund)
+                            //{
+                              //  refndToonlin = remaing;
+                               // remaing = 0;
+                            //}
+                            //else
+                            //{
+                              //  remaing = remaing - remaingtorefund;
+                               // refndToonlin = remaingtorefund;
+                            //}
+                            //initialize the SDK client
+                            string key = "rzp_test_DMsPlGIBp3SSnI";
+                            string secret = "YMkpd9LbnaXViePncLLXhqms";
+                            RazorpayClient client = new RazorpayClient(key, secret);
+                            List<tbl_PaymentHistory> lstPymtn = _db.tbl_PaymentHistory.Where(o => o.PaymentBy == "online" && o.OrderId == objtbl_Orders.OrderId && o.PaymentFor == "OrderPayment").OrderBy(o => o.DateOfPayment).ToList();
+                            if (lstPymtn != null && lstPymtn.Count() > 0)
+                            {
+                                amronl = remaing;
+                                foreach (var objPaymen in lstPymtn)
+                                {
+                                    if(objPaymen.AmountPaid >= remaing)
+                                    {
+                                        // payment to be refunded, payment must be a captured payment
+                                        Payment payment = client.Payment.Fetch(objPaymen.RazorpayPaymentId);
+                                        int refundAmtOnline = Convert.ToInt32(Math.Round(remaing,2) * 100);
+                                        //Partial Refund
+                                        Dictionary<string, object> data = new Dictionary<string, object>();
+                                        data.Add("amount", refundAmtOnline);
+                                        Refund refund = payment.Refund(data);                                     
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        // payment to be refunded, payment must be a captured payment
+                                        Payment payment = client.Payment.Fetch(objPaymen.RazorpayPaymentId);
+                                        int refundAmtOnline = Convert.ToInt32(Math.Round(objPaymen.AmountPaid, 2) * 100);
+                                        //Partial Refund
+                                        Dictionary<string, object> data = new Dictionary<string, object>();
+                                        data.Add("amount", refundAmtOnline);
+                                        Refund refund = payment.Refund(data);
+                                        remaing = remaing - objPaymen.AmountPaid;                                        
+                                    }
+                                }
+                            }                           
+                        }
+                    }
+                    objReq.IsApproved = true;
+                    objReq.DateModified = DateTime.UtcNow;
+                    objReq.ModifiedBy = clsAdminSession.UserID;
+                    string amtrefundtext = "";
+                    if(amtCrd > 0)
+                    {
+                        amtrefundtext = amtrefundtext + "\n Credit : Rs." + amtCrd;
+                    }
+                    if (amtwlt1 > 0)
+                    {
+                        amtrefundtext = amtrefundtext + "\n Wallet : Rs." + amtwlt1;
+                    }
+                    if (amronl > 0)
+                    {
+                        amtrefundtext = amtrefundtext + "\n Online : Rs." + amronl;
+                    }
+                    msgsms = "You Item is Returned for Order No." + objReq.OrderId + " . Amount Refunded to "+ amtrefundtext;
+                    objCommon.SaveTransaction(objOrderItm.ProductItemId.Value, objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, "Item Return Request Accepted", 0, 0, clsAdminSession.UserID, DateTime.UtcNow, "Accepted Return Item Request");
+                    objCommon.SaveTransaction(objOrderItm.ProductItemId.Value, objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, "Refunded amount to "+ amtrefundtext, 0, 0, clsAdminSession.UserID, DateTime.UtcNow, "Accepted Return Item Request Refund");
+                    SendMessageSMS(mobilenumber, msgsms);
+                    _db.SaveChanges();
+                }
+                else if (objReq.ItemStatus == 7)
+                {
+                    objReq.IsApproved = true;
+                    objReq.DateModified = DateTime.UtcNow;
+                    objReq.ModifiedBy = clsAdminSession.UserID;
+                    _db.SaveChanges();
+                    objCommon.SaveTransaction(objOrderItm.ProductItemId.Value, objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, "Item Replace Request Accepted", 0, 0, clsAdminSession.UserID, DateTime.UtcNow, "Accepted Replace Item Request");
+                }
+                else if (objReq.ItemStatus == 8)
+                {
+                    objReq.IsApproved = true;
+                    objOrderItm.IsDelete = true;
+                    decimal amt = objReq.Amount.Value;
+                    decimal deprc = Math.Round((objReq.Amount.Value * 3) / 100, 2);
+                    decimal amtredund = amt - deprc;
+                    tbl_Wallet objWlt = new tbl_Wallet();
+                    objWlt.Amount = amtredund;
+                    objWlt.CreditDebit = "Credit";
+                    objWlt.ItemId = objReq.ItemId;
+                    objWlt.OrderId = objReq.OrderId;
+                    objWlt.ClientUserId = objReq.ClientUserId;
+                    objWlt.WalletDate = DateTime.UtcNow;
+                    objWlt.Description = "Amount Refund to Wallet Order #" + objReq.OrderId;
+                    _db.tbl_Wallet.Add(objWlt);                   
+                    if (objClient != null)
+                    {
+                        decimal amtwlt = objClient.WalletAmt.HasValue ? objClient.WalletAmt.Value : 0;
+                        amtwlt = amtwlt + amtredund;
+                        objClient.WalletAmt = amtwlt;
+                        _db.SaveChanges();
+                    }
+                    objReq.DateModified = DateTime.UtcNow;
+                    objReq.ModifiedBy = clsAdminSession.UserID;
+                    _db.SaveChanges();
+                    msgsms = "You Item is Exchanged for Order No." + objReq.OrderId + " . Amount Rs." + amtredund + " Refunded to your wallet";
+                    SendMessageSMS(mobilenumber, msgsms);
+                    objCommon.SaveTransaction(objOrderItm.ProductItemId.Value, objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, "Item Exchanged Request Accepted", 0, 0, clsAdminSession.UserID, DateTime.UtcNow, "Accepted Exchanged Item Request");
+                    objCommon.SaveTransaction(objOrderItm.ProductItemId.Value, objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, "Amount Rs." + amtredund + " Refunded to your wallet", 0, 0, clsAdminSession.UserID, DateTime.UtcNow, "Accepted Exchanged Item Request Refund");
+                }
+            }
+             
+
+            return "Success";
+        }
+
+        public string SendMessageSMS(string mobile, string msg)
+        {
+            try
+            {
+                using (WebClient webClient = new WebClient())
+                {
+                    string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + mobile + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    var json = webClient.DownloadString(url);
+                    if (json.Contains("invalidnumber"))
+                    {
+                        return "InvalidNumber";
+                    }
+                    else
+                    {
+                        return "success";
+                    }
+
+                }
+            }
+            catch (WebException ex)
+            {
+                return "fail";
+            }
         }
     }
 }

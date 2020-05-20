@@ -12,18 +12,17 @@ namespace KrupaBuildGallery.Model
     using System;
     using System.Collections.Generic;
     
-    public partial class tbl_ItemReturnCancelReplace
+    public partial class tbl_Transactions
     {
-        public long ItemReturnCancelReplaceId { get; set; }
-        public Nullable<long> ItemId { get; set; }
+        public long PK_Transacation_Id { get; set; }
+        public Nullable<long> ProductItemId { get; set; }
+        public Nullable<long> OrderItemId { get; set; }
         public Nullable<long> OrderId { get; set; }
+        public string Description { get; set; }
         public Nullable<decimal> Amount { get; set; }
-        public string Reason { get; set; }
-        public Nullable<int> ItemStatus { get; set; }
-        public Nullable<bool> IsApproved { get; set; }
-        public Nullable<System.DateTime> DateCreated { get; set; }
-        public Nullable<long> ClientUserId { get; set; }
-        public Nullable<System.DateTime> DateModified { get; set; }
-        public Nullable<long> ModifiedBy { get; set; }
+        public Nullable<long> CreatedByUserId { get; set; }
+        public Nullable<long> CreatedByAdminId { get; set; }
+        public Nullable<System.DateTime> CreatedDate { get; set; }
+        public string TypeOfTransaction { get; set; }
     }
 }

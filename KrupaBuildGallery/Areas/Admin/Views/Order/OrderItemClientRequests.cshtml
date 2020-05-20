@@ -1,0 +1,219 @@
+﻿
+@model List<KrupaBuildGallery.OrderItemRequestsVM>
+@{
+    ViewBag.Title = "Order Item Client Requests";
+
+    int counter = 1;
+}
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="page-header-left">
+                        <h3>
+                            Order Item Client Requests
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Order</li>
+                        <li class="breadcrumb-item active">Order Item Client Requests</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h5>Order Item Client Requests</h5>
+            </div>
+            <div class="card-body vendor-table">
+
+                <h3>Filter:</h3>
+                <div class="row" style="margin-top:25px; border-bottom: 2px solid #f8f8f9; padding-bottom: 25px; margin-bottom: 10px;">
+                    <div class="col-md-4">
+                        <label>Order Item Request Status</label>
+                        <select class="form-control" id="selectstatus" style="width:150px;" onchange="changestatus();">
+                            <option value="0">Pending</option>
+                            <option value="5">Cancelled</option>
+                            <option value="6">Return</option>
+                            <option value="7">Replace</option>
+                            <option value="8">Exchange</option>
+                        </select>
+                    </div>
+                </div>
+
+                <br />
+                <table class="display" id="basic-1">
+                    <thead>
+                        <tr>
+                            <th>Order #</th>
+                            <th>Item Name</th>
+                            <th>Date</th>
+                            <th>Item Amount</th>
+                            <th>Item Status</th>
+                            <th>Reason</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            foreach (KrupaBuildGallery.OrderItemRequestsVM objorder in Model)
+                            {
+
+                                string stauscolor = "badge-secondary";
+                                string status = "";
+                                if(Convert.ToInt32(ViewBag.Status) == 0)
+                                {
+                                    status = "Pending ";
+                                }
+                                if (objorder.ItemStatus == 5)
+                                {
+                                    stauscolor = "badge-danger";
+                                    status = status +"Cancelled";
+                                }
+                                else if (objorder.ItemStatus == 6)
+                                {
+                                    stauscolor = "badge-warning";
+                                    status = status +"Return";
+                                }
+                                else if (objorder.ItemStatus == 7)
+                                {
+                                    stauscolor = "badge-success";
+                                    status = status +"Replace";
+                                }
+                                else if (objorder.ItemStatus == 8)
+                                {
+                                    stauscolor = "badge-success";
+                                    status = status +"Exchange";
+                                }
+                                <tr class="gradeX">
+                                    <td>@objorder.OrderId</td>
+                                    <td>@objorder.ItemName</td>
+                                    <td>@objorder.DateCreated.ToString("dd/MM/yyyy")</td>
+                                    <td>₹ @Math.Round(objorder.Amount, 2)</td>
+                                    <td><span class="badge @stauscolor">@status</span></td>
+                                    <td>@objorder.Reason</td>
+                                    <td>                                        
+                                        @if (Convert.ToInt32(ViewBag.Status) == 0)
+                                        {
+                                            <input type="hidden" value="@objorder.Reason" id="hdnreson_@objorder.OrderItemId" />
+                                            <a href="javascript:void(0);" title="Click to Approve/Reject" onclick="approverejectitemrequest('@objorder.OrderItemRequestId','@objorder.OrderItemId','@objorder.ItemStatus')"><i class="fa fa-wrench font-success"></i></a>
+                                        }
+                                    </td>
+                                </tr>
+                                counter++;
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    
+</div>
+<div class="modal fade open" id="approverejectitemrequestmodal" tabindex="-1" role="dialog" aria-labelledby="approverejectitemrequestmodal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Approve/Reject Request of Client for Item</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="label-wrapper"><label class="control-label" id="lblconfirm"></label></div>
+                    </div>
+                    <div class="col-md-8">
+                        <label class="radio-inline"><input type="radio" value="Approve" checked name="optradioapprove">Approve</label>
+                        <label class="radio-inline"><input type="radio" value="Reject" name="optradioapprove">Reject</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="label-wrapper"><label class="control-label">Reason</label></div>
+                    </div>
+                    <div class="col-md-8">
+                       <p id="txtreason"></p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="requestid" />
+                <input type="hidden" id="orderitmid" />
+                <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
+                <button id="saveapprovereject1" onclick="saveapprovereject();" class="btn btn-primary" type="button">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+     $(document).ready(function () {
+        $("#selectstatus").val("@ViewBag.Status");
+    });
+    function changestatus() {
+        var statusid = $("#selectstatus").val();
+        location.href = "/admin/order/OrderItemClientRequests?Status="+statusid;
+    }
+
+    function approverejectitemrequest(requetid, ordritmid, statusid) {
+        var stus = "Cancelled";
+        if (statusid == 6) {
+            stus = "Return";
+        }
+        else if (statusid == 7) {
+            stus = "Replace";
+        }
+        else if (statusid == 8) {
+            stus = "Exchange";
+        }
+        $("#requestid").val(requetid);
+        $("#lblconfirm").html("Do you want to Approve/Reject Item " + stus + "?");
+        $("#txtreason").html($("#hdnreson_"+ordritmid).val());
+        $("#approverejectitemrequestmodal").modal("show");
+        $("input[name=optradioapprove][value=Approve]").prop("checked",true)
+    }
+
+    function saveapprovereject() {
+        var approvereject = "reject";
+        if ($("input[name=optradioapprove]:checked").val() == "Approve") {
+            approvereject = "approve";
+        }
+        var reqid = $("#requestid").val();
+        
+          StartLoading();
+          var URL = '@Url.Action("ApproveRejectItemRequest", "Order")';
+        jQuery.ajax({
+        type: 'POST',
+        async: true,
+        url: URL + "?requestid=" + reqid + "&aprprovereject=" + approvereject,
+        success: function (result) {
+            if (result == "Success") {             
+                alert("Item Action Taken Successfully..")
+                location.reload();
+            }
+            else {                 
+            }
+               StopLoading();
+        },
+        error: function (resultData) {
+            StopLoading();
+            console.log("error");
+
+        }
+     });
+        
+    }
+</script>
+

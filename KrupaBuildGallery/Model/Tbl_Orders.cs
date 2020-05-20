@@ -45,5 +45,8 @@ namespace KrupaBuildGallery.Model
         public Nullable<decimal> WalletAmountUsed { get; set; }
         public Nullable<decimal> AmountByRazorPay { get; set; }
         public Nullable<bool> IsCashOnDelivery { get; set; }
+        public Nullable<decimal> CreditAmountRefund { get; set; }
+        public Nullable<decimal> WalletAmountRefund { get; set; }
+        public Nullable<decimal> OnlinePaymentAmtRefund { get; set; }
     }
 }
