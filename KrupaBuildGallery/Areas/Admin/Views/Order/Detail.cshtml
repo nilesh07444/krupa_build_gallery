@@ -113,16 +113,16 @@
                                     <button type="button" name="btnChangeOrderStatustoconfirm" id="btnChangeOrderStatustoconfirm" onclick="changestatus('Confirmed', 2,'@Model.OrderId');" class="btn btn-primary" style="display: inline-block;">
                                         Change status to Confirmed
                                     </button>
-                                    <button type="button" name="btnChangeOrderStatustodispatched" id="btnChangeOrderStatustodispatched" class="btn btn-primary" onclick="changestatus('Dispatched',3,'@Model.OrderId');" style="display: none;">
+                                    @*<button type="button" name="btnChangeOrderStatustodispatched" id="btnChangeOrderStatustodispatched" class="btn btn-primary" onclick="changestatus('Dispatched',3,'@Model.OrderId');" style="display: none;">
                                         Change status to Dispatched
-                                    </button>
+                                    </button>*@
                                 }
-                                else if (Model.OrderStatusId == 2)
+                                @*else if (Model.OrderStatusId == 2)
                                 {
                                     <button type="button" name="btnChangeOrderStatustodispatched" id="btnChangeOrderStatustodispatched" class="btn btn-primary" onclick="changestatus('Dispatched',3,'@Model.OrderId');" style="display: inline-block;">
                                         Change status to Dispatched
                                     </button>
-                                }
+                                }*@
 
                             </div>
                         </div>
@@ -244,6 +244,7 @@
                                         <th>Discount</th>
                                         <th>GST</th>
                                         <th>Total</th>
+                                        <th>Dispatch Item</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -251,7 +252,8 @@
                                     {
                                         foreach (KrupaBuildGallery.ViewModel.OrderItemsVM objorderItem in Model.OrderItems)
                                         {
-                                             decimal Totl = Math.Round((objorderItem.Price * objorderItem.Qty) - objorderItem.Discount + objorderItem.GSTAmt, 2);
+                                            decimal Totl = Math.Round((objorderItem.Price * objorderItem.Qty) - objorderItem.Discount + objorderItem.GSTAmt, 2);
+
                                             <tr>
                                                 <td>
                                                     @if (!string.IsNullOrEmpty(objorderItem.ItemImg))
@@ -277,6 +279,17 @@
                                                 <td>₹ @objorderItem.Discount</td>
                                                 <td>₹ @objorderItem.GSTAmt</td>
                                                 <td>₹ @Totl</td>
+                                                <td id="td_@objorderItem.OrderItemId">
+                                                    @if (objorderItem.ItemStatus == 2 || objorderItem.ItemStatus == 7)
+                                                    {
+                                                        @objorderItem.ItemStatustxt <a href="javascript:void(0);" title="Assign Delivery Person and Dispatched" onclick="assigndeliveryperson('@objorderItem.OrderId','@objorderItem.OrderItemId','@objorderItem.ProductItemId');"><i class="fa fa-user-o font-info"></i></a>
+                                                      
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>@objorderItem.ItemStatustxt</span>
+                                                    }
+                                                </td>
                                             </tr>
                                         }
                                     }
@@ -344,6 +357,24 @@
                 <input type="hidden" id="orderids" />                
                 <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
                 <button id="setshipcharge" class="btn btn-primary" type="button">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade open" id="assignpersonmodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Assign Delivery Person</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="orderids" />
+                <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
+                <button id="btnassign" onclick="AssignPerson();" class="btn btn-primary" type="button">Assign</button>
             </div>
         </div>
     </div>
@@ -444,4 +475,35 @@
         });
 
     });
+
+    function assigndeliveryperson(ordrid,orderitmid,produitmid) {
+        $("#assignpersonmodal .modal-body").load('@Url.Action("GetAndAssignDeliveryPerson","Order")',function () {
+            $("#assignpersonmodal").modal("show");
+            $("#orderidd").val(ordrid);
+            $("#orderitmidd").val(orderitmid);
+            $("#proditmidd").val(produitmid);          
+        });
+    }
+    function AssignPerson() {
+         if ($("#Personname").val() == "0") {
+            alert("Please Select Person to Assigned Item");
+            return;
+        }
+        var URL = '/Admin/Order/AssignDeliveryPerson';
+        jQuery.ajax({
+            type: 'POST',
+            async: true,
+            url: URL + "?OrderId=" + $("#orderidd").val() + "&OrderItemId=" + $("#orderitmidd").val() + "&PersonId=" + $("#Personname").val(),
+            success: function (result) {
+                alert("Item Assigned");
+                 $("#assignpersonmodal").modal("hide");               
+                  $("#td_"+$("#orderitmidd").val()).html("Dispatched");
+            },
+            error: function (error) {
+                console.log("error");
+                alert(error);
+              $("#assignpersonmodal").modal("hide");
+            }
+        });
+    }
 </script>

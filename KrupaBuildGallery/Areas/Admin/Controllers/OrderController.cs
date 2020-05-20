@@ -106,8 +106,13 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                 GSTAmt = p.GSTAmt.Value,
                                 IGSTAmt = p.IGSTAmt.Value,
                                 ItemImg = c.MainImage,
+                                ItemStatus = p.ItemStatus.Value,
                                 Discount = p.Discount.HasValue ? p.Discount.Value : 0
                             }).OrderByDescending(x => x.OrderItemId).ToList();
+                if (lstOrderItms != null && lstOrderItms.Count() > 0)
+                {
+                    lstOrderItms.ForEach(x => x.ItemStatustxt = GetItemStatus(x.ItemStatus));
+                }
                 objOrder.OrderItems = lstOrderItms;
             }
             return View(objOrder);
@@ -130,6 +135,18 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 if(Status == 2)
                 {
                     tbl_ClientUsers objclntusr = _db.tbl_ClientUsers.Where(o => o.ClientUserId == clientusrid).FirstOrDefault();
+                    List<tbl_OrderItemDetails> lstItms = _db.tbl_OrderItemDetails.Where(o => o.OrderId == OrderId).ToList();
+                    if(lstItms != null && lstItms.Count() > 0)
+                    {
+                        foreach(tbl_OrderItemDetails ob in lstItms)
+                        {
+                            if(ob.ItemStatus == 1)
+                            {
+                                ob.ItemStatus = 2;
+                            }
+                        }
+                        _db.SaveChanges();
+                    }
                     if (objclntusr != null)
                     {
                         using (WebClient webClient = new WebClient())
@@ -251,7 +268,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                  Reason = p.Reason,
                                  OrderItemId = p.ItemId.Value,
                                  ItemStatus = p.ItemStatus.Value,                              
-                                 DateCreated = p.DateCreated.Value
+                                 DateCreated = p.DateCreated.Value,
+                                 OrderItemStatus = ordritems.ItemStatus.Value
                              }).OrderByDescending(x => x.DateCreated).ToList();
 
               
@@ -553,5 +571,114 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 return "fail";
             }
         }
+
+        public string GetItemStatus(long itemstatusid)
+        {
+            return Enum.GetName(typeof(OrderItemStatus), itemstatusid);
+        }
+
+        public ActionResult GetAndAssignDeliveryPerson()
+        {
+          List<AdminUserVM> lstAdminUsers = (from a in _db.tbl_AdminUsers
+                             join r in _db.tbl_AdminRoles on a.AdminRoleId equals r.AdminRoleId
+                             where !a.IsDeleted
+                             select new AdminUserVM
+                             {
+                                 AdminUserId = a.AdminUserId,
+                                 AdminRoleId = a.AdminRoleId,
+                                 RoleName = r.AdminRoleName,
+                                 FirstName = a.FirstName,
+                                 LastName = a.LastName,
+                                 Email = a.Email,
+                                 MobileNo = a.MobileNo,
+                                 ProfilePicture = a.ProfilePicture,
+                                 IsActive = a.IsActive
+                             }).ToList();
+            ViewData["lstAdminUsers"] = lstAdminUsers;
+            return PartialView("~/Areas/Admin/Views/Order/_AssignDeliveryPerson.cshtml");
+        }
+
+        [HttpPost]
+        public string AssignDeliveryPerson(long OrderId,long OrderItemId,long PersonId)
+        {
+            clsCommon objCommon = new clsCommon();
+            tbl_OrderItemDetails objOrderItm = _db.tbl_OrderItemDetails.Where(o => o.OrderDetailId == OrderItemId).FirstOrDefault();
+            tbl_AdminUsers objAdminUsr = _db.tbl_AdminUsers.Where(o => o.AdminUserId == PersonId).FirstOrDefault();
+            objOrderItm.ItemStatus = 3;
+            _db.SaveChanges();
+            tbl_Orders objOrdr = _db.tbl_Orders.Where(o => o.OrderId == OrderId).FirstOrDefault();
+            if (objOrdr.OrderStatusId == 2)
+            {
+                List<tbl_OrderItemDetails> lstOrderTms = _db.tbl_OrderItemDetails.Where(o => o.OrderId == OrderId && o.ItemStatus != 5 && o.ItemStatus != 3).ToList();
+                if(lstOrderTms == null || lstOrderTms.Count == 0)
+                {
+                    objOrdr.OrderStatusId = 3;
+                }
+            }
+            tbl_OrderItemDelivery objOrderItmDlv = new tbl_OrderItemDelivery();
+            objOrderItmDlv.OrderId = OrderId;
+            objOrderItmDlv.OrderItemId = OrderItemId;
+            objOrderItmDlv.Status = 3;
+            objOrderItmDlv.DelieveryPersonId = PersonId;
+            objOrderItmDlv.AssignedBy = clsAdminSession.UserID;
+            objOrderItmDlv.AssignedDate = DateTime.UtcNow;
+            _db.tbl_OrderItemDelivery.Add(objOrderItmDlv);
+            _db.SaveChanges();
+            objCommon.SaveTransaction(objOrderItm.ProductItemId.Value, objOrderItm.OrderDetailId, objOrderItm.OrderId.Value,"Delivery Person "+ objAdminUsr.FirstName+" "+ objAdminUsr.LastName+" Assign to Dispatch Item", 0, 0, clsAdminSession.UserID, DateTime.UtcNow, "");
+            tbl_ClientUsers objclntusr = _db.tbl_ClientUsers.Where(o => o.ClientUserId == objOrdr.ClientUserId).FirstOrDefault();
+            if (objclntusr != null)
+            {
+                using (WebClient webClient = new WebClient())
+                {
+
+                    string msg = "Your order no." + objOrdr.OrderId + "\n Item: " + objOrderItm.ItemName + "\n has been dispatched";
+                    string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objclntusr.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    var json = webClient.DownloadString(url);
+                    if (json.Contains("invalidnumber"))
+                    {
+                        return "InvalidNumber";
+                    }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(objclntusr.Email))
+                        {
+                            tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
+                            string FromEmail = objGensetting.FromEmail;
+
+                            string msg1 = "Your order #" + objOrdr.OrderId + "Item: "+objOrderItm.ItemName+ "\n has been dispatched";
+                            clsCommon.SendEmail(objclntusr.Email, FromEmail, "Your Order has been dispatched - Krupa Build Gallery", msg1);
+                        }
+                    }
+
+                }
+
+                using (WebClient webClient = new WebClient())
+                {
+                    string msg = "Order no." + objOrdr.OrderId + " \nItem: " + objOrderItm.ItemName + " \nhas been assigned to you for delivery";
+                    string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objAdminUsr.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    var json = webClient.DownloadString(url);
+                    if (json.Contains("invalidnumber"))
+                    {
+                        return "InvalidNumber";
+                    }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(objAdminUsr.Email))
+                        {
+                            tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
+                            string FromEmail = objGensetting.FromEmail;
+
+                            string msg1 = "Order no." + objOrdr.OrderId + "Item: " + objOrderItm.ItemName + "has been assigned to you for delivery";
+                            clsCommon.SendEmail(objAdminUsr.Email, FromEmail, "Assigned New Item Delivery - Krupa Build Gallery", msg1);
+                        }
+                    }
+
+                }
+            }
+
+            return "Success";
+        }
+
+
     }
 }

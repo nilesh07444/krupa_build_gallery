@@ -19,6 +19,7 @@ namespace KrupaBuildGallery
         public DateTime DateModified { get; set; }
         public long ModifiedBy { get; set; }
         public string ItemName { get; set; }
+        public int OrderItemStatus { get; set; }
         
     }
 }

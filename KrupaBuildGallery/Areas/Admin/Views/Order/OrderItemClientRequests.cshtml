@@ -103,11 +103,15 @@
                                     <td>₹ @Math.Round(objorder.Amount, 2)</td>
                                     <td><span class="badge @stauscolor">@status</span></td>
                                     <td>@objorder.Reason</td>
-                                    <td>                                        
+                                    <td>
                                         @if (Convert.ToInt32(ViewBag.Status) == 0)
                                         {
                                             <input type="hidden" value="@objorder.Reason" id="hdnreson_@objorder.OrderItemId" />
                                             <a href="javascript:void(0);" title="Click to Approve/Reject" onclick="approverejectitemrequest('@objorder.OrderItemRequestId','@objorder.OrderItemId','@objorder.ItemStatus')"><i class="fa fa-wrench font-success"></i></a>
+                                        }
+                                        else if (Convert.ToInt32(ViewBag.Status) == 7 && objorder.ItemStatus == 7 && objorder.OrderItemStatus == 7)
+                                        {
+                                            <a href="/admin/order/detail/@objorder.OrderId" title="Assign Delivery Person and Dispatched" ><i class="fa fa-user-o font-info"></i></a>
                                         }
                                     </td>
                                 </tr>
