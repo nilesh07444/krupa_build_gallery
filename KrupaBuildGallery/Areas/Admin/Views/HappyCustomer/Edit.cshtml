@@ -1,0 +1,107 @@
+﻿@using KrupaBuildGallery.Helper;
+@model HomeImageVM
+
+@{
+                /**/
+
+                ViewBag.Title = "HomeImage";
+}
+
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col">
+                    <div class="page-header-left">
+                        <h3>
+                            Edit Home Image
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="/admin/homeimages">Home Images</a></li>
+                        <li class="breadcrumb-item active">Edit Home Image</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Edit Home Image</h5>
+                    </div>
+                    <div class="card-body">
+                        @using (Html.BeginForm("Edit", "HomeImages", FormMethod.Post, new { @id = "HomeImageFormId", @class = "needs-validation", enctype = "multipart/form-data", role = "form" }))
+                        {
+
+                            @Html.AntiForgeryToken()
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.HeadingText1, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.EditorFor(model => model.HeadingText1, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Heading Text1", maxlength = "200" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.HeadingText1, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.HeadingText2, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.EditorFor(model => model.HeadingText2, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Heading Text2", maxlength = "200" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.HeadingText1, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.HomeImageFile, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.TextBoxFor(model => model.HomeImageFile, new { type = "file", @class = "form-control col-md-8" })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.HomeImageFile, "", new { @class = "text-danger" })
+                            </div>
+
+                            if (!string.IsNullOrEmpty(Model.HomeImageName))
+                            {
+                                <div class="form-group row">
+                                    <lable class="col-xl-3 col-md-4"></lable>
+                                    <p><a target="_blank" href="@ErrorMessage.HomeDirectoryPath/@Model.HomeImageName"> Click here to view image </a></p>
+                                </div>
+                            }
+
+                            <div class="form-group row">
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.HiddenFor(x => x.HomeImageId)
+                                <button type="submit" class="btn btn-primary" style="margin-right:10px;">Submit</button>
+                                <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
+                            </div>
+
+
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+</div>
+
+<script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+<script>
+    $(document).on("click", "#btnCancel", function () {
+        window.location.href = "/admin/homeimages";
+    });
+</script>

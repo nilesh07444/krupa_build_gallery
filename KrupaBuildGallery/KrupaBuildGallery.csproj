@@ -190,6 +190,7 @@
     <Compile Include="Areas\Admin\Controllers\DistributorController.cs" />
     <Compile Include="Areas\Admin\Controllers\GeneralSettingController.cs" />
     <Compile Include="Areas\Admin\Controllers\GodownController.cs" />
+    <Compile Include="Areas\Admin\Controllers\HappyCustomerController.cs" />
     <Compile Include="Areas\Admin\Controllers\HomeImagesController.cs" />
     <Compile Include="Areas\Admin\Controllers\ImportExcelController.cs" />
     <Compile Include="Areas\Admin\Controllers\ItemTextController.cs" />
@@ -212,6 +213,7 @@
     <Compile Include="Areas\Client\Controllers\DistributorRequestController.cs" />
     <Compile Include="Areas\Client\Controllers\FaqController.cs" />
     <Compile Include="Areas\Client\Controllers\ForgotPasswordController.cs" />
+    <Compile Include="Areas\Client\Controllers\HappyCustomerController.cs" />
     <Compile Include="Areas\Client\Controllers\LoginController.cs" />
     <Compile Include="Areas\Client\Controllers\MyProfileController.cs" />
     <Compile Include="Areas\Client\Controllers\OrdersController.cs" />
@@ -3951,6 +3953,9 @@
     <Content Include="Areas\Client\Views\Products\UnPacked.cshtml" />
     <Content Include="Areas\Client\Views\Products\Offer.cshtml" />
     <Content Include="Areas\Client\Views\Category\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\HappyCustomer\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\HappyCustomer\Add.cshtml" />
+    <Content Include="Areas\Admin\Views\HappyCustomer\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Order\OrderItemClientRequests.cshtml" />
     <Content Include="Areas\Admin\Views\Order\_AssignDeliveryPerson.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
@@ -3990,6 +3995,7 @@
     <Folder Include="Areas\Admin\Models\" />
     <Folder Include="Areas\Admin\Views\ClientUser\" />
     <Folder Include="Areas\Client\Models\" />
+    <Folder Include="Areas\Client\Views\HappyCustomer\" />
     <Folder Include="Areas\WebAPI\Models\" />
     <Folder Include="Areas\WebAPI\Views\Agent\" />
     <Folder Include="Areas\WebAPI\Views\Cart\" />
