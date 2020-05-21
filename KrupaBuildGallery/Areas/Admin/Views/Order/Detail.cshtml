@@ -96,7 +96,15 @@
                                 <div class="label-wrapper"><label class="control-label">Customer:</label></div>
                             </div>
                             <div class="col-md-9">
-                                <div class="form-text-row">@Model.ClientUserName</div>
+                                @if (Model.ClientRoleId == 1)
+                                {
+                                    <div class="form-text-row"><a href="/admin/customer/detail/@Model.ClientUserId" style="color:blue;" target="_blank">@Model.ClientUserName</a></div>
+                                }
+                                else
+                                {
+                                    <div class="form-text-row"><a href="/admin/distributor/detail/@Model.ClientUserId" style="color:blue;" target="_blank">@Model.ClientUserName</a></div>
+                                }
+
                             </div>
                         </div>
                         <div class="form-group">
@@ -114,15 +122,15 @@
                                         Change status to Confirmed
                                     </button>
                                     @*<button type="button" name="btnChangeOrderStatustodispatched" id="btnChangeOrderStatustodispatched" class="btn btn-primary" onclick="changestatus('Dispatched',3,'@Model.OrderId');" style="display: none;">
-                                        Change status to Dispatched
-                                    </button>*@
+                        Change status to Dispatched
+                    </button>*@
                                 }
                                 @*else if (Model.OrderStatusId == 2)
-                                {
-                                    <button type="button" name="btnChangeOrderStatustodispatched" id="btnChangeOrderStatustodispatched" class="btn btn-primary" onclick="changestatus('Dispatched',3,'@Model.OrderId');" style="display: inline-block;">
-                                        Change status to Dispatched
-                                    </button>
-                                }*@
+                {
+                    <button type="button" name="btnChangeOrderStatustodispatched" id="btnChangeOrderStatustodispatched" class="btn btn-primary" onclick="changestatus('Dispatched',3,'@Model.OrderId');" style="display: inline-block;">
+                        Change status to Dispatched
+                    </button>
+                }*@
 
                             </div>
                         </div>
@@ -142,6 +150,28 @@
                                 <div class="form-text-row">₹ @Model.OrderAmount</div>
                             </div>
                         </div>
+                        @if (Model.WalletAmtUsed > 0)
+                        {
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <div class="label-wrapper"><label class="control-label">Wallet Amount Used:</label></div>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="form-text-row">₹ @Model.WalletAmtUsed</div>
+                                </div>
+                            </div>
+                        }
+                        @if (Model.CreditUsed > 0)
+                        {
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <div class="label-wrapper"><label class="control-label">Credit Amount Used:</label></div>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="form-text-row">₹ @Model.CreditUsed</div>
+                                </div>
+                            </div>
+                        }
                         <div class="form-group">
                             <div class="col-md-3">
                                 <div class="label-wrapper"><label class="control-label" style="font-size:17px;">Shipping Address</label></div>
@@ -213,16 +243,16 @@
                             <div class="col-md-9">
                                 @if (Model.OrderPincode != "389001")
                                 {
-                                <div class="form-text-row">
-                                    <button type="button" name="btnSetShippingCharge" id="btnSetShippingCharge" class="btn btn-primary" onclick="setshipchargemodl('@Model.OrderId');" style="display: inline-block;">
-                                        Set Shipping Charge
-                                    </button>
-                                    <span class="spnshipchrg"></span>
-                                </div>
+                                    <div class="form-text-row">
+                                        <button type="button" name="btnSetShippingCharge" id="btnSetShippingCharge" class="btn btn-primary" onclick="setshipchargemodl('@Model.OrderId');" style="display: inline-block;">
+                                            Set Shipping Charge
+                                        </button>
+                                        <span class="spnshipchrg"></span>
+                                    </div>
                                 }
                                 else
                                 {
-                                 <div class="form-text-row">₹ @Model.ShipmentCharge</div>
+                                    <div class="form-text-row">₹ @Model.ShipmentCharge</div>
                                 }
 
                             </div>
@@ -253,7 +283,36 @@
                                         foreach (KrupaBuildGallery.ViewModel.OrderItemsVM objorderItem in Model.OrderItems)
                                         {
                                             decimal Totl = Math.Round((objorderItem.Price * objorderItem.Qty) - objorderItem.Discount + objorderItem.GSTAmt, 2);
-
+                                      string stauscolor = "badge-secondary";                                   
+                                        
+                                        if (objorderItem.ItemStatus == 1)
+                                        {
+                                            stauscolor = "badge-danger";
+                                        }
+                                        else if (objorderItem.ItemStatus == 2)
+                                        {
+                                            stauscolor = "badge-success";
+                                        }
+                                        else if (objorderItem.ItemStatus == 3)
+                                        {
+                                            stauscolor = "badge-warning";
+                                        }
+                                        else if (objorderItem.ItemStatus == 4)
+                                        {
+                                            stauscolor = "badge-info";
+                                        }
+                                        else if (objorderItem.ItemStatus == 5)
+                                        {
+                                            stauscolor = "badge-primary";
+                                        }
+                                        else if (objorderItem.ItemStatus == 6)
+                                        {
+                                            stauscolor = "badge-sample1";
+                                        }
+                                        else if (objorderItem.ItemStatus == 7)
+                                        {
+                                            stauscolor = "badge-sample2";
+                                        }
                                             <tr>
                                                 <td>
                                                     @if (!string.IsNullOrEmpty(objorderItem.ItemImg))
@@ -282,12 +341,12 @@
                                                 <td id="td_@objorderItem.OrderItemId">
                                                     @if (objorderItem.ItemStatus == 2 || objorderItem.ItemStatus == 7)
                                                     {
-                                                        @objorderItem.ItemStatustxt <a href="javascript:void(0);" title="Assign Delivery Person and Dispatched" onclick="assigndeliveryperson('@objorderItem.OrderId','@objorderItem.OrderItemId','@objorderItem.ProductItemId');"><i class="fa fa-user-o font-info"></i></a>
+                                                    <span class="badge @stauscolor">@objorderItem.ItemStatustxt</span> <a href="javascript:void(0);" title="Assign Delivery Person and Dispatched" onclick="assigndeliveryperson('@objorderItem.OrderId','@objorderItem.OrderItemId','@objorderItem.ProductItemId');"><i class="fa fa-user-o font-info"></i></a>
                                                       
                                                     }
                                                     else
                                                     {
-                                                        <span>@objorderItem.ItemStatustxt</span>
+                                                      <span class="badge @stauscolor">@objorderItem.ItemStatustxt</span>
                                                     }
                                                 </td>
                                             </tr>

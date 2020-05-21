@@ -18564,3 +18564,17 @@ body.dark {
     padding-right: 35px; }
     .collection-banner .contain-banner.banner-4 h2 {
       font-size: 15px; } }
+
+.badge-sample1 {
+    color: #2d1a1a;
+    background-color: #fbb0f3;
+}
+
+.badge-sample2 {
+    color: #2d1a1a;
+    background-color: #d9fdd6;
+}
+.badge-sample3 {
+    color: #ffffff;
+    background-color: #569041;
+}

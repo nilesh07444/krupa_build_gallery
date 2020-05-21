@@ -38,5 +38,6 @@ namespace KrupaBuildGallery.ViewModel
         public decimal OnlineUsed { get; set; }
         public int OrderTypeId { get; set; }
         public bool IsCashOnDelivery { get; set; }
+        public long ClientRoleId { get; set; }
     }
 }

@@ -284,6 +284,36 @@
                                         {
                                             decimal Totl = Math.Round((objorderItem.Price * objorderItem.Qty) - objorderItem.Discount + objorderItem.GSTAmt, 2);
                                             SubTotl = SubTotl + Totl;
+                                             string stauscolor = "badge-secondary";                                   
+                                        
+                                        if (objorderItem.ItemStatus == 1)
+                                        {
+                                            stauscolor = "badge-danger";
+                                        }
+                                        else if (objorderItem.ItemStatus == 2)
+                                        {
+                                            stauscolor = "badge-success";
+                                        }
+                                        else if (objorderItem.ItemStatus == 3)
+                                        {
+                                            stauscolor = "badge-warning";
+                                        }
+                                        else if (objorderItem.ItemStatus == 4)
+                                        {
+                                            stauscolor = "badge-info";
+                                        }
+                                        else if (objorderItem.ItemStatus == 5)
+                                        {
+                                            stauscolor = "badge-primary";
+                                        }
+                                        else if (objorderItem.ItemStatus == 6)
+                                        {
+                                            stauscolor = "badge-sample1";
+                                        }
+                                        else if (objorderItem.ItemStatus == 7)
+                                        {
+                                            stauscolor = "badge-sample2";
+                                        }
                                             <tr>
                                                 <td>
                                                     @if (!string.IsNullOrEmpty(objorderItem.ItemImg))
@@ -309,7 +339,7 @@
                                                 <td>₹ @objorderItem.Discount</td>
                                                 <td>₹ @objorderItem.GSTAmt</td>
                                                 <td>₹ @Totl</td>
-                                                <td>@objorderItem.ItemStatustxt</td>
+                                                <td><span class="badge @stauscolor">@objorderItem.ItemStatustxt</span></td>
                                                 <td>
                                                     @if (((objorderItem.ItemStatus == 1 || objorderItem.ItemStatus == 2) && Model.OrderTypeId == 1) || objorderItem.ItemStatus == 4)
                                                     {

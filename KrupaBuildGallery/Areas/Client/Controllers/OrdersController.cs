@@ -44,11 +44,14 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                  OrderStatusId = p.OrderStatusId,
                                  PaymentType = p.PaymentType,
                                  OrderDate = p.CreatedDate,
+                                 IsCashOnDelivery = p.IsCashOnDelivery.HasValue ? p.IsCashOnDelivery.Value : false,
+                                 OrderTypeId = p.OrderType.HasValue ? p.OrderType.Value : 1,
                                  OrderAmountDue = p.AmountDue.HasValue ? p.AmountDue.Value : 0,
                                  ShipmentCharge = p.ShippingCharge.HasValue ? p.ShippingCharge.Value : 0,
                                  ShippingStatus = p.ShippingStatus.HasValue ? p.ShippingStatus.Value : 2
                              }).OrderByDescending(x => x.OrderDate).ToList();
 
+                ViewBag.TotalOrders = lstOrders.Count();
                 if (lstOrders != null && lstOrders.Count() > 0)
                 {
                     lstOrders.ForEach(x => x.OrderStatus = GetOrderStatus(x.OrderStatusId));
@@ -62,7 +65,14 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 {
                     lstOrders = lstOrders.Where(o => o.OrderAmountDue > 0).ToList();
                 }
-
+                else if (Status == 3)
+                {
+                    lstOrders = lstOrders.Where(o => o.IsCashOnDelivery == true).ToList();
+                }
+                else if(Status == 4)
+                {
+                    lstOrders = lstOrders.Where(o => o.OrderTypeId == 2).ToList();
+                }
                 ViewBag.Status = Status;
             }
             catch (Exception ex)
@@ -192,7 +202,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         public string SaveShippingCharge(string razorpymentid,string razororderid,string razorsignature,string orderid)
         {
             long OrderID64 = Convert.ToInt64(orderid);
-          
+            clsCommon objCom = new clsCommon();
             Razorpay.Api.Payment objpymn = new Razorpay.Api.Payment().Fetch(razorpymentid);
             if (objpymn != null)
             {
@@ -219,6 +229,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     objPayment.PaymentFor = "ShippingCharge";
                     _db.tbl_PaymentHistory.Add(objPayment);
                     _db.SaveChanges();
+                    objCom.SaveTransaction(0, 0, objordr.OrderId, "Shipping Price Paid Online Amount: Rs" + objordr.ShippingCharge.Value, objordr.ShippingCharge.Value, clsClientSession.UserID, 0, DateTime.UtcNow, "Shipping Charge Payment");
                     return "Success";
                 }            
             }
@@ -229,6 +240,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         [HttpPost]
         public string MakePayment(string razorpymentid,string razororderid, string razorsignature, string orderid,string amount)
         {
+            clsCommon objCom = new clsCommon();
             long orderid64 = Convert.ToInt64(orderid); 
             var objOrder = _db.tbl_Orders.Where(o => o.OrderId == orderid64).FirstOrDefault();
             decimal amountdue = 0;
@@ -263,7 +275,9 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     objPayment.PaymentFor = "Order Amount";
                     _db.tbl_PaymentHistory.Add(objPayment);
                     _db.SaveChanges();
+                    objCom.SaveTransaction(0, 0, orderid64, "Due Order Amount Paid Online: Rs" + amountpaid, amountpaid, clsClientSession.UserID, 0, DateTime.UtcNow, "Amount Due Paid");
                     return "Success";
+                   
                 }
             }
 
@@ -416,6 +430,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         [HttpPost]
         public string SaveItemAction(string orderitemid,string status,string reason)
         {
+            clsCommon objCom = new clsCommon();
             long OrderItmID64 = Convert.ToInt64(orderitemid);
             decimal amtrefund = 0;
             bool IsApprov = false;
@@ -466,9 +481,10 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         }
                         msgsms = "You Item is Cancelled for Order No." + objitm.OrderId + " . Amount Rs." + amtrefund + " Refunded to your wallet";
                         SendMessageSMS(objClient.MobileNo, msgsms);
+                        objCom.SaveTransaction(objproditm.ProductItemId, objitm.OrderDetailId, objitm.OrderId.Value, "Item Cancel Request", objitm.FinalItemPrice.Value, clsClientSession.UserID, 0, DateTime.UtcNow, "Item Cancel Request");
                         msgsms = "Items has been Cancelled for Order No." + objitm.OrderId;
                         SendMessageSMS(adminmobilenumber, msgsms);
-                        
+                        objCom.SaveTransaction(objproditm.ProductItemId, objitm.OrderDetailId, objitm.OrderId.Value, "Cancel Item amount Refund to Wallet Rs"+ amtrefund, amtrefund, clsClientSession.UserID, 0, DateTime.UtcNow, "Item Cancel Refund");
                         //SendMessageSMS(objClient.MobileNo,);
                         _db.SaveChanges();                        
                     }
@@ -479,6 +495,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     msgsms = "Item Return Request Received for Order No." + objitm.OrderId;
                     amtrefund = objitm.FinalItemPrice.Value;
                     SendMessageSMS(adminmobilenumber, msgsms);
+                    objCom.SaveTransaction(objproditm.ProductItemId, objitm.OrderDetailId, objitm.OrderId.Value, "Item Return Request Sent", objitm.FinalItemPrice.Value, clsClientSession.UserID, 0, DateTime.UtcNow, "Item Return Request Sent");
                 }
                 else if (status == "7")
                 {
@@ -486,6 +503,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     msgsms = "Item Replace Request Received for Order No." + objitm.OrderId;
                     amtrefund = objitm.FinalItemPrice.Value;
                     SendMessageSMS(adminmobilenumber, msgsms);
+                    objCom.SaveTransaction(objproditm.ProductItemId, objitm.OrderDetailId, objitm.OrderId.Value, "Item Replace Request Sent", objitm.FinalItemPrice.Value, clsClientSession.UserID, 0, DateTime.UtcNow, "Item Replace Request Sent");
                 }
                 else if (status == "8")
                 {
@@ -493,6 +511,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     msgsms = "Item Exchange Request Received for Order No." + objitm.OrderId;
                     amtrefund = objitm.FinalItemPrice.Value;                   
                     SendMessageSMS(adminmobilenumber, msgsms);
+                    objCom.SaveTransaction(objproditm.ProductItemId, objitm.OrderDetailId, objitm.OrderId.Value, "Item Exchange Request Sent", objitm.FinalItemPrice.Value, clsClientSession.UserID, 0, DateTime.UtcNow, "Item Exchange Request Sent");
                 }
                 tbl_ItemReturnCancelReplace objitmreplce = new tbl_ItemReturnCancelReplace();
                 objitmreplce.ItemId = objitm.OrderDetailId;

@@ -30,74 +30,89 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-12" style="overflow-x:auto;">
-                @if (Model != null && Model.Count > 0)
+                @if (Convert.ToInt32(ViewBag.TotalOrders) > 0)
                 {
-                    if (clsClientSession.RoleID == 1)
-                    {
-                        <select class="form-control" id="selectstatus" style="width:250px;" onchange="changestatus();">
-                            <option value="-1">All</option>
-                            <option value="1">Pending Shipping Charge</option>
-                        </select>
-                        <br />
-                    }
-                    else
-                    {
-                        <select class="form-control" id="selectstatus" style="width:150px;" onchange="changestatus();">
-                            <option value="-1">All</option>
-                            <option value="1">Pending Shipping Charge</option>
-                            <option value="2">Pending Order Payment</option>
-                        </select>
-                        <br />
-                    }
+                 
+                        if (clsClientSession.RoleID == 1)
+                        {
+                            <select class="form-control" id="selectstatus" style="width:250px;" onchange="changestatus();">
+                                <option value="-1">All</option>
+                                <option value="1">Pending Shipping Charge</option>
+                                <option value="3">Cash On Delivery</option>
+                                <option value="4">Second Cart Orders</option>
+                            </select>
+                            <br />
+                        }
+                        else
+                        {
+                            <select class="form-control" id="selectstatus" style="width:150px;" onchange="changestatus();">
+                                <option value="-1">All</option>
+                                <option value="1">Pending Shipping Charge</option>
+                                <option value="2">Pending Order Payment</option>
+                                <option value="3">Cash On Delivery</option>
+                                <option value="4">Second Cart Orders</option>
+                            </select>
+                            <br />
+                        }
 
-                    <table class="table cart-table table-responsive-xs">
-                        <thead>
-                            <tr class="table-head">
-                                <th scope="col">Order No.</th>
-                                <th scope="col">Order Date</th>
-                                <th scope="col">Order Amount</th>
-                                <th scope="col">Order Status</th>
-                                <th scope="col">Payment Type</th>
-                                <th scope="col">Action</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (Model != null && Model.Count > 0)
-                            {
-                                foreach (KrupaBuildGallery.ViewModel.OrderVM objorder in Model)
+                        <table class="table cart-table table-responsive-xs">
+                            <thead>
+                                <tr class="table-head">
+                                    <th scope="col">Order No.</th>
+                                    <th scope="col">Order Date</th>
+                                    <th scope="col">Order Amount</th>
+                                    <th scope="col">Order Status</th>
+                                    <th scope="col">Payment Type</th>
+                                    <th scope="col">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (Model != null && Model.Count > 0)
                                 {
-                                    string stauscolor = "badge-secondary";
-                                    decimal shippingchrge = 0;
-                                    if (objorder.ShippingStatus == 2)
+                                    foreach (KrupaBuildGallery.ViewModel.OrderVM objorder in Model)
                                     {
-                                        shippingchrge = objorder.ShipmentCharge;
+                                        string stauscolor = "badge-secondary";
+                                        decimal shippingchrge = 0;
+                                        if (objorder.ShippingStatus == 2)
+                                        {
+                                            shippingchrge = objorder.ShipmentCharge;
+                                        }
+                                        decimal OrdAmt = Math.Round(objorder.OrderAmount + shippingchrge, 2);
+                                        if (objorder.OrderStatusId == 1)
+                                        {
+                                            stauscolor = "badge-danger";
+                                        }
+                                        else if (objorder.OrderStatusId == 2)
+                                        {
+                                            stauscolor = "badge-success";
+                                        }
+                                        else if (objorder.OrderStatusId == 3)
+                                        {
+                                            stauscolor = "badge-warning";
+                                        }
+                                        <tr>
+                                            <td># @objorder.OrderId</td>
+                                            <td>@objorder.OrderDate.ToString("MMM dd,yyyy")</td>
+                                            <td>₹ @Math.Round(OrdAmt)</td>
+                                            <td><span class="badge @stauscolor">@objorder.OrderStatus</span></td>
+                                            <td>@objorder.PaymentType</td>
+                                            <td> <a href="/orders/orderdetails/@objorder.OrderId"><i class="fa fa-eye font-success"></i></a></td>
+                                        </tr>
                                     }
-                                    decimal OrdAmt = Math.Round(objorder.OrderAmount + shippingchrge, 2);
-                                    if (objorder.OrderStatusId == 1)
-                                    {
-                                        stauscolor = "badge-danger";
-                                    }
-                                    else if (objorder.OrderStatusId == 2)
-                                    {
-                                        stauscolor = "badge-success";
-                                    }
-                                    else if (objorder.OrderStatusId == 3)
-                                    {
-                                        stauscolor = "badge-warning";
-                                    }
-                                    <tr>
-                                        <td># @objorder.OrderId</td>
-                                        <td>@objorder.OrderDate.ToString("MMM dd,yyyy")</td>
-                                        <td>₹ @Math.Round(OrdAmt)</td>
-                                        <td><span class="badge @stauscolor">@objorder.OrderStatus</span></td>
-                                        <td>@objorder.PaymentType</td>
-                                        <td> <a href="/orders/orderdetails/@objorder.OrderId"><i class="fa fa-eye font-success"></i></a></td>
-                                    </tr>
-                                }
 
-                            }
-                        </tbody>
-                    </table>
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td colspan="5" style="text-align:center;">
+                                            No Orders found....
+                                        </td>
+                                    </tr>
+
+                                }
+                            </tbody>
+                       </table>
+                    
                 }
                 else
                 {
@@ -115,12 +130,12 @@
 </section>
 <!--section end-->
 <script>
-      
+
       $(document).ready(function () {
         $("#selectstatus").val("@ViewBag.Status");
     });
-    function changestatus() {       
+    function changestatus() {
         var statusid = $("#selectstatus").val();
-        location.href = "/orders?Status="+statusid;       
+        location.href = "/orders?Status="+statusid;
     }
 </script>

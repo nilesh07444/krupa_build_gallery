@@ -85,8 +85,12 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                              OrderStatusId = p.OrderStatusId,
                              PaymentType = p.PaymentType,
                              OrderDate = p.CreatedDate,
+                             ClientRoleId = c.ClientRoleId,
                              ShipmentCharge = p.ShippingCharge.HasValue ? p.ShippingCharge.Value : 0,
-                             ShippingStatus = p.ShippingStatus.HasValue ? p.ShippingStatus.Value : 2
+                             ShippingStatus = p.ShippingStatus.HasValue ? p.ShippingStatus.Value : 2,
+                             CreditUsed = p.CreditAmountUsed.HasValue ? p.CreditAmountUsed.Value : 0,
+                             WalletAmtUsed = p.WalletAmountUsed.HasValue ? p.WalletAmountUsed.Value : 0,
+                             OrderTypeId = p.OrderType.HasValue ? p.OrderType.Value : 1
                          }).OrderByDescending(x => x.OrderDate).FirstOrDefault();          
             if(objOrder != null)
             {   
@@ -127,7 +131,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         public string ChangeOrderStatus(long OrderId,int Status,string Dispatchtime)
         {
             tbl_Orders objordr =  _db.tbl_Orders.Where(o => o.OrderId == OrderId).FirstOrDefault();
-            if(objordr != null)
+            clsCommon objcmn = new clsCommon();
+            if (objordr != null)
             {
                 objordr.OrderStatusId = Status;
                 long clientusrid = objordr.ClientUserId;
@@ -144,6 +149,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             {
                                 ob.ItemStatus = 2;
                             }
+                            objcmn.SaveTransaction(ob.ProductItemId.Value,ob.OrderDetailId, ob.OrderId.Value, "Change Item Status to Confirm", ob.FinalItemPrice.Value,0,clsAdminSession.UserID, DateTime.UtcNow, "Item Status Change");
                         }
                         _db.SaveChanges();
                     }
@@ -508,6 +514,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     objReq.DateModified = DateTime.UtcNow;
                     objReq.ModifiedBy = clsAdminSession.UserID;
                     _db.SaveChanges();
+                    msgsms = "You Item to Return for Order No." + objReq.OrderId +" is Accepted. You will get Item asap";
+                    SendMessageSMS(mobilenumber, msgsms);
                     objCommon.SaveTransaction(objOrderItm.ProductItemId.Value, objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, "Item Replace Request Accepted", 0, 0, clsAdminSession.UserID, DateTime.UtcNow, "Accepted Replace Item Request");
                 }
                 else if (objReq.ItemStatus == 8)
@@ -624,7 +632,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             objOrderItmDlv.AssignedDate = DateTime.UtcNow;
             _db.tbl_OrderItemDelivery.Add(objOrderItmDlv);
             _db.SaveChanges();
-            objCommon.SaveTransaction(objOrderItm.ProductItemId.Value, objOrderItm.OrderDetailId, objOrderItm.OrderId.Value,"Delivery Person "+ objAdminUsr.FirstName+" "+ objAdminUsr.LastName+" Assign to Dispatch Item", 0, 0, clsAdminSession.UserID, DateTime.UtcNow, "");
+            objCommon.SaveTransaction(objOrderItm.ProductItemId.Value, objOrderItm.OrderDetailId, objOrderItm.OrderId.Value,"Delivery Person "+ objAdminUsr.FirstName+" "+ objAdminUsr.LastName+" Assign to Dispatch Item", 0, 0, clsAdminSession.UserID, DateTime.UtcNow, "Item Status Changed");
             tbl_ClientUsers objclntusr = _db.tbl_ClientUsers.Where(o => o.ClientUserId == objOrdr.ClientUserId).FirstOrDefault();
             if (objclntusr != null)
             {

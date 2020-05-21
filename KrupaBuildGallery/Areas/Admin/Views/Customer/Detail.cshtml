@@ -107,7 +107,7 @@
                             </div>
                         </div>
 
-                    </div>                   
+                    </div>
                     <div class="card-header">
                         <h5>Order List</h5>
                     </div>
@@ -130,12 +130,12 @@
                                     {
                                         foreach (KrupaBuildGallery.ViewModel.OrderVM objorder in Model.OrderList)
                                         {
-                                             decimal shippingchrge = 0;
-                                    if(objorder.ShippingStatus == 2)
-                                    {
-                                        shippingchrge = objorder.ShipmentCharge;
-                                    }
-                                    decimal OrdAmt = @Math.Round(objorder.OrderAmount + shippingchrge, 2); 
+                                            decimal shippingchrge = 0;
+                                            if (objorder.ShippingStatus == 2)
+                                            {
+                                                shippingchrge = objorder.ShipmentCharge;
+                                            }
+                                            decimal OrdAmt = Math.Round(objorder.OrderAmount + shippingchrge, 2);
                                             string stauscolor = "badge-secondary";
                                             if (objorder.OrderStatusId == 1)
                                             {
