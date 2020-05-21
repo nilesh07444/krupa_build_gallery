@@ -30,7 +30,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
                 lstOrders = (from p in _db.tbl_Orders
                              join c in _db.tbl_ClientUsers on p.ClientUserId equals c.ClientUserId
-                               where !p.IsDelete && (Status == -1 || p.OrderStatusId == Status)
+                               where !p.IsDelete && (Status == -1 || Status == 10 || Status == 11 || p.OrderStatusId == Status)
                              select new OrderVM
                                {
                                    OrderId = p.OrderId,
@@ -46,6 +46,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                    OrderStatusId =  p.OrderStatusId,       
                                    PaymentType = p.PaymentType,
                                    OrderDate = p.CreatedDate,
+                                   IsCashOnDelivery = p.IsCashOnDelivery.HasValue ? p.IsCashOnDelivery.Value : false,
+                                   OrderTypeId = p.OrderType.HasValue ? p.OrderType.Value : 1,
                                    ShipmentCharge = p.ShippingCharge.HasValue ? p.ShippingCharge.Value : 0,
                                    ShippingStatus = p.ShippingStatus.HasValue ? p.ShippingStatus.Value : 2
                                }).OrderByDescending(x => x.OrderDate).ToList();
@@ -53,6 +55,14 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 if(lstOrders != null && lstOrders.Count() > 0)
                 {
                     lstOrders.ForEach(x => x.OrderStatus = GetOrderStatus(x.OrderStatusId));
+                }
+                if(Status == 10)
+                {
+                    lstOrders = lstOrders.Where(o => o.IsCashOnDelivery == true).ToList();
+                }
+                else if(Status == 11)
+                {
+                    lstOrders = lstOrders.Where(o => o.OrderTypeId == 2).ToList();
                 }
                 ViewBag.Status = Status;
             }

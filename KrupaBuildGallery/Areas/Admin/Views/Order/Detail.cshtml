@@ -142,7 +142,7 @@
                                 <div class="form-text-row">@Model.PaymentType</div>
                             </div>
                         </div>
-                        <div class="form-group" style="border-bottom: 1px solid #eff2f7;">
+                        <div class="form-group">
                             <div class="col-md-3">
                                 <div class="label-wrapper"><label class="control-label">Order Total Amount:</label></div>
                             </div>
@@ -172,7 +172,7 @@
                                 </div>
                             </div>
                         }
-                        <div class="form-group">
+                        <div class="form-group" style="border-top: 1px solid #eff2f7;">
                             <div class="col-md-3">
                                 <div class="label-wrapper"><label class="control-label" style="font-size:17px;">Shipping Address</label></div>
                             </div>
@@ -479,7 +479,8 @@
                 $("#changestatustoconfirmed").modal("hide");
                 $("#btnChangeOrderStatustoconfirm").hide();
                 $("#btnChangeOrderStatustodispatched").show();
-                  $("#dvorderstatus").html("Confirmed");
+                $("#dvorderstatus").html("Confirmed");
+                  location.reload();
             },
             error: function (error) {
                 console.log("error");
@@ -556,8 +557,9 @@
             url: URL + "?OrderId=" + $("#orderidd").val() + "&OrderItemId=" + $("#orderitmidd").val() + "&PersonId=" + $("#Personname").val(),
             success: function (result) {
                 alert("Item Assigned");
-                 $("#assignpersonmodal").modal("hide");               
-                  $("#td_"+$("#orderitmidd").val()).html("Dispatched");
+                $("#assignpersonmodal").modal("hide");      
+                 location.reload();
+               //   $("#td_"+$("#orderitmidd").val()).html("Dispatched");
             },
             error: function (error) {
                 console.log("error");

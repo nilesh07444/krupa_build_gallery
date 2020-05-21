@@ -39,12 +39,14 @@
                 <h3>Filter:</h3>
                 <div class="row" style="margin-top:25px; border-bottom: 2px solid #f8f8f9; padding-bottom: 25px; margin-bottom: 10px;">
                     <div class="col-md-2">
-                        <label>Order Status</label>
+                        @*<label>Order Status</label>*@
                         <select class="form-control" id="selectstatus" style="width:150px;" onchange="changestatus();">
                             <option value="-1">All</option>
                             <option value="1">New Order</option>
                             <option value="2">Confirmed</option>
                             <option value="3">Dispatched</option>
+                            <option value="10">Cash On Delivery</option>
+                            <option value="11">Second Cart Orders</option>
                         </select>
                     </div>
                 </div>
