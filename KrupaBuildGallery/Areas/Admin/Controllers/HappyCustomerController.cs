@@ -24,19 +24,19 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
         public ActionResult Index()
         {
-            List<HomeImageVM> lstHomeImages = new List<HomeImageVM>();
+            List<HappyCustomerVM> lstHappyCustomers = new List<HappyCustomerVM>();
             try
             {
 
-                lstHomeImages = (from c in _db.tbl_HomeImages
-                                 select new HomeImageVM
+                lstHappyCustomers = (from c in _db.tbl_HappyCustomers
+                                 select new HappyCustomerVM
                                  {
-                                     HomeImageId = c.HomeImageId,
-                                     HomeImageName = c.HomeImageName,
-                                     HeadingText1 = c.HeadingText1,
-                                     HeadingText2 = c.HeadingText2,
+                                     HappyCustomerId = c.HappyCustomerId,
+                                     FinanceYear = c.FinanceYear,
+                                     CustomerName = c.CustomerName,
+                                     CustomerImage = c.CustomerImage,
                                      IsActive = c.IsActive
-                                 }).OrderByDescending(x => x.HomeImageId).ToList();
+                                 }).OrderByDescending(x => x.HappyCustomerId).ToList();
 
             }
             catch (Exception ex)
@@ -44,16 +44,19 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 string ErrorMessage = ex.Message.ToString();
             }
 
-            return View(lstHomeImages);
+            return View(lstHappyCustomers);
         }
 
         public ActionResult Add()
         {
-            return View();
+            HappyCustomerVM customerVM = new HappyCustomerVM(); 
+            customerVM.FinanceYearList = GetFinancialYearList();
+
+            return View(customerVM);
         }
 
         [HttpPost]
-        public ActionResult Add(HomeImageVM homeImageVM, HttpPostedFileBase HomeImageFile)
+        public ActionResult Add(HappyCustomerVM customerVM, HttpPostedFileBase CustomerImageFile)
         {
             try
             {
@@ -69,36 +72,40 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     if (!folderExists)
                         Directory.CreateDirectory(path);
 
-                    if (HomeImageFile != null)
+                    if (CustomerImageFile != null)
                     {
                         // Image file validation
-                        string ext = Path.GetExtension(HomeImageFile.FileName);
+                        string ext = Path.GetExtension(CustomerImageFile.FileName);
                         if (ext.ToUpper().Trim() != ".JPG" && ext.ToUpper() != ".PNG" && ext.ToUpper() != ".GIF" && ext.ToUpper() != ".JPEG" && ext.ToUpper() != ".BMP")
                         {
-                            ModelState.AddModelError("HomeImageFile", ErrorMessage.SelectOnlyImage);
-                            return View(homeImageVM);
+                            customerVM.FinanceYearList = GetFinancialYearList();
+
+                            ModelState.AddModelError("CustomerImageFile", ErrorMessage.SelectOnlyImage);
+                            return View(customerVM);
                         }
 
                         // Save file in folder
-                        fileName = Guid.NewGuid() + "-" + Path.GetFileName(HomeImageFile.FileName);
-                        HomeImageFile.SaveAs(path + fileName);
+                        fileName = Guid.NewGuid() + "-" + Path.GetFileName(CustomerImageFile.FileName);
+                        CustomerImageFile.SaveAs(path + fileName);
                     }
                     else
                     {
-                        ModelState.AddModelError("HomeImageFile", ErrorMessage.ImageRequired);
-                        return View(homeImageVM);
+                        customerVM.FinanceYearList = GetFinancialYearList();
+
+                        ModelState.AddModelError("CustomerImageFile", ErrorMessage.ImageRequired);
+                        return View(customerVM);
                     }
 
-                    tbl_HomeImages objHome = new tbl_HomeImages();
-                    objHome.HeadingText1 = homeImageVM.HeadingText1;
-                    objHome.HeadingText2 = homeImageVM.HeadingText2;
-                    objHome.HomeImageName = fileName;
-                    objHome.IsActive = true;
-                    objHome.CreatedBy = LoggedInUserId;
-                    objHome.CreatedDate = DateTime.UtcNow;
-                    objHome.UpdatedBy = LoggedInUserId;
-                    objHome.UpdatedDate = DateTime.UtcNow;
-                    _db.tbl_HomeImages.Add(objHome);
+                    tbl_HappyCustomers objCustomer = new tbl_HappyCustomers();
+                    objCustomer.FinanceYear = customerVM.FinanceYear;
+                    objCustomer.CustomerName = customerVM.CustomerName;
+                    objCustomer.CustomerImage = fileName;
+                    objCustomer.IsActive = true;
+                    objCustomer.CreatedBy = LoggedInUserId;
+                    objCustomer.CreatedDate = DateTime.UtcNow;
+                    objCustomer.UpdatedBy = LoggedInUserId;
+                    objCustomer.UpdatedDate = DateTime.UtcNow;
+                    _db.tbl_HappyCustomers.Add(objCustomer);
                     _db.SaveChanges();
 
                     return RedirectToAction("Index");
@@ -111,36 +118,41 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 throw ex;
             }
 
-            return View(homeImageVM);
+            customerVM.FinanceYearList = GetFinancialYearList();
+
+            return View(customerVM);
         }
 
         public ActionResult Edit(int Id)
         {
-            HomeImageVM objHome = new HomeImageVM();
+            HappyCustomerVM objCustomer = new HappyCustomerVM();
 
             try
             {
-                objHome = (from c in _db.tbl_HomeImages
-                           where c.HomeImageId == Id
-                           select new HomeImageVM
-                           {
-                               HomeImageId = c.HomeImageId,
-                               HomeImageName = c.HomeImageName,
-                               HeadingText1 = c.HeadingText1,
-                               HeadingText2 = c.HeadingText2,
-                               IsActive = c.IsActive
-                           }).FirstOrDefault();
+                objCustomer = (from c in _db.tbl_HappyCustomers
+                               where c.HappyCustomerId == Id
+                               select new HappyCustomerVM
+                               {
+                                   HappyCustomerId = c.HappyCustomerId,
+                                   FinanceYear = c.FinanceYear,
+                                   CustomerName = c.CustomerName,
+                                   CustomerImage = c.CustomerImage,
+                                   IsActive = c.IsActive
+                               }).FirstOrDefault();
+
+                objCustomer.FinanceYearList = GetFinancialYearList();
+
             }
             catch (Exception ex)
             {
                 string ErrorMessage = ex.Message.ToString();
             }
 
-            return View(objHome);
+            return View(objCustomer);
         }
 
         [HttpPost]
-        public ActionResult Edit(HomeImageVM homeImageVM, HttpPostedFileBase HomeImageFile)
+        public ActionResult Edit(HappyCustomerVM customerVM, HttpPostedFileBase CustomerImageFile)
         {
             try
             {
@@ -149,35 +161,37 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 {
                     long LoggedInUserId = Int64.Parse(clsAdminSession.UserID.ToString());
 
-                    tbl_HomeImages objHome = _db.tbl_HomeImages.Where(x => x.HomeImageId == homeImageVM.HomeImageId).FirstOrDefault();
+                    tbl_HappyCustomers objCustomer = _db.tbl_HappyCustomers.Where(x => x.HappyCustomerId == customerVM.HappyCustomerId).FirstOrDefault();
 
                     string fileName = string.Empty;
                     string path = Server.MapPath(HappyCustomerDirectoryPath);
-                    if (HomeImageFile != null)
+                    if (CustomerImageFile != null)
                     {
                         // Image file validation
-                        string ext = Path.GetExtension(HomeImageFile.FileName);
+                        string ext = Path.GetExtension(CustomerImageFile.FileName);
                         if (ext.ToUpper().Trim() != ".JPG" && ext.ToUpper() != ".PNG" && ext.ToUpper() != ".GIF" && ext.ToUpper() != ".JPEG" && ext.ToUpper() != ".BMP")
                         {
-                            ModelState.AddModelError("HomeImageFile", ErrorMessage.SelectOnlyImage);
-                            return View(homeImageVM);
+                            customerVM.FinanceYearList = GetFinancialYearList();
+
+                            ModelState.AddModelError("CustomerImageFile", ErrorMessage.SelectOnlyImage);
+                            return View(customerVM);
                         }
 
                         // Save image in folder
-                        fileName = Guid.NewGuid() + "-" + Path.GetFileName(HomeImageFile.FileName);
-                        HomeImageFile.SaveAs(path + fileName);
+                        fileName = Guid.NewGuid() + "-" + Path.GetFileName(CustomerImageFile.FileName);
+                        CustomerImageFile.SaveAs(path + fileName);
                     }
                     else
                     {
-                        fileName = objHome.HomeImageName;
+                        fileName = objCustomer.CustomerImage;
                     }
 
-                    objHome.HomeImageName = fileName;
-                    objHome.HeadingText1 = homeImageVM.HeadingText1;
-                    objHome.HeadingText2 = homeImageVM.HeadingText2;
+                    objCustomer.CustomerImage = fileName;
+                    objCustomer.FinanceYear = customerVM.FinanceYear;
+                    objCustomer.CustomerName = customerVM.CustomerName;
 
-                    objHome.UpdatedBy = LoggedInUserId;
-                    objHome.UpdatedDate = DateTime.UtcNow;
+                    objCustomer.UpdatedBy = LoggedInUserId;
+                    objCustomer.UpdatedDate = DateTime.UtcNow;
                     _db.SaveChanges();
 
                     return RedirectToAction("Index");
@@ -189,25 +203,27 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 string ErrorMessage = ex.Message.ToString();
             }
 
-            return View(homeImageVM);
+            customerVM.FinanceYearList = GetFinancialYearList();
+
+            return View(customerVM);
         }
 
         [HttpPost]
-        public string DeleteHomeImage(int HomeImageId)
+        public string DeleteHappyCustomer(int HappyCustomerId)
         {
             string ReturnMessage = "";
 
             try
             {
-                tbl_HomeImages objHome = _db.tbl_HomeImages.Where(x => x.HomeImageId == HomeImageId).FirstOrDefault();
+                tbl_HappyCustomers objCustomer = _db.tbl_HappyCustomers.Where(x => x.HappyCustomerId == HappyCustomerId).FirstOrDefault();
 
-                if (objHome == null)
+                if (objCustomer == null)
                 {
                     ReturnMessage = "notfound";
                 }
                 else
                 {
-                    _db.tbl_HomeImages.Remove(objHome);
+                    _db.tbl_HappyCustomers.Remove(objCustomer);
                     _db.SaveChanges();
 
                     ReturnMessage = "success";
@@ -223,12 +239,12 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public string ChangeStatus(long Id, string Status)
+        public string ChangeStatus(int Id, string Status)
         {
             string ReturnMessage = "";
             try
             {
-                tbl_HomeImages objHome = _db.tbl_HomeImages.Where(x => x.HomeImageId == Id).FirstOrDefault();
+                tbl_HappyCustomers objHome = _db.tbl_HappyCustomers.Where(x => x.HappyCustomerId == Id).FirstOrDefault();
 
                 if (objHome != null)
                 {
@@ -256,6 +272,26 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             }
 
             return ReturnMessage;
+        }
+
+        private List<SelectListItem> GetFinancialYearList()
+        {
+            int startYear = DateTime.Now.Year - 5;
+            int endYear = DateTime.Now.Year;
+
+            List<SelectListItem> lstFinancialYear = new List<SelectListItem>();
+            for (int i = endYear; i >= startYear; i--)
+            {
+                string stryear = i + "-" + (i + 1);
+
+                SelectListItem objSelectListItem = new SelectListItem();
+                objSelectListItem.Text = stryear;
+                objSelectListItem.Value = stryear;
+                lstFinancialYear.Add(objSelectListItem);
+            }
+
+            return lstFinancialYear;
+
         }
 
     }

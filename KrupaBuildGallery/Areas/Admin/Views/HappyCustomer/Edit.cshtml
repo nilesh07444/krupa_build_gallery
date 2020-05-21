@@ -1,10 +1,8 @@
 ﻿@using KrupaBuildGallery.Helper;
-@model HomeImageVM
+@model HappyCustomerVM
 
 @{
-                /**/
-
-                ViewBag.Title = "HomeImage";
+    ViewBag.Title = "HappyCustomer";
 }
 
 <div class="page-body">
@@ -16,15 +14,15 @@
                 <div class="col">
                     <div class="page-header-left">
                         <h3>
-                            Edit Home Image
+                            Edit Happy Customer
                         </h3>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <ol class="breadcrumb pull-right">
                         <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
-                        <li class="breadcrumb-item"><a href="/admin/homeimages">Home Images</a></li>
-                        <li class="breadcrumb-item active">Edit Home Image</li>
+                        <li class="breadcrumb-item"><a href="/admin/happycustomer">Happy Customers</a></li>
+                        <li class="breadcrumb-item active">Edit Happy Customer</li>
                     </ol>
                 </div>
             </div>
@@ -37,55 +35,54 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5>Edit Home Image</h5>
+                        <h5>Edit Happy Customer</h5>
                     </div>
                     <div class="card-body">
-                        @using (Html.BeginForm("Edit", "HomeImages", FormMethod.Post, new { @id = "HomeImageFormId", @class = "needs-validation", enctype = "multipart/form-data", role = "form" }))
+                        @using (Html.BeginForm("Edit", "HappyCustomer", FormMethod.Post, new { @id = "happycustomerFormId", @class = "needs-validation", enctype = "multipart/form-data", role = "form" }))
                         {
 
                             @Html.AntiForgeryToken()
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
                             <div class="form-group row">
-                                @Html.LabelFor(model => model.HeadingText1, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
-                                @Html.EditorFor(model => model.HeadingText1, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Heading Text1", maxlength = "200" } })
+                                @Html.LabelFor(model => model.FinanceYear, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.DropDownListFor(model => model.FinanceYear, new SelectList(Model.FinanceYearList, "Value", "Text"), "- Select Financial Year -", new { @class = "form-control col-md-8", style = "" })
 
                                 <lable class="col-xl-3 col-md-4"></lable>
-                                @Html.ValidationMessageFor(model => model.HeadingText1, "", new { @class = "text-danger" })
+                                @Html.ValidationMessageFor(model => model.FinanceYear, "", new { @class = "text-danger" })
                             </div>
 
                             <div class="form-group row">
-                                @Html.LabelFor(model => model.HeadingText2, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
-                                @Html.EditorFor(model => model.HeadingText2, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Heading Text2", maxlength = "200" } })
+                                @Html.LabelFor(model => model.CustomerName, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.EditorFor(model => model.CustomerName, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Customer Name", maxlength = "200" } })
 
                                 <lable class="col-xl-3 col-md-4"></lable>
-                                @Html.ValidationMessageFor(model => model.HeadingText1, "", new { @class = "text-danger" })
+                                @Html.ValidationMessageFor(model => model.CustomerName, "", new { @class = "text-danger" })
                             </div>
 
                             <div class="form-group row">
-                                @Html.LabelFor(model => model.HomeImageFile, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
-                                @Html.TextBoxFor(model => model.HomeImageFile, new { type = "file", @class = "form-control col-md-8" })
+                                @Html.LabelFor(model => model.CustomerImageFile, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.TextBoxFor(model => model.CustomerImageFile, new { type = "file", @class = "form-control col-md-8" })
 
                                 <lable class="col-xl-3 col-md-4"></lable>
-                                @Html.ValidationMessageFor(model => model.HomeImageFile, "", new { @class = "text-danger" })
+                                @Html.ValidationMessageFor(model => model.CustomerImageFile, "", new { @class = "text-danger" })
+                                <p class="text-primary">NOTE: Upload Images size : 370 X 370</p>
                             </div>
 
-                            if (!string.IsNullOrEmpty(Model.HomeImageName))
+                            if (!string.IsNullOrEmpty(Model.CustomerImage))
                             {
                                 <div class="form-group row">
                                     <lable class="col-xl-3 col-md-4"></lable>
-                                    <p><a target="_blank" href="@ErrorMessage.HomeDirectoryPath/@Model.HomeImageName"> Click here to view image </a></p>
+                                    <p><a target="_blank" href="@ErrorMessage.HappyCustomerDirectoryPath/@Model.CustomerImage"> Click here to view image </a></p>
                                 </div>
                             }
 
                             <div class="form-group row">
+                                @Html.HiddenFor(x => x.HappyCustomerId)
                                 <lable class="col-xl-3 col-md-4"></lable>
-                                @Html.HiddenFor(x => x.HomeImageId)
                                 <button type="submit" class="btn btn-primary" style="margin-right:10px;">Submit</button>
                                 <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
                             </div>
-
-
                         }
                     </div>
                 </div>
@@ -102,6 +99,6 @@
 
 <script>
     $(document).on("click", "#btnCancel", function () {
-        window.location.href = "/admin/homeimages";
+        window.location.href = "/admin/happycustomer";
     });
 </script>
