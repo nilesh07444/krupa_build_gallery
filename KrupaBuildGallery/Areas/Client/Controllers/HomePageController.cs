@@ -20,18 +20,18 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         }
         public ActionResult Index()
         {
-             
+            List<HappyCustomerVM> lstHappyCustomers = new List<HappyCustomerVM>();
             List<ProductItemVM> lstPopularProductItem = new List<ProductItemVM>();
             List<ProductItemVM> lstUnpackProductItem = new List<ProductItemVM>();
             List<ProductItemVM> lstOfferItems = new List<ProductItemVM>();
             List<long> wishlistitemsId = new List<long>();
-              
+
             if (clsClientSession.UserID != 0)
             {
                 long UserId = clsClientSession.UserID;
                 wishlistitemsId = _db.tbl_WishList.Where(o => o.ClientUserId == UserId).Select(o => o.ItemId.Value).ToList();
             }
-             
+
             lstPopularProductItem = (from i in _db.tbl_ProductItems
                                      where !i.IsDelete && i.IsActive == true && i.IsPopularProduct == true
                                      select new ProductItemVM
@@ -59,19 +59,19 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             }
 
             lstUnpackProductItem = (from i in _db.tbl_ProductItems
-                                     where !i.IsDelete && i.IsActive == true && i.ItemType == (int)ItemTypes.UnPackedItem
+                                    where !i.IsDelete && i.IsActive == true && i.ItemType == (int)ItemTypes.UnPackedItem
                                     select new ProductItemVM
-                                     {
-                                         ProductItemId = i.ProductItemId,
-                                         ProductId = i.ProductId,
-                                         SubProductId = i.SubProductId,
-                                         ItemName = i.ItemName,
-                                         MainImage = i.MainImage,
-                                         MRPPrice = i.MRPPrice,
-                                         CustomerPrice = i.CustomerPrice,
-                                         DistributorPrice = i.DistributorPrice,
-                                         IsActive = i.IsActive,
-                                         CreatedDate = i.CreatedDate,
+                                    {
+                                        ProductItemId = i.ProductItemId,
+                                        ProductId = i.ProductId,
+                                        SubProductId = i.SubProductId,
+                                        ItemName = i.ItemName,
+                                        MainImage = i.MainImage,
+                                        MRPPrice = i.MRPPrice,
+                                        CustomerPrice = i.CustomerPrice,
+                                        DistributorPrice = i.DistributorPrice,
+                                        IsActive = i.IsActive,
+                                        CreatedDate = i.CreatedDate,
                                         IsCashonDelieveryuse = i.IsCashonDeliveryUse.HasValue ? i.IsCashonDeliveryUse.Value : false
                                     }).OrderByDescending(x => x.CreatedDate).ToList().Take(8).ToList();
 
@@ -119,20 +119,32 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
 
             List<HomeImageVM> lstImages = GetHomeImages();
             List<CategoryVM> lstCategory = (from c in _db.tbl_Categories
-                                              where !c.IsDelete && c.IsActive
-                                              select new CategoryVM
-                                              {
-                                                  CategoryId = c.CategoryId,
-                                                  CategoryName = c.CategoryName,
-                                                  CategoryImage = c.CategoryImage 
-                                              }).OrderByDescending(x => x.CategoryId).ToList().Take(9).ToList();
+                                            where !c.IsDelete && c.IsActive
+                                            select new CategoryVM
+                                            {
+                                                CategoryId = c.CategoryId,
+                                                CategoryName = c.CategoryName,
+                                                CategoryImage = c.CategoryImage
+                                            }).OrderByDescending(x => x.CategoryId).ToList().Take(9).ToList();
 
-            ViewData["lstPopularProductItem"] = lstPopularProductItem; 
+            lstHappyCustomers = (from c in _db.tbl_HappyCustomers
+                                 where c.IsActive
+                                 select new HappyCustomerVM
+                                 {
+                                     HappyCustomerId = c.HappyCustomerId,
+                                     FinanceYear = c.FinanceYear,
+                                     CustomerName = c.CustomerName,
+                                     CustomerImage = c.CustomerImage,
+                                     IsActive = c.IsActive
+                                 }).OrderByDescending(x => x.HappyCustomerId).ToList();
+
+            ViewData["lstPopularProductItem"] = lstPopularProductItem;
             ViewData["lstOfferItems"] = lstOfferItems;
             ViewData["lstImages"] = lstImages;
             ViewData["lstCategory"] = lstCategory;
             ViewData["lstUnpackProductItem"] = lstUnpackProductItem;
-            
+            ViewData["lstHappyCustomers"] = lstHappyCustomers;
+
             return View();
         }
 

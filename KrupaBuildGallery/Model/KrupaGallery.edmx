@@ -34,13 +34,13 @@
           <Property Name="AdminRoleId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="AdminRoleName" Type="nvarchar" MaxLength="150" />
           <Property Name="AdminRoleDescription" Type="nvarchar" MaxLength="500" />
+          <Property Name="IsDefaultRole" Type="bit" Nullable="false" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
           <Property Name="IsDelete" Type="bit" Nullable="false" />
           <Property Name="CreatedBy" Type="bigint" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="UpdatedBy" Type="bigint" />
           <Property Name="UpdatedDate" Type="datetime" />
-          <Property Name="IsDefaultRole" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="tbl_AdminUsers">
           <Key>
@@ -56,6 +56,7 @@
           <Property Name="AlternateMobile" Type="nvarchar" MaxLength="50" />
           <Property Name="Address" Type="nvarchar" MaxLength="450" />
           <Property Name="City" Type="nvarchar" MaxLength="200" />
+          <Property Name="ParentAgentId" Type="bigint" />
           <Property Name="Designation" Type="nvarchar" MaxLength="350" />
           <Property Name="Dob" Type="datetime" />
           <Property Name="DateOfJoin" Type="datetime" />
@@ -71,7 +72,6 @@
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="UpdatedBy" Type="bigint" />
           <Property Name="UpdatedDate" Type="datetime" />
-          <Property Name="ParentAgentId" Type="bigint" />
         </EntityType>
         <EntityType Name="tbl_Cart">
           <Key>
@@ -215,7 +215,7 @@
           <Property Name="AddharPhoto" Type="nvarchar" MaxLength="450" />
           <Property Name="ProfilePhoto" Type="nvarchar" MaxLength="450" />
           <Property Name="Status" Type="int" />
-          <Property Name="Reason" Type="nvarchar" MaxLength="800" />
+          <Property Name="Reason" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="tbl_GeneralSetting">
           <Key>
@@ -224,12 +224,12 @@
           <Property Name="GeneralSettingId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="InitialPointCustomer" Type="decimal" Precision="18" Scale="2" />
           <Property Name="ShippingMessage" Type="nvarchar(max)" />
-          <Property Name="SMTPHost" Type="nvarchar" MaxLength="400" />
-          <Property Name="SMTPPort" Type="nvarchar" MaxLength="10" />
+          <Property Name="SMTPHost" Type="nvarchar" MaxLength="150" />
+          <Property Name="SMTPPort" Type="nvarchar" MaxLength="150" />
           <Property Name="EnableSSL" Type="bit" />
-          <Property Name="SMTPEmail" Type="nvarchar" MaxLength="200" />
-          <Property Name="SMTPPwd" Type="nvarchar" MaxLength="100" />
-          <Property Name="AdminSMSNumber" Type="nvarchar" MaxLength="20" />
+          <Property Name="SMTPEmail" Type="nvarchar" MaxLength="150" />
+          <Property Name="SMTPPwd" Type="nvarchar" MaxLength="150" />
+          <Property Name="AdminSMSNumber" Type="nvarchar" MaxLength="150" />
           <Property Name="AdminEmail" Type="nvarchar" MaxLength="150" />
           <Property Name="FromEmail" Type="nvarchar" MaxLength="150" />
         </EntityType>
@@ -253,6 +253,21 @@
           <Property Name="GST_Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="GSTText" Type="nvarchar" MaxLength="15" />
           <Property Name="GSTPer" Type="decimal" Precision="18" Scale="2" />
+        </EntityType>
+        <EntityType Name="tbl_HappyCustomers">
+          <Key>
+            <PropertyRef Name="HappyCustomerId" />
+          </Key>
+          <Property Name="HappyCustomerId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FinanceYear" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="CustomerName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="CustomerImage" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="IsDelete" Type="bit" Nullable="false" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="UpdatedBy" Type="bigint" />
+          <Property Name="UpdatedDate" Type="datetime" />
         </EntityType>
         <EntityType Name="tbl_HomeImages">
           <Key>
@@ -493,7 +508,7 @@
           <Property Name="HSNCode" Type="nvarchar" MaxLength="150" />
           <Property Name="ItemType" Type="int" />
           <Property Name="IsReturnable" Type="bit" />
-          <Property Name="PayAdvancePer" Type="decimal" Precision="6" Scale="2" />
+          <Property Name="PayAdvancePer" Type="decimal" Precision="18" Scale="2" />
           <Property Name="IsCashonDeliveryUse" Type="bit" />
         </EntityType>
         <EntityType Name="tbl_Products">
@@ -587,18 +602,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_tbl_AdminRolePermissions_tbl_AdminRolePermissions1">
-          <End Role="tbl_AdminRoles" Type="Self.tbl_AdminRoles" Multiplicity="1" />
-          <End Role="tbl_AdminRolePermissions" Type="Self.tbl_AdminRolePermissions" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="tbl_AdminRoles">
-              <PropertyRef Name="AdminRoleId" />
-            </Principal>
-            <Dependent Role="tbl_AdminRolePermissions">
-              <PropertyRef Name="AdminRoleId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityContainer Name="krupagalleryModelStoreContainer">
           <EntitySet Name="tbl_AdminRoleModules" EntityType="Self.tbl_AdminRoleModules" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_AdminRolePermissions" EntityType="Self.tbl_AdminRolePermissions" Schema="dbo" store:Type="Tables" />
@@ -614,6 +617,7 @@
           <EntitySet Name="tbl_GeneralSetting" EntityType="Self.tbl_GeneralSetting" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Godown" EntityType="Self.tbl_Godown" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_GSTMaster" EntityType="Self.tbl_GSTMaster" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_HappyCustomers" EntityType="Self.tbl_HappyCustomers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_HomeImages" EntityType="Self.tbl_HomeImages" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ItemReturnCancelReplace" EntityType="Self.tbl_ItemReturnCancelReplace" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ItemStocks" EntityType="Self.tbl_ItemStocks" Schema="dbo" store:Type="Tables" />
@@ -635,10 +639,6 @@
           <EntitySet Name="tbl_WishList" EntityType="Self.tbl_WishList" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_tbl_AdminRolePermissions_tbl_AdminRoleModules" Association="Self.FK_tbl_AdminRolePermissions_tbl_AdminRoleModules">
             <End Role="tbl_AdminRoleModules" EntitySet="tbl_AdminRoleModules" />
-            <End Role="tbl_AdminRolePermissions" EntitySet="tbl_AdminRolePermissions" />
-          </AssociationSet>
-          <AssociationSet Name="FK_tbl_AdminRolePermissions_tbl_AdminRolePermissions1" Association="Self.FK_tbl_AdminRolePermissions_tbl_AdminRolePermissions1">
-            <End Role="tbl_AdminRoles" EntitySet="tbl_AdminRoles" />
             <End Role="tbl_AdminRolePermissions" EntitySet="tbl_AdminRolePermissions" />
           </AssociationSet>
         </EntityContainer>
@@ -799,7 +799,7 @@
           <Property Name="AddharPhoto" Type="String" MaxLength="450" FixedLength="false" Unicode="true" />
           <Property Name="ProfilePhoto" Type="String" MaxLength="450" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Int32" />
-          <Property Name="Reason" Type="String" MaxLength="800" FixedLength="false" Unicode="true" />
+          <Property Name="Reason" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_Godown">
           <Key>
@@ -1019,7 +1019,7 @@
           <Property Name="HSNCode" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="ItemType" Type="Int32" />
           <Property Name="IsReturnable" Type="Boolean" />
-          <Property Name="PayAdvancePer" Type="Decimal" Precision="6" Scale="2" />
+          <Property Name="PayAdvancePer" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="IsCashonDeliveryUse" Type="Boolean" />
         </EntityType>
         <EntityType Name="tbl_Products">
@@ -1104,6 +1104,7 @@
           <EntitySet Name="tbl_OrderItemDelivery" EntityType="krupagalleryModel.tbl_OrderItemDelivery" />
           <EntitySet Name="tbl_ItemReturnCancelReplace" EntityType="krupagalleryModel.tbl_ItemReturnCancelReplace" />
           <EntitySet Name="tbl_Transactions" EntityType="krupagalleryModel.tbl_Transactions" />
+          <EntitySet Name="tbl_HappyCustomers" EntityType="krupagalleryModel.tbl_HappyCustomers" />
         </EntityContainer>
         <EntityType Name="tbl_AdminRoles">
           <Key>
@@ -1209,12 +1210,12 @@
           <Property Name="GeneralSettingId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="InitialPointCustomer" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="ShippingMessage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="SMTPHost" Type="String" MaxLength="400" FixedLength="false" Unicode="true" />
-          <Property Name="SMTPPort" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="SMTPHost" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="SMTPPort" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="EnableSSL" Type="Boolean" />
-          <Property Name="SMTPEmail" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="SMTPPwd" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="AdminSMSNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="SMTPEmail" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="SMTPPwd" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="AdminSMSNumber" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="AdminEmail" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="FromEmail" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
         </EntityType>
@@ -1286,6 +1287,21 @@
           <Property Name="CreatedByAdminId" Type="Int64" />
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="TypeOfTransaction" Type="String" MaxLength="550" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="tbl_HappyCustomers">
+          <Key>
+            <PropertyRef Name="HappyCustomerId" />
+          </Key>
+          <Property Name="HappyCustomerId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FinanceYear" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CustomerName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CustomerImage" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="IsDelete" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdatedBy" Type="Int64" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -1893,6 +1909,22 @@
                 <ScalarProperty Name="OrderItemId" ColumnName="OrderItemId" />
                 <ScalarProperty Name="ProductItemId" ColumnName="ProductItemId" />
                 <ScalarProperty Name="PK_Transacation_Id" ColumnName="PK_Transacation_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_HappyCustomers">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_HappyCustomers">
+              <MappingFragment StoreEntitySet="tbl_HappyCustomers">
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="CustomerImage" ColumnName="CustomerImage" />
+                <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
+                <ScalarProperty Name="FinanceYear" ColumnName="FinanceYear" />
+                <ScalarProperty Name="HappyCustomerId" ColumnName="HappyCustomerId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

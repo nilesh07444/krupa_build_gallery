@@ -7,7 +7,7 @@
     var lstUnPackItems = ViewData["lstUnpackProductItem"] as List<ProductItemVM>;
     List<HomeImageVM> lstImages = ViewData["lstImages"] as List<HomeImageVM>;
     List<CategoryVM> lstCategory = ViewData["lstCategory"] as List<CategoryVM>;
-
+    List<HappyCustomerVM> lstHappyCustomers = ViewData["lstHappyCustomers"] as List<HappyCustomerVM>;
 }
 <style>
     .wishlistcls {
@@ -75,6 +75,13 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
+                    <div class="col-md-12 viewmore">
+                        <a href="/category" class="btn btn-solid btn-xs" style="float: right; margin-bottom: 25px; border-radius: 10px;">
+                            <i class="fa fa-angle-double-right"></i>View More
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-12">
                     <div class="slide-3 no-arrow">
                         @foreach (CategoryVM obj in lstCategory)
                         {
@@ -113,11 +120,7 @@
                             </div>
                         }
                     </div>
-                    <div class="viewmore">
-                        <a href="/category" class="btn btn-solid btn-xs" style="float: right; margin-top: 25px; border-radius: 10px;">
-                            <i class="fa fa-angle-double-right"></i>View More
-                        </a>
-                    </div>
+
                 </div>
             </div>
         </div>
@@ -127,12 +130,12 @@
 <!-- Offer Product List start-->
 @if (lstOffers != null && lstOffers.Count() > 0)
 {
-<div class="title1 section-t-space"> 
-    <div class="title4">
-        <h2 class="title-inner4">Special Offer</h2>
-        <div class="line"><span></span></div>
+    <div class="title1 section-t-space">
+        <div class="title4">
+            <h2 class="title-inner4">Special Offer</h2>
+            <div class="line"><span></span></div>
+        </div>
     </div>
-</div>
     <div class="container">
         <div class="row">
             <div class="col-lg-6 offset-lg-3">
@@ -147,6 +150,16 @@
     <section class="section-b-space p-t-0 ratio_asos">
         <div class="container">
             <div class="row">
+                <div class="col-sm-12">
+                    <div class="viewmore">
+                        <a href="/products/offer" class="btn btn-solid btn-xs" style="float: right; margin-bottom: 25px; border-radius: 10px;">
+                            <i class="fa fa-angle-double-right"></i>View More
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+
                 <div class="col">
                     <div class="product-4 product-m no-arrow">
                         @if (lstOffers != null && lstOffers.Count() > 0)
@@ -217,11 +230,7 @@
                     </div>
                 </div>
             </div>
-            <div class="viewmore">
-                <a href="/products/offer" class="btn btn-solid btn-xs" style="float: right; margin-top: 25px; border-radius: 10px;">
-                    <i class="fa fa-angle-double-right"></i>View More
-                </a>
-            </div>
+
         </div>
     </section>
     <!-- Product slider end -->
@@ -249,6 +258,15 @@
     <!-- Product slider -->
     <section class="section-b-space p-t-0 ratio_asos">
         <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="viewmore">
+                        <a href="/products/popular" class="btn btn-solid btn-xs" style="float: right; margin-bottom: 25px; border-radius: 10px;">
+                            <i class="fa fa-angle-double-right"></i>View More
+                        </a>
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="col">
                     <div class="product-4 product-m no-arrow">
@@ -319,12 +337,6 @@
                         }
                     </div>
                 </div>
-
-            </div>
-            <div class="viewmore">
-                <a href="/products/popular" class="btn btn-solid btn-xs" style="float: right; margin-top: 25px; border-radius: 10px;">
-                    <i class="fa fa-angle-double-right"></i>View More
-                </a>
             </div>
         </div>
     </section>
@@ -353,6 +365,15 @@
     <!-- Product slider -->
     <section class="section-b-space p-t-0 ratio_asos">
         <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="viewmore">
+                        <a href="/products/unpacked" class="btn btn-solid btn-xs" style="float: right; margin-bottom: 25px; border-radius: 10px;">
+                            <i class="fa fa-angle-double-right"></i>View More
+                        </a>
+                    </div>
+                </div>
+            </div>
             <div class="row">
                 <div class="col">
                     <div class="product-4 product-m no-arrow">
@@ -424,11 +445,6 @@
                     </div>
                 </div>
 
-            </div>
-            <div class="viewmore">
-                <a href="/products/unpacked" class="btn btn-solid btn-xs" style="float: right; margin-top: 25px; border-radius: 10px;">
-                    <i class="fa fa-angle-double-right"></i>View More
-                </a>
             </div>
         </div>
     </section>
@@ -502,98 +518,63 @@
 <!-- Product slider end -->
 @*Site Statistics - end*@
 
-<section class="ratio_landscape game-product light-layout section-b-space"> 
-    <div class="title4">
-        <h2 class="title-inner4">Happiest Customers</h2>
-        <div class="line"><span></span></div>
-    </div>
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <div class="product-4 product-m no-arrow">
-                    <div class="product-box">
-                        <div class="img-wrapper">
-                            <div class="front">
-                                <a href="product-page(no-sidebar).html">
-                                    <img src="~/Content/assets/images/game/pro/11.jpg" class="bg-img img-fluid blur-up lazyload" alt="">
-                                </a>
-                            </div>
-                        </div>
-                        <div class="product-detail">
-                            <a href="product-page(no-sidebar).html">
-                                <h5>Nilesh Prajapati</h5>
-                            </a>
-                        </div>
+@if (lstHappyCustomers != null && lstHappyCustomers.Count() > 0)
+{
+    <section class="ratio_landscape game-product light-layout section-b-space">
+        <div class="title4">
+            <h2 class="title-inner4">Happiest Customers</h2>
+            <div class="line"><span></span></div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="col-sm-12 viewmore">
+                        <a href="/happycustomer" class="btn btn-solid btn-xs" style="float: right; margin-bottom: 25px; border-radius: 10px;">
+                            <i class="fa fa-angle-double-right"></i>View More
+                        </a>
                     </div>
-
-                    <div class="product-box">
-                        <div class="img-wrapper">
-                            <div class="front">
-                                <a href="product-page(no-sidebar).html">
-                                    <img src="~/Content/assets/images/game/pro/11.jpg" class="bg-img img-fluid blur-up lazyload" alt="">
-                                </a>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="product-4 product-m no-arrow">
+                        @foreach (var objItem in lstHappyCustomers)
+                        {
+                            <div class="product-box">
+                                <div class="img-wrapper">
+                                    <div class="front">
+                                        <a href="javascript:void(0);">                                            
+                                            @if (!string.IsNullOrEmpty(objItem.CustomerImage))
+                                            {
+                                                if (File.Exists(Server.MapPath(ErrorMessage.HappyCustomerDirectoryPath + objItem.CustomerImage)))
+                                                {
+                                                    <img src="@ErrorMessage.HappyCustomerDirectoryPath/@objItem.CustomerImage" alt="" class="bg-img img-fluid blur-up lazyload" />
+                                                }
+                                                else
+                                                {
+                                                    <img src="@ErrorMessage.DefaultImagePath" alt="" class="bg-img img-fluid blur-up lazyload" />
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <img src="@ErrorMessage.DefaultImagePath" alt="" class="bg-img img-fluid blur-up lazyload" />
+                                            }
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="product-detail">
+                                    <a href="javascript:void(0);">
+                                        <h5>@objItem.CustomerName</h5>
+                                    </a>
+                                </div>
                             </div>
-                        </div>
-                        <div class="product-detail">
-                            <a href="product-page(no-sidebar).html">
-                                <h5>Nilesh Prajapati</h5>
-                            </a>
-                        </div>
+                        }
                     </div>
-
-                    <div class="product-box">
-                        <div class="img-wrapper">
-                            <div class="front">
-                                <a href="product-page(no-sidebar).html">
-                                    <img src="~/Content/assets/images/game/pro/11.jpg" class="bg-img img-fluid blur-up lazyload" alt="">
-                                </a>
-                            </div>
-                        </div>
-                        <div class="product-detail">
-                            <a href="product-page(no-sidebar).html">
-                                <h5>Nilesh Prajapati</h5>
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="product-box">
-                        <div class="img-wrapper">
-                            <div class="front">
-                                <a href="product-page(no-sidebar).html">
-                                    <img src="~/Content/assets/images/game/pro/11.jpg" class="bg-img img-fluid blur-up lazyload" alt="">
-                                </a>
-                            </div>
-                        </div>
-                        <div class="product-detail">
-                            <a href="product-page(no-sidebar).html">
-                                <h5>Nilesh Prajapati</h5>
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="product-box">
-                        <div class="img-wrapper">
-                            <div class="front">
-                                <a href="product-page(no-sidebar).html">
-                                    <img src="~/Content/assets/images/game/pro/11.jpg" class="bg-img img-fluid blur-up lazyload" alt="">
-                                </a>
-                            </div>
-                        </div>
-                        <div class="product-detail">
-                            <a href="product-page(no-sidebar).html">
-                                <h5>Nilesh Prajapati</h5>
-                            </a>
-                        </div>
-                    </div>
-
-
-
                 </div>
             </div>
         </div>
-    </div>
-</section>
-
+    </section>
+}
 
 <script>
     function addremovewishlist(itemid, objthis) {

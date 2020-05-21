@@ -2,9 +2,9 @@
 @using Newtonsoft.Json;
 @using KrupaBuildGallery.Model;
 
-@model List<HomeImageVM>
+@model List<HappyCustomerVM>
 @{
-    ViewBag.Title = "HomeImage";
+    ViewBag.Title = "HappyCustomer";
 
     int counter = 1;
 }
@@ -31,14 +31,14 @@
                 <div class="col-lg-6">
                     <div class="page-header-left">
                         <h3>
-                            Home Image List
+                            Happy Customer List
                         </h3>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <ol class="breadcrumb pull-right">
                         <li class="breadcrumb-item"><a href="/"><i data-feather="home"></i></a></li>
-                        <li class="breadcrumb-item active">Home Image List</li>
+                        <li class="breadcrumb-item active">Happy Customer List</li>
                     </ol>
                 </div>
             </div>
@@ -49,22 +49,22 @@
     <div class="container-fluid">
         <div class="card">
             <div class="card-header">
-                <h5>Home Image List</h5>
+                <h5>Happy Customer List</h5>
             </div>
             <div class="card-body vendor-table">
                 @if (IsSA || objPermission.ManagePageContent >= (int)ModulePermission.Add)
                 {
                     <div class="btn-popup pull-right">
-                        <button type="button" class="btn btn-primary" id="btnAdd">Add Home Image</button>
+                        <button type="button" class="btn btn-primary" id="btnAdd">Add Happy Customer</button>
                     </div>
                 }
                 <table class="display" id="basic-1">
                     <thead>
                         <tr>
                             <th width="10%;">#</th>
-                            <th width="15%;">Home Image</th>
-                            <th>Heading Text 1</th>
-                            <th>Heading Text 2</th>
+                            <th width="15%;">Customer Image</th>
+                            <th>Financial Year</th>
+                            <th>Customer Name</th>
                             <th width="15%;">Active</th>
                             <th width="15%;">Action</th>
                         </tr>
@@ -73,16 +73,16 @@
 
                         @if (Model != null && Model.Count > 0)
                         {
-                            foreach (HomeImageVM obj in Model)
+                            foreach (HappyCustomerVM obj in Model)
                             {
                                 <tr class="gradeX">
                                     <td>@counter.</td>
                                     <td>
-                                        @if (!string.IsNullOrEmpty(obj.HomeImageName))
+                                        @if (!string.IsNullOrEmpty(obj.CustomerImage))
                                         {
-                                            if (File.Exists(Server.MapPath(ErrorMessage.HomeDirectoryPath + obj.HomeImageName)))
+                                            if (File.Exists(Server.MapPath(ErrorMessage.HappyCustomerDirectoryPath + obj.CustomerImage)))
                                             {
-                                                <img src="@ErrorMessage.HomeDirectoryPath/@obj.HomeImageName" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                                <img src="@ErrorMessage.HappyCustomerDirectoryPath/@obj.CustomerImage" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
                                             }
                                             else
                                             {
@@ -95,25 +95,25 @@
                                         }
 
                                     </td>
-                                    <td>@obj.HeadingText1</td>
-                                    <td>@obj.HeadingText2</td>
+                                    <td>@obj.FinanceYear</td>
+                                    <td>@obj.CustomerName</td>
                                     @if (obj.IsActive == true)
                                     {
-                                        <td><span class="badge badge-success" style="cursor:pointer;" title="Click to Inactive" onclick="fnChangeStatus('@obj.HomeImageId','InActive');">Active</span></td>
+                                        <td><span class="badge badge-success" style="cursor:pointer;" title="Click to Inactive" onclick="fnChangeStatus('@obj.HappyCustomerId','InActive');">Active</span></td>
                                     }
                                     else
                                     {
-                                        <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@obj.HomeImageId','Active');">InActive</span></td>
+                                        <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@obj.HappyCustomerId','Active');">InActive</span></td>
                                     }
 
                                     <td>
                                         @if (IsSA || objPermission.ManagePageContent >= (int)ModulePermission.Edit)
                                         {
-                                            <a href="/admin/homeimages/edit/@obj.HomeImageId"><i class="fa fa-edit mr-2 font-success"></i></a>
+                                            <a href="/admin/happycustomer/edit/@obj.HappyCustomerId"><i class="fa fa-edit mr-2 font-success"></i></a>
                                         }
                                         @if (IsSA || objPermission.ManagePageContent == (int)ModulePermission.Full)
                                         {
-                                            <a href="javascript:void(0);" onclick="fnDeleteHomeImage('@obj.HomeImageId')"><i class="fa fa-trash font-danger"></i></a>
+                                            <a href="javascript:void(0);" onclick="fnDeleteHappyCustomer('@obj.HappyCustomerId')"><i class="fa fa-trash font-danger"></i></a>
                                         }
                                     </td>
                                 </tr>
@@ -131,7 +131,7 @@
 </div>
 
 <!-- Delete Modal -->
-<div class="modal fade open" id="deleteHomeImageModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade open" id="deleteHappyCustomerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -142,9 +142,9 @@
                 Are you sure you want to delete ?
             </div>
             <div class="modal-footer">
-                <input type="hidden" id="hdnDeleteHomeImage" />
+                <input type="hidden" id="hdnDeleteHappyCustomer" />
                 <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
-                <button id="btnDeleteHomeImage" class="btn btn-primary" type="button">Delete</button>
+                <button id="btnDeleteHappyCustomer" class="btn btn-primary" type="button">Delete</button>
             </div>
         </div>
     </div>
@@ -175,40 +175,35 @@
 
 <script>
 
-    //jQuery(document).ready(function () {
-    //    StartLoading()
-    //    jQuery('html, body').animate({ scrollTop: 0 }, 1000);
-    //});
-
-    $(document).on("click", "#btnAdd", function () {
-        window.location.href = "/admin/homeimages/add";
+    jQuery(document).ready(function () { 
+        jQuery('html, body').animate({ scrollTop: 0 }, 1000);
     });
 
-    function fnDeleteHomeImage(HomeImage_Id) {
-        jQuery("#hdnDeleteHomeImage").val(HomeImage_Id);
-        $('#deleteHomeImageModal').modal('show');
+    $(document).on("click", "#btnAdd", function () {
+        window.location.href = "/admin/happycustomer/add";
+    });
+
+    function fnDeleteHappyCustomer(HappyCustomer_Id) {
+        jQuery("#hdnDeleteHappyCustomer").val(HappyCustomer_Id);
+        $('#deleteHappyCustomerModal').modal('show');
     }
+     
+    jQuery(document).on("click", "#btnDeleteHappyCustomer", function () {
 
-    //jQuery(window).on("load", function () {
-    //    StopLoading();
-    //});
-
-    jQuery(document).on("click", "#btnDeleteHomeImage", function () {
-
-        var HomeImage_Id = jQuery("#hdnDeleteHomeImage").val();
-        if (HomeImage_Id != "" && HomeImage_Id != null) {
-            $('#deleteHomeImageModal').modal('hide');
+        var HappyCustomer_Id = jQuery("#hdnDeleteHappyCustomer").val();
+        if (HappyCustomer_Id != "" && HappyCustomer_Id != null) {
+            $('#deleteHappyCustomerModal').modal('hide');
 
             StartLoading();
 
-            var URL = '@Url.Action("DeleteHomeImage", "HomeImages")';
+            var URL = '@Url.Action("DeleteHappyCustomer", "HappyCustomer")';
             $.ajax({
                 type: 'POST',
                 async: true,
-                url: URL + "?HomeImageId=" + HomeImage_Id,
+                url: URL + "?HappyCustomerId=" + HappyCustomer_Id,
                 success: function (result) {
                     if (result == "success") {
-                        alert("Image deleted successfully");
+                        alert("Happy Customer deleted successfully");
                         window.location.reload();
                     }
                     else if (result == "notfound") {
@@ -227,8 +222,8 @@
         }
     });
 
-     function fnChangeStatus(HomeImage_Id,status) {
-         jQuery("#hdndataId").val(HomeImage_Id);
+     function fnChangeStatus(HappyCustomer_Id,status) {
+         jQuery("#hdndataId").val(HappyCustomer_Id);
          jQuery("#hdnstatus").val(status);
          if (status == "Active") {
              $('#activeinactiveModal .modal-body').html(" Are you sure you want to make active ?");
@@ -247,7 +242,7 @@
 
             StartLoading();
 
-            var URL = '@Url.Action("ChangeStatus", "HomeImages")';
+            var URL = '@Url.Action("ChangeStatus", "HappyCustomer")';
             $.ajax({
                 type: 'POST',
                 async: true,
