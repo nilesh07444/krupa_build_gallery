@@ -5,11 +5,13 @@ using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
+using KrupaBuildGallery.Filters;
 using KrupaBuildGallery.Model;
 using KrupaBuildGallery.ViewModel;
 using Razorpay.Api;
 namespace KrupaBuildGallery.Areas.Client.Controllers
 {
+    [CustomClientAuthorize]
     public class CheckoutController : Controller
     {
         private readonly krupagallarydbEntities _db;

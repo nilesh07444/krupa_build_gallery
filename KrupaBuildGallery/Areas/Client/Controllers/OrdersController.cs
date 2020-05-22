@@ -1,4 +1,5 @@
-﻿using KrupaBuildGallery.Model;
+﻿using KrupaBuildGallery.Filters;
+using KrupaBuildGallery.Model;
 using KrupaBuildGallery.ViewModel;
 using Razorpay.Api;
 using System;
@@ -11,6 +12,7 @@ using System.Web.Mvc;
 
 namespace KrupaBuildGallery.Areas.Client.Controllers
 {
+    [CustomClientAuthorize]
     public class OrdersController : Controller
     {
         private readonly krupagallarydbEntities _db;

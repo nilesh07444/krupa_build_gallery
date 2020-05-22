@@ -266,7 +266,7 @@ function addtoCart(itemid, qty, iscash) {
         url: URL + "?ItemId=" + itemid + "&Qty=" + qty + "&IsCash=" + iscash,
         success: function (result) {
             if (result == "OutofStock") {
-                msgdisplayFail("Item is out of stock can not add to cart");
+               // msgdisplayFail("Item is out of stock can not add to cart");
                 $("#outofstockmodl").modal("show");
                 $("#outofstockmodl #hdnsecndcartitmid").val(itemid);
                 $("#outofstockmodl #hdnsecndcartqty").val(qty);

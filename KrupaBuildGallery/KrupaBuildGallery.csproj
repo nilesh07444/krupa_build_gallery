@@ -236,6 +236,7 @@
     <Compile Include="Areas\WebAPI\Controllers\WishListController.cs" />
     <Compile Include="Areas\WebAPI\WebAPIAreaRegistration.cs" />
     <Compile Include="Filters\CustomAuthorize.cs" />
+    <Compile Include="Filters\CustomClientAuthorize.cs" />
     <Compile Include="Helper\CommonMethod.cs" />
     <Compile Include="Helper\Enums.cs" />
     <Compile Include="Helper\ErrorMessage.cs" />

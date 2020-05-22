@@ -52,7 +52,7 @@
                 </div>
 
                     <br />
-                    <table class="display" id="basic-1">
+                    <table class="display" id="basic-111">
                         <thead>
                             <tr>
                                 <th>Order #</th>
@@ -130,7 +130,10 @@
 
 
      $(document).ready(function () {
-        $("#selectstatus").val("@ViewBag.Status");
+         $("#selectstatus").val("@ViewBag.Status");
+         $('#basic-111').DataTable({
+             "order": [[ 0, "desc" ]]
+         });
     });
     function changestatus() {
         var statusid = $("#selectstatus").val();

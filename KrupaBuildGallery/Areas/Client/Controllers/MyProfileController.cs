@@ -1,4 +1,5 @@
-﻿using KrupaBuildGallery.Model;
+﻿using KrupaBuildGallery.Filters;
+using KrupaBuildGallery.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,7 @@ using System.Web.Mvc;
 
 namespace KrupaBuildGallery.Areas.Client.Controllers
 {
+    [CustomClientAuthorize]
     public class MyProfileController : Controller
     {
         private readonly krupagallarydbEntities _db;

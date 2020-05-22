@@ -93,6 +93,22 @@
                         </div>
                         <div class="form-group">
                             <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Order Type:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                @if (Model.OrderTypeId == 1)
+                                {
+                                    <div class="form-text-row">First Cart</div>
+                                }
+                                else
+                                {
+                                    <div class="form-text-row">Second Cart</div>
+                                }
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
                                 <div class="label-wrapper"><label class="control-label">Created On:</label></div>
                             </div>
                             <div class="col-md-9">

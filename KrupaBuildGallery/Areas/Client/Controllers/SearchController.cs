@@ -23,11 +23,11 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 ViewBag.Name = "";              
                 lstProductItem = (from i in _db.tbl_ProductItems
                                   join c in _db.tbl_Categories on i.CategoryId equals c.CategoryId
-                                      //join p in _db.tbl_Products on i.ProductId equals p.Product_Id
-                                      //join s in _db.tbl_SubProducts on i.SubProductId equals s.SubProductId into outerJoinSubProduct
-                                      //from s in outerJoinSubProduct.DefaultIfEmpty()
+                                  join p in _db.tbl_Products on i.ProductId equals p.Product_Id
+                                  join s in _db.tbl_SubProducts on i.SubProductId equals s.SubProductId into outerJoinSubProduct
+                                  from s in outerJoinSubProduct.DefaultIfEmpty()
                                       //where !i.IsDelete && !c.IsDelete && !p.IsDelete
-                                  where !i.IsDelete && i.IsActive == true && (q.ToLower().Contains(i.ItemName.ToLower()) || i.ItemName.ToLower().Contains(q.ToLower()) || q.Contains(c.CategoryName))
+                                  where !i.IsDelete && i.IsActive == true && !c.IsDelete && !p.IsDelete && (q.ToLower().Contains(i.ItemName.ToLower()) || i.ItemName.ToLower().Contains(q.ToLower()) || q.ToLower().Contains(c.CategoryName.ToLower()) || c.CategoryName.ToLower().Contains(q.ToLower()) || q.ToLower().Contains(p.ProductName.ToLower()) || p.ProductName.ToLower().Contains(q.ToLower()) || q.ToLower().Contains(s.SubProductName.ToLower()) || s.SubProductName.ToLower().Contains(q.ToLower()))
                                   select new ProductItemVM
                                   {
                                       ProductItemId = i.ProductItemId,
