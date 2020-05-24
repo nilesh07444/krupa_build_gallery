@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
@@ -63,7 +64,7 @@ namespace KrupaBuildGallery.Model
                 string SMTPEMail = objGensetting.SMTPEmail;
                 string SMTPPwd = objGensetting.SMTPPwd;
                 string EnablSSL = "false";
-                if(objGensetting.EnableSSL == true)
+                if (objGensetting.EnableSSL == true)
                 {
                     EnablSSL = "true";
                 }
@@ -86,7 +87,7 @@ namespace KrupaBuildGallery.Model
 
                     client.UseDefaultCredentials = false;
                     client.Credentials = new NetworkCredential(SMTPEMail, SMTPPwd);
-                  
+
                     client.DeliveryMethod = SmtpDeliveryMethod.Network;
                     mailMessage.IsBodyHtml = true;
                     client.Send(mailMessage);
@@ -98,7 +99,7 @@ namespace KrupaBuildGallery.Model
             }
         }
 
-        public void SaveTransaction(long ProductItemId,long OrderItemId,long OrderId,string Description,decimal Amount,long CreatedByUser,long CreadtedByAdmin,DateTime CreatedDate,string TypeOfTransaction)
+        public void SaveTransaction(long ProductItemId, long OrderItemId, long OrderId, string Description, decimal Amount, long CreatedByUser, long CreadtedByAdmin, DateTime CreatedDate, string TypeOfTransaction)
         {
             krupagallarydbEntities _db = new krupagallarydbEntities();
             tbl_Transactions objTrans = new tbl_Transactions();
@@ -112,6 +113,89 @@ namespace KrupaBuildGallery.Model
             objTrans.TypeOfTransaction = TypeOfTransaction;
             _db.tbl_Transactions.Add(objTrans);
             _db.SaveChanges();
+        }
+
+        public static EmailMessageVM GetSampleEmailTemplate()
+        {
+            string HeaderContent = GetFileText("EmailTemplates\\Header.htm");
+            string FooterContent = GetFileText("EmailTemplates\\Footer.htm");
+            string BodyContent = GetFileText("EmailTemplates\\AccountBlocked.htm");
+
+            string body = HeaderContent + BodyContent + FooterContent;
+            string subject = "Test Email By Nilesh";
+            string toEmail = "krutik.shah1310@gmail.com";
+
+            return new EmailMessageVM()
+            {
+                SendEmailTo = { toEmail },
+                Subject = subject,
+                Body = body
+            };
+        }
+
+        public static string GetFileText(string filePathName)
+        {
+            string dirPath = AppDomain.CurrentDomain.BaseDirectory;
+            string FullPath = Path.Combine(dirPath, filePathName);
+
+            return File.ReadAllText(FullPath);
+        }
+
+        public static void SendEmail2(EmailMessageVM emailModel)
+        {
+
+            string fromEmailID = string.Empty;
+            string emailFromName = string.Empty;
+
+            try
+            {
+                krupagallarydbEntities _db = new krupagallarydbEntities();
+                tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
+
+                // as per the application run mode, assign proper from email address from configuration file.
+                using (SmtpClient emailClient = new SmtpClient())
+                {
+                    emailClient.EnableSsl = objGensetting.EnableSSL == true ? true : false;
+                    //emailClient.UseDefaultCredentials = false; 
+
+                    emailClient.DeliveryMethod = SmtpDeliveryMethod.Network;
+
+                    emailClient.Host = objGensetting.SMTPHost;
+                    emailClient.Port = Convert.ToInt32(objGensetting.SMTPPort);
+                    emailClient.Credentials = new NetworkCredential(
+                        objGensetting.SMTPEmail,
+                        objGensetting.SMTPPwd
+                    );
+                    fromEmailID = objGensetting.SMTPEmail;
+                    emailFromName = "Shopping & Saving";
+
+
+                    //Create SMTP message
+                    MailMessage message = new MailMessage
+                    {
+                        From = new MailAddress(fromEmailID, emailFromName),
+                        Subject = emailModel.Subject,
+                        Body = emailModel.Body,
+                        IsBodyHtml = true,
+                        BodyEncoding = Encoding.UTF8
+                    };
+
+                    emailModel.SendEmailTo.ForEach(x => message.To.Add(x));
+                    emailModel.SendEmailCc.ForEach(x => message.CC.Add(x));
+                    emailModel.SendEmailBcc.ForEach(x => message.Bcc.Add(x));
+
+                    //Send message.
+                    emailClient.Timeout = 10000;
+                    emailClient.Send(message);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                string ErrorMessage = ex.Message.ToString();
+                throw ex;
+            }
+
         }
 
     }
