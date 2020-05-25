@@ -20,6 +20,10 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         }
         public ActionResult Index()
         {
+            //EmailMessageVM emailModel = clsCommon.GetSampleEmailTemplate();
+            //clsCommon.SendEmail2(emailModel);
+            //clsCommon.SendEmail("prajapati.nileshbhai@gmail.com", "admin@shopping-saving.com", "Test Email", emailModel.Body);
+
             List<HappyCustomerVM> lstHappyCustomers = new List<HappyCustomerVM>();
             List<ProductItemVM> lstPopularProductItem = new List<ProductItemVM>();
             List<ProductItemVM> lstUnpackProductItem = new List<ProductItemVM>();

@@ -391,6 +391,7 @@
     <Compile Include="ViewModel\ContactUsMessageVM.cs" />
     <Compile Include="ViewModel\DashboardCountVM.cs" />
     <Compile Include="ViewModel\DistributorRequestVM.cs" />
+    <Compile Include="ViewModel\EmailMessageVM.cs" />
     <Compile Include="ViewModel\GeneralVM.cs" />
     <Compile Include="ViewModel\HomePageVM.cs" />
     <Compile Include="ViewModel\InvoiceItemVM.cs" />
@@ -3533,6 +3534,9 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\lightbox.min.css" />
+    <Content Include="EmailTemplates\AccountBlocked.htm" />
+    <Content Include="EmailTemplates\Footer.htm" />
+    <Content Include="EmailTemplates\Header.htm" />
     <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />

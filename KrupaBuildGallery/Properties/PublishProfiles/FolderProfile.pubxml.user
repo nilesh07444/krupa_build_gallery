@@ -52,7 +52,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/25/2020 14:18:18</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Customer/Detail.cshtml">
-      <publishTime>04/21/2020 21:20:05</publishTime>
+      <publishTime>05/23/2020 11:02:19</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Customer/Index.cshtml">
       <publishTime>04/26/2020 11:35:53</publishTime>
@@ -100,13 +100,13 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/06/2020 21:23:24</publishTime>
     </File>
     <File Include="Areas/Admin/Views/HappyCustomer/Add.cshtml">
-      <publishTime>05/18/2020 23:54:06</publishTime>
+      <publishTime>05/21/2020 23:02:58</publishTime>
     </File>
     <File Include="Areas/Admin/Views/HappyCustomer/Edit.cshtml">
-      <publishTime>05/18/2020 23:54:43</publishTime>
+      <publishTime>05/21/2020 23:27:17</publishTime>
     </File>
     <File Include="Areas/Admin/Views/HappyCustomer/Index.cshtml">
-      <publishTime>05/18/2020 23:53:32</publishTime>
+      <publishTime>05/21/2020 22:04:29</publishTime>
     </File>
     <File Include="Areas/Admin/Views/HomeImages/Add.cshtml">
       <publishTime>05/02/2020 01:01:05</publishTime>
@@ -157,13 +157,16 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/02/2020 12:51:07</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Order/Detail.cshtml">
-      <publishTime>05/18/2020 11:56:22</publishTime>
+      <publishTime>05/23/2020 11:02:19</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Order/Index.cshtml">
-      <publishTime>05/02/2020 20:32:21</publishTime>
+      <publishTime>05/23/2020 11:02:19</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Order/OrderItemClientRequests.cshtml">
-      <publishTime>05/20/2020 22:55:07</publishTime>
+      <publishTime>05/21/2020 18:30:05</publishTime>
+    </File>
+    <File Include="Areas/Admin/Views/Order/_AssignDeliveryPerson.cshtml">
+      <publishTime>05/21/2020 18:30:05</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Product/Add.cshtml">
       <publishTime>05/14/2020 22:09:11</publishTime>
@@ -184,7 +187,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/17/2020 19:01:45</publishTime>
     </File>
     <File Include="Areas/Admin/Views/ProductItem/Index.cshtml">
-      <publishTime>03/05/2020 22:32:46</publishTime>
+      <publishTime>05/03/2020 22:32:46</publishTime>
     </File>
     <File Include="Areas/Admin/Views/ProductItem/View.cshtml">
       <publishTime>05/09/2020 12:11:11</publishTime>
@@ -202,7 +205,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/14/2020 23:54:10</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Shared/_Layout.cshtml">
-      <publishTime>05/20/2020 22:55:07</publishTime>
+      <publishTime>05/21/2020 22:16:31</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Stock/Add.cshtml">
       <publishTime>05/09/2020 12:11:11</publishTime>
@@ -280,7 +283,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>04/17/2020 21:52:43</publishTime>
     </File>
     <File Include="Areas/Client/Views/HomePage/Index.cshtml">
-      <publishTime>05/17/2020 19:01:45</publishTime>
+      <publishTime>05/21/2020 23:48:18</publishTime>
     </File>
     <File Include="Areas/Client/Views/Login/Distributor.cshtml">
       <publishTime>03/22/2020 18:11:18</publishTime>
@@ -289,16 +292,16 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>03/22/2020 18:11:18</publishTime>
     </File>
     <File Include="Areas/Client/Views/MyProfile/ChangePassword.cshtml">
-      <publishTime>04/17/2020 21:52:43</publishTime>
+      <publishTime>05/20/2020 23:54:43</publishTime>
     </File>
     <File Include="Areas/Client/Views/MyProfile/Index.cshtml">
       <publishTime>05/20/2020 22:55:07</publishTime>
     </File>
     <File Include="Areas/Client/Views/Orders/Index.cshtml">
-      <publishTime>04/25/2020 14:19:01</publishTime>
+      <publishTime>05/23/2020 11:02:19</publishTime>
     </File>
     <File Include="Areas/Client/Views/Orders/OrderDetails.cshtml">
-      <publishTime>05/18/2020 11:56:22</publishTime>
+      <publishTime>05/23/2020 11:02:19</publishTime>
     </File>
     <File Include="Areas/Client/Views/Orders/_Razorpaymentpartial.cshtml">
       <publishTime>04/14/2020 00:20:57</publishTime>
@@ -316,7 +319,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/16/2020 23:35:45</publishTime>
     </File>
     <File Include="Areas/Client/Views/Products/ProductItemList.cshtml">
-      <publishTime>12/04/2020 14:53:46</publishTime>
+      <publishTime>05/17/2020 19:01:45</publishTime>
     </File>
     <File Include="Areas/Client/Views/Products/UnPacked.cshtml">
       <publishTime>05/16/2020 23:36:15</publishTime>
@@ -331,7 +334,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/17/2020 19:01:45</publishTime>
     </File>
     <File Include="Areas/Client/Views/Shared/_Layout.cshtml">
-      <publishTime>05/20/2020 22:55:07</publishTime>
+      <publishTime>05/23/2020 11:02:19</publishTime>
     </File>
     <File Include="Areas/Client/Views/TermsCondition/Index.cshtml">
       <publishTime>04/13/2020 23:45:40</publishTime>
@@ -364,10 +367,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>03/01/2020 10:00:03</publishTime>
     </File>
     <File Include="bin/KrupaBuildGallery.dll">
-      <publishTime>05/20/2020 23:06:50</publishTime>
+      <publishTime>05/23/2020 11:14:17</publishTime>
     </File>
     <File Include="bin/KrupaBuildGallery.pdb">
-      <publishTime>05/20/2020 23:06:50</publishTime>
+      <publishTime>05/23/2020 11:14:17</publishTime>
     </File>
     <File Include="bin/Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll">
       <publishTime>05/24/2018 13:38:22</publishTime>
@@ -526,7 +529,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>11/28/2018 13:04:24</publishTime>
     </File>
     <File Include="bin/System.Web.Http.dll">
-      <publishTime>01/01/0001 00:00:00</publishTime>
+      <publishTime>11/28/2018 13:01:00</publishTime>
     </File>
     <File Include="bin/System.Web.Http.WebHost.dll">
       <publishTime>11/28/2018 13:02:56</publishTime>
@@ -553,7 +556,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/23/2014 13:57:34</publishTime>
     </File>
     <File Include="Content/assets/css/admin.css">
-      <publishTime>03/11/2020 15:09:22</publishTime>
+      <publishTime>05/23/2020 11:02:19</publishTime>
     </File>
     <File Include="Content/assets/css/animate.css">
       <publishTime>02/11/2020 22:52:55</publishTime>
@@ -598,7 +601,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>03/11/2020 15:09:30</publishTime>
     </File>
     <File Include="Content/assets/css/color19.css">
-      <publishTime>04/26/2020 15:29:55</publishTime>
+      <publishTime>05/23/2020 11:02:19</publishTime>
     </File>
     <File Include="Content/assets/css/color2.css">
       <publishTime>03/11/2020 15:09:32</publishTime>
@@ -6136,229 +6139,229 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>02/11/2020 22:53:10</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/1.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:13</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/2.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:12</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/3.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:12</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/4.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:12</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/5.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:12</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/6.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:11</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/7.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:11</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/8.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:11</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/bag.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:10</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/beauty/1.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:10</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/beauty/2.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:10</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/beauty/3.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:09</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/electronic/1.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:09</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/electronic/2.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:09</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/electronic/3.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:08</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/fashion.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:08</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/flower/1.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:08</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/flower/2.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:07</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/flower/3.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:07</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/furniture/1.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:06</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/furniture/2.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:06</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/furniture/3.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:06</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/furniture/mega2.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:05</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/furniture/mega3.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:05</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/goggles/1.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:05</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/goggles/2.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:05</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/goggles/3.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:04</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/kids/1.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:04</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/kids/2.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:04</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/kids/3.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:03</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/light/1.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:03</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/light/2.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:02</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/light/3.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:02</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/nursery/1.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:02</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/nursery/2.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:01</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/nursery/3.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:01</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/shoes.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:01</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/vegetable-fruits/1.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:00</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/vegetable-fruits/2.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:00</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/vegetable-fruits/3.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:00</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/vegetable-fruits/vegetable.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:55:00</publishTime>
     </File>
     <File Include="Content/assets/images/mega-menu/watches.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:54:59</publishTime>
     </File>
     <File Include="Content/assets/images/mega.jpg">
       <publishTime>02/11/2020 22:53:10</publishTime>
     </File>
     <File Include="Content/assets/images/menu-icon/1.png">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:54:59</publishTime>
     </File>
     <File Include="Content/assets/images/menu-icon/2.png">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:54:59</publishTime>
     </File>
     <File Include="Content/assets/images/menu-icon/3.png">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:54:58</publishTime>
     </File>
     <File Include="Content/assets/images/menu-icon/4.png">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:54:58</publishTime>
     </File>
     <File Include="Content/assets/images/menu-icon/5.png">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:54:58</publishTime>
     </File>
     <File Include="Content/assets/images/menu-icon/6.png">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:54:57</publishTime>
     </File>
     <File Include="Content/assets/images/metro.jpg">
       <publishTime>02/11/2020 22:53:10</publishTime>
     </File>
     <File Include="Content/assets/images/modal-bg/1.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:54:57</publishTime>
     </File>
     <File Include="Content/assets/images/modal-bg/10.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:54:57</publishTime>
     </File>
     <File Include="Content/assets/images/modal-bg/11.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:54:57</publishTime>
     </File>
     <File Include="Content/assets/images/modal-bg/12.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:54:56</publishTime>
     </File>
     <File Include="Content/assets/images/modal-bg/2.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:54:56</publishTime>
     </File>
     <File Include="Content/assets/images/modal-bg/3.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:54:55</publishTime>
     </File>
     <File Include="Content/assets/images/modal-bg/4.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:54:55</publishTime>
     </File>
     <File Include="Content/assets/images/modal-bg/5.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:54:55</publishTime>
     </File>
     <File Include="Content/assets/images/modal-bg/6.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:54:54</publishTime>
     </File>
     <File Include="Content/assets/images/modal-bg/7.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:54:54</publishTime>
     </File>
     <File Include="Content/assets/images/modal-bg/8.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:54:54</publishTime>
     </File>
     <File Include="Content/assets/images/modal-bg/9.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:54:53</publishTime>
     </File>
     <File Include="Content/assets/images/nursery/1.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:54:53</publishTime>
     </File>
     <File Include="Content/assets/images/nursery/2.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:54:53</publishTime>
     </File>
     <File Include="Content/assets/images/nursery/3.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:54:52</publishTime>
     </File>
     <File Include="Content/assets/images/nursery/bg.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:54:52</publishTime>
     </File>
     <File Include="Content/assets/images/nursery/pro/1.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:54:52</publishTime>
     </File>
     <File Include="Content/assets/images/nursery/pro/2.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:54:51</publishTime>
     </File>
     <File Include="Content/assets/images/nursery/pro/3.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:54:51</publishTime>
     </File>
     <File Include="Content/assets/images/nursery/pro/4.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:54:51</publishTime>
     </File>
     <File Include="Content/assets/images/nursery/pro/5.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:54:50</publishTime>
     </File>
     <File Include="Content/assets/images/nursery/pro/6.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:54:50</publishTime>
     </File>
     <File Include="Content/assets/images/nursery/pro/7.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:54:50</publishTime>
     </File>
     <File Include="Content/assets/images/nursery/sub-1.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:54:49</publishTime>
     </File>
     <File Include="Content/assets/images/nursery/sub-2.jpg">
-      <publishTime>02/11/2020 22:53:10</publishTime>
+      <publishTime>05/21/2020 23:54:49</publishTime>
     </File>
     <File Include="Content/assets/images/offer-banner.jpg">
       <publishTime>02/11/2020 22:53:10</publishTime>
@@ -6370,82 +6373,82 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>02/11/2020 22:53:10</publishTime>
     </File>
     <File Include="Content/assets/images/parallax/1.jpg">
-      <publishTime>02/11/2020 22:53:11</publishTime>
+      <publishTime>05/21/2020 23:54:49</publishTime>
     </File>
     <File Include="Content/assets/images/parallax/10.jpg">
-      <publishTime>02/11/2020 22:53:11</publishTime>
+      <publishTime>05/21/2020 23:54:49</publishTime>
     </File>
     <File Include="Content/assets/images/parallax/11.jpg">
-      <publishTime>02/11/2020 22:53:11</publishTime>
+      <publishTime>05/21/2020 23:54:47</publishTime>
     </File>
     <File Include="Content/assets/images/parallax/12.jpg">
-      <publishTime>02/11/2020 22:53:11</publishTime>
+      <publishTime>05/21/2020 23:54:47</publishTime>
     </File>
     <File Include="Content/assets/images/parallax/13.jpg">
-      <publishTime>02/11/2020 22:53:11</publishTime>
+      <publishTime>05/21/2020 23:54:47</publishTime>
     </File>
     <File Include="Content/assets/images/parallax/14.jpg">
-      <publishTime>02/11/2020 22:53:11</publishTime>
+      <publishTime>05/21/2020 23:54:46</publishTime>
     </File>
     <File Include="Content/assets/images/parallax/15.jpg">
-      <publishTime>02/11/2020 22:53:11</publishTime>
+      <publishTime>05/21/2020 23:54:46</publishTime>
     </File>
     <File Include="Content/assets/images/parallax/16.jpg">
-      <publishTime>02/11/2020 22:53:11</publishTime>
+      <publishTime>05/21/2020 23:54:46</publishTime>
     </File>
     <File Include="Content/assets/images/parallax/17.jpg">
-      <publishTime>02/11/2020 22:53:11</publishTime>
+      <publishTime>05/21/2020 23:54:45</publishTime>
     </File>
     <File Include="Content/assets/images/parallax/18.jpg">
-      <publishTime>02/11/2020 22:53:11</publishTime>
+      <publishTime>05/21/2020 23:54:45</publishTime>
     </File>
     <File Include="Content/assets/images/parallax/19.jpg">
-      <publishTime>02/11/2020 22:53:11</publishTime>
+      <publishTime>05/21/2020 23:54:45</publishTime>
     </File>
     <File Include="Content/assets/images/parallax/2.jpg">
-      <publishTime>02/11/2020 22:53:11</publishTime>
+      <publishTime>05/21/2020 23:54:44</publishTime>
     </File>
     <File Include="Content/assets/images/parallax/20.jpg">
-      <publishTime>02/11/2020 22:53:11</publishTime>
+      <publishTime>05/21/2020 23:54:44</publishTime>
     </File>
     <File Include="Content/assets/images/parallax/21.jpg">
-      <publishTime>02/11/2020 22:53:11</publishTime>
+      <publishTime>05/21/2020 23:54:44</publishTime>
     </File>
     <File Include="Content/assets/images/parallax/22.jpg">
-      <publishTime>02/11/2020 22:53:11</publishTime>
+      <publishTime>05/21/2020 23:54:43</publishTime>
     </File>
     <File Include="Content/assets/images/parallax/23.jpg">
-      <publishTime>02/11/2020 22:53:11</publishTime>
+      <publishTime>05/21/2020 23:54:43</publishTime>
     </File>
     <File Include="Content/assets/images/parallax/24.jpg">
-      <publishTime>02/11/2020 22:53:11</publishTime>
+      <publishTime>05/21/2020 23:54:43</publishTime>
     </File>
     <File Include="Content/assets/images/parallax/25.jpg">
-      <publishTime>02/11/2020 22:53:11</publishTime>
+      <publishTime>05/21/2020 23:54:43</publishTime>
     </File>
     <File Include="Content/assets/images/parallax/26.jpg">
-      <publishTime>02/11/2020 22:53:11</publishTime>
+      <publishTime>05/21/2020 23:54:42</publishTime>
     </File>
     <File Include="Content/assets/images/parallax/27.jpg">
-      <publishTime>02/11/2020 22:53:11</publishTime>
+      <publishTime>05/21/2020 23:54:42</publishTime>
     </File>
     <File Include="Content/assets/images/parallax/3.jpg">
-      <publishTime>02/11/2020 22:53:11</publishTime>
+      <publishTime>05/21/2020 23:54:41</publishTime>
     </File>
     <File Include="Content/assets/images/parallax/4.jpg">
-      <publishTime>02/11/2020 22:53:11</publishTime>
+      <publishTime>05/21/2020 23:54:41</publishTime>
     </File>
     <File Include="Content/assets/images/parallax/5.jpg">
-      <publishTime>02/11/2020 22:53:11</publishTime>
+      <publishTime>05/21/2020 23:54:41</publishTime>
     </File>
     <File Include="Content/assets/images/parallax/6.jpg">
-      <publishTime>02/11/2020 22:53:11</publishTime>
+      <publishTime>05/21/2020 23:54:40</publishTime>
     </File>
     <File Include="Content/assets/images/parallax/7.jpg">
-      <publishTime>02/11/2020 22:53:11</publishTime>
+      <publishTime>05/21/2020 23:54:40</publishTime>
     </File>
     <File Include="Content/assets/images/parallax/9.jpg">
-      <publishTime>02/11/2020 22:53:11</publishTime>
+      <publishTime>05/21/2020 23:54:40</publishTime>
     </File>
     <File Include="Content/assets/images/payment_cart.png">
       <publishTime>02/11/2020 22:53:11</publishTime>
@@ -6454,7 +6457,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>02/11/2020 22:53:11</publishTime>
     </File>
     <File Include="Content/assets/images/pets/banner/1.jpg">
-      <publishTime>02/11/2020 22:53:11</publishTime>
+      <publishTime>05/21/2020 23:54:39</publishTime>
     </File>
     <File Include="Content/assets/images/pets/banner/2.jpg">
       <publishTime>02/11/2020 22:53:11</publishTime>
@@ -7594,7 +7597,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>02/11/2020 22:53:14</publishTime>
     </File>
     <File Include="Content/assets/js/admin-customizer.js">
-      <publishTime>01/01/0001 00:00:00</publishTime>
+      <publishTime>09/14/2019 14:30:00</publishTime>
     </File>
     <File Include="Content/assets/js/admin-reports.js">
       <publishTime>02/11/2020 22:53:14</publishTime>
@@ -10843,7 +10846,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>02/02/2020 14:48:02</publishTime>
     </File>
     <File Include="Model/KrupaGallery.edmx.diagram">
-      <publishTime>05/20/2020 22:55:07</publishTime>
+      <publishTime>05/21/2020 23:06:49</publishTime>
     </File>
     <File Include="Scripts/bootstrap.js">
       <publishTime>01/30/2020 23:04:44</publishTime>
@@ -10852,7 +10855,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/30/2020 23:04:44</publishTime>
     </File>
     <File Include="Scripts/cart.js">
-      <publishTime>05/17/2020 19:01:45</publishTime>
+      <publishTime>05/23/2020 11:02:19</publishTime>
     </File>
     <File Include="Scripts/jquery-3.3.1.js">
       <publishTime>01/30/2020 23:04:45</publishTime>
@@ -10891,7 +10894,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>03/22/2020 18:11:18</publishTime>
     </File>
     <File Include="Scripts/lightbox.js">
-      <publishTime>01/01/0001 00:00:00</publishTime>
+      <publishTime>04/23/2020 18:22:00</publishTime>
     </File>
     <File Include="Scripts/modernizr-2.8.3.js">
       <publishTime>01/30/2020 23:04:52</publishTime>
@@ -10921,7 +10924,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/30/2020 23:04:36</publishTime>
     </File>
     <File Include="Web.config">
-      <publishTime>05/20/2020 23:06:55</publishTime>
+      <publishTime>05/23/2020 11:14:21</publishTime>
     </File>
   </ItemGroup>
 </Project>
