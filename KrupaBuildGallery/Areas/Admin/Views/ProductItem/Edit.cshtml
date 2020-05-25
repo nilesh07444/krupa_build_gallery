@@ -157,6 +157,13 @@
                                 @Html.ValidationMessageFor(model => model.InitialQty, "", new { @class = "text-danger" })
                             </div>
                             <div class="form-group row">
+                                @Html.LabelFor(model => model.MinimumQty, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.EditorFor(model => model.MinimumQty, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter quantity", maxlength = "15" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.MinimumQty, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group row">
                                 @Html.LabelFor(model => model.ShippingCharge, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.EditorFor(model => model.ShippingCharge, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Shipping Charge", maxlength = "15" } })
 
@@ -195,11 +202,20 @@
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.PayAdvancePer, "", new { @class = "text-danger" })
                             </div>
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.UnitType, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.DropDownListFor(model => model.UnitType, new SelectList(Model.UnitList, "Value", "Text"), "- Select Unit Type -", new { @class = "form-control col-md-8", @readonly = "readonly", style = "pointer-events:none;" })
 
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.UnitType, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group row clsvarint">
+
+                            </div>
                             <div class="form-group row">
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.HiddenFor(x => x.ProductItemId)
-                                <button type="submit" class="btn btn-primary" style="margin-right:10px;">Submit</button>
+                                <button type="button" class="btn btn-primary" style="margin-right:10px;" onclick="validateandsubmit();">Submit</button>
                                 <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
                             </div>
 
@@ -286,6 +302,42 @@
             $("#SubProductId").html(htmlSubData);
         }
     });
+    jQuery(document).ready(function () {
+       $("#UnitType").trigger("change");
+    });
+     jQuery(document).on("change", "#UnitType", function () {
 
+         var unittype = jQuery("#UnitType option:selected").val();
+         var proditm = jQuery("#ProductItemId").val();
+        /// clsvarint
+         $(".clsvarint").load('@Url.Action("GetUnitsData","ProductItem")'+'?UnitTypeId='+unittype + '&ProductItemId='+ proditm, function () {
+
+         });
+    });
+     function validateandsubmit() {        
+        if ($("#hdnUntType").length > 0) {
+            var flgtrue = true;
+            if ($("input[name^=chkvarian]:checked").length == 0) {
+                alert("Please Select atleast 1 checkbox of variant");
+                flgtrue = false;
+            }
+
+            $("input[name^=variantper]").each(function () {
+                if ($(this).val() == "" || parseInt($(this).val()) <= 0) {
+                    if (flgtrue == true) {
+                        alert("Please Enter Price Percentage for variant");
+                    }
+                   flgtrue = false; 
+                }
+            });
+            if (flgtrue == true) {
+                $("#ProductItemFormId").submit();
+            }            
+        }
+        else {
+            $("#ProductItemFormId").submit();            
+        }
+        
+    }
 </script>
 

@@ -33,5 +33,6 @@ namespace KrupaBuildGallery.Model
         public Nullable<decimal> GSTPer { get; set; }
         public Nullable<int> ItemStatus { get; set; }
         public Nullable<decimal> FinalItemPrice { get; set; }
+        public Nullable<long> VariantItemId { get; set; }
     }
 }

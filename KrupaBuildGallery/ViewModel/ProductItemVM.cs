@@ -62,6 +62,7 @@ namespace KrupaBuildGallery
         public List<SelectListItem> ProductList { get; set; }
         public List<SelectListItem> SubProductList { get; set; }
         public List<SelectListItem> GST { get; set; }
+        public List<SelectListItem> UnitList { get; set; }
         public string CategoryName { get; set; }
         public string ProductName { get; set; }
         public string SubProductName { get; set; }
@@ -70,7 +71,7 @@ namespace KrupaBuildGallery
         public int InStock { get; set; }        
         public int Sold { get; set; }
         [Required]
-        [Range(1, int.MaxValue, ErrorMessage = "Quatity must be greater than 0")]
+        [Range(1, int.MaxValue, ErrorMessage = "Quantity must be greater than 0")]
         [Display(Name = "Initial Qty *")]
         public int InitialQty { get; set; }
         [Required]
@@ -104,5 +105,13 @@ namespace KrupaBuildGallery
         [Display(Name = "Cash On Delivery Use")]
         public bool IsCashonDelieveryuse { get; set; }
 
+        [Required]
+        [Range(1, int.MaxValue, ErrorMessage = "Minimum Quantity must be greater than 0")]
+        [Display(Name = "Minimum Qty *")]
+        public int MinimumQty { get; set; }
+
+        [Display(Name = "Item Unit Type")]
+        public int UnitType { get; set; }
+        public List<VariantItemVM> VariantItems { get; set; }
     }
 }

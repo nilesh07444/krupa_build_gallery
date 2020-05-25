@@ -322,6 +322,9 @@
     <Compile Include="Model\tbl_Itemtext_master.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\tbl_ItemVariant.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\tbl_LoginHistory.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
@@ -359,6 +362,9 @@
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\tbl_Transactions.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_Units.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\tbl_Wallet.cs">
@@ -405,6 +411,7 @@
     <Compile Include="ViewModel\PwdVM.cs" />
     <Compile Include="ViewModel\RegisterVM.cs" />
     <Compile Include="ViewModel\SubProductVM.cs" />
+    <Compile Include="ViewModel\VariantItemVM.cs" />
     <Compile Include="ViewModel\WishListVM.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -3963,6 +3970,7 @@
     <Content Include="Areas\Admin\Views\HappyCustomer\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Order\OrderItemClientRequests.cshtml" />
     <Content Include="Areas\Admin\Views\Order\_AssignDeliveryPerson.cshtml" />
+    <Content Include="Areas\Admin\Views\ProductItem\_UnitPriceSet.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />
