@@ -406,6 +406,7 @@
     <Compile Include="ViewModel\PwdVM.cs" />
     <Compile Include="ViewModel\RegisterVM.cs" />
     <Compile Include="ViewModel\SubProductVM.cs" />
+    <Compile Include="ViewModel\WebsiteStatisticsVM.cs" />
     <Compile Include="ViewModel\WishListVM.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -8,6 +8,8 @@
     List<HomeImageVM> lstImages = ViewData["lstImages"] as List<HomeImageVM>;
     List<CategoryVM> lstCategory = ViewData["lstCategory"] as List<CategoryVM>;
     List<HappyCustomerVM> lstHappyCustomers = ViewData["lstHappyCustomers"] as List<HappyCustomerVM>;
+    WebsiteStatisticsVM objStatistics = ViewData["objStatistics"] as WebsiteStatisticsVM;
+    
 }
 <style>
     .wishlistcls {
@@ -478,7 +480,7 @@
                     <div class="counter-box">
                         <img src="~/Content/assets/images/icon/dashboard/order.png" class="img-fluid">
                         <div>
-                            <h3>25</h3>
+                            <h3>@objStatistics.TotalCustomers</h3>
                             <h5>Total Customers</h5>
                         </div>
                     </div>
@@ -487,7 +489,7 @@
                     <div class="counter-box">
                         <img src="~/Content/assets/images/icon/dashboard/sale.png" class="img-fluid">
                         <div>
-                            <h3>12500</h3>
+                            <h3>@objStatistics.TotalDistributers</h3>
                             <h5>Total Distributer</h5>
                         </div>
                     </div>
@@ -496,7 +498,7 @@
                     <div class="counter-box">
                         <img src="~/Content/assets/images/icon/dashboard/homework.png" class="img-fluid">
                         <div>
-                            <h3>50</h3>
+                            <h3>@objStatistics.TotalHappyCustomers</h3>
                             <h5>Happiest Customers</h5>
                         </div>
                     </div>
@@ -505,7 +507,7 @@
                     <div class="counter-box">
                         <img src="~/Content/assets/images/icon/dashboard/sale.png" class="img-fluid">
                         <div>
-                            <h3>12500</h3>
+                            <h3>@objStatistics.TotalSiteVisitors</h3>
                             <h5>Site Visitors</h5>
                         </div>
                     </div>
