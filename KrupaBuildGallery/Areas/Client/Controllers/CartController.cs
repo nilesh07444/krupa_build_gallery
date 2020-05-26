@@ -39,16 +39,19 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     long ClientUserId = Convert.ToInt64(clsClientSession.UserID);
                     lstCartItems = (from crt in _db.tbl_Cart
                                  join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
+                                 join vr in _db.tbl_ItemVariant on i.ProductItemId equals vr.ProductItemId
                                  where crt.ClientUserId == ClientUserId 
                                  select new CartVM
                                  {
                                      CartId = crt.Cart_Id,
                                      ItemName = i.ItemName,
                                      ItemId = i.ProductItemId,
-                                     Price = clsClientSession.RoleID == 1 ? i.CustomerPrice : i.DistributorPrice,                                     
+                                     //Price = clsClientSession.RoleID == 1 ? i.CustomerPrice : i.DistributorPrice,                                     
                                      ItemImage = i.MainImage,
                                      Qty = crt.CartItemQty.Value,
-                                     IsCashonDelivery = crt.IsCashonDelivery.HasValue ? crt.IsCashonDelivery.Value : false
+                                     IsCashonDelivery = crt.IsCashonDelivery.HasValue ? crt.IsCashonDelivery.Value : false,
+                                     VariantId = crt.VariantItemId.Value,
+                                     Price = clsClientSession.RoleID == 1 ? vr.CustomerPrice.Value : vr.DistributorPrice.Value,
                                  }).OrderByDescending(x => x.CartId).ToList();
                     lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price);x.StockQty = RemainingStock(x.ItemId);});
                 }
@@ -56,16 +59,19 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 {
                     lstCartItems = (from crt in _db.tbl_Cart
                                     join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
+                                    join vr in _db.tbl_ItemVariant on i.ProductItemId equals vr.ProductItemId
                                     where crt.CartSessionId == cookiesessionval
                                     select new CartVM
                                     {
                                         CartId = crt.Cart_Id,
                                         ItemName = i.ItemName,
                                         ItemId = i.ProductItemId,
-                                        Price = i.CustomerPrice,
+                                        //Price = i.CustomerPrice,
                                         ItemImage = i.MainImage,
                                         Qty = crt.CartItemQty.Value,
-                                        IsCashonDelivery = crt.IsCashonDelivery.HasValue ? crt.IsCashonDelivery.Value : false
+                                        IsCashonDelivery = crt.IsCashonDelivery.HasValue ? crt.IsCashonDelivery.Value : false,
+                                        VariantId = crt.VariantItemId.Value,
+                                        Price = vr.CustomerPrice.Value
                                     }).OrderByDescending(x => x.CartId).ToList();
                     lstCartItems.ForEach(x => { x.Price = GetOfferPrice(x.ItemId, x.Price); x.StockQty = RemainingStock(x.ItemId);});
                 }
@@ -81,7 +87,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         }
 
         [HttpPost]
-        public string AddtoCart(long ItemId, long Qty,string IsCash)
+        public string AddtoCart(long VarintId,long ItemId, long Qty,string IsCash)
         {
             string ReturnMessage = "";
             bool isOutofStock = false;
@@ -116,7 +122,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         if(lstcrt != null && lstcrt.Count() > 0)
                         {
                             long TotlQty = lstcrt.Sum(x => x.CartItemQty).Value + Qty;
-                            var crtobj1 = lstcrt.Where(o => o.IsCashonDelivery == IsCashOrdr).FirstOrDefault();
+                            var crtobj1 = lstcrt.Where(o => o.VariantItemId == VarintId && o.IsCashonDelivery == IsCashOrdr).FirstOrDefault();
                             if(crtobj1 != null)
                             {
                                 crtobj1.CartItemQty = crtobj1.CartItemQty + Qty;
@@ -128,6 +134,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 crtobj.CartItemQty = Qty;
                                 crtobj.CartSessionId = cookiesessionval;
                                 crtobj.ClientUserId = 0;
+                                crtobj.VariantItemId = VarintId;
                                 crtobj.IsCashonDelivery = IsCashOrdr;
                                 crtobj.CreatedDate = DateTime.Now;
                                 _db.tbl_Cart.Add(crtobj);
@@ -145,6 +152,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             crtobj.CartSessionId = cookiesessionval;
                             crtobj.ClientUserId = 0;
                             crtobj.IsCashonDelivery = IsCashOrdr;
+                            crtobj.VariantItemId = VarintId;
                             crtobj.CreatedDate = DateTime.Now;
                             _db.tbl_Cart.Add(crtobj);
                             if (InStock < crtobj.CartItemQty)
@@ -160,6 +168,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         crtobj.CartItemQty = Qty;
                         crtobj.CartSessionId = cookiesessionval;
                         crtobj.ClientUserId = 0;
+                        crtobj.VariantItemId = VarintId;
                         crtobj.CreatedDate = DateTime.Now;
                         crtobj.IsCashonDelivery = IsCashOrdr;
                         _db.tbl_Cart.Add(crtobj);
@@ -181,7 +190,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         if (lstcrt != null && lstcrt.Count() > 0)
                         {
                             long TotlQty = lstcrt.Sum(x => x.CartItemQty).Value + Qty;
-                            var crtobj1 = lstcrt.Where(o => o.IsCashonDelivery == IsCashOrdr).FirstOrDefault();
+                            var crtobj1 = lstcrt.Where(o => o.VariantItemId == VarintId && o.IsCashonDelivery == IsCashOrdr).FirstOrDefault();
                             if (crtobj1 != null)
                             {
                                 crtobj1.CartItemQty = crtobj1.CartItemQty + Qty;
@@ -195,6 +204,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 crtobj11.ClientUserId = clientusrid;
                                 crtobj11.IsCashonDelivery = IsCashOrdr;
                                 crtobj11.CreatedDate = DateTime.Now;
+                                crtobj11.VariantItemId = VarintId;
                                 _db.tbl_Cart.Add(crtobj11);
                             }
                             if (InStock < TotlQty)
@@ -210,6 +220,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             crtobj2.CartSessionId = cartlist.FirstOrDefault().CartSessionId;
                             crtobj2.ClientUserId = clientusrid;
                             crtobj2.IsCashonDelivery = IsCashOrdr;
+                            crtobj2.VariantItemId = VarintId;
                             crtobj2.CreatedDate = DateTime.Now;
                             _db.tbl_Cart.Add(crtobj2);
                             if (InStock < crtobj2.CartItemQty)
@@ -226,6 +237,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         crtobj.CartSessionId = cookiesessionval;
                         crtobj.ClientUserId = clientusrid;
                         crtobj.IsCashonDelivery = IsCashOrdr;
+                        crtobj.VariantItemId = VarintId;
                         crtobj.CreatedDate = DateTime.Now;
                         _db.tbl_Cart.Add(crtobj);
                         if (InStock < crtobj.CartItemQty)
@@ -356,16 +368,19 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     long ClientUserId = Convert.ToInt64(clsClientSession.UserID);
                     lstCartItems = (from crt in _db.tbl_Cart
                                     join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
+                                    join vr in _db.tbl_ItemVariant on i.ProductItemId equals vr.ProductItemId
                                     where crt.ClientUserId == ClientUserId
                                     select new CartVM
                                     {
                                         CartId = crt.Cart_Id,
                                         ItemName = i.ItemName,
                                         ItemId = i.ProductItemId,
-                                        Price = clsClientSession.RoleID == 1 ? i.CustomerPrice : i.DistributorPrice,
+                                        //Price = clsClientSession.RoleID == 1 ? i.CustomerPrice : i.DistributorPrice,
                                         ItemImage = i.MainImage,
                                         Qty = crt.CartItemQty.Value,
-                                        IsCashonDelivery = crt.IsCashonDelivery.HasValue ? crt.IsCashonDelivery.Value : false
+                                        IsCashonDelivery = crt.IsCashonDelivery.HasValue ? crt.IsCashonDelivery.Value : false,
+                                        VariantId = crt.VariantItemId.Value,
+                                        Price = clsClientSession.RoleID == 1 ? vr.CustomerPrice.Value : vr.DistributorPrice.Value
                                     }).OrderByDescending(x => x.CartId).ToList();
                     lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price); });
                 }
@@ -373,16 +388,19 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 {
                     lstCartItems = (from crt in _db.tbl_Cart
                                     join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
+                                    join vr in _db.tbl_ItemVariant on i.ProductItemId equals vr.ProductItemId
                                     where crt.CartSessionId == cookiesessionval
                                     select new CartVM
                                     {
                                         CartId = crt.Cart_Id,
                                         ItemName = i.ItemName,
                                         ItemId = i.ProductItemId,
-                                        Price = i.CustomerPrice,
+                                       // Price = i.CustomerPrice,
                                         ItemImage = i.MainImage,
                                         Qty = crt.CartItemQty.Value,
-                                        IsCashonDelivery = crt.IsCashonDelivery.HasValue ? crt.IsCashonDelivery.Value : false
+                                        IsCashonDelivery = crt.IsCashonDelivery.HasValue ? crt.IsCashonDelivery.Value : false,
+                                        VariantId = crt.VariantItemId.Value,
+                                        Price = vr.CustomerPrice.Value
                                     }).OrderByDescending(x => x.CartId).ToList();
                     lstCartItems.ForEach(x => { x.Price = GetOfferPrice(x.ItemId, x.Price); });
                 }
@@ -573,7 +591,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         }
 
         [HttpPost]
-        public string AddtoSecondCart(long ItemId, long Qty)
+        public string AddtoSecondCart(long VarintId,long ItemId, long Qty)
         {
             string ReturnMessage = "";
             bool isOutofStock = false;
@@ -598,12 +616,10 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     var cartlist = _db.tbl_SecondCart.Where(o => o.CartSessionId == cookiesessionval).ToList();
                     if (cartlist != null && cartlist.Count() > 0)
                     {
-                        var crtobj = cartlist.Where(o => o.CartItemId == ItemId).FirstOrDefault();
+                        var crtobj = cartlist.Where(o => o.CartItemId == ItemId && o.VariantItemId == VarintId).FirstOrDefault();
                         if (crtobj != null)
                         {
                             crtobj.CartItemQty = crtobj.CartItemQty + Qty;
-
-                           
                         }
                         else
                         {
@@ -612,10 +628,10 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             crtobj.CartItemQty = Qty;
                             crtobj.CartSessionId = cookiesessionval;
                             crtobj.ClientUserId = 0;
+                            crtobj.VariantItemId = VarintId;
                             crtobj.CreatedDate = DateTime.Now;
                             _db.tbl_SecondCart.Add(crtobj);                            
                         }
-
                     }
                     else
                     {
@@ -624,6 +640,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         crtobj.CartItemQty = Qty;
                         crtobj.CartSessionId = cookiesessionval;
                         crtobj.ClientUserId = 0;
+                        crtobj.VariantItemId = VarintId;
                         crtobj.CreatedDate = DateTime.Now;
                         _db.tbl_SecondCart.Add(crtobj);
                      }
@@ -635,7 +652,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     var cartlist = _db.tbl_SecondCart.Where(o => o.ClientUserId == clientusrid).ToList();
                     if (cartlist != null && cartlist.Count() > 0)
                     {
-                        var crtobj = cartlist.Where(o => o.CartItemId == ItemId).FirstOrDefault();
+                        var crtobj = cartlist.Where(o => o.CartItemId == ItemId && o.VariantItemId == VarintId).FirstOrDefault();
                         if (crtobj != null)
                         {
                             crtobj.CartItemQty = crtobj.CartItemQty + Qty;
@@ -648,6 +665,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             crtobj.CartItemQty = Qty;
                             crtobj.CartSessionId = cartlist.FirstOrDefault().CartSessionId;
                             crtobj.ClientUserId = clientusrid;
+                            crtobj.VariantItemId = VarintId;
                             crtobj.CreatedDate = DateTime.Now;
                             _db.tbl_SecondCart.Add(crtobj);
                          
@@ -662,6 +680,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         crtobj.CartSessionId = cookiesessionval;
                         crtobj.ClientUserId = clientusrid;
                         crtobj.CreatedDate = DateTime.Now;
+                        crtobj.VariantItemId = VarintId;
                         _db.tbl_SecondCart.Add(crtobj);                      
 
                     }
@@ -769,15 +788,18 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     long ClientUserId = Convert.ToInt64(clsClientSession.UserID);
                     lstCartItems = (from crt in _db.tbl_SecondCart
                                     join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
+                                    join vr in _db.tbl_ItemVariant on i.ProductItemId equals vr.ProductItemId
                                     where crt.ClientUserId == ClientUserId
                                     select new CartVM
                                     {
                                         CartId = crt.SecondCartId,
                                         ItemName = i.ItemName,
                                         ItemId = i.ProductItemId,
-                                        Price = clsClientSession.RoleID == 1 ? i.CustomerPrice : i.DistributorPrice,
+                                        //Price = clsClientSession.RoleID == 1 ? i.CustomerPrice : i.DistributorPrice,
                                         ItemImage = i.MainImage,
-                                        Qty = crt.CartItemQty.Value
+                                        Qty = crt.CartItemQty.Value,
+                                        VariantId = crt.VariantItemId.Value,
+                                        Price = clsClientSession.RoleID == 1 ? vr.CustomerPrice.Value : vr.DistributorPrice.Value
                                     }).OrderByDescending(x => x.CartId).ToList();
                     lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price); });
                 }
@@ -785,15 +807,18 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 {
                     lstCartItems = (from crt in _db.tbl_SecondCart
                                     join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
+                                    join vr in _db.tbl_ItemVariant on i.ProductItemId equals vr.ProductItemId
                                     where crt.CartSessionId == cookiesessionval
                                     select new CartVM
                                     {
                                         CartId = crt.SecondCartId,
                                         ItemName = i.ItemName,
                                         ItemId = i.ProductItemId,
-                                        Price = i.CustomerPrice,
+                                        //Price = i.CustomerPrice,
                                         ItemImage = i.MainImage,
-                                        Qty = crt.CartItemQty.Value
+                                        Qty = crt.CartItemQty.Value,
+                                        VariantId = crt.VariantItemId.Value,
+                                        Price = vr.CustomerPrice.Value
                                     }).OrderByDescending(x => x.CartId).ToList();
                     lstCartItems.ForEach(x => { x.Price = GetOfferPrice(x.ItemId, x.Price); });
                 }

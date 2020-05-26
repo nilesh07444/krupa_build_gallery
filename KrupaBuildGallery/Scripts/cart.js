@@ -1,11 +1,13 @@
-﻿function AddtoCartfunc(itemid,qty,iscash) {
+﻿function AddtoCartfunc(variantid,itemid,qty,iscash) {
     if (iscash == "False") {
-        addtoCart(itemid, qty,"false");        
+        addtoCart(variantid,itemid, qty,"false");        
     }
     else {
         $("#cashondeliverymodal").modal("show");
         $("#cashondeliverymodal #hdncscartitmid").val(itemid);
         $("#cashondeliverymodal #hdncscartqty").val(qty);
+        $("#cashondeliverymodal #hdncscartitmidvarint").val(variantid);
+        
     }
 }
 
@@ -224,12 +226,13 @@ function CheckItemExists(bypymnt,optionss,e) {
 function addtosecondcart() {
     var itemid = $("#outofstockmodl #hdnsecndcartitmid").val();
     var qty = $("#outofstockmodl #hdnsecndcartqty").val();    
+    var varintid = $("#outofstockmodl #hdnsecndcartqtyvarint").val();    
     var URL = '/Client/Cart/AddtoSecondCart';
     $("#outofstockmodl").modal("hide");
     jQuery.ajax({
         type: 'POST',
         async: true,
-        url: URL + "?ItemId=" + itemid + "&Qty=" + qty,
+        url: URL + "?VarintId=" + varintid + "&ItemId=" + itemid + "&Qty=" + qty,
         success: function (result) {            
                 msgdisplay("Item Successfully added to your second cart");            
          
@@ -258,18 +261,20 @@ function addtosecondcart() {
     });
 }
 
-function addtoCart(itemid, qty, iscash) {
+function addtoCart(variantid,itemid, qty, iscash) {
     var URL = '/Client/Cart/AddtoCart';
     jQuery.ajax({
         type: 'POST',
         async: true,
-        url: URL + "?ItemId=" + itemid + "&Qty=" + qty + "&IsCash=" + iscash,
+        url: URL + "?VarintId=" +variantid+"&ItemId=" + itemid + "&Qty=" + qty + "&IsCash=" + iscash,
         success: function (result) {
             if (result == "OutofStock") {
                // msgdisplayFail("Item is out of stock can not add to cart");
                 $("#outofstockmodl").modal("show");
                 $("#outofstockmodl #hdnsecndcartitmid").val(itemid);
                 $("#outofstockmodl #hdnsecndcartqty").val(qty);
+                $("#outofstockmodl #hdnsecndcartqtyvarint").val(variantid);
+                
                 return false;
             }
             else {
@@ -304,12 +309,13 @@ function addtoCart(itemid, qty, iscash) {
 function addtoCartCashOndelivery(iscash) {
     var itemid = $("#cashondeliverymodal #hdncscartitmid").val();
     var qty = $("#cashondeliverymodal #hdncscartqty").val();    
+    var varintid = $("#cashondeliverymodal #hdncscartitmidvarint").val();    
     if (iscash == "yes") {
         $("#cashondeliverymodal").modal("hide");
-        addtoCart(itemid, qty,"true");      
+        addtoCart(varintid,itemid, qty,"true");      
     }
     else {
         $("#cashondeliverymodal").modal("hide");
-        addtoCart(itemid, qty,"false");      
+        addtoCart(varintid,itemid, qty,"false");      
     }
 }

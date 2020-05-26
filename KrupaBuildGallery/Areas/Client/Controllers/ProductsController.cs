@@ -360,6 +360,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                   Sku = i.Sku,
                                   OtherImages = lstimages,
                                   IsActive = i.IsActive,
+                                  UnitType = i.UnitType.HasValue ? i.UnitType.Value : 0,
                                   IsCashonDelieveryuse = i.IsCashonDeliveryUse.HasValue ? i.IsCashonDeliveryUse.Value : false
                               }).FirstOrDefault();
             if (clsClientSession.UserID != 0)
@@ -376,6 +377,14 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             int TotalStk = ItemStock(objProductItem.ProductItemId);
             int TotalSold = SoldItems(objProductItem.ProductItemId);
             objProductItem.InStock = TotalStk - TotalSold;
+            var objUnt = _db.tbl_Units.Where(o => o.UnitId == objProductItem.UnitType).FirstOrDefault();
+            List<tbl_ItemVariant> lstVarint = new List<tbl_ItemVariant>();
+            if(objUnt != null)
+            {
+                lstVarint = _db.tbl_ItemVariant.Where(o => o.ProductItemId == objProductItem.ProductItemId).ToList();
+            }
+            ViewData["lstVarint"] = lstVarint;
+            ViewBag.UnitTyp = objUnt.UnitName;
             return View(objProductItem);
         }
         public decimal GetOfferPrice(long Itemid, decimal price)

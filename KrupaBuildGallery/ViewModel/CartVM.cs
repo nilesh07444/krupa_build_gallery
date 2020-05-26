@@ -24,5 +24,8 @@ namespace KrupaBuildGallery
         public decimal AdvncePayPer { get; set; }
         public decimal ItmAdvncePayAmt { get; set; }
         public bool IsCashonDelivery { get; set; }
+        public long VariantId { get; set; }
+        public decimal VariantCustPrice { get; set; }
+        public decimal VariantDistriPrice { get; set; }
     }
 }

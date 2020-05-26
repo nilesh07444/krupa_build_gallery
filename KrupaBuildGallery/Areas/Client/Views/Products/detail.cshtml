@@ -11,6 +11,8 @@
     {
         Model.OtherImages.Add(Model.MainImage);
     }
+    List<tbl_ItemVariant> lstVarintss = ViewData["lstVarint"] as List<tbl_ItemVariant>;
+    string unittyppe = Convert.ToString(ViewBag.UnitTyp);
 }
 <style>
     .wishlistcls {
@@ -109,12 +111,46 @@
                         <h2>@Model.ItemName</h2>
                         @if (clsClientSession.UserID == 0 || (clsClientSession.UserID > 0 && clsClientSession.RoleID == 1))
                         {
-                            <h4>₹ @Model.CustomerPrice <del>₹ @Model.MRPPrice</del></h4>
+                            <h4>₹ <span id="prcc">@Model.CustomerPrice</span> <del>₹ @Model.MRPPrice</del></h4>
                         }
                         else
                         {
-                            <h4>₹ @Model.DistributorPrice <del>₹ @Model.MRPPrice</del></h4>
+                            <h4>₹ <span id="prcc">@Model.DistributorPrice</span> <del>₹ @Model.MRPPrice</del></h4>
                         }
+                        @if (unittyppe.ToLower().Contains("killo") || unittyppe.ToLower().Contains("litr") || unittyppe.ToLower().Contains("sheet"))
+                        {
+                            <div class="product-description border-product">
+                                <h6 class="product-title">Select Option</h6>
+                                <div class="qty-box">
+                                    @if (lstVarintss != null && lstVarintss.Count() > 0)
+                                    {
+                                        <select id="variantoption" class="form-control" style="width:230px;">
+                                            @foreach (var objj in lstVarintss)
+                                            {
+                                                decimal prc = objj.CustomerPrice.Value;
+                                                string selected1 = "";
+                                                if (clsClientSession.RoleID == 2)   
+                                                {
+                                                    prc = objj.DistributorPrice.Value;
+                                                }
+                                                if(objj.UnitQty == "1 Killo" || objj.UnitQty == "1 litre")
+                                                {
+                                                    selected1 = "selected";
+                                                }
+                                                <option value="@objj.VariantItemId" @selected1 data-attrprc="@prc">@objj.UnitQty</option>
+                                            }
+                                        </select>
+                                        <input type="hidden" value="" id="hdnvarintIds" />
+                                    }
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            var objVrnt = lstVarintss.FirstOrDefault();
+                            <input type="hidden" value="@objVrnt.VariantItemId" id="hdnvarintIds" />
+                        }
+
                         <div class="product-description border-product">
                             <h6 class="product-title">quantity</h6>
                             <div class="qty-box">
@@ -128,11 +164,11 @@
                             <a href="javascript:void(0);" data-toggle="modal" data-target="#addtocart" class="btn btn-solid" onclick="addtocrt('@Model.ProductItemId');">add to cart</a>
                             @if (clsClientSession.UserID > 0)
                             {
-                                <a href="/checkout" class="btn btn-solid">checkout</a>
+                                <a href="/checkout" class="btn btn-solid" style="display:none;">checkout</a>
                             }
                             else
                             {
-                                <a href="/login?referer=checkout" class="btn btn-solid">checkout</a>
+                                <a href="/login?referer=checkout" class="btn btn-solid" style="display:none;">checkout</a>
                             }
                         </div>
                         <div class="border-product">
@@ -252,7 +288,16 @@
                 '</div>'
         });
     }
-
+    $(document).ready(function () {
+          if ($("#variantoption").length > 0) {
+             $(document).on("change", "#variantoption", function () {
+                 $("#prcc").html($(this).find("option:selected").attr("data-attrprc"));
+                 $("#hdnvarintIds").val($("#variantoption").val());
+             });
+              $("#hdnvarintIds").val($("#variantoption").val());
+        }
+    });
+  
 </script>
 <script src="~/Content/assets/js/jquery.zoom.js"></script>
 <script>

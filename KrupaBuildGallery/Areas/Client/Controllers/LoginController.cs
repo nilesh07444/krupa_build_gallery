@@ -155,7 +155,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         foreach (var obj in cartlistsessions)
                         {
                             bool IsCashhOrd = obj.IsCashonDelivery.HasValue ? obj.IsCashonDelivery.Value : false;
-                            var lstcrtsessions = cartlist.Where(o => o.CartItemId == obj.CartItemId).ToList();
+                            var lstcrtsessions = cartlist.Where(o => o.CartItemId == obj.CartItemId && o.VariantItemId == obj.VariantItemId).ToList();
                             if(lstcrtsessions != null && lstcrtsessions.Count() > 0)
                             {
                               
@@ -173,6 +173,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                     crtobj1.CartSessionId = sessioncrtid;
                                     crtobj1.ClientUserId = clientusrid;
                                     crtobj1.IsCashonDelivery = IsCashhOrd;
+                                    crtobj1.VariantItemId = obj.VariantItemId;
                                     crtobj1.CreatedDate = DateTime.Now;
                                     _db.tbl_Cart.Add(crtobj1);
                                     _db.tbl_Cart.Remove(obj);
@@ -186,6 +187,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 crtobj1.CartSessionId = sessioncrtid;
                                 crtobj1.ClientUserId = clientusrid;
                                 crtobj1.IsCashonDelivery = IsCashhOrd;
+                                crtobj1.VariantItemId = obj.VariantItemId;
                                 crtobj1.CreatedDate = DateTime.Now;
                                 _db.tbl_Cart.Add(crtobj1);
                                 _db.tbl_Cart.Remove(obj);
@@ -208,6 +210,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         crtobj1.CartSessionId = "cust"+clsClientSession.UserID;
                         crtobj1.ClientUserId = clientusrid;
                         crtobj1.CreatedDate = DateTime.Now;
+                        crtobj1.VariantItemId = obj.VariantItemId;
                         crtobj1.IsCashonDelivery = obj.IsCashonDelivery;
                         _db.tbl_Cart.Add(crtobj1);
                         _db.tbl_Cart.Remove(obj);
@@ -226,7 +229,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     {
                         foreach (var obj in cartlistsessions)
                         {
-                            var objcrtsession = cartlistsecond.Where(o => o.CartItemId == obj.CartItemId).FirstOrDefault();
+                            var objcrtsession = cartlistsecond.Where(o => o.CartItemId == obj.CartItemId && o.VariantItemId == obj.VariantItemId).FirstOrDefault();
                             if (objcrtsession != null)
                             {
                                 objcrtsession.CartItemQty = objcrtsession.CartItemQty + obj.CartItemQty;
@@ -240,6 +243,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 crtobj1.CartSessionId = sessioncrtid;
                                 crtobj1.ClientUserId = clientusrid;
                                 crtobj1.CreatedDate = DateTime.Now;
+                                crtobj1.VariantItemId = obj.VariantItemId;
                                 _db.tbl_SecondCart.Add(crtobj1);
                                 _db.tbl_SecondCart.Remove(obj);
                             }
@@ -261,6 +265,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         crtobj1.CartSessionId = "cust" + clsClientSession.UserID;
                         crtobj1.ClientUserId = clientusrid;
                         crtobj1.CreatedDate = DateTime.Now;
+                        crtobj1.VariantItemId = obj.VariantItemId;
                         _db.tbl_SecondCart.Add(crtobj1);
                         _db.tbl_SecondCart.Remove(obj);
                         _db.SaveChanges();
