@@ -25,5 +25,6 @@ namespace KrupaBuildGallery.Model
         public Nullable<long> ClientUserId { get; set; }
         public Nullable<System.DateTime> DateModified { get; set; }
         public Nullable<long> ModifiedBy { get; set; }
+        public Nullable<long> VariantItemId { get; set; }
     }
 }
