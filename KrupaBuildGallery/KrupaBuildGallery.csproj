@@ -412,8 +412,8 @@
     <Compile Include="ViewModel\PwdVM.cs" />
     <Compile Include="ViewModel\RegisterVM.cs" />
     <Compile Include="ViewModel\SubProductVM.cs" />
-    <Compile Include="ViewModel\VariantItemVM.cs" />
-    <Compile Include="ViewModel\WishListVM.cs" />
+<Compile Include="ViewModel\VariantItemVM.cs" />
+<Compile Include="ViewModel\WebsiteStatisticsVM.cs" />    <Compile Include="ViewModel\WishListVM.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\assets\css\admin.css" />
