@@ -130,6 +130,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 objOrder.OrderStatus = GetOrderStatus(objOrder.OrderStatusId);
                 List<OrderItemsVM> lstOrderItms = (from p in _db.tbl_OrderItemDetails
                                                    join c in _db.tbl_ProductItems on p.ProductItemId equals c.ProductItemId
+                                                   join vr in _db.tbl_ItemVariant on p.VariantItemId equals vr.VariantItemId
                                                    where p.OrderId == Id
                                                    select new OrderItemsVM
                                                    {
@@ -143,6 +144,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                                        GSTAmt = p.GSTAmt.Value,
                                                        IGSTAmt = p.IGSTAmt.Value,
                                                        ItemImg = c.MainImage,
+                                                       VariantQtytxt = vr.UnitQty,
                                                        Discount = p.Discount.HasValue ? p.Discount.Value : 0,
                                                        ItemStatus = p.ItemStatus.HasValue ? p.ItemStatus.Value : 1,
                                                        IsReturnable = c.IsReturnable.HasValue ? c.IsReturnable.Value : false

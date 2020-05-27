@@ -149,7 +149,7 @@
                                                 {
                                                     decimal Itemttl = objcart.Qty * objcart.Price;
                                                     CartTotal = CartTotal + Itemttl;
-                                                    <li>@objcart.ItemName × @objcart.Qty <span>&#8377; @Itemttl</span></li>
+                                                    <li>@objcart.ItemName (@objcart.VariantQtytxt) × @objcart.Qty <span>&#8377; @Itemttl</span></li>
                                                 }
                                             }
                                         </ul>
@@ -350,7 +350,7 @@
                                     @countr.
                                 </td>
                                 <td>
-                                    @objj.ItemName
+                                    @objj.ItemName - @objj.VariantQtytxt
                                 </td>
                                 <td>
                                     ₹ @objj.BasicAmount

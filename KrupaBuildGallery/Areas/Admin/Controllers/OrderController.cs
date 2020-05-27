@@ -107,6 +107,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 objOrder.OrderStatus = GetOrderStatus(objOrder.OrderStatusId);
                 List<OrderItemsVM> lstOrderItms = (from p in _db.tbl_OrderItemDetails
                             join c in _db.tbl_ProductItems on p.ProductItemId equals c.ProductItemId
+                            join vr in _db.tbl_ItemVariant on p.VariantItemId equals vr.VariantItemId
                             where p.OrderId == Id
                             select new OrderItemsVM
                             {
@@ -121,6 +122,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                 IGSTAmt = p.IGSTAmt.Value,
                                 ItemImg = c.MainImage,
                                 ItemStatus = p.ItemStatus.Value,
+                                VariantQtytxt = vr.UnitQty,
                                 Discount = p.Discount.HasValue ? p.Discount.Value : 0
                             }).OrderByDescending(x => x.OrderItemId).ToList();
                 if (lstOrderItms != null && lstOrderItms.Count() > 0)

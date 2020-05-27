@@ -23,5 +23,6 @@ namespace KrupaBuildGallery.ViewModel
         public int ItemStatus { get; set; }
         public string ItemStatustxt { get; set; }
         public bool IsReturnable { get; set; }
+        public string VariantQtytxt { get; set; }
     }
 }

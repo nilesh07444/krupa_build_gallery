@@ -17,5 +17,6 @@ namespace KrupaBuildGallery
         public long ItemId { get; set; }
         public decimal beforetaxamount { get; set; }
         public decimal AdvncePayAMt { get; set; }
+        public string VariantQtytxt { get; set; }
     }
 }

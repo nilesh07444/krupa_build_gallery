@@ -223,7 +223,8 @@
 <script>
     function addtocrt(itmid) {
         var qtyy = $("#txtqty").val();
-        AddtoCartfunc(itmid, qtyy,'@Model.IsCashonDelieveryuse.ToString()');
+        var provariant = $("#hdnvarintIds").val();
+        AddtoCartfunc(provariant,itmid, qtyy,'@Model.IsCashonDelieveryuse.ToString()');
     }
 
 

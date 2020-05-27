@@ -27,5 +27,6 @@ namespace KrupaBuildGallery
         public long VariantId { get; set; }
         public decimal VariantCustPrice { get; set; }
         public decimal VariantDistriPrice { get; set; }
+        public string VariantQtytxt { get; set; }
     }
 }
