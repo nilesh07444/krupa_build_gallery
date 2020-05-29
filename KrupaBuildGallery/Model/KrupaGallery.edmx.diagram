@@ -43,6 +43,7 @@
         <EntityTypeShape EntityType="krupagalleryModel.tbl_HappyCustomers" Width="1.5" PointX="17.375" PointY="16.75" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_ItemVariant" Width="1.5" PointX="18.375" PointY="0.75" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_Units" Width="1.5" PointX="19.375" PointY="4.75" />
+        <EntityTypeShape EntityType="krupagalleryModel.tbl_ExtraAmount" Width="1.5" PointX="19.375" PointY="7.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -2,11 +2,17 @@
 @model tbl_GeneralSetting
 @{
     ViewBag.Title = "General Settings";
+    List<tbl_ExtraAmount> lstAmmtt = ViewData["extramtlst"] as List<tbl_ExtraAmount>;
+    int cnt = 0;
 }
 
 <style>
     .clserror {
         color: red;
+    }
+
+    #tblextraamt td {
+        padding:5px;
     }
 </style>
 
@@ -120,6 +126,84 @@
                             <button id="btnSavesettings" type="button" class="btn btn-primary">Save Settings</button>
                         </form>
                     </div>
+                    <div class="card-header">
+                        <h5>Extra Amount Settings</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="frmgensettings11">
+                            <table id="tblextraamt">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            From Amount
+                                        </th>
+                                        <th>
+                                            To Amount
+                                        </th>
+                                        <th>
+                                            Extra Amount in Order
+                                        </th>
+                                        <th>
+
+                                        </th>
+                                    <tr>
+                                </thead>
+                                <tbody id="tbodytbl">
+                                    @if (lstAmmtt != null && lstAmmtt.Count() > 0)
+                                    {
+
+                                        foreach (var objj in lstAmmtt)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <input type="number" class="form-control" data-attramfrm="@cnt" value="@objj.AmountFrom" name="txtAmtFrom_@cnt" id="txtAmtFrom_@cnt" />
+                                                </td>
+                                                <td>
+                                                    <input type="number" class="form-control" data-attramto="@cnt" value="@objj.AmountTo" name="txtAmtTo_@cnt" id="txtAmtTo_@cnt" />
+                                                </td>
+                                                <td>
+                                                    <input type="number" class="form-control" data-attramt="@cnt" value="@objj.ExtraAmount" name="txtExtrAmt_@cnt" id="txtExtrAmt_@cnt" />
+                                                    <input type="hidden" name="hdntrnumbr" value="@cnt" />
+                                                </td>
+                                                <td>
+                                                    <a href="javascript:void(0);" onclick="deleterow(this);">X</a>
+                                                </td>
+                                            </tr>
+                                            cnt = cnt + 1;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <tr>
+                                            <td>
+                                                <input type="number" class="form-control" data-attramfrm="@cnt" name="txtAmtFrom_@cnt" value="" id="txtAmtFrom_@cnt" />
+                                            </td>
+                                            <td>
+                                                <input type="number" class="form-control" data-attramto="@cnt"  name="txtAmtTo_@cnt" value="" id="txtAmtTo_@cnt" />
+                                            </td>
+                                            <td>
+                                                <input type="number" class="form-control" data-attramt="@cnt" name="txtExtrAmt_@cnt" value="" id="txtExtrAmt_@cnt" />
+                                                <input type="hidden" name="hdntrnumbr" value="@cnt" />
+                                            </td>
+                                            <td>
+                                                <a href="javascript:void(0);" onclick="deleterow(this);">X</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td colspan="3" style="text-align:right;">
+                                            <input type="button" class="btn btn-secondary" onclick="AddNewRange();" value="Add New Range" />
+                                        </td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                            <br/>
+                            <button id="btnExtraAmtSetting" type="button" class="btn btn-primary" onclick="SaveExtraAmt();">Save Settings</button>
+                        </form>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -133,7 +217,7 @@
 <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
 
 <script>
-
+    var cntsrow = $("#tblextraamt tbody tr").length;
     jQuery(document).on("click", "#btnSavesettings", function () {
         var requiredMessage = 'This field is required';
         var flag = true;
@@ -178,4 +262,46 @@
 
 
     });
+
+    function AddNewRange() {
+          var $row = $("<tr>");
+    $row.append($("<td>").html("<input type='number' class='form-control' data-attramfrm='"+cntsrow+"' value=''  name='txtAmtFrom_" + cntsrow + "' id='txtAmtFrom_"+cntsrow+"'/>"));
+        $row.append($("<td>").html("<input type='number' class='form-control'  data-attramto='" + cntsrow + "' value='' name='txtAmtTo_" + cntsrow + "' id='txtAmtTo_" + cntsrow + "'/>"));
+        $row.append($("<td>").html("<input type='number' class='form-control' data-attramt='" + cntsrow + "' value='' name='txtExtrAmt_" + cntsrow + "' id='txtExtrAmt_" + cntsrow + "'/> <input type='hidden' name='hdntrnumbr' value='"+cntsrow+"' />"));
+        $row.append($("<td>").html("<a href='javascript:void(0);' onclick='deleterow(this);'>X</a>"));        
+       $row.appendTo($("#tbodytbl"));
+        cntsrow = cntsrow + 1;
+    }
+
+    function deleterow(objthis) {
+        $(objthis).parents('tr').remove();
+    }
+
+    function SaveExtraAmt() {
+        if ($("#tbodytbl input[type=number][value='']").length > 0) {
+            alert("Please Enter Value in Empty box.");
+            return;
+        }
+
+        $.blockUI({ message: "<h4>Please Wait...</h4>" });
+            var URL = '@Url.Action("SaveExtraAmtSetting", "GeneralSetting")';
+            jQuery.ajax({
+                url: URL,
+                type: 'POST',
+                data: jQuery('#frmgensettings11').serialize(),
+                success: function (data) {
+                    $.unblockUI();
+                    if (data == "Success") {
+                        alert("Extra amount settings save successfully");
+                      }
+                    else {
+                        alert("Error: Something went wrong. Please try again.");
+                    }
+                },
+                error: function (data) {
+                    alert("Something went wrong. Please try again.");
+                }
+
+            });
+    }
 </script>

@@ -549,6 +549,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             objOrderItem.CreatedDate = DateTime.UtcNow;
                             objOrderItem.UpdatedBy = clientusrid;
                             objOrderItem.UpdatedDate = DateTime.UtcNow;
+                            decimal qtty = GetVarintQtyy(objCart.VariantQtytxt);
+                            objOrderItem.QtyUsed = qtty * objCart.Qty;
                             //decimal InclusiveGST = Math.Round(Convert.ToDecimal(objOrderItem.Price) - Convert.ToDecimal(objOrderItem.Price) * (100 / (100 + objCart.GSTPer)), 2);
                             //decimal PreGSTPrice = Math.Round(Convert.ToDecimal(objOrderItem.Price) - InclusiveGST, 2);
                             //decimal basicTotalPrice = Math.Round(Convert.ToDecimal(PreGSTPrice * objOrderItem.Qty), 2);
@@ -885,6 +887,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                     objOrderItem.CreatedDate = DateTime.Now;
                                     objOrderItem.UpdatedBy = clientusrid;
                                     objOrderItem.UpdatedDate = DateTime.Now;
+                                     decimal qtty = GetVarintQtyy(objCart.VariantQtytxt);
+                                    objOrderItem.QtyUsed = qtty * objCart.Qty;
                                     decimal originalbasicprice = Math.Round(((objCart.Price / (100 + objCart.GSTPer)) * 100), 2);
                                     decimal totalItembasicprice = originalbasicprice * objCart.Qty;
                                     decimal disc = 0;
@@ -1071,7 +1075,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             if(objcrt != null)
                             {
                               int cntremingstk = RemainingStock(objcrt.CartItemId.Value);
-                              if(cntremingstk < Convert.ToInt32(objcrt.CartItemQty))
+                               decimal qtyy = GetVarintQnty(objcrt.VariantItemId.Value);
+                              if (cntremingstk < (Convert.ToInt32(objcrt.CartItemQty) * qtyy))
                               {
                                     isOutofStock = true; 
                               }
@@ -1101,7 +1106,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         public int RemainingStock(long ItemId)
         {
             long? TotalStock = _db.tbl_ItemStocks.Where(o => o.IsActive == true && o.IsDelete == false && o.ProductItemId == ItemId).Sum(o => (long?)o.Qty);
-            long? TotalSold = _db.tbl_OrderItemDetails.Where(o => o.ProductItemId == ItemId && o.IsDelete == false).Sum(o => (long?)o.Qty.Value);
+            long? TotalSold = _db.tbl_OrderItemDetails.Where(o => o.ProductItemId == ItemId && o.IsDelete == false).Sum(o => (long?)o.QtyUsed.Value);
             if (TotalStock == null)
             {
                 TotalStock = 0;
@@ -1396,6 +1401,66 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             }
 
             return Price;
+        }
+
+        public decimal GetVarintQtyy(string varintqty)
+        {
+            string[] kgs = { "50 Grams", "100 Grams", "250 Grams", "500 Grams", "1 Killo", "2 Killo", "5 Killo" };
+            string[] kgsQty = { "0.05", "0.10", "0.25", "0.50", "1", "2", "5" };
+            string[] ltrs = { "50 ml", "100 ml", "250 ml", "500 ml", "1 litre", "2 litres", "5 litres" };
+            string[] ltrsQty = { "0.05", "0.10", "0.25", "0.50", "1", "2", "5" };
+
+            string[] sheets = { "8x4", "7x4", "7x3", "6x4", "6x3" };
+            string[] sheetsqty = { "32", "28", "21", "24", "18" };
+            if (Array.IndexOf(kgs, varintqty) >= 0)
+            {
+                int idxxx = Array.IndexOf(kgs, varintqty);
+                decimal qtt = Convert.ToDecimal(kgsQty[idxxx].ToString());
+                return qtt;
+            }
+            else if (Array.IndexOf(ltrs, varintqty) >= 0)
+            {
+                int idxxx = Array.IndexOf(ltrs, varintqty);
+                decimal qtt = Convert.ToDecimal(ltrsQty[idxxx].ToString());
+                return qtt;
+            }
+            else 
+            {
+                return 1;
+            }            
+        }
+
+        public decimal GetVarintQnty(long VariantId)
+        {
+            string[] kgs = { "50 Grams", "100 Grams", "250 Grams", "500 Grams", "1 Killo", "2 Killo", "5 Killo" };
+            string[] kgsQty = { "0.05", "0.10", "0.25", "0.50", "1", "2", "5" };
+            string[] ltrs = { "50 ml", "100 ml", "250 ml", "500 ml", "1 litre", "2 litres", "5 litres" };
+            string[] ltrsQty = { "0.05", "0.10", "0.25", "0.50", "1", "2", "5" };
+
+            string[] sheets = { "8x4", "7x4", "7x3", "6x4", "6x3" };
+            string[] sheetsqty = { "32", "28", "21", "24", "18" };
+            tbl_ItemVariant objVarints = _db.tbl_ItemVariant.Where(o => o.VariantItemId == VariantId).FirstOrDefault();
+            if (objVarints != null)
+            {
+                if (Array.IndexOf(kgs, objVarints.UnitQty) >= 0)
+                {
+                    int idxxx = Array.IndexOf(kgs, objVarints.UnitQty);
+                    decimal qtt = Convert.ToDecimal(kgsQty[idxxx].ToString());
+                    return qtt;
+                }
+                else if (Array.IndexOf(ltrs, objVarints.UnitQty) >= 0)
+                {
+                    int idxxx = Array.IndexOf(ltrs, objVarints.UnitQty);
+                    decimal qtt = Convert.ToDecimal(ltrsQty[idxxx].ToString());
+                    return qtt;
+                }
+                else
+                {
+                    return 1;
+                }
+            }
+
+            return 1;
         }
     }
 }

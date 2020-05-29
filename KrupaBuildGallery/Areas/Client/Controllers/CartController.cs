@@ -123,7 +123,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         var lstcrt = cartlist.Where(o => o.CartItemId == ItemId).ToList();
                         if(lstcrt != null && lstcrt.Count() > 0)
                         {
-                            long TotlQty = lstcrt.Sum(x => x.CartItemQty).Value + Qty;
+                            decimal Qtnty = GetVarintQnty(VarintId);
+                            decimal TotlQty = (lstcrt.Sum(x => x.CartItemQty).Value + Qty) *Qtnty;
                             var crtobj1 = lstcrt.Where(o => o.VariantItemId == VarintId && o.IsCashonDelivery == IsCashOrdr).FirstOrDefault();
                             if(crtobj1 != null)
                             {
@@ -141,13 +142,14 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 crtobj.CreatedDate = DateTime.Now;
                                 _db.tbl_Cart.Add(crtobj);
                             }
-                            if (InStock < TotlQty)
+                            if (Convert.ToDecimal(InStock) < TotlQty)
                             {
                                 isOutofStock = true;
                             }
                         }
                         else
                         {
+                            decimal Qtnty = GetVarintQnty(VarintId);
                             tbl_Cart crtobj = new tbl_Cart();
                             crtobj.CartItemId = ItemId;
                             crtobj.CartItemQty = Qty;
@@ -157,7 +159,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             crtobj.VariantItemId = VarintId;
                             crtobj.CreatedDate = DateTime.Now;
                             _db.tbl_Cart.Add(crtobj);
-                            if (InStock < crtobj.CartItemQty)
+                            if (InStock < (crtobj.CartItemQty * Qtnty))
                             {
                                 isOutofStock = true;
                             }
@@ -174,7 +176,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         crtobj.CreatedDate = DateTime.Now;
                         crtobj.IsCashonDelivery = IsCashOrdr;
                         _db.tbl_Cart.Add(crtobj);
-                        if (InStock < crtobj.CartItemQty)
+                        decimal Qtnty = GetVarintQnty(VarintId);
+                        if (InStock < (crtobj.CartItemQty * Qtnty))
                         {
                             isOutofStock = true;
                         }
@@ -190,8 +193,9 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     {
                         var lstcrt = cartlist.Where(o => o.CartItemId == ItemId).ToList();
                         if (lstcrt != null && lstcrt.Count() > 0)
-                        {
-                            long TotlQty = lstcrt.Sum(x => x.CartItemQty).Value + Qty;
+                        {                            
+                            decimal Qtnty = GetVarintQnty(VarintId);
+                            decimal TotlQty = (lstcrt.Sum(x => x.CartItemQty).Value + Qty) * Qtnty;
                             var crtobj1 = lstcrt.Where(o => o.VariantItemId == VarintId && o.IsCashonDelivery == IsCashOrdr).FirstOrDefault();
                             if (crtobj1 != null)
                             {
@@ -209,7 +213,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 crtobj11.VariantItemId = VarintId;
                                 _db.tbl_Cart.Add(crtobj11);
                             }
-                            if (InStock < TotlQty)
+                            if (Convert.ToDecimal(InStock) < TotlQty)
                             {
                                 isOutofStock = true;
                             }
@@ -225,7 +229,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             crtobj2.VariantItemId = VarintId;
                             crtobj2.CreatedDate = DateTime.Now;
                             _db.tbl_Cart.Add(crtobj2);
-                            if (InStock < crtobj2.CartItemQty)
+                            decimal Qtnty = GetVarintQnty(VarintId);
+                            if (InStock < (crtobj2.CartItemQty * Qtnty))
                             {
                                 isOutofStock = true;
                             }
@@ -242,7 +247,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         crtobj.VariantItemId = VarintId;
                         crtobj.CreatedDate = DateTime.Now;
                         _db.tbl_Cart.Add(crtobj);
-                        if (InStock < crtobj.CartItemQty)
+                        decimal Qtnty = GetVarintQnty(VarintId);
+                        if (InStock < (crtobj.CartItemQty * Qtnty))
                         {
                             isOutofStock = true;
                         }
@@ -511,7 +517,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         }
         public int SoldItems(long ItemId)
         {
-            long? TotalSold = _db.tbl_OrderItemDetails.Where(o => o.ProductItemId == ItemId && o.IsDelete == false).Sum(o => (long?)o.Qty.Value);
+            long? TotalSold = _db.tbl_OrderItemDetails.Where(o => o.ProductItemId == ItemId && o.IsDelete == false).Sum(o => (long?)o.QtyUsed.Value);
             if(TotalSold == null)
             {
                 TotalSold = 0;
@@ -521,7 +527,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         public int RemainingStock(long ItemId)
         {
             long? TotalStock = _db.tbl_ItemStocks.Where(o => o.IsActive == true && o.IsDelete == false && o.ProductItemId == ItemId).Sum(o => (long?)o.Qty);
-            long? TotalSold = _db.tbl_OrderItemDetails.Where(o => o.ProductItemId == ItemId && o.IsDelete == false).Sum(o => (long?)o.Qty.Value);
+            long? TotalSold = _db.tbl_OrderItemDetails.Where(o => o.ProductItemId == ItemId && o.IsDelete == false).Sum(o => (long?)o.QtyUsed.Value);
             if(TotalStock == null)
             {
                 TotalStock = 0;
@@ -897,6 +903,39 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             }
 
             return Price;
+        }
+
+        public decimal GetVarintQnty(long VariantId)
+        {
+            string[] kgs = { "50 Grams", "100 Grams", "250 Grams", "500 Grams", "1 Killo", "2 Killo", "5 Killo" };
+            string[] kgsQty = { "0.05", "0.10", "0.25", "0.50", "1", "2", "5" };
+            string[] ltrs = { "50 ml", "100 ml", "250 ml", "500 ml", "1 litre", "2 litres", "5 litres" };
+            string[] ltrsQty = { "0.05", "0.10", "0.25", "0.50", "1", "2", "5" };
+
+            string[] sheets = { "8x4", "7x4", "7x3", "6x4", "6x3" };
+            string[] sheetsqty = { "32", "28", "21", "24", "18" };
+            tbl_ItemVariant objVarints = _db.tbl_ItemVariant.Where(o => o.VariantItemId == VariantId).FirstOrDefault();
+            if (objVarints != null)
+            {
+                if (Array.IndexOf(kgs, objVarints.UnitQty) >= 0)
+                {
+                    int idxxx = Array.IndexOf(kgs, objVarints.UnitQty);
+                    decimal qtt = Convert.ToDecimal(kgsQty[idxxx].ToString());
+                    return qtt;
+                }
+                else if (Array.IndexOf(ltrs, objVarints.UnitQty) >= 0)
+                {
+                    int idxxx = Array.IndexOf(ltrs, objVarints.UnitQty);
+                    decimal qtt = Convert.ToDecimal(ltrsQty[idxxx].ToString());
+                    return qtt;
+                }
+                else 
+                {
+                    return 1;
+                }
+            }
+
+            return 1;
         }
     }
 }
