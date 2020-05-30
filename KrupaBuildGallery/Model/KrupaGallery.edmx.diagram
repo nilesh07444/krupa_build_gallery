@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="8d048f9b7d7441688c9ddb27be11a8f4" Name="Diagram1" ZoomLevel="72">
+      <Diagram DiagramId="8d048f9b7d7441688c9ddb27be11a8f4" Name="Diagram1" ZoomLevel="77">
         <EntityTypeShape EntityType="krupagalleryModel.tbl_AdminRolePermissions" Width="1.5" PointX="3" PointY="1.125" IsExpanded="true" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_Cart" Width="1.5" PointX="4.75" PointY="4.75" IsExpanded="true" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_Categories" Width="1.5" PointX="5.75" PointY="0.75" IsExpanded="true" />
@@ -20,8 +20,7 @@
         <EntityTypeShape EntityType="krupagalleryModel.tbl_Itemtext_master" Width="1.5" PointX="10.75" PointY="11.75" IsExpanded="true" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_LoginHistory" Width="1.5" PointX="12.75" PointY="4.75" IsExpanded="true" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_Offers" Width="1.5" PointX="4.75" PointY="12.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="krupagalleryModel.tbl_OrderItemDetails" Width="1.5" PointX="12.75" PointY="7.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="krupagalleryModel.tbl_Orders" Width="1.5" PointX="12.75" PointY="12.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="krupagalleryModel.tbl_Orders" Width="1.5" PointX="12.625" PointY="14.5" IsExpanded="true" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_PaymentHistory" Width="1.5" PointX="13.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_ProductItemImages" Width="1.5" PointX="14.75" PointY="4.75" IsExpanded="true" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_ProductItems" Width="1.5" PointX="14.75" PointY="8.75" IsExpanded="true" />
@@ -42,9 +41,10 @@
         <EntityTypeShape EntityType="krupagalleryModel.tbl_HappyCustomers" Width="1.5" PointX="17.375" PointY="16.75" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_ItemVariant" Width="1.5" PointX="18.375" PointY="0.75" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_Units" Width="1.5" PointX="19.375" PointY="4.75" />
-        <EntityTypeShape EntityType="krupagalleryModel.tbl_ExtraAmount" Width="1.5" PointX="19.375" PointY="7.75" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_AdvertiseImages" Width="1.5" PointX="19.375" PointY="7.75" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_SecondCart" Width="1.5" PointX="3.375" PointY="17.75" />
+        <EntityTypeShape EntityType="krupagalleryModel.tbl_ExtraAmount" Width="1.5" PointX="19.375" PointY="11.75" />
+        <EntityTypeShape EntityType="krupagalleryModel.tbl_OrderItemDetails" Width="1.5" PointX="19.375" PointY="15.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

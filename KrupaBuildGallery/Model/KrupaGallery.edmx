@@ -954,32 +954,6 @@
           <Property Name="UpdatedBy" Type="Int64" />
           <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
         </EntityType>
-        <EntityType Name="tbl_OrderItemDetails">
-          <Key>
-            <PropertyRef Name="OrderDetailId" />
-          </Key>
-          <Property Name="OrderDetailId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="OrderId" Type="Int64" />
-          <Property Name="ProductItemId" Type="Int64" />
-          <Property Name="ItemName" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
-          <Property Name="Qty" Type="Int64" />
-          <Property Name="Price" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="Sku" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="GSTAmt" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="IGSTAmt" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="IsActive" Type="Boolean" Nullable="false" />
-          <Property Name="IsDelete" Type="Boolean" Nullable="false" />
-          <Property Name="CreatedBy" Type="Int64" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="UpdatedBy" Type="Int64" />
-          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
-          <Property Name="Discount" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="GSTPer" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="ItemStatus" Type="Int32" />
-          <Property Name="FinalItemPrice" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="VariantItemId" Type="Int64" />
-          <Property Name="QtyUsed" Type="Decimal" Precision="18" Scale="2" />
-        </EntityType>
         <EntityType Name="tbl_Orders">
           <Key>
             <PropertyRef Name="OrderId" />
@@ -1143,7 +1117,6 @@
           <EntitySet Name="tbl_Itemtext_master" EntityType="Self.tbl_Itemtext_master" />
           <EntitySet Name="tbl_LoginHistory" EntityType="Self.tbl_LoginHistory" />
           <EntitySet Name="tbl_Offers" EntityType="Self.tbl_Offers" />
-          <EntitySet Name="tbl_OrderItemDetails" EntityType="Self.tbl_OrderItemDetails" />
           <EntitySet Name="tbl_Orders" EntityType="Self.tbl_Orders" />
           <EntitySet Name="tbl_PaymentHistory" EntityType="Self.tbl_PaymentHistory" />
           <EntitySet Name="tbl_ProductItemImages" EntityType="Self.tbl_ProductItemImages" />
@@ -1171,9 +1144,10 @@
           <EntitySet Name="tbl_HappyCustomers" EntityType="krupagalleryModel.tbl_HappyCustomers" />
           <EntitySet Name="tbl_ItemVariant" EntityType="krupagalleryModel.tbl_ItemVariant" />
           <EntitySet Name="tbl_Units" EntityType="krupagalleryModel.tbl_Units" />
-          <EntitySet Name="tbl_ExtraAmount" EntityType="krupagalleryModel.tbl_ExtraAmount" />
           <EntitySet Name="tbl_AdvertiseImages" EntityType="krupagalleryModel.tbl_AdvertiseImages" />
           <EntitySet Name="tbl_SecondCart" EntityType="krupagalleryModel.tbl_SecondCart" />
+          <EntitySet Name="tbl_ExtraAmount" EntityType="krupagalleryModel.tbl_ExtraAmount" />
+          <EntitySet Name="tbl_OrderItemDetails" EntityType="krupagalleryModel.tbl_OrderItemDetails" />
         </EntityContainer>
         <EntityType Name="tbl_AdminRoles">
           <Key>
@@ -1420,6 +1394,32 @@
           <Property Name="CreatedBy" Type="Int64" />
           <Property Name="ModifiedBy" Type="Int64" />
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="tbl_OrderItemDetails">
+          <Key>
+            <PropertyRef Name="OrderDetailId" />
+          </Key>
+          <Property Name="OrderDetailId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OrderId" Type="Int64" />
+          <Property Name="ProductItemId" Type="Int64" />
+          <Property Name="ItemName" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Qty" Type="Int64" />
+          <Property Name="Price" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="Sku" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="GSTAmt" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="IGSTAmt" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="IsDelete" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdatedBy" Type="Int64" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <Property Name="Discount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="GSTPer" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="ItemStatus" Type="Int32" />
+          <Property Name="FinalItemPrice" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="VariantItemId" Type="Int64" />
+          <Property Name="QtyUsed" Type="Decimal" Precision="18" Scale="2" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -1680,33 +1680,6 @@
                 <ScalarProperty Name="OfferPriceforDistributor" ColumnName="OfferPriceforDistributor" />
                 <ScalarProperty Name="StartDate" ColumnName="StartDate" />
                 <ScalarProperty Name="EndDate" ColumnName="EndDate" />
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
-                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="tbl_OrderItemDetails">
-            <EntityTypeMapping TypeName="krupagalleryModel.tbl_OrderItemDetails">
-              <MappingFragment StoreEntitySet="tbl_OrderItemDetails">
-                <ScalarProperty Name="QtyUsed" ColumnName="QtyUsed" />
-                <ScalarProperty Name="VariantItemId" ColumnName="VariantItemId" />
-                <ScalarProperty Name="FinalItemPrice" ColumnName="FinalItemPrice" />
-                <ScalarProperty Name="ItemStatus" ColumnName="ItemStatus" />
-                <ScalarProperty Name="GSTPer" ColumnName="GSTPer" />
-                <ScalarProperty Name="Discount" ColumnName="Discount" />
-                <ScalarProperty Name="OrderDetailId" ColumnName="OrderDetailId" />
-                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
-                <ScalarProperty Name="ProductItemId" ColumnName="ProductItemId" />
-                <ScalarProperty Name="ItemName" ColumnName="ItemName" />
-                <ScalarProperty Name="Qty" ColumnName="Qty" />
-                <ScalarProperty Name="Price" ColumnName="Price" />
-                <ScalarProperty Name="Sku" ColumnName="Sku" />
-                <ScalarProperty Name="GSTAmt" ColumnName="GSTAmt" />
-                <ScalarProperty Name="IGSTAmt" ColumnName="IGSTAmt" />
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
@@ -2088,6 +2061,47 @@
                 <ScalarProperty Name="CartItemQty" ColumnName="CartItemQty" />
                 <ScalarProperty Name="CartItemId" ColumnName="CartItemId" />
                 <ScalarProperty Name="SecondCartId" ColumnName="SecondCartId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_ExtraAmount">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_ExtraAmount">
+              <MappingFragment StoreEntitySet="tbl_ExtraAmount">
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ExtraAmount" ColumnName="ExtraAmount" />
+                <ScalarProperty Name="AmountTo" ColumnName="AmountTo" />
+                <ScalarProperty Name="AmountFrom" ColumnName="AmountFrom" />
+                <ScalarProperty Name="ExtraAmountId" ColumnName="ExtraAmountId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_OrderItemDetails">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_OrderItemDetails">
+              <MappingFragment StoreEntitySet="tbl_OrderItemDetails">
+                <ScalarProperty Name="QtyUsed" ColumnName="QtyUsed" />
+                <ScalarProperty Name="VariantItemId" ColumnName="VariantItemId" />
+                <ScalarProperty Name="FinalItemPrice" ColumnName="FinalItemPrice" />
+                <ScalarProperty Name="ItemStatus" ColumnName="ItemStatus" />
+                <ScalarProperty Name="GSTPer" ColumnName="GSTPer" />
+                <ScalarProperty Name="Discount" ColumnName="Discount" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="IGSTAmt" ColumnName="IGSTAmt" />
+                <ScalarProperty Name="GSTAmt" ColumnName="GSTAmt" />
+                <ScalarProperty Name="Sku" ColumnName="Sku" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Qty" ColumnName="Qty" />
+                <ScalarProperty Name="ItemName" ColumnName="ItemName" />
+                <ScalarProperty Name="ProductItemId" ColumnName="ProductItemId" />
+                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
+                <ScalarProperty Name="OrderDetailId" ColumnName="OrderDetailId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
