@@ -1,10 +1,15 @@
 ﻿@using KrupaBuildGallery.Helper;
 @model  KrupaBuildGallery.ViewModel.OrderVM
-    @{ 
-        decimal CartTotal = 0;
-        decimal Discount = 0;
-        decimal GSTTotal = 0;
-    }
+
+@{
+    ViewBag.Title = "Order Success";
+}
+
+@{
+    decimal CartTotal = 0;
+    decimal Discount = 0;
+    decimal GSTTotal = 0;
+}
 <!-- thank-you section start -->
 <section class="section-b-space light-layout">
     <div class="container">
@@ -52,7 +57,7 @@
                                     else
                                     {
                                         <img src="@ErrorMessage.DefaultImagePath" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
-                                    }                                  
+                                    }
                                 </div>
                                 <div class="col-3 order_detail">
                                     <div>
@@ -72,10 +77,10 @@
                                         <h5>₹ @ItemTotal</h5>
                                     </div>
                                 </div>
-                            </div>                           
+                            </div>
                         }
 
-                    }               
+                    }
                     <div class="total-sec">
                         <ul>
                             <li>subtotal <span>₹ @CartTotal</span></li>
@@ -88,14 +93,14 @@
                                 <li>shipping charge <span>₹ @Model.ShipmentCharge</span></li>
                             }
                             <li>Total GST <span>₹ @Math.Round(GSTTotal, 2)</span></li>
-                            <li>Total Discount <span>₹ @Math.Round(Discount,2)</span></li>
+                            <li>Total Discount <span>₹ @Math.Round(Discount, 2)</span></li>
                         </ul>
                     </div>
                     <div class="final-total">
-                        @{ 
+                        @{
 
                             decimal ordeamt = Math.Round(Model.OrderAmount + Model.ShipmentCharge, 2);
-                         }
+                        }
                         <h3>total <span>₹ @ordeamt</span></h3>
                     </div>
                 </div>
@@ -123,10 +128,10 @@
                         <h4>payment method</h4>
                         <p>@Model.PaymentType</p>
                     </div>
-                    <div class="col-md-12">
-                        <div class="delivery-sec">                            
-                        </div>
-                    </div>
+                    @*<div class="col-md-12">
+                            <div class="delivery-sec">
+                            </div>
+                        </div>*@
                 </div>
             </div>
         </div>

@@ -61,5 +61,6 @@ namespace KrupaBuildGallery.Model
         public DbSet<tbl_HappyCustomers> tbl_HappyCustomers { get; set; }
         public DbSet<tbl_ItemVariant> tbl_ItemVariant { get; set; }
         public DbSet<tbl_Units> tbl_Units { get; set; }
+        public DbSet<tbl_AdvertiseImages> tbl_AdvertiseImages { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using KrupaBuildGallery.Model;
+﻿using KrupaBuildGallery.Helper;
+using KrupaBuildGallery.Model;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -288,11 +289,16 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         {
             try
             {                   
-                tbl_ClientUsers objClientUsr = _db.tbl_ClientUsers.Where(o => (o.Email.ToLower() == MobileNumber || o.MobileNo.ToLower() == MobileNumber.ToLower()) && o.ClientRoleId == 2 && o.IsDelete == false && o.IsActive == true).FirstOrDefault();
+                tbl_ClientUsers objClientUsr = _db.tbl_ClientUsers.Where(o => (o.Email.ToLower() == MobileNumber || o.MobileNo.ToLower() == MobileNumber.ToLower()) && o.ClientRoleId == (int)ClientRoles.Distributor && !o.IsDelete).FirstOrDefault();
                 if (objClientUsr == null)
                 {
                     return "NotExist";
                 }
+                if(!objClientUsr.IsActive)
+                {
+                    return "InActiveAccount";
+                }
+
                 using (WebClient webClient = new WebClient())
                 {                   
                     Random random = new Random();

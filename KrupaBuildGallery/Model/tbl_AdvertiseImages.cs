@@ -12,17 +12,15 @@ namespace KrupaBuildGallery.Model
     using System;
     using System.Collections.Generic;
     
-    public partial class tbl_HomeImages
+    public partial class tbl_AdvertiseImages
     {
-        public int HomeImageId { get; set; }
-        public string HomeImageName { get; set; }
-        public string HeadingText1 { get; set; }
-        public string HeadingText2 { get; set; }
+        public int AdvertiseImageId { get; set; }
+        public string AdvertiseImage { get; set; }
         public bool IsActive { get; set; }
-        public long CreatedBy { get; set; }
+        public bool IsDeleted { get; set; }
+        public int CreatedBy { get; set; }
         public System.DateTime CreatedDate { get; set; }
-        public Nullable<long> UpdatedBy { get; set; }
+        public Nullable<int> UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDate { get; set; }
-        public Nullable<int> HomeImageFor { get; set; }
     }
 }

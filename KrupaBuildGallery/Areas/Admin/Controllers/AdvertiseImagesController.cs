@@ -11,32 +11,29 @@ using KrupaBuildGallery.ViewModel;
 
 namespace KrupaBuildGallery.Areas.Admin.Controllers
 {
-    [CustomAuthorize]
-    public class HomeImagesController : Controller
+    public class AdvertiseImagesController : Controller
     {
         private readonly krupagallarydbEntities _db;
-        public string HomeDirectoryPath = "";
-        public HomeImagesController()
+        public string AdvertiseDirectoryPath = "";
+        public AdvertiseImagesController()
         {
             _db = new krupagallarydbEntities();
-            HomeDirectoryPath = ErrorMessage.HomeDirectoryPath;
+            AdvertiseDirectoryPath = ErrorMessage.AdvertiseDirectoryPath;
         }
 
         public ActionResult Index()
         {
-            List<HomeImageVM> lstHomeImages = new List<HomeImageVM>();
+            List<AdvertiseImageVM> lstHomeImages = new List<AdvertiseImageVM>();
             try
             {
 
-                lstHomeImages = (from c in _db.tbl_HomeImages
-                                 select new HomeImageVM
+                lstHomeImages = (from c in _db.tbl_AdvertiseImages
+                                 select new AdvertiseImageVM
                                  {
-                                     HomeImageId = c.HomeImageId,
-                                     HomeImageName = c.HomeImageName,
-                                     HeadingText1 = c.HeadingText1,
-                                     HeadingText2 = c.HeadingText2,
+                                     AdvertiseImageId = c.AdvertiseImageId,
+                                     ImageUrl = c.AdvertiseImage, 
                                      IsActive = c.IsActive
-                                 }).OrderByDescending(x => x.HomeImageId).ToList();
+                                 }).OrderByDescending(x => x.AdvertiseImageId).ToList();
 
             }
             catch (Exception ex)
@@ -49,60 +46,56 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
         public ActionResult Add()
         {
-            HomeImageVM homeImageVM = new HomeImageVM();
-            homeImageVM.HomeImageForList = GetHomeImageFor();
+            AdvertiseImageVM AdvertiseImageVM = new AdvertiseImageVM(); 
 
-            return View(homeImageVM);
+            return View(AdvertiseImageVM);
         }
 
         [HttpPost]
-        public ActionResult Add(HomeImageVM homeImageVM, HttpPostedFileBase HomeImageFile)
+        public ActionResult Add(AdvertiseImageVM AdvertiseImageVM, HttpPostedFileBase AdvertiseImageFile)
         {
             try
             {
                 IEnumerable<ModelError> allErrors = ModelState.Values.SelectMany(v => v.Errors);
                 if (ModelState.IsValid)
                 {
-                    long LoggedInUserId = Int64.Parse(clsAdminSession.UserID.ToString());
+                    int LoggedInUserId = Int32.Parse(clsAdminSession.UserID.ToString());
 
                     string fileName = string.Empty;
-                    string path = Server.MapPath(HomeDirectoryPath);
+                    string path = Server.MapPath(AdvertiseDirectoryPath);
 
                     bool folderExists = Directory.Exists(path);
                     if (!folderExists)
                         Directory.CreateDirectory(path);
 
-                    if (HomeImageFile != null)
+                    if (AdvertiseImageFile != null)
                     {
                         // Image file validation
-                        string ext = Path.GetExtension(HomeImageFile.FileName);
+                        string ext = Path.GetExtension(AdvertiseImageFile.FileName);
                         if (ext.ToUpper().Trim() != ".JPG" && ext.ToUpper() != ".PNG" && ext.ToUpper() != ".GIF" && ext.ToUpper() != ".JPEG" && ext.ToUpper() != ".BMP")
                         {
-                            ModelState.AddModelError("HomeImageFile", ErrorMessage.SelectOnlyImage);
-                            return View(homeImageVM);
+                            ModelState.AddModelError("AdvertiseImageFile", ErrorMessage.SelectOnlyImage);
+                            return View(AdvertiseImageVM);
                         }
 
                         // Save file in folder
-                        fileName = Guid.NewGuid() + "-" + Path.GetFileName(HomeImageFile.FileName);
-                        HomeImageFile.SaveAs(path + fileName);
+                        fileName = Guid.NewGuid() + "-" + Path.GetFileName(AdvertiseImageFile.FileName);
+                        AdvertiseImageFile.SaveAs(path + fileName);
                     }
                     else
                     {
-                        ModelState.AddModelError("HomeImageFile", ErrorMessage.ImageRequired);
-                        return View(homeImageVM);
+                        ModelState.AddModelError("AdvertiseImageFile", ErrorMessage.ImageRequired);
+                        return View(AdvertiseImageVM);
                     }
 
-                    tbl_HomeImages objHome = new tbl_HomeImages();
-                    objHome.HomeImageFor = homeImageVM.HomeImageFor;
-                    objHome.HeadingText1 = homeImageVM.HeadingText1;
-                    objHome.HeadingText2 = homeImageVM.HeadingText2;
-                    objHome.HomeImageName = fileName;
+                    tbl_AdvertiseImages objHome = new tbl_AdvertiseImages(); 
+                    objHome.AdvertiseImage = fileName;
                     objHome.IsActive = true;
                     objHome.CreatedBy = LoggedInUserId;
                     objHome.CreatedDate = DateTime.UtcNow;
                     objHome.UpdatedBy = LoggedInUserId;
                     objHome.UpdatedDate = DateTime.UtcNow;
-                    _db.tbl_HomeImages.Add(objHome);
+                    _db.tbl_AdvertiseImages.Add(objHome);
                     _db.SaveChanges();
 
                     return RedirectToAction("Index");
@@ -115,29 +108,24 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 throw ex;
             }
 
-            return View(homeImageVM);
+            return View(AdvertiseImageVM);
         }
 
         public ActionResult Edit(int Id)
         {
-            HomeImageVM objHome = new HomeImageVM();
+            AdvertiseImageVM objHome = new AdvertiseImageVM();
 
             try
             {
-                objHome = (from c in _db.tbl_HomeImages
-                           where c.HomeImageId == Id
-                           select new HomeImageVM
+                objHome = (from c in _db.tbl_AdvertiseImages
+                           where c.AdvertiseImageId == Id
+                           select new AdvertiseImageVM
                            {
-                               HomeImageId = c.HomeImageId,
-                               HomeImageFor = c.HomeImageFor,
-                               HomeImageName = c.HomeImageName,
-                               HeadingText1 = c.HeadingText1,
-                               HeadingText2 = c.HeadingText2,
-                               IsActive = c.IsActive
+                               AdvertiseImageId = c.AdvertiseImageId,
+                               ImageUrl = c.AdvertiseImage,
+                               IsActive = c.IsActive 
                            }).FirstOrDefault();
-
-                objHome.HomeImageForList = GetHomeImageFor();
-
+                  
             }
             catch (Exception ex)
             {
@@ -148,43 +136,38 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit(HomeImageVM homeImageVM, HttpPostedFileBase HomeImageFile)
+        public ActionResult Edit(AdvertiseImageVM AdvertiseImageVM, HttpPostedFileBase AdvertiseImageFile)
         {
             try
             {
                 IEnumerable<ModelError> allErrors = ModelState.Values.SelectMany(v => v.Errors);
                 if (ModelState.IsValid)
                 {
-                    long LoggedInUserId = Int64.Parse(clsAdminSession.UserID.ToString());
+                    int LoggedInUserId = Int32.Parse(clsAdminSession.UserID.ToString());
 
-                    tbl_HomeImages objHome = _db.tbl_HomeImages.Where(x => x.HomeImageId == homeImageVM.HomeImageId).FirstOrDefault();
+                    tbl_AdvertiseImages objHome = _db.tbl_AdvertiseImages.Where(x => x.AdvertiseImageId == AdvertiseImageVM.AdvertiseImageId).FirstOrDefault();
 
                     string fileName = string.Empty;
-                    string path = Server.MapPath(HomeDirectoryPath);
-                    if (HomeImageFile != null)
+                    string path = Server.MapPath(AdvertiseDirectoryPath);
+                    if (AdvertiseImageFile != null)
                     {
                         // Image file validation
-                        string ext = Path.GetExtension(HomeImageFile.FileName);
+                        string ext = Path.GetExtension(AdvertiseImageFile.FileName);
                         if (ext.ToUpper().Trim() != ".JPG" && ext.ToUpper() != ".PNG" && ext.ToUpper() != ".GIF" && ext.ToUpper() != ".JPEG" && ext.ToUpper() != ".BMP")
                         {
-                            ModelState.AddModelError("HomeImageFile", ErrorMessage.SelectOnlyImage);
-                            return View(homeImageVM);
+                            ModelState.AddModelError("AdvertiseImageFile", ErrorMessage.SelectOnlyImage);
+                            return View(AdvertiseImageVM);
                         }
 
                         // Save image in folder
-                        fileName = Guid.NewGuid() + "-" + Path.GetFileName(HomeImageFile.FileName);
-                        HomeImageFile.SaveAs(path + fileName);
+                        fileName = Guid.NewGuid() + "-" + Path.GetFileName(AdvertiseImageFile.FileName);
+                        AdvertiseImageFile.SaveAs(path + fileName);
                     }
                     else
                     {
-                        fileName = objHome.HomeImageName;
+                        fileName = objHome.AdvertiseImage;
                     }
-
-                    objHome.HomeImageName = fileName;
-                    objHome.HomeImageFor = homeImageVM.HomeImageFor;
-                    objHome.HeadingText1 = homeImageVM.HeadingText1;
-                    objHome.HeadingText2 = homeImageVM.HeadingText2;
-
+                     
                     objHome.UpdatedBy = LoggedInUserId;
                     objHome.UpdatedDate = DateTime.UtcNow;
                     _db.SaveChanges();
@@ -198,17 +181,17 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 string ErrorMessage = ex.Message.ToString();
             }
 
-            return View(homeImageVM);
+            return View(AdvertiseImageVM);
         }
 
         [HttpPost]
-        public string DeleteHomeImage(int HomeImageId)
+        public string DeleteAdvertiseImage(int AdvertiseImageId)
         {
             string ReturnMessage = "";
 
             try
             {
-                tbl_HomeImages objHome = _db.tbl_HomeImages.Where(x => x.HomeImageId == HomeImageId).FirstOrDefault();
+                tbl_AdvertiseImages objHome = _db.tbl_AdvertiseImages.Where(x => x.AdvertiseImageId == AdvertiseImageId).FirstOrDefault();
 
                 if (objHome == null)
                 {
@@ -216,7 +199,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 }
                 else
                 {
-                    _db.tbl_HomeImages.Remove(objHome);
+                    _db.tbl_AdvertiseImages.Remove(objHome);
                     _db.SaveChanges();
 
                     ReturnMessage = "success";
@@ -237,11 +220,11 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             string ReturnMessage = "";
             try
             {
-                tbl_HomeImages objHome = _db.tbl_HomeImages.Where(x => x.HomeImageId == Id).FirstOrDefault();
+                tbl_AdvertiseImages objHome = _db.tbl_AdvertiseImages.Where(x => x.AdvertiseImageId == Id).FirstOrDefault();
 
                 if (objHome != null)
                 {
-                    long LoggedInUserId = Int64.Parse(clsAdminSession.UserID.ToString());
+                    int LoggedInUserId = Int32.Parse(clsAdminSession.UserID.ToString());
                     if (Status == "Active")
                     {
                         objHome.IsActive = true;
@@ -267,16 +250,5 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return ReturnMessage;
         }
 
-        private List<SelectListItem> GetHomeImageFor()
-        {
-            List<SelectListItem> lst = new List<SelectListItem>();
-
-            lst.Add(new SelectListItem { Value = "1", Text = "Website" });
-            lst.Add(new SelectListItem { Value = "2", Text = "Mobile App" });
-
-            return lst;
-        }
-
     }
 }
-

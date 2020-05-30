@@ -9,7 +9,7 @@
     List<CategoryVM> lstCategory = ViewData["lstCategory"] as List<CategoryVM>;
     List<HappyCustomerVM> lstHappyCustomers = ViewData["lstHappyCustomers"] as List<HappyCustomerVM>;
     WebsiteStatisticsVM objStatistics = ViewData["objStatistics"] as WebsiteStatisticsVM;
-    
+
 }
 <style>
     .wishlistcls {
@@ -139,14 +139,14 @@
         </div>
     </div>
     @*<div class="container">
-        <div class="row">
-            <div class="col-lg-6 offset-lg-3">
-                <div class="product-para">
-                    <p class="text-center">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,</p>
+            <div class="row">
+                <div class="col-lg-6 offset-lg-3">
+                    <div class="product-para">
+                        <p class="text-center">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>*@
+        </div>*@
     <!-- Paragraph end -->
     <!-- Product slider -->
     <section class="section-b-space p-t-0 ratio_asos">
@@ -192,10 +192,10 @@
                                 <div class="product-box">
                                     <div class="img-wrapper">
                                         <div class="front">
-                                            <a href="/client/products/detail/@objItem.ProductItemId"><img src="@imgpath" class="img-fluid blur-up lazyload bg-img" alt=""></a>
+                                            <a href="/products/detail/@objItem.ProductItemId"><img src="@imgpath" class="img-fluid blur-up lazyload bg-img" alt=""></a>
                                         </div>
                                         <div class="back">
-                                            <a href="/client/products/detail/@objItem.ProductItemId"><img src="@imgpath" class="img-fluid blur-up lazyload bg-img" alt=""></a>
+                                            <a href="/products/detail/@objItem.ProductItemId"><img src="@imgpath" class="img-fluid blur-up lazyload bg-img" alt=""></a>
                                         </div>
                                         <div class="cart-info cart-wrap">
                                             <button data-toggle="modal" style="display:none;" data-target="#addtocart" title="Add to cart" onclick="AddtoCartfunc(@objItem.ProductItemId, 1,'@objItem.IsCashonDelieveryuse.ToString()');">
@@ -213,7 +213,7 @@
                                     </div>
                                     <div class="product-detail">
                                         <div class="rating"><i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i></div>
-                                        <a href="/client/products/detail/@objItem.ProductItemId">
+                                        <a href="/products/detail/@objItem.ProductItemId">
                                             <h6>@objItem.ItemName</h6>
                                         </a>
                                         @if (clsClientSession.UserID == 0 || (clsClientSession.UserID > 0 && clsClientSession.RoleID == 1))
@@ -248,14 +248,14 @@
         </div>
     </div>
     @*<div class="container">
-        <div class="row">
-            <div class="col-lg-6 offset-lg-3">
-                <div class="product-para">
-                    <p class="text-center">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,</p>
+            <div class="row">
+                <div class="col-lg-6 offset-lg-3">
+                    <div class="product-para">
+                        <p class="text-center">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>*@
+        </div>*@
     <!-- Paragraph end -->
     <!-- Product slider -->
     <section class="section-b-space p-t-0 ratio_asos">
@@ -300,10 +300,10 @@
                                 <div class="product-box">
                                     <div class="img-wrapper">
                                         <div class="front">
-                                            <a href="/client/products/detail/@objItem.ProductItemId"><img src="@imgpath" class="img-fluid blur-up lazyload bg-img" alt=""></a>
+                                            <a href="/products/detail/@objItem.ProductItemId"><img src="@imgpath" class="img-fluid blur-up lazyload bg-img" alt=""></a>
                                         </div>
                                         <div class="back">
-                                            <a href="/client/products/detail/@objItem.ProductItemId"><img src="@imgpath" class="img-fluid blur-up lazyload bg-img" alt=""></a>
+                                            <a href="/products/detail/@objItem.ProductItemId"><img src="@imgpath" class="img-fluid blur-up lazyload bg-img" alt=""></a>
                                         </div>
                                         <div class="cart-info cart-wrap">
                                             <button data-toggle="modal" style="display:none;" data-target="#addtocart" title="Add to cart" onclick="AddtoCartfunc(@objItem.ProductItemId, 1,'@objItem.IsCashonDelieveryuse.ToString()');">
@@ -321,7 +321,7 @@
                                     </div>
                                     <div class="product-detail">
                                         <div class="rating"><i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i></div>
-                                        <a href="/client/products/detail/@objItem.ProductItemId">
+                                        <a href="/products/detail/@objItem.ProductItemId">
                                             <h6>@objItem.ItemName</h6>
                                         </a>
                                         @if (clsClientSession.UserID == 0 || (clsClientSession.UserID > 0 && clsClientSession.RoleID == 1))
@@ -345,6 +345,23 @@
     <!-- Product slider end -->
 }
 <!-- Popular Products List end -->
+<!-- Advertisement Images - Start -->
+<section class="p-0 layout-7">
+    <div class="slide-1 home-slider">
+        <div>
+            <div class="home">
+                <img src="~/Content/assets/images/electronics/8.jpg" alt="" class="bg-img blur-up lazyload">
+            </div>
+        </div>
+        <div>
+            <div class="home">
+                <img src="~/Content/assets/images/home-banner/12.jpg" alt="" class="bg-img blur-up lazyload">
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Advertisement Images - end -->
+
 <!-- UpPack Products List -->
 @if (lstUnPackItems != null && lstUnPackItems.Count() > 0)
 {
@@ -355,14 +372,14 @@
         </div>
     </div>
     @*<div class="container">
-        <div class="row">
-            <div class="col-lg-6 offset-lg-3">
-                <div class="product-para">
-                    <p class="text-center">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,</p>
+            <div class="row">
+                <div class="col-lg-6 offset-lg-3">
+                    <div class="product-para">
+                        <p class="text-center">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,</p>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>*@
+        </div>*@
     <!-- Paragraph end -->
     <!-- Product slider -->
     <section class="section-b-space p-t-0 ratio_asos">
@@ -407,10 +424,10 @@
                                 <div class="product-box">
                                     <div class="img-wrapper">
                                         <div class="front">
-                                            <a href="/client/products/detail/@objItem.ProductItemId"><img src="@imgpath" class="img-fluid blur-up lazyload bg-img" alt=""></a>
+                                            <a href="/products/detail/@objItem.ProductItemId"><img src="@imgpath" class="img-fluid blur-up lazyload bg-img" alt=""></a>
                                         </div>
                                         <div class="back">
-                                            <a href="/client/products/detail/@objItem.ProductItemId"><img src="@imgpath" class="img-fluid blur-up lazyload bg-img" alt=""></a>
+                                            <a href="/products/detail/@objItem.ProductItemId"><img src="@imgpath" class="img-fluid blur-up lazyload bg-img" alt=""></a>
                                         </div>
                                         <div class="cart-info cart-wrap">
                                             <button data-toggle="modal" style="display:none;" data-target="#addtocart" title="Add to cart" onclick="AddtoCartfunc(@objItem.ProductItemId, 1,'@objItem.IsCashonDelieveryuse.ToString()');">
@@ -428,7 +445,7 @@
                                     </div>
                                     <div class="product-detail">
                                         <div class="rating"><i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i></div>
-                                        <a href="/client/products/detail/@objItem.ProductItemId">
+                                        <a href="/products/detail/@objItem.ProductItemId">
                                             <h6>@objItem.ItemName</h6>
                                         </a>
                                         @if (clsClientSession.UserID == 0 || (clsClientSession.UserID > 0 && clsClientSession.RoleID == 1))
@@ -461,14 +478,14 @@
     </div>
 </div>
 @*<div class="container">
-    <div class="row">
-        <div class="col-lg-6 offset-lg-3">
-            <div class="product-para">
-                <p class="text-center">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,</p>
+        <div class="row">
+            <div class="col-lg-6 offset-lg-3">
+                <div class="product-para">
+                    <p class="text-center">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,</p>
+                </div>
             </div>
         </div>
-    </div>
-</div>*@
+    </div>*@
 <!-- Paragraph end -->
 <!-- Product slider -->
 <section class="section-b-space p-t-0 ratio_asos">
@@ -545,7 +562,7 @@
                             <div class="product-box">
                                 <div class="img-wrapper">
                                     <div class="front">
-                                        <a href="javascript:void(0);">                                            
+                                        <a href="javascript:void(0);">
                                             @if (!string.IsNullOrEmpty(objItem.CustomerImage))
                                             {
                                                 if (File.Exists(Server.MapPath(ErrorMessage.HappyCustomerDirectoryPath + objItem.CustomerImage)))

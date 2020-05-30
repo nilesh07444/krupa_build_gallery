@@ -13,8 +13,9 @@ namespace ConstructionDiary.Models
     {
         public override void OnActionExecuting(ActionExecutingContext filterContext)
         {
+            int userId = filterContext.HttpContext.Session["UserID"] != null ? Int32.Parse(filterContext.HttpContext.Session["UserID"].ToString()) : 0;
 
-            if (filterContext.HttpContext.Session["UserID"] == null)
+            if (userId == 0)
             {
                 if (filterContext.HttpContext.Request.IsAjaxRequest())
                 {
