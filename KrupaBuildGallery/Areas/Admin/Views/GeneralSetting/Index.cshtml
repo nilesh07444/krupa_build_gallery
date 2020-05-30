@@ -278,11 +278,17 @@
     }
 
     function SaveExtraAmt() {
-        if ($("#tbodytbl input[type=number][value='']").length > 0) {
-            alert("Please Enter Value in Empty box.");
+        var fll = true;
+        $("#tbodytbl input[type=number]").each(function () {
+            if ($(this).val() == "") {
+                fll = false;
+            }
+        });
+        if (fll == false) {
+              alert("Please Enter Value in Empty box.");
             return;
         }
-
+      
         $.blockUI({ message: "<h4>Please Wait...</h4>" });
             var URL = '@Url.Action("SaveExtraAmtSetting", "GeneralSetting")';
             jQuery.ajax({

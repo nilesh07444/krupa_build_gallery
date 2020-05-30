@@ -100,7 +100,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                              ShippingStatus = p.ShippingStatus.HasValue ? p.ShippingStatus.Value : 2,
                              CreditUsed = p.CreditAmountUsed.HasValue ? p.CreditAmountUsed.Value : 0,
                              WalletAmtUsed = p.WalletAmountUsed.HasValue ? p.WalletAmountUsed.Value : 0,
-                             OrderTypeId = p.OrderType.HasValue ? p.OrderType.Value : 1
+                             OrderTypeId = p.OrderType.HasValue ? p.OrderType.Value : 1,
+                             ExtraAmount = p.ExtraAmount.HasValue ? p.ExtraAmount.Value : 0
                          }).OrderByDescending(x => x.OrderDate).FirstOrDefault();          
             if(objOrder != null)
             {   

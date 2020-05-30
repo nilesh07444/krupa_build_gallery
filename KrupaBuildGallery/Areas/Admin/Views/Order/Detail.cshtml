@@ -98,7 +98,7 @@
                                 }
                             </div>
                         </div>
-                     
+
                         <div class="form-group">
                             <div class="col-md-3">
                                 <div class="label-wrapper"><label class="control-label">Order Date:</label></div>
@@ -252,6 +252,18 @@
                                 <div class="form-text-row">@Model.OrderShipState</div>
                             </div>
                         </div>
+                        @if (Model.ExtraAmount > 0)
+                        {
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <div class="label-wrapper"><label class="control-label">Extra Amount:</label></div>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="form-text-row">₹ @Model.ExtraAmount</div>
+                                </div>
+                            </div>
+                        }
+
                         <div class="form-group">
                             <div class="col-md-3">
                                 <div class="label-wrapper"><label class="control-label">Shipping Charge:</label></div>
@@ -273,6 +285,7 @@
 
                             </div>
                         </div>
+
                     </div>
                     <div class="card-header">
                         <h5>Order Items</h5>

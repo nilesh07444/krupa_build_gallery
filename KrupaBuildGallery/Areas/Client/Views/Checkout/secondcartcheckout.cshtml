@@ -12,6 +12,8 @@
     string iscashondelivery = Convert.ToString(ViewBag.IsCashOnDelivery);
     decimal AdvancePaymentWithoutShip = Convert.ToDecimal(ViewBag.AdvancePaymentAmt);
     decimal AdvancePaymentWithShip = Convert.ToDecimal(ViewBag.AdvancePaymentAmt) + Convert.ToDecimal(ViewBag.ShippingChargeTotal);
+     decimal extramt = Convert.ToDecimal(ViewBag.ExtraAmt);
+    TotalOrderamtt = TotalOrderamtt + extramt;
 }
 <style>
     .errorcls {
@@ -175,6 +177,10 @@
                                             </li>
                                         </ul>
                                         <ul class="total">
+                                            @if (extramt > 0)
+                                            {
+                                                <li class="shippingexist">Extra Amount<span class="count">&#8377; @extramt</span></li>
+                                            }
                                             <li class="shippingnotexist">Total <span class="count">&#8377; @ViewBag.TotalOrder</span></li>
                                             <li class="shippingexist" style="display:none;">Total <span class="count">&#8377; @TotalOrderamtt</span></li>
                                             <li><a href="javascript:void(0);" style="font-size:12px;" onclick="ViewDetails();">View Details</a></li>
@@ -190,6 +196,7 @@
                                     <input type="hidden" id="creditamtinorder" name="creditamtinorder" value="0" />
                                     <input type="hidden" id="onlineamtinorder" name="onlineamtinorder" value="0" />
                                     <input type="hidden" id="ordertype" name="ordertype" value="2" />
+                                    <input type="hidden" id="extraamount" name="extraamount" value="@extramt" />
                                     <input type="hidden" id="isCashondelivery" name="isCashondelivery" value="@iscashondelivery" />
                                     <input type="hidden" name="advanceamtpay" id="advanceamtpay" data-withship="@AdvancePaymentWithShip" data-wihoutship="@AdvancePaymentWithoutShip" value="@AdvancePaymentWithoutShip" />
                                     <div class="payment-box">
@@ -386,6 +393,7 @@
                             }
                             @{
                                 decimal totlnetamount = Convert.ToDecimal(ViewBag.ShippingChargeTotal) + totalamts;
+                                totlnetamount = totlnetamount + extramt;
                             }
                             <tr>
                                 <td></td>
@@ -409,7 +417,7 @@
                                 <td></td>
                                 <td></td>
                                 <th>Shipping Charge</th>
-                                <td>@ViewBag.ShippingChargeTotal</td>
+                                <td>₹ @ViewBag.ShippingChargeTotal</td>
                             </tr>
                             <tr class="shipnotexist">
                                 <td></td>
@@ -423,6 +431,21 @@
                                 <th>Shipping Charge</th>
                                 <td>@ViewBag.ShippingMsg</td>
                             </tr>
+                            @if (extramt > 0)
+                            {
+                                <tr class="shipexist">
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <th>Extra Amount</th>
+                                    <td>₹ @extramt</td>
+                                </tr>
+                            }
                             <tr class="shipexist">
                                 <td></td>
                                 <td></td>

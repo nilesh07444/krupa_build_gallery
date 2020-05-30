@@ -208,6 +208,12 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 ViewBag.ShippingChargeTotal = ShippingChargeTotal;
                 ViewBag.TotalDiscount = TotalDiscount;
                 ViewBag.TotalOrder = TotalOrder;
+                var objtbl_ExtraAmount = _db.tbl_ExtraAmount.Where(o => o.AmountFrom <= TotalOrder && o.AmountTo >= TotalOrder).FirstOrDefault();
+                ViewBag.ExtraAmt = 0;
+                if (objtbl_ExtraAmount != null)
+                {
+                    ViewBag.ExtraAmt = objtbl_ExtraAmount.ExtraAmount;
+                }
                 decimal WalletAmt = 0;
                 var objuserclient =_db.tbl_ClientUsers.Where(o => o.ClientUserId == clsClientSession.UserID).FirstOrDefault();
                 if(objuserclient != null)
@@ -252,6 +258,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             PaymentType = p.PaymentType,
                             RazorpayOrderId = p.RazorpayOrderId,
                             OrderDate = p.CreatedDate,
+                            ExtraAmount = p.ExtraAmount.HasValue ? p.ExtraAmount.Value : 0,
                             ShipmentCharge = p.ShippingCharge.HasValue ? p.ShippingCharge.Value : 0
                         }).OrderByDescending(x => x.OrderDate).FirstOrDefault();
             if (objOrder != null)
@@ -395,14 +402,16 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     objOrder.ClientUserId = clientusrid;
                     decimal ordramt = Convert.ToDecimal(objCheckout.Orderamount);
                     decimal shippingcharge = 0;
+                    decimal extraamt = 0;
                     if (objCheckout.shippincode == "389001")
                     {
                         shippingcharge = Convert.ToDecimal(objCheckout.shipamount);
-                        ordramt = ordramt - shippingcharge;
+                        extraamt = Convert.ToDecimal(objCheckout.extraamount);
+                        ordramt = ordramt - shippingcharge - extraamt;
                     }
                     if (objCheckout.isCashondelivery.ToLower() == "true")
                     {
-                        amtorderdue = ordramt + shippingcharge;                        
+                        amtorderdue = ordramt + shippingcharge + extraamt;                        
                     }
                     else
                     {
@@ -428,7 +437,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             if(!string.IsNullOrEmpty(objCheckout.advanceamtpay))
                             {
                                 advncpay = Convert.ToDecimal(objCheckout.advanceamtpay);
-                                decimal totlordewithship = ordramt + shippingcharge;
+                                decimal totlordewithship = ordramt + shippingcharge + extraamt;
                                 decimal remaingammt = totlordewithship - advncpay;
                                 amtorderdue = remaingammt + amtcredit;
                             }
@@ -454,6 +463,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     objOrder.RazorpayPaymentId = "";
                     objOrder.InvoiceNo = Invno;
                     objOrder.InvoiceYear = year + "-" + toyear;
+                    objOrder.ExtraAmount = extraamt;
                     objOrder.OrderType = Convert.ToInt32(objCheckout.ordertype);
                    
                     objOrder.RazorSignature = "";
@@ -587,7 +597,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         }
                         _db.SaveChanges();
                     }
-                    decimal amttTotlordepy = ordramt + shippingcharge;
+                    decimal amttTotlordepy = ordramt + shippingcharge + extraamt;
                     if (amtwallet > 0)
                     {
                         tbl_PaymentHistory objPyment1 = new tbl_PaymentHistory();
@@ -718,10 +728,12 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             }
                             decimal ordramt = Convert.ToDecimal(objCheckout.Orderamount);
                             decimal shippingcharge = 0;
+                            decimal extraamount = 0;
                             if (objCheckout.shippincode == "389001")
                             {
                                 shippingcharge = Convert.ToDecimal(objCheckout.shipamount);
-                                ordramt = ordramt - shippingcharge;
+                                extraamount = Convert.ToDecimal(objCheckout.extraamount);
+                                ordramt = ordramt - shippingcharge - extraamount;
                             }
 
                             List<string> lstpymenymthod = new List<string>();
@@ -749,7 +761,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 if (!string.IsNullOrEmpty(objCheckout.advanceamtpay))
                                 {
                                     advncpay = Convert.ToDecimal(objCheckout.advanceamtpay);
-                                    decimal totlordewithship = ordramt + shippingcharge;
+                                    decimal totlordewithship = ordramt + shippingcharge + extraamount;
                                     decimal remaingammt = totlordewithship - advncpay;
                                     amountdue = remaingammt + amtcredit;
                                 }
@@ -783,6 +795,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             objOrder.WalletAmountUsed = amtwallet;
                             objOrder.CreditAmountUsed = amtcredit;
                             objOrder.AmountByRazorPay = amtonline;
+                            objOrder.ExtraAmount = extraamount;
                             if (objCheckout.shippincode == "389001")
                             {
                                 objOrder.ShippingCharge = shippingcharge;
@@ -815,7 +828,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 objcmn.SaveTransaction(0, 0, objOrder.OrderId, "Payment By Wallet : Rs" + amtwallet, amtwallet, clsClientSession.UserID, 0, DateTime.UtcNow, "Wallet Payment");
                             }
 
-                            decimal amttTotlordepy = ordramt + shippingcharge;
+                            decimal amttTotlordepy = ordramt + shippingcharge + extraamount;
                             if(amtwallet > 0)
                             {
                                 tbl_PaymentHistory objPyment1 = new tbl_PaymentHistory();
@@ -1329,12 +1342,18 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 ViewBag.ShippingChargeTotal = ShippingChargeTotal;
                 ViewBag.TotalDiscount = TotalDiscount;
                 ViewBag.TotalOrder = TotalOrder;
+                var objtbl_ExtraAmount =  _db.tbl_ExtraAmount.Where(o => o.AmountFrom <= TotalOrder && o.AmountTo >= TotalOrder).FirstOrDefault();
+                ViewBag.ExtraAmt = 0;
+                if (objtbl_ExtraAmount != null)
+                {
+                    ViewBag.ExtraAmt = objtbl_ExtraAmount.ExtraAmount;
+                }
                 decimal WalletAmt = 0;
                 var objuserclient = _db.tbl_ClientUsers.Where(o => o.ClientUserId == clsClientSession.UserID).FirstOrDefault();
                 if (objuserclient != null)
                 {
                     WalletAmt = objuserclient.WalletAmt.HasValue ? objuserclient.WalletAmt.Value : 0;
-                }
+                }              
                 //_db.tbl_ClientOtherDetails.Where(o => o.ClientUserId == clsClientSession.UserID).FirstOrDefault();
                 ViewBag.WalletAmt = WalletAmt;
                 ViewBag.AdvancePaymentAmt = AdvancePaymentAmt;

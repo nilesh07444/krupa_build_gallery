@@ -88,13 +88,17 @@
                                 <li>shipping charge <span>₹ @Model.ShipmentCharge</span></li>
                             }
                             <li>Total GST <span>₹ @Math.Round(GSTTotal, 2)</span></li>
-                            <li>Total Discount <span>₹ @Math.Round(Discount,2)</span></li>
+                            <li>Total Discount <span>₹ @Math.Round(Discount, 2)</span></li>
+                            @if (Model.ExtraAmount > 0)
+                            {
+                                <li>Extra Amount <span>₹ @Math.Round(Model.ExtraAmount, 2)</span></li>
+                            }
                         </ul>
                     </div>
                     <div class="final-total">
                         @{ 
 
-                            decimal ordeamt = Math.Round(Model.OrderAmount + Model.ShipmentCharge, 2);
+                            decimal ordeamt = Math.Round(Model.OrderAmount + Model.ShipmentCharge + Model.ExtraAmount, 2);
                          }
                         <h3>total <span>₹ @ordeamt</span></h3>
                     </div>

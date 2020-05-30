@@ -462,6 +462,7 @@
           <Property Name="CreditAmountRefund" Type="decimal" Precision="18" Scale="2" />
           <Property Name="WalletAmountRefund" Type="decimal" Precision="18" Scale="2" />
           <Property Name="OnlinePaymentAmtRefund" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="ExtraAmount" Type="decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="tbl_PaymentHistory">
           <Key>
@@ -1018,6 +1019,7 @@
           <Property Name="CreditAmountRefund" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="WalletAmountRefund" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="OnlinePaymentAmtRefund" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="ExtraAmount" Type="Decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="tbl_PaymentHistory">
           <Key>
@@ -1704,6 +1706,7 @@
           <EntitySetMapping Name="tbl_Orders">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_Orders">
               <MappingFragment StoreEntitySet="tbl_Orders">
+                <ScalarProperty Name="ExtraAmount" ColumnName="ExtraAmount" />
                 <ScalarProperty Name="OnlinePaymentAmtRefund" ColumnName="OnlinePaymentAmtRefund" />
                 <ScalarProperty Name="WalletAmountRefund" ColumnName="WalletAmountRefund" />
                 <ScalarProperty Name="CreditAmountRefund" ColumnName="CreditAmountRefund" />

@@ -23,5 +23,6 @@ namespace KrupaBuildGallery
         public string ordertype { get; set; }
         public string isCashondelivery { get; set; }
         public string advanceamtpay { get; set; }
+        public string extraamount { get; set; }
     }
 }
