@@ -40,7 +40,6 @@ namespace KrupaBuildGallery.Model
         public DbSet<tbl_Itemtext_master> tbl_Itemtext_master { get; set; }
         public DbSet<tbl_LoginHistory> tbl_LoginHistory { get; set; }
         public DbSet<tbl_Offers> tbl_Offers { get; set; }
-        public DbSet<tbl_OrderItemDetails> tbl_OrderItemDetails { get; set; }
         public DbSet<tbl_Orders> tbl_Orders { get; set; }
         public DbSet<tbl_PaymentHistory> tbl_PaymentHistory { get; set; }
         public DbSet<tbl_ProductItemImages> tbl_ProductItemImages { get; set; }
@@ -53,7 +52,6 @@ namespace KrupaBuildGallery.Model
         public DbSet<tbl_AdminUsers> tbl_AdminUsers { get; set; }
         public DbSet<tbl_PointDetails> tbl_PointDetails { get; set; }
         public DbSet<tbl_GeneralSetting> tbl_GeneralSetting { get; set; }
-        public DbSet<tbl_SecondCart> tbl_SecondCart { get; set; }
         public DbSet<tbl_Wallet> tbl_Wallet { get; set; }
         public DbSet<tbl_OrderItemDelivery> tbl_OrderItemDelivery { get; set; }
         public DbSet<tbl_ItemReturnCancelReplace> tbl_ItemReturnCancelReplace { get; set; }
@@ -61,6 +59,9 @@ namespace KrupaBuildGallery.Model
         public DbSet<tbl_HappyCustomers> tbl_HappyCustomers { get; set; }
         public DbSet<tbl_ItemVariant> tbl_ItemVariant { get; set; }
         public DbSet<tbl_Units> tbl_Units { get; set; }
+        public DbSet<tbl_AdvertiseImages> tbl_AdvertiseImages { get; set; }
+        public DbSet<tbl_SecondCart> tbl_SecondCart { get; set; }
         public DbSet<tbl_ExtraAmount> tbl_ExtraAmount { get; set; }
+        public DbSet<tbl_OrderItemDetails> tbl_OrderItemDetails { get; set; }
     }
 }

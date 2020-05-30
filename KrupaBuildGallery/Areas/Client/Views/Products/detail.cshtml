@@ -1,5 +1,8 @@
 ﻿@using KrupaBuildGallery.Model;
 @using KrupaBuildGallery.Helper;
+
+
+
 @model  ProductItemVM
 @{
     string clswishlist = "";
@@ -14,6 +17,11 @@
     List<tbl_ItemVariant> lstVarintss = ViewData["lstVarint"] as List<tbl_ItemVariant>;
     string unittyppe = Convert.ToString(ViewBag.UnitTyp);
 }
+
+@{
+    ViewBag.Title = Model.ItemName;
+}
+
 <style>
     .wishlistcls {
         color: #ff4c3b !important;
@@ -129,11 +137,11 @@
                                             {
                                                 decimal prc = objj.CustomerPrice.Value;
                                                 string selected1 = "";
-                                                if (clsClientSession.RoleID == 2)   
+                                                if (clsClientSession.RoleID == 2)
                                                 {
                                                     prc = objj.DistributorPrice.Value;
                                                 }
-                                                if(objj.UnitQty == "1 Killo" || objj.UnitQty == "1 litre")
+                                                if (objj.UnitQty == "1 Killo" || objj.UnitQty == "1 litre")
                                                 {
                                                     selected1 = "selected";
                                                 }
@@ -298,7 +306,7 @@
               $("#hdnvarintIds").val($("#variantoption").val());
         }
     });
-  
+
 </script>
 <script src="~/Content/assets/js/jquery.zoom.js"></script>
 <script>

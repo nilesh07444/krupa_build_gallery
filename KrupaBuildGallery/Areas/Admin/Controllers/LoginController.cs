@@ -157,6 +157,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             _db.tbl_LoginHistory.Add(objLogin);
 
             clsAdminSession.SessionID = "";
+            clsAdminSession.UserID = 0;
+
             return RedirectToAction("Index");
         }
 

@@ -1,0 +1,270 @@
+﻿
+@using KrupaBuildGallery.Helper;
+@using Newtonsoft.Json;
+@using KrupaBuildGallery.Model;
+
+@model List<AdvertiseImageVM>
+@{
+    ViewBag.Title = "AdvertiseImage";
+
+    int counter = 1;
+}
+
+@{
+    UserPermissionVM objPermission = new UserPermissionVM();
+
+    int RoleId = Int32.Parse(clsAdminSession.RoleID.ToString());
+
+    if (RoleId != 1)
+    {
+        string strPermission = clsAdminSession.UserPermission;
+        objPermission = JsonConvert.DeserializeObject<UserPermissionVM>(strPermission, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+    }
+    bool IsSA = (RoleId == 1 ? true : false);
+}
+
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="page-header-left">
+                        <h3>
+                            Advertise Image List
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item active">Advertise Image List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h5>Advertise Image List</h5>
+            </div>
+            <div class="card-body vendor-table">
+                @if (IsSA || objPermission.ManagePageContent >= (int)ModulePermission.Add)
+                {
+                    <div class="btn-popup pull-right">
+                        <button type="button" class="btn btn-primary" id="btnAdd">Add Advertise Image</button>
+                    </div>
+                }
+                <table class="display" id="basic-1">
+                    <thead>
+                        <tr>
+                            <th width="10%;">#</th>
+                            <th width="15%;">Advertise Image</th> 
+                            <th width="15%;">Active</th>
+                            <th width="15%;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            foreach (AdvertiseImageVM obj in Model)
+                            {
+                                <tr class="gradeX">
+                                    <td>@counter.</td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(obj.ImageUrl))
+                                        {
+                                            if (File.Exists(Server.MapPath(ErrorMessage.HomeDirectoryPath + obj.ImageUrl)))
+                                            {
+                                                <img src="@ErrorMessage.HomeDirectoryPath/@obj.ImageUrl" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                            }
+                                            else
+                                            {
+                                                <img src="@ErrorMessage.DefaultImagePath" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <img src="@ErrorMessage.DefaultImagePath" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                        }
+
+                                    </td> 
+                                    @if (obj.IsActive == true)
+                                    {
+                                        <td><span class="badge badge-success" style="cursor:pointer;" title="Click to Inactive" onclick="fnChangeStatus('@obj.AdvertiseImageId','InActive');">Active</span></td>
+                                    }
+                                    else
+                                    {
+                                        <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@obj.AdvertiseImageId','Active');">InActive</span></td>
+                                    }
+
+                                    <td>
+                                        @if (IsSA || objPermission.ManagePageContent >= (int)ModulePermission.Edit)
+                                        {
+                                            <a href="/admin/AdvertiseImages/edit/@obj.AdvertiseImageId"><i class="fa fa-edit mr-2 font-success"></i></a>
+                                        }
+                                        @if (IsSA || objPermission.ManagePageContent == (int)ModulePermission.Full)
+                                        {
+                                            <a href="javascript:void(0);" onclick="fnDeleteAdvertiseImage('@obj.AdvertiseImageId')"><i class="fa fa-trash font-danger"></i></a>
+                                        }
+                                    </td>
+                                </tr>
+                                counter++;
+                            }
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade open" id="deleteAdvertiseImageModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete Confirm</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete ?
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="hdnDeleteAdvertiseImage" />
+                <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
+                <button id="btnDeleteAdvertiseImage" class="btn btn-primary" type="button">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Delete modal -->
+
+<div class="modal fade open" id="activeinactiveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to active ?
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="hdndataId" />
+                <input type="hidden" id="hdnstatus" />
+                <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
+                <button id="btnChangeStatus" class="btn btn-primary" type="button">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>*@
+
+<script>
+
+    jQuery(document).ready(function () {
+        //StartLoading()
+        jQuery('html, body').animate({ scrollTop: 0 }, 1000);
+    });
+
+    $(document).on("click", "#btnAdd", function () {
+        window.location.href = "/admin/advertiseimages/add";
+    });
+
+    function fnDeleteAdvertiseImage(AdvertiseImage_Id) {
+        jQuery("#hdnDeleteAdvertiseImage").val(AdvertiseImage_Id);
+        $('#deleteAdvertiseImageModal').modal('show');
+    }
+
+    //jQuery(window).on("load", function () {
+    //    StopLoading();
+    //});
+
+    jQuery(document).on("click", "#btnDeleteAdvertiseImage", function () {
+
+        var AdvertiseImage_Id = jQuery("#hdnDeleteAdvertiseImage").val();
+        if (AdvertiseImage_Id != "" && AdvertiseImage_Id != null) {
+            $('#deleteAdvertiseImageModal').modal('hide');
+
+            StartLoading();
+
+            var URL = '@Url.Action("DeleteAdvertiseImage", "AdvertiseImages")';
+            $.ajax({
+                type: 'POST',
+                async: true,
+                url: URL + "?AdvertiseImageId=" + AdvertiseImage_Id,
+                success: function (result) {
+                    if (result == "success") {
+                        alert("Image deleted successfully");
+                        window.location.reload();
+                    }
+                    else if (result == "notfound") {
+                        alert("Image Not Found");
+                    }
+                    else {
+                        alert("Something went wrong. Please try again");
+                    }
+
+                   StopLoading();
+                },
+                error: function (resultData) {
+                    StopLoading();
+                }
+            });
+        }
+    });
+
+     function fnChangeStatus(AdvertiseImage_Id,status) {
+         jQuery("#hdndataId").val(AdvertiseImage_Id);
+         jQuery("#hdnstatus").val(status);
+         if (status == "Active") {
+             $('#activeinactiveModal .modal-body').html(" Are you sure you want to make active ?");
+         }
+         else {
+             $('#activeinactiveModal .modal-body').html(" Are you sure you want to make inactive ?");
+         }
+        $('#activeinactiveModal').modal('show');
+    }
+
+       jQuery(document).on("click", "#btnChangeStatus", function () {
+
+        var Id = jQuery("#hdndataId").val();
+        if (Id != "" && Id != null) {
+            $('#activeinactiveModal').modal('hide');
+
+            StartLoading();
+
+            var URL = '@Url.Action("ChangeStatus", "AdvertiseImages")';
+            $.ajax({
+                type: 'POST',
+                async: true,
+                url: URL + "?Id=" + Id+"&Status="+jQuery("#hdnstatus").val(),
+                success: function (result) {
+                    if (result == "success") {
+                        alert("Status change Successfully...");
+                        window.location.reload();
+                    }
+                    else {
+                        alert("Something went wrong. Please try again");
+                    }
+
+                   StopLoading();
+                },
+                error: function (resultData) {
+                    StopLoading();
+                }
+            });
+        }
+    });
+
+</script>

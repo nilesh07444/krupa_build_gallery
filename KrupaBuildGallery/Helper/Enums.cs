@@ -72,4 +72,10 @@ namespace KrupaBuildGallery.Helper
         UnPackedItem = 2
     }
 
+    public enum HomeImageFor
+    {
+        Website = 1,
+        MobileApp = 2
+    }
+
 }

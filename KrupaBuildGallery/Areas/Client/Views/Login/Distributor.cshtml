@@ -119,9 +119,13 @@
                 url: URL + "?MobileNumber=" + $("#emailmobile").val(),
                 success: function (result) {
                     if (result == "NotExist") {
-                        alert("Account is Inactive or not exist. Please contact to support")    
+                        alert("Username or Password is Invalid");
                         return false;
                     }
+                    if (result == "InActiveAccount") {
+                        alert("Your Account is Inactive. Please contact to support");
+                        return false;
+                    }                    
                     else {                      
                         alert("Otp Sent to your registerd mobile number and on email.");
                         $('#hdnotptxt').val(result);                 
