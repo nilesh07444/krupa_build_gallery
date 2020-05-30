@@ -302,6 +302,9 @@
     <Compile Include="Model\tbl_DistributorRequestDetails.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\tbl_ExtraAmount.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\tbl_GeneralSetting.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>

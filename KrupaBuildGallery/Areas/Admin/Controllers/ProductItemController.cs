@@ -772,7 +772,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         }
         public int SoldItems(long ItemId)
         {
-            long? TotalSold = _db.tbl_OrderItemDetails.Where(o => o.ProductItemId == ItemId && o.IsDelete == false).Sum(o => (long?)o.Qty.Value);
+            long? TotalSold = _db.tbl_OrderItemDetails.Where(o => o.ProductItemId == ItemId && o.IsDelete == false).Sum(o => (long?)o.QtyUsed.Value);
             if (TotalSold == null)
             {
                 TotalSold = 0;

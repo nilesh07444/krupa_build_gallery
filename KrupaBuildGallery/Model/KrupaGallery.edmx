@@ -231,6 +231,19 @@
           <Property Name="Status" Type="int" />
           <Property Name="Reason" Type="nvarchar(max)" />
         </EntityType>
+        <EntityType Name="tbl_ExtraAmount">
+          <Key>
+            <PropertyRef Name="ExtraAmountId" />
+          </Key>
+          <Property Name="ExtraAmountId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AmountFrom" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="AmountTo" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="ExtraAmount" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="ModifiedBy" Type="bigint" />
+          <Property Name="ModifiedDate" Type="datetime" />
+        </EntityType>
         <EntityType Name="tbl_GeneralSetting">
           <Key>
             <PropertyRef Name="GeneralSettingId" />
@@ -423,6 +436,7 @@
           <Property Name="ItemStatus" Type="int" />
           <Property Name="FinalItemPrice" Type="decimal" Precision="18" Scale="2" />
           <Property Name="VariantItemId" Type="bigint" />
+          <Property Name="QtyUsed" Type="decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="tbl_Orders">
           <Key>
@@ -656,6 +670,7 @@
           <EntitySet Name="tbl_ClientUsers" EntityType="Self.tbl_ClientUsers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ContactFormData" EntityType="Self.tbl_ContactFormData" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_DistributorRequestDetails" EntityType="Self.tbl_DistributorRequestDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_ExtraAmount" EntityType="Self.tbl_ExtraAmount" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_GeneralSetting" EntityType="Self.tbl_GeneralSetting" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Godown" EntityType="Self.tbl_Godown" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_GSTMaster" EntityType="Self.tbl_GSTMaster" Schema="dbo" store:Type="Tables" />
@@ -963,6 +978,7 @@
           <Property Name="ItemStatus" Type="Int32" />
           <Property Name="FinalItemPrice" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="VariantItemId" Type="Int64" />
+          <Property Name="QtyUsed" Type="Decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="tbl_Orders">
           <Key>
@@ -1155,6 +1171,7 @@
           <EntitySet Name="tbl_HappyCustomers" EntityType="krupagalleryModel.tbl_HappyCustomers" />
           <EntitySet Name="tbl_ItemVariant" EntityType="krupagalleryModel.tbl_ItemVariant" />
           <EntitySet Name="tbl_Units" EntityType="krupagalleryModel.tbl_Units" />
+          <EntitySet Name="tbl_ExtraAmount" EntityType="krupagalleryModel.tbl_ExtraAmount" />
           <EntitySet Name="tbl_AdvertiseImages" EntityType="krupagalleryModel.tbl_AdvertiseImages" />
           <EntitySet Name="tbl_SecondCart" EntityType="krupagalleryModel.tbl_SecondCart" />
         </EntityContainer>
@@ -1390,6 +1407,19 @@
           <Property Name="ClientUserId" Type="Int64" />
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="VariantItemId" Type="Int64" />
+        </EntityType>
+        <EntityType Name="tbl_ExtraAmount">
+          <Key>
+            <PropertyRef Name="ExtraAmountId" />
+          </Key>
+          <Property Name="ExtraAmountId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AmountFrom" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="AmountTo" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="ExtraAmount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="ModifiedBy" Type="Int64" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -1662,6 +1692,7 @@
           <EntitySetMapping Name="tbl_OrderItemDetails">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_OrderItemDetails">
               <MappingFragment StoreEntitySet="tbl_OrderItemDetails">
+                <ScalarProperty Name="QtyUsed" ColumnName="QtyUsed" />
                 <ScalarProperty Name="VariantItemId" ColumnName="VariantItemId" />
                 <ScalarProperty Name="FinalItemPrice" ColumnName="FinalItemPrice" />
                 <ScalarProperty Name="ItemStatus" ColumnName="ItemStatus" />
