@@ -1,5 +1,5 @@
 ﻿@using KrupaBuildGallery.Model;
-
+@using KrupaBuildGallery.Helper;
 
 @{
     krupagallarydbEntities _db = new krupagallarydbEntities();
@@ -24,6 +24,9 @@
 
         }).ToList()
     }).ToList();
+
+    // Get settings
+    tbl_GeneralSetting objSetting = _db.tbl_GeneralSetting.FirstOrDefault();
 
 }
 
@@ -584,6 +587,30 @@
         </div>
     </div>
     <!-- tap to top end -->
+    @if (objSetting != null && !string.IsNullOrEmpty(objSetting.AdvertiseBannerImage))
+    {
+        <!--modal popup start-->
+        <div class="modal fade bd-example-modal-lg theme-modal" id="exampleModal" tabindex="-1" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-body modal1">
+                        <div class="container-fluid p-0">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="modal-bg">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                        <center><img src="@ErrorMessage.AdvertiseDirectoryPath/@objSetting.AdvertiseBannerImage" class="img-fluid blur-up lazyload" alt=""></center>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--modal popup end-->
+    }
+
     <!-- fly cart ui jquery-->
     <script src="~/Content/assets/js/jquery-ui.min.js"></script>
 
@@ -621,7 +648,7 @@
     <script src="~/Scripts/cart.js"></script>
     <script>
         $(window).on('load', function () {
-            //$('#exampleModal').modal('show');
+            $('#exampleModal').modal('show');
         });
         function openSearch() {
             document.getElementById("search-overlay").style.display = "block";

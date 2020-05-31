@@ -25,5 +25,12 @@ namespace KrupaBuildGallery.Model
         public string AdminSMSNumber { get; set; }
         public string AdminEmail { get; set; }
         public string FromEmail { get; set; }
+        public string AdvertiseBannerImage { get; set; }
+        public Nullable<decimal> ReturnPerInGodhra { get; set; }
+        public Nullable<decimal> ReturnPerOutGodhra { get; set; }
+        public Nullable<decimal> ExchangePer { get; set; }
+        public Nullable<bool> IsShowBannerImage { get; set; }
+        public Nullable<decimal> CashLimitPerOrder { get; set; }
+        public Nullable<decimal> CashLimitPerYear { get; set; }
     }
 }

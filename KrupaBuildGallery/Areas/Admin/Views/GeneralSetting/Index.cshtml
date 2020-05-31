@@ -1,5 +1,6 @@
-﻿@using KrupaBuildGallery.Model;
-@model tbl_GeneralSetting
+﻿@using KrupaBuildGallery.Helper;
+@using KrupaBuildGallery.Model;
+@model GeneralSettingVM
 @{
     ViewBag.Title = "General Settings";
     List<tbl_ExtraAmount> lstAmmtt = ViewData["extramtlst"] as List<tbl_ExtraAmount>;
@@ -12,7 +13,7 @@
     }
 
     #tblextraamt td {
-        padding:5px;
+        padding: 5px;
     }
 </style>
 
@@ -179,7 +180,7 @@
                                                 <input type="number" class="form-control" data-attramfrm="@cnt" name="txtAmtFrom_@cnt" value="" id="txtAmtFrom_@cnt" />
                                             </td>
                                             <td>
-                                                <input type="number" class="form-control" data-attramto="@cnt"  name="txtAmtTo_@cnt" value="" id="txtAmtTo_@cnt" />
+                                                <input type="number" class="form-control" data-attramto="@cnt" name="txtAmtTo_@cnt" value="" id="txtAmtTo_@cnt" />
                                             </td>
                                             <td>
                                                 <input type="number" class="form-control" data-attramt="@cnt" name="txtExtrAmt_@cnt" value="" id="txtExtrAmt_@cnt" />
@@ -199,10 +200,44 @@
                                     </tr>
                                 </tfoot>
                             </table>
-                            <br/>
+                            <br />
                             <button id="btnExtraAmtSetting" type="button" class="btn btn-primary" onclick="SaveExtraAmt();">Save Settings</button>
                         </form>
                     </div>
+
+                    <div class="card-header">
+                        <h5>Advertise Banner</h5>
+                    </div>
+                    <div class="card-body">
+                        @using (Html.BeginForm("UploadAdvertiseBanner", "GeneralSetting", FormMethod.Post, new { @id = "frmAdvertiseBannerId", @class = "", enctype = "multipart/form-data", role = "form" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.AdvertiseBannerImageFile, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.TextBoxFor(model => model.AdvertiseBannerImageFile, new { type = "file", @class = "form-control col-md-8" })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.AdvertiseBannerImageFile, "", new { @class = "text-danger" })
+                            </div>
+
+                            if (!string.IsNullOrEmpty(Model.AdvertiseBannerImage))
+                            {
+                                <div class="form-group row">
+                                    <lable class="col-xl-3 col-md-4"></lable>
+                                    <p><a target="_blank" href="@ErrorMessage.AdvertiseDirectoryPath/@Model.AdvertiseBannerImage"> Click here to view image </a></p>
+                                </div>
+                            }
+
+                            <div class="form-group row">
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                <button type="submit" class="btn btn-primary" style="margin-right:10px;">Submit</button>
+                                <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
+                            </div>
+                        }
+                    </div>
+
 
                 </div>
             </div>
@@ -268,7 +303,7 @@
     $row.append($("<td>").html("<input type='number' class='form-control' data-attramfrm='"+cntsrow+"' value=''  name='txtAmtFrom_" + cntsrow + "' id='txtAmtFrom_"+cntsrow+"'/>"));
         $row.append($("<td>").html("<input type='number' class='form-control'  data-attramto='" + cntsrow + "' value='' name='txtAmtTo_" + cntsrow + "' id='txtAmtTo_" + cntsrow + "'/>"));
         $row.append($("<td>").html("<input type='number' class='form-control' data-attramt='" + cntsrow + "' value='' name='txtExtrAmt_" + cntsrow + "' id='txtExtrAmt_" + cntsrow + "'/> <input type='hidden' name='hdntrnumbr' value='"+cntsrow+"' />"));
-        $row.append($("<td>").html("<a href='javascript:void(0);' onclick='deleterow(this);'>X</a>"));        
+        $row.append($("<td>").html("<a href='javascript:void(0);' onclick='deleterow(this);'>X</a>"));
        $row.appendTo($("#tbodytbl"));
         cntsrow = cntsrow + 1;
     }
@@ -288,7 +323,7 @@
               alert("Please Enter Value in Empty box.");
             return;
         }
-      
+
         $.blockUI({ message: "<h4>Please Wait...</h4>" });
             var URL = '@Url.Action("SaveExtraAmtSetting", "GeneralSetting")';
             jQuery.ajax({

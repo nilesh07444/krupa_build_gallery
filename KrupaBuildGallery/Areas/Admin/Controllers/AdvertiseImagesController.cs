@@ -11,6 +11,7 @@ using KrupaBuildGallery.ViewModel;
 
 namespace KrupaBuildGallery.Areas.Admin.Controllers
 {
+    [CustomAuthorize]
     public class AdvertiseImagesController : Controller
     {
         private readonly krupagallarydbEntities _db;
@@ -88,14 +89,14 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         return View(AdvertiseImageVM);
                     }
 
-                    tbl_AdvertiseImages objHome = new tbl_AdvertiseImages(); 
-                    objHome.AdvertiseImage = fileName;
-                    objHome.IsActive = true;
-                    objHome.CreatedBy = LoggedInUserId;
-                    objHome.CreatedDate = DateTime.UtcNow;
-                    objHome.UpdatedBy = LoggedInUserId;
-                    objHome.UpdatedDate = DateTime.UtcNow;
-                    _db.tbl_AdvertiseImages.Add(objHome);
+                    tbl_AdvertiseImages objAdvertise = new tbl_AdvertiseImages(); 
+                    objAdvertise.AdvertiseImage = fileName;
+                    objAdvertise.IsActive = true;
+                    objAdvertise.CreatedBy = LoggedInUserId;
+                    objAdvertise.CreatedDate = DateTime.UtcNow;
+                    objAdvertise.UpdatedBy = LoggedInUserId;
+                    objAdvertise.UpdatedDate = DateTime.UtcNow;
+                    _db.tbl_AdvertiseImages.Add(objAdvertise);
                     _db.SaveChanges();
 
                     return RedirectToAction("Index");
@@ -113,11 +114,11 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
         public ActionResult Edit(int Id)
         {
-            AdvertiseImageVM objHome = new AdvertiseImageVM();
+            AdvertiseImageVM objAdvertise = new AdvertiseImageVM();
 
             try
             {
-                objHome = (from c in _db.tbl_AdvertiseImages
+                objAdvertise = (from c in _db.tbl_AdvertiseImages
                            where c.AdvertiseImageId == Id
                            select new AdvertiseImageVM
                            {
@@ -132,7 +133,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 string ErrorMessage = ex.Message.ToString();
             }
 
-            return View(objHome);
+            return View(objAdvertise);
         }
 
         [HttpPost]
@@ -145,7 +146,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 {
                     int LoggedInUserId = Int32.Parse(clsAdminSession.UserID.ToString());
 
-                    tbl_AdvertiseImages objHome = _db.tbl_AdvertiseImages.Where(x => x.AdvertiseImageId == AdvertiseImageVM.AdvertiseImageId).FirstOrDefault();
+                    tbl_AdvertiseImages objAdvertise = _db.tbl_AdvertiseImages.Where(x => x.AdvertiseImageId == AdvertiseImageVM.AdvertiseImageId).FirstOrDefault();
 
                     string fileName = string.Empty;
                     string path = Server.MapPath(AdvertiseDirectoryPath);
@@ -165,11 +166,12 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     }
                     else
                     {
-                        fileName = objHome.AdvertiseImage;
+                        fileName = objAdvertise.AdvertiseImage;
                     }
-                     
-                    objHome.UpdatedBy = LoggedInUserId;
-                    objHome.UpdatedDate = DateTime.UtcNow;
+
+                    objAdvertise.AdvertiseImage = fileName;
+                    objAdvertise.UpdatedBy = LoggedInUserId;
+                    objAdvertise.UpdatedDate = DateTime.UtcNow;
                     _db.SaveChanges();
 
                     return RedirectToAction("Index");
@@ -191,15 +193,15 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             try
             {
-                tbl_AdvertiseImages objHome = _db.tbl_AdvertiseImages.Where(x => x.AdvertiseImageId == AdvertiseImageId).FirstOrDefault();
+                tbl_AdvertiseImages objAdvertise = _db.tbl_AdvertiseImages.Where(x => x.AdvertiseImageId == AdvertiseImageId).FirstOrDefault();
 
-                if (objHome == null)
+                if (objAdvertise == null)
                 {
                     ReturnMessage = "notfound";
                 }
                 else
                 {
-                    _db.tbl_AdvertiseImages.Remove(objHome);
+                    _db.tbl_AdvertiseImages.Remove(objAdvertise);
                     _db.SaveChanges();
 
                     ReturnMessage = "success";
@@ -220,22 +222,22 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             string ReturnMessage = "";
             try
             {
-                tbl_AdvertiseImages objHome = _db.tbl_AdvertiseImages.Where(x => x.AdvertiseImageId == Id).FirstOrDefault();
+                tbl_AdvertiseImages objAdvertise = _db.tbl_AdvertiseImages.Where(x => x.AdvertiseImageId == Id).FirstOrDefault();
 
-                if (objHome != null)
+                if (objAdvertise != null)
                 {
                     int LoggedInUserId = Int32.Parse(clsAdminSession.UserID.ToString());
                     if (Status == "Active")
                     {
-                        objHome.IsActive = true;
+                        objAdvertise.IsActive = true;
                     }
                     else
                     {
-                        objHome.IsActive = false;
+                        objAdvertise.IsActive = false;
                     }
 
-                    objHome.UpdatedBy = LoggedInUserId;
-                    objHome.UpdatedDate = DateTime.UtcNow;
+                    objAdvertise.UpdatedBy = LoggedInUserId;
+                    objAdvertise.UpdatedDate = DateTime.UtcNow;
 
                     _db.SaveChanges();
                     ReturnMessage = "success";

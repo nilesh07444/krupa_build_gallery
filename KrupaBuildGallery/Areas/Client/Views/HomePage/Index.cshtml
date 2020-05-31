@@ -9,6 +9,7 @@
     List<CategoryVM> lstCategory = ViewData["lstCategory"] as List<CategoryVM>;
     List<HappyCustomerVM> lstHappyCustomers = ViewData["lstHappyCustomers"] as List<HappyCustomerVM>;
     WebsiteStatisticsVM objStatistics = ViewData["objStatistics"] as WebsiteStatisticsVM;
+    List<AdvertiseImageVM> lstAdvertiseImages = ViewData["lstAdvertiseImages"] as List<AdvertiseImageVM>;
 
 }
 <style>
@@ -346,22 +347,38 @@
 }
 <!-- Popular Products List end -->
 <!-- Advertisement Images - Start -->
-<section class="p-0 layout-7">
-    <div class="slide-1 home-slider">
-        <div>
-            <div class="home">
-                <img src="~/Content/assets/images/electronics/8.jpg" alt="" class="bg-img blur-up lazyload">
-            </div>
-        </div>
-        <div>
-            <div class="home">
-                <img src="~/Content/assets/images/home-banner/12.jpg" alt="" class="bg-img blur-up lazyload">
-            </div>
-        </div>
-    </div>
-</section>
-<!-- Advertisement Images - end -->
+@if (lstAdvertiseImages != null && lstAdvertiseImages.Count > 0)
+{
+    <section class="p-0 layout-7">
+        <div class="slide-1 home-slider">
+            @foreach (var obj in lstAdvertiseImages)
+            {
+                <div>
+                    <div class="home">
+                         
+                        @if (!string.IsNullOrEmpty(obj.ImageUrl))
+                        {
+                            if (File.Exists(Server.MapPath(ErrorMessage.AdvertiseDirectoryPath + obj.ImageUrl)))
+                            {
+                                <img src="@ErrorMessage.AdvertiseDirectoryPath/@obj.ImageUrl" alt="" class="bg-img blur-up lazyload" />
+                            }
+                            else
+                            {
+                                <img src="@ErrorMessage.DefaultImagePath" alt="" class="bg-img blur-up lazyload" />
+                            }
+                        }
+                        else
+                        {
+                            <img src="@ErrorMessage.DefaultImagePath" alt="" class="bg-img blur-up lazyload" />
+                        }
 
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+}
+<!-- Advertisement Images - end -->
 <!-- UpPack Products List -->
 @if (lstUnPackItems != null && lstUnPackItems.Count() > 0)
 {

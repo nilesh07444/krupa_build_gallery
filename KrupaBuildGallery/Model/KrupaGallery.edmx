@@ -259,6 +259,13 @@
           <Property Name="AdminSMSNumber" Type="nvarchar" MaxLength="150" />
           <Property Name="AdminEmail" Type="nvarchar" MaxLength="150" />
           <Property Name="FromEmail" Type="nvarchar" MaxLength="150" />
+          <Property Name="IsShowBannerImage" Type="bit" />
+          <Property Name="AdvertiseBannerImage" Type="nvarchar" MaxLength="150" />
+          <Property Name="ReturnPerInGodhra" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="ReturnPerOutGodhra" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="ExchangePer" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="CashLimitPerOrder" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="CashLimitPerYear" Type="decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="tbl_Godown">
           <Key>
@@ -1263,6 +1270,13 @@
           <Property Name="AdminSMSNumber" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="AdminEmail" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="FromEmail" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="AdvertiseBannerImage" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="ReturnPerInGodhra" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="ReturnPerOutGodhra" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="ExchangePer" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="IsShowBannerImage" Type="Boolean" />
+          <Property Name="CashLimitPerOrder" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="CashLimitPerYear" Type="Decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="tbl_Wallet">
           <Key>
@@ -1924,6 +1938,13 @@
           <EntitySetMapping Name="tbl_GeneralSetting">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_GeneralSetting">
               <MappingFragment StoreEntitySet="tbl_GeneralSetting">
+                <ScalarProperty Name="CashLimitPerYear" ColumnName="CashLimitPerYear" />
+                <ScalarProperty Name="CashLimitPerOrder" ColumnName="CashLimitPerOrder" />
+                <ScalarProperty Name="IsShowBannerImage" ColumnName="IsShowBannerImage" />
+                <ScalarProperty Name="ExchangePer" ColumnName="ExchangePer" />
+                <ScalarProperty Name="ReturnPerOutGodhra" ColumnName="ReturnPerOutGodhra" />
+                <ScalarProperty Name="ReturnPerInGodhra" ColumnName="ReturnPerInGodhra" />
+                <ScalarProperty Name="AdvertiseBannerImage" ColumnName="AdvertiseBannerImage" />
                 <ScalarProperty Name="FromEmail" ColumnName="FromEmail" />
                 <ScalarProperty Name="AdminEmail" ColumnName="AdminEmail" />
                 <ScalarProperty Name="AdminSMSNumber" ColumnName="AdminSMSNumber" />

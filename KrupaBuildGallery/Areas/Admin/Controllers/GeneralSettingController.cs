@@ -1,12 +1,16 @@
-﻿using KrupaBuildGallery.Model;
+﻿using ConstructionDiary.Models;
+using KrupaBuildGallery.Helper;
+using KrupaBuildGallery.Model;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
 namespace KrupaBuildGallery.Areas.Admin.Controllers
 {
+    [CustomAuthorize]
     public class GeneralSettingController : Controller
     {
         private readonly krupagallarydbEntities _db;
@@ -16,10 +20,28 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         }
         // GET: Admin/GeneralSetting
         public ActionResult Index()
-        { 
-            tbl_GeneralSetting objGenSetting = _db.tbl_GeneralSetting.FirstOrDefault();
+        {
+            //tbl_GeneralSetting objGenSetting = _db.tbl_GeneralSetting.FirstOrDefault();
             List<tbl_ExtraAmount> extramtlst = _db.tbl_ExtraAmount.ToList();
             ViewData["extramtlst"] = extramtlst;
+
+            GeneralSettingVM objGenSetting = (from s in _db.tbl_GeneralSetting
+                                    select new GeneralSettingVM
+                                    {
+                                        GeneralSettingId = s.GeneralSettingId,
+                                        InitialPointCustomer = s.InitialPointCustomer,
+                                        ShippingMessage = s.ShippingMessage,
+                                        SMTPHost = s.SMTPHost,
+                                        SMTPPort = s.SMTPPort,
+                                        EnableSSL = s.EnableSSL,
+                                        SMTPEmail = s.SMTPEmail,
+                                        SMTPPwd = s.SMTPPwd,
+                                        AdminSMSNumber = s.AdminSMSNumber,
+                                        AdminEmail = s.AdminEmail,
+                                        FromEmail = s.FromEmail,
+                                        AdvertiseBannerImage = s.AdvertiseBannerImage
+                                    }).FirstOrDefault();
+             
             return View(objGenSetting);
         }
 
@@ -39,11 +61,11 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 string txtfrommail = frm["txtfrommail"];
                 string txtsmsmobil = frm["txtsmsmobil"];
                 bool EnableSSL = false;
-                if(frm["rdbSSL"].ToString() == "Yes")
+                if (frm["rdbSSL"].ToString() == "Yes")
                 {
                     EnableSSL = true;
                 }
-                
+
                 tbl_GeneralSetting objGenSetting = _db.tbl_GeneralSetting.FirstOrDefault();
                 objGenSetting.InitialPointCustomer = Convert.ToDecimal(intialpoints);
                 objGenSetting.ShippingMessage = shippingmsg;
@@ -75,7 +97,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             {
                 string nummmbers = Convert.ToString(frm["hdntrnumbr"]);
                 List<tbl_ExtraAmount> extramtlst = _db.tbl_ExtraAmount.ToList();
-                foreach(var objj in extramtlst)
+                foreach (var objj in extramtlst)
                 {
                     _db.tbl_ExtraAmount.Remove(objj);
                     _db.SaveChanges();
@@ -84,7 +106,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 if (!string.IsNullOrEmpty(nummmbers))
                 {
                     string[] arrynums = nummmbers.Split(',');
-                    for(var jk = 0;jk<arrynums.Length;jk++)
+                    for (var jk = 0; jk < arrynums.Length; jk++)
                     {
                         tbl_ExtraAmount objextrammt = new tbl_ExtraAmount();
                         objextrammt.AmountFrom = Convert.ToDecimal(frm["txtAmtFrom_" + arrynums[jk]]);
@@ -97,7 +119,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         _db.SaveChanges();
                     }
                 }
-               
+
                 return "Success";
             }
             catch (Exception ex)
@@ -108,5 +130,46 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             return ReturnMessage;
         }
+
+        [HttpPost]
+        public ActionResult UploadAdvertiseBanner(GeneralSettingVM settingVM, HttpPostedFileBase AdvertiseBannerImageFile)
+        {
+            try
+            {
+                IEnumerable<ModelError> allErrors = ModelState.Values.SelectMany(v => v.Errors);
+                if (ModelState.IsValid)
+                {
+                    long LoggedInUserId = Int64.Parse(clsAdminSession.UserID.ToString());
+                      
+                    string fileName = string.Empty;
+                    string path = Server.MapPath(ErrorMessage.AdvertiseDirectoryPath);
+                    if (AdvertiseBannerImageFile != null)
+                    {
+                        fileName = Guid.NewGuid() + "-" + Path.GetFileName(AdvertiseBannerImageFile.FileName);
+                        AdvertiseBannerImageFile.SaveAs(path + fileName);
+                    }
+                    else
+                    {
+                        fileName = settingVM.AdvertiseBannerImage;
+                    }
+                     
+                    tbl_GeneralSetting objSetting = _db.tbl_GeneralSetting.FirstOrDefault();
+                    objSetting.AdvertiseBannerImage = fileName;
+                      
+                    _db.SaveChanges();
+                        
+                    return RedirectToAction("Index");
+
+                }
+            }
+            catch (Exception ex)
+            {
+                string ErrorMessage = ex.Message.ToString();
+            }
+
+            return View(settingVM);
+        }
+
+
     }
 }

@@ -79,9 +79,9 @@
                                     <td>
                                         @if (!string.IsNullOrEmpty(obj.ImageUrl))
                                         {
-                                            if (File.Exists(Server.MapPath(ErrorMessage.HomeDirectoryPath + obj.ImageUrl)))
+                                            if (File.Exists(Server.MapPath(ErrorMessage.AdvertiseDirectoryPath + obj.ImageUrl)))
                                             {
-                                                <img src="@ErrorMessage.HomeDirectoryPath/@obj.ImageUrl" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                                <img src="@ErrorMessage.AdvertiseDirectoryPath/@obj.ImageUrl" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
                                             }
                                             else
                                             {

@@ -24,6 +24,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             //clsCommon.SendEmail2(emailModel);
             //clsCommon.SendEmail("prajapati.nileshbhai@gmail.com", "admin@shopping-saving.com", "Test Email", emailModel.Body);
 
+            List<AdvertiseImageVM> lstAdvertiseImages = new List<AdvertiseImageVM>();
             WebsiteStatisticsVM objStatistics = new WebsiteStatisticsVM();
             List<HappyCustomerVM> lstHappyCustomers = new List<HappyCustomerVM>();
             List<ProductItemVM> lstPopularProductItem = new List<ProductItemVM>();
@@ -150,6 +151,15 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             objStatistics.TotalHappyCustomers = _db.tbl_HappyCustomers.Where(x => !x.IsDelete && x.IsActive).ToList().Count + 400;
             objStatistics.TotalSiteVisitors = 1548;
 
+            // Get Advertise Images
+            lstAdvertiseImages = (from c in _db.tbl_AdvertiseImages
+                                  where !c.IsDeleted && c.IsActive
+                                  select new AdvertiseImageVM
+                                  {
+                                      AdvertiseImageId = c.AdvertiseImageId,
+                                      ImageUrl = c.AdvertiseImage 
+                                  }).OrderByDescending(x => x.AdvertiseImageId).ToList();
+
             ViewData["lstPopularProductItem"] = lstPopularProductItem;
             ViewData["lstOfferItems"] = lstOfferItems;
             ViewData["lstImages"] = lstImages;
@@ -157,6 +167,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             ViewData["lstUnpackProductItem"] = lstUnpackProductItem;
             ViewData["lstHappyCustomers"] = lstHappyCustomers;
             ViewData["objStatistics"] = objStatistics;
+            ViewData["lstAdvertiseImages"] = lstAdvertiseImages;
+            
 
             return View();
         }
