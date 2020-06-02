@@ -362,6 +362,9 @@
     <Compile Include="Model\tbl_Products.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\tbl_ReviewRating.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\tbl_SecondCart.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
@@ -463,6 +466,7 @@
     <Content Include="Content\assets\css\magnific-popup.css" />
     <Content Include="Content\assets\css\owlcarousel.css" />
     <Content Include="Content\assets\css\prism.css" />
+    <Content Include="Content\assets\css\rateit.css" />
     <Content Include="Content\assets\css\rating.css" />
     <Content Include="Content\assets\css\slick-theme.css" />
     <Content Include="Content\assets\css\slick.css" />
@@ -3987,6 +3991,7 @@
     <Content Include="Areas\Admin\Views\AdvertiseImages\Index.cshtml" />
     <Content Include="Areas\Admin\Views\AdvertiseImages\Add.cshtml" />
     <Content Include="Areas\Admin\Views\AdvertiseImages\Edit.cshtml" />
+    <Content Include="Areas\Client\Views\Orders\_RatingReview.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />
@@ -3996,6 +4001,7 @@
     <Content Include="Scripts\jquery-3.3.1.slim.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery.blockUI.js" />
+    <Content Include="Scripts\jquery.rateit.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />

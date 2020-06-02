@@ -1,0 +1,24 @@
+﻿<link href="~/Content/assets/css/rateit.css" rel="stylesheet" />
+<script src="~/Scripts/jquery.rateit.js"></script>
+@model KrupaBuildGallery.Model.tbl_ReviewRating
+@{
+    decimal ratinvl = Model.Rating.HasValue ? Model.Rating.Value : 0;
+}
+<div class="rateit1" data-rateit-mode="font" data-rateit-min="0" data-rateit-resetable="false" data-rateit-value="0" style="font-size:40px" id="ratings">
+</div>
+<br/>
+<label>Review</label>
+<textarea class="form-control" id="txtreview" placeholder="Enter Review">@Model.Review</textarea>
+<input type="hidden" id="hdnOrderDetailsItmId" value="@ViewBag.OrderDetailId" />
+<script>
+    $(document).ready(function () {
+        $("#ratings").rateit();
+        setTimeout(function () {
+           // $("#ratings").rateit('reset');
+            $("#ratings").rateit('value',@ratinvl);
+
+        }, 200);
+        
+    });
+   
+</script>

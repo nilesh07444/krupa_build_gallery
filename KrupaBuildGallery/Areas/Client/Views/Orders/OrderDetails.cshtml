@@ -290,7 +290,7 @@
                                         <th>GST</th>
                                         <th>Total</th>
                                         <th>Status</th>
-                                        <th></th>
+                                        <th></th>                                        
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -360,6 +360,11 @@
                                                     @if (((objorderItem.ItemStatus == 1 || objorderItem.ItemStatus == 2) && Model.OrderTypeId == 1) || objorderItem.ItemStatus == 4)
                                                     {
                                                         <a href="javascript:void(0)" onclick="itemaction('@objorderItem.OrderItemId','@Model.OrderTypeId','@objorderItem.ItemStatus','@objorderItem.IsReturnable.ToString()');"><i class="fa fa-wrench font-success"></i></a>
+                                                    }
+
+                                                    @if (objorderItem.ItemStatus != 1 && objorderItem.ItemStatus != 2 && objorderItem.ItemStatus != 3 && objorderItem.ItemStatus != 5)
+                                                    {
+                                                        <a href="javascript:void(0)" onclick="ratingreview('@objorderItem.OrderItemId');" style="margin-left:15px;">Rate it</a>
                                                     }
                                                 </td>
                                             </tr>
@@ -517,6 +522,23 @@
                 <input type="hidden" id="hdnOrdritmid" />
                 <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
                 <button class="btn btn-primary" type="button" onclick="takeactionforitem();">Take Action</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade open" id="ratingsmodel" tabindex="-1" role="dialog" aria-labelledby="ratingsmodel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Ratings</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                
+            </div>
+            <div class="modal-footer">              
+                <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
+                <button class="btn btn-primary" type="button" onclick="SaveRatingReview();">Save</button>
             </div>
         </div>
     </div>
@@ -802,6 +824,48 @@
      });
         
     }
+
+    function ratingreview(orderdetailid) {
+        $("#ratingsmodel .modal-body").load('@Url.Action("GetRatingReview", "Orders")' + '?OrderDetailId=' + orderdetailid, function() {
+            $("#ratingsmodel").modal("show");
+        });        
+    }
+    function SaveRatingReview() {
+        if ($("#ratings").rateit('value') == 0) {
+            alert("Please Give Rating");
+            return;
+        }        
+
+        
+         var rtvl = $("#ratings").rateit('value');
+         var ordritmid = $("#hdnOrderDetailsItmId").val();
+         var review = encodeURIComponent($("#txtreview").val());
+         
+         $("#ratingsmodel").modal("hide");
+         
+          StartLoading();
+          var URL = '@Url.Action("SaveRatingReview", "Orders")';
+        jQuery.ajax({
+        type: 'POST',
+        async: true,
+        url: URL + "?OrderDetailsId=" + ordritmid + "&rating=" + rtvl+"&review="+review ,
+        success: function (result) {
+            if (result == "Success") {
+                alert("Rating/Review Submitted Successfully");                
+            }
+            else {                 
+            }
+               StopLoading();
+        },
+        error: function (resultData) {
+            StopLoading();
+            console.log("error");
+
+        }
+     });
+        
+    }
+
 </script>
 <div class="dvrazorpayscript">
 

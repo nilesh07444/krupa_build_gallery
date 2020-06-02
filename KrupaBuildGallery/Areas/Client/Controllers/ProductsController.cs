@@ -32,6 +32,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 {
                     ViewBag.Name = objCat.CategoryName;
                 }
+                List<tbl_ReviewRating> lstRatings = _db.tbl_ReviewRating.ToList();
                 lstProductItem = (from i in _db.tbl_ProductItems
                                       //join c in _db.tbl_Categories on i.CategoryId equals c.CategoryId
                                       //join p in _db.tbl_Products on i.ProductId equals p.Product_Id
@@ -57,11 +58,11 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 {
                     long UserId = clsClientSession.UserID;
                     List<long> wishlistitemsId = _db.tbl_WishList.Where(o => o.ClientUserId == UserId).Select(o => o.ItemId.Value).ToList();
-                    lstProductItem.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
+                    lstProductItem.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); x.Ratings = GetRatingOfItem(x.ProductItemId, lstRatings); });
                 }
                 else
                 {
-                    lstProductItem.ForEach(x => { x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
+                    lstProductItem.ForEach(x => { x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); x.Ratings = GetRatingOfItem(x.ProductItemId, lstRatings); });
                 }
 
                 if (sortby == 1)
@@ -120,6 +121,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 {
                     ViewBag.Name = objCat.SubProductName;
                 }
+                List<tbl_ReviewRating> lstRatings = _db.tbl_ReviewRating.ToList();
                 lstProductItem = (from i in _db.tbl_ProductItems
                                       //join c in _db.tbl_Categories on i.CategoryId equals c.CategoryId
                                       //join p in _db.tbl_Products on i.ProductId equals p.Product_Id
@@ -145,11 +147,11 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 {
                     long UserId = clsClientSession.UserID;
                     List<long> wishlistitemsId = _db.tbl_WishList.Where(o => o.ClientUserId == UserId).Select(o => o.ItemId.Value).ToList();
-                    lstProductItem.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
+                    lstProductItem.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); x.Ratings = GetRatingOfItem(x.ProductItemId, lstRatings); });
                 }
                 else
                 {
-                    lstProductItem.ForEach(x => { x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
+                    lstProductItem.ForEach(x => { x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); x.Ratings = GetRatingOfItem(x.ProductItemId, lstRatings); });
                 }
 
                 if (sortby == 1)
@@ -202,6 +204,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             List<ProductItemVM> lstProductItem = new List<ProductItemVM>();
             try
             {
+                List<tbl_ReviewRating> lstRatings = _db.tbl_ReviewRating.ToList();
                 ViewBag.Name = "";
                 var objCat = _db.tbl_Products.Where(o => o.Product_Id == productid).FirstOrDefault();
                 if (objCat != null)
@@ -233,11 +236,11 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 {
                     long UserId = clsClientSession.UserID;
                     List<long> wishlistitemsId = _db.tbl_WishList.Where(o => o.ClientUserId == UserId).Select(o => o.ItemId.Value).ToList();
-                    lstProductItem.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
+                    lstProductItem.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); x.Ratings = GetRatingOfItem(x.ProductItemId, lstRatings); });
                 }
                 else
                 {
-                    lstProductItem.ForEach(x => { x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
+                    lstProductItem.ForEach(x => { x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); x.Ratings = GetRatingOfItem(x.ProductItemId, lstRatings); });
                 }
 
                 if (sortby == 1)
@@ -484,7 +487,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             List<ProductItemVM> lstPopularProductItem = new List<ProductItemVM>();
             List<long> wishlistitemsId = new List<long>();
 
-            
+            List<tbl_ReviewRating> lstRatings = _db.tbl_ReviewRating.ToList();
             try
             {
                 lstPopularProductItem = (from i in _db.tbl_ProductItems
@@ -508,11 +511,11 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     long UserId = clsClientSession.UserID;
                     wishlistitemsId = _db.tbl_WishList.Where(o => o.ClientUserId == UserId).Select(o => o.ItemId.Value).ToList();
 
-                    lstPopularProductItem.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
+                    lstPopularProductItem.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); x.Ratings = GetRatingOfItem(x.ProductItemId, lstRatings); });
                 }
                 else
                 {
-                    lstPopularProductItem.ForEach(x => { x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
+                    lstPopularProductItem.ForEach(x => { x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); x.Ratings = GetRatingOfItem(x.ProductItemId, lstRatings); });
                 }
 
             }
@@ -525,6 +528,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
 
         public ActionResult UnPacked()
         {
+            List<tbl_ReviewRating> lstRatings = _db.tbl_ReviewRating.ToList();
             List<ProductItemVM> lstUnpackProductItem = new List<ProductItemVM>();
             List<long> wishlistitemsId = new List<long>();
 
@@ -551,11 +555,11 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     long UserId = clsClientSession.UserID;
                     wishlistitemsId = _db.tbl_WishList.Where(o => o.ClientUserId == UserId).Select(o => o.ItemId.Value).ToList();
 
-                    lstUnpackProductItem.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
+                    lstUnpackProductItem.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); x.Ratings = GetRatingOfItem(x.ProductItemId, lstRatings); });
                 }
                 else
                 {
-                    lstUnpackProductItem.ForEach(x => { x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
+                    lstUnpackProductItem.ForEach(x => { x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); x.Ratings = GetRatingOfItem(x.ProductItemId, lstRatings); });
                 }
             }
             catch (Exception ex)
@@ -572,6 +576,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
 
             try
             {
+                List<tbl_ReviewRating> lstRatings = _db.tbl_ReviewRating.ToList();
                 List<long> lstOfferItemsId = new List<long>();
                 List<tbl_Offers> lstOfferss = _db.tbl_Offers.Where(o => DateTime.Now >= o.StartDate && DateTime.Now <= o.EndDate && o.IsActive == true && o.IsDelete == false).ToList();
                 if (lstOfferss != null && lstOfferss.Count() > 0)
@@ -597,11 +602,11 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
 
                 if (clsClientSession.UserID != 0)
                 {
-                    lstOfferItems.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
+                    lstOfferItems.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); x.Ratings = GetRatingOfItem(x.ProductItemId, lstRatings); });
                 }
                 else
                 {
-                    lstOfferItems.ForEach(x => { x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
+                    lstOfferItems.ForEach(x => { x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); x.Ratings = GetRatingOfItem(x.ProductItemId, lstRatings); });
                 }
 
             }
@@ -612,5 +617,15 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             return View(lstOfferItems);
         }
 
+        public decimal GetRatingOfItem(long ItemId, List<tbl_ReviewRating> lstreviewratings)
+        {
+            decimal rating = 0;
+            var lstt = lstreviewratings.Where(o => o.ProductItemId == ItemId).ToList();
+            if (lstt != null && lstt.Count() > 0)
+            {
+                rating = lstt.Select(o => o.Rating.Value).Average();
+            }
+            return rating;
+        }
     }
 }

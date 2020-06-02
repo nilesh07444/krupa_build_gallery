@@ -63,5 +63,6 @@ namespace KrupaBuildGallery.Model
         public DbSet<tbl_SecondCart> tbl_SecondCart { get; set; }
         public DbSet<tbl_ExtraAmount> tbl_ExtraAmount { get; set; }
         public DbSet<tbl_OrderItemDetails> tbl_OrderItemDetails { get; set; }
+        public DbSet<tbl_ReviewRating> tbl_ReviewRating { get; set; }
     }
 }

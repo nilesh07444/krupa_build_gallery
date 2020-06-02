@@ -34,13 +34,13 @@
           <Property Name="AdminRoleId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="AdminRoleName" Type="nvarchar" MaxLength="150" />
           <Property Name="AdminRoleDescription" Type="nvarchar" MaxLength="500" />
-          <Property Name="IsDefaultRole" Type="bit" Nullable="false" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
           <Property Name="IsDelete" Type="bit" Nullable="false" />
           <Property Name="CreatedBy" Type="bigint" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="UpdatedBy" Type="bigint" />
           <Property Name="UpdatedDate" Type="datetime" />
+          <Property Name="IsDefaultRole" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="tbl_AdminUsers">
           <Key>
@@ -56,7 +56,6 @@
           <Property Name="AlternateMobile" Type="nvarchar" MaxLength="50" />
           <Property Name="Address" Type="nvarchar" MaxLength="450" />
           <Property Name="City" Type="nvarchar" MaxLength="200" />
-          <Property Name="ParentAgentId" Type="bigint" />
           <Property Name="Designation" Type="nvarchar" MaxLength="350" />
           <Property Name="Dob" Type="datetime" />
           <Property Name="DateOfJoin" Type="datetime" />
@@ -72,13 +71,14 @@
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="UpdatedBy" Type="bigint" />
           <Property Name="UpdatedDate" Type="datetime" />
+          <Property Name="ParentAgentId" Type="bigint" />
         </EntityType>
         <EntityType Name="tbl_AdvertiseImages">
           <Key>
             <PropertyRef Name="AdvertiseImageId" />
           </Key>
           <Property Name="AdvertiseImageId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="AdvertiseImage" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="AdvertiseImage" Type="nvarchar" MaxLength="500" Nullable="false" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
           <Property Name="IsDeleted" Type="bit" Nullable="false" />
           <Property Name="CreatedBy" Type="int" Nullable="false" />
@@ -229,7 +229,7 @@
           <Property Name="AddharPhoto" Type="nvarchar" MaxLength="450" />
           <Property Name="ProfilePhoto" Type="nvarchar" MaxLength="450" />
           <Property Name="Status" Type="int" />
-          <Property Name="Reason" Type="nvarchar(max)" />
+          <Property Name="Reason" Type="nvarchar" MaxLength="800" />
         </EntityType>
         <EntityType Name="tbl_ExtraAmount">
           <Key>
@@ -251,12 +251,12 @@
           <Property Name="GeneralSettingId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="InitialPointCustomer" Type="decimal" Precision="18" Scale="2" />
           <Property Name="ShippingMessage" Type="nvarchar(max)" />
-          <Property Name="SMTPHost" Type="nvarchar" MaxLength="150" />
-          <Property Name="SMTPPort" Type="nvarchar" MaxLength="150" />
+          <Property Name="SMTPHost" Type="nvarchar" MaxLength="400" />
+          <Property Name="SMTPPort" Type="nvarchar" MaxLength="10" />
           <Property Name="EnableSSL" Type="bit" />
-          <Property Name="SMTPEmail" Type="nvarchar" MaxLength="150" />
-          <Property Name="SMTPPwd" Type="nvarchar" MaxLength="150" />
-          <Property Name="AdminSMSNumber" Type="nvarchar" MaxLength="150" />
+          <Property Name="SMTPEmail" Type="nvarchar" MaxLength="200" />
+          <Property Name="SMTPPwd" Type="nvarchar" MaxLength="100" />
+          <Property Name="AdminSMSNumber" Type="nvarchar" MaxLength="20" />
           <Property Name="AdminEmail" Type="nvarchar" MaxLength="150" />
           <Property Name="FromEmail" Type="nvarchar" MaxLength="150" />
           <Property Name="IsShowBannerImage" Type="bit" />
@@ -308,7 +308,6 @@
             <PropertyRef Name="HomeImageId" />
           </Key>
           <Property Name="HomeImageId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="HomeImageFor" Type="int" />
           <Property Name="HomeImageName" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="HeadingText1" Type="nvarchar" MaxLength="100" />
           <Property Name="HeadingText2" Type="nvarchar" MaxLength="100" />
@@ -317,6 +316,7 @@
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="UpdatedBy" Type="bigint" />
           <Property Name="UpdatedDate" Type="datetime" />
+          <Property Name="HomeImageFor" Type="int" />
         </EntityType>
         <EntityType Name="tbl_ItemReturnCancelReplace">
           <Key>
@@ -560,10 +560,10 @@
           <Property Name="HSNCode" Type="nvarchar" MaxLength="150" />
           <Property Name="ItemType" Type="int" />
           <Property Name="IsReturnable" Type="bit" />
-          <Property Name="PayAdvancePer" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="PayAdvancePer" Type="decimal" Precision="6" Scale="2" />
           <Property Name="IsCashonDeliveryUse" Type="bit" />
-          <Property Name="UnitType" Type="int" />
           <Property Name="MinimumStock" Type="int" />
+          <Property Name="UnitType" Type="int" />
         </EntityType>
         <EntityType Name="tbl_Products">
           <Key>
@@ -579,6 +579,18 @@
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="UpdatedBy" Type="bigint" />
           <Property Name="UpdatedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="tbl_ReviewRating">
+          <Key>
+            <PropertyRef Name="ReviewRatingId" />
+          </Key>
+          <Property Name="ReviewRatingId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProductItemId" Type="bigint" />
+          <Property Name="OrderDetailId" Type="bigint" />
+          <Property Name="ClientUserId" Type="bigint" />
+          <Property Name="Rating" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="Review" Type="nvarchar" MaxLength="550" />
+          <Property Name="CreatedDate" Type="datetime" />
         </EntityType>
         <EntityType Name="tbl_SecondCart">
           <Key>
@@ -665,6 +677,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_tbl_AdminRolePermissions_tbl_AdminRolePermissions1">
+          <End Role="tbl_AdminRoles" Type="Self.tbl_AdminRoles" Multiplicity="1" />
+          <End Role="tbl_AdminRolePermissions" Type="Self.tbl_AdminRolePermissions" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="tbl_AdminRoles">
+              <PropertyRef Name="AdminRoleId" />
+            </Principal>
+            <Dependent Role="tbl_AdminRolePermissions">
+              <PropertyRef Name="AdminRoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="krupagalleryModelStoreContainer">
           <EntitySet Name="tbl_AdminRoleModules" EntityType="Self.tbl_AdminRoleModules" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_AdminRolePermissions" EntityType="Self.tbl_AdminRolePermissions" Schema="dbo" store:Type="Tables" />
@@ -698,6 +722,7 @@
           <EntitySet Name="tbl_ProductItemImages" EntityType="Self.tbl_ProductItemImages" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ProductItems" EntityType="Self.tbl_ProductItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Products" EntityType="Self.tbl_Products" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_ReviewRating" EntityType="Self.tbl_ReviewRating" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_SecondCart" EntityType="Self.tbl_SecondCart" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_SubProducts" EntityType="Self.tbl_SubProducts" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Transactions" EntityType="Self.tbl_Transactions" Schema="dbo" store:Type="Tables" />
@@ -706,6 +731,10 @@
           <EntitySet Name="tbl_WishList" EntityType="Self.tbl_WishList" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_tbl_AdminRolePermissions_tbl_AdminRoleModules" Association="Self.FK_tbl_AdminRolePermissions_tbl_AdminRoleModules">
             <End Role="tbl_AdminRoleModules" EntitySet="tbl_AdminRoleModules" />
+            <End Role="tbl_AdminRolePermissions" EntitySet="tbl_AdminRolePermissions" />
+          </AssociationSet>
+          <AssociationSet Name="FK_tbl_AdminRolePermissions_tbl_AdminRolePermissions1" Association="Self.FK_tbl_AdminRolePermissions_tbl_AdminRolePermissions1">
+            <End Role="tbl_AdminRoles" EntitySet="tbl_AdminRoles" />
             <End Role="tbl_AdminRolePermissions" EntitySet="tbl_AdminRolePermissions" />
           </AssociationSet>
         </EntityContainer>
@@ -867,7 +896,7 @@
           <Property Name="AddharPhoto" Type="String" MaxLength="450" FixedLength="false" Unicode="true" />
           <Property Name="ProfilePhoto" Type="String" MaxLength="450" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Int32" />
-          <Property Name="Reason" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Reason" Type="String" MaxLength="800" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_Godown">
           <Key>
@@ -1065,7 +1094,7 @@
           <Property Name="HSNCode" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="ItemType" Type="Int32" />
           <Property Name="IsReturnable" Type="Boolean" />
-          <Property Name="PayAdvancePer" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="PayAdvancePer" Type="Decimal" Precision="6" Scale="2" />
           <Property Name="IsCashonDeliveryUse" Type="Boolean" />
           <Property Name="MinimumStock" Type="Int32" />
           <Property Name="UnitType" Type="Int32" />
@@ -1157,6 +1186,7 @@
           <EntitySet Name="tbl_SecondCart" EntityType="krupagalleryModel.tbl_SecondCart" />
           <EntitySet Name="tbl_ExtraAmount" EntityType="krupagalleryModel.tbl_ExtraAmount" />
           <EntitySet Name="tbl_OrderItemDetails" EntityType="krupagalleryModel.tbl_OrderItemDetails" />
+          <EntitySet Name="tbl_ReviewRating" EntityType="krupagalleryModel.tbl_ReviewRating" />
         </EntityContainer>
         <EntityType Name="tbl_AdminRoles">
           <Key>
@@ -1262,12 +1292,12 @@
           <Property Name="GeneralSettingId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="InitialPointCustomer" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="ShippingMessage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="SMTPHost" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
-          <Property Name="SMTPPort" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="SMTPHost" Type="String" MaxLength="400" FixedLength="false" Unicode="true" />
+          <Property Name="SMTPPort" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="EnableSSL" Type="Boolean" />
-          <Property Name="SMTPEmail" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
-          <Property Name="SMTPPwd" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
-          <Property Name="AdminSMSNumber" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="SMTPEmail" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="SMTPPwd" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="AdminSMSNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="AdminEmail" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="FromEmail" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="AdvertiseBannerImage" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
@@ -1378,7 +1408,7 @@
             <PropertyRef Name="AdvertiseImageId" />
           </Key>
           <Property Name="AdvertiseImageId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="AdvertiseImage" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="AdvertiseImage" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
           <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
           <Property Name="CreatedBy" Type="Int32" Nullable="false" />
@@ -1436,6 +1466,18 @@
           <Property Name="FinalItemPrice" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="VariantItemId" Type="Int64" />
           <Property Name="QtyUsed" Type="Decimal" Precision="18" Scale="2" />
+        </EntityType>
+        <EntityType Name="tbl_ReviewRating">
+          <Key>
+            <PropertyRef Name="ReviewRatingId" />
+          </Key>
+          <Property Name="ReviewRatingId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductItemId" Type="Int64" />
+          <Property Name="OrderDetailId" Type="Int64" />
+          <Property Name="ClientUserId" Type="Int64" />
+          <Property Name="Rating" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="Review" Type="String" MaxLength="550" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -2126,6 +2168,19 @@
                 <ScalarProperty Name="ProductItemId" ColumnName="ProductItemId" />
                 <ScalarProperty Name="OrderId" ColumnName="OrderId" />
                 <ScalarProperty Name="OrderDetailId" ColumnName="OrderDetailId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_ReviewRating">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_ReviewRating">
+              <MappingFragment StoreEntitySet="tbl_ReviewRating">
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="Review" ColumnName="Review" />
+                <ScalarProperty Name="Rating" ColumnName="Rating" />
+                <ScalarProperty Name="ClientUserId" ColumnName="ClientUserId" />
+                <ScalarProperty Name="OrderDetailId" ColumnName="OrderDetailId" />
+                <ScalarProperty Name="ProductItemId" ColumnName="ProductItemId" />
+                <ScalarProperty Name="ReviewRatingId" ColumnName="ReviewRatingId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

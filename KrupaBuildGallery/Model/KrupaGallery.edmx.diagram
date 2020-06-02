@@ -45,6 +45,7 @@
         <EntityTypeShape EntityType="krupagalleryModel.tbl_SecondCart" Width="1.5" PointX="3.375" PointY="17.75" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_ExtraAmount" Width="1.5" PointX="19.375" PointY="11.75" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_OrderItemDetails" Width="1.5" PointX="19.375" PointY="15.75" />
+        <EntityTypeShape EntityType="krupagalleryModel.tbl_ReviewRating" Width="1.5" PointX="20.375" PointY="0.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

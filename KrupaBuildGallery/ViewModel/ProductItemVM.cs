@@ -113,5 +113,7 @@ namespace KrupaBuildGallery
         [Display(Name = "Item Unit Type")]
         public int UnitType { get; set; }
         public List<VariantItemVM> VariantItems { get; set; }
+        
+        public decimal Ratings { get; set; }
     }
 }

@@ -591,5 +591,42 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 return "fail";
             }
         }
+
+        public ActionResult GetRatingReview(int OrderDetailId)
+        {
+            tbl_ReviewRating objtbl_ReviewRating = _db.tbl_ReviewRating.Where(o => o.OrderDetailId == OrderDetailId).FirstOrDefault();
+            if(objtbl_ReviewRating == null)
+            {
+                objtbl_ReviewRating = new tbl_ReviewRating();
+            }
+            ViewBag.OrderDetailId = OrderDetailId;
+           return PartialView("~/Areas/Client/Views/Orders/_RatingReview.cshtml", objtbl_ReviewRating);
+        }
+
+        [HttpPost]
+        public string SaveRatingReview(string OrderDetailsId, string rating, string review)
+        {
+            long OrdrDtlid = Convert.ToInt64(OrderDetailsId);
+            tbl_ReviewRating objrt =_db.tbl_ReviewRating.Where(o => o.OrderDetailId == OrdrDtlid).FirstOrDefault();
+            if(objrt == null)
+            {
+               var objItms = _db.tbl_OrderItemDetails.Where(o => o.OrderDetailId == OrdrDtlid).FirstOrDefault();
+                objrt = new tbl_ReviewRating();
+                objrt.OrderDetailId = OrdrDtlid;
+                objrt.ProductItemId = objItms.ProductItemId;
+                objrt.ClientUserId = clsClientSession.UserID;
+                objrt.Rating = Convert.ToDecimal(rating);
+                objrt.Review = review;
+                objrt.CreatedDate = DateTime.UtcNow;
+                _db.tbl_ReviewRating.Add(objrt);
+            }
+            else
+            {
+                objrt.Rating = Convert.ToDecimal(rating);
+                objrt.Review = review;
+            }
+            _db.SaveChanges();
+            return "Success";
+        }
     }
 }
