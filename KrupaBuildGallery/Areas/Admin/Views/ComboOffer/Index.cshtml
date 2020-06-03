@@ -1,0 +1,258 @@
+﻿
+@using KrupaBuildGallery.Helper;
+@using Newtonsoft.Json;
+@using KrupaBuildGallery.Model;
+
+@model List<ComboOfferVM>
+@{
+    ViewBag.Title = "ComoOffers";
+}
+
+@{
+    UserPermissionVM objPermission = new UserPermissionVM();
+
+    int RoleId = Int32.Parse(clsAdminSession.RoleID.ToString());
+
+    if (RoleId != 1)
+    {
+        string strPermission = clsAdminSession.UserPermission;
+        objPermission = JsonConvert.DeserializeObject<UserPermissionVM>(strPermission, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+    }
+    bool IsSA = (RoleId == 1 ? true : false);
+}
+
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="page-header-left">
+                        <h3>
+                            Combo Offer List
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item active">Combo Offer List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h5>Combo Offer List</h5>
+            </div>
+            <div class="card-body vendor-table">
+                @if (IsSA || objPermission.Offer >= (int)ModulePermission.Add)
+                {
+                    <div class="btn-popup pull-right">
+                        <button type="button" class="btn btn-primary" id="btnAdd">Add Combo Offer</button>
+                    </div>
+                }
+                <table class="display" id="basic-1">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Offer Title</th>
+                            <th>Main Item Name</th>
+                            <th>Sub Item Name</th>
+                            <th>Offer Price</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th width="15%;">Active</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            foreach (ComboOfferVM item in Model)
+                            {
+                                <tr>
+                                    <td>
+                                        @item.OfferTitle
+                                    </td>
+                                    <td>
+                                        @item.Main_ProductItemName
+                                    </td>
+                                    <td>
+                                        @item.Sub_ProductItemName
+                                    </td>
+                                    <td>
+                                        @item.ComboOfferPrice
+                                    </td>
+                                    <td>
+                                        @Convert.ToDateTime(item.dtOfferStartDate).ToString("dd/MM/yyyy")
+                                    </td>
+                                    <td>
+                                        @Convert.ToDateTime(item.dtOfferEndDate).ToString("dd/MM/yyyy")
+                                    </td>
+                                    @if (item.IsActive == true)
+                                    {
+                                        <td><span class="badge badge-success" style="cursor:pointer;" title="Click to Inactive" onclick="fnChangeStatus('@item.ComboOfferId','InActive');">Active</span></td>
+                                    }
+                                    else
+                                    {
+                                        <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@item.ComboOfferId','Active');">InActive</span></td>
+                                    }
+                                    <td style="width:10% !important;">
+                                        @if (IsSA || objPermission.Offer >= (int)ModulePermission.Edit)
+                                        {
+                                            <a href="/admin/offer/edit/@item.ComboOfferId"><i class="fa fa-edit mr-2 font-success"></i></a>
+                                        }
+                                        @if (IsSA || objPermission.Offer == (int)ModulePermission.Full)
+                                        {
+                                            <a href="javascript:void(0);" onclick="fnDeleteOffer('@item.ComboOfferId')"><i class="fa fa-trash font-danger"></i></a>
+                                        }
+                                    </td>
+                                </tr>
+
+                            }
+
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade open" id="deleteOfferModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete Confirm</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete ?
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="hdnDeleteOfferItem" />
+                <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
+                <button id="btnDeleteOfferItem" class="btn btn-primary" type="button">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Delete modal -->
+<div class="modal fade open" id="activeinactiveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to active ?
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="hdndataId" />
+                <input type="hidden" id="hdnstatus" />
+                <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
+                <button id="btnChangeStatus" class="btn btn-primary" type="button">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    jQuery(document).ready(function () {
+        jQuery('html, body').animate({ scrollTop: 0 }, 1000);
+    });
+
+    $(document).on("click", "#btnAdd", function () {
+        window.location.href = "/admin/combooffer/add";
+    });
+      function fnDeleteOffer(item_id) {
+        jQuery("#hdnDeleteOfferItem").val(item_id);
+        jQuery('#deleteOfferModal').modal('show');
+    }
+      jQuery(document).on("click", "#btnDeleteOfferItem", function () {
+
+        var offerid = jQuery("#hdnDeleteOfferItem").val();
+        if (offerid != "" && offerid != null) {
+            $('#deleteOfferModal').modal('hide');
+
+            StartLoading();
+
+            var URL = '@Url.Action("DeleteOffer", "ComboOffer")';
+            $.ajax({
+                type: 'POST',
+                async: true,
+                url: URL + "?ComboOfferId=" + offerid,
+                success: function (result) {
+                    if (result == "success") {
+                        alert("Offer deleted successfully");
+                        window.location.reload();
+                    }
+                    else if (result == "notfound") {
+                        alert("Offer Not Found");
+                    }
+                    else {
+                        alert("Something went wrong. Please try again");
+                    }
+
+                   StopLoading();
+                },
+                error: function (resultData) {
+                    StopLoading();
+                }
+            });
+        }
+      });
+
+       function fnChangeStatus(cat_id,status) {
+             jQuery("#hdndataId").val(cat_id);
+             jQuery("#hdnstatus").val(status);
+             if (status == "Active") {
+                 $('#activeinactiveModal .modal-body').html(" Are you sure you want to make active ?");
+             }
+             else {
+                 $('#activeinactiveModal .modal-body').html(" Are you sure you want to make inactive ?");
+             }
+            $('#activeinactiveModal').modal('show');
+        }
+
+       jQuery(document).on("click", "#btnChangeStatus", function () {
+
+        var Id = jQuery("#hdndataId").val();
+        if (Id != "" && Id != null) {
+            $('#activeinactiveModal').modal('hide');
+
+            StartLoading();
+
+            var URL = '@Url.Action("ChangeStatus", "ComboOffer")';
+            $.ajax({
+                type: 'POST',
+                async: true,
+                url: URL + "?Id=" + Id+"&Status="+jQuery("#hdnstatus").val(),
+                success: function (result) {
+                    if (result == "success") {
+                        alert("Status change Successfully...");
+                        window.location.reload();
+                    }
+                    else {
+                        alert("Something went wrong. Please try again");
+                    }
+
+                   StopLoading();
+                },
+                error: function (resultData) {
+                    StopLoading();
+                }
+            });
+        }
+    });
+</script>
