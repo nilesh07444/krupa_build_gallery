@@ -39,7 +39,14 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                         AdminSMSNumber = s.AdminSMSNumber,
                                         AdminEmail = s.AdminEmail,
                                         FromEmail = s.FromEmail,
-                                        AdvertiseBannerImage = s.AdvertiseBannerImage
+                                        AdvertiseBannerImage = s.AdvertiseBannerImage,
+
+                                        ReturnPerInGodhra = s.ReturnPerInGodhra,
+                                        ReturnPerOutGodhra = s.ReturnPerOutGodhra,
+                                        ExchangePer = s.ExchangePer,
+                                        CashLimitPerOrder = s.CashLimitPerOrder,
+                                        CashLimitPerYear = s.CashLimitPerYear
+
                                     }).FirstOrDefault();
              
             return View(objGenSetting);
@@ -66,6 +73,12 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     EnableSSL = true;
                 }
 
+                decimal txtReturnPerInGodhra = string.IsNullOrEmpty(frm["txtReturnPerInGodhra"]) ? 0 : Convert.ToDecimal(frm["txtReturnPerInGodhra"]);
+                decimal txtReturnPerOutGodhra = string.IsNullOrEmpty(frm["txtReturnPerOutGodhra"]) ? 0 : Convert.ToDecimal(frm["txtReturnPerOutGodhra"]);
+                decimal txtExchangePer = string.IsNullOrEmpty(frm["txtExchangePer"]) ? 0 : Convert.ToDecimal(frm["txtExchangePer"]);
+                decimal txtCashLimitPerOrder = string.IsNullOrEmpty(frm["txtCashLimitPerOrder"]) ? 0 : Convert.ToDecimal(frm["txtCashLimitPerOrder"]);
+                decimal txtCashLimitPerYear = string.IsNullOrEmpty(frm["txtCashLimitPerYear"]) ? 0 : Convert.ToDecimal(frm["txtCashLimitPerYear"]);
+
                 tbl_GeneralSetting objGenSetting = _db.tbl_GeneralSetting.FirstOrDefault();
                 objGenSetting.InitialPointCustomer = Convert.ToDecimal(intialpoints);
                 objGenSetting.ShippingMessage = shippingmsg;
@@ -77,6 +90,14 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 objGenSetting.AdminSMSNumber = txtsmsmobil.ToString();
                 objGenSetting.FromEmail = txtfrommail;
                 objGenSetting.EnableSSL = EnableSSL;
+
+                objGenSetting.ReturnPerInGodhra = txtReturnPerInGodhra;
+                objGenSetting.ReturnPerOutGodhra = txtReturnPerOutGodhra;
+                objGenSetting.ExchangePer = txtExchangePer;
+                objGenSetting.CashLimitPerOrder = txtCashLimitPerOrder;
+                objGenSetting.CashLimitPerYear = txtCashLimitPerYear;
+
+
                 _db.SaveChanges();
                 return "Success";
             }
