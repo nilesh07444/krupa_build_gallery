@@ -297,6 +297,9 @@
     <Compile Include="Model\tbl_ClientUsers.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\tbl_ComboOffer.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\tbl_ContactFormData.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>

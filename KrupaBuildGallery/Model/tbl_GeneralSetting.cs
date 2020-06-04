@@ -32,5 +32,7 @@ namespace KrupaBuildGallery.Model
         public Nullable<bool> IsShowBannerImage { get; set; }
         public Nullable<decimal> CashLimitPerOrder { get; set; }
         public Nullable<decimal> CashLimitPerYear { get; set; }
+        public string RazorPayKey { get; set; }
+        public string RazorPaySecret { get; set; }
     }
 }

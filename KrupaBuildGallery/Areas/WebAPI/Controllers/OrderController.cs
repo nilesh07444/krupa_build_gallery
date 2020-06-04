@@ -145,8 +145,9 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     input.Add("receipt", "recpt_shipping_"+ objOrder.OrderId);
                     input.Add("payment_capture", 1);
 
-                    string key = "rzp_test_DMsPlGIBp3SSnI";
-                    string secret = "YMkpd9LbnaXViePncLLXhqms";
+                    var objGsetting = _db.tbl_GeneralSetting.FirstOrDefault();
+                    string key = objGsetting.RazorPayKey;  //"rzp_test_DMsPlGIBp3SSnI";
+                    string secret = objGsetting.RazorPaySecret; // "YMkpd9LbnaXViePncLLXhqms";
 
                     RazorpayClient client = new RazorpayClient(key, secret);
 
@@ -318,8 +319,9 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 input.Add("receipt", "12000");
                 input.Add("payment_capture", 1);
 
-                string key = "rzp_test_DMsPlGIBp3SSnI";
-                string secret = "YMkpd9LbnaXViePncLLXhqms";
+                var objGsetting = _db.tbl_GeneralSetting.FirstOrDefault();
+                string key = objGsetting.RazorPayKey;  //"rzp_test_DMsPlGIBp3SSnI";
+                string secret = objGsetting.RazorPaySecret; // "YMkpd9LbnaXViePncLLXhqms";
 
                 RazorpayClient client = new RazorpayClient(key, secret);
 

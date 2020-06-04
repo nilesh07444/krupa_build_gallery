@@ -3,7 +3,7 @@
 
 <script>
     var options = {
-        "key": "rzp_test_DMsPlGIBp3SSnI", // Enter the Key ID generated from the Dashboard
+        "key": "@ViewBag.Key", // Enter the Key ID generated from the Dashboard
         "amount": "@ViewBag.Amount", // Amount is in currency subunits. Default currency is INR. Hence, 50000 means 50000 paise or ₹500.
         "currency": "INR",
         "name": "Krupa Build Gallery",
@@ -28,7 +28,17 @@
     };
 
     if ($("#rzp-placeorder").length > 0) {
-        $(document).off('click').on('click', '#rzp-placeorder', function (e) {           
+        $(document).off('click').on('click', '#rzp-placeorder', function (e) {       
+            if ($("#isCashondelivery").length > 0 && $("#isCashondelivery").val() == "True") {
+                var ord = parseFloat($("#Orderamout").val());
+                if ($("#cashlimitoforder").length > 0) {
+                    var limitordr = parseFloat($("#cashlimitoforder").val());
+                    if (ord > limitordr) {
+                        alert("Your Total Order Amount exceed the Cash On Delivery limit");
+                        return false;
+                    }
+                }
+            }
             $(".errorcls").html("");
             var flg = true;
             //$("input[name=shipfirstname]").siblings('.errorcls')
@@ -73,7 +83,7 @@
                 if ($("#payment-2").is(":checked") && parseFloat($("#onlineamtinorder").val()) > 0) {
                       var isitemexists = CheckItemExists("ByOther",options,e);
                 }
-                else {
+                else {                    
                      var isitemexists = CheckItemExists("ByCredit");
                 }             
             }

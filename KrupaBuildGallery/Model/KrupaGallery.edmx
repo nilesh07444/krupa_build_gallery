@@ -186,6 +186,33 @@
           <Property Name="Prefix" Type="nvarchar" MaxLength="10" />
           <Property Name="WalletAmt" Type="decimal" Precision="18" Scale="2" />
         </EntityType>
+        <EntityType Name="tbl_ComboOffer">
+          <Key>
+            <PropertyRef Name="ComboOfferId" />
+          </Key>
+          <Property Name="ComboOfferId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MainItemCatId" Type="bigint" Nullable="false" />
+          <Property Name="MainItemsSubProductId" Type="bigint" />
+          <Property Name="MainItemProductId" Type="bigint" />
+          <Property Name="MainItemId" Type="bigint" Nullable="false" />
+          <Property Name="MainItemQty" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="SubItemCatId" Type="bigint" />
+          <Property Name="SubItemSubProductId" Type="bigint" />
+          <Property Name="SubItemProductId" Type="bigint" />
+          <Property Name="SubItemId" Type="bigint" />
+          <Property Name="SubItemQty" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="OfferTitle" Type="nvarchar" MaxLength="850" Nullable="false" />
+          <Property Name="OfferPrice" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="OfferStartDate" Type="datetime" Nullable="false" />
+          <Property Name="OfferEndDate" Type="datetime" Nullable="false" />
+          <Property Name="OfferImage" Type="nvarchar" MaxLength="900" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="ModifiedBy" Type="bigint" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="IsDeleted" Type="bit" />
+        </EntityType>
         <EntityType Name="tbl_ContactFormData">
           <Key>
             <PropertyRef Name="ContactForm_Id" />
@@ -266,6 +293,8 @@
           <Property Name="ExchangePer" Type="decimal" Precision="18" Scale="2" />
           <Property Name="CashLimitPerOrder" Type="decimal" Precision="18" Scale="2" />
           <Property Name="CashLimitPerYear" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="RazorPayKey" Type="nvarchar" MaxLength="500" />
+          <Property Name="RazorPaySecret" Type="nvarchar" MaxLength="500" />
         </EntityType>
         <EntityType Name="tbl_Godown">
           <Key>
@@ -700,6 +729,7 @@
           <EntitySet Name="tbl_ClientOtherDetails" EntityType="Self.tbl_ClientOtherDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ClientRoles" EntityType="Self.tbl_ClientRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ClientUsers" EntityType="Self.tbl_ClientUsers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_ComboOffer" EntityType="Self.tbl_ComboOffer" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ContactFormData" EntityType="Self.tbl_ContactFormData" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_DistributorRequestDetails" EntityType="Self.tbl_DistributorRequestDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ExtraAmount" EntityType="Self.tbl_ExtraAmount" Schema="dbo" store:Type="Tables" />
@@ -1187,6 +1217,7 @@
           <EntitySet Name="tbl_ExtraAmount" EntityType="krupagalleryModel.tbl_ExtraAmount" />
           <EntitySet Name="tbl_OrderItemDetails" EntityType="krupagalleryModel.tbl_OrderItemDetails" />
           <EntitySet Name="tbl_ReviewRating" EntityType="krupagalleryModel.tbl_ReviewRating" />
+          <EntitySet Name="tbl_ComboOffer" EntityType="krupagalleryModel.tbl_ComboOffer" />
         </EntityContainer>
         <EntityType Name="tbl_AdminRoles">
           <Key>
@@ -1307,6 +1338,8 @@
           <Property Name="IsShowBannerImage" Type="Boolean" />
           <Property Name="CashLimitPerOrder" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="CashLimitPerYear" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="RazorPayKey" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="RazorPaySecret" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_Wallet">
           <Key>
@@ -1478,6 +1511,33 @@
           <Property Name="Rating" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="Review" Type="String" MaxLength="550" FixedLength="false" Unicode="true" />
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="tbl_ComboOffer">
+          <Key>
+            <PropertyRef Name="ComboOfferId" />
+          </Key>
+          <Property Name="ComboOfferId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MainItemCatId" Type="Int64" Nullable="false" />
+          <Property Name="MainItemsSubProductId" Type="Int64" />
+          <Property Name="MainItemProductId" Type="Int64" />
+          <Property Name="MainItemId" Type="Int64" Nullable="false" />
+          <Property Name="MainItemQty" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="SubItemCatId" Type="Int64" />
+          <Property Name="SubItemSubProductId" Type="Int64" />
+          <Property Name="SubItemProductId" Type="Int64" />
+          <Property Name="SubItemId" Type="Int64" />
+          <Property Name="SubItemQty" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="OfferTitle" Type="String" Nullable="false" MaxLength="850" FixedLength="false" Unicode="true" />
+          <Property Name="OfferPrice" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="OfferStartDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="OfferEndDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="OfferImage" Type="String" MaxLength="900" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="ModifiedBy" Type="Int64" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="IsDeleted" Type="Boolean" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -1980,6 +2040,8 @@
           <EntitySetMapping Name="tbl_GeneralSetting">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_GeneralSetting">
               <MappingFragment StoreEntitySet="tbl_GeneralSetting">
+                <ScalarProperty Name="RazorPaySecret" ColumnName="RazorPaySecret" />
+                <ScalarProperty Name="RazorPayKey" ColumnName="RazorPayKey" />
                 <ScalarProperty Name="CashLimitPerYear" ColumnName="CashLimitPerYear" />
                 <ScalarProperty Name="CashLimitPerOrder" ColumnName="CashLimitPerOrder" />
                 <ScalarProperty Name="IsShowBannerImage" ColumnName="IsShowBannerImage" />
@@ -2181,6 +2243,34 @@
                 <ScalarProperty Name="OrderDetailId" ColumnName="OrderDetailId" />
                 <ScalarProperty Name="ProductItemId" ColumnName="ProductItemId" />
                 <ScalarProperty Name="ReviewRatingId" ColumnName="ReviewRatingId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_ComboOffer">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_ComboOffer">
+              <MappingFragment StoreEntitySet="tbl_ComboOffer">
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="OfferImage" ColumnName="OfferImage" />
+                <ScalarProperty Name="OfferEndDate" ColumnName="OfferEndDate" />
+                <ScalarProperty Name="OfferStartDate" ColumnName="OfferStartDate" />
+                <ScalarProperty Name="OfferPrice" ColumnName="OfferPrice" />
+                <ScalarProperty Name="OfferTitle" ColumnName="OfferTitle" />
+                <ScalarProperty Name="SubItemQty" ColumnName="SubItemQty" />
+                <ScalarProperty Name="SubItemId" ColumnName="SubItemId" />
+                <ScalarProperty Name="SubItemProductId" ColumnName="SubItemProductId" />
+                <ScalarProperty Name="SubItemSubProductId" ColumnName="SubItemSubProductId" />
+                <ScalarProperty Name="SubItemCatId" ColumnName="SubItemCatId" />
+                <ScalarProperty Name="MainItemQty" ColumnName="MainItemQty" />
+                <ScalarProperty Name="MainItemId" ColumnName="MainItemId" />
+                <ScalarProperty Name="MainItemProductId" ColumnName="MainItemProductId" />
+                <ScalarProperty Name="MainItemsSubProductId" ColumnName="MainItemsSubProductId" />
+                <ScalarProperty Name="MainItemCatId" ColumnName="MainItemCatId" />
+                <ScalarProperty Name="ComboOfferId" ColumnName="ComboOfferId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

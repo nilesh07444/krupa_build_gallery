@@ -193,9 +193,9 @@
         window.location.href = "/admin/combooffer";
     });
 
-    jQuery(document).on("change", "#CategoryId", function () {
+    jQuery(document).on("change", "#Main_CategoryId", function () {
 
-        var CategoryId = jQuery("#CategoryId option:selected").val();
+        var CategoryId = jQuery("#Main_CategoryId option:selected").val();
 
         if (CategoryId != "" && CategoryId != null) {
 
@@ -211,7 +211,7 @@
                             htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
                         });
                     }
-                    $("#ProductId").html(htmlData);
+                    $("#Main_ProductId").html(htmlData);
                 },
                 error: function (error) {
                 }
@@ -219,13 +219,13 @@
         }
        else {
              var htmlSubData = "<option value='0'>- Select Product -</option>";
-            $("#ProductId").html(htmlSubData);
+            $("#Main_ProductId").html(htmlSubData);
         }
     });
 
-    jQuery(document).on("change", "#ProductId", function () {
+    jQuery(document).on("change", "#Main_ProductId", function () {
 
-        var ProductId = jQuery("#ProductId option:selected").val();
+        var ProductId = jQuery("#Main_ProductId option:selected").val();
 
         if (ProductId != "" && ProductId != null) {
 
@@ -241,7 +241,7 @@
                             htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
                         });
                     }
-                    $("#SubProductId").html(htmlData);
+                    $("#Main_SubProductId").html(htmlData);
                 },
                 error: function (error) {
                 }
@@ -249,14 +249,14 @@
         }
         else {
              var htmlSubData = "<option value='0'>- Select SubProduct -</option>";
-            $("#SubProductId").html(htmlSubData);
+            $("#Main_SubProductId").html(htmlSubData);
         }
     });
 
-    jQuery(document).on("change", "#ProductId,#SubProductId", function () {
+    jQuery(document).on("change", "#Main_ProductId,#Main_SubProductId", function () {
 
-        var ProductId = jQuery("#ProductId option:selected").val();
-        var SubProductId = jQuery("#SubProductId option:selected").val();
+        var ProductId = jQuery("#Main_ProductId option:selected").val();
+        var SubProductId = jQuery("#Main_SubProductId option:selected").val();
 
         if ((ProductId != "" && ProductId != null) || (SubProductId != "" && SubProductId != null)) {
             var URL = '@Url.Action("GetItemList", "Stock")';
@@ -271,7 +271,7 @@
                             htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
                         });
                     }
-                    $("#ProductItemId").html(htmlData);
+                    $("#Main_ProductItemId").html(htmlData);
                 },
                 error: function (error) {
                 }
@@ -279,7 +279,98 @@
         }
        else {
             var htmlSubData = "<option value='0'>- Select Product Item -</option>";
-            $("#ProductItemId").html(htmlSubData);
+            $("#Main_ProductItemId").html(htmlSubData);
+        }
+    });
+
+
+     jQuery(document).on("change", "#Sub_CategoryId", function () {
+
+        var CategoryId = jQuery("#Sub_CategoryId option:selected").val();
+
+        if (CategoryId != "" && CategoryId != null) {
+
+            var URL = '@Url.Action("GetProductListByCategoryId", "SubProduct")';
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: URL + "/" + CategoryId,
+                success: function (result) {
+                    var htmlData = "<option value='0'>-Select Product-</option>";
+                    if (result && result.length > 0) {
+                        result.forEach(element => {
+                            htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
+                        });
+                    }
+                    $("#Sub_ProductId").html(htmlData);
+                },
+                error: function (error) {
+                }
+            });
+        }
+       else {
+             var htmlSubData = "<option value='0'>- Select Product -</option>";
+            $("#Sub_ProductId").html(htmlSubData);
+        }
+    });
+
+    jQuery(document).on("change", "#Sub_ProductId", function () {
+
+        var ProductId = jQuery("#Sub_ProductId option:selected").val();
+
+        if (ProductId != "" && ProductId != null) {
+
+            var URL = '@Url.Action("GetSubProductListByProductId", "SubProduct")';
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: URL + "/" + ProductId,
+                success: function (result) {
+                    var htmlData = "<option value='0'>-Select SubProduct-</option>";
+                    if (result && result.length > 0) {
+                        result.forEach(element => {
+                            htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
+                        });
+                    }
+                    $("#Sub_SubProductId").html(htmlData);
+                },
+                error: function (error) {
+                }
+            });
+        }
+        else {
+             var htmlSubData = "<option value='0'>- Select SubProduct -</option>";
+            $("#Sub_SubProductId").html(htmlSubData);
+        }
+    });
+
+    jQuery(document).on("change", "#Sub_ProductId,#Sub_SubProductId", function () {
+
+        var ProductId = jQuery("#Sub_ProductId option:selected").val();
+        var SubProductId = jQuery("#Sub_SubProductId option:selected").val();
+
+        if ((ProductId != "" && ProductId != null) || (SubProductId != "" && SubProductId != null)) {
+            var URL = '@Url.Action("GetItemList", "Stock")';
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: URL + "?ProductId=" + ProductId + "&SubProductId=" + SubProductId,
+                success: function (result) {
+                    var htmlData = "<option value='0'>-Select Product Item-</option>";
+                    if (result && result.length > 0) {
+                        result.forEach(element => {
+                            htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
+                        });
+                    }
+                    $("#Sub_ProductItemId").html(htmlData);
+                },
+                error: function (error) {
+                }
+            });
+        }
+       else {
+            var htmlSubData = "<option value='0'>- Select Product Item -</option>";
+            $("#Sub_ProductItemId").html(htmlSubData);
         }
     });
 

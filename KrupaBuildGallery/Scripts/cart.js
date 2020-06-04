@@ -190,8 +190,12 @@ $('.product-box a .ti-heart1 , .product-box a .fa-heart1').on('click', function 
     });
 });
 
-function CheckItemExists(bypymnt,optionss,e) {
-    var URL = '/Client/Checkout/CheckItemsinStock';
+function CheckItemExists(bypymnt, optionss, e) {
+    var iscsh = "false";
+    if($("#isCashondelivery").length > 0 && $("#isCashondelivery").val() == "True") {
+        iscsh = "true";
+    }
+    var URL = '/Client/Checkout/CheckItemsinStock?IsCash=' + iscsh;
     jQuery.ajax({
         type: 'POST',
         async: false,

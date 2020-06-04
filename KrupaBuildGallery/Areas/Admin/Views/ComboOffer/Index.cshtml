@@ -74,9 +74,13 @@
                     <tbody>
                         @if (Model != null && Model.Count > 0)
                         {
+                            int cnt = 1;
                             foreach (ComboOfferVM item in Model)
                             {
                                 <tr>
+                                    <td>
+                                        @cnt
+                                    </td>
                                     <td>
                                         @item.OfferTitle
                                     </td>
@@ -106,7 +110,7 @@
                                     <td style="width:10% !important;">
                                         @if (IsSA || objPermission.Offer >= (int)ModulePermission.Edit)
                                         {
-                                            <a href="/admin/offer/edit/@item.ComboOfferId"><i class="fa fa-edit mr-2 font-success"></i></a>
+                                            <a href="/admin/combooffer/edit/@item.ComboOfferId"><i class="fa fa-edit mr-2 font-success"></i></a>
                                         }
                                         @if (IsSA || objPermission.Offer == (int)ModulePermission.Full)
                                         {
@@ -114,7 +118,7 @@
                                         }
                                     </td>
                                 </tr>
-
+                                cnt = cnt + 1;
                             }
 
                         }
@@ -194,11 +198,11 @@
                 url: URL + "?ComboOfferId=" + offerid,
                 success: function (result) {
                     if (result == "success") {
-                        alert("Offer deleted successfully");
+                        alert("Combo Offer deleted successfully");
                         window.location.reload();
                     }
                     else if (result == "notfound") {
-                        alert("Offer Not Found");
+                        alert("Combo Offer Not Found");
                     }
                     else {
                         alert("Something went wrong. Please try again");

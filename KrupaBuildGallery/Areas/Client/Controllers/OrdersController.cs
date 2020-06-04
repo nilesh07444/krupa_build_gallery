@@ -165,8 +165,9 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 input.Add("receipt", "12121");
                 input.Add("payment_capture", 1);
 
-                string key = "rzp_test_DMsPlGIBp3SSnI";
-                string secret = "YMkpd9LbnaXViePncLLXhqms";
+                var objGsetting = _db.tbl_GeneralSetting.FirstOrDefault();
+                string key = objGsetting.RazorPayKey;  //"rzp_test_DMsPlGIBp3SSnI";
+                string secret = objGsetting.RazorPaySecret; // "YMkpd9LbnaXViePncLLXhqms";
 
                 RazorpayClient client = new RazorpayClient(key, secret);
 
@@ -174,12 +175,14 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 ViewBag.OrderId = order["id"];
                 ViewBag.Description = "Shipping Charge for Order #"+ objOrder.OrderId;
                 ViewBag.Amount = objOrder.ShipmentCharge * 100;
+                ViewBag.key = key;
             }
             else
             {
                 ViewBag.OrderId = 0;
                 ViewBag.Description = "Shipping Charge for Order #" + objOrder.OrderId;
                 ViewBag.Amount = objOrder.ShipmentCharge * 100;
+                ViewBag.key = "";
             }
 
             List<PaymentHistoryVM> lstPaymentHist = new List<PaymentHistoryVM>();
@@ -297,8 +300,9 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             input.Add("receipt", "12000");
             input.Add("payment_capture", 1);
 
-            string key = "rzp_test_DMsPlGIBp3SSnI";
-            string secret = "YMkpd9LbnaXViePncLLXhqms";
+            var objGsetting = _db.tbl_GeneralSetting.FirstOrDefault();
+            string key = objGsetting.RazorPayKey;  //"rzp_test_DMsPlGIBp3SSnI";
+            string secret = objGsetting.RazorPaySecret; // "YMkpd9LbnaXViePncLLXhqms";
 
             RazorpayClient client = new RazorpayClient(key, secret);
 
@@ -306,6 +310,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             ViewBag.OrderId = order["id"];
             ViewBag.Description = description;
             ViewBag.Amount = Amount * 100;
+            ViewBag.key = key;
             return PartialView("~/Areas/Client/Views/Orders/_Razorpaymentpartial.cshtml");
         }
 

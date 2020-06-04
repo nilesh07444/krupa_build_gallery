@@ -231,6 +231,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             ViewData["lstCartItems"] = lstCartItems;
             var objGenralsetting = _db.tbl_GeneralSetting.FirstOrDefault();
             ViewBag.ShippingMsg = objGenralsetting.ShippingMessage;
+            ViewBag.CashOrderAmtMax = objGenralsetting.CashLimitPerOrder;
             return View();
         }
 
@@ -296,8 +297,9 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             input.Add("receipt", "12121");
             input.Add("payment_capture", 1);
 
-            string key = "rzp_test_DMsPlGIBp3SSnI";
-            string secret = "YMkpd9LbnaXViePncLLXhqms";
+            var objGsetting = _db.tbl_GeneralSetting.FirstOrDefault();
+            string key = objGsetting.RazorPayKey;  //"rzp_test_DMsPlGIBp3SSnI";
+            string secret = objGsetting.RazorPaySecret; // "YMkpd9LbnaXViePncLLXhqms";
 
             RazorpayClient client = new RazorpayClient(key, secret);
 
@@ -305,6 +307,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             ViewBag.OrderId = order["id"];
             ViewBag.Description = description;
             ViewBag.Amount = Amount * 100;
+            ViewBag.Key = key;
             return PartialView("~/Areas/Client/Views/Checkout/_RazorPayPayment.cshtml");
         }
 
@@ -1072,7 +1075,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             return price;
         }
         [HttpPost]
-        public string CheckItemsinStock()
+        public string CheckItemsinStock(string IsCash = "false")
         {
             string ReturnMessage = "";
             bool isOutofStock = false;
@@ -1080,7 +1083,12 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             {
                 if(clsClientSession.UserID > 0)
                 {
-                    var cartlist = _db.tbl_Cart.Where(o => o.ClientUserId == clsClientSession.UserID).ToList();
+                    bool IsCashOrdr = false;
+                    if(IsCash == "true")
+                    {
+                        IsCashOrdr = true;
+                    }
+                    var cartlist = _db.tbl_Cart.Where(o => o.ClientUserId == clsClientSession.UserID && o.IsCashonDelivery == IsCashOrdr).ToList();
                     if(cartlist != null && cartlist.Count() > 0)
                     {                        
                         foreach (var objcrt in cartlist)

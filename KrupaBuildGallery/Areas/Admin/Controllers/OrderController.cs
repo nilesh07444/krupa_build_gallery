@@ -341,6 +341,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             }
             else
             {
+                var objSettings = _db.tbl_GeneralSetting.FirstOrDefault();
                 string mobilenumber = objClient.MobileNo;
                 if (objReq.ItemStatus == 6)
                 {
@@ -353,11 +354,11 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         decimal amtcut = 0;
                         if(objtbl_Orders.OrderShipPincode == "389001")
                         {
-                            amtcut = Math.Round((objOrderItm.FinalItemPrice.Value * 5) / 100, 2);
+                            amtcut = Math.Round((objOrderItm.FinalItemPrice.Value * objSettings.ReturnPerInGodhra.Value) / 100, 2);
                         }
                         else
                         {
-                            amtcut = Math.Round((objOrderItm.FinalItemPrice.Value * 7) / 100, 2);
+                            amtcut = Math.Round((objOrderItm.FinalItemPrice.Value * objSettings.ReturnPerOutGodhra.Value) / 100, 2);
                         }
                         decimal refundamtt = objOrderItm.FinalItemPrice.Value - amtcut;
                         decimal remaing = refundamtt;
@@ -455,17 +456,18 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             //decimal refndToonlin = 0;
                             //if (remaing <= remaingtorefund)
                             //{
-                              //  refndToonlin = remaing;
-                               // remaing = 0;
+                            //  refndToonlin = remaing;
+                            // remaing = 0;
                             //}
                             //else
                             //{
-                              //  remaing = remaing - remaingtorefund;
-                               // refndToonlin = remaingtorefund;
+                            //  remaing = remaing - remaingtorefund;
+                            // refndToonlin = remaingtorefund;
                             //}
                             //initialize the SDK client
-                            string key = "rzp_test_DMsPlGIBp3SSnI";
-                            string secret = "YMkpd9LbnaXViePncLLXhqms";
+                            var objGsetting = _db.tbl_GeneralSetting.FirstOrDefault();
+                            string key = objGsetting.RazorPayKey;  //"rzp_test_DMsPlGIBp3SSnI";
+                            string secret = objGsetting.RazorPaySecret; // "YMkpd9LbnaXViePncLLXhqms";
                             RazorpayClient client = new RazorpayClient(key, secret);
                             List<tbl_PaymentHistory> lstPymtn = _db.tbl_PaymentHistory.Where(o => o.PaymentBy == "online" && o.OrderId == objtbl_Orders.OrderId && o.PaymentFor == "OrderPayment").OrderBy(o => o.DateOfPayment).ToList();
                             if (lstPymtn != null && lstPymtn.Count() > 0)
@@ -536,7 +538,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     objReq.IsApproved = true;
                     objOrderItm.IsDelete = true;
                     decimal amt = objReq.Amount.Value;
-                    decimal deprc = Math.Round((objReq.Amount.Value * 3) / 100, 2);
+                    decimal deprc = Math.Round((objReq.Amount.Value * objSettings.ExchangePer.Value) / 100, 2);
                     decimal amtredund = amt - deprc;
                     tbl_Wallet objWlt = new tbl_Wallet();
                     objWlt.Amount = amtredund;

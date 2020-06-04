@@ -1054,7 +1054,7 @@
         $(".product-3").slick({
             arrows: true,
             dots: false,
-            infinite: false,
+            infinite: true,
             speed: 300,
             slidesToShow: 3,
             slidesToScroll: 1,

@@ -55,7 +55,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="email">Email</label>
-                                <input type="text" class="form-control" id="email" value="@TempData["email"]" name="email" placeholder="Email"  />
+                                <input type="text" class="form-control" id="email" value="@TempData["email"]" name="email" placeholder="Email" />
                             </div>
                         </div>
                         <div class="form-row">
@@ -102,7 +102,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="$('#hdnotptxt').val('');$('#otptxt').val('');">&times;</button>
             </div>
             <div class="modal-body">
-                <label>Enter Mobile's OTP</label><input type="text" id="otptxt" value="" class="form-control" />                
+                <label>Enter Mobile's OTP</label><input type="text" id="otptxt" value="" class="form-control" />
             </div>
             <div class="modal-footer">
                 <input type="hidden" id="hdnDeleteProductItem" />
@@ -145,13 +145,13 @@
                     if (result == "InvalidNumber") {
                         alert("Mobile Number is invalid");
                         return false;
-                    }                 
+                    }
                    else if (result == "AlreadyExist") {
                         alert("Your Account is already exist with this mobile number.Please go to Login or Contact to support");
                         return false;
                     }
                     else {
-                        $('#hdnotptxt').val(result);                       
+                        $('#hdnotptxt').val(result);
                         $("#otpmodal").modal();
                     }
                 },
@@ -169,12 +169,18 @@
     }
 
     function ValidateEmail(mail) {
-        if (/^\w+([\.-]?\w+)*@@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
+        if (mail != "") {
+              if (/^\w+([\.-]?\w+)*@@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
             return true;
         }
         else {
             return false;
+         }
         }
+        else {
+            return true;
+        }
+
     }
      function submitotp() {
         if ($("#otptxt").val() == "") {

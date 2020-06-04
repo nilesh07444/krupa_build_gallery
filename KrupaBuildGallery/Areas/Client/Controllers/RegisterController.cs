@@ -33,7 +33,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 string mobileno = frm["mobileno"].ToString();
                 string password = frm["password"].ToString();
               
-                tbl_ClientUsers objClientUsr = _db.tbl_ClientUsers.Where(o => o.Email.ToLower() == email.ToLower() && o.ClientRoleId == 1).FirstOrDefault();
+                tbl_ClientUsers objClientUsr = _db.tbl_ClientUsers.Where(o => (o.MobileNo == mobileno || (email != "" && o.Email.ToLower() == email.ToLower())) && o.ClientRoleId == 1).FirstOrDefault();
                 if(objClientUsr != null)
                 {
                     TempData["RegisterError"] = "Your Account is already exist.Please go to Login or Contact to support";

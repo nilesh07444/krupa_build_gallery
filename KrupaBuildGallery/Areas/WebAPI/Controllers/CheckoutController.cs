@@ -217,8 +217,9 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     input.Add("receipt", "rec_"+ UserId+"_"+ DateTime.Now.ToString("ddmmyyyy"));
                     input.Add("payment_capture", 1);
 
-                    string key = "rzp_test_DMsPlGIBp3SSnI";
-                    string secret = "YMkpd9LbnaXViePncLLXhqms";
+                    var objGsetting = _db.tbl_GeneralSetting.FirstOrDefault();
+                    string key = objGsetting.RazorPayKey;  //"rzp_test_DMsPlGIBp3SSnI";
+                    string secret = objGsetting.RazorPaySecret; // "YMkpd9LbnaXViePncLLXhqms";
 
                     RazorpayClient client = new RazorpayClient(key, secret);
                     Razorpay.Api.Order order = client.Order.Create(input);
