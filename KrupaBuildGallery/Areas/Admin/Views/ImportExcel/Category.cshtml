@@ -68,4 +68,9 @@
 <script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>
 <script src="~/Scripts/jquery.validate.min.js"></script>
 <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
- 
+ <script>
+     var strmsg = '@Convert.ToString(ViewBag.Message)';
+     if (strmsg != "") {
+         alert(strmsg);
+     }
+ </script>

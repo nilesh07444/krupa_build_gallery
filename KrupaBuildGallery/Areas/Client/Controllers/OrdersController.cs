@@ -461,8 +461,70 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                      amtrefund = objitm.FinalItemPrice.Value;
                     if (objordr.OrderShipPincode == "389001")
                     {
-                        decimal shipchrge = Math.Round(objproditm.ShippingCharge.Value * objitm.Qty.Value,2);
-                        amtrefund = shipchrge + amtrefund;
+                        List<OrderItemsVM> lstOrderItms = (from p in _db.tbl_OrderItemDetails
+                                                           join c in _db.tbl_ProductItems on p.ProductItemId equals c.ProductItemId
+                                                           join vr in _db.tbl_ItemVariant on p.VariantItemId equals vr.VariantItemId
+                                                           where p.OrderId == ordrid && p.IsDelete == false && p.ItemStatus != 5
+                                                           select new OrderItemsVM
+                                                           {
+                                                               OrderId = p.OrderId.Value,
+                                                               OrderItemId = p.OrderDetailId,
+                                                               ProductItemId = p.ProductItemId.Value,
+                                                               ItemName = p.ItemName,
+                                                               Qty = p.Qty.Value,
+                                                               Price = p.Price.Value,
+                                                               Sku = p.Sku,
+                                                               GSTAmt = p.GSTAmt.Value,
+                                                               IGSTAmt = p.IGSTAmt.Value,
+                                                               ItemImg = c.MainImage,
+                                                               VariantQtytxt = vr.UnitQty,
+                                                               ShipingChargeOf1Item = c.ShippingCharge.HasValue ? c.ShippingCharge.Value : 0,
+                                                               FinalAmt = p.FinalItemPrice.HasValue ? p.FinalItemPrice.Value : 0,
+                                                               Discount = p.Discount.HasValue ? p.Discount.Value : 0,
+                                                               ItemStatus = p.ItemStatus.HasValue ? p.ItemStatus.Value : 1,
+                                                               IsReturnable = c.IsReturnable.HasValue ? c.IsReturnable.Value : false
+                                                           }).OrderByDescending(x => x.OrderItemId).ToList();
+                        
+                        decimal totlmt = 0;
+                        decimal OldOrderTotl = 0;
+                        decimal shipingchrgs = 0;
+                        if(lstOrderItms != null && lstOrderItms.Count() > 0)
+                        {
+                            foreach(var objj in lstOrderItms)
+                            {
+                                totlmt = totlmt + objj.FinalAmt;
+                                shipingchrgs = shipingchrgs + Math.Round(objj.ShipingChargeOf1Item * objj.Qty, 2);
+                            }
+                        }
+                        OldOrderTotl = totlmt;
+                        var objtbl_ExtraAmount = _db.tbl_ExtraAmount.Where(o => o.AmountFrom <= totlmt && o.AmountTo >= totlmt).FirstOrDefault();
+                        decimal extramt = 0;
+                        if(objtbl_ExtraAmount != null)
+                        {
+                            extramt = objtbl_ExtraAmount.ExtraAmount.Value;
+                        }
+                        OldOrderTotl = OldOrderTotl + extramt + shipingchrgs;
+                        decimal shipchrge = Math.Round(objproditm.ShippingCharge.Value * objitm.Qty.Value, 2);
+                        decimal NewShipingCharge = shipingchrgs - shipchrge;
+                        decimal NewOrdeAmt = totlmt - objitm.FinalItemPrice.Value;
+                        var objtbl_ExtraAmountnew = _db.tbl_ExtraAmount.Where(o => o.AmountFrom <= NewOrdeAmt && o.AmountTo >= NewOrdeAmt).FirstOrDefault();
+                        decimal amtextrnew = 0;
+                        decimal OrderTotlNew = 0;
+                        if (objtbl_ExtraAmountnew != null)
+                        {
+                            amtextrnew = objtbl_ExtraAmountnew.ExtraAmount.Value;
+                        }
+                        OrderTotlNew = NewOrdeAmt + amtextrnew + NewShipingCharge;
+                        decimal refund = OldOrderTotl - OrderTotlNew;
+                        if(refund >= 0)
+                        {
+                            amtrefund = 0;
+                        }
+                        else
+                        {
+                            return "Can Not Cancel";
+                        }
+                        //amtrefund = shipchrge + amtrefund;
                     }
                     objitm.ItemStatus = 5;
                     objitm.IsDelete = true;

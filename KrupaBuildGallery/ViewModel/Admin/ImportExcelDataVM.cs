@@ -10,5 +10,8 @@ namespace KrupaBuildGallery
     {
         [Display(Name = "Select Excel")]
         public HttpPostedFileBase ExcelFile { get; set; }
+
+        public int SrNo { get; set;}
+        public string ErrorMsg { get; set; }
     }
 }

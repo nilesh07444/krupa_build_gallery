@@ -57,6 +57,7 @@
                 {
                     <div class="btn-popup pull-right">
                         <button type="button" class="btn btn-primary" id="btnAdd">Add Category</button>
+                        <button type="button" class="btn btn-primary" id="btnImport">Import Category</button>
                     </div>
                 }
                 <table class="display" id="basic-1">
@@ -154,6 +155,7 @@
 </div>
 <!-- Delete modal -->
 
+
 <div class="modal fade open" id="activeinactiveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -174,106 +176,148 @@
     </div>
 </div>
 
+<!-- Import Modal -->
+<div class="modal fade open" id="importmodal" tabindex="-1" role="dialog" aria-labelledby="importmodal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Category Import</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("ImportExcel", "Inquiry", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    <div>
+                        Select Excel file <input type="file" name="importfile" />
+                    </div>
+                }
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="hdnDeleteCategory" />
+                <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
+                <button id="btnSaveImport" class="btn btn-primary" type="button">Import</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Delete modal -->
 @*<script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>*@
 
 <script>
 
-    //jQuery(document).ready(function () {
-    //    StartLoading()
-    //    jQuery('html, body').animate({ scrollTop: 0 }, 1000);
-    //});
+                //jQuery(document).ready(function () {
+                //    StartLoading()
+                //    jQuery('html, body').animate({ scrollTop: 0 }, 1000);
+                //});
 
-    $(document).on("click", "#btnAdd", function () {
-        window.location.href = "/admin/category/add";
-    });
+                $(document).on("click", "#btnAdd", function () {
+                        window.location.href = "/admin/category/add";
+                    });
 
-    function fnDeleteCategory(cat_id) {
-        jQuery("#hdnDeleteCategory").val(cat_id);
-        $('#deleteCategoryModal').modal('show');
-    }
-
-    //jQuery(window).on("load", function () {
-    //    StopLoading();
-    //});
-
-    jQuery(document).on("click", "#btnDeleteCategory", function () {
-
-        var Category_id = jQuery("#hdnDeleteCategory").val();
-        if (Category_id != "" && Category_id != null) {
-            $('#deleteCategoryModal').modal('hide');
-
-            StartLoading();
-
-            var URL = '@Url.Action("DeleteCategory", "Category")';
-            $.ajax({
-                type: 'POST',
-                async: true,
-                url: URL + "?CategoryId=" + Category_id,
-                success: function (result) {
-                    if (result == "success") {
-                        alert("Category deleted successfully");
-                        window.location.reload();
-                    }
-                    else if (result == "notfound") {
-                        alert("Category Not Found");
-                    }
-                    else {
-                        alert("Something went wrong. Please try again");
+                function fnDeleteCategory(cat_id)
+                    {
+                        jQuery("#hdnDeleteCategory").val(cat_id);
+                    $('#deleteCategoryModal').modal('show');
                     }
 
-                   StopLoading();
-                },
-                error: function (resultData) {
-                    StopLoading();
-                }
-            });
-        }
-    });
+                    //jQuery(window).on("load", function () {
+                    //    StopLoading();
+                    //});
+
+                    jQuery(document).on("click", "#btnDeleteCategory", function () {
+
+                        var Category_id = jQuery("#hdnDeleteCategory").val();
+                        if (Category_id != "" && Category_id != null)
+                        {
+                        $('#deleteCategoryModal').modal('hide');
+
+                            StartLoading();
+
+                            var URL = '@Url.Action("DeleteCategory", "Category")';
+                        $.ajax({
+                            type: 'POST',
+                            async: true,
+                            url: URL + "?CategoryId=" + Category_id,
+                            success: function(result) {
+                                    if (result == "success")
+                                    {
+                                        alert("Category deleted successfully");
+                                        window.location.reload();
+                                    }
+                                    else if (result == "notfound")
+                                    {
+                                        alert("Category Not Found");
+                                    }
+                                    else
+                                    {
+                                        alert("Something went wrong. Please try again");
+                                    }
+
+                                    StopLoading();
+                                },
+                            error: function(resultData) {
+                                    StopLoading();
+                                }
+                            });
+                        }
+                    });
 
 
 
 
-     function fnChangeStatus(cat_id,status) {
-         jQuery("#hdndataId").val(cat_id);
-         jQuery("#hdnstatus").val(status);
-         if (status == "Active") {
-             $('#activeinactiveModal .modal-body').html(" Are you sure you want to make active ?");
-         }
-         else {
-             $('#activeinactiveModal .modal-body').html(" Are you sure you want to make inactive ?");
-         }
-        $('#activeinactiveModal').modal('show');
-    }
-
-       jQuery(document).on("click", "#btnChangeStatus", function () {
-
-        var Id = jQuery("#hdndataId").val();
-        if (Id != "" && Id != null) {
-            $('#activeinactiveModal').modal('hide');
-
-            StartLoading();
-
-            var URL = '@Url.Action("ChangeStatus", "Category")';
-            $.ajax({
-                type: 'POST',
-                async: true,
-                url: URL + "?Id=" + Id+"&Status="+jQuery("#hdnstatus").val(),
-                success: function (result) {
-                    if (result == "success") {
-                        alert("Status change Successfully...");
-                        window.location.reload();
+                 function fnChangeStatus(cat_id, status)
+                    {
+                        jQuery("#hdndataId").val(cat_id);
+                        jQuery("#hdnstatus").val(status);
+                        if (status == "Active")
+                        {
+                         $('#activeinactiveModal .modal-body').html(" Are you sure you want to make active ?");
+                        }
+                        else
+                        {
+                         $('#activeinactiveModal .modal-body').html(" Are you sure you want to make inactive ?");
+                        }
+                    $('#activeinactiveModal').modal('show');
                     }
-                    else {
-                        alert("Something went wrong. Please try again");
-                    }
 
-                   StopLoading();
-                },
-                error: function (resultData) {
-                    StopLoading();
-                }
-            });
-        }
-    });
+                    jQuery(document).on("click", "#btnChangeStatus", function () {
+
+                        var Id = jQuery("#hdndataId").val();
+                        if (Id != "" && Id != null)
+                        {
+                        $('#activeinactiveModal').modal('hide');
+
+                            StartLoading();
+
+                            var URL = '@Url.Action("ChangeStatus", "Category")';
+                           $.ajax({
+                            type: 'POST',
+                            async: true,
+                            url: URL + "?Id=" + Id + "&Status=" + jQuery("#hdnstatus").val(),
+                            success: function(result) {
+                                    if (result == "success")
+                                    {
+                                        alert("Status change Successfully...");
+                                        window.location.reload();
+                                    }
+                                    else
+                                    {
+                                        alert("Something went wrong. Please try again");
+                                    }
+
+                                    StopLoading();
+                                },
+                            error: function(resultData) {
+                                    StopLoading();
+                                }
+                            });
+                        }
+                    });
+
+
+     $(document).on("click", "#btnImport", function () {
+               // $("#importmodal").modal("show"); 
+         window.location.href = "/admin/ImportExcel/Category";
+      });
 
 </script>

@@ -24,5 +24,7 @@ namespace KrupaBuildGallery.ViewModel
         public string ItemStatustxt { get; set; }
         public bool IsReturnable { get; set; }
         public string VariantQtytxt { get; set; }
+        public decimal FinalAmt { get; set; }
+        public decimal ShipingChargeOf1Item { get; set; }
     }
 }
