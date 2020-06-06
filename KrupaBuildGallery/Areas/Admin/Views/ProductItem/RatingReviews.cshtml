@@ -61,6 +61,7 @@
                             <th width="15%;">Item Name</th>
                             <th>Client Name</th>
                             <th>Order No</th>
+                            <td>Rating Date</td>
                             <th>Ratings</th>
                             <th>Reviews</th>
                         </tr>
@@ -77,6 +78,7 @@
                                     </td>
                                     <td>@objrtng.ClientName</td>
                                     <td>@objrtng.OrderId</td>
+                                    <td>@CommonMethod.ConvertFromUTC(objrtng.RatingDate)</td>
                                     <td>@objrtng.Ratings</td>
                                     <td>@objrtng.Review</td>
                                 </tr>
