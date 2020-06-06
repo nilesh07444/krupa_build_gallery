@@ -1,6 +1,7 @@
 ﻿using ConstructionDiary.Models;
 using KrupaBuildGallery.Helper;
 using KrupaBuildGallery.Model;
+using KrupaBuildGallery.ViewModel.Admin;
 using System;
 using System.Collections.Generic;
 using System.Data.Objects.SqlClient;
@@ -375,6 +376,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         }
 
         public ActionResult Edit(int Id)
+        
         {
             ProductItemVM objProductItem = new ProductItemVM();
 
@@ -996,5 +998,27 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return PartialView("~/Areas/Admin/Views/ProductItem/_UnitPriceSet.cshtml");
         }
 
+        public ActionResult RatingReviews(decimal Rating = -1)
+        {
+            List<RatingReviewVM> lstRatings = new List<RatingReviewVM>();
+            lstRatings = (from p in _db.tbl_ReviewRating
+                        join c in _db.tbl_ClientUsers on p.ClientUserId equals c.ClientUserId
+                        join pr in _db.tbl_ProductItems on p.ProductItemId equals pr.ProductItemId  
+                        join orddet in _db.tbl_OrderItemDetails on p.OrderDetailId equals orddet.OrderDetailId
+                        where Rating == -1 || p.Rating == Rating
+                        select new RatingReviewVM
+                        {
+                            OrderId = orddet.OrderId.Value,
+                            ClientName = c.FirstName + " " + c.LastName,
+                            MobileNo = c.MobileNo,
+                            Ratings = p.Rating.Value,
+                            Review = p.Review,
+                            ItemName = pr.ItemName,
+                            RatingReviewId = p.ReviewRatingId,
+                            RatingDate = p.CreatedDate.Value                            
+                        }).OrderByDescending(x => x.RatingDate).ToList();
+            ViewBag.Ratings = Rating;
+            return View(lstRatings);
+        }
     }
 }

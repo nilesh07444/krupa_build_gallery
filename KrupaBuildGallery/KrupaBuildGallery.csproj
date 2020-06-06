@@ -400,6 +400,7 @@
     <Compile Include="ViewModel\Admin\HomeImageVM.cs" />
     <Compile Include="ViewModel\Admin\ImportExcelDataVM.cs" />
     <Compile Include="ViewModel\Admin\LoginHistoryVM.cs" />
+    <Compile Include="ViewModel\Admin\RatingReviewVM.cs" />
     <Compile Include="ViewModel\Admin\RoleModuleVM.cs" />
     <Compile Include="ViewModel\Admin\RoleVM.cs" />
     <Compile Include="ViewModel\Admin\UserPermissionVM.cs" />
@@ -4004,6 +4005,7 @@
     <Content Include="Areas\Admin\Views\ComboOffer\Index.cshtml" />
     <Content Include="Areas\Admin\Views\ComboOffer\Add.cshtml" />
     <Content Include="Areas\Admin\Views\ComboOffer\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\ProductItem\RatingReviews.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />
