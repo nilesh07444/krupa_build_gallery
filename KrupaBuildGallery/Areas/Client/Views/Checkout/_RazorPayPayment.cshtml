@@ -38,6 +38,16 @@
                         return false;
                     }
                 }
+
+                 if ($("#cashlimitoforderyear").length > 0) {
+                     var limitordr = parseFloat($("#cashlimitoforderyear").val());
+                     var cshordryear = parseFloat($("#cashorderyear").val());
+                     cshordryear = cshordryear + ord;
+                    if (cshordryear > limitordr) {
+                        alert("Your Yearly Cash On Delivery limit exceed");
+                        return false;
+                    }
+                }
             }
             $(".errorcls").html("");
             var flg = true;

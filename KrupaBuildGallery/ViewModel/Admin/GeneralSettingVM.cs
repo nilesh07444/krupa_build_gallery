@@ -35,6 +35,8 @@ namespace KrupaBuildGallery
         public decimal? CashLimitPerYear { get; set; }
         //
         public string AdvertiseBannerImage { get; set; }
+        public string RazorPayKey { get; set; }
+        public string RazorPaySecret { get; set; }
 
     }
 }
