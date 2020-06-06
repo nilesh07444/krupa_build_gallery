@@ -47,6 +47,7 @@
         <EntityTypeShape EntityType="krupagalleryModel.tbl_OrderItemDetails" Width="1.5" PointX="19.375" PointY="15.75" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_ReviewRating" Width="1.5" PointX="20.375" PointY="0.75" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_ComboOffer" Width="1.5" PointX="15.375" PointY="20.75" />
+        <EntityTypeShape EntityType="krupagalleryModel.tbl_ImportExcel" Width="1.5" PointX="3.375" PointY="21.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

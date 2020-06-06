@@ -1,7 +1,9 @@
 ﻿@model ImportExcelDataVM
+@using KrupaBuildGallery.Model;
 
 @{
     ViewBag.Title = "Import Sub Product";
+    List<tbl_ImportExcel> lstImportlog = ViewData["lstExcl"] as List<tbl_ImportExcel>;
 }
 
 <div class="page-body">
@@ -59,6 +61,37 @@
                 </div>
             </div>
         </div>
+        @if (lstImportlog != null && lstImportlog.Count() > 0)
+        {
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Import Error Log</h5>
+                        </div>
+                        <div class="card-body">
+                            <table class="display" id="basic-1">
+                                <thead>
+                                    <tr>
+                                        <th>Excel Sr No.</th>
+                                        <th>ErrorLog</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var objlog in lstImportlog)
+                                    {
+                                        <tr class="gradeX">
+                                            <td>@objlog.SrNo</td>
+                                            <td>@objlog.ErroMsg</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
     </div>
     <!-- Container-fluid Ends-->
 

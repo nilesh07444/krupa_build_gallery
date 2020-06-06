@@ -325,6 +325,9 @@
     <Compile Include="Model\tbl_HomeImages.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\tbl_ImportExcel.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\tbl_ItemReturnCancelReplace.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>

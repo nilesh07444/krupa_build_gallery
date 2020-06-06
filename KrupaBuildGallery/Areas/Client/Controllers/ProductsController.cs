@@ -382,9 +382,9 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             objProductItem.InStock = TotalStk - TotalSold;
             var objUnt = _db.tbl_Units.Where(o => o.UnitId == objProductItem.UnitType).FirstOrDefault();
             List<tbl_ItemVariant> lstVarint = new List<tbl_ItemVariant>();
-            string[] kgs = { "50 Grams", "100 Grams", "250 Grams", "500 Grams", "1 Killo", "2 Killo", "5 Killo" };
+            string[] kgs = { "50 Grams", "100 Grams", "250 Grams", "500 Grams", "1 Kg", "2 Kg", "5 Kg" };
             string[] kgsQty = { "0.05", "0.10", "0.25", "0.50", "1", "2", "5" };
-            string[] ltrs = { "50 ml", "100 ml", "250 ml", "500 ml", "1 litre", "2 litres", "5 litres" };
+            string[] ltrs = { "50 ml", "100 ml", "250 ml", "500 ml", "1 Ltr", "2 Ltr", "5 Ltr" };
             string[] ltrsQty = { "0.05", "0.10", "0.25", "0.50", "1", "2", "5" };
 
             string[] sheets = { "8x4", "7x4", "7x3", "6x4", "6x3" };

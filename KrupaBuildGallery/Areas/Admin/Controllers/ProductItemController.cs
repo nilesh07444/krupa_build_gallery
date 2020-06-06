@@ -187,11 +187,12 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         objProductItem.IsCashonDeliveryUse = productItemVM.IsCashonDelieveryuse;
                         objProductItem.MinimumStock = productItemVM.MinimumQty;
                         objProductItem.UnitType = productItemVM.UnitType;
+                        objProductItem.Tags = productItemVM.Tags;
                         _db.tbl_ProductItems.Add(objProductItem);
                         _db.SaveChanges();
-                        string[] kgs = { "50 Grams", "100 Grams", "250 Grams", "500 Grams", "1 Killo", "2 Killo", "5 Killo" };
+                        string[] kgs = { "50 Grams", "100 Grams", "250 Grams", "500 Grams", "1 Kg", "2 Kg", "5 Kg" };
                         string[] kgsQty = { "0.05", "0.10", "0.25", "0.50", "1", "2", "5" };
-                        string[] ltrs = { "50 ml", "100 ml", "250 ml", "500 ml", "1 litre", "2 litres", "5 litres" };
+                        string[] ltrs = { "50 ml", "100 ml", "250 ml", "500 ml", "1 Ltr", "2 Ltr", "5 Ltr" };
                         string[] ltrsQty = { "0.05", "0.10", "0.25", "0.50", "1", "2", "5" };
 
                         string[] sheets = { "8x4", "7x4", "7x3", "6x4", "6x3" };
@@ -256,6 +257,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             {
                                 for (int kk = 1; kk <= sheets.Length; kk++)
                                 {
+                                    int k = kk - 1;
                                     tbl_ItemVariant objtbl_ItemVariant = new tbl_ItemVariant();
                                     objtbl_ItemVariant.ProductItemId = objProductItem.ProductItemId;
                                     objtbl_ItemVariant.IsActive = false;
@@ -263,8 +265,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                     {
                                         objtbl_ItemVariant.IsActive = true;
                                     }
-                                    decimal sqft = Convert.ToDecimal(sheetsqty[kk]);
-                                    objtbl_ItemVariant.UnitQty = sheets[kk];
+                                    decimal sqft = Convert.ToDecimal(sheetsqty[k]);
+                                    objtbl_ItemVariant.UnitQty = sheets[k];
                                     objtbl_ItemVariant.CustomerPrice = Math.Round(sqft * objProductItem.CustomerPrice, 2);
                                     objtbl_ItemVariant.DistributorPrice = Math.Round(sqft * objProductItem.DistributorPrice, 2);
                                     objtbl_ItemVariant.PricePecentage = 100;
@@ -473,12 +475,13 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         objProductItem.MinimumStock = productItemVM.MinimumQty;
                         objProductItem.UnitType = productItemVM.UnitType;
                         objProductItem.IsCashonDeliveryUse = productItemVM.IsCashonDelieveryuse;
+                        objProductItem.Tags = productItemVM.Tags;
                         objProductItem.ItemType = productItemVM.ItemType;
                         _db.SaveChanges();
 
-                        string[] kgs = { "50 Grams", "100 Grams", "250 Grams", "500 Grams", "1 Killo", "2 Killo", "5 Killo" };
+                        string[] kgs = { "50 Grams", "100 Grams", "250 Grams", "500 Grams", "1 Kg", "2 Kg", "5 Kg" };
                         string[] kgsQty = { "0.05", "0.10", "0.25", "0.50", "1", "2", "5" };
-                        string[] ltrs = { "50 ml", "100 ml", "250 ml", "500 ml", "1 litre", "2 litres", "5 litres" };
+                        string[] ltrs = { "50 ml", "100 ml", "250 ml", "500 ml", "1 Ltr", "2 Ltr", "5 Ltr" };
                         string[] ltrsQty = { "0.05", "0.10", "0.25", "0.50", "1", "2", "5" };
 
                         string[] sheets = { "8x4", "7x4", "7x3", "6x4", "6x3" };
@@ -913,9 +916,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
         public ActionResult GetUnitsData(int UnitTypeId,int ProductItemId = 0)
         {
-            string[] kgs = { "50 Grams", "100 Grams", "250 Grams", "500 Grams", "1 Killo", "2 Killo", "5 Killo" };
+            string[] kgs = { "50 Grams", "100 Grams", "250 Grams", "500 Grams", "1 Kg", "2 Kg", "5 Kg" };
             string[] kgsQty = { "0.05", "0.10", "0.25", "0.50", "1", "2", "5" };
-            string[] ltrs = { "50 ml", "100 ml", "250 ml", "500 ml", "1 litre", "2 litres", "5 litres" };
+            string[] ltrs = { "50 ml", "100 ml", "250 ml", "500 ml", "1 Ltr", "2 Ltr", "5 Ltr" };
             string[] ltrsQty = { "0.05", "0.10", "0.25", "0.50", "1", "2", "5" };
 
             string[] sheets = { "8x4", "7x4", "7x3", "6x4", "6x3" };

@@ -25,5 +25,6 @@ namespace KrupaBuildGallery.Model
         public System.DateTime CreatedDate { get; set; }
         public Nullable<long> UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDate { get; set; }
+        public Nullable<bool> IsImported { get; set; }
     }
 }

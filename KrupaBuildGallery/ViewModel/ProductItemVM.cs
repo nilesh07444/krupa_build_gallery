@@ -115,5 +115,7 @@ namespace KrupaBuildGallery
         public List<VariantItemVM> VariantItems { get; set; }
         
         public decimal Ratings { get; set; }
+
+        public string ItemTag { get; set; }
     }
 }

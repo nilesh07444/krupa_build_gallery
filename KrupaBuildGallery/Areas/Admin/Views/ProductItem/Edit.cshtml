@@ -104,7 +104,7 @@
                             </div>
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.ItemDescription, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
-                                @Html.TextAreaFor(model => model.ItemDescription,new { @class = "form-control col-md-8", @placeholder = "Enter Item Description", maxlength = "200", cols = 35, @rows = 4 , @style = "width:600px;height:80px;" })
+                                @Html.TextAreaFor(model => model.ItemDescription, new { @class = "form-control col-md-8", @placeholder = "Enter Item Description", maxlength = "200", cols = 35, @rows = 4, @style = "width:600px;height:80px;" })
                                 @Html.ValidationMessageFor(model => model.ItemDescription, "", new { @class = "text-danger" })
                             </div>
 
@@ -201,6 +201,11 @@
 
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.PayAdvancePer, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.Tags, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.EditorFor(model => model.Tags, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Keywords with coma seprated", maxlength = "200" } })
+                                <lable class="col-xl-3 col-md-4"></lable>
                             </div>
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.UnitType, htmlAttributes: new { @class = "col-xl-3 col-md-4" })

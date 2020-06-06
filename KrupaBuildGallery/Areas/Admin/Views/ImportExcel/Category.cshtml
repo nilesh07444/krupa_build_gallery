@@ -1,8 +1,8 @@
-﻿
-@model ImportExcelDataVM
-
+﻿@model ImportExcelDataVM
+@using KrupaBuildGallery.Model;
 @{
     ViewBag.Title = "Import Category";
+    List<tbl_ImportExcel> lstImportlog = ViewData["lstExcl"] as List<tbl_ImportExcel>;
 }
 
 <div class="page-body">
@@ -20,7 +20,7 @@
                 </div>
                 <div class="col-lg-6">
                     <ol class="breadcrumb pull-right">
-                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li> 
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
                         <li class="breadcrumb-item active">Import Category</li>
                     </ol>
                 </div>
@@ -42,7 +42,7 @@
 
                             @Html.AntiForgeryToken()
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                              
+
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.ExcelFile, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.TextBoxFor(model => model.ExcelFile, new { type = "file", @class = "form-control col-md-8" })
@@ -53,13 +53,45 @@
 
                             <div class="form-group row">
                                 <lable class="col-xl-3 col-md-4"></lable>
-                                <button type="submit" class="btn btn-primary" style="margin-right:10px;">Submit</button> 
+                                <button type="submit" class="btn btn-primary" style="margin-right:10px;">Submit</button>
                             </div>
                         }
                     </div>
                 </div>
             </div>
         </div>
+        @if (lstImportlog != null && lstImportlog.Count() > 0)
+        {
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5>Import Error Log</h5>
+                        </div>
+                        <div class="card-body">
+                            <table class="display" id="basic-1">
+                                <thead>
+                                    <tr>
+                                        <th>Excel Sr No.</th>
+                                        <th>ErrorLog</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var objlog in lstImportlog)
+                                    {
+                                        <tr class="gradeX">
+                                            <td>@objlog.SrNo</td>
+                                            <td>@objlog.ErroMsg</td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
     </div>
     <!-- Container-fluid Ends-->
 
@@ -68,9 +100,9 @@
 <script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>
 <script src="~/Scripts/jquery.validate.min.js"></script>
 <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
- <script>
+<script>
      var strmsg = '@Convert.ToString(ViewBag.Message)';
      if (strmsg != "") {
          alert(strmsg);
      }
- </script>
+</script>

@@ -112,6 +112,7 @@
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="UpdatedBy" Type="bigint" />
           <Property Name="UpdatedDate" Type="datetime" />
+          <Property Name="IsImported" Type="bit" />
         </EntityType>
         <EntityType Name="tbl_ClientOtherDetails">
           <Key>
@@ -346,6 +347,17 @@
           <Property Name="UpdatedBy" Type="bigint" />
           <Property Name="UpdatedDate" Type="datetime" />
           <Property Name="HomeImageFor" Type="int" />
+        </EntityType>
+        <EntityType Name="tbl_ImportExcel">
+          <Key>
+            <PropertyRef Name="ImportExcelId" />
+          </Key>
+          <Property Name="ImportExcelId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SrNo" Type="nvarchar" MaxLength="30" />
+          <Property Name="ErroMsg" Type="nvarchar(max)" />
+          <Property Name="ImportedDate" Type="datetime" />
+          <Property Name="ImportedBy" Type="bigint" />
+          <Property Name="ImportType" Type="int" />
         </EntityType>
         <EntityType Name="tbl_ItemReturnCancelReplace">
           <Key>
@@ -593,6 +605,9 @@
           <Property Name="IsCashonDeliveryUse" Type="bit" />
           <Property Name="MinimumStock" Type="int" />
           <Property Name="UnitType" Type="int" />
+          <Property Name="IsComboOffer" Type="bit" />
+          <Property Name="ComboOfferId" Type="bigint" />
+          <Property Name="IsImported" Type="bit" />
         </EntityType>
         <EntityType Name="tbl_Products">
           <Key>
@@ -608,6 +623,7 @@
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="UpdatedBy" Type="bigint" />
           <Property Name="UpdatedDate" Type="datetime" />
+          <Property Name="IsImported" Type="bit" />
         </EntityType>
         <EntityType Name="tbl_ReviewRating">
           <Key>
@@ -648,6 +664,7 @@
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="UpdatedBy" Type="bigint" />
           <Property Name="UpdatedDate" Type="datetime" />
+          <Property Name="IsImported" Type="bit" />
         </EntityType>
         <EntityType Name="tbl_Transactions">
           <Key>
@@ -738,6 +755,7 @@
           <EntitySet Name="tbl_GSTMaster" EntityType="Self.tbl_GSTMaster" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_HappyCustomers" EntityType="Self.tbl_HappyCustomers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_HomeImages" EntityType="Self.tbl_HomeImages" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_ImportExcel" EntityType="Self.tbl_ImportExcel" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ItemReturnCancelReplace" EntityType="Self.tbl_ItemReturnCancelReplace" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ItemStocks" EntityType="Self.tbl_ItemStocks" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Itemtext_master" EntityType="Self.tbl_Itemtext_master" Schema="dbo" store:Type="Tables" />
@@ -809,6 +827,7 @@
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="UpdatedBy" Type="Int64" />
           <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <Property Name="IsImported" Type="Boolean" />
         </EntityType>
         <EntityType Name="tbl_ClientOtherDetails">
           <Key>
@@ -1128,6 +1147,9 @@
           <Property Name="IsCashonDeliveryUse" Type="Boolean" />
           <Property Name="MinimumStock" Type="Int32" />
           <Property Name="UnitType" Type="Int32" />
+          <Property Name="IsComboOffer" Type="Boolean" />
+          <Property Name="ComboOfferId" Type="Int64" />
+          <Property Name="IsImported" Type="Boolean" />
         </EntityType>
         <EntityType Name="tbl_Products">
           <Key>
@@ -1143,6 +1165,7 @@
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="UpdatedBy" Type="Int64" />
           <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <Property Name="IsImported" Type="Boolean" />
         </EntityType>
         <EntityType Name="tbl_SubProducts">
           <Key>
@@ -1159,6 +1182,7 @@
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="UpdatedBy" Type="Int64" />
           <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <Property Name="IsImported" Type="Boolean" />
         </EntityType>
         <EntityType Name="tbl_WishList">
           <Key>
@@ -1218,6 +1242,7 @@
           <EntitySet Name="tbl_OrderItemDetails" EntityType="krupagalleryModel.tbl_OrderItemDetails" />
           <EntitySet Name="tbl_ReviewRating" EntityType="krupagalleryModel.tbl_ReviewRating" />
           <EntitySet Name="tbl_ComboOffer" EntityType="krupagalleryModel.tbl_ComboOffer" />
+          <EntitySet Name="tbl_ImportExcel" EntityType="krupagalleryModel.tbl_ImportExcel" />
         </EntityContainer>
         <EntityType Name="tbl_AdminRoles">
           <Key>
@@ -1539,6 +1564,17 @@
           <Property Name="IsActive" Type="Boolean" />
           <Property Name="IsDeleted" Type="Boolean" />
         </EntityType>
+        <EntityType Name="tbl_ImportExcel">
+          <Key>
+            <PropertyRef Name="ImportExcelId" />
+          </Key>
+          <Property Name="ImportExcelId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SrNo" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="ErroMsg" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ImportedDate" Type="DateTime" Precision="3" />
+          <Property Name="ImportedBy" Type="Int64" />
+          <Property Name="ImportType" Type="Int32" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1572,6 +1608,7 @@
           <EntitySetMapping Name="tbl_Categories">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_Categories">
               <MappingFragment StoreEntitySet="tbl_Categories">
+                <ScalarProperty Name="IsImported" ColumnName="IsImported" />
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
                 <ScalarProperty Name="CategoryName" ColumnName="CategoryName" />
                 <ScalarProperty Name="CategoryImage" ColumnName="CategoryImage" />
@@ -1884,6 +1921,9 @@
           <EntitySetMapping Name="tbl_ProductItems">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_ProductItems">
               <MappingFragment StoreEntitySet="tbl_ProductItems">
+                <ScalarProperty Name="IsImported" ColumnName="IsImported" />
+                <ScalarProperty Name="ComboOfferId" ColumnName="ComboOfferId" />
+                <ScalarProperty Name="IsComboOffer" ColumnName="IsComboOffer" />
                 <ScalarProperty Name="UnitType" ColumnName="UnitType" />
                 <ScalarProperty Name="MinimumStock" ColumnName="MinimumStock" />
                 <ScalarProperty Name="IsCashonDeliveryUse" ColumnName="IsCashonDeliveryUse" />
@@ -1922,6 +1962,7 @@
           <EntitySetMapping Name="tbl_Products">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_Products">
               <MappingFragment StoreEntitySet="tbl_Products">
+                <ScalarProperty Name="IsImported" ColumnName="IsImported" />
                 <ScalarProperty Name="Product_Id" ColumnName="Product_Id" />
                 <ScalarProperty Name="ProductName" ColumnName="ProductName" />
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
@@ -1938,6 +1979,7 @@
           <EntitySetMapping Name="tbl_SubProducts">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_SubProducts">
               <MappingFragment StoreEntitySet="tbl_SubProducts">
+                <ScalarProperty Name="IsImported" ColumnName="IsImported" />
                 <ScalarProperty Name="SubProductId" ColumnName="SubProductId" />
                 <ScalarProperty Name="SubProductName" ColumnName="SubProductName" />
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
@@ -2271,6 +2313,18 @@
                 <ScalarProperty Name="MainItemsSubProductId" ColumnName="MainItemsSubProductId" />
                 <ScalarProperty Name="MainItemCatId" ColumnName="MainItemCatId" />
                 <ScalarProperty Name="ComboOfferId" ColumnName="ComboOfferId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_ImportExcel">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_ImportExcel">
+              <MappingFragment StoreEntitySet="tbl_ImportExcel">
+                <ScalarProperty Name="ImportType" ColumnName="ImportType" />
+                <ScalarProperty Name="ImportedBy" ColumnName="ImportedBy" />
+                <ScalarProperty Name="ImportedDate" ColumnName="ImportedDate" />
+                <ScalarProperty Name="ErroMsg" ColumnName="ErroMsg" />
+                <ScalarProperty Name="SrNo" ColumnName="SrNo" />
+                <ScalarProperty Name="ImportExcelId" ColumnName="ImportExcelId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

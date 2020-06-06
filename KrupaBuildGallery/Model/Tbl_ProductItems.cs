@@ -46,5 +46,8 @@ namespace KrupaBuildGallery.Model
         public Nullable<bool> IsCashonDeliveryUse { get; set; }
         public Nullable<int> MinimumStock { get; set; }
         public Nullable<int> UnitType { get; set; }
+        public Nullable<bool> IsComboOffer { get; set; }
+        public Nullable<long> ComboOfferId { get; set; }
+        public Nullable<bool> IsImported { get; set; }
     }
 }

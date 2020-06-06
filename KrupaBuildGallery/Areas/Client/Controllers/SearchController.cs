@@ -27,7 +27,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                   join s in _db.tbl_SubProducts on i.SubProductId equals s.SubProductId into outerJoinSubProduct
                                   from s in outerJoinSubProduct.DefaultIfEmpty()
                                       //where !i.IsDelete && !c.IsDelete && !p.IsDelete
-                                  where !i.IsDelete && i.IsActive == true && !c.IsDelete && !p.IsDelete && (q.ToLower().Contains(i.ItemName.ToLower()) || i.ItemName.ToLower().Contains(q.ToLower()) || q.ToLower().Contains(c.CategoryName.ToLower()) || c.CategoryName.ToLower().Contains(q.ToLower()) || q.ToLower().Contains(p.ProductName.ToLower()) || p.ProductName.ToLower().Contains(q.ToLower()) || q.ToLower().Contains(s.SubProductName.ToLower()) || s.SubProductName.ToLower().Contains(q.ToLower()))
+                                  where !i.IsDelete && i.IsActive == true && !c.IsDelete && !p.IsDelete && (q.ToLower().Contains(i.ItemName.ToLower()) || (i.Tags != "" && i.Tags.ToLower().Contains(q.ToLower())) || i.ItemName.ToLower().Contains(q.ToLower()) || q.ToLower().Contains(c.CategoryName.ToLower()) || c.CategoryName.ToLower().Contains(q.ToLower()) || q.ToLower().Contains(p.ProductName.ToLower()) || p.ProductName.ToLower().Contains(q.ToLower()) || q.ToLower().Contains(s.SubProductName.ToLower()) || s.SubProductName.ToLower().Contains(q.ToLower()))
                                   select new ProductItemVM
                                   {
                                       ProductItemId = i.ProductItemId,

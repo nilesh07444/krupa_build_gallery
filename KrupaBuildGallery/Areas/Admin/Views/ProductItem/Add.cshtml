@@ -37,7 +37,7 @@
                         <h5>Add Product Item</h5>
                     </div>
                     <div class="card-body">
-                        @using (Html.BeginForm("Add", "ProductItem", FormMethod.Post, new { @id = "ProductItemFormId", @class = "needs-validation", enctype = "multipart/form-data", role = "form"}))
+                        @using (Html.BeginForm("Add", "ProductItem", FormMethod.Post, new { @id = "ProductItemFormId", @class = "needs-validation", enctype = "multipart/form-data", role = "form" }))
                         {
 
                             @Html.AntiForgeryToken()
@@ -111,7 +111,7 @@
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.ItemDescription, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
 
-                                @Html.TextAreaFor(model => model.ItemDescription, new { @class = "form-control col-md-8", @placeholder = "Enter Item Description", maxlength = "200", cols = 35, @rows = 4 , @style = "width:600px;height:80px;" })
+                                @Html.TextAreaFor(model => model.ItemDescription, new { @class = "form-control col-md-8", @placeholder = "Enter Item Description", maxlength = "200", cols = 35, @rows = 4, @style = "width:600px;height:80px;" })
 
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.ItemDescription, "", new { @class = "text-danger" })
@@ -174,7 +174,7 @@
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.InitialQty, "", new { @class = "text-danger" })
                             </div>
-                            <div class="form-group row"> 
+                            <div class="form-group row">
                                 @Html.LabelFor(model => model.MinimumQty, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.EditorFor(model => model.MinimumQty, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter quantity", maxlength = "15" } })
 
@@ -227,14 +227,19 @@
                                 @Html.ValidationMessageFor(model => model.PayAdvancePer, "", new { @class = "text-danger" })
                             </div>
                             <div class="form-group row">
+                                @Html.LabelFor(model => model.Tags, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.EditorFor(model => model.Tags, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Keywords with coma seprated", maxlength = "200" } })
+                                <lable class="col-xl-3 col-md-4"></lable>                                
+                            </div>
+                            <div class="form-group row">
                                 @Html.LabelFor(model => model.UnitType, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.DropDownListFor(model => model.UnitType, new SelectList(Model.UnitList, "Value", "Text"), "- Select Unit Type -", new { @class = "form-control col-md-8", style = "" })
 
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.UnitType, "", new { @class = "text-danger" })
                             </div>
-                            <div class="form-group row clsvarint">                               
-                                
+                            <div class="form-group row clsvarint">
+
                             </div>
                             <div class="form-group row">
                                 <lable class="col-xl-3 col-md-4"></lable>
