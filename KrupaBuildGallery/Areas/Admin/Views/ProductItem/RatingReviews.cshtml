@@ -1,0 +1,104 @@
+﻿@model List<KrupaBuildGallery.ViewModel.Admin.RatingReviewVM>
+@{
+    ViewBag.Title = "Ratings Reviews";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    int counter = 1;
+}
+
+<div class="page-body">
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="page-header-left">
+                        <h3>
+                            Ratings Reviews
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item active">Ratings Reviews</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h5>Ratings Reviews</h5>
+            </div>
+            <div class="card-body vendor-table">
+                <h3>Filter:</h3>
+                <div class="row" style="margin-top:25px;border-bottom: 2px solid #f8f8f9;padding-bottom: 25px;margin-bottom: 10px;">
+
+                    <div class="col-sm-2">
+                        <label>Ratings Reviews</label>
+                        <select id="selectrating" class="form-control">
+                            <option value="-1">All</option>
+                            <option value="0.5">0.5 Star</option>
+                            <option value="1">1 Star</option>
+                            <option value="1.5">1.5 Star</option>
+                            <option value="2">2 Star</option>
+                            <option value="2.5">2.5 Star</option>
+                            <option value="3">3 Star</option>
+                            <option value="3.5">3.5 Star</option>
+                            <option value="4">4 Star</option>
+                            <option value="4.5">4.5 Star</option>
+                            <option value="5">5 Star</option>
+                        </select>
+                    </div>
+                </div>
+                <table class="display" id="basic-1">
+                    <thead>
+                        <tr>
+                            <th width="10%;">#</th>
+                            <th width="15%;">Item Name</th>
+                            <th>Client Name</th>
+                            <th>Order No</th>
+                            <td>Rating Date</td>
+                            <th>Ratings</th>
+                            <th>Reviews</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            foreach (KrupaBuildGallery.ViewModel.Admin.RatingReviewVM objrtng in Model)
+                            {
+                                <tr class="gradeX">
+                                    <td>@counter.</td>
+                                    <td>
+                                        @objrtng.ItemName
+                                    </td>
+                                    <td>@objrtng.ClientName</td>
+                                    <td>@objrtng.OrderId</td>
+                                    <td>@CommonMethod.ConvertFromUTC(objrtng.RatingDate)</td>
+                                    <td>@objrtng.Ratings</td>
+                                    <td>@objrtng.Review</td>
+                                </tr>
+                                counter++;
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+</div>
+<script>
+       $(document).ready(function () {
+          $("#selectrating").val("@ViewBag.Ratings");
+       });
+
+    $("#selectrating").change(function () {
+      location.href = "/admin/productitem/RatingReviews?Rating="+$("#selectrating").val();
+    });
+</script>

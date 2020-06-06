@@ -27,6 +27,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             {
 
                 decimal ShippingChargeTotal = 0;
+                decimal Ordetotlyearly = 0;
                 decimal TotalDiscount = 0;
                 decimal TotalOrder = 0;
                 ViewBag.WebsiteOrderId = "1";
@@ -34,6 +35,27 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 if(type == "Cash")
                 {
                     IsCashOrd = true;
+                    int year1 = DateTime.UtcNow.Year;
+                    int toyear = year1 + 1;
+                    if (DateTime.UtcNow.Month <= 3)
+                    {
+                        year1 = year1 - 1;
+                        toyear = year1;
+                    }
+                    DateTime dtfincialyear = new DateTime(year1, 4, 1);
+                    DateTime dtendyear = new DateTime(toyear, 3, 31);
+                    List<OrderItemsVM> lstOrderItms = (from p in _db.tbl_OrderItemDetails
+                                                       join c in _db.tbl_Orders on p.OrderId equals c.OrderId                                                       
+                                                       where c.ClientUserId == clsClientSession.UserID && c.IsCashOnDelivery == true && p.ItemStatus != 5 && p.ItemStatus != 6 && p.ItemStatus != 8 && c.CreatedDate >= dtfincialyear && c.CreatedDate <= dtendyear
+                                                       select new OrderItemsVM
+                                                       {
+                                                          FinalAmt = p.FinalItemPrice.Value
+                                                       }).ToList();
+                   
+                    if(lstOrderItms != null && lstOrderItms.Count() > 0)
+                    {
+                        Ordetotlyearly = lstOrderItms.Sum(x => x.FinalAmt);
+                    }
                 }
                
                 string GuidNew = Guid.NewGuid().ToString();
@@ -223,6 +245,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 //_db.tbl_ClientOtherDetails.Where(o => o.ClientUserId == clsClientSession.UserID).FirstOrDefault();
                 ViewBag.WalletAmt = WalletAmt;
                 ViewBag.IsCashOnDelivery = IsCashOrd;
+                ViewBag.YearlyOrderPlaced = Ordetotlyearly;
             }
             catch (Exception ex)
             {
@@ -232,6 +255,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             var objGenralsetting = _db.tbl_GeneralSetting.FirstOrDefault();
             ViewBag.ShippingMsg = objGenralsetting.ShippingMessage;
             ViewBag.CashOrderAmtMax = objGenralsetting.CashLimitPerOrder;
+            ViewBag.CashOrderAmtYerly = objGenralsetting.CashLimitPerYear;
+            
             return View();
         }
 

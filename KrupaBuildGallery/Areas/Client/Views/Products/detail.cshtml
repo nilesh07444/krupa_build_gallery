@@ -57,7 +57,7 @@
     <div class="collection-wrapper">
         <div class="container">
             <div class="row">
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                     <div class="product-slick">
                         @if (Model.OtherImages != null && Model.OtherImages.Count() > 0)
                         {
@@ -114,7 +114,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-6 rtl-text">
+                <div class="col-lg-8 rtl-text">
                     <div class="product-right">
                         <h2>@Model.ItemName</h2>
                         @if (clsClientSession.UserID == 0 || (clsClientSession.UserID > 0 && clsClientSession.RoleID == 1))

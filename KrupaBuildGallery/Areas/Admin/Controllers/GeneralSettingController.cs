@@ -40,13 +40,13 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                         AdminEmail = s.AdminEmail,
                                         FromEmail = s.FromEmail,
                                         AdvertiseBannerImage = s.AdvertiseBannerImage,
-
                                         ReturnPerInGodhra = s.ReturnPerInGodhra,
                                         ReturnPerOutGodhra = s.ReturnPerOutGodhra,
                                         ExchangePer = s.ExchangePer,
                                         CashLimitPerOrder = s.CashLimitPerOrder,
-                                        CashLimitPerYear = s.CashLimitPerYear
-
+                                        CashLimitPerYear = s.CashLimitPerYear,
+                                        RazorPayKey = s.RazorPayKey,
+                                        RazorPaySecret = s.RazorPaySecret
                                     }).FirstOrDefault();
              
             return View(objGenSetting);
@@ -79,6 +79,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 decimal txtCashLimitPerOrder = string.IsNullOrEmpty(frm["txtCashLimitPerOrder"]) ? 0 : Convert.ToDecimal(frm["txtCashLimitPerOrder"]);
                 decimal txtCashLimitPerYear = string.IsNullOrEmpty(frm["txtCashLimitPerYear"]) ? 0 : Convert.ToDecimal(frm["txtCashLimitPerYear"]);
 
+                string RazorPaykey = frm["txtRazorPayKey"]; 
+                string RazorPayScrete = frm["txtRazorPaySecret"];
                 tbl_GeneralSetting objGenSetting = _db.tbl_GeneralSetting.FirstOrDefault();
                 objGenSetting.InitialPointCustomer = Convert.ToDecimal(intialpoints);
                 objGenSetting.ShippingMessage = shippingmsg;
@@ -90,7 +92,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 objGenSetting.AdminSMSNumber = txtsmsmobil.ToString();
                 objGenSetting.FromEmail = txtfrommail;
                 objGenSetting.EnableSSL = EnableSSL;
-
+                objGenSetting.RazorPayKey = RazorPaykey;
+                objGenSetting.RazorPaySecret = RazorPayScrete;
                 objGenSetting.ReturnPerInGodhra = txtReturnPerInGodhra;
                 objGenSetting.ReturnPerOutGodhra = txtReturnPerOutGodhra;
                 objGenSetting.ExchangePer = txtExchangePer;
