@@ -28,6 +28,9 @@
     // Get settings
     tbl_GeneralSetting objSetting = _db.tbl_GeneralSetting.FirstOrDefault();
 
+    // Get list of categories
+    List<List<CategoryVM>> lstCategoryMegaMenu = CommonMethod.GetCategoryForMegaMenu();
+
 }
 
 <!DOCTYPE html>
@@ -269,8 +272,43 @@
 
                                                     }
                                                 </ul>
-                                            </li>
+                                            </li> 
+                                        }
 
+                                        @if (lstCategoryMegaMenu != null && lstCategoryMegaMenu.Count > 0)
+                                        {
+                                            <li class="mega" id="hover-cls">
+                                                <a href="#">
+                                                    Products
+                                                </a>
+                                                <ul class="mega-menu full-mega-menu">
+                                                    <li>
+                                                        <div class="container">
+                                                            <div class="row">
+                                                                @foreach (List<CategoryVM> lstCat in lstCategoryMegaMenu)
+                                                                {
+                                                                    <div class="col mega-box">
+                                                                        <div class="link-section">
+                                                                            <div class="menu-content">
+                                                                                <ul>
+                                                                                    @foreach (CategoryVM category in lstCat)
+                                                                                    {
+                                                                                        <li>
+                                                                                            <a href="/products/bycategory/@category.CategoryId">
+                                                                                                @category.CategoryName
+                                                                                            </a>
+                                                                                        </li>
+                                                                                    }
+                                                                                </ul>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                } 
+                                                            </div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </li>
                                         }
 
                                         <li>
@@ -351,7 +389,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col" style="        padding-left: 5%;">
+                    <div class="col" style="padding-left: 5%;">
                         <div class="sub-title">
                             <div class="footer-title">
                                 <h4>my account</h4>

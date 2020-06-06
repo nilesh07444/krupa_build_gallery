@@ -100,14 +100,14 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                 int srno = 0;
                                 try
                                 {
-                                     srno = Convert.ToInt32(dr["SRNo"].ToString());
+                                    srno = Convert.ToInt32(dr["SRNo"].ToString());
                                     string CategoryNm = dr["CategoryName"].ToString();
                                     string CategoryImageName = "DefaultImg.png";
                                     if (string.IsNullOrEmpty(CategoryNm))
                                     {
                                         ImportExcelDataVM objimport = new ImportExcelDataVM();
                                         objimport.SrNo = srno;
-                                        objimport.ErrorMsg = "CatrgoryName is Blank";
+                                        objimport.ErrorMsg = "Category Name is Blank";
                                         lstImportExcl.Add(objimport);
                                         tbl_ImportExcel objtblex = new tbl_ImportExcel();
                                         objtblex.SrNo = srno.ToString();
@@ -122,11 +122,11 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                     else
                                     {
                                         var existCategory = _db.tbl_Categories.Where(x => x.CategoryName.ToLower() == CategoryNm.ToLower() && !x.IsDelete).FirstOrDefault();
-                                        if(existCategory != null)
+                                        if (existCategory != null)
                                         {
                                             ImportExcelDataVM objimport = new ImportExcelDataVM();
                                             objimport.SrNo = srno;
-                                            objimport.ErrorMsg = "CatrgoryName already exist";
+                                            objimport.ErrorMsg = "Category Name is already exist";
                                             lstImportExcl.Add(objimport);
                                             tbl_ImportExcel objtblex = new tbl_ImportExcel();
                                             objtblex.SrNo = srno.ToString();
@@ -139,7 +139,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                             continue;
                                         }
                                         string fileName = string.Empty;
-                                        
+
                                         tbl_Categories objCategory = new tbl_Categories();
                                         objCategory.CategoryName = CategoryNm;
                                         objCategory.CategoryImage = CategoryImageName;
@@ -151,9 +151,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                         objCategory.IsImported = true;
                                         _db.tbl_Categories.Add(objCategory);
                                         _db.SaveChanges();
-                                    }                                  
+                                    }
                                 }
-                                catch(Exception ex)
+                                catch (Exception ex)
                                 {
                                     ImportExcelDataVM objimport = new ImportExcelDataVM();
                                     objimport.SrNo = srno;
@@ -167,10 +167,10 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                     _db.tbl_ImportExcel.Add(objtblex);
                                     _db.SaveChanges();
                                 }
-                               
+
                             }
                             TempData["Result"] = "Categories Imported";
-                        }                        
+                        }
                         else
                         {
                             TempData["Result"] = "Please select Excel file with Data";
@@ -178,7 +178,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     }
                     catch (Exception e)
                     {
-                       
+
                     }
 
                     return RedirectToAction("Category");
@@ -281,7 +281,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                     {
                                         ImportExcelDataVM objimport = new ImportExcelDataVM();
                                         objimport.SrNo = srno;
-                                        objimport.ErrorMsg = "CatrgoryName Or ProductName is Blank";
+                                        objimport.ErrorMsg = "Category Name Or Product Name is Blank";
                                         lstImportExcl.Add(objimport);
                                         tbl_ImportExcel objtblex = new tbl_ImportExcel();
                                         objtblex.SrNo = srno.ToString();
@@ -314,7 +314,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                         }
 
                                         var objCatExist = lstCats.Where(o => o.CategoryName.ToLower() == CategoryNm.ToLower()).FirstOrDefault();
-                                        if(objCatExist == null)
+                                        if (objCatExist == null)
                                         {
                                             ImportExcelDataVM objimport = new ImportExcelDataVM();
                                             objimport.SrNo = srno;
@@ -335,7 +335,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                         tbl_Products objProducts = new tbl_Products();
                                         objProducts.ProductName = ProductNm;
                                         objProducts.ProductImage = ProductImageName;
-                                         
+
                                         objProducts.CategoryId = objCatExist.CategoryId;
                                         objProducts.IsActive = true;
                                         objProducts.IsDelete = false;
@@ -345,7 +345,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                         objProducts.UpdatedDate = DateTime.UtcNow;
                                         objProducts.IsImported = true;
                                         _db.tbl_Products.Add(objProducts);
-                                        _db.SaveChanges();                                       
+                                        _db.SaveChanges();
                                     }
                                 }
                                 catch (Exception ex)
@@ -475,13 +475,13 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                     string CategoryNm = dr["CategoryName"].ToString();
                                     string ProductNm = dr["ProductName"].ToString();
                                     string SubProductName = dr["SubProductName"].ToString();
-                                    
+
                                     string SubProductImageName = "DefaultImg.png";
                                     if (string.IsNullOrEmpty(CategoryNm) || string.IsNullOrEmpty(ProductNm) || string.IsNullOrEmpty(SubProductName))
                                     {
                                         ImportExcelDataVM objimport = new ImportExcelDataVM();
                                         objimport.SrNo = srno;
-                                        objimport.ErrorMsg = "CatrgoryName Or ProductName Or SubProductName is Blank";
+                                        objimport.ErrorMsg = "Category Name Or Product Name Or Sub ProductName is Blank";
                                         lstImportExcl.Add(objimport);
                                         tbl_ImportExcel objtblex = new tbl_ImportExcel();
                                         objtblex.SrNo = srno.ToString();
@@ -552,7 +552,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                             continue;
                                         }
 
-                                      
+
                                         string fileName = string.Empty;
 
                                         tbl_SubProducts objSubCategory = new tbl_SubProducts();
@@ -571,7 +571,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
                                         _db.tbl_SubProducts.Add(objSubCategory);
                                         _db.SaveChanges();
-                                        
+
                                     }
                                 }
                                 catch (Exception ex)
@@ -736,7 +736,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                     {
                                         ImportExcelDataVM objimport = new ImportExcelDataVM();
                                         objimport.SrNo = srno;
-                                        objimport.ErrorMsg = "CatrgoryName Or ProductName Or ItemName is Blank";
+                                        objimport.ErrorMsg = "Category Name Or Product Name Or Item Name is Blank";
                                         lstImportExcl.Add(objimport);
                                         tbl_ImportExcel objtblex = new tbl_ImportExcel();
                                         objtblex.SrNo = srno.ToString();
@@ -808,7 +808,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                         }
 
                                         long SubProductId = 0;
-                                        if(!string.IsNullOrEmpty(SubProductName))
+                                        if (!string.IsNullOrEmpty(SubProductName))
                                         {
                                             var existSubProduct = _db.tbl_SubProducts.Where(x => x.SubProductName.ToLower() == SubProductName.ToLower()
                && x.CategoryId == CatId && x.ProductId == ProdId
@@ -848,7 +848,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                         }
 
                                         var objGown = _db.tbl_Godown.Where(o => o.GodownName.ToLower() == GodownName && o.IsDeleted == false).FirstOrDefault();
-                                        if(objGown == null)
+                                        if (objGown == null)
                                         {
                                             tbl_ImportExcel objtblex = new tbl_ImportExcel();
                                             objtblex.SrNo = srno.ToString();
@@ -870,7 +870,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                         objProductItem.ItemName = ItemName;
                                         objProductItem.ItemDescription = Description;
                                         objProductItem.Sku = Sku;
-                                        if(string.IsNullOrEmpty(MRPPrice) || string.IsNullOrEmpty(CustomerPrice) || string.IsNullOrEmpty(DistributorPrice))
+                                        if (string.IsNullOrEmpty(MRPPrice) || string.IsNullOrEmpty(CustomerPrice) || string.IsNullOrEmpty(DistributorPrice))
                                         {
                                             ImportExcelDataVM objimport = new ImportExcelDataVM();
                                             objimport.SrNo = srno;
@@ -884,11 +884,11 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                             objtblex.ImportedBy = clsAdminSession.UserID;
                                             _db.tbl_ImportExcel.Add(objtblex);
                                             _db.SaveChanges();
-                                            continue;                                           
+                                            continue;
                                         }
                                         else
                                         {
-                                            if(!IsValidPriceFormat(MRPPrice))
+                                            if (!IsValidPriceFormat(MRPPrice))
                                             {
                                                 tbl_ImportExcel objtblex = new tbl_ImportExcel();
                                                 objtblex.SrNo = srno.ToString();
@@ -932,9 +932,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                         objProductItem.CustomerPrice = Convert.ToDecimal(CustomerPrice);
                                         objProductItem.DistributorPrice = Convert.ToDecimal(DistributorPrice);
                                         decimal GSTPer = 0;
-                                        if(!string.IsNullOrEmpty(GSTPercentage))
+                                        if (!string.IsNullOrEmpty(GSTPercentage))
                                         {
-                                            if(GSTPercentage == "0" || GSTPercentage == "5" || GSTPercentage == "12" || GSTPercentage == "18" || GSTPercentage == "28")
+                                            if (GSTPercentage == "0" || GSTPercentage == "5" || GSTPercentage == "12" || GSTPercentage == "18" || GSTPercentage == "28")
                                             {
                                                 GSTPer = Convert.ToDecimal(GSTPercentage);
                                             }
@@ -949,16 +949,16 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                                 _db.tbl_ImportExcel.Add(objtblex);
                                                 _db.SaveChanges();
                                                 continue;
-                                            }                                            
+                                            }
                                         }
                                         objProductItem.GST_Per = GSTPer;
                                         objProductItem.IGST_Per = Convert.ToDecimal(GSTPercentage);
                                         objProductItem.Notification = NotificationText;
                                         objProductItem.MainImage = MainImageName;
                                         bool IsPopulrItm = false;
-                                        if(!string.IsNullOrEmpty(IsPopularItem))
+                                        if (!string.IsNullOrEmpty(IsPopularItem))
                                         {
-                                            if(IsPopularItem == "Yes")
+                                            if (IsPopularItem.ToLower().Trim() == "yes")
                                             {
                                                 IsPopulrItm = true;
                                             }
@@ -966,7 +966,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                         bool IsRetunble = false;
                                         if (!string.IsNullOrEmpty(IsReturnable))
                                         {
-                                            if (IsReturnable == "Yes")
+                                            if (IsReturnable.ToLower().Trim() == "yes")
                                             {
                                                 IsRetunble = true;
                                             }
@@ -974,27 +974,27 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                         bool IsCashonDelv = false;
                                         if (!string.IsNullOrEmpty(CashOnDelivery))
                                         {
-                                            if (CashOnDelivery == "Yes")
+                                            if (CashOnDelivery.ToLower().Trim() == "yes")
                                             {
                                                 IsCashonDelv = true;
                                             }
                                         }
                                         decimal advncepay = 0;
-                                        if(!string.IsNullOrEmpty(AdvancePaymentPercentage))
+                                        if (!string.IsNullOrEmpty(AdvancePaymentPercentage))
                                         {
                                             advncepay = Convert.ToDecimal(AdvancePaymentPercentage);
                                         }
                                         objProductItem.IsPopularProduct = IsPopulrItm;
                                         decimal ShipingChrg = 0;
-                                        if(!string.IsNullOrEmpty(ShippingCharge))
+                                        if (!string.IsNullOrEmpty(ShippingCharge))
                                         {
                                             ShipingChrg = Convert.ToDecimal(ShippingCharge);
                                         }
 
                                         int itmtyp = 1;
-                                        if(!string.IsNullOrEmpty(PackedUnPacked))
+                                        if (!string.IsNullOrEmpty(PackedUnPacked))
                                         {
-                                            if(PackedUnPacked == "Packed")
+                                            if (PackedUnPacked.ToLower().Trim() == "packed")
                                             {
                                                 itmtyp = 1;
                                             }
@@ -1004,10 +1004,10 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                             }
                                         }
                                         int MiniStk = 0;
-                                        if(!string.IsNullOrEmpty(MinimumStock))
+                                        if (!string.IsNullOrEmpty(MinimumStock))
                                         {
                                             MiniStk = Convert.ToInt32(MinimumStock);
-                                        }                                        
+                                        }
 
                                         objProductItem.ShippingCharge = ShipingChrg;
                                         objProductItem.IsActive = true;
@@ -1054,11 +1054,11 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                                     tbl_ItemVariant objtbl_ItemVariant = new tbl_ItemVariant();
                                                     objtbl_ItemVariant.ProductItemId = objProductItem.ProductItemId;
                                                     objtbl_ItemVariant.IsActive = true;
-                                                   
+
                                                     if (lstPerVarint[kk - 1] != null)
                                                     {
                                                         decimal perc = 0;
-                                                        if(!string.IsNullOrEmpty(lstPerVarint[kk - 1]))
+                                                        if (!string.IsNullOrEmpty(lstPerVarint[kk - 1]))
                                                         {
                                                             perc = Convert.ToDecimal(lstPerVarint[kk - 1].ToString());
                                                         }
@@ -1113,7 +1113,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                                     tbl_ItemVariant objtbl_ItemVariant = new tbl_ItemVariant();
                                                     objtbl_ItemVariant.ProductItemId = objProductItem.ProductItemId;
                                                     objtbl_ItemVariant.IsActive = true;
-                                                   
+
                                                     decimal sqft = Convert.ToDecimal(sheetsqty[k]);
                                                     objtbl_ItemVariant.UnitQty = sheets[k];
                                                     objtbl_ItemVariant.CustomerPrice = Math.Round(sqft * objProductItem.CustomerPrice, 2);
@@ -1208,11 +1208,11 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     }
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
 
             }
-           
+
         }
 
         public bool IsValidPriceFormat(string prc)
@@ -1222,7 +1222,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             decimal amts2 = 0;
             bool result2 = decimal.TryParse(prc, out amts2);
-            if(result == true || result2 == true)
+            if (result == true || result2 == true)
             {
                 return true;
             }
