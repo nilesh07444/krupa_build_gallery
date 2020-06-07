@@ -141,7 +141,47 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             return View();
         }
-          
+
+        public string SendOTP(string MobileNumber)
+        {
+            try
+            {
+                tbl_AdminUsers objtbl_AdminUsers = _db.tbl_AdminUsers.Where(o =>  o.MobileNo.ToLower() == MobileNumber.ToLower() && !o.IsDeleted).FirstOrDefault();
+                if (objtbl_AdminUsers == null)
+                {
+                    return "NotExist";
+                }
+                if (!objtbl_AdminUsers.IsActive)
+                {
+                    return "InActiveAccount";
+                }
+
+                using (WebClient webClient = new WebClient())
+                {
+                    Random random = new Random();
+                    int num = random.Next(555555, 999999);
+                    string msg = "Your Otp code for Login is " + num;
+                    string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + MobileNumber + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    var json = webClient.DownloadString(url);
+                    if (json.Contains("invalidnumber"))
+                    {
+                        return "InvalidNumber";
+                    }
+                    else
+                    {                       
+                        string msg1 = "Your Otp code for Login is " + num;                      
+                        return num.ToString();
+
+                    }
+
+                }
+            }
+            catch (WebException ex)
+            {
+                throw ex;
+            }
+        }
+
         public ActionResult Signout()
         {
             tbl_LoginHistory objLogin = new tbl_LoginHistory();
