@@ -32,6 +32,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                  select new HomeImageVM
                                  {
                                      HomeImageId = c.HomeImageId,
+                                     HomeImageFor = c.HomeImageFor,
                                      HomeImageName = c.HomeImageName,
                                      HeadingText1 = c.HeadingText1,
                                      HeadingText2 = c.HeadingText2,

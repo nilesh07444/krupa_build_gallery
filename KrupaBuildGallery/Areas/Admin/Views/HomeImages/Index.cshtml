@@ -45,7 +45,6 @@
         </div>
     </div>
     <!-- Container-fluid Ends-->
-
     <!-- Container-fluid starts-->
     <div class="container-fluid">
         <div class="card">
@@ -64,6 +63,7 @@
                         <tr>
                             <th width="10%;">#</th>
                             <th width="15%;">Home Image</th>
+                            <th width="10%;">Image For</th>
                             <th>Heading Text 1</th>
                             <th>Heading Text 2</th>
                             <th width="15%;">Active</th>
@@ -96,6 +96,7 @@
                                         }
 
                                     </td>
+                                    <td>@(obj.HomeImageFor == 1 ? "Website" : "Mobile App")</td>
                                     <td>@obj.HeadingText1</td>
                                     <td>@obj.HeadingText2</td>
                                     @if (obj.IsActive == true)
