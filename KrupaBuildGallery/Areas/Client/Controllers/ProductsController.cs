@@ -299,6 +299,106 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             }
         }
 
+        public ActionResult ItemList(int CatId, int sortby = 3, int ProductId = -1,int SubProductId = -1)
+        {
+            long CategoryId = Convert.ToInt64(CatId);
+            List<ProductItemVM> lstProductItem = new List<ProductItemVM>();
+            try
+            {
+                ViewBag.Name = "";
+                var objCat = _db.tbl_Categories.Where(o => o.CategoryId == CategoryId).FirstOrDefault();
+                if (objCat != null)
+                {
+                    ViewBag.Name = objCat.CategoryName;
+                }
+                List<tbl_ReviewRating> lstRatings = _db.tbl_ReviewRating.ToList();
+                lstProductItem = (from i in _db.tbl_ProductItems
+                                      //join c in _db.tbl_Categories on i.CategoryId equals c.CategoryId
+                                      //join p in _db.tbl_Products on i.ProductId equals p.Product_Id
+                                      //join s in _db.tbl_SubProducts on i.SubProductId equals s.SubProductId into outerJoinSubProduct
+                                      //from s in outerJoinSubProduct.DefaultIfEmpty()
+                                      //where !i.IsDelete && !c.IsDelete && !p.IsDelete
+                                  where !i.IsDelete && i.IsActive == true && i.CategoryId == CategoryId && (ProductId == -1 || i.ProductId == ProductId) && (SubProductId == -1 || i.SubProductId == SubProductId)
+                                  select new ProductItemVM
+                                  {
+                                      ProductItemId = i.ProductItemId,
+                                      ProductId = i.ProductId,
+                                      SubProductId = i.SubProductId,
+                                      ItemName = i.ItemName,
+                                      MainImage = i.MainImage,
+                                      MRPPrice = i.MRPPrice,
+                                      CustomerPrice = i.CustomerPrice,
+                                      DistributorPrice = i.DistributorPrice,
+                                      IsActive = i.IsActive,
+                                      IsCashonDelieveryuse = i.IsCashonDeliveryUse.HasValue ? i.IsCashonDeliveryUse.Value : false
+                                  }).OrderBy(x => x.ItemName).ToList();
+
+                if (clsClientSession.UserID != 0)
+                {
+                    long UserId = clsClientSession.UserID;
+                    List<long> wishlistitemsId = _db.tbl_WishList.Where(o => o.ClientUserId == UserId).Select(o => o.ItemId.Value).ToList();
+                    lstProductItem.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); x.Ratings = GetRatingOfItem(x.ProductItemId, lstRatings); });
+                }
+                else
+                {
+                    lstProductItem.ForEach(x => { x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); x.Ratings = GetRatingOfItem(x.ProductItemId, lstRatings); });
+                }
+
+                if (sortby == 1)
+                {
+                    if (clsClientSession.UserID == 0 || clsClientSession.RoleID == 1)
+                    {
+                        lstProductItem = lstProductItem.OrderBy(o => o.CustomerPrice).ToList();
+                    }
+                    else
+                    {
+                        lstProductItem = lstProductItem.OrderBy(o => o.DistributorPrice).ToList();
+                    }
+                }
+                else if (sortby == 2)
+                {
+                    if (clsClientSession.UserID == 0 || clsClientSession.RoleID == 1)
+                    {
+                        lstProductItem = lstProductItem.OrderByDescending(o => o.CustomerPrice).ToList();
+                    }
+                    else
+                    {
+                        lstProductItem = lstProductItem.OrderByDescending(o => o.DistributorPrice).ToList();
+                    }
+                }
+                else if (sortby == 3)
+                {
+                    lstProductItem = lstProductItem.OrderBy(o => o.ItemName).ToList();
+                }
+                else if (sortby == 4)
+                {
+                    lstProductItem = lstProductItem.OrderByDescending(o => o.ItemName).ToList();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                string ErrorMessage = ex.Message.ToString();
+            }
+
+            ViewBag.SortBy = sortby;
+            ViewBag.FromPage = "/products/bycategory?Id=" + CategoryId;
+            ViewBag.ProductId = ProductId;
+            ViewBag.SubProductId = SubProductId;
+            ViewBag.CatId = CategoryId;
+            List<tbl_Products> lstProducts = _db.tbl_Products.Where(o => o.IsDelete == false && o.IsActive == true && o.CategoryId == CategoryId).ToList();
+            List<tbl_SubProducts> lstSubProd = new List<tbl_SubProducts>();
+            if(ProductId != -1)
+            {
+                lstSubProd = _db.tbl_SubProducts.Where(o => o.ProductId == ProductId && o.IsActive == true && o.IsDelete == false).ToList();
+            }
+
+            ViewData["lstProduc"] = lstProducts;
+            ViewData["lstSubProduc"] = lstSubProd;
+            // _db.tbl_ProductItems.Where(o => o.CategoryId == CategoryId).L();
+            return View("/Areas/Client/Views/Products/ProductItemList.cshtml", lstProductItem);
+        }
+
         [HttpPost]
         public string AddRemoveWishList(int ItemId)
         {

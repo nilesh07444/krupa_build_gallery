@@ -5,11 +5,33 @@
 
 @{
     ViewBag.Title = "Product List";
+    List<tbl_Products> lstProdt = ViewData["lstProduc"] as List<tbl_Products>;
+    List<tbl_SubProducts> lstSubProdt = ViewData["lstSubProduc"] as List<tbl_SubProducts>;
+    //ViewData["lstSubProduc"] = lstSubProd;
 }
-    <link href="~/Content/assets/css/rateit.css" rel="stylesheet" />
+<link href="~/Content/assets/css/rateit.css" rel="stylesheet" />
 <style>
     .wishlistcls {
         color: #ff4c3b !important;
+    }
+
+    .product-top-filter {
+        border: none !important;
+    }
+
+    .custlbl {
+        color: black !important;
+        cursor:pointer;
+    }
+
+    .ulcls {
+        margin-top: 10px;
+    }
+    .ulcls li{
+display:block !important;
+    }
+    .clsacvtmenu .custlbl {
+        color: #3e5fd6 !important;
     }
 </style>
 <script src="~/Scripts/jquery.rateit.js"></script>
@@ -36,21 +58,101 @@
     <div class="collection-wrapper">
         <div class="container">
             <div class="row">
-                <div class="collection-content col">
+                <div class="col-sm-3 collection-filter" style="margin-top:15px;">
+                    <!-- side-bar colleps block stat -->
+                    @if (lstProdt != null && lstProdt.Count() > 0)
+                    {
+                        <div class="collection-filter-block">
+                            <!-- brand filter start -->
+                            <div class="collection-mobile-back"><span class="filter-back"><i class="fa fa-angle-left" aria-hidden="true"></i> back</span></div>
+
+                            @if (lstProdt != null && lstProdt.Count() > 0)
+                            {
+                                long prodidd = Convert.ToInt64(ViewBag.ProductId);
+                                <div class="collection-collapse-block open">
+                                    <h3 class="collapse-block-title">Products</h3>
+                                    <div class="collection-collapse-block-content" style="display: block;">
+                                        <div class="collection-brand-filter">
+                                            <ul class="ulcls">
+                                                @foreach (var objj in lstProdt)
+                                                {
+                                                    string stractvclass = "";
+
+                                                    if (prodidd != -1 && objj.Product_Id == prodidd)
+                                                    {
+                                                        stractvclass = "clsacvtmenu";
+                                                    }
+                                                    <li><a href="javascript:void(0);" class="@stractvclass" onclick="filteitemsbyproduct('@objj.Product_Id');"><label class="custlbl">@objj.ProductName</label></a></li>
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+
+                            @if (lstSubProdt != null && lstSubProdt.Count() > 0)
+                            {
+                                long subprodidd = Convert.ToInt64(ViewBag.SubProductId);
+                                string strstyll = "display: none;";
+                                string clssc = "";
+                                if(subprodidd > 0)
+                                {
+                                    strstyll = "display: block;";
+                                    clssc = "open";
+                                }
+                                 <div class="collection-collapse-block @clssc">
+                                    <h3 class="collapse-block-title">Sub Products</h3>
+                                    <div class="collection-collapse-block-content" style="@strstyll">
+                                        <div class="collection-brand-filter">
+                                            <ul class="ulcls">
+                                                @foreach (var objj in lstSubProdt)
+                                                {
+
+                                                    string stractvclass = "";                                                  
+                                                    if (subprodidd != -1 && objj.SubProductId == subprodidd)
+                                                    {
+                                                        stractvclass = "clsacvtmenu";
+                                                    }
+                                                      <li><a href="javascript:void(0);" onclick="filteitemsbysubproduct('@objj.SubProductId');" class="@stractvclass"><label class="custlbl">@objj.SubProductName</label></a></li>
+
+                                                    }
+</ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                        </div>
+                        <!-- silde-bar colleps block end here -->
+                    }
+                    </div>
+                <div class="collection-content col" style="margin-top: 15px;">
                     <div class="page-main-content">
                         <div class="row">
                             @if (Model != null && Model.Count > 0)
                             {
                                 <div class="col-sm-12">
-                                    <h4 style="margin-top:10px;">Sort by </h4>
-                                    <select id="selectsortitems" class="form-control" style="width:300px;" onchange="sortproductitems();">
-                                        <option value="1">Price: Low to High</option>
-                                        <option value="2">Price: High to Low</option>
-                                        <option value="3">Name: A - Z</option>
-                                        <option value="4">Name: Z - A</option>
-                                        <option value="5">Star Rating</option>
-                                    </select>
                                     <div class="collection-product-wrapper">
+                                        <div class="product-top-filter">
+                                            <div class="row">
+                                                <div class="col-xl-12">
+                                                    <div class="filter-main-btn"><span class="filter-btn btn btn-theme"><i class="fa fa-filter" aria-hidden="true"></i> Filter</span></div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <h4 style="margin-top: 10px;margin-right:10px;">
+                                                    Sort by
+                                                </h4>
+                                                <select id="selectsortitems" class="form-control" style="width:300px;" onchange="sortproductitems();">
+                                                    <option value="1">Price: Low to High</option>
+                                                    <option value="2">Price: High to Low</option>
+                                                    <option value="3">Name: A - Z</option>
+                                                    <option value="4">Name: Z - A</option>
+                                                    <option value="5">Star Rating</option>
+                                                </select>
+                                            </div>
+                                        </div>
                                         <div class="product-wrapper-grid">
                                             <div class="row">
                                                 <div class="col">
@@ -168,6 +270,10 @@
         </div>
     </div>
 </section>
+<input type="hidden" id="hdncatids" value="@ViewBag.CatId" />
+<input type="hidden" id="hdnprodids" value="@ViewBag.ProductId" />
+<input type="hidden" id="hdnsubproids" value="@ViewBag.SubProductId" />
+<input type="hidden" id="hdnsortbyids" value="@ViewBag.SortBy" />
 <script>
     $(document).ready(function () {
         $("#selectsortitems").val("@ViewBag.SortBy");
@@ -175,7 +281,36 @@
     function sortproductitems() {
         var pagefrom = '@ViewBag.FromPage';
         var sortid = $("#selectsortitems").val();
-        location.href = location.origin + "/" + pagefrom + "&sortby="+sortid;
+        //location.href = location.origin + "/" + pagefrom + "&sortby=" + sortid;
+        var catids = $("#hdncatids").val();
+        var productids = $("#hdnprodids").val();
+        var subprodid = $("#hdnsubproids").val();
+        if (productids == "-1") {
+            location.href = location.origin + "/products/ItemList?CatId=" + catids + "&sortby=" + sortid;
+        }
+        else if (productids != "-1" && subprodid == "-1") {
+            location.href = location.origin + "/products/ItemList?CatId=" + catids + "&sortby=" + sortid + "&ProductId=" + productids;
+        }
+        else if (productids != "-1" && subprodid != "1") {
+            location.href = location.origin + "/products/ItemList?CatId="+catids+"&sortby="+sortid + "&ProductId="+productids+"&SubProductId="+subprodid ;
+        }
+
+
+    }
+
+    function filteitemsbyproduct(ids) {
+        var pagefrom = '@ViewBag.FromPage';
+        var catids = $("#hdncatids").val();
+        var sortid = $("#selectsortitems").val();
+        location.href = location.origin + "/products/ItemList?CatId="+catids+"&sortby="+sortid + "&ProductId="+ids;
+    }
+
+     function filteitemsbysubproduct(idd) {
+        var pagefrom = '@ViewBag.FromPage';
+        var catids = $("#hdncatids").val();
+        var productids = $("#hdnprodids").val();
+        var sortid = $("#selectsortitems").val();
+        location.href = location.origin + "/products/ItemList?CatId="+catids+"&sortby="+sortid + "&ProductId="+productids+"&SubProductId="+idd ;
     }
 
     function addremovewishlist(itemid,objthis) {
