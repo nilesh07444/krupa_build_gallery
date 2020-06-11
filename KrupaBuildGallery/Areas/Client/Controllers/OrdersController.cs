@@ -518,7 +518,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         decimal refund = OldOrderTotl - OrderTotlNew;
                         if(refund >= 0)
                         {
-                            amtrefund = 0;
+                            amtrefund = refund;
                         }
                         else
                         {

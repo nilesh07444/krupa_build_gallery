@@ -102,7 +102,18 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     UpdatCarts();
                     if (!string.IsNullOrEmpty(referer))
                     {
-                        return RedirectToAction("Index", "Checkout", new { area = "Client" });
+                        if (referer == "checkout")
+                        {
+                            return RedirectToAction("Index", "Checkout");
+                        }
+                        else if (referer == "checkoutcash")
+                        {
+                            return RedirectToRoute("Client_CheckoutCash");// Redirect("checkoutcash");
+                        }
+                        else
+                        {
+                            return RedirectToAction("secondcartcheckout", "Checkout");
+                        }                        
                     }
                     else
                     {

@@ -158,7 +158,9 @@
                 success: function (data) {
                     //success
                     $("#ulCartitems").html(data); //populate the tab content.
-
+                    if ($("#shipamount").length > 0 && $("#onlineamtinorder").length > 0) {
+                        location.reload();
+                    }
                 },
                 error: function () {
                     alert("error");
