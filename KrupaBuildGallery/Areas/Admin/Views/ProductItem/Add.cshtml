@@ -379,7 +379,7 @@
             }
 
             $("input[name^=variantper]").each(function () {
-                if ($(this).val() == "" || parseInt($(this).val()) <= 0) {
+                if ($(this).val() == "" || parseInt($(this).val()) < 0) {
                     if (flgtrue == true) {
                         alert("Please Enter Price Percentage for variant");
                     }
