@@ -20,7 +20,13 @@ namespace KrupaBuildGallery
         public string razorpay_payment_id { get; set; }
         public string ClientUserId { get; set; }
         public string RoleId { get; set; }
-
+        public string walletamtinorder { get; set; }
+        public string creditamtinorder { get; set; }
+        public string onlineamtinorder { get; set; }
+        public string ordertype { get; set; }
+        public string isCashondelivery { get; set; }
+        public string advanceamtpay { get; set; }
+        public string extraamount { get; set; }
         public string MobileNumber {get;set;}
     }
 }

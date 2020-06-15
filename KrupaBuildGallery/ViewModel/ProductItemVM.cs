@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KrupaBuildGallery.Model;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -117,5 +118,8 @@ namespace KrupaBuildGallery
         public decimal Ratings { get; set; }
 
         public string ItemTag { get; set; }
+
+        public List<tbl_ItemVariant> lstVariants { get; set; }        
+        public string UnitTyp { get; set; }
     }
 }

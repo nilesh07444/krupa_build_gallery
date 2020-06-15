@@ -607,7 +607,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             objOrderItem.GSTAmt = gstamt;
                             objOrderItem.Price = originalbasicprice;
                             objOrderItem.Discount = disc;
-                            objOrderItem.ItemStatus = 1;
+                            objOrderItem.ItemStatus = Convert.ToInt32(OrderStatus.NewOrder); 
                             objOrderItem.FinalItemPrice = AfterTax;
                             _db.tbl_OrderItemDetails.Add(objOrderItem);
                             _db.SaveChanges();
@@ -955,7 +955,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                     objOrderItem.Price = originalbasicprice;
                                     objOrderItem.Discount = disc;
                                     objOrderItem.FinalItemPrice = AfterTax;
-                                    objOrderItem.ItemStatus = 1;
+                                    objOrderItem.ItemStatus = Convert.ToInt32(OrderStatus.NewOrder); 
                                     _db.tbl_OrderItemDetails.Add(objOrderItem);
                                     _db.SaveChanges();
                                     objcmn.SaveTransaction(objCart.ItemId, objOrderItem.OrderDetailId, objOrderItem.OrderId.Value, "Order Placed for Item", objOrderItem.FinalItemPrice.Value, clsClientSession.UserID, 0, DateTime.UtcNow, "New Order Item");

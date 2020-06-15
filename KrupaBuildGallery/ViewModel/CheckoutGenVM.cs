@@ -16,6 +16,12 @@ namespace KrupaBuildGallery
         public decimal TotalOrder { get; set; }
         public List<InvoiceItemVM> InvItems { get; set; }
         public decimal CreditRemaining { get; set; }
-
+        public decimal ExtraAmount { get; set; }
+        public decimal WalletAmount { get; set; }
+        public bool IsCashOnDelivery { get; set; }
+        public decimal YearlyOrderPlaced { get; set; }
+        public decimal CashOrderAmtMax { get; set; }
+        public decimal CashOrderAmtYerly { get; set; }
+        public decimal AdvancePaymentAmt { get; set; }
     }
 }
