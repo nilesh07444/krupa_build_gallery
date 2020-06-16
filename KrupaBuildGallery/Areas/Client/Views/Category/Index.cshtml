@@ -38,7 +38,7 @@
                 foreach (CategoryVM category in Model)
                 {
                     <div class="col-md-4" style="margin-bottom: 50px;">
-                        <a href="/products/bycategory/@category.CategoryId">
+                        <a href="/products/ItemList?CatId=@category.CategoryId">
                             <div class="collection-banner p-left text-left">
                                 @if (!string.IsNullOrEmpty(category.CategoryImage))
                                 {
