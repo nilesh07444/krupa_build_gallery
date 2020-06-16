@@ -66,6 +66,10 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         {
                             return RedirectToAction("Index", "Checkout");
                         }
+                        else if(referer == "checkoutcash")
+                        {
+                            return RedirectToRoute("Client_CheckoutCash");// Redirect("checkoutcash");
+                        }
                         else
                         {
                             return RedirectToAction("secondcartcheckout", "Checkout");
@@ -375,6 +379,10 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         if (referer == "checkout")
                         {
                             return RedirectToAction("Index", "Checkout");
+                        }
+                        else if (referer == "checkoutcash")
+                        {
+                            return RedirectToRoute("Client_CheckoutCash");// Redirect("checkoutcash");
                         }
                         else
                         {
