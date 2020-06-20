@@ -13,7 +13,8 @@ namespace KrupaBuildGallery
         public int TotalProductItems { get; set; }
         public int TotalConfirmOrder {get;set;}
         public int TotalNewOrder { get; set; } 
-        public int TotalDispatchedOrder { get; set; }        
+        public int TotalDispatchedOrder { get; set; }
+        public int TotalPendingDistributorRequest { get; set; }
 
     }
 }

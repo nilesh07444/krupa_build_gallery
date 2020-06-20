@@ -90,7 +90,7 @@
                         @foreach (CategoryVM obj in lstCategory)
                         {
                             <div class="col-md-12">
-                                <a href="/products/bycategory/@obj.CategoryId">
+                                <a href="/products/ItemList?CatId=@obj.CategoryId">
                                     <div class="classic-effect">
                                         <div>
                                             @{
@@ -117,7 +117,7 @@
                                     </div>
                                 </a>
                                 <div class="blog-details">
-                                    <a href="/products/bycategory/@obj.CategoryId">
+                                    <a href="/products/ItemList?CatId=@obj.CategoryId">
                                         <h4>@obj.CategoryName</h4>
                                     </a>
                                 </div>
@@ -216,7 +216,7 @@
                                     <div class="product-detail">
                                         <div class="rateit" data-rateit-value="@objItem.Ratings" style="margin-top:5px;" data-rateit-ispreset="true" data-rateit-readonly="true"></div>
                                         <a href="/products/detail/@objItem.ProductItemId">
-                                            <h6>@objItem.ItemName</h6>
+                                            <h6 class="dashboardItemName">@objItem.ItemName</h6>
                                         </a>
                                         @if (clsClientSession.UserID == 0 || (clsClientSession.UserID > 0 && clsClientSession.RoleID == 1))
                                         {
@@ -324,7 +324,7 @@
                                     <div class="product-detail">
                                         <div class="rateit" data-rateit-value="@objItem.Ratings" style="margin-top:5px;" data-rateit-ispreset="true" data-rateit-readonly="true"></div>
                                         <a href="/products/detail/@objItem.ProductItemId">
-                                            <h6>@objItem.ItemName</h6>
+                                            <h6 class="dashboardItemName">@objItem.ItemName</h6>
                                         </a>
                                         @if (clsClientSession.UserID == 0 || (clsClientSession.UserID > 0 && clsClientSession.RoleID == 1))
                                         {
@@ -462,9 +462,9 @@
                                         </div>
                                     </div>
                                     <div class="product-detail">
-                                    <div class="rateit" data-rateit-value="@objItem.Ratings" style="margin-top:5px;" data-rateit-ispreset="true" data-rateit-readonly="true"></div>
+                                        <div class="rateit" data-rateit-value="@objItem.Ratings" style="margin-top:5px;" data-rateit-ispreset="true" data-rateit-readonly="true"></div>
                                         <a href="/products/detail/@objItem.ProductItemId">
-                                            <h6>@objItem.ItemName</h6>
+                                            <h6 class="dashboardItemName">@objItem.ItemName</h6>
                                         </a>
                                         @if (clsClientSession.UserID == 0 || (clsClientSession.UserID > 0 && clsClientSession.RoleID == 1))
                                         {
@@ -516,7 +516,7 @@
                         <img src="~/Content/assets/images/icon/dashboard/order.png" class="img-fluid">
                         <div>
                             <h3>@objStatistics.TotalCustomers</h3>
-                            <h5>Total Customers</h5>
+                            <h5 class="statsCount">Total Customers</h5>
                         </div>
                     </div>
                 </div>
@@ -525,7 +525,7 @@
                         <img src="~/Content/assets/images/icon/dashboard/sale.png" class="img-fluid">
                         <div>
                             <h3>@objStatistics.TotalDistributers</h3>
-                            <h5>Total Distributer</h5>
+                            <h5 class="statsCount">Total Distributer</h5>
                         </div>
                     </div>
                 </div>
@@ -534,7 +534,7 @@
                         <img src="~/Content/assets/images/icon/dashboard/homework.png" class="img-fluid">
                         <div>
                             <h3>@objStatistics.TotalHappyCustomers</h3>
-                            <h5>Happiest Customers</h5>
+                            <h5 class="statsCount">Happiest Customers</h5>
                         </div>
                     </div>
                 </div>
@@ -543,7 +543,7 @@
                         <img src="~/Content/assets/images/icon/dashboard/sale.png" class="img-fluid">
                         <div>
                             <h3>@objStatistics.TotalSiteVisitors</h3>
-                            <h5>Site Visitors</h5>
+                            <h5 class="statsCount">Site Visitors</h5>
                         </div>
                     </div>
                 </div>
@@ -644,36 +644,36 @@
             title: 'Success!',
             message: msg
         }, {
-            element: 'body',
-            position: null,
-            type: "info",
-            allow_dismiss: true,
-            newest_on_top: false,
-            showProgressbar: true,
-            placement: {
-                from: "top",
-                align: "right"
-            },
-            offset: 20,
-            spacing: 10,
-            z_index: 1031,
-            delay: 5000,
-            animate: {
-                enter: 'animated fadeInDown',
-                exit: 'animated fadeOutUp'
-            },
-            icon_type: 'class',
-            template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-                '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
-                '<span data-notify="icon"></span> ' +
-                '<span data-notify="title">{1}</span> ' +
-                '<span data-notify="message">{2}</span>' +
-                '<div class="progress" data-notify="progressbar">' +
-                '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
-                '</div>' +
-                '<a href="{3}" target="{4}" data-notify="url"></a>' +
-                '</div>'
-        });
+                element: 'body',
+                position: null,
+                type: "info",
+                allow_dismiss: true,
+                newest_on_top: false,
+                showProgressbar: true,
+                placement: {
+                    from: "top",
+                    align: "right"
+                },
+                offset: 20,
+                spacing: 10,
+                z_index: 1031,
+                delay: 5000,
+                animate: {
+                    enter: 'animated fadeInDown',
+                    exit: 'animated fadeOutUp'
+                },
+                icon_type: 'class',
+                template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
+                    '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+                    '<span data-notify="icon"></span> ' +
+                    '<span data-notify="title">{1}</span> ' +
+                    '<span data-notify="message">{2}</span>' +
+                    '<div class="progress" data-notify="progressbar">' +
+                    '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
+                    '</div>' +
+                    '<a href="{3}" target="{4}" data-notify="url"></a>' +
+                    '</div>'
+            });
     }
 
 </script>

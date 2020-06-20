@@ -269,7 +269,7 @@
                                 <div class="label-wrapper"><label class="control-label">Shipping Charge:</label></div>
                             </div>
                             <div class="col-md-9">
-                                @if (Model.OrderPincode != "389001")
+                                @if (Model.OrderPincode != "389001" && Model.ShipmentCharge == 0)
                                 {
                                     <div class="form-text-row">
                                         <button type="button" name="btnSetShippingCharge" id="btnSetShippingCharge" class="btn btn-primary" onclick="setshipchargemodl('@Model.OrderId');" style="display: inline-block;">
@@ -291,10 +291,14 @@
                         <h5>Order Items</h5>
                     </div>
                     <div class="card-body">
+                        <button type="button" name="btnAssign" id="btnAssign" class="btn btn-primary" onclick="assigndeliverypersonMulti();" style="display: inline-block;">
+                           Assign Delivery Person
+                        </button>
                         <div class="card-body vendor-table">
                             <table class="display" id="basic-1">
                                 <thead>
                                     <tr>
+                                        <th></th>
                                         <th>Picture</th>
                                         <th>Product Item Name</th>
                                         <th>Sku</th>
@@ -312,37 +316,43 @@
                                         foreach (KrupaBuildGallery.ViewModel.OrderItemsVM objorderItem in Model.OrderItems)
                                         {
                                             decimal Totl = Math.Round((objorderItem.Price * objorderItem.Qty) - objorderItem.Discount + objorderItem.GSTAmt, 2);
-                                      string stauscolor = "badge-secondary";                                   
-                                        
-                                        if (objorderItem.ItemStatus == 1)
-                                        {
-                                            stauscolor = "badge-danger";
-                                        }
-                                        else if (objorderItem.ItemStatus == 2)
-                                        {
-                                            stauscolor = "badge-success";
-                                        }
-                                        else if (objorderItem.ItemStatus == 3)
-                                        {
-                                            stauscolor = "badge-warning";
-                                        }
-                                        else if (objorderItem.ItemStatus == 4)
-                                        {
-                                            stauscolor = "badge-info";
-                                        }
-                                        else if (objorderItem.ItemStatus == 5)
-                                        {
-                                            stauscolor = "badge-primary";
-                                        }
-                                        else if (objorderItem.ItemStatus == 6)
-                                        {
-                                            stauscolor = "badge-sample1";
-                                        }
-                                        else if (objorderItem.ItemStatus == 7)
-                                        {
-                                            stauscolor = "badge-sample2";
-                                        }
+                                            string stauscolor = "badge-secondary";
+
+                                            if (objorderItem.ItemStatus == 1)
+                                            {
+                                                stauscolor = "badge-danger";
+                                            }
+                                            else if (objorderItem.ItemStatus == 2)
+                                            {
+                                                stauscolor = "badge-success";
+                                            }
+                                            else if (objorderItem.ItemStatus == 3)
+                                            {
+                                                stauscolor = "badge-warning";
+                                            }
+                                            else if (objorderItem.ItemStatus == 4)
+                                            {
+                                                stauscolor = "badge-info";
+                                            }
+                                            else if (objorderItem.ItemStatus == 5)
+                                            {
+                                                stauscolor = "badge-primary";
+                                            }
+                                            else if (objorderItem.ItemStatus == 6)
+                                            {
+                                                stauscolor = "badge-sample1";
+                                            }
+                                            else if (objorderItem.ItemStatus == 7)
+                                            {
+                                                stauscolor = "badge-sample2";
+                                            }
                                             <tr>
+                                                <td>
+                                                    @if (objorderItem.ItemStatus == 2 || objorderItem.ItemStatus == 7)
+                                                    {
+                                                        <input type="checkbox" class="chkrdr" data-ordridss="@objorderItem.OrderId" data-ordrprdtitmidss="@objorderItem.ProductItemId" value="@objorderItem.OrderItemId" />
+                                                    }
+                                                </td>
                                                 <td>
                                                     @if (!string.IsNullOrEmpty(objorderItem.ItemImg))
                                                     {
@@ -370,12 +380,12 @@
                                                 <td id="td_@objorderItem.OrderItemId">
                                                     @if (objorderItem.ItemStatus == 2 || objorderItem.ItemStatus == 7)
                                                     {
-                                                    <span class="badge @stauscolor">@objorderItem.ItemStatustxt</span> <a href="javascript:void(0);" title="Assign Delivery Person and Dispatched" onclick="assigndeliveryperson('@objorderItem.OrderId','@objorderItem.OrderItemId','@objorderItem.ProductItemId');"><i class="fa fa-user-o font-info"></i></a>
-                                                      
+                                                        <span class="badge @stauscolor">@objorderItem.ItemStatustxt</span> <a href="javascript:void(0);" title="Assign Delivery Person and Dispatched" onclick="assigndeliveryperson('@objorderItem.OrderId','@objorderItem.OrderItemId','@objorderItem.ProductItemId');"><i class="fa fa-user-o font-info"></i></a>
+
                                                     }
                                                     else
                                                     {
-                                                      <span class="badge @stauscolor">@objorderItem.ItemStatustxt</span>
+                                                        <span class="badge @stauscolor">@objorderItem.ItemStatustxt</span>
                                                     }
                                                 </td>
                                             </tr>
@@ -461,6 +471,7 @@
             </div>
             <div class="modal-footer">
                 <input type="hidden" id="orderids" />
+                <input type="hidden" id="IsMulti" />
                 <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
                 <button id="btnassign" onclick="AssignPerson();" class="btn btn-primary" type="button">Assign</button>
             </div>
@@ -566,11 +577,13 @@
 
     });
 
-    function assigndeliveryperson(ordrid,orderitmid,produitmid) {
+    function assigndeliveryperson(ordrid, orderitmid, produitmid) {
+            $("#IsMulti").val('false');
         $("#assignpersonmodal .modal-body").load('@Url.Action("GetAndAssignDeliveryPerson","Order")',function () {
             $("#assignpersonmodal").modal("show");
             $("#orderidd").val(ordrid);
             $("#orderitmidd").val(orderitmid);
+        
             $("#proditmidd").val(produitmid);          
         });
     }
@@ -579,7 +592,36 @@
             alert("Please Select Person to Assigned Item");
             return;
         }
-        var URL = '/Admin/Order/AssignDeliveryPerson';
+        if ($("#IsMulti").val() == 'true') {
+            var stritddd = '';
+            if ($(".chkrdr:checked").length == 0) {
+                  alert("Please Select atlest 1 Item");
+            return;
+            }
+            $(".chkrdr:checked").each(function () {
+                stritddd = stritddd + $(this).val() + '^';
+            });
+            stritddd = stritddd.trim('^');
+             var URL = '/Admin/Order/AssignMultiItemDeliveryPerson';
+        jQuery.ajax({
+            type: 'POST',
+            async: true,
+            url: URL + "?OrderId=" + $("#orderidd").val() + "&OrderItemIds=" + encodeURIComponent(stritddd) + "&PersonId=" + $("#Personname").val(),
+            success: function (result) {
+                alert("Item Assigned");
+                $("#assignpersonmodal").modal("hide");      
+                 location.reload();
+               //   $("#td_"+$("#orderitmidd").val()).html("Dispatched");
+            },
+            error: function (error) {
+                console.log("error");
+                alert(error);
+              $("#assignpersonmodal").modal("hide");
+            }
+        });
+       }
+        else {
+             var URL = '/Admin/Order/AssignDeliveryPerson';
         jQuery.ajax({
             type: 'POST',
             async: true,
@@ -596,5 +638,23 @@
               $("#assignpersonmodal").modal("hide");
             }
         });
+       }
+       
+     }
+
+    function assigndeliverypersonMulti() {
+        if ($(".chkrdr:checked").length == 0) {
+                  alert("Please Select atlest 1 Item");
+            return;
+            }
+            $("#IsMulti").val('true');
+          $("#assignpersonmodal .modal-body").load('@Url.Action("GetAndAssignDeliveryPerson","Order")',function () {
+            $("#assignpersonmodal").modal("show");
+            $("#orderidd").val('@Model.OrderId');
+            ///$("#orderitmidd").val(orderitmid);
+          //  $("#proditmidd").val(produitmid);                 
+        });
     }
+   
+    
 </script>

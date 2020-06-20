@@ -145,7 +145,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
                     objAdminUser.IsActive = true;
                     objAdminUser.IsDeleted = false;
-                    objAdminUser.CreatedDate = DateTime.Now;
+                    objAdminUser.CreatedDate = DateTime.UtcNow;
                     objAdminUser.CreatedBy = LoggedInUserId;
                     _db.tbl_AdminUsers.Add(objAdminUser);
                     _db.SaveChanges();

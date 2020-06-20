@@ -378,13 +378,28 @@
                 flgtrue = false;
             }
 
-            $("input[name^=variantper]").each(function () {
-                if ($(this).val() == "" || parseInt($(this).val()) < 0) {
-                    if (flgtrue == true) {
-                        alert("Please Enter Price Percentage for variant");
+          $("input[name^=variantper]").each(function () {
+                if ($(this).val() == "" || parseInt($(this).val()) <= 0) {
+                    if ($(this).parents('tr').find('input[type=checkbox]:checked').length > 0) {
+                        if (parseInt($(this).val()) == 0) {
+                            if (flgtrue == true) {
+                                alert("Please Enter Price Percentage for variant");
+                                 flgtrue = false; 
+                            }
+                        }
                     }
-                   flgtrue = false; 
+                    else {
+                        if (parseInt($(this).val()) < 0) {
+                            if (flgtrue == true) {
+                                alert("Please Enter Price Percentage for variant");
+                                 flgtrue = false; 
+                            }
+                        }                    
+                    }
+                    
+                  
                 }
+
             });
             if (flgtrue == true) {
                 $("#ProductItemFormId").submit();

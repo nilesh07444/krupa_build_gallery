@@ -125,9 +125,11 @@ li {
   display: inline-block; }
 
 p {
-  font-size: 14px;
+  font-size: 15px;
   color: #777777;
-  line-height: 1; }
+  line-height: 1; 
+  text-align: justify;
+}
 
 a {
   -webkit-transition: 0.5s ease;
@@ -565,33 +567,36 @@ button.btn.btn-solid:active, button.btn.btn-outline:active {
     margin-bottom: 0;
     position: relative;
     margin-top: -5px; }
-  .title4 .line {
-    position: relative;
-    height: 1px;
-    width: 180px;
-    background-color: var(--theme-deafult);
-    margin: 0 auto;
-    margin-bottom: 55px;
-    bottom: 0;
-    top: 0; }
+    .title4 .line {
+        position: relative;
+        height: 1px;
+        width: 180px;
+        background-color: #F38634;
+        margin: 0 auto;
+        margin-bottom: 55px;
+        bottom: 0;
+        top: 0;
+    }
     .title4 .line:after, .title4 .line:before {
-      position: absolute;
-      height: 10px;
-      width: 10px;
-      content: "";
-      background-color: var(--theme-deafult);
-      top: -4px; }
+        position: absolute;
+        height: 10px;
+        width: 10px;
+        content: "";
+        background-color: #F38634;
+        top: -4px;
+    }
     .title4 .line:after {
       left: 78px; }
     .title4 .line:before {
       left: 64px; }
     .title4 .line span:after, .title4 .line span:before {
-      position: absolute;
-      height: 10px;
-      width: 10px;
-      content: "";
-      background-color: var(--theme-deafult);
-      top: -4px; }
+        position: absolute;
+        height: 10px;
+        width: 10px;
+        content: "";
+        background-color: #F38634;
+        top: -4px;
+    }
     .title4 .line span:after {
       right: 78px; }
     .title4 .line span:before {
@@ -18578,3 +18583,25 @@ body.dark {
     color: #ffffff;
     background-color: #569041;
 }
+
+
+
+
+/* NILESH - Custom CSS Start */
+
+.product-detail h6 {
+    color: #000000;
+    font-weight: bold;
+}
+
+h6.dashboardItemName {
+    color: var(--theme-deafult);
+    font-weight : bold;
+}
+
+.statsCount {
+    color: #000000;
+    font-weight: bold;
+}
+
+/* NILESH - Custom CSS End */

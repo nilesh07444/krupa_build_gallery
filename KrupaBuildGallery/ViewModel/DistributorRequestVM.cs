@@ -31,5 +31,6 @@ namespace KrupaBuildGallery.ViewModel
         public int Status { get; set; }        
         public string StatusString { get; set; }
         public string Reason { get; set; }
+        public string CancellationChequePhoto { get; set; }
     }  
 }

@@ -548,7 +548,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                   ShopPhoto = cu.ShopPhoto,
                                   Prefix = cu.Prefix,
                                   Status = cu.Status.HasValue ? cu.Status.Value : 0,
-                                  Reason = cu.Reason
+                                  Reason = cu.Reason,
+                                  CancellationChequePhoto = cu.CancellationChequePhoto
                               }).FirstOrDefault();
 
             }

@@ -24,7 +24,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         }
 
         [HttpPost]
-        public ActionResult NewDistributorRequest(FormCollection frm,HttpPostedFileBase aadhharphoto, HttpPostedFileBase gstphoto, HttpPostedFileBase pancardnophoto, HttpPostedFileBase photofile, HttpPostedFileBase shopphoto)
+        public ActionResult NewDistributorRequest(FormCollection frm,HttpPostedFileBase aadhharphoto, HttpPostedFileBase gstphoto, HttpPostedFileBase pancardnophoto, HttpPostedFileBase photofile, HttpPostedFileBase shopphoto, HttpPostedFileBase cancellationchequephoto)
         {
             try
             {
@@ -41,13 +41,15 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 string dob = frm["dob"].ToString();
                 string alternatemobileno = frm["alternatemobileno"].ToString();
                 string shopname = frm["shopname"].ToString();
-                string pancardno = frm["pancardno"].ToString();
+                string pancardno = frm["pancardno"].ToString(); 
+
                 string photo = string.Empty; 
                 string pancardphotoname = string.Empty;
                 string gstphotoname = string.Empty;
                 string addharphoto = string.Empty;
                 string shopphotoname = string.Empty;
-
+                string cancellationchequephotoname = string.Empty;
+                 
                 tbl_DistributorRequestDetails objRequest = _db.tbl_DistributorRequestDetails.Where(o => (o.Email.ToLower() == email.ToLower() || o.MobileNo.ToLower() == mobileno.ToLower()) && o.IsDelete == false && o.Status == 0).FirstOrDefault();
                 if(objRequest != null)
                 {
@@ -63,9 +65,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     TempData["pancardno"] = frm["pancardno"].ToString();
                     TempData["alternatemobileno"] = frm["alternatemobileno"].ToString();
                     TempData["dob"] = frm["dob"].ToString();
-                    TempData["shopname"] = frm["shopname"].ToString();
-
-
+                    TempData["shopname"] = frm["shopname"].ToString(); 
+                     
                     TempData["RegisterError"] = "You have already sent a request with this email.";
                     return RedirectToAction("Index", "DistributorRequest", new { area = "Client" });
                 }
@@ -85,8 +86,9 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     TempData["pancardno"] = frm["pancardno"].ToString();
                     TempData["alternatemobileno"] = frm["alternatemobileno"].ToString();
                     TempData["dob"] = frm["dob"].ToString();
-                    TempData["shopname"] = frm["shopname"].ToString();
-                    TempData["RegisterError"] = "Email or Mobile is already exist.Please try with another email or mobile";                    
+                    TempData["shopname"] = frm["shopname"].ToString(); 
+
+                    TempData["RegisterError"] = "Email or Mobile is already exist. Please try with another email or mobile";                    
                     return RedirectToAction("Index", "DistributorRequest", new { area = "Client" });
                 }
                 else
@@ -118,6 +120,13 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         shopphotoname = Guid.NewGuid() + "-" + Path.GetFileName(shopphoto.FileName);
                         shopphoto.SaveAs(path + shopphotoname);
                     }
+
+                    if (cancellationchequephoto != null)
+                    {
+                        cancellationchequephotoname = Guid.NewGuid() + "-" + Path.GetFileName(cancellationchequephoto.FileName);
+                        cancellationchequephoto.SaveAs(path + cancellationchequephotoname);
+                    }
+
                     objRequest = new tbl_DistributorRequestDetails();
                                                      
                     objRequest.CreatedDate = DateTime.Now;
@@ -143,6 +152,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     objRequest.IsDelete = false;
                     objRequest.Status = 0;
                     objRequest.Reason = "";
+                    objRequest.CancellationChequePhoto = cancellationchequephotoname;
                     _db.tbl_DistributorRequestDetails.Add(objRequest);
                     _db.SaveChanges();
                     tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();

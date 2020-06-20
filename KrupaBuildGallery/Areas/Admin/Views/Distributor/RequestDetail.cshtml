@@ -328,6 +328,32 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Cancellation Cheque Photo:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">
+                                    @if (!string.IsNullOrEmpty(Model.CancellationChequePhoto))
+                                    {
+                                        if (File.Exists(Server.MapPath("~/Images/UsersDocuments/" + (Model.CancellationChequePhoto))))
+                                        {
+                                            <a class="example-image-link" href="~/Images/UsersDocuments/@Model.CancellationChequePhoto" data-lightbox="panphoto">
+                                                <img src="~/Images/UsersDocuments/@Model.CancellationChequePhoto" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <span>-</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span>-</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
                         @if (Model.Status == 1)
                         {
                             <div class="form-group">

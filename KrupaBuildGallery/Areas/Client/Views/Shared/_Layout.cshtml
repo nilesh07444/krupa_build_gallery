@@ -72,6 +72,10 @@
     <!-- Theme css -->
     <link rel="stylesheet" type="text/css" href="~/Content/assets/css/color19.css" media="screen" id="color">
 
+    <!-- Datepicker css-->
+    @*<link rel="stylesheet" type="text/css" href="~/Content/assets/css/date-picker.css">*@
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.css" />
+
     <!-- latest jquery-->
     <script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>
 
@@ -98,7 +102,7 @@
         <div class="mobile-fix-option"></div>
         <div class="top-header">
 
-            <div class="container-fluid " style="background-color: #67255A; color: white; font-size: 17px;float: left;">
+            <div class="container-fluid " style="background-color: #67255A; color: white; font-size: 15px;float: left;">
 
                 <div class="row  p-2">
                     <div class="col-md-9 ml-5">
@@ -238,42 +242,42 @@
                                         </li>
 
                                         @*@if (lstSideMenu != null && lstSideMenu.Count > 0)
-                                        {
-                                            <li>
-                                                <a href="javascript:void(0);">Product</a>
-                                                <ul>
-                                                    @foreach (CategoryInfo category in lstSideMenu)
-                                                    {
-                                                        <li>
-                                                            <a href="/products/bycategory/@category.CategoryId">@category.CategoryName</a>
-                                                            @if (category.ProductInfo != null && category.ProductInfo.Count() > 0)
-                                                            {
-                                                                <ul>
-                                                                    @foreach (ProductInfo product in category.ProductInfo)
-                                                                    {
-                                                                        <li>
-                                                                            <a href="/products/Byproduct/@product.ProductId">@product.ProductName</a>
-                                                                            @if (product.SubProductInfo.Count() > 0)
-                                                                            {
-                                                                                <ul>
-                                                                                    @foreach (SubProductInfo subproduct in product.SubProductInfo)
-                                                                                    {
-                                                                                        <li><a href="/products/Bysubproduct/@subproduct.SubProductId">@subproduct.SubProductName</a></li>
-                                                                                    }
-                                                                                </ul>
-                                                                            }
+                                            {
+                                                <li>
+                                                    <a href="javascript:void(0);">Product</a>
+                                                    <ul>
+                                                        @foreach (CategoryInfo category in lstSideMenu)
+                                                        {
+                                                            <li>
+                                                                <a href="/products/bycategory/@category.CategoryId">@category.CategoryName</a>
+                                                                @if (category.ProductInfo != null && category.ProductInfo.Count() > 0)
+                                                                {
+                                                                    <ul>
+                                                                        @foreach (ProductInfo product in category.ProductInfo)
+                                                                        {
+                                                                            <li>
+                                                                                <a href="/products/Byproduct/@product.ProductId">@product.ProductName</a>
+                                                                                @if (product.SubProductInfo.Count() > 0)
+                                                                                {
+                                                                                    <ul>
+                                                                                        @foreach (SubProductInfo subproduct in product.SubProductInfo)
+                                                                                        {
+                                                                                            <li><a href="/products/Bysubproduct/@subproduct.SubProductId">@subproduct.SubProductName</a></li>
+                                                                                        }
+                                                                                    </ul>
+                                                                                }
 
-                                                                        </li>
+                                                                            </li>
 
-                                                                    }
-                                                                </ul>
-                                                            }
-                                                        </li>
+                                                                        }
+                                                                    </ul>
+                                                                }
+                                                            </li>
 
-                                                    }
-                                                </ul>
-                                            </li> 
-                                        }*@
+                                                        }
+                                                    </ul>
+                                                </li>
+                                            }*@
 
                                         @if (lstCategoryMegaMenu != null && lstCategoryMegaMenu.Count > 0)
                                         {
@@ -303,7 +307,7 @@
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                } 
+                                                                }
                                                             </div>
                                                         </div>
                                                     </li>
@@ -380,11 +384,12 @@
                             </p>
                             <div class="footer-social">
                                 <ul>
-                                    <li><a target="_blank" href="https://facebook.com/"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
-                                    <li><a target="_blank" href="https://google.com/"><i class="fa fa-google-plus" aria-hidden="true"></i></a></li>
-                                    <li><a target="_blank" href="https://twitter.com/"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
-                                    <li><a target="_blank" href="https://instagram.com/"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
-                                    <li><a target="_blank" href="https://rss.com/"><i class="fa fa-rss" aria-hidden="true"></i></a></li>
+                                    <li><a target="_blank" href="https://www.facebook.com/krupabuildgallery"><i class="fa fa-facebook" aria-hidden="true"></i></a></li>
+                                    <li><a target="_blank" href="https://www.instagram.com/krupa_buildgallery/"><i class="fa fa-instagram" aria-hidden="true"></i></a></li>
+                                    <li><a target="_blank" href="https://google.com/"><i class="fa fa-youtube" aria-hidden="true"></i></a></li>
+                                    @*<li><a target="_blank" href="https://google.com/"><i class="fa fa-google-plus" aria-hidden="true"></i></a></li>
+                                        <li><a target="_blank" href="https://twitter.com/"><i class="fa fa-twitter" aria-hidden="true"></i></a></li>
+                                        <li><a target="_blank" href="https://rss.com/"><i class="fa fa-rss" aria-hidden="true"></i></a></li>*@
                                 </ul>
                             </div>
                         </div>
@@ -434,12 +439,12 @@
                                         <b>Vavdi Buzarg, Godhra-389001 (P.M.S) </b> <br />
                                         <b>Gujarat - INDIA. </b>
                                     </li>
-                                    <li>
-                                        <i class="fa fa-phone"></i>
-                                        Call Us: +91 98242 43334 <br />
-                                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                        +91 98246 43334
-                                    </li>
+                                    @*<li>
+                                            <i class="fa fa-phone"></i>
+                                            Call Us: +91 98242 43334 <br />
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            +91 98246 43334
+                                        </li>*@
                                     <li><i class="fa fa-envelope-o"></i>Email Us: <a href="#">admin@shopping-saving.com</a></li>
                                 </ul>
                             </div>
@@ -684,15 +689,20 @@
     <script src="~/Content/assets/js/script.js"></script>
 
     <script src="~/Scripts/cart.js"></script>
+
+    <script src="~/Scripts/jquery.blockUI.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
+
     <script>
         $(window).on('load', function () {
             var adss = getCookie("adsdisplay");
             if (adss == "") {
                 if ($('#exampleModal').length > 0) {
                     $('#exampleModal').modal('show');
-                }                
+                }
                 setCookie("adsdisplay", "shown", 1);
-            }           
+            }
         });
         function openSearch() {
             document.getElementById("search-overlay").style.display = "block";
@@ -701,9 +711,9 @@
         function closeSearch() {
             document.getElementById("search-overlay").style.display = "none";
         }
-    
+
     </script>
-    <script src="~/Scripts/jquery.blockUI.js"></script>
+
 
     <script>
 
@@ -783,38 +793,38 @@
         }
 
         function setCookie(cname, cvalue, exdays) {
-  var d = new Date();
-  d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-  var expires = "expires="+d.toUTCString();
-  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-}
+          var d = new Date();
+          d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+          var expires = "expires="+d.toUTCString();
+          document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+        }
 
-function getCookie(cname) {
-  var name = cname + "=";
-  var ca = document.cookie.split(';');
-  for(var i = 0; i < ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0) == ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
-}
+        function getCookie(cname) {
+          var name = cname + "=";
+          var ca = document.cookie.split(';');
+          for(var i = 0; i < ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+              c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+              return c.substring(name.length, c.length);
+            }
+          }
+          return "";
+        }
 
-function checkCookie() {
-  var user = getCookie("username");
-  if (user != "") {
-    alert("Welcome again " + user);
-  } else {
-    user = prompt("Please enter your name:", "");
-    if (user != "" && user != null) {
-      setCookie("username", user, 365);
-    }
-  }
-}
+        function checkCookie() {
+          var user = getCookie("username");
+          if (user != "") {
+            alert("Welcome again " + user);
+          } else {
+            user = prompt("Please enter your name:", "");
+            if (user != "" && user != null) {
+              setCookie("username", user, 365);
+            }
+          }
+        }
 
     </script>
 </body>
