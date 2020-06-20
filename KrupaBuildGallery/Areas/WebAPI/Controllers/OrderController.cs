@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Security.AccessControl;
 using System.Web;
 using System.Web.Http;
 
@@ -633,5 +634,262 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             return response;
 
         }
+
+
+        [Route("GetOrderListForAgent"), HttpPost]
+        public ResponseDataModel<List<OrderVM>> GetOrderListForAgent(GeneralVM objGen)
+        {
+            ResponseDataModel<List<OrderVM>> response = new ResponseDataModel<List<OrderVM>>();
+            List<OrderVM> lstOrder = new List<OrderVM>();
+            try
+            {
+                long AdminUser = Convert.ToInt64(objGen.ClientUserId);
+               List<long> lstOrderIds = _db.tbl_OrderItemDelivery.Where(o => o.DelieveryPersonId == AdminUser).Where(o => o.Status == 3).Select(o => o.OrderId.Value).Distinct().ToList();
+                lstOrder = (from p in _db.tbl_Orders
+                            join c in _db.tbl_ClientUsers on p.ClientUserId equals c.ClientUserId
+                            where lstOrderIds.Contains(p.OrderId) 
+                            select new OrderVM
+                            {
+                                OrderId = p.OrderId,
+                                ClientUserName = c.FirstName + " " + c.LastName,
+                                ClientUserId = p.ClientUserId,
+                                OrderAmount = p.OrderAmount,
+                                OrderShipCity = p.OrderShipCity,
+                                OrderShipState = p.OrderShipState,
+                                OrderShipAddress = p.OrderShipAddress,
+                                OrderPincode = p.OrderShipPincode,
+                                OrderShipClientName = p.OrderShipClientName,
+                                OrderShipClientPhone = p.OrderShipClientPhone,
+                                OrderStatusId = p.OrderStatusId,
+                                PaymentType = p.PaymentType,
+                                OrderDate = p.CreatedDate,
+                                ClientEmail = c.Email,
+                                ClientMobileNo = c.MobileNo,
+                                OrderAmountDue = p.AmountDue.HasValue ? p.AmountDue.Value : 0,
+                                ShipmentCharge = p.ShippingCharge.HasValue ? p.ShippingCharge.Value : 0,
+                                ShippingStatus = p.ShippingStatus.HasValue ? p.ShippingStatus.Value : 2,
+                                WalletAmtUsed = p.WalletAmountUsed.HasValue ? p.WalletAmountUsed.Value : 0,
+                                CreditUsed = p.CreditAmountUsed.HasValue ? p.CreditAmountUsed.Value : 0,
+                                OnlineUsed = p.AmountByRazorPay.HasValue ? p.AmountByRazorPay.Value : 0,
+                                OrderTypeId = p.OrderType.HasValue ? p.OrderType.Value : 1,
+                                IsCashOnDelivery = p.IsCashOnDelivery.HasValue ? p.IsCashOnDelivery.Value : false,
+                                ExtraAmount = p.ExtraAmount.HasValue ? p.ExtraAmount.Value : 0
+                            }).OrderByDescending(x => x.OrderDate).ToList();             
+                response.Data = lstOrder;
+
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+
+        [Route("GetOrderDetailsForAgentByOrderId"), HttpPost]
+        public ResponseDataModel<OrderVM> GetOrderDetailsForAgentByOrderId(GeneralVM objGen)
+        {
+            ResponseDataModel<OrderVM> response = new ResponseDataModel<OrderVM>();
+            OrderVM objOrdr = new OrderVM();
+            try
+            {
+                long OrderId = Convert.ToInt64(objGen.OrderId);
+                long AgntUsrId = Convert.ToInt64(objGen.ClientUserId);
+                long AgentId = Convert.ToInt64(objGen.AgentId);
+                objOrdr = (from p in _db.tbl_Orders
+                            join c in _db.tbl_ClientUsers on p.ClientUserId equals c.ClientUserId
+                            where p.OrderId == OrderId
+                           select new OrderVM
+                            {
+                                OrderId = p.OrderId,
+                                ClientUserName = c.FirstName + " " + c.LastName,
+                                ClientUserId = p.ClientUserId,
+                                OrderAmount = p.OrderAmount,
+                                OrderShipCity = p.OrderShipCity,
+                                OrderShipState = p.OrderShipState,
+                                OrderShipAddress = p.OrderShipAddress,
+                                OrderPincode = p.OrderShipPincode,
+                                OrderShipClientName = p.OrderShipClientName,
+                                OrderShipClientPhone = p.OrderShipClientPhone,
+                                OrderStatusId = p.OrderStatusId,
+                                PaymentType = p.PaymentType,
+                                OrderDate = p.CreatedDate,
+                                ClientEmail = c.Email,
+                                ClientMobileNo = c.MobileNo,
+                                OrderAmountDue = p.AmountDue.HasValue ? p.AmountDue.Value : 0,
+                                ShipmentCharge = p.ShippingCharge.HasValue ? p.ShippingCharge.Value : 0,
+                                ShippingStatus = p.ShippingStatus.HasValue ? p.ShippingStatus.Value : 2,
+                                WalletAmtUsed = p.WalletAmountUsed.HasValue ? p.WalletAmountUsed.Value : 0,
+                                CreditUsed = p.CreditAmountUsed.HasValue ? p.CreditAmountUsed.Value : 0,
+                                OnlineUsed = p.AmountByRazorPay.HasValue ? p.AmountByRazorPay.Value : 0,
+                                OrderTypeId = p.OrderType.HasValue ? p.OrderType.Value : 1,
+                                IsCashOnDelivery = p.IsCashOnDelivery.HasValue ? p.IsCashOnDelivery.Value : false,
+                                ExtraAmount = p.ExtraAmount.HasValue ? p.ExtraAmount.Value : 0
+                            }).OrderByDescending(x => x.OrderDate).FirstOrDefault();
+                if (objOrdr != null)
+                {
+                   List<long> lstOrdritmid = _db.tbl_OrderItemDelivery.Where(o => o.OrderId == OrderId && o.DelieveryPersonId == AgntUsrId).Select(x => x.OrderItemId.Value).ToList();
+
+                    List<OrderItemsVM> lstOrderItms = (from p in _db.tbl_OrderItemDetails
+                                                       join c in _db.tbl_ProductItems on p.ProductItemId equals c.ProductItemId
+                                                       join vr in _db.tbl_ItemVariant on p.VariantItemId equals vr.VariantItemId
+                                                       where p.OrderId == OrderId && lstOrdritmid.Contains(p.OrderDetailId)
+                                                       select new OrderItemsVM
+                                                       {
+                                                           OrderId = p.OrderId.Value,
+                                                           OrderItemId = p.OrderDetailId,
+                                                           ProductItemId = p.ProductItemId.Value,
+                                                           ItemName = p.ItemName,
+                                                           Qty = p.Qty.Value,
+                                                           Price = p.Price.Value,
+                                                           Sku = p.Sku,
+                                                           GSTAmt = p.GSTAmt.Value,
+                                                           FinalAmt = p.FinalItemPrice.Value,
+                                                           IGSTAmt = p.IGSTAmt.Value,
+                                                           ItemImg = c.MainImage,
+                                                           Discount = p.Discount.HasValue ? p.Discount.Value : 0,
+                                                           VariantQtytxt = vr.UnitQty,
+                                                           ItemStatus = p.ItemStatus.HasValue ? p.ItemStatus.Value : 1,
+                                                           IsReturnable = c.IsReturnable.HasValue ? c.IsReturnable.Value : false
+                                                       }).OrderByDescending(x => x.OrderItemId).ToList();
+                List<AdminUserVM> lstAdminusers = (from p in _db.tbl_AdminUsers                              
+                                select new AdminUserVM
+                                {
+                                    AdminUserId = p.AdminUserId,
+                                    FirstName = p.FirstName,
+                                    LastName = p.LastName,
+                                    MobileNo = p.MobileNo,
+                                    Address = p.Address,
+                                    WorkingTime = p.WorkingTime
+                                }).OrderBy(x => x.FirstName).ToList();
+                    if (lstOrderItms != null && lstOrderItms.Count() > 0)
+                    {
+                        lstOrderItms.ForEach(x => { x.ItemStatustxt = GetItemStatus(x.ItemStatus); x.DeliveryPersonName = GetAssignPersonName(x.OrderItemId, lstAdminusers); });
+                    }
+                    objOrdr.OrderItems = lstOrderItms;
+                }
+
+                response.Data = objOrdr;
+
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+            return response;
+        }
+
+        public string GetAssignPersonName(long OrderItemId, List<AdminUserVM> lstuser)
+        {
+           var objPersonN = _db.tbl_OrderItemDelivery.Where(o => o.OrderItemId == OrderItemId).OrderByDescending(x => x.OrderItemDeliveryId).FirstOrDefault();
+           if(objPersonN != null && lstuser != null)
+            {
+                var objusr = lstuser.Where(o => o.AdminUserId == objPersonN.DelieveryPersonId).FirstOrDefault();
+                if(objusr != null)
+                {
+                   return objusr.FirstName + " " + objusr.LastName;
+                }
+            }
+            return "";
+        }
+
+        [Route("AssignDelieveryPerson"), HttpPost]
+        public ResponseDataModel<string> AssignDelieveryPerson(GeneralVM objGen)
+        {
+            ResponseDataModel<string> response = new ResponseDataModel<string>();         
+            try
+            {
+                long DelieveryPrsnId = objGen.DelieveryPersonId;
+                long OrdrId = Convert.ToInt64(objGen.OrderId);
+                long AgentId = Convert.ToInt64(objGen.AgentId);
+                string OrderItemIds = objGen.OrderDetailId;
+                clsCommon objCommon = new clsCommon();
+                tbl_AdminUsers objAdminUsr = _db.tbl_AdminUsers.Where(o => o.AdminUserId == DelieveryPrsnId).FirstOrDefault();
+                string ItmsText = "";
+                OrderItemIds = OrderItemIds.Trim('^');
+                if (!string.IsNullOrEmpty(OrderItemIds))
+                {
+                    string[] strordditm = OrderItemIds.Split('^');
+                    foreach (string ss in strordditm)
+                    {
+                        long OrderItemId = Convert.ToInt64(ss);
+                        tbl_OrderItemDetails objOrderItm = _db.tbl_OrderItemDetails.Where(o => o.OrderDetailId == OrderItemId).FirstOrDefault();
+                     
+                        tbl_ItemVariant objVrnt = _db.tbl_ItemVariant.Where(o => o.VariantItemId == objOrderItm.VariantItemId).FirstOrDefault();
+                        if (objVrnt != null)
+                        {
+                            ItmsText = ItmsText + objOrderItm.ItemName + "-" + objVrnt.UnitQty + ",";
+                        }
+                        else
+                        {
+                            ItmsText = ItmsText + objOrderItm.ItemName + ",";
+                        }
+                        tbl_OrderItemDelivery objOrderItmDlv = _db.tbl_OrderItemDelivery.Where(o => o.OrderItemId == OrderItemId && o.Status == 3 && o.DelieveryPersonId != AgentId).FirstOrDefault();
+                        if(objOrderItmDlv == null)
+                        {
+                            objOrderItmDlv = new tbl_OrderItemDelivery();
+                            objOrderItmDlv.OrderId = OrdrId;
+                            objOrderItmDlv.OrderItemId = OrderItemId;
+                            objOrderItmDlv.Status = 3;
+                            objOrderItmDlv.DelieveryPersonId = DelieveryPrsnId;
+                            objOrderItmDlv.AssignedBy = AgentId;
+                            objOrderItmDlv.AssignedDate = DateTime.UtcNow;
+                            _db.tbl_OrderItemDelivery.Add(objOrderItmDlv);
+                            _db.SaveChanges();
+                        }
+                        else
+                        {
+                            objOrderItmDlv.OrderItemId = OrderItemId;
+                            objOrderItmDlv.Status = 3;
+                            objOrderItmDlv.DelieveryPersonId = DelieveryPrsnId;
+                            objOrderItmDlv.AssignedBy = AgentId;
+                            objOrderItmDlv.AssignedDate = DateTime.UtcNow;                            
+                            _db.SaveChanges();
+                        }
+                        
+                        objCommon.SaveTransaction(objOrderItm.ProductItemId.Value, objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, "Delivery Person " + objAdminUsr.FirstName + " " + objAdminUsr.LastName + " Assign to Dispatch Item", 0, 0, AgentId, DateTime.UtcNow, "Delievery Person Assigned");
+                    }
+                    _db.SaveChanges();
+                }
+                using (WebClient webClient = new WebClient())
+                {
+                    string msg = "Order no." + OrdrId + " \nItem: " + ItmsText + " \nhas been assigned to you for delivery";
+                    string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objAdminUsr.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    var json = webClient.DownloadString(url);
+                    if (json.Contains("invalidnumber"))
+                    {
+                        
+                    }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(objAdminUsr.Email))
+                        {
+                            tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
+                            string FromEmail = objGensetting.FromEmail;
+
+                            string msg1 = "Order no." + OrdrId + "Item: " + ItmsText.Trim(',') + "has been assigned to you for delivery";
+                            clsCommon.SendEmail(objAdminUsr.Email, FromEmail, "Assigned New Item Delivery - Krupa Build Gallery", msg1);
+                        }
+                    }
+
+                }
+
+
+                response.Data = "Success";
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+
+
     }
 }

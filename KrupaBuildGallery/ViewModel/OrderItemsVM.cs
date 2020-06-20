@@ -26,5 +26,6 @@ namespace KrupaBuildGallery.ViewModel
         public string VariantQtytxt { get; set; }
         public decimal FinalAmt { get; set; }
         public decimal ShipingChargeOf1Item { get; set; }
+        public string DeliveryPersonName { get; set; }
     }
 }

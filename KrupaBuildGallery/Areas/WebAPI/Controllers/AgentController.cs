@@ -41,8 +41,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         objadminuser.LastName = data.LastName;
                         objadminuser.MobileNo = data.MobileNo;
                         objadminuser.AdminRoleId = data.AdminRoleId;
-                        objadminuser.Email = data.Email;    
-                        
+                        objadminuser.Email = data.Email;
+                        objadminuser.AdminUserId = data.AdminUserId;
                         response.Data = objadminuser;
                     }
                 }
@@ -62,5 +62,41 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             return response;
 
         }
+
+        [Route("DelieveryPersonsOfAgents"), HttpPost]
+        public ResponseDataModel<List<AdminUserVM>> DelieveryPersonsOfAgents(GeneralVM objGeneral)
+        {
+            ResponseDataModel<List<AdminUserVM>> response = new ResponseDataModel<List<AdminUserVM>>();
+            List<AdminUserVM> lstusers = new List<AdminUserVM>();
+            try
+            {
+                long AgntUserId = Convert.ToInt64(objGeneral.ClientUserId);
+         
+                lstusers = (from p in _db.tbl_AdminUsers                            
+                             where p.ParentAgentId == AgntUserId
+                             select new AdminUserVM
+                             {
+                                 AdminUserId = p.AdminUserId,
+                                 FirstName = p.FirstName,
+                                 LastName = p.LastName,
+                                 MobileNo = p.MobileNo,
+                                 Address = p.Address,
+                                 WorkingTime = p.WorkingTime                             
+                             }).OrderBy(x => x.FirstName).ToList();
+
+                response.Data = lstusers;            
+
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+
+
     }
 }

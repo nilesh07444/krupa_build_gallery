@@ -25,6 +25,7 @@ namespace KrupaBuildGallery
         public string OrderDetailId { get; set; }
         public string StatusId { get; set; }
         public string Reason { get; set; }
-
+        public long AgentId { get; set; }
+        public long DelieveryPersonId { get; set; }
     }
 }
