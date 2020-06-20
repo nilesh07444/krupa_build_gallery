@@ -702,6 +702,108 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return "Success";
         }
 
+        [HttpPost]
+        public string AssignMultiItemDeliveryPerson(long OrderId, string OrderItemIds, long PersonId)
+        {
+            clsCommon objCommon = new clsCommon();          
+            tbl_AdminUsers objAdminUsr = _db.tbl_AdminUsers.Where(o => o.AdminUserId == PersonId).FirstOrDefault();
+            string ItmsText = "";
+            OrderItemIds = OrderItemIds.Trim('^');
+            if (!string.IsNullOrEmpty(OrderItemIds))
+            {
+                string[] strordditm = OrderItemIds.Split('^');
+                foreach(string ss in strordditm)
+                {
+                    long OrderItemId = Convert.ToInt64(ss);
+                    tbl_OrderItemDetails objOrderItm = _db.tbl_OrderItemDetails.Where(o => o.OrderDetailId == OrderItemId).FirstOrDefault();
+                    objOrderItm.ItemStatus = 3;
+                    _db.SaveChanges();
 
+                    tbl_ItemVariant objVrnt = _db.tbl_ItemVariant.Where(o => o.VariantItemId == objOrderItm.VariantItemId).FirstOrDefault();
+                    if(objVrnt != null)
+                    {
+                        ItmsText = ItmsText + objOrderItm.ItemName + "-" + objVrnt.UnitQty + ",";
+                    }
+                    else
+                    {
+                        ItmsText = ItmsText + objOrderItm.ItemName + ",";
+                    }
+                    tbl_OrderItemDelivery objOrderItmDlv = new tbl_OrderItemDelivery();
+                    objOrderItmDlv.OrderId = OrderId;
+                    objOrderItmDlv.OrderItemId = OrderItemId;
+                    objOrderItmDlv.Status = 3;
+                    objOrderItmDlv.DelieveryPersonId = PersonId;
+                    objOrderItmDlv.AssignedBy = clsAdminSession.UserID;
+                    objOrderItmDlv.AssignedDate = DateTime.UtcNow;
+                    _db.tbl_OrderItemDelivery.Add(objOrderItmDlv);
+                    objCommon.SaveTransaction(objOrderItm.ProductItemId.Value, objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, "Delivery Person " + objAdminUsr.FirstName + " " + objAdminUsr.LastName + " Assign to Dispatch Item", 0, 0, clsAdminSession.UserID, DateTime.UtcNow, "Item Status Changed");
+                }
+                _db.SaveChanges();
+            }
+          
+            
+           
+            tbl_Orders objOrdr = _db.tbl_Orders.Where(o => o.OrderId == OrderId).FirstOrDefault();
+            if (objOrdr.OrderStatusId == 2)
+            {
+                List<tbl_OrderItemDetails> lstOrderTms = _db.tbl_OrderItemDetails.Where(o => o.OrderId == OrderId && o.ItemStatus != 5 && o.ItemStatus != 3).ToList();
+                if (lstOrderTms == null || lstOrderTms.Count == 0)
+                {
+                    objOrdr.OrderStatusId = 3;
+                }
+            }
+            tbl_ClientUsers objclntusr = _db.tbl_ClientUsers.Where(o => o.ClientUserId == objOrdr.ClientUserId).FirstOrDefault();
+            if (objclntusr != null)
+            {
+                using (WebClient webClient = new WebClient())
+                {
+
+                    string msg = "Your order no." + objOrdr.OrderId + "\n Item: " + ItmsText + "\n has been dispatched";
+                    string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objclntusr.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    var json = webClient.DownloadString(url);
+                    if (json.Contains("invalidnumber"))
+                    {
+                        return "InvalidNumber";
+                    }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(objclntusr.Email))
+                        {
+                            tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
+                            string FromEmail = objGensetting.FromEmail;
+
+                            string msg1 = "Your order #" + objOrdr.OrderId + "Item: " + ItmsText.Trim(',') + "\n has been dispatched";
+                            clsCommon.SendEmail(objclntusr.Email, FromEmail, "Your Order has been dispatched - Krupa Build Gallery", msg1);
+                        }
+                    }
+
+                }
+
+                using (WebClient webClient = new WebClient())
+                {
+                    string msg = "Order no." + objOrdr.OrderId + " \nItem: " + ItmsText + " \nhas been assigned to you for delivery";
+                    string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objAdminUsr.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    var json = webClient.DownloadString(url);
+                    if (json.Contains("invalidnumber"))
+                    {
+                        return "InvalidNumber";
+                    }
+                    else
+                    {
+                        if (!string.IsNullOrEmpty(objAdminUsr.Email))
+                        {
+                            tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
+                            string FromEmail = objGensetting.FromEmail;
+
+                            string msg1 = "Order no." + objOrdr.OrderId + "Item: " + ItmsText.Trim(',') + "has been assigned to you for delivery";
+                            clsCommon.SendEmail(objAdminUsr.Email, FromEmail, "Assigned New Item Delivery - Krupa Build Gallery", msg1);
+                        }
+                    }
+
+                }
+            }
+
+            return "Success";
+        }
     }
 }

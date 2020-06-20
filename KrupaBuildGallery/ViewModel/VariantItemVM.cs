@@ -12,5 +12,8 @@ namespace KrupaBuildGallery
         public string UnitQtyText { get; set; }
         public string UnitQtys { get; set; }
         public bool IsActive { get; set; }
+        public decimal MRPPrice { get; set; }
+        public decimal CustomerPrice { get; set; }
+        public decimal DistributorPrice { get; set; }
     }
 }

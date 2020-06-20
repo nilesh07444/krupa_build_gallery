@@ -31,12 +31,12 @@
             <div class="col-lg-12">
                 <h3>Distributor Request</h3>
                 <div class="theme-card">
-                    @using (Html.BeginForm("NewDistributorRequest", "DistributorRequest", FormMethod.Post, new { ID = "theFormId", enctype = "multipart/form-data",autocomplete="off", @class = "theme-form", onsubmit = "return checkdetails();" }))
+                    @using (Html.BeginForm("NewDistributorRequest", "DistributorRequest", FormMethod.Post, new { ID = "theFormId", enctype = "multipart/form-data", autocomplete = "off", @class = "theme-form", onsubmit = "return checkdetails();" }))
                     {
                         <div class="form-row">
                             <div class="col-md-6">
                                 <label for="photofile">Distributor Photo *</label>
-                                <input class="form-control" type="file" id="photofile" name="photofile"   required=""/>
+                                <input class="form-control" type="file" id="photofile" name="photofile" required="" />
                             </div>
                             <div class="col-md-6 select_input">
                                 <label for="prefix">Prefix *</label>
@@ -52,7 +52,7 @@
                             <div class="col-md-6">
                                 <label for="fname">First Name *</label>
                                 <input type="text" class="form-control sentensecase" id="fname" name="fname" value="@TempData["firstnm"]" placeholder="First Name" required="">
-                            </div>  
+                            </div>
                             <div class="col-md-6">
                                 <label for="lname">Last Name *</label>
                                 <input type="text" class="form-control sentensecase" id="lname" name="lname" value="@TempData["lastnm"]" placeholder="Last Name" required="">
@@ -143,7 +143,7 @@
                             </div>
                             <div class="col-md-6">
                                 <label for="gstno">GST No *</label>
-                                <input type="text" class="form-control uppercase" id="gstno" name="gstno" value="@TempData["gstno"]" placeholder="GST No."  required="">
+                                <input type="text" class="form-control uppercase" id="gstno" name="gstno" value="@TempData["gstno"]" placeholder="GST No." required="">
                             </div>
                         </div>
                         <div class="form-row">
@@ -170,8 +170,13 @@
                             <div class="col-md-6">
                                 <label for="shopphoto">Shop Photo.*</label>
                                 <input type="file" class="form-control" id="shopphoto" name="shopphoto" required />
-                            </div> 
+                            </div>
+                            <div class="col-md-6">
+                                <label for="shopphoto">Cancellation Cheque Photo *</label>
+                                <input type="file" class="form-control" id="cancellationchequephoto" name="cancellationchequephoto" required />
+                            </div>
                         </div>
+                         
                         <div class="form-row">
                             <div class="col-md-6">
                                 <input type="hidden" id="hdnotptxt" value="" />
@@ -217,13 +222,19 @@
 
     </script>
 }
+
 @*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.css" />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>*@
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>*@
+@*<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">*@
+
+@*<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.css" /> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>*@
+
 <script>
       $(document).ready(function () {
         $("#dob").datepicker({
-             format: "dd/mm/yyyy",
+            format: "dd/mm/yyyy",
+            autoclose: true
         });
     });
     function checkdetails() {

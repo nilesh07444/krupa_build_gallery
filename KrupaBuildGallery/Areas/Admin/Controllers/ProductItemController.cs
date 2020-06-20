@@ -926,6 +926,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             string[] sheets = { "8x4", "7x4", "7x3", "6x4", "6x3" };
             string[] sheetsqty = { "32", "28", "21", "24", "18" };
             var obj = _db.tbl_Units.Where(x => x.UnitId == UnitTypeId).FirstOrDefault();
+            ViewBag.UntTyp = obj.UnitName;
             if (ProductItemId == 0)
             {                
                 List<VariantItemVM> lstVarintss = new List<VariantItemVM>();

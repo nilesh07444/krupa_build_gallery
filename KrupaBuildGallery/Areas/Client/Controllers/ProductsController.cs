@@ -482,6 +482,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             objProductItem.InStock = TotalStk - TotalSold;
             var objUnt = _db.tbl_Units.Where(o => o.UnitId == objProductItem.UnitType).FirstOrDefault();
             List<tbl_ItemVariant> lstVarint = new List<tbl_ItemVariant>();
+            List<VariantItemVM> lstVrntVM = new List<VariantItemVM>();
             string[] kgs = { "50 Grams", "100 Grams", "250 Grams", "500 Grams", "1 Kg", "2 Kg", "5 Kg" };
             string[] kgsQty = { "0.05", "0.10", "0.25", "0.50", "1", "2", "5" };
             string[] ltrs = { "50 ml", "100 ml", "250 ml", "500 ml", "1 Ltr", "2 Ltr", "5 Ltr" };
@@ -496,6 +497,9 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 {
                     foreach (tbl_ItemVariant objvv in lstVarint)
                     {
+                        VariantItemVM objVM = new VariantItemVM();
+                        objVM.VariantItemId = Convert.ToInt32(objvv.VariantItemId);
+                        objVM.UnitQtys = objvv.UnitQty;
                         if (objUnt.UnitName.ToLower().Contains("killo"))
                         {
                             int idxxx = Array.IndexOf(kgs, objvv.UnitQty);
@@ -504,14 +508,20 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             {
                                 objvv.CustomerPrice = Math.Round((objProductItem.CustomerPrice * qtt * objvv.PricePecentage.Value) / 100, 2);
                                 objvv.DistributorPrice = Math.Round((objProductItem.DistributorPrice * qtt * objvv.PricePecentage.Value) / 100, 2);
+                                objVM.CustomerPrice = objvv.CustomerPrice.Value;
+                                objVM.DistributorPrice = objvv.DistributorPrice.Value;
+                                objVM.MRPPrice = Math.Round((objProductItem.MRPPrice * qtt * objvv.PricePecentage.Value) / 100, 2);
                             }
                             else
                             {
                                 objvv.CustomerPrice = Math.Round((objProductItem.CustomerPrice * objvv.PricePecentage.Value) / 100, 2);
                                 objvv.DistributorPrice = Math.Round((objProductItem.DistributorPrice * objvv.PricePecentage.Value) / 100, 2);
+                                objVM.CustomerPrice = objvv.CustomerPrice.Value;
+                                objVM.DistributorPrice = objvv.DistributorPrice.Value;
+                                objVM.MRPPrice = Math.Round((objProductItem.MRPPrice * objvv.PricePecentage.Value) / 100, 2);
                             }
                         }
-                        else if(objUnt.UnitName.ToLower().Contains("litr"))
+                        else if (objUnt.UnitName.ToLower().Contains("litr"))
                         {
                             int idxxx = Array.IndexOf(ltrs, objvv.UnitQty);
                             decimal qtt = Convert.ToDecimal(ltrsQty[idxxx].ToString());
@@ -519,25 +529,40 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             {
                                 objvv.CustomerPrice = Math.Round((objProductItem.CustomerPrice * qtt * objvv.PricePecentage.Value) / 100, 2);
                                 objvv.DistributorPrice = Math.Round((objProductItem.DistributorPrice * qtt * objvv.PricePecentage.Value) / 100, 2);
+                                objVM.CustomerPrice = objvv.CustomerPrice.Value;
+                                objVM.DistributorPrice = objvv.DistributorPrice.Value;
+                                objVM.MRPPrice = Math.Round((objProductItem.MRPPrice * qtt * objvv.PricePecentage.Value) / 100, 2);
                             }
                             else
                             {
                                 objvv.CustomerPrice = Math.Round((objProductItem.CustomerPrice * objvv.PricePecentage.Value) / 100, 2);
                                 objvv.DistributorPrice = Math.Round((objProductItem.DistributorPrice * objvv.PricePecentage.Value) / 100, 2);
+                                objVM.CustomerPrice = objvv.CustomerPrice.Value;
+                                objVM.DistributorPrice = objvv.DistributorPrice.Value;
+                                objVM.MRPPrice = Math.Round((objProductItem.MRPPrice * objvv.PricePecentage.Value) / 100, 2);
                             }
                         }
                         else if (objUnt.UnitName.ToLower().Contains("sheet"))
                         {
-                            int idxxx = Array.IndexOf(sheets, objvv.UnitQty);                            
+                            int idxxx = Array.IndexOf(sheets, objvv.UnitQty);
                             decimal sqft = Convert.ToDecimal(sheetsqty[idxxx]);
                             objvv.CustomerPrice = Math.Round(sqft * objProductItem.CustomerPrice, 2);
                             objvv.DistributorPrice = Math.Round(sqft * objProductItem.DistributorPrice, 2);
-
-                        }                       
+                            objVM.CustomerPrice = objvv.CustomerPrice.Value;
+                            objVM.DistributorPrice = objvv.DistributorPrice.Value;
+                            objVM.MRPPrice = Math.Round(sqft * objProductItem.MRPPrice, 2);
+                        }
+                        else
+                        {
+                            objVM.CustomerPrice = objvv.CustomerPrice.Value;
+                            objVM.DistributorPrice = objvv.DistributorPrice.Value;
+                            objVM.MRPPrice = Math.Round(objProductItem.MRPPrice, 2);
+                        }
+                        lstVrntVM.Add(objVM);
                     }
                 }
             }
-            ViewData["lstVarint"] = lstVarint;
+            ViewData["lstVarint"] = lstVrntVM;
             ViewBag.UnitTyp = objUnt.UnitName;
             return View(objProductItem);
         }

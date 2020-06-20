@@ -14,7 +14,7 @@
     {
         Model.OtherImages.Add(Model.MainImage);
     }
-    List<tbl_ItemVariant> lstVarintss = ViewData["lstVarint"] as List<tbl_ItemVariant>;
+    List<VariantItemVM> lstVarintss = ViewData["lstVarint"] as List<VariantItemVM>;
     string unittyppe = Convert.ToString(ViewBag.UnitTyp);
 }
 
@@ -119,11 +119,11 @@
                         <h2>@Model.ItemName</h2>
                         @if (clsClientSession.UserID == 0 || (clsClientSession.UserID > 0 && clsClientSession.RoleID == 1))
                         {
-                            <h4>₹ <span id="prcc">@Model.CustomerPrice</span> <del>₹ @Model.MRPPrice</del></h4>
+                            <h4>₹ <span id="prcc">@Model.CustomerPrice</span> <del>₹ <span id="mrpprcc">@Model.MRPPrice</span></del></h4>
                         }
                         else
                         {
-                            <h4>₹ <span id="prcc">@Model.DistributorPrice</span> <del>₹ @Model.MRPPrice</del></h4>
+                            <h4>₹ <span id="prcc">@Model.DistributorPrice</span> <del>₹ <span id="mrpprcc">@Model.MRPPrice</span></del></h4>
                         }
                         @if (unittyppe.ToLower().Contains("killo") || unittyppe.ToLower().Contains("litr") || unittyppe.ToLower().Contains("sheet"))
                         {
@@ -132,20 +132,29 @@
                                 <div class="qty-box">
                                     @if (lstVarintss != null && lstVarintss.Count() > 0)
                                     {
+                                        int cntt0 = 0;
                                         <select id="variantoption" class="form-control" style="width:230px;">
                                             @foreach (var objj in lstVarintss)
                                             {
-                                                decimal prc = objj.CustomerPrice.Value;
+                                                decimal prc = objj.CustomerPrice;
                                                 string selected1 = "";
                                                 if (clsClientSession.RoleID == 2)
                                                 {
-                                                    prc = objj.DistributorPrice.Value;
+                                                    prc = objj.DistributorPrice;
                                                 }
-                                                if (objj.UnitQty == "1 Kg" || objj.UnitQty == "1 Ltr")
+                                                if (objj.UnitQtys == "1 Kg" || objj.UnitQtys == "1 Ltr")
                                                 {
                                                     selected1 = "selected";
                                                 }
-                                                <option value="@objj.VariantItemId" @selected1 data-attrprc="@prc">@objj.UnitQty</option>
+                                                else
+                                                {
+                                                    if(cntt0 == 0)
+                                                    {
+                                                        selected1 = "selected";
+                                                        cntt0 = cntt0 + 1;
+                                                    }
+                                                }
+                                                <option value="@objj.VariantItemId" @selected1 data-attrmrpprc="@objj.MRPPrice" data-attrprc="@prc">@objj.UnitQtys</option>
                                             }
                                         </select>
                                         <input type="hidden" value="" id="hdnvarintIds" />
@@ -229,6 +238,13 @@
 <!-- product-tab starts -->
 <!-- product-tab ends -->
 <script>
+    $(document).ready(function () {
+        if ($("#variantoption").length > 0) {
+            setTimeout(function () {
+                $("#variantoption").trigger('change');
+            },250);
+        }       
+    });
     function addtocrt(itmid) {
         var qtyy = $("#txtqty").val();
         var provariant = $("#hdnvarintIds").val();
@@ -301,6 +317,7 @@
           if ($("#variantoption").length > 0) {
              $(document).on("change", "#variantoption", function () {
                  $("#prcc").html($(this).find("option:selected").attr("data-attrprc"));
+                 $("#mrpprcc").html($(this).find("option:selected").attr("data-attrmrpprc"));
                  $("#hdnvarintIds").val($("#variantoption").val());
              });
               $("#hdnvarintIds").val($("#variantoption").val());

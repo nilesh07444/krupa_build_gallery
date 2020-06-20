@@ -1,5 +1,7 @@
 ﻿@{
     List<VariantItemVM> lstVarint = ViewData["lstVarintss"] as List<VariantItemVM>;
+    string strunittp = Convert.ToString(ViewBag.UntTyp);
+    strunittp = strunittp.ToLower();
 }
 @if (lstVarint != null && lstVarint.Count() > 0)
 {
@@ -10,7 +12,7 @@
             <td colspan="3" style="text-align:center;font-size:19px;">
                 Item Variants
             </td> 
-        </tr>
+        </tr> 
         @foreach (var objj in lstVarint)
         {
             string chk = "";
@@ -18,11 +20,18 @@
             {
                 chk = "checked";
             }
-            <tr>
-                <td><input class="" @chk style="width:50px;" type="checkbox" name="chkvariant_@objj.VariantItemId" /></td>
-                <td style="width:200px;">@objj.UnitQtyText</td>
-                <td><input type="number" id="variantper_@objj.VariantItemId" style="width:100px;" placeholder="Percentage %" name="variantper_@objj.VariantItemId" value="@objj.PricePercentage" /></td>
-            </tr>
+    <tr>
+        <td><input class="" @chk style="width:50px;" type="checkbox" name="chkvariant_@objj.VariantItemId" /></td>
+        <td style="width:200px;">@objj.UnitQtyText</td>
+        @if (strunittp == "sheets")
+        {
+            <td><input type="number" id="variantper_@objj.VariantItemId" style="width:100px;display:none;" placeholder="Percentage %" name="variantper_@objj.VariantItemId" value="100" /></td>
+        }
+        else
+        {
+            <td><input type="number" id="variantper_@objj.VariantItemId" style="width:100px;" placeholder="Percentage %" name="variantper_@objj.VariantItemId" value="@objj.PricePercentage" /></td>
+        }
+    </tr>
         }
 
     </table>
