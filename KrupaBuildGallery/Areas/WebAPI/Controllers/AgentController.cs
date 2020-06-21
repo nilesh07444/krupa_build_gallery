@@ -79,8 +79,10 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                              select new AdminUserVM
                              {
                                  AdminUserId = p.AdminUserId,
+                                 ProfilePicture = p.ProfilePicture,
                                  FirstName = p.FirstName,
                                  LastName = p.LastName,
+                                 Email = p.Email,                                
                                  MobileNo = p.MobileNo,
                                  Address = p.Address,
                                  WorkingTime = p.WorkingTime                             
@@ -134,6 +136,88 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     }
                 }
 
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+
+
+        [Route("AddStaff"), HttpPost]
+        public ResponseDataModel<string> AddStaff(AdminUserVM objadminusr)
+        {
+            ResponseDataModel<string> response = new ResponseDataModel<string>();
+            try
+            {
+                long AgentId = Convert.ToInt64(objadminusr.strCreatedBy);
+                string FirstName = objadminusr.FirstName;
+                string LastName = objadminusr.LastName;
+                string Email = objadminusr.Email;
+                string MobileNo = objadminusr.MobileNo;
+                string Address = objadminusr.Address;
+                string City = objadminusr.City;
+                string Password = objadminusr.Password;
+                tbl_AdminUsers objUsr = new tbl_AdminUsers();
+                objUsr.FirstName = FirstName;
+                objUsr.LastName = LastName;
+                objUsr.Email = Email;
+                objUsr.MobileNo = MobileNo;
+                objUsr.Password = Password;
+                objUsr.AdminRoleId = 3;
+                objUsr.ParentAgentId = AgentId;
+                objUsr.CreatedBy = AgentId;
+                objUsr.CreatedDate = DateTime.UtcNow;
+                objUsr.Address = Address;
+                objUsr.City = City;
+                _db.tbl_AdminUsers.Add(objUsr);
+                _db.SaveChanges();
+                response.Data = "Success";
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+
+
+        [Route("EditStaff"), HttpPost]
+        public ResponseDataModel<string> EditStaff(AdminUserVM objadminusr)
+        {
+            ResponseDataModel<string> response = new ResponseDataModel<string>();
+            try
+            {
+                long AgentId = Convert.ToInt64(objadminusr.strCreatedBy);
+                long adminuserid = objadminusr.AdminUserId;
+                string FirstName = objadminusr.FirstName;
+                string LastName = objadminusr.LastName;
+                string Email = objadminusr.Email;
+                string MobileNo = objadminusr.MobileNo;
+                string Address = objadminusr.Address;
+                string City = objadminusr.City;
+                string Password = objadminusr.Password;
+                tbl_AdminUsers objUsr = _db.tbl_AdminUsers.Where(o => o.AdminUserId == adminuserid).FirstOrDefault();
+                objUsr.FirstName = FirstName;
+                objUsr.LastName = LastName;
+                objUsr.Email = Email;
+                objUsr.MobileNo = MobileNo;
+                objUsr.Password = Password;
+                objUsr.AdminRoleId = 3;
+                objUsr.ParentAgentId = AgentId;
+                objUsr.UpdatedBy = AgentId;
+                objUsr.UpdatedDate = DateTime.UtcNow;
+                objUsr.Address = Address;
+                objUsr.City = City;
+                _db.SaveChanges();
+                response.Data = "Success";
             }
             catch (Exception ex)
             {
