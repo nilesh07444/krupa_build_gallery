@@ -621,6 +621,12 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     _db.SaveChanges();
                     string orderid = clsCommon.EncryptString(objOrder.OrderId.ToString());
                     response.Data = "Success^" + orderid;
+                    tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
+                    string AdminMobileNumber = objGensetting.AdminSMSNumber;
+                    string msgsms = "New Order Received - Order No " + objOrder.OrderId + " - Krupa Build Gallery";
+                    string msgsmscustomer = "Thank you for the Order. You order number is " + objOrder.OrderId + " - Krupa Build Gallery";
+                    SendSMSForNewOrder(AdminMobileNumber, msgsms);
+                    SendSMSForNewOrder(objPlaceOrderVM.MobileNumber, msgsmscustomer);
                 }
                 else
                 {

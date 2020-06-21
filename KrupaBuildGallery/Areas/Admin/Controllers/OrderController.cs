@@ -752,6 +752,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     objOrdr.OrderStatusId = 3;
                 }
             }
+            _db.SaveChanges();
             tbl_ClientUsers objclntusr = _db.tbl_ClientUsers.Where(o => o.ClientUserId == objOrdr.ClientUserId).FirstOrDefault();
             if (objclntusr != null)
             {

@@ -661,8 +661,13 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         objcmn.SaveTransaction(0, 0, objOrder.OrderId, "Order Online Payment : Rs" + amtonline, amtonline, clsClientSession.UserID, 0, DateTime.UtcNow, "Online Payment");
                     }
                     _db.SaveChanges();
-                    string orderid = clsCommon.EncryptString(objOrder.OrderId.ToString());
-                   
+                    string orderid = clsCommon.EncryptString(objOrder.OrderId.ToString());                   
+                    tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
+                    string AdminMobileNumber = objGensetting.AdminSMSNumber;
+                    string msgsms = "New Order Received - Order No " + objOrder.OrderId + " - Krupa Build Gallery";
+                    string msgsmscustomer = "Thank you for the Order. You order number is " + objOrder.OrderId + " - Krupa Build Gallery";
+                    SendSMSForNewOrder(AdminMobileNumber, msgsms);
+                    SendSMSForNewOrder(clsClientSession.MobileNumber, msgsmscustomer);
                     ReturnMessage = "Success^" + orderid;
                 }
                 else

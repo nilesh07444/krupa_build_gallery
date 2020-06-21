@@ -3,12 +3,14 @@ using KrupaBuildGallery.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Web;
-using System.Web.Mvc;
+using System.Web.Http;
+
 
 namespace KrupaBuildGallery.Areas.WebAPI.Controllers
 {
-    public class AgentController : Controller
+    public class AgentController : ApiController
     {
         private readonly krupagallarydbEntities _db;
         public AgentController()
@@ -97,6 +99,50 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
 
         }
 
+        [Route("SendOTP"), HttpPost]
+        public ResponseDataModel<OtpVM> SendOTP(OtpVM objOtpVM)
+        {
+            ResponseDataModel<OtpVM> response = new ResponseDataModel<OtpVM>();
+            OtpVM objOtp = new OtpVM();
+            try
+            {
+                string MobileNum = objOtpVM.MobileNo;
+                tbl_AdminUsers objadminusr = _db.tbl_AdminUsers.Where(o => (o.MobileNo.ToLower() == MobileNum) && o.IsDeleted == false && o.IsActive == true).FirstOrDefault();
+                if (objadminusr == null)
+                {
+                    response.AddError("Your Account is not exist.Please Contact to support");
+                }
+                else
+                {
+                    using (WebClient webClient = new WebClient())
+                    {
+                        Random random = new Random();
+                        int num = random.Next(555555, 999999);
+                        string msg = "Your Otp code for Login is " + num;
+                        string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + MobileNum + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                        var json = webClient.DownloadString(url);
+                        if (json.Contains("invalidnumber"))
+                        {
+                            response.AddError("Invalid Mobile Number");
+                        }
+                        else
+                        {                           
+                            objOtp.Otp = num.ToString();
+                            response.Data = objOtp;
+                        }
 
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
     }
 }
