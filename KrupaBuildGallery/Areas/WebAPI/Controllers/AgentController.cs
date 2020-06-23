@@ -228,5 +228,45 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             return response;
 
         }
+
+        [Route("GetAdminUserDetails"), HttpPost]
+        public ResponseDataModel<AdminUserVM> GetAdminUserDetails(GeneralVM objGeneral)
+        {
+            ResponseDataModel<AdminUserVM> response = new ResponseDataModel<AdminUserVM>();
+            AdminUserVM objUsr = new AdminUserVM();
+            try
+            {
+                long AgntUserId = Convert.ToInt64(objGeneral.ClientUserId);
+
+                objUsr = (from p in _db.tbl_AdminUsers
+                          where p.AdminUserId == AgntUserId
+                          select new AdminUserVM
+                          {
+                              AdminUserId = p.AdminUserId,
+                              ProfilePicture = p.ProfilePicture,
+                              FirstName = p.FirstName,
+                              LastName = p.LastName,
+                              Email = p.Email == null ? "" : p.Email,
+                              MobileNo = p.MobileNo,
+                              Address = p.Address,
+                              Password = p.Password,
+                              City = p.City,
+                              WorkingTime = p.WorkingTime
+                          }).FirstOrDefault();
+
+                response.Data = objUsr;
+
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+
+
     }
 }

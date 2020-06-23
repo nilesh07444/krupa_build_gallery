@@ -644,7 +644,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             try
             {
                 long AdminUser = Convert.ToInt64(objGen.ClientUserId);
-               List<long> lstOrderIds = _db.tbl_OrderItemDelivery.Where(o => o.DelieveryPersonId == AdminUser).Where(o => o.Status == 3).Select(o => o.OrderId.Value).Distinct().ToList();
+                long StatusId = Convert.ToInt64(objGen.StatusId);
+                List<long> lstOrderIds = _db.tbl_OrderItemDelivery.Where(o => o.DelieveryPersonId == AdminUser).Where(o => o.Status == StatusId).Select(o => o.OrderId.Value).Distinct().ToList();
                 lstOrder = (from p in _db.tbl_Orders
                             join c in _db.tbl_ClientUsers on p.ClientUserId equals c.ClientUserId
                             where lstOrderIds.Contains(p.OrderId) 
