@@ -1,0 +1,179 @@
+﻿@using KrupaBuildGallery.Helper;
+@using Newtonsoft.Json;
+@using KrupaBuildGallery.Model;
+
+@model List<AvailablePincodeVM>
+@{
+    ViewBag.Title = "Pincode List";
+
+    int counter = 1;
+}
+
+@{
+    UserPermissionVM objPermission = new UserPermissionVM();
+
+    int RoleId = Int32.Parse(clsAdminSession.RoleID.ToString());
+
+    if (RoleId != 1)
+    {
+        string strPermission = clsAdminSession.UserPermission;
+        objPermission = JsonConvert.DeserializeObject<UserPermissionVM>(strPermission, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+    }
+    bool IsSA = (RoleId == 1 ? true : false);
+}
+
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="page-header-left">
+                        <h3>
+                            Pincode List
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/"><i data-feather="home"></i></a></li> 
+                        <li class="breadcrumb-item active">Pincode List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h5>Pincode List</h5>
+            </div>
+            <div class="card-body vendor-table">
+                @if (IsSA || objPermission.ManagePageContent >= (int)ModulePermission.Add)
+                {
+                    <div class="btn-popup pull-right">
+                        <button type="button" class="btn btn-primary" id="btnAdd">Add Pincode</button>
+                    </div>
+                }
+                <table class="display" id="basic-1">
+                    <thead>
+                        <tr>
+                            <th width="10%;">#</th>
+                            <th>Pincode</th> 
+                            <th width="15%;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            foreach (AvailablePincodeVM item in Model)
+                            {
+                                <tr class="gradeX">
+                                    <td>@counter.</td>
+
+                                    <td>@item.AvailablePincode</td>
+                                    <td>
+                                        @if (IsSA || objPermission.ManagePageContent >= (int)ModulePermission.Edit)
+                                        {
+                                            <a title="Edit" href="/admin/availablepincode/edit/@item.AvailablePincodeId"><i class="fa fa-edit mr-2 font-success"></i></a>
+                                        }
+                                        @if (IsSA || objPermission.ManagePageContent == (int)ModulePermission.Full)
+                                        {
+                                            <a title="Delete" href="javascript:void(0);" onclick="fnDeletePincode('@item.AvailablePincodeId')"><i class="fa fa-trash font-danger"></i></a>
+                                        }
+                                    </td>
+                                </tr>
+                                counter++;
+                            }
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade open" id="deletePincodeModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete Confirm</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete ?
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="hdnDeletePincode" />
+                <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
+                <button id="btnDeletePincode" class="btn btn-primary" type="button">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Delete modal -->
+
+<script>
+
+    jQuery(document).ready(function () {
+        jQuery('html, body').animate({ scrollTop: 0 }, 1000);
+    });
+
+    $(document).on("click", "#btnAdd", function () {
+            window.location.href = "/admin/availablepincode/add";
+        });
+
+    function fnDeletePincode(cat_id)
+    {
+        jQuery("#hdnDeletePincode").val(cat_id);
+        $('#deletePincodeModal').modal('show');
+    }
+     
+    jQuery(document).on("click", "#btnDeletePincode", function () {
+
+        var AvailablePincode_id = jQuery("#hdnDeletePincode").val();
+        if (AvailablePincode_id != "" && AvailablePincode_id != null)
+        {
+
+        $('#deletePincodeModal').modal('hide');
+
+        StartLoading();
+
+        var URL = '@Url.Action("DeletePincode", "AvailablePincode")';
+        $.ajax({
+            type: 'POST',
+            async: true,
+            url: URL + "?AvailablePincodeId=" + AvailablePincode_id,
+            success: function(result) {
+                    if (result == "success")
+                    {
+                        alert("Pincode deleted successfully");
+                        window.location.reload();
+                    }
+                    else if (result == "notfound")
+                    {
+                        alert("Pincode Not Found");
+                    }
+                    else
+                    {
+                        alert("Something went wrong. Please try again");
+                    }
+
+                    StopLoading();
+                },
+            error: function(resultData) {
+                    StopLoading();
+                }
+            });
+        }
+    });
+
+</script>

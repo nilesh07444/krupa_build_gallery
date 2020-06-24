@@ -86,6 +86,17 @@
           <Property Name="UpdatedBy" Type="int" />
           <Property Name="UpdatedDate" Type="datetime" />
         </EntityType>
+        <EntityType Name="tbl_AvailablePincode">
+          <Key>
+            <PropertyRef Name="AvailablePincodeId" />
+          </Key>
+          <Property Name="AvailablePincodeId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AvailablePincode" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="CreatedBy" Type="int" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+          <Property Name="UpdatedBy" Type="int" Nullable="false" />
+          <Property Name="UpdatedDate" Type="datetime" Nullable="false" />
+        </EntityType>
         <EntityType Name="tbl_Cart">
           <Key>
             <PropertyRef Name="Cart_Id" />
@@ -730,6 +741,7 @@
           <EntitySet Name="tbl_AdminRoles" EntityType="Self.tbl_AdminRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_AdminUsers" EntityType="Self.tbl_AdminUsers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_AdvertiseImages" EntityType="Self.tbl_AdvertiseImages" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_AvailablePincode" EntityType="Self.tbl_AvailablePincode" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Cart" EntityType="Self.tbl_Cart" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Categories" EntityType="Self.tbl_Categories" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ClientOtherDetails" EntityType="Self.tbl_ClientOtherDetails" Schema="dbo" store:Type="Tables" />
@@ -1229,6 +1241,7 @@
           <EntitySet Name="tbl_ReviewRating" EntityType="krupagalleryModel.tbl_ReviewRating" />
           <EntitySet Name="tbl_ComboOffer" EntityType="krupagalleryModel.tbl_ComboOffer" />
           <EntitySet Name="tbl_ImportExcel" EntityType="krupagalleryModel.tbl_ImportExcel" />
+          <EntitySet Name="tbl_AvailablePincode" EntityType="krupagalleryModel.tbl_AvailablePincode" />
         </EntityContainer>
         <EntityType Name="tbl_AdminRoles">
           <Key>
@@ -1560,6 +1573,17 @@
           <Property Name="ImportedDate" Type="DateTime" Precision="3" />
           <Property Name="ImportedBy" Type="Int64" />
           <Property Name="ImportType" Type="Int32" />
+        </EntityType>
+        <EntityType Name="tbl_AvailablePincode">
+          <Key>
+            <PropertyRef Name="AvailablePincodeId" />
+          </Key>
+          <Property Name="AvailablePincodeId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AvailablePincode" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="Int32" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UpdatedBy" Type="Int32" Nullable="false" />
+          <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -2312,6 +2336,18 @@
                 <ScalarProperty Name="ErroMsg" ColumnName="ErroMsg" />
                 <ScalarProperty Name="SrNo" ColumnName="SrNo" />
                 <ScalarProperty Name="ImportExcelId" ColumnName="ImportExcelId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_AvailablePincode">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_AvailablePincode">
+              <MappingFragment StoreEntitySet="tbl_AvailablePincode">
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="AvailablePincode" ColumnName="AvailablePincode" />
+                <ScalarProperty Name="AvailablePincodeId" ColumnName="AvailablePincodeId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
