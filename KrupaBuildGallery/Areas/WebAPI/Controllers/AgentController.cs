@@ -171,6 +171,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 objUsr.AdminRoleId = 3;
                 objUsr.ParentAgentId = AgentId;
                 objUsr.CreatedBy = AgentId;
+                objUsr.IsActive = true;
+                objUsr.IsDeleted = false;
                 objUsr.CreatedDate = DateTime.UtcNow;
                 objUsr.Address = Address;
                 objUsr.City = City;
@@ -215,6 +217,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 objUsr.UpdatedBy = AgentId;
                 objUsr.UpdatedDate = DateTime.UtcNow;
                 objUsr.Address = Address;
+                objUsr.IsActive = true;
                 objUsr.City = City;
                 _db.SaveChanges();
                 response.Data = "Success";

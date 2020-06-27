@@ -675,7 +675,12 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                 OrderTypeId = p.OrderType.HasValue ? p.OrderType.Value : 1,
                                 IsCashOnDelivery = p.IsCashOnDelivery.HasValue ? p.IsCashOnDelivery.Value : false,
                                 ExtraAmount = p.ExtraAmount.HasValue ? p.ExtraAmount.Value : 0
-                            }).OrderByDescending(x => x.OrderDate).ToList();             
+                            }).OrderByDescending(x => x.OrderDate).ToList();
+                if (lstOrder != null && lstOrder.Count() > 0)
+                {
+                    lstOrder.ForEach(x => { x.OrderStatus = GetOrderStatus(x.OrderStatusId); x.OrderDateString = CommonMethod.ConvertFromUTC(x.OrderDate); });
+                }
+
                 response.Data = lstOrder;
 
             }
@@ -891,6 +896,144 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
 
         }
 
+        [Route("SetDeliveredItems"), HttpPost]
+        public ResponseDataModel<string> SetDeliveredItems(GeneralVM objGen)
+        {
+            ResponseDataModel<string> response = new ResponseDataModel<string>();
+            try
+            {
+                long DelieveryPrsnId = objGen.DelieveryPersonId;
+                long OrdrId = Convert.ToInt64(objGen.OrderId);
+                long AgentId = Convert.ToInt64(objGen.AgentId);
+                string OrderItemIds = objGen.OrderDetailId;
+                clsCommon objCommon = new clsCommon();
+                tbl_AdminUsers objAdminUsr = _db.tbl_AdminUsers.Where(o => o.AdminUserId == DelieveryPrsnId).FirstOrDefault();
+                tbl_Orders objrd = _db.tbl_Orders.Where(o => o.OrderId == OrdrId).FirstOrDefault();
+                long ClientUserId = 0;
+                if(objrd != null)
+                {
+                    ClientUserId = objrd.ClientUserId;
+                }
+                string mobileclient = "";
+                tbl_ClientUsers objClient = _db.tbl_ClientUsers.Where(o => o.ClientUserId == ClientUserId).FirstOrDefault();
+                if(objClient != null)
+                {
+                    mobileclient = objClient.MobileNo;
+                }
 
+                string ItmsText = "";
+                OrderItemIds = OrderItemIds.Trim('^');
+                if (!string.IsNullOrEmpty(OrderItemIds))
+                {
+                    string[] strordditm = OrderItemIds.Split('^');
+                    foreach (string ss in strordditm)
+                    {
+                        long OrderItemId = Convert.ToInt64(ss);
+                        tbl_OrderItemDetails objOrderItm = _db.tbl_OrderItemDetails.Where(o => o.OrderDetailId == OrderItemId).FirstOrDefault();
+
+                        tbl_ItemVariant objVrnt = _db.tbl_ItemVariant.Where(o => o.VariantItemId == objOrderItm.VariantItemId).FirstOrDefault();
+                        if (objVrnt != null)
+                        {
+                            ItmsText = ItmsText + objOrderItm.ItemName + "-" + objVrnt.UnitQty + ",";
+                        }
+                        else
+                        {
+                            ItmsText = ItmsText + objOrderItm.ItemName + ",";
+                        }
+                        List<tbl_OrderItemDelivery> lstorddelv = _db.tbl_OrderItemDelivery.Where(o => o.OrderItemId == OrderItemId).ToList();
+                        if(lstorddelv != null && lstorddelv.Count() > 0)
+                        {
+                            foreach(var objj in lstorddelv)
+                            {
+                                objj.Status = 4;                                
+                            }
+                            _db.SaveChanges();
+                        }
+                        objOrderItm.ItemStatus = 4;
+                        _db.SaveChanges();
+                        objCommon.SaveTransaction(objOrderItm.ProductItemId.Value, objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, "Delivered By " + objAdminUsr.FirstName + " " + objAdminUsr.LastName, 0, 0, AgentId, DateTime.UtcNow, "Delievered Items");
+                    }
+                    _db.SaveChanges();
+                    if(objrd.OrderStatusId == 3)
+                    {
+                        List<tbl_OrderItemDetails> lstOrderTms1 = _db.tbl_OrderItemDetails.Where(o => o.OrderId == OrdrId && o.ItemStatus != 5 && o.ItemStatus != 3 && o.ItemStatus != 4).ToList();
+                        if (lstOrderTms1 == null || lstOrderTms1.Count == 0)
+                        {
+                            objrd.OrderStatusId = 4;
+                        }
+                    }
+                    _db.SaveChanges();
+                }
+                using (WebClient webClient = new WebClient())
+                {
+                    string msg = "Order no." + OrdrId + " \nItem: " + ItmsText + " \nhas been delivered";
+                    string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + mobileclient + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    var json = webClient.DownloadString(url);
+                    if (json.Contains("invalidnumber"))
+                    {
+
+                    }
+                    else
+                    {
+                       
+                    }
+
+                }
+
+
+                response.Data = "Success";
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+
+        [Route("SendOTPForDelivery"), HttpPost]
+        public ResponseDataModel<OtpVM> SendOTPForDelivery(OtpVM objOtpVM)
+        {
+            ResponseDataModel<OtpVM> response = new ResponseDataModel<OtpVM>();
+            OtpVM objOtp = new OtpVM();
+            try
+            {
+                long orderid = Convert.ToInt64(objOtpVM.OrderId);
+                var objOrder = _db.tbl_Orders.Where(o => o.OrderId == orderid).FirstOrDefault();
+                string mobilnumber = "";
+                if(objOrder != null)
+                {
+                    mobilnumber = objOrder.OrderShipClientPhone;
+                }
+                using (WebClient webClient = new WebClient())
+                {
+                    Random random = new Random();
+                    int num = random.Next(555555, 999999);
+                    string msg = "Your OTP code for Item Delivery is " + num;
+                    string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + mobilnumber + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    var json = webClient.DownloadString(url);
+                    if (json.Contains("invalidnumber"))
+                    {
+                        response.AddError("Invalid Mobile Number");
+                    }
+                    else
+                    {
+                        objOtp.Otp = num.ToString();
+                        response.Data = objOtp;
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
     }
 }

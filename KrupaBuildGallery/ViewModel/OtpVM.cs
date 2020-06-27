@@ -12,5 +12,7 @@ namespace KrupaBuildGallery
         public string MobileNo { get; set; }
 
         public string UserType { get; set; }
+
+        public string OrderId { get; set; }
     }
 }
