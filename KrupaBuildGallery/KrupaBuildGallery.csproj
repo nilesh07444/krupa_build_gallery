@@ -413,6 +413,7 @@
     <Compile Include="ViewModel\Admin\RoleVM.cs" />
     <Compile Include="ViewModel\Admin\UserPermissionVM.cs" />
     <Compile Include="ViewModel\CartVM.cs" />
+    <Compile Include="ViewModel\CashOrderAmountVM.cs" />
     <Compile Include="ViewModel\CategoryVM.cs" />
     <Compile Include="ViewModel\CheckoutGenVM.cs" />
     <Compile Include="ViewModel\CheckoutVM.cs" />

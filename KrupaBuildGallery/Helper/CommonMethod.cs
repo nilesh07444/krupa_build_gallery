@@ -45,7 +45,7 @@ namespace KrupaBuildGallery
                                                 CategoryName = c.CategoryName
                                             }).OrderBy(x => x.CategoryName).ToList();
 
-            List<List<CategoryVM>> categoryMegaMenuVMs = Split(lstCategory, 7);
+            List<List<CategoryVM>> categoryMegaMenuVMs = Split(lstCategory, 10);
 
             return categoryMegaMenuVMs;
         }
