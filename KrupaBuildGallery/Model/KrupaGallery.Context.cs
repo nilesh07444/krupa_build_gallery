@@ -66,5 +66,6 @@ namespace KrupaBuildGallery.Model
         public DbSet<tbl_ReviewRating> tbl_ReviewRating { get; set; }
         public DbSet<tbl_ComboOffer> tbl_ComboOffer { get; set; }
         public DbSet<tbl_ImportExcel> tbl_ImportExcel { get; set; }
+        public DbSet<tbl_AvailablePincode> tbl_AvailablePincode { get; set; }
     }
 }
