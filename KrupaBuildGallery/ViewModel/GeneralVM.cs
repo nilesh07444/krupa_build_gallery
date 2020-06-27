@@ -27,5 +27,10 @@ namespace KrupaBuildGallery
         public string Reason { get; set; }
         public long AgentId { get; set; }
         public long DelieveryPersonId { get; set; }
+
+        public string TotalPendingDeliveryItems { get; set; }
+        public string TotalDeliveredItem { get; set; }
+        public decimal AmountDecmal { get; set; }
+        public string Id { get; set; }
     }
 }

@@ -49,5 +49,6 @@ namespace KrupaBuildGallery.Model
         public Nullable<decimal> WalletAmountRefund { get; set; }
         public Nullable<decimal> OnlinePaymentAmtRefund { get; set; }
         public Nullable<decimal> ExtraAmount { get; set; }
+        public Nullable<bool> IsExtraAmountReceived { get; set; }
     }
 }

@@ -732,10 +732,14 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                 OnlineUsed = p.AmountByRazorPay.HasValue ? p.AmountByRazorPay.Value : 0,
                                 OrderTypeId = p.OrderType.HasValue ? p.OrderType.Value : 1,
                                 IsCashOnDelivery = p.IsCashOnDelivery.HasValue ? p.IsCashOnDelivery.Value : false,
-                                ExtraAmount = p.ExtraAmount.HasValue ? p.ExtraAmount.Value : 0
+                                ExtraAmount = p.ExtraAmount.HasValue ? p.ExtraAmount.Value : 0,
+                                IsExtraAmountReceived = p.IsExtraAmountReceived.HasValue ? p.IsExtraAmountReceived.Value : false
+                                
                             }).OrderByDescending(x => x.OrderDate).FirstOrDefault();
+
                 if (objOrdr != null)
                 {
+                    objOrdr.OrderStatus = GetOrderStatus(objOrdr.OrderStatusId);
                    List<long> lstOrdritmid = _db.tbl_OrderItemDelivery.Where(o => o.OrderId == OrderId && o.DelieveryPersonId == AgntUsrId).Select(x => x.OrderItemId.Value).ToList();
 
                     List<OrderItemsVM> lstOrderItms = (from p in _db.tbl_OrderItemDetails
@@ -755,6 +759,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                                            FinalAmt = p.FinalItemPrice.Value,
                                                            IGSTAmt = p.IGSTAmt.Value,
                                                            ItemImg = c.MainImage,
+                                                           ShipingChargeOf1Item = c.ShippingCharge.HasValue ? c.ShippingCharge.Value : 0,
                                                            Discount = p.Discount.HasValue ? p.Discount.Value : 0,
                                                            VariantQtytxt = vr.UnitQty,
                                                            ItemStatus = p.ItemStatus.HasValue ? p.ItemStatus.Value : 1,
@@ -908,11 +913,15 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 string OrderItemIds = objGen.OrderDetailId;
                 clsCommon objCommon = new clsCommon();
                 tbl_AdminUsers objAdminUsr = _db.tbl_AdminUsers.Where(o => o.AdminUserId == DelieveryPrsnId).FirstOrDefault();
+                if(objAdminUsr.ParentAgentId != null && objAdminUsr.ParentAgentId != 0)
+                {
+                    AgentId = objAdminUsr.ParentAgentId.Value;
+                }
                 tbl_Orders objrd = _db.tbl_Orders.Where(o => o.OrderId == OrdrId).FirstOrDefault();
                 long ClientUserId = 0;
                 if(objrd != null)
                 {
-                    ClientUserId = objrd.ClientUserId;
+                    ClientUserId = objrd.ClientUserId;                    
                 }
                 string mobileclient = "";
                 tbl_ClientUsers objClient = _db.tbl_ClientUsers.Where(o => o.ClientUserId == ClientUserId).FirstOrDefault();
@@ -923,6 +932,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
 
                 string ItmsText = "";
                 OrderItemIds = OrderItemIds.Trim('^');
+                bool IsExtrapaid = false;
                 if (!string.IsNullOrEmpty(OrderItemIds))
                 {
                     string[] strordditm = OrderItemIds.Split('^');
@@ -930,7 +940,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     {
                         long OrderItemId = Convert.ToInt64(ss);
                         tbl_OrderItemDetails objOrderItm = _db.tbl_OrderItemDetails.Where(o => o.OrderDetailId == OrderItemId).FirstOrDefault();
-
+                      
                         tbl_ItemVariant objVrnt = _db.tbl_ItemVariant.Where(o => o.VariantItemId == objOrderItm.VariantItemId).FirstOrDefault();
                         if (objVrnt != null)
                         {
@@ -940,13 +950,30 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         {
                             ItmsText = ItmsText + objOrderItm.ItemName + ",";
                         }
+                     
                         List<tbl_OrderItemDelivery> lstorddelv = _db.tbl_OrderItemDelivery.Where(o => o.OrderItemId == OrderItemId).ToList();
                         if(lstorddelv != null && lstorddelv.Count() > 0)
                         {
                             foreach(var objj in lstorddelv)
                             {
-                                objj.Status = 4;                                
+                                objj.Status = 4;
+                                if (objrd.IsCashOnDelivery == true && objrd.OrderShipPincode == "389001")
+                                {
+                                    tbl_ProductItems objprod = _db.tbl_ProductItems.Where(o => o.ProductItemId == objOrderItm.ProductItemId).FirstOrDefault();
+                                    decimal shipcharge = Math.Round(objOrderItm.Qty.Value * objprod.ShippingCharge.Value,2);
+                                    decimal extramtt = objrd.ExtraAmount.HasValue ? objrd.ExtraAmount.Value : 0;
+                                    if (IsExtrapaid == false && objrd.IsExtraAmountReceived == false)
+                                    {                                       
+                                        objj.AmountToReceived = shipcharge + objOrderItm.FinalItemPrice + extramtt;
+                                    }
+                                    else
+                                    {
+                                        objj.AmountToReceived = shipcharge + objOrderItm.FinalItemPrice;
+                                    }
+                                }
                             }
+                            IsExtrapaid = true;
+                            objrd.IsExtraAmountReceived = true;
                             _db.SaveChanges();
                         }
                         objOrderItm.ItemStatus = 4;
@@ -1035,5 +1062,30 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             return response;
 
         }
+
+        [Route("GetStatsOfDelivery"), HttpPost]
+        public ResponseDataModel<GeneralVM> GetStatsOfDelivery(GeneralVM objGeneralVM)
+        {
+            ResponseDataModel<GeneralVM> response = new ResponseDataModel<GeneralVM>();
+            GeneralVM objGeneralVM1 = new GeneralVM();
+            try
+            {
+                long CustId = Convert.ToInt64(objGeneralVM.ClientUserId);
+                int TotalPendingDelv =  _db.tbl_OrderItemDelivery.Where(o => o.Status == 3 && o.DelieveryPersonId == CustId).ToList().Count();
+                int TotalDelv = _db.tbl_OrderItemDelivery.Where(o => o.Status == 4 && o.DelieveryPersonId == CustId).ToList().Count();
+                objGeneralVM1.TotalPendingDeliveryItems = TotalPendingDelv.ToString();
+                objGeneralVM1.TotalDeliveredItem = TotalDelv.ToString();
+                response.Data = objGeneralVM1;
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+
     }
 }
