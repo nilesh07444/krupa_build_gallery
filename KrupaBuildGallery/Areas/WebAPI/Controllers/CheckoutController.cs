@@ -48,7 +48,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     DateTime dtendyear = new DateTime(toyear, 3, 31);
                     List<OrderItemsVM> lstOrderItms = (from p in _db.tbl_OrderItemDetails
                                                        join c in _db.tbl_Orders on p.OrderId equals c.OrderId
-                                                       where c.ClientUserId == clsClientSession.UserID && c.IsCashOnDelivery == true && p.ItemStatus != 5 && p.ItemStatus != 6 && p.ItemStatus != 8 && c.CreatedDate >= dtfincialyear && c.CreatedDate <= dtendyear
+                                                       where c.ClientUserId == UserId && c.IsCashOnDelivery == true && p.ItemStatus != 5 && p.ItemStatus != 6 && p.ItemStatus != 8 && c.CreatedDate >= dtfincialyear && c.CreatedDate <= dtendyear
                                                        select new OrderItemsVM
                                                        {
                                                            FinalAmt = p.FinalItemPrice.Value
@@ -204,7 +204,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     objChkout.ExtraAmount = objtbl_ExtraAmount.ExtraAmount.Value;
                 }
                 decimal WalletAmt = 0;
-                var objuserclient = _db.tbl_ClientUsers.Where(o => o.ClientUserId == clsClientSession.UserID).FirstOrDefault();
+                var objuserclient = _db.tbl_ClientUsers.Where(o => o.ClientUserId == UserId).FirstOrDefault();
                 if (objuserclient != null)
                 {
                     WalletAmt = objuserclient.WalletAmt.HasValue ? objuserclient.WalletAmt.Value : 0;
@@ -526,7 +526,23 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         objotherdetails.ShipEmail = objPlaceOrderVM.shipemailaddress;
                     }
                     _db.SaveChanges();
+                    decimal pointreamining = 0;
+                    decimal totalremining = 0;
                     decimal TotalDiscount = 0;
+                    List<tbl_PointDetails> lstpoints = new List<tbl_PointDetails>();
+                    if (RoleId == 1)
+                    {
+                        DateTime dtNow = DateTime.UtcNow;
+                        long clientusrrId = clientusrid;
+                        lstpoints = _db.tbl_PointDetails.Where(o => o.ClientUserId == clientusrrId && o.ExpiryDate >= dtNow && o.Points.Value > o.UsedPoints.Value).ToList().OrderBy(x => x.ExpiryDate).ToList();
+
+                        if (lstpoints != null && lstpoints.Count() > 0)
+                        {
+                            pointreamining = lstpoints.Sum(x => (x.Points - x.UsedPoints).Value);
+                        }
+                        totalremining = pointreamining;
+                    }
+
                     if (lstCartItems != null && lstCartItems.Count() > 0)
                     {
                         foreach (var objCart in lstCartItems)
@@ -558,6 +574,20 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                             decimal originalbasicprice = Math.Round(((objCart.Price / (100 + objCart.GSTPer)) * 100), 2);
                             decimal totalItembasicprice = originalbasicprice * objCart.Qty;
                             decimal disc = 0;
+                            if (RoleId == 1)
+                            {
+                                disc = Math.Round((totalItembasicprice * 5) / 100, 2);
+                                if (disc <= totalremining)
+                                {
+                                    totalremining = totalremining - disc;
+                                }
+                                else
+                                {
+                                    disc = totalremining;
+                                }
+                            }
+
+                            TotalDiscount = TotalDiscount + disc;
                             decimal beforetaxamount = Math.Round(totalItembasicprice - disc, 2);
                             decimal gstamt = Math.Round((beforetaxamount * objCart.GSTPer) / 100, 2);
                             decimal AfterTax = beforetaxamount + gstamt;
@@ -619,6 +649,33 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         objcmn.SaveTransaction(0, 0, objOrder.OrderId, "Order Online Payment : Rs" + amtonline, amtonline,clientusrid, 0, DateTime.UtcNow, "Online Payment");
                     }
                     _db.SaveChanges();
+                    if (TotalDiscount > 0 && RoleId == 1)
+                    {
+                        if (lstpoints != null && lstpoints.Count() > 0)
+                        {
+                            decimal reminingdisc = TotalDiscount;
+                            foreach (tbl_PointDetails objpoint in lstpoints)
+                            {
+                                if (objpoint != null)
+                                {
+                                    decimal pnts = objpoint.Points.Value;
+                                    decimal usedpnts = objpoint.UsedPoints.Value;
+                                    decimal remainingpnts = pnts - usedpnts;
+                                    if (remainingpnts <= reminingdisc)
+                                    {
+                                        objpoint.UsedPoints = objpoint.UsedPoints + remainingpnts;
+                                        reminingdisc = reminingdisc - remainingpnts;
+                                    }
+                                    else
+                                    {
+                                        objpoint.UsedPoints = objpoint.UsedPoints + reminingdisc;
+                                    }
+                                }
+                                _db.SaveChanges();
+                            }
+                            objcmn.SaveTransaction(0, 0, objOrder.OrderId, "Points Used", TotalDiscount, clientusrid, 0, DateTime.UtcNow, "Points Used");
+                        }
+                    }
                     string orderid = clsCommon.EncryptString(objOrder.OrderId.ToString());
                     response.Data = "Success^" + orderid;
                     tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
@@ -1355,7 +1412,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     objChkout.ExtraAmount = objtbl_ExtraAmount.ExtraAmount.Value;
                 }
                 decimal WalletAmt = 0;
-                var objuserclient = _db.tbl_ClientUsers.Where(o => o.ClientUserId == clsClientSession.UserID).FirstOrDefault();
+                var objuserclient = _db.tbl_ClientUsers.Where(o => o.ClientUserId == UserId).FirstOrDefault();
                 if (objuserclient != null)
                 {
                     WalletAmt = objuserclient.WalletAmt.HasValue ? objuserclient.WalletAmt.Value : 0;

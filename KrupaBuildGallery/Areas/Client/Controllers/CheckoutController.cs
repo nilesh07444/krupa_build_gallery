@@ -567,7 +567,23 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         objotherdetails.ShipEmail = objCheckout.shipemailaddress;
                     }
                     _db.SaveChanges();
+                    decimal pointreamining = 0;
+                    decimal totalremining = 0;
                     decimal TotalDiscount = 0;
+                    List<tbl_PointDetails> lstpoints = new List<tbl_PointDetails>();
+                    if (clsClientSession.RoleID == 1)
+                    {
+                        DateTime dtNow = DateTime.UtcNow;
+                        long clientusrrId = clsClientSession.UserID;
+                        lstpoints = _db.tbl_PointDetails.Where(o => o.ClientUserId == clientusrrId && o.ExpiryDate >= dtNow && o.Points.Value > o.UsedPoints.Value).ToList().OrderBy(x => x.ExpiryDate).ToList();
+
+                        if (lstpoints != null && lstpoints.Count() > 0)
+                        {
+                            pointreamining = lstpoints.Sum(x => (x.Points - x.UsedPoints).Value);
+                        }
+                        totalremining = pointreamining;
+                    }
+
                     if (lstCartItems != null && lstCartItems.Count() > 0)
                     {
                         foreach (var objCart in lstCartItems)
@@ -600,6 +616,19 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             decimal originalbasicprice = Math.Round(((objCart.Price / (100 + objCart.GSTPer)) * 100), 2);
                             decimal totalItembasicprice = originalbasicprice * objCart.Qty;
                             decimal disc = 0;
+                            if (clsClientSession.RoleID == 1)
+                            {
+                                disc = Math.Round((totalItembasicprice * 5) / 100, 2);
+                                if (disc <= totalremining)
+                                {
+                                    totalremining = totalremining - disc;
+                                }
+                                else
+                                {
+                                    disc = totalremining;
+                                }
+                            }
+                            TotalDiscount = TotalDiscount + disc;
                             decimal beforetaxamount = Math.Round(totalItembasicprice - disc,2);
                             decimal gstamt = Math.Round((beforetaxamount * objCart.GSTPer) / 100, 2);
                             decimal AfterTax = beforetaxamount + gstamt;
@@ -624,6 +653,34 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             }
                         }
                         _db.SaveChanges();
+                    }
+
+                    if (TotalDiscount > 0 && clsClientSession.RoleID == 1)
+                    {
+                        if (lstpoints != null && lstpoints.Count() > 0)
+                        {
+                            decimal reminingdisc = TotalDiscount;
+                            foreach (tbl_PointDetails objpoint in lstpoints)
+                            {
+                                if (objpoint != null)
+                                {
+                                    decimal pnts = objpoint.Points.Value;
+                                    decimal usedpnts = objpoint.UsedPoints.Value;
+                                    decimal remainingpnts = pnts - usedpnts;
+                                    if (remainingpnts <= reminingdisc)
+                                    {
+                                        objpoint.UsedPoints = objpoint.UsedPoints + remainingpnts;
+                                        reminingdisc = reminingdisc - remainingpnts;
+                                    }
+                                    else
+                                    {
+                                        objpoint.UsedPoints = objpoint.UsedPoints + reminingdisc;
+                                    }
+                                }
+                                _db.SaveChanges();
+                            }
+                            objcmn.SaveTransaction(0, 0, objOrder.OrderId, "Points Used", TotalDiscount, clsClientSession.UserID, 0, DateTime.UtcNow, "Points Used");
+                        }
                     }
                     decimal amttTotlordepy = ordramt + shippingcharge + extraamt;
                     if (amtwallet > 0)
