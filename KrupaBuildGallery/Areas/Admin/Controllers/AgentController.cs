@@ -46,6 +46,15 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                      ProfilePicture = a.ProfilePicture,
                                      IsActive = a.IsActive
                                  }).ToList();
+
+                if (lstAdminUsers.Count > 0)
+                {
+                    lstAdminUsers.ForEach(user =>
+                    {
+                        user.RemainingCashAmount = GetRemainingCashAmountAvailable(user.AdminUserId);
+                    });
+                }
+
             }
             catch (Exception ex)
             {
@@ -408,6 +417,45 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             return View(objAdminUser);
         }
+
+        public ActionResult Users(int Id)
+        {
+            List<AdminUserVM> lstAdminUsers = new List<AdminUserVM>();
+
+            try
+            {
+                lstAdminUsers = (from a in _db.tbl_AdminUsers
+                                 join r in _db.tbl_AdminRoles on a.AdminRoleId equals r.AdminRoleId
+                                 where !a.IsDeleted && a.ParentAgentId == Id
+                                 select new AdminUserVM
+                                 {
+                                     AdminUserId = a.AdminUserId,
+                                     AdminRoleId = a.AdminRoleId,
+                                     RoleName = r.AdminRoleName,
+                                     FirstName = a.FirstName,
+                                     LastName = a.LastName,
+                                     Email = a.Email,
+                                     MobileNo = a.MobileNo,
+                                     City = a.City,
+                                     ProfilePicture = a.ProfilePicture,
+                                     IsActive = a.IsActive
+                                 }).ToList();
+
+                if (lstAdminUsers.Count > 0)
+                {
+                    lstAdminUsers.ForEach(user =>
+                    {
+                        user.RemainingCashAmount = GetRemainingCashAmountAvailable(user.AdminUserId);
+                    });
+                }
+
+            }
+            catch (Exception ex)
+            {
+            }
+
+            return View(lstAdminUsers);
+        }
          
         public string SendOTP(string MobileNumber)
         {
@@ -436,6 +484,38 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             {
                 throw ex;
             }
+        }
+
+        public decimal GetRemainingCashAmountAvailable(long AgntUserId)
+        {
+            decimal remainingCashAmt = 0;
+
+            decimal TotalAmout = (from p in _db.tbl_OrderItemDelivery
+                                  join c in _db.tbl_Orders on p.OrderId equals c.OrderId
+                                  where p.DelieveryPersonId == AgntUserId && p.Status == 4 && c.IsCashOnDelivery == true
+                                  select new GeneralVM
+                                  {
+                                      AmountDecmal = p.AmountToReceived.HasValue ? p.AmountToReceived.Value : 0
+                                  }).ToList().Sum(x => x.AmountDecmal);
+
+            var lstdl = _db.tbl_CashDeliveryAmount.Where(o => o.ReceivedBy == AgntUserId).ToList();
+
+            decimal receiveamt = 0;
+            if (lstdl != null && lstdl.Count() > 0)
+            {
+                receiveamt = _db.tbl_CashDeliveryAmount.Where(o => o.ReceivedBy == AgntUserId && o.IsAccept == true).ToList().Sum(o => o.Amount.HasValue ? o.Amount.Value : 0);
+            }
+
+            decimal paidamt = 0;
+            var paidamts = _db.tbl_CashDeliveryAmount.Where(o => o.SentBy == AgntUserId && o.IsAccept == true).ToList();
+            if (paidamts != null && paidamts.Count() > 0)
+            {
+                paidamt = paidamts.Sum(o => o.Amount.HasValue ? o.Amount.Value : 0);
+            }
+
+            remainingCashAmt = (TotalAmout + receiveamt) - paidamt;
+
+            return remainingCashAmt;
         }
 
     }

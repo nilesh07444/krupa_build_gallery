@@ -943,8 +943,11 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         if (DelieveryPrsnId == AgentId)
                         {
                             var objDelvItmm = _db.tbl_OrderItemDelivery.Where(o => o.DelieveryPersonId != AgentId && o.OrderItemId == OrderItemId).FirstOrDefault();
-                            _db.tbl_OrderItemDelivery.Remove(objDelvItmm);
-                            _db.SaveChanges();
+                            if (objDelvItmm != null)
+                            {
+                                _db.tbl_OrderItemDelivery.Remove(objDelvItmm);
+                                _db.SaveChanges();
+                            }
                         }
                         tbl_OrderItemDetails objOrderItm = _db.tbl_OrderItemDetails.Where(o => o.OrderDetailId == OrderItemId).FirstOrDefault();
                       

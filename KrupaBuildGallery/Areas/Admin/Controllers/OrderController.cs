@@ -36,7 +36,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                    OrderId = p.OrderId,
                                    ClientUserName = c.FirstName+" "+c.LastName,
                                    ClientUserId = p.ClientUserId,
-                                   OrderAmount = p.OrderAmount,
+                                   OrderAmount = p.OrderAmount + (p.ExtraAmount.HasValue ? p.ExtraAmount.Value : 0) + (p.ShippingCharge.HasValue ? p.ShippingCharge.Value : 0),
                                    OrderShipCity = p.OrderShipCity,
                                    OrderShipState = p.OrderShipState,
                                    OrderShipAddress = p.OrderShipAddress,
@@ -85,7 +85,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                              OrderId = p.OrderId,
                              ClientUserName = c.FirstName + " " + c.LastName,
                              ClientUserId = p.ClientUserId,
-                             OrderAmount = p.OrderAmount,
+                             OrderAmount = p.OrderAmount + (p.ExtraAmount.HasValue ? p.ExtraAmount.Value : 0) + (p.ShippingCharge.HasValue ? p.ShippingCharge.Value : 0),
                              OrderShipCity = p.OrderShipCity,
                              OrderShipState = p.OrderShipState,
                              OrderShipAddress = p.OrderShipAddress,
@@ -170,7 +170,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     {
                         using (WebClient webClient = new WebClient())
                         {
-                            string msg = "Your order no."+ objordr.OrderId+" has been confirmed. We will dispatch your order within " + Dispatchtime;
+                            string msg = "Your Order No.: "+ objordr.OrderId+" Has Been Confirmed. We Will Dispatch Your Order Within " + Dispatchtime;
                             string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objclntusr.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
                             var json = webClient.DownloadString(url);
                             if (json.Contains("invalidnumber"))
@@ -184,7 +184,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                     tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
                                     string FromEmail = objGensetting.FromEmail;
                                   
-                                    string msg1 = "Your order #" + objordr.OrderId + " has been confirmed. We will dispatch your order within " + Dispatchtime;
+                                    string msg1 = "Your Order No.: " + objordr.OrderId + " Has Been Confirmed. We Will Dispatch Your Order Within " + Dispatchtime;
                                     clsCommon.SendEmail(objclntusr.Email, FromEmail, "Your Order has been confirmed - Krupa Build Gallery", msg1);
                                 }
                             }
@@ -654,7 +654,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 using (WebClient webClient = new WebClient())
                 {
 
-                    string msg = "Your order no." + objOrdr.OrderId + "\n Item: " + objOrderItm.ItemName + "\n has been dispatched";
+                    string msg = "Your Order No: " + objOrdr.OrderId + "\n Item: " + objOrderItm.ItemName + "\n Has Been Dispatched";
                     string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objclntusr.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
                     var json = webClient.DownloadString(url);
                     if (json.Contains("invalidnumber"))
@@ -668,8 +668,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
                             string FromEmail = objGensetting.FromEmail;
 
-                            string msg1 = "Your order #" + objOrdr.OrderId + "Item: "+objOrderItm.ItemName+ "\n has been dispatched";
-                            clsCommon.SendEmail(objclntusr.Email, FromEmail, "Your Order has been dispatched - Krupa Build Gallery", msg1);
+                            string msg1 = "Your Order #" + objOrdr.OrderId + "Item: "+objOrderItm.ItemName+ "\n Has Been Dispatched";
+                            clsCommon.SendEmail(objclntusr.Email, FromEmail, "Your Order has been dispatched - Shopping & Saving", msg1);
                         }
                     }
 
@@ -677,7 +677,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
                 using (WebClient webClient = new WebClient())
                 {
-                    string msg = "Order no." + objOrdr.OrderId + " \nItem: " + objOrderItm.ItemName + " \nhas been assigned to you for delivery";
+                    string msg = "Order No: " + objOrdr.OrderId + " \nItem: " + objOrderItm.ItemName + " \nHas Been Assigned To You for Delivery";
                     string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objAdminUsr.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
                     var json = webClient.DownloadString(url);
                     if (json.Contains("invalidnumber"))
@@ -691,8 +691,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
                             string FromEmail = objGensetting.FromEmail;
 
-                            string msg1 = "Order no." + objOrdr.OrderId + "Item: " + objOrderItm.ItemName + "has been assigned to you for delivery";
-                            clsCommon.SendEmail(objAdminUsr.Email, FromEmail, "Assigned New Item Delivery - Krupa Build Gallery", msg1);
+                            string msg1 = "Order No: " + objOrdr.OrderId + "Item: " + objOrderItm.ItemName + "Has Been Assigned To You for Delivery";
+                            clsCommon.SendEmail(objAdminUsr.Email, FromEmail, "Assigned New Item Delivery - Shopping & Saving", msg1);
                         }
                     }
 

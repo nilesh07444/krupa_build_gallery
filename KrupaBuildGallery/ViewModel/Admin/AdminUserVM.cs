@@ -68,5 +68,6 @@ namespace KrupaBuildGallery
         public DateTime? UpdatedDate { get; set; }
 
         public string FullName { get; set; }
+        public decimal? RemainingCashAmount { get; set; }
     }
 }

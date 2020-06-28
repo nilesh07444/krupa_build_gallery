@@ -583,7 +583,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         }
                         totalremining = pointreamining;
                     }
-
+                    decimal disc = 0;
                     if (lstCartItems != null && lstCartItems.Count() > 0)
                     {
                         foreach (var objCart in lstCartItems)
@@ -615,7 +615,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             //objOrderItem.GSTAmt = SGSTAmt + CGSTAmt;
                             decimal originalbasicprice = Math.Round(((objCart.Price / (100 + objCart.GSTPer)) * 100), 2);
                             decimal totalItembasicprice = originalbasicprice * objCart.Qty;
-                            decimal disc = 0;
+                           
                             if (clsClientSession.RoleID == 1)
                             {
                                 disc = Math.Round((totalItembasicprice * 5) / 100, 2);
@@ -626,6 +626,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 else
                                 {
                                     disc = totalremining;
+                                    totalremining = totalremining - disc;
                                 }
                             }
                             TotalDiscount = TotalDiscount + disc;
@@ -971,6 +972,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 totalremining = pointreamining;
                             }
                             var lstCartItemsnew = lstCartItems.OrderByDescending(o => o.GSTPer).ToList();
+                            decimal disc = 0;
                             if (lstCartItemsnew != null && lstCartItemsnew.Count() > 0)
                             {
                                 foreach (var objCart in lstCartItemsnew)
@@ -994,7 +996,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                     objOrderItem.QtyUsed = qtty * objCart.Qty;
                                     decimal originalbasicprice = Math.Round(((objCart.Price / (100 + objCart.GSTPer)) * 100), 2);
                                     decimal totalItembasicprice = originalbasicprice * objCart.Qty;
-                                    decimal disc = 0;
+                                  
                                     if (clsClientSession.RoleID == 1)
                                     {
                                         disc = Math.Round((totalItembasicprice * 5) / 100, 2);
@@ -1005,6 +1007,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                         else
                                         {
                                             disc = totalremining;
+                                            totalremining = totalremining - disc;
                                         }
                                     }
                                    

@@ -1,7 +1,6 @@
-﻿@using KrupaBuildGallery.Model;
-@model List<AdminUserVM>
+﻿@model List<AdminUserVM>
 @{
-    ViewBag.Title = "AdminUser";
+    ViewBag.Title = "AgentStaff";
 
     int counter = 1;
 }
@@ -15,14 +14,14 @@
                 <div class="col-lg-6">
                     <div class="page-header-left">
                         <h3>
-                            Admin User List
+                            Staff List
                         </h3>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <ol class="breadcrumb pull-right">
                         <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
-                        <li class="breadcrumb-item active">Admin User List</li>
+                        <li class="breadcrumb-item active">Staff List</li>
                     </ol>
                 </div>
             </div>
@@ -33,26 +32,26 @@
     <div class="container-fluid">
         <div class="card">
             <div class="card-header">
-                <h5>Admin User List</h5>
+                <h5>Staff List</h5>
             </div>
             <div class="card-body vendor-table">
 
-                <div class="btn-popup pull-right">
-                    <button type="button" class="btn btn-primary" id="btnAdd">Add Admin User</button>
-                </div>
+                @*<div class="btn-popup pull-right">
+                    <button type="button" class="btn btn-primary" id="btnAdd">Add Agent</button>
+                </div>*@
 
                 <table class="display" id="basic-1">
                     <thead>
                         <tr>
-                            <th width="5%;">#</th>
+                            <th width="10%;">#</th>
                             <th>First Name</th>
                             <th>Last Name</th>
-                            <th>Role</th>
                             <th>Email Id</th>
                             <th>Mobile No</th>
+                            <th>City</th>
                             <th>Remaining Cash Amount</th>
-                            <th width="8%;">Active</th>
-                            <th width="10%;">Action</th>
+                            <th width="15%;">Active</th>
+                            <th width="15%;">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -65,10 +64,11 @@
                                     <td>@counter.</td>
                                     <td>@obj.FirstName</td>
                                     <td>@obj.LastName</td>
-                                    <td>@obj.RoleName</td>
                                     <td>@obj.Email</td>
                                     <td>@obj.MobileNo</td>
+                                    <td>@obj.City</td>
                                     <td>@obj.RemainingCashAmount</td>
+
                                     @if (obj.IsActive == true)
                                     {
                                         <td><span class="badge badge-success" style="cursor:pointer;" title="Click to Inactive" onclick="fnChangeStatus('@obj.AdminUserId','InActive');">Active</span></td>
@@ -78,14 +78,11 @@
                                         <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@obj.AdminUserId','Active');">InActive</span></td>
                                     }
 
-                                <td>
-                                    <a title="View" href="/admin/adminuser/view/@obj.AdminUserId"><i class="fa fa-eye mr-2 font-success"></i></a>
-                                    <a title="Edit" href="/admin/adminuser/edit/@obj.AdminUserId"><i class="fa fa-edit mr-2 font-success"></i></a>
-                                    @if (obj.AdminRoleId != 1)
-                                    {
-                                        <a title="Delete" href="javascript:void(0);" onclick="fnDeleteAdminUser('@obj.AdminUserId')"><i class="fa fa-trash font-danger"></i></a>
-                                    }
-                                </td>
+                                    <td>
+                                        <a title="View" href="/admin/agent/view/@obj.AdminUserId"><i class="fa fa-eye mr-2 font-success"></i></a>
+                                        @*<a title="Edit" href="/admin/agent/edit/@obj.AdminUserId"><i class="fa fa-edit mr-2 font-success"></i></a>
+                                        <a title="Delete" href="javascript:void(0);" onclick="fnDeleteAdminUser('@obj.AdminUserId')"><i class="fa fa-trash font-danger"></i></a>*@
+                                    </td>
                                 </tr>
                                 counter++;
                             }
@@ -145,24 +142,19 @@
 
 <script>
 
-    //jQuery(document).ready(function () {
-    //    StartLoading()
-    //    jQuery('html, body').animate({ scrollTop: 0 }, 1000);
-    //});
+    jQuery(document).ready(function () { 
+        jQuery('html, body').animate({ scrollTop: 0 }, 1000);
+    });
 
     $(document).on("click", "#btnAdd", function () {
-        window.location.href = "/admin/adminuser/add";
+        window.location.href = "/admin/agent/add";
     });
 
     function fnDeleteAdminUser(cat_id) {
         jQuery("#hdnDeleteAdminUser").val(cat_id);
         $('#deleteAdminUserModal').modal('show');
     }
-
-    //jQuery(window).on("load", function () {
-    //    StopLoading();
-    //});
-
+     
     jQuery(document).on("click", "#btnDeleteAdminUser", function () {
 
         var AdminUser_id = jQuery("#hdnDeleteAdminUser").val();
@@ -171,18 +163,18 @@
 
             StartLoading();
 
-            var URL = '@Url.Action("DeleteAdminUser", "AdminUser")';
+            var URL = '@Url.Action("DeleteAdminUser", "Agent")';
             $.ajax({
                 type: 'POST',
                 async: true,
                 url: URL + "?AdminUserId=" + AdminUser_id,
                 success: function (result) {
                     if (result == "success") {
-                        alert("Admin user deleted successfully");
+                        alert("Agent deleted successfully");
                         window.location.reload();
                     }
                     else if (result == "notfound") {
-                        alert("Admin user Not Found");
+                        alert("Agent Not Found");
                     }
                     else {
                         alert("Something went wrong. Please try again");
@@ -209,7 +201,7 @@
         $('#activeinactiveModal').modal('show');
     }
 
-       jQuery(document).on("click", "#btnChangeStatus", function () {
+     jQuery(document).on("click", "#btnChangeStatus", function () {
 
         var Id = jQuery("#hdndataId").val();
         if (Id != "" && Id != null) {
@@ -217,7 +209,7 @@
 
             StartLoading();
 
-            var URL = '@Url.Action("ChangeStatus", "AdminUser")';
+            var URL = '@Url.Action("ChangeStatus", "Agent")';
             $.ajax({
                 type: 'POST',
                 async: true,
