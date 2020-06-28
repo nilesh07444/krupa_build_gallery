@@ -190,7 +190,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Order/Index.cshtml">
-      <publishTime>05/23/2020 11:02:19</publishTime>
+      <publishTime>01/01/0001 00:00:00</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Order/OrderItemClientRequests.cshtml">
       <publishTime>05/21/2020 18:30:05</publishTime>
@@ -334,7 +334,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/20/2020 22:55:07</publishTime>
     </File>
     <File Include="Areas/Client/Views/Orders/Index.cshtml">
-      <publishTime>05/23/2020 11:02:19</publishTime>
+      <publishTime>06/28/2020 18:52:49</publishTime>
     </File>
     <File Include="Areas/Client/Views/Orders/OrderDetails.cshtml">
       <publishTime>06/28/2020 13:39:54</publishTime>
@@ -406,10 +406,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>03/01/2020 10:00:03</publishTime>
     </File>
     <File Include="bin/KrupaBuildGallery.dll">
-      <publishTime>06/28/2020 16:43:11</publishTime>
+      <publishTime>06/28/2020 18:57:49</publishTime>
     </File>
     <File Include="bin/KrupaBuildGallery.pdb">
-      <publishTime>06/28/2020 16:43:11</publishTime>
+      <publishTime>06/28/2020 18:57:49</publishTime>
     </File>
     <File Include="bin/Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll">
       <publishTime>05/24/2018 13:38:22</publishTime>
