@@ -271,14 +271,14 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     WebClient client = new WebClient();
 
                     string msg = "Hello " + userVM.FirstName + "\n\n";
-                    msg += "You are member of Shopping & Saving." + "\n\n";
+                    msg += "You Are Member Of Shopping & Saving." + "\n\n";
 
                     msg += "Below are login details:" + "\n";
                     msg += "Mobile No:" + userVM.MobileNo + "\n";
                     msg += "Password:" + userVM.Password + "\n\n";
 
                     msg += "Regards," + "\n";
-                    msg += "Krupa Build Gallery";
+                    msg += "Shopping & Saving";
 
                     string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + userVM.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
 

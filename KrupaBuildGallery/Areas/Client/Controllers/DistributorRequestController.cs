@@ -165,8 +165,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         FromEmail = objRequest.Email;
                     }
                     string dobstr = objRequest.Dob.Value.ToString("dd-MMM-yyyy");
-                    string Subject = "New Distributor Request - Krupa Build Gallery";
-                    string bodyhtml = "Following are the details:<br/>";
+                    string Subject = "New Distributor Request - Shopping & Saving";
+                    string bodyhtml = "Following Are The Details:<br/>";
                     bodyhtml += "FirstName: " + objRequest.FirstName + "<br/>";
                     bodyhtml += "LastName: " + objRequest.LastName + "<br/>";
                     bodyhtml += "Date of Birth: " + dobstr + "<br/>";
@@ -226,8 +226,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         string FromEmail = objGensetting.FromEmail;
                         Random random1 = new Random();
                         int num1 = random1.Next(111566,499999);
-                        string msg1 = "Your distributor request OTP code is " + num1;
-                        clsCommon.SendEmail(Email, FromEmail, "OTP Code for Distributor Request - Krupa Build Gallery", msg1);
+                        string msg1 = "Your Distributor Request OTP Code Is " + num1;
+                        clsCommon.SendEmail(Email, FromEmail, "OTP Code For Distributor Request - Shopping & Saving", msg1);
                         return num.ToString()+"^"+ num1.ToString();
                     }
 

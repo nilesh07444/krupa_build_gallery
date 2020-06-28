@@ -119,7 +119,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         WebClient client = new WebClient();
                         Random random = new Random();
                         int num = random.Next(555555, 999999);
-                        string msg = "Registration's OTP code is " + num + "\n Thanks \n Krupa Build Gallery";
+                        string msg = "Registration's OTP Code Is " + num + "\n Thanks \n Shopping & Saving";
                         string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + MobileNum + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
                         var json = webClient.DownloadString(url);
                         if (json.Contains("invalidnumber"))

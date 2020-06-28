@@ -130,8 +130,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 //    FromEmail = objContactform.Email;
                 //}
 
-                string Subject = "Message From Krupa Build Gallery";
-                string bodyhtml = "Following are the message details:<br/>";
+                string Subject = "Message From Shopping & Saving";
+                string bodyhtml = "Following Are The Message Details:<br/>";
                 bodyhtml += "Name: " + objContactform.Name + "<br/>";
                 bodyhtml += "Email: " + objContactform.Email + "<br/>";
                 bodyhtml += "PhoneNumber: " + objContactform.PhoneNumber + "<br/>";

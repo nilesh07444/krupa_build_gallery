@@ -321,7 +321,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         string msg1 = "Your Otp code for Login is " + num;
                         try
                         {
-                            clsCommon.SendEmail(objClientUsr.Email, FromEmail, "OTP Code for Login - Krupa Build Gallery", msg1);
+                            clsCommon.SendEmail(objClientUsr.Email, FromEmail, "OTP Code For Login - Shopping & Saving", msg1);
                         }
                         catch(Exception e)
                         {

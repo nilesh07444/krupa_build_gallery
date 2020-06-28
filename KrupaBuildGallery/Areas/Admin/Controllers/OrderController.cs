@@ -185,7 +185,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                     string FromEmail = objGensetting.FromEmail;
                                   
                                     string msg1 = "Your Order No.: " + objordr.OrderId + " Has Been Confirmed. We Will Dispatch Your Order Within " + Dispatchtime;
-                                    clsCommon.SendEmail(objclntusr.Email, FromEmail, "Your Order has been confirmed - Krupa Build Gallery", msg1);
+                                    clsCommon.SendEmail(objclntusr.Email, FromEmail, "Your Order Has Been Confirmed - Shopping & Saving", msg1);
                                 }
                             }
 
@@ -214,8 +214,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                     tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
                                     string FromEmail = objGensetting.FromEmail;
                                   
-                                    string msg1 = "Your order #" + objordr.OrderId + " has been dispatched";
-                                    clsCommon.SendEmail(objclntusr.Email, FromEmail, "Your Order has been dispatched - Krupa Build Gallery", msg1);
+                                    string msg1 = "Your Order No.: " + objordr.OrderId + " Has Been Dispatched";
+                                    clsCommon.SendEmail(objclntusr.Email, FromEmail, "Your Order Has Been Dispatched - Shopping & Saving", msg1);
                                 }
                             }
 
@@ -255,8 +255,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
                             string FromEmail = objGensetting.FromEmail;
 
-                            string msg1 = "Shipping Charges for Your order no." + objordr.OrderId + " is: Rs " + ShippingCharge + ". Please pay from your order details you can find button to pay.";
-                             clsCommon.SendEmail(objclntusr.Email, FromEmail, "Shipping Charge - Krupa Build Gallery", msg1);
+                            string msg1 = "Shipping Charges For Your Order No.: " + objordr.OrderId + " Is: Rs " + ShippingCharge + ". Please Pay From Your Order Details You Can Find Button To Pay.";
+                             clsCommon.SendEmail(objclntusr.Email, FromEmail, "Shipping Charge - Shopping & Saving", msg1);
                            
                         }
                     }
@@ -773,8 +773,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
                             string FromEmail = objGensetting.FromEmail;
 
-                            string msg1 = "Your order #" + objOrdr.OrderId + "Item: " + ItmsText.Trim(',') + "\n has been dispatched";
-                            clsCommon.SendEmail(objclntusr.Email, FromEmail, "Your Order has been dispatched - Krupa Build Gallery", msg1);
+                            string msg1 = "Your Order No: " + objOrdr.OrderId + "Item: " + ItmsText.Trim(',') + "\n Has Been Dispatched.";
+                            clsCommon.SendEmail(objclntusr.Email, FromEmail, "Your Order Has Been Dispatched - Shopping & Saving", msg1);
                         }
                     }
 
@@ -796,8 +796,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
                             string FromEmail = objGensetting.FromEmail;
 
-                            string msg1 = "Order no." + objOrdr.OrderId + "Item: " + ItmsText.Trim(',') + "has been assigned to you for delivery";
-                            clsCommon.SendEmail(objAdminUsr.Email, FromEmail, "Assigned New Item Delivery - Krupa Build Gallery", msg1);
+                            string msg1 = "Order No.: " + objOrdr.OrderId + "Item: " + ItmsText.Trim(',') + "Has Been Assigned To You For Delivery.";
+                            clsCommon.SendEmail(objAdminUsr.Email, FromEmail, "Assigned New Item Delivery - Shopping & Saving", msg1);
                         }
                     }
 

@@ -596,8 +596,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             WebClient client = new WebClient();
                             Random random = new Random();
                             int num = random.Next(111566, 999999);
-                            string msg = "Your Registration as a Distributor Rejected - Krupa Build Gallery\n";
-                            msg += "Following is the reason:\n";
+                            string msg = "Your Registration As A Distributor Rejected - Shopping & Saving\n";
+                            msg += "Following Is The Reason:\n";
                             msg += Reason;
                             string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objReq.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
                             var json = webClient.DownloadString(url);
@@ -664,9 +664,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             string ToEmail = objReq.Email;
                             tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
                             string FromEmail = objGensetting.FromEmail;
-                            string Subject = "Your Registration as a Distributor Created - Krupa Build Gallery";
-                            string bodyhtml = "Thank you for become a valuable distributor of Krupa Build Gallery<br/>";
-                            bodyhtml += "Following are the login details<br/>";
+                            string Subject = "Your Registration As a Distributor Created - Shopping & Saving";
+                            string bodyhtml = "Thank You For Become A Valuable Distributor Of Shopping & Saving<br/>";
+                            bodyhtml += "Following Are The Login Details:<br/>";
                             bodyhtml += "===============================<br/>";
                             bodyhtml += "Email: " + objReq.Email + "<br/>";
                             bodyhtml += "Password: " + Password + "<br/>";
@@ -682,7 +682,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             WebClient client = new WebClient();
                             Random random = new Random();
                             int num = random.Next(111566, 999999);
-                            string msg = "Thank you for become a valuable distributor of Krupa Build Gallery\n";
+                            string msg = "Thank You For Become A Valuable Distributor Of Shopping & Saving\n";
                             msg += "Login Details:\n";
                             msg += "Email:" + objReq.Email + "\n";
                             msg += "Password:" + Password + "\n";
@@ -797,7 +797,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     decimal Credit = Convert.ToDecimal(CreditLimit);
                     objclientother.CreditLimitAmt = Credit;
                     _db.SaveChanges();
-                    string msg = "Your Credit limit has changed to Rs" + CreditLimit + " - Krupa Build Gallery";
+                    string msg = "Your Credit Limit Has Changed To Rs" + CreditLimit + " - Shopping & Saving";
                     SendSMSmsg(Mobilenum, msg);
                 }
                 return "Success";

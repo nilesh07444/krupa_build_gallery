@@ -167,10 +167,10 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         {
                             tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
                             string FromEmail = objGensetting.FromEmail;
-                            string msg1 = "Your Otp code for Login is " + num;
+                            string msg1 = "Your Otp Code For Login Is " + num;
                             try
                             {
-                                clsCommon.SendEmail(objClientUsr.Email, FromEmail, "OTP Code for Login - Krupa Build Gallery", msg1);
+                                clsCommon.SendEmail(objClientUsr.Email, FromEmail, "OTP Code for Login - Shopping & Saving", msg1);
                             }
                             catch (Exception e)
                             {

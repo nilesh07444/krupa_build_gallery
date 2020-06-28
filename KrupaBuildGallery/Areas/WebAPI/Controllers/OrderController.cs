@@ -881,8 +881,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                             tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
                             string FromEmail = objGensetting.FromEmail;
 
-                            string msg1 = "Order no." + OrdrId + "Item: " + ItmsText.Trim(',') + "has been assigned to you for delivery";
-                            clsCommon.SendEmail(objAdminUsr.Email, FromEmail, "Assigned New Item Delivery - Krupa Build Gallery", msg1);
+                            string msg1 = "Order no." + OrdrId + "Item: " + ItmsText.Trim(',') + "Has Been Assigned To You For Delivery.";
+                            clsCommon.SendEmail(objAdminUsr.Email, FromEmail, "Assigned New Item Delivery - Shopping & Saving", msg1);
                         }
                     }
 

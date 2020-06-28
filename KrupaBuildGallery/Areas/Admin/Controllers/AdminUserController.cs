@@ -421,7 +421,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     msg += "Password:" + userVM.Password + "\n\n";
 
                     msg += "Regards," + "\n";
-                    msg += "Krupa Build Gallery";
+                    msg += "Shopping & Saving";
 
                     string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + userVM.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
 
