@@ -313,7 +313,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     decimal receiveamt = 0;
                 if (lstdl != null && lstdl.Count() > 0)
                 {
-                    receiveamt = _db.tbl_CashDeliveryAmount.Where(o => o.ReceivedBy == AgntUserId).ToList().Sum(o => o.Amount.HasValue ? o.Amount.Value : 0);
+                    receiveamt = _db.tbl_CashDeliveryAmount.Where(o => o.ReceivedBy == AgntUserId && o.IsAccept == true).ToList().Sum(o => o.Amount.HasValue ? o.Amount.Value : 0);
                 }
                 decimal paidamt = 0;
                 var paidamts = _db.tbl_CashDeliveryAmount.Where(o => o.SentBy == AgntUserId).ToList();
