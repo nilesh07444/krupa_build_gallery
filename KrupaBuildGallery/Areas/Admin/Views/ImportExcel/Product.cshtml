@@ -33,8 +33,15 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
-                    <div class="card-header">
-                        <h5>Import Product</h5>
+                    <div class="card-header"> 
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h5>Import Product</h5>
+                            </div>
+                            <div class="col-sm-6">
+                                <a href="/Documents/ProductImportSample.xlsx" style="float: right;" download="">Download Template</a>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-body">
                         @using (Html.BeginForm("Product", "ImportExcel", FormMethod.Post, new { @id = "ImportExcelFormId", @class = "needs-validation", enctype = "multipart/form-data", role = "form" }))

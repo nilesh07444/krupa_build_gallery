@@ -261,7 +261,7 @@
                             <tr>
                                 <td>total price :</td>
                                 <td>
-                                    <h2 class="clsttlfull" style="width:143px;">₹ @CartTotal</h2>
+                                    <h2 class="clsttlfull" style="width:143px;">₹@CartTotal</h2>
                                 </td>
                             </tr>
                         </tfoot>
@@ -341,13 +341,16 @@
         });
     }
 
-    $(".clsq").change(function () {
-        debugger;
+    $(".clsq").change(function () { 
         var qty = parseFloat($(this).val());
         var idd = $(this).attr("data-attrcrtidd");
         var prrcc = $(".clsprc_" + idd).attr("data-attrpprc");
         var prc = parseFloat(prrcc);
         var totll = prc * qty;
+
+        // to convert amount in 2 decimal
+        totll = parseFloat(totll).toFixed(2);
+
         $(".clsttl_" + idd).html("₹" + totll);
         $(".clsttl_" + idd).attr("data-attrttls", totll);
         var ttlll = 0;
@@ -358,10 +361,13 @@
         }
         else {
              $(".clsonline .clspr").each(function () {
-            ttlll = ttlll + parseFloat($(this).attr("data-attrttls"));
-          })
+                ttlll = ttlll + parseFloat($(this).attr("data-attrttls"));
+             });
         }
-       
+
+        // to convert amount in 2 decimal
+        ttlll = parseFloat(ttlll).toFixed(2);
+
         if ($(this).parents('.clsCash').length > 0) {
              $(".clsCash1 .clsttlfull").html("₹ " + ttlll);
         }
