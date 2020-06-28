@@ -309,9 +309,20 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                       {
                                           AmountDecmal = p.AmountToReceived.HasValue ? p.AmountToReceived.Value : 0
                                       }).ToList().Sum(x => x.AmountDecmal);
-
-                decimal paidamt = _db.tbl_CashDeliveryAmount.Where(o => o.SentBy == AgntUserId).Sum(o => o.Amount.Value);
-                decimal remaining = TotalAmout - paidamt;
+                var lstdl = _db.tbl_CashDeliveryAmount.Where(o => o.ReceivedBy == AgntUserId).ToList();
+                    decimal receiveamt = 0;
+                if (lstdl != null && lstdl.Count() > 0)
+                {
+                    receiveamt = _db.tbl_CashDeliveryAmount.Where(o => o.ReceivedBy == AgntUserId).ToList().Sum(o => o.Amount.HasValue ? o.Amount.Value : 0);
+                }
+                decimal paidamt = 0;
+                var paidamts = _db.tbl_CashDeliveryAmount.Where(o => o.SentBy == AgntUserId).ToList();
+                if(paidamts != null && paidamts.Count() > 0)
+                {
+                    paidamt = paidamts.Sum(o => o.Amount.HasValue ? o.Amount.Value : 0);
+                }
+                
+                decimal remaining = (TotalAmout + receiveamt) - paidamt;
                 response.Data = remaining.ToString();
 
             }

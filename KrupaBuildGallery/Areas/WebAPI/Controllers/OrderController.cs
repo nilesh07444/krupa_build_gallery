@@ -917,6 +917,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 {
                     AgentId = objAdminUsr.ParentAgentId.Value;
                 }
+                
                 tbl_Orders objrd = _db.tbl_Orders.Where(o => o.OrderId == OrdrId).FirstOrDefault();
                 long ClientUserId = 0;
                 if(objrd != null)
@@ -939,6 +940,12 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     foreach (string ss in strordditm)
                     {
                         long OrderItemId = Convert.ToInt64(ss);
+                        if (DelieveryPrsnId == AgentId)
+                        {
+                            var objDelvItmm = _db.tbl_OrderItemDelivery.Where(o => o.DelieveryPersonId != AgentId && o.OrderItemId == OrderItemId).FirstOrDefault();
+                            _db.tbl_OrderItemDelivery.Remove(objDelvItmm);
+                            _db.SaveChanges();
+                        }
                         tbl_OrderItemDetails objOrderItm = _db.tbl_OrderItemDetails.Where(o => o.OrderDetailId == OrderItemId).FirstOrDefault();
                       
                         tbl_ItemVariant objVrnt = _db.tbl_ItemVariant.Where(o => o.VariantItemId == objOrderItm.VariantItemId).FirstOrDefault();
@@ -970,6 +977,22 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                     {
                                         objj.AmountToReceived = shipcharge + objOrderItm.FinalItemPrice;
                                     }
+                                }
+                                else if(objrd.IsCashOnDelivery == true && objrd.OrderShipPincode != "389001")
+                                {
+                                    decimal extramtt = objrd.ExtraAmount.HasValue ? objrd.ExtraAmount.Value : 0;
+                                    if (IsExtrapaid == false && objrd.IsExtraAmountReceived == false)
+                                    {
+                                        objj.AmountToReceived =  objOrderItm.FinalItemPrice + extramtt;
+                                    }
+                                    else
+                                    {
+                                        objj.AmountToReceived = objOrderItm.FinalItemPrice;
+                                    }
+                                }
+                                if(objj.DelieveryPersonId != DelieveryPrsnId)
+                                {
+                                    objj.AmountToReceived = 0;
                                 }
                             }
                             IsExtrapaid = true;
