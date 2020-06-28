@@ -1198,7 +1198,7 @@
     //        type: "success",
     //        allow_dismiss: true,
     //        newest_on_top: false,
-    //        showProgressbar: true,
+    //        showProgressbar: false,
     //        placement: {
     //            from: "top",
     //            align: "right"
@@ -1241,7 +1241,7 @@
     //        type: "info",
     //        allow_dismiss: true,
     //        newest_on_top: false,
-    //        showProgressbar: true,
+    //        showProgressbar: false,
     //        placement: {
     //            from: "top",
     //            align: "right"

@@ -189,7 +189,7 @@ display:block !important;
                                                                                 <div class="img-wrapper">
                                                                                     <!-- front image -->
                                                                                     <div class="front">
-                                                                                        <a href="/client/products/detail/@item.ProductItemId" class="bg-size blur-up lazyloaded" style="background-image: url(@imgpath); background-size: cover; background-position: center center; display: block;" tabindex="0"><img src="@imgpath" class="img-fluid blur-up lazyload bg-img" alt="" style="display: none;"></a>
+                                                                                        <a href="/client/products/detail/@item.ProductItemId" class="bg-size blur-up lazyloaded" style="background-image: url('@imgpath'); background-size: cover; background-position: center center; display: block;" tabindex="0"><img src="@imgpath" class="img-fluid blur-up lazyload bg-img" alt="" style="display: none;"></a>
                                                                                     </div>
                                                                                     <div class="cart-info cart-wrap">
                                                                                         <button data-toggle="modal" data-target="#addtocart" style="display:none;" title="Add to cart" tabindex="0" style="cursor:pointer;" onclick="AddtoCartfunc(@item.ProductItemId, 1,'@item.IsCashonDelieveryuse.ToString()');"><i class="ti-shopping-cart"></i></button>
@@ -348,7 +348,7 @@ display:block !important;
         type: "info",
         allow_dismiss: true,
         newest_on_top: false,
-        showProgressbar: true,
+        showProgressbar: false,
         placement: {
             from: "top",
             align: "right"

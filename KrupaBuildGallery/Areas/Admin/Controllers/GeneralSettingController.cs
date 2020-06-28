@@ -92,8 +92,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 objGenSetting.AdminSMSNumber = txtsmsmobil.ToString();
                 objGenSetting.FromEmail = txtfrommail;
                 objGenSetting.EnableSSL = EnableSSL;
-                objGenSetting.RazorPayKey = RazorPaykey;
-                objGenSetting.RazorPaySecret = RazorPayScrete;
+                //objGenSetting.RazorPayKey = RazorPaykey;
+                //objGenSetting.RazorPaySecret = RazorPayScrete;
                 objGenSetting.ReturnPerInGodhra = txtReturnPerInGodhra;
                 objGenSetting.ReturnPerOutGodhra = txtReturnPerOutGodhra;
                 objGenSetting.ExchangePer = txtExchangePer;

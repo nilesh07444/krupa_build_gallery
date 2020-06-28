@@ -54,7 +54,7 @@ function msgdisplay(msg) {
         type: "success",
         allow_dismiss: true,
         newest_on_top: false,
-        showProgressbar: true,
+            showProgressbar: false,
         placement: {
             from: "top",
             align: "right"
@@ -92,7 +92,7 @@ function msgdisplayFail(msg) {
         type: "warning",
         allow_dismiss: true,
         newest_on_top: false,
-        showProgressbar: true,
+            showProgressbar: false,
         placement: {
             from: "top",
             align: "right"
@@ -119,37 +119,37 @@ function msgdisplayFail(msg) {
     });
 }
 
-$('.product-4').slick({
-    infinite: true,
-    speed: 300,
-    slidesToShow: 4,
-    slidesToScroll: 4,
-    autoplay: true,
-    autoplaySpeed: 3000,
-    responsive: [
-        {
-            breakpoint: 1200,
-            settings: {
-                slidesToShow: 3,
-                slidesToScroll: 3
-            }
-        },
-        {
-            breakpoint: 991,
-            settings: {
-                slidesToShow: 2,
-                slidesToScroll: 2
-            }
-        },
-        {
-            breakpoint: 420,
-            settings: {
-                slidesToShow: 1,
-                slidesToScroll: 1
-            }
-        }
-    ]
-});
+//$('.product-4').slick({
+//    infinite: true,
+//    speed: 300,
+//    slidesToShow: 4,
+//    slidesToScroll: 4,
+//    autoplay: true,
+//    autoplaySpeed: 3000,
+//    responsive: [
+//        {
+//            breakpoint: 1200,
+//            settings: {
+//                slidesToShow: 3,
+//                slidesToScroll: 3
+//            }
+//        },
+//        {
+//            breakpoint: 991,
+//            settings: {
+//                slidesToShow: 2,
+//                slidesToScroll: 2
+//            }
+//        },
+//        {
+//            breakpoint: 420,
+//            settings: {
+//                slidesToShow: 1,
+//                slidesToScroll: 1
+//            }
+//        }
+//    ]
+//});
 
 $('.product-box a .ti-heart1 , .product-box a .fa-heart1').on('click', function () {
 
@@ -163,7 +163,7 @@ $('.product-box a .ti-heart1 , .product-box a .fa-heart1').on('click', function 
         type: "info",
         allow_dismiss: true,
         newest_on_top: false,
-        showProgressbar: true,
+            showProgressbar: false,
         placement: {
             from: "top",
             align: "right"

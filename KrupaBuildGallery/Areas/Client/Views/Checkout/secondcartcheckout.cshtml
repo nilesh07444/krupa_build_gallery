@@ -144,7 +144,7 @@
                                 <div class="checkout-details">
                                     <div class="order-box">
                                         <div class="title-box">
-                                            <div>Product <span>Total</span></div>
+                                            <div>Product <span>Qty</span></div>
                                         </div>
                                         <ul class="qty">
                                             @if (lstCartItmms != null && lstCartItmms.Count() > 0)
@@ -153,33 +153,26 @@
                                                 {
                                                     decimal Itemttl = objcart.Qty * objcart.Price;
                                                     CartTotal = CartTotal + Itemttl;
-                                                    <li>@objcart.ItemName × @objcart.Qty <span>&#8377; @Itemttl</span></li>
+                                                    @*<li>@objcart.ItemName × @objcart.Qty <span>&#8377; @Itemttl</span></li>*@
+                                                    <li>@objcart.ItemName <span> @objcart.Qty</span></li>
                                                 }
                                             }
                                         </ul>
-                                        <ul class="sub-total">
+                                        @*<ul class="sub-total">
                                             <li>Subtotal <span class="count">&#8377; @CartTotal</span></li>
                                             <li>Discount <span class="count">&#8377; @ViewBag.TotalDiscount</span></li>
                                             <li>
                                                 Shipping
                                                 <div class="shipping" style="color:#ff4c3b">
                                                     <span id="spnshipmsg">@ViewBag.ShippingMsg</span>
-                                                    <span id="spnshipamt" style="display:none;">&#8377; @ViewBag.ShippingChargeTotal</span>
-                                                    @*<div class="shopping-option">
-                            <input type="checkbox" name="free-shipping" id="free-shipping">
-                            <label for="free-shipping">Free Shipping</label>
-                        </div>
-                        <div class="shopping-option">
-                            <input type="checkbox" name="local-pickup" id="local-pickup">
-                            <label for="local-pickup">Local Pickup</label>
-                        </div>*@
+                                                    <span id="spnshipamt" style="display:none;">&#8377; @ViewBag.ShippingChargeTotal</span> 
                                                 </div>
                                             </li>
-                                        </ul>
+                                        </ul>*@
                                         <ul class="total">
                                             @if (extramt > 0)
                                             {
-                                                <li class="shippingexist">Minimum Purchase Charge<span class="count">&#8377; @extramt</span></li>
+                                                @*<li class="shippingexist">Minimum Purchase Charge<span class="count">&#8377; @extramt</span></li>*@
                                             }
                                             <li class="shippingnotexist">Total <span class="count">&#8377; @ViewBag.TotalOrder</span></li>
                                             <li class="shippingexist" style="display:none;">Total <span class="count">&#8377; @TotalOrderamtt</span></li>

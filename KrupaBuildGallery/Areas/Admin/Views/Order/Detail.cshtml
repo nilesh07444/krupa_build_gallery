@@ -130,23 +130,23 @@
                             <div class="col-md-9">
                                 <div class="form-text-row" id="dvorderstatus">@Model.OrderStatus</div>
                                 @*<button type="button" name="" id="cancelorder" class="btn bg-red" style="margin-right: 3px;">
-                    Cancel order
-                </button>*@
+                                        Cancel order
+                                    </button>*@
                                 @if (Model.OrderStatusId == 1)
                                 {
                                     <button type="button" name="btnChangeOrderStatustoconfirm" id="btnChangeOrderStatustoconfirm" onclick="changestatus('Confirmed', 2,'@Model.OrderId');" class="btn btn-primary" style="display: inline-block;">
                                         Change status to Confirmed
                                     </button>
                                     @*<button type="button" name="btnChangeOrderStatustodispatched" id="btnChangeOrderStatustodispatched" class="btn btn-primary" onclick="changestatus('Dispatched',3,'@Model.OrderId');" style="display: none;">
-                        Change status to Dispatched
-                    </button>*@
+                                            Change status to Dispatched
+                                        </button>*@
                                 }
                                 @*else if (Model.OrderStatusId == 2)
-                {
-                    <button type="button" name="btnChangeOrderStatustodispatched" id="btnChangeOrderStatustodispatched" class="btn btn-primary" onclick="changestatus('Dispatched',3,'@Model.OrderId');" style="display: inline-block;">
-                        Change status to Dispatched
-                    </button>
-                }*@
+                                    {
+                                        <button type="button" name="btnChangeOrderStatustodispatched" id="btnChangeOrderStatustodispatched" class="btn btn-primary" onclick="changestatus('Dispatched',3,'@Model.OrderId');" style="display: inline-block;">
+                                            Change status to Dispatched
+                                        </button>
+                                    }*@
 
                             </div>
                         </div>
@@ -292,7 +292,7 @@
                     </div>
                     <div class="card-body">
                         <button type="button" name="btnAssign" id="btnAssign" class="btn btn-primary" onclick="assigndeliverypersonMulti();" style="display: inline-block;">
-                           Assign Delivery Person
+                            Assign Delivery Person
                         </button>
                         <div class="card-body vendor-table">
                             <table class="display" id="basic-1">
@@ -452,7 +452,7 @@
                 <label>Shipping Charge</label><input type="number" id="txtshipchrg" style="display:inline-block;width:150px;margin-left:12px;" class="form-control" value="" />
             </div>
             <div class="modal-footer">
-                <input type="hidden" id="orderids" />                
+                <input type="hidden" id="orderids" />
                 <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
                 <button id="setshipcharge" class="btn btn-primary" type="button">Save</button>
             </div>
@@ -467,7 +467,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             </div>
             <div class="modal-body">
-                
+
             </div>
             <div class="modal-footer">
                 <input type="hidden" id="orderids" />
@@ -489,7 +489,7 @@
             $("#changestatustoconfirmed #orderidshdn").val(orderid);
             $("#changestatustoconfirmed #statusids").val(statusid);
         }
-        else if (statusid == 3) { 
+        else if (statusid == 3) {
             if ($("#hdnShippingStatus").val() == "1") {
                 alert("Shipmment Charges Remaining");
                 return;
@@ -532,7 +532,7 @@
     });
 
     jQuery(document).on("click", "#savestatustodispatched", function () {
-      
+
         var URL = '/Admin/Order/ChangeOrderStatus';
         jQuery.ajax({
             type: 'POST',
@@ -583,63 +583,77 @@
             $("#assignpersonmodal").modal("show");
             $("#orderidd").val(ordrid);
             $("#orderitmidd").val(orderitmid);
-        
-            $("#proditmidd").val(produitmid);          
+
+            $("#proditmidd").val(produitmid);
         });
     }
     function AssignPerson() {
+
          if ($("#Personname").val() == "0") {
             alert("Please Select Person to Assigned Item");
             return;
         }
-        if ($("#IsMulti").val() == 'true') {
+
+        if ($("#IsMulti").val() == 'true')
+        {
+
             var stritddd = '';
             if ($(".chkrdr:checked").length == 0) {
-                  alert("Please Select atlest 1 Item");
-            return;
+                alert("Please Select atlest 1 Item");
+                return;
             }
+
             $(".chkrdr:checked").each(function () {
                 stritddd = stritddd + $(this).val() + '^';
             });
+             
+            $("#assignpersonmodal").modal("hide");
+            StartLoading();
+
             stritddd = stritddd.trim('^');
-             var URL = '/Admin/Order/AssignMultiItemDeliveryPerson';
-        jQuery.ajax({
-            type: 'POST',
-            async: true,
-            url: URL + "?OrderId=" + $("#orderidd").val() + "&OrderItemIds=" + encodeURIComponent(stritddd) + "&PersonId=" + $("#Personname").val(),
-            success: function (result) {
-                alert("Item Assigned");
-                $("#assignpersonmodal").modal("hide");      
-                 location.reload();
-               //   $("#td_"+$("#orderitmidd").val()).html("Dispatched");
-            },
-            error: function (error) {
-                console.log("error");
-                alert(error);
-              $("#assignpersonmodal").modal("hide");
-            }
-        });
+            var URL = '/Admin/Order/AssignMultiItemDeliveryPerson';
+            jQuery.ajax({
+                type: 'POST',
+                async: true,
+                url: URL + "?OrderId=" + $("#orderidd").val() + "&OrderItemIds=" + encodeURIComponent(stritddd) + "&PersonId=" + $("#Personname").val(),
+                success: function (result) {
+                    $("#assignpersonmodal").modal("hide");
+                    StopLoading();
+
+                    alert("Item Assigned");
+                    
+                    location.reload(); 
+                },
+                error: function (error) {
+                    StopLoading();
+                    $("#assignpersonmodal").modal("hide");
+                }
+            });
+
+        }
+        else
+        {
+            StartLoading();
+
+            var URL = '/Admin/Order/AssignDeliveryPerson';
+            jQuery.ajax({
+                type: 'POST',
+                async: true,
+                url: URL + "?OrderId=" + $("#orderidd").val() + "&OrderItemId=" + $("#orderitmidd").val() + "&PersonId=" + $("#Personname").val(),
+                success: function (result) {
+                    StopLoading(); 
+                    $("#assignpersonmodal").modal("hide");
+                    alert("Item Assigned");
+                    location.reload();
+                    
+                },
+                error: function (error) {
+                    StopLoading();
+                  $("#assignpersonmodal").modal("hide");
+                }
+            });
        }
-        else {
-             var URL = '/Admin/Order/AssignDeliveryPerson';
-        jQuery.ajax({
-            type: 'POST',
-            async: true,
-            url: URL + "?OrderId=" + $("#orderidd").val() + "&OrderItemId=" + $("#orderitmidd").val() + "&PersonId=" + $("#Personname").val(),
-            success: function (result) {
-                alert("Item Assigned");
-                $("#assignpersonmodal").modal("hide");      
-                 location.reload();
-               //   $("#td_"+$("#orderitmidd").val()).html("Dispatched");
-            },
-            error: function (error) {
-                console.log("error");
-                alert(error);
-              $("#assignpersonmodal").modal("hide");
-            }
-        });
-       }
-       
+
      }
 
     function assigndeliverypersonMulti() {
@@ -652,9 +666,9 @@
             $("#assignpersonmodal").modal("show");
             $("#orderidd").val('@Model.OrderId');
             ///$("#orderitmidd").val(orderitmid);
-          //  $("#proditmidd").val(produitmid);                 
+          //  $("#proditmidd").val(produitmid);
         });
     }
-   
-    
+
+
 </script>
