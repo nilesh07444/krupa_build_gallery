@@ -119,7 +119,7 @@ namespace KrupaBuildGallery
 
         public string ItemTag { get; set; }
 
-        public List<tbl_ItemVariant> lstVariants { get; set; }        
+        public List<VariantItemVM> lstVariants { get; set; }        
         public string UnitTyp { get; set; }
     }
 }
