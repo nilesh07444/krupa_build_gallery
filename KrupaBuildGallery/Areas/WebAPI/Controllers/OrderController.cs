@@ -1113,5 +1113,72 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
 
         }
 
+        [Route("GetRatingReview"), HttpPost]
+        public ResponseDataModel<tbl_ReviewRating> GetRatingReview(GeneralVM objGen)
+        {
+            ResponseDataModel<tbl_ReviewRating> response = new ResponseDataModel<tbl_ReviewRating>();
+            try
+            {
+                long OrderDetailId = Convert.ToInt64(objGen.OrderDetailId);
+                tbl_ReviewRating objtbl_ReviewRating = _db.tbl_ReviewRating.Where(o => o.OrderDetailId == OrderDetailId).FirstOrDefault();
+                if (objtbl_ReviewRating == null)
+                {
+                    objtbl_ReviewRating = new tbl_ReviewRating();
+                }
+                response.Data = objtbl_ReviewRating;
+
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+
+        [Route("SaveRatingReview"), HttpPost]
+        public ResponseDataModel<string> SaveRatingReview(GeneralVM objGen)
+        {
+            ResponseDataModel<string> response = new ResponseDataModel<string>();
+            try
+            {
+                long OrdrDtlid = Convert.ToInt64(objGen.OrderDetailId);
+                long UserId = Convert.ToInt64(objGen.ClientUserId);
+                string Ratings = objGen.Ratings;
+                string Reviews = objGen.Reviews;
+                tbl_ReviewRating objrt = _db.tbl_ReviewRating.Where(o => o.OrderDetailId == OrdrDtlid).FirstOrDefault();
+                if (objrt == null)
+                {
+                    var objItms = _db.tbl_OrderItemDetails.Where(o => o.OrderDetailId == OrdrDtlid).FirstOrDefault();
+                    objrt = new tbl_ReviewRating();
+                    objrt.OrderDetailId = OrdrDtlid;
+                    objrt.ProductItemId = objItms.ProductItemId;
+                    objrt.ClientUserId = clsClientSession.UserID;
+                    objrt.Rating = Convert.ToDecimal(Ratings);
+                    objrt.Review = Reviews;
+                    objrt.CreatedDate = DateTime.UtcNow;
+                    _db.tbl_ReviewRating.Add(objrt);
+                }
+                else
+                {
+                    objrt.Rating = Convert.ToDecimal(Ratings);
+                    objrt.Review = Reviews;
+                }
+                _db.SaveChanges();
+
+                response.Data = "Success";
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+
     }
 }
