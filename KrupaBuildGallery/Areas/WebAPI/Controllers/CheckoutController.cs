@@ -550,6 +550,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                             tbl_OrderItemDetails objOrderItem = new tbl_OrderItemDetails();
                             objOrderItem.OrderId = objOrder.OrderId;
                             objOrderItem.ProductItemId = objCart.ItemId;
+                            objOrderItem.VariantItemId = objCart.VariantId;
                             objOrderItem.ItemName = objCart.ItemName;
                             objOrderItem.IGSTAmt = 0;
                             objOrderItem.Qty = objCart.Qty;
@@ -632,7 +633,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         _db.tbl_PaymentHistory.Add(objPyment1);
                         amttTotlordepy = amttTotlordepy - amtwallet;
                     }
-                    if (amtonline > 0)
+                    if (amtonline > 0 && Iscashondelivery == false)
                     {
                         tbl_PaymentHistory objPyment = new tbl_PaymentHistory();
                         objPyment.OrderId = objOrder.OrderId;
@@ -854,6 +855,25 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                 objOrder.ShippingStatus = 1;
                             }
                             _db.tbl_Orders.Add(objOrder);
+                            _db.SaveChanges();
+                            if (amtwallet > 0)
+                            {
+                                tbl_Wallet objwlt = new tbl_Wallet();
+                                objwlt.Amount = amtwallet;
+                                objwlt.CreditDebit = "Debit";
+                                objwlt.OrderId = objOrder.OrderId;
+                                objwlt.ClientUserId = clientusrid;
+                                objwlt.WalletDate = DateTime.UtcNow;
+                                objwlt.Description = "Paid Amount for order no." + objOrder.OrderId;
+                                _db.tbl_Wallet.Add(objwlt);
+                                var objclientuss = _db.tbl_ClientUsers.Where(o => o.ClientUserId == clientusrid).FirstOrDefault();
+                                if (objclientuss != null)
+                                {
+                                    objclientuss.WalletAmt = objclientuss.WalletAmt - amtwallet;
+                                }
+                                _db.SaveChanges();
+                                objcmn.SaveTransaction(0, 0, objOrder.OrderId, "Payment By Wallet : Rs" + amtwallet, amtwallet,clientusrid, 0, DateTime.UtcNow, "Wallet Payment");
+                            }
                             decimal amttTotlordepy = ordramt + shippingcharge + extraamount;
                             if (amtwallet > 0)
                             {
@@ -914,6 +934,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                     tbl_OrderItemDetails objOrderItem = new tbl_OrderItemDetails();
                                     objOrderItem.OrderId = objOrder.OrderId;
                                     objOrderItem.ProductItemId = objCart.ItemId;
+                                    objOrderItem.VariantItemId = objCart.VariantId;
                                     objOrderItem.ItemName = objCart.ItemName;
                                     objOrderItem.IGSTAmt = 0;
                                     objOrderItem.Qty = objCart.Qty;

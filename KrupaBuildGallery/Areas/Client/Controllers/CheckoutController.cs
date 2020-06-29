@@ -701,7 +701,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         _db.tbl_PaymentHistory.Add(objPyment1);
                         amttTotlordepy = amttTotlordepy - amtwallet;
                     }
-                    if (amtonline > 0)
+                    if (amtonline > 0 && Iscashondelivery == false)
                     {
                         tbl_PaymentHistory objPyment = new tbl_PaymentHistory();
                         objPyment.OrderId = objOrder.OrderId;
@@ -937,7 +937,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 _db.tbl_PaymentHistory.Add(objPyment1);
                                 amttTotlordepy = amttTotlordepy - amtwallet;
                             }
-                            if(amtonline > 0)
+                            if(amtonline > 0 && Iscashondelivery == false)
                             {
                                 tbl_PaymentHistory objPyment = new tbl_PaymentHistory();
                                 objPyment.OrderId = objOrder.OrderId;
