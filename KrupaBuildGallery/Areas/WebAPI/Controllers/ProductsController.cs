@@ -260,7 +260,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 long UserId = Convert.ToInt64(objGen.ClientUserId);
                 long RoleId = Convert.ToInt64(objGen.RoleId);            
                 long ProdItem = Convert.ToInt64(objGen.ItemId);
-                
+                List<tbl_ReviewRating> lstRatings = _db.tbl_ReviewRating.ToList();
                 List<string> lstimages = _db.tbl_ProductItemImages.Where(o => o.ProductItemId == ProdItem).Select(o => o.ItemImage).ToList();
                 objProductItem = (from i in _db.tbl_ProductItems
                                   where i.ProductItemId == ProdItem
@@ -295,6 +295,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         objProductItem.IsWishListItem = true;
                     }
                 }
+                objProductItem.Ratings = GetRatingOfItem(objProductItem.ProductItemId, lstRatings);
                 objProductItem.CustomerPrice = GetOfferPrice(objProductItem.ProductItemId, objProductItem.CustomerPrice);
                 objProductItem.DistributorPrice = GetDistributorOfferPrice(objProductItem.ProductItemId, objProductItem.DistributorPrice);
                 int TotalStk = ItemStock(objProductItem.ProductItemId);
@@ -590,6 +591,17 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             }
 
             return lstImages;
+        }
+
+        public decimal GetRatingOfItem(long ItemId, List<tbl_ReviewRating> lstreviewratings)
+        {
+            decimal rating = 0;
+            var lstt = lstreviewratings.Where(o => o.ProductItemId == ItemId).ToList();
+            if (lstt != null && lstt.Count() > 0)
+            {
+                rating = lstt.Select(o => o.Rating.Value).Average();
+            }
+            return rating;
         }
 
     }
