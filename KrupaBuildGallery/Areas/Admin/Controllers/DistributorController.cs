@@ -394,6 +394,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         {
             StreamReader sr;
             string newhtmldata = "";
+
             OrderVM objOrder = new OrderVM();
             objOrder = (from p in _db.tbl_Orders
                         join c in _db.tbl_ClientUsers on p.ClientUserId equals c.ClientUserId
@@ -420,13 +421,16 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             InvoiceNo = p.InvoiceNo.Value,
                             InvoiceYear = p.InvoiceYear,
                             ShipmentCharge = p.ShippingCharge.HasValue ? p.ShippingCharge.Value : 0,
-                            ShippingStatus = p.ShippingStatus.HasValue ? p.ShippingStatus.Value : 2
+                            ShippingStatus = p.ShippingStatus.HasValue ? p.ShippingStatus.Value : 2,
+                            ExtraAmount = p.ExtraAmount.HasValue ? p.ExtraAmount.Value : 0
                         }).OrderByDescending(x => x.OrderDate).FirstOrDefault();
+
             if (objOrder != null)
             {
                 objOrder.OrderStatus = GetOrderStatus(objOrder.OrderStatusId);
                 List<OrderItemsVM> lstOrderItms = (from p in _db.tbl_OrderItemDetails
                                                    join c in _db.tbl_ProductItems on p.ProductItemId equals c.ProductItemId
+                                                   join u in _db.tbl_ItemVariant on p.VariantItemId equals u.VariantItemId                                                   
                                                    where p.OrderId == OrderId
                                                    select new OrderItemsVM
                                                    {
@@ -440,9 +444,11 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                                        GSTAmt = p.GSTAmt.Value,
                                                        IGSTAmt = p.IGSTAmt.Value,
                                                        ItemImg = c.MainImage,
-                                                       GST_Per = c.GST_Per,
+                                                       VariantQtytxt = u.UnitQty,
+                                                       GST_Per = (p.GSTPer.HasValue ? p.GSTPer.Value : 0),
                                                        Discount = p.Discount.HasValue ? p.Discount.Value : 0
-                                                   }).OrderByDescending(x => x.OrderItemId).ToList();
+                                                   }).OrderByDescending(x => x.GST_Per).ToList();
+
                 objOrder.OrderItems = lstOrderItms;
                 string file = Server.MapPath("~/templates/Invoice.html");
                 if (objOrder.OrderShipState != "Gujarat")
@@ -469,7 +475,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     foreach (var objItem in lstOrderItms)
                     {
                         // decimal InclusiveGST = Math.Round(objItem.Price - objItem.Price * (100 / (100 + objItem.GST_Per)), 2);
-                        //   decimal PreGSTPrice = Math.Round(objItem.Price - InclusiveGST, 2);
+                        // decimal PreGSTPrice = Math.Round(objItem.Price - InclusiveGST, 2);
+
                         decimal basicTotalPrice = Math.Round(objItem.Price * objItem.Qty, 2);
                         decimal SGST = Math.Round(Convert.ToDecimal(objItem.GST_Per / 2), 2);
                         decimal CGST = Math.Round(Convert.ToDecimal(objItem.GST_Per / 2), 2);
@@ -478,39 +485,44 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         decimal IGSTAmt = Math.Round(objItem.GSTAmt);
                         decimal IGST = Math.Round(Convert.ToDecimal(objItem.GST_Per));
                         decimal FinalPrice = Math.Round(basicTotalPrice + objItem.GSTAmt - objItem.Discount, 2);
+                        decimal TaxableAmt = Math.Round(basicTotalPrice + objItem.Discount, 2);
                         TotalFinal = TotalFinal + FinalPrice;
                         srBuild.Append("<tr>");
                         srBuild.Append("<td>" + cntsrNo + "</td>");
                         srBuild.Append("<td>" + objItem.ItemName + "</td>");
                         srBuild.Append("<td>" + objItem.HSNCode + "</td>");
                         srBuild.Append("<td class=\"text-center\">" + objItem.Qty + "</td>");
+                        srBuild.Append("<td class=\"text-center\">" + objItem.VariantQtytxt + "</td>");
                         srBuild.Append("<td class=\"text-center\">" + objItem.Price + "</td>");
                         srBuild.Append("<td class=\"text-center\">" + basicTotalPrice + "</td>");
                         srBuild.Append("<td class=\"text-center\">" + objItem.Discount + "</td>");
-                        if (objOrder.OrderShipState != "Gujarat")
-                        {
-                            srBuild.Append("<td class=\"text-center\">" + IGST + "</td>");
-                            srBuild.Append("<td class=\"text-center\">" + IGSTAmt + "</td>");
-                        }
-                        else
-                        {
-                            srBuild.Append("<td class=\"text-center\">" + CGST + "</td>");
-                            srBuild.Append("<td class=\"text-center\">" + CGSTAmt + "</td>");
-                            srBuild.Append("<td class=\"text-center\">" + SGST + "</td>");
-                            srBuild.Append("<td class=\"text-center\">" + SGSTAmt + "</td>");
+                        srBuild.Append("<td class=\"text-center\">" + TaxableAmt + "</td>");
 
-                        }
+                        //if (objOrder.OrderShipState != "Gujarat")
+                        //{
+                        //    srBuild.Append("<td class=\"text-center\">" + IGST + "</td>");
+                        //    srBuild.Append("<td class=\"text-center\">" + IGSTAmt + "</td>");
+                        //}
+                        //else
+                        //{
+                        //    srBuild.Append("<td class=\"text-center\">" + CGST + "</td>");
+                        //    srBuild.Append("<td class=\"text-center\">" + CGSTAmt + "</td>");
+                        //    srBuild.Append("<td class=\"text-center\">" + SGST + "</td>");
+                        //    srBuild.Append("<td class=\"text-center\">" + SGSTAmt + "</td>");
+
+                        //}
+
+                        srBuild.Append("<td class=\"text-center\">" + Convert.ToDecimal(objItem.GST_Per).ToString("0.##") + "%</td>");
                         srBuild.Append("<td class=\"text-center\">" + Math.Round(FinalPrice, 2) + "</td>");
                         srBuild.Append("</tr>");
                         cntsrNo = cntsrNo + 1;
-
-
+                         
                     }
                 }
                 SubTotal = TotalFinal;
-                TotalFinal = TotalFinal + objOrder.ShipmentCharge;
+                TotalFinal = TotalFinal + objOrder.ShipmentCharge + objOrder.ExtraAmount;
                 ItemHtmls = srBuild.ToString();
-                newhtmldata = htmldata.Replace("--INVOICENO--", InvoiceNo).Replace("--INVOICEDATE--", DateOfInvoice).Replace("--ORDERNO--", orderNo).Replace("--CLIENTUSERNAME--", ClientUserName).Replace("--CLIENTUSERADDRESS--", objOrder.ClientAddress).Replace("--CLIENTUSEREMAIL--", objOrder.ClientEmail).Replace("--CLIENTUSERMOBILE--", objOrder.ClientMobileNo).Replace("--ITEMLIST--", ItemHtmls).Replace("--SHIPPING--", Math.Round(objOrder.ShipmentCharge, 2).ToString()).Replace("--SUBTOTAL--", Math.Round(SubTotal, 2).ToString()).Replace("--TOTAL--", Math.Round(TotalFinal, 2).ToString());
+                newhtmldata = htmldata.Replace("--INVOICENO--", InvoiceNo).Replace("--INVOICEDATE--", DateOfInvoice).Replace("--ORDERNO--", orderNo).Replace("--CLIENTUSERNAME--", ClientUserName).Replace("--CLIENTUSERADDRESS--", objOrder.ClientAddress).Replace("--CLIENTUSEREMAIL--", objOrder.ClientEmail).Replace("--CLIENTUSERMOBILE--", objOrder.ClientMobileNo).Replace("--ITEMLIST--", ItemHtmls).Replace("--SHIPPING--", Math.Round(objOrder.ShipmentCharge, 2).ToString()).Replace("--SUBTOTAL--", Math.Round(SubTotal, 2).ToString()).Replace("--TOTAL--", Math.Round(TotalFinal, 2).ToString()).Replace("--EXTRAAMOUNT--", Math.Round(objOrder.ExtraAmount, 2).ToString());
 
             }
 

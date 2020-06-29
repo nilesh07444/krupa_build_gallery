@@ -4019,6 +4019,10 @@
     <Content Include="Areas\Admin\Views\AvailablePincode\Add.cshtml" />
     <Content Include="Areas\Admin\Views\AvailablePincode\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Agent\Users.cshtml" />
+    <Content Include="Documents\CategoryImportSample.xlsx" />
+    <Content Include="Documents\ItemImportSample.xlsx" />
+    <Content Include="Documents\ProductImportSample.xlsx" />
+    <Content Include="Documents\SubProductImportSample.xlsx" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />
@@ -4037,6 +4041,9 @@
     <Content Include="Scripts\lightbox.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\prism.min.js" />
+    <Content Include="templates\Invoice.html" />
+    <Content Include="templates\InvoiceIGST.html" />
+    <Content Include="templates\ReceiptLatest.html" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
