@@ -787,26 +787,6 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                             continue;
                                         }
                                         long ProdId = objProduExist.Product_Id;
-                                        var existProductItem = _db.tbl_ProductItems.Where(x => x.ItemName.ToLower() == ItemName.ToLower()
-                        && x.CategoryId == CatId && x.ProductId == ProdId
-                        && !x.IsDelete).FirstOrDefault();
-
-                                        if (existProductItem != null)
-                                        {
-                                            ImportExcelDataVM objimport = new ImportExcelDataVM();
-                                            objimport.SrNo = srno;
-                                            objimport.ErrorMsg = "Item already exist";
-                                            lstImportExcl.Add(objimport);
-                                            tbl_ImportExcel objtblex = new tbl_ImportExcel();
-                                            objtblex.SrNo = srno.ToString();
-                                            objtblex.ErroMsg = objimport.ErrorMsg;
-                                            objtblex.ImportedDate = DateTime.UtcNow;
-                                            objtblex.ImportedBy = clsAdminSession.UserID;
-                                            objtblex.ImportType = 4;
-                                            _db.tbl_ImportExcel.Add(objtblex);
-                                            _db.SaveChanges();
-                                            continue;
-                                        }
 
                                         long SubProductId = 0;
                                         if (!string.IsNullOrEmpty(SubProductName))
@@ -847,6 +827,30 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                             _db.SaveChanges();
                                             continue;
                                         }
+
+                                        
+
+                                        var existProductItem = _db.tbl_ProductItems.Where(x => x.ItemName.ToLower() == ItemName.ToLower()
+                        && x.CategoryId == CatId && x.ProductId == ProdId && x.SubProductId == SubProductId
+                        && !x.IsDelete).FirstOrDefault();
+
+                                        if (existProductItem != null)
+                                        {
+                                            ImportExcelDataVM objimport = new ImportExcelDataVM();
+                                            objimport.SrNo = srno;
+                                            objimport.ErrorMsg = "Item already exist";
+                                            lstImportExcl.Add(objimport);
+                                            tbl_ImportExcel objtblex = new tbl_ImportExcel();
+                                            objtblex.SrNo = srno.ToString();
+                                            objtblex.ErroMsg = objimport.ErrorMsg;
+                                            objtblex.ImportedDate = DateTime.UtcNow;
+                                            objtblex.ImportedBy = clsAdminSession.UserID;
+                                            objtblex.ImportType = 4;
+                                            _db.tbl_ImportExcel.Add(objtblex);
+                                            _db.SaveChanges();
+                                            continue;
+                                        }
+
 
                                         var objGown = _db.tbl_Godown.Where(o => o.GodownName.ToLower() == GodownName && o.IsDeleted == false).FirstOrDefault();
                                         if (objGown == null)
