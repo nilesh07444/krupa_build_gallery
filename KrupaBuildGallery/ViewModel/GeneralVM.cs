@@ -35,5 +35,8 @@ namespace KrupaBuildGallery
         public string Ratings { get; set; }
         public string Reviews { get; set; }
 
+        public string TotalWalletAmt { get; set; }
+        public string TotalPoints { get; set; }
+
     }
 }

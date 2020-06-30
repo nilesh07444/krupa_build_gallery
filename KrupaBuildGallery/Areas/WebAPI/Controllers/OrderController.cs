@@ -972,7 +972,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                     tbl_ProductItems objprod = _db.tbl_ProductItems.Where(o => o.ProductItemId == objOrderItm.ProductItemId).FirstOrDefault();
                                     decimal shipcharge = Math.Round(objOrderItm.Qty.Value * objprod.ShippingCharge.Value,2);
                                     decimal extramtt = objrd.ExtraAmount.HasValue ? objrd.ExtraAmount.Value : 0;
-                                    if (IsExtrapaid == false && objrd.IsExtraAmountReceived == false)
+                                    bool IsExtramtrec = objrd.IsExtraAmountReceived.HasValue ? objrd.IsExtraAmountReceived.Value : false;
+                                    if (IsExtrapaid == false && IsExtramtrec == false)
                                     {                                       
                                         objj.AmountToReceived = shipcharge + objOrderItm.FinalItemPrice + extramtt;
                                     }
@@ -984,7 +985,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                 else if(objrd.IsCashOnDelivery == true && objrd.OrderShipPincode != "389001")
                                 {
                                     decimal extramtt = objrd.ExtraAmount.HasValue ? objrd.ExtraAmount.Value : 0;
-                                    if (IsExtrapaid == false && objrd.IsExtraAmountReceived == false)
+                                    bool IsExtramtrec = objrd.IsExtraAmountReceived.HasValue ? objrd.IsExtraAmountReceived.Value : false;
+                                    if (IsExtrapaid == false && IsExtramtrec == false)
                                     {
                                         objj.AmountToReceived =  objOrderItm.FinalItemPrice + extramtt;
                                     }

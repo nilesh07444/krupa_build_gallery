@@ -233,5 +233,41 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             return response;
 
         }
+
+        [Route("ProfileInfo"), HttpPost]
+        public ResponseDataModel<GeneralVM> ProfileInfo(GeneralVM objGeneralVM)
+        {
+            ResponseDataModel<GeneralVM> response = new ResponseDataModel<GeneralVM>();
+            GeneralVM objGenVm = new GeneralVM();
+            try
+            {
+                long userid = Convert.ToInt64(objGeneralVM.ClientUserId);
+                objGenVm.ClientUserId = Convert.ToString(userid);
+                if (userid > 0)
+                {
+                    tbl_ClientUsers objClientUser = _db.tbl_ClientUsers.Where(o => o.ClientUserId == userid).FirstOrDefault();
+                    decimal waltamt = objClientUser.WalletAmt.HasValue ? objClientUser.WalletAmt.Value : 0;
+                    DateTime dtNow = DateTime.UtcNow;
+                    List<tbl_PointDetails> lstpoints = _db.tbl_PointDetails.Where(o => o.ClientUserId == userid && o.ExpiryDate >= dtNow && o.Points.Value > o.UsedPoints.Value).ToList().OrderBy(x => x.ExpiryDate).ToList();
+                    decimal pointreamining = 0;
+                    if (lstpoints != null && lstpoints.Count() > 0)
+                    {
+                        pointreamining = lstpoints.Sum(x => (x.Points - x.UsedPoints).Value);
+                    }
+                    objGenVm.TotalWalletAmt = Convert.ToString(waltamt);
+                    objGenVm.TotalPoints = Convert.ToString(pointreamining);                    
+                }
+                response.Data = objGenVm;
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+
     }
 }
