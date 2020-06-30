@@ -32,7 +32,7 @@ namespace KrupaBuildGallery
         public string TotalDeliveredItem { get; set; }
         public decimal AmountDecmal { get; set; }
         public string Id { get; set; }
-        public string Ratings { get;set }
+        public string Ratings { get; set; }
         public string Reviews { get; set; }
 
     }

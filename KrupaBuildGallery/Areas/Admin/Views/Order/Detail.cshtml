@@ -509,12 +509,16 @@
             alert("Please Enter displatch time");
             return;
         }
+        
+        $("#changestatustoconfirmed").modal("hide");
+        StartLoading();
         var URL = '/Admin/Order/ChangeOrderStatus';
         jQuery.ajax({
             type: 'POST',
             async: true,
             url: URL + "?OrderId=" + $("#changestatustoconfirmed  #orderidshdn").val() + "&Status=" + $("#changestatustoconfirmed #statusids").val() + "&Dispatchtime=" + $("#changestatustoconfirmed #txtdys").val(),
             success: function (result) {
+                StopLoading();
                 alert("Order Status Change to Confirmed");
                 $("#changestatustoconfirmed").modal("hide");
                 $("#btnChangeOrderStatustoconfirm").hide();
@@ -523,6 +527,7 @@
                   location.reload();
             },
             error: function (error) {
+                StopLoading();
                 console.log("error");
                 alert(error);
               $("#changestatustoconfirmed").modal("hide");
@@ -532,6 +537,9 @@
     });
 
     jQuery(document).on("click", "#savestatustodispatched", function () {
+        
+        $("#changestatustodisplatched").modal("hide");
+        StartLoading();
 
         var URL = '/Admin/Order/ChangeOrderStatus';
         jQuery.ajax({
@@ -539,6 +547,7 @@
             async: true,
             url: URL + "?OrderId=" + $("#changestatustodisplatched  #orderidshdn").val() + "&Status=" + $("#changestatustodisplatched #statusids").val() + "&Dispatchtime=" + $("#changestatustodisplatched #txtdys").val(),
             success: function (result) {
+                StopLoading();
                 alert("Order Status Change to Dispatched");
                  $("#changestatustodisplatched").modal("hide");
                 $("#dvorderstatus").html("Dispatched");
@@ -547,7 +556,7 @@
             },
             error: function (resultData) {
                 console.log("error");
-
+                StopLoading();
             }
         });
 
@@ -558,12 +567,17 @@
             alert("Please Enter Valid Shipping Charge");
             return;
         }
+
+        $("#setshipchargemodal").modal("hide");
+        StartLoading();
+
         var URL = '/Admin/Order/SetShipCharge';
         jQuery.ajax({
             type: 'POST',
             async: true,
              url: URL + "?OrderId=" + $("#setshipchargemodal  #orderids").val() + "&ShippingCharge=" + $("#txtshipchrg").val(),
             success: function (result) {
+                StopLoading();
                 alert("Shipping Charge Set Successfully...");
                 $("#setshipchargemodal").modal("hide");
                 $("#btnSetShippingCharge").hide();
@@ -571,7 +585,7 @@
             },
             error: function (resultData) {
                 console.log("error");
-
+                StopLoading();
             }
         });
 
