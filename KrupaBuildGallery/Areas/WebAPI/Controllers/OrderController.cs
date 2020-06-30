@@ -1155,7 +1155,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     objrt = new tbl_ReviewRating();
                     objrt.OrderDetailId = OrdrDtlid;
                     objrt.ProductItemId = objItms.ProductItemId;
-                    objrt.ClientUserId = clsClientSession.UserID;
+                    objrt.ClientUserId = UserId;
                     objrt.Rating = Convert.ToDecimal(Ratings);
                     objrt.Review = Reviews;
                     objrt.CreatedDate = DateTime.UtcNow;
