@@ -23,5 +23,6 @@ namespace KrupaBuildGallery
         public decimal CashOrderAmtMax { get; set; }
         public decimal CashOrderAmtYerly { get; set; }
         public decimal AdvancePaymentAmt { get; set; }
+        public List<string> AvailablePincodes { get; set; }
     }
 }

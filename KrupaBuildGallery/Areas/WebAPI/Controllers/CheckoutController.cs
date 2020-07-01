@@ -215,6 +215,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 objChkout.YearlyOrderPlaced = Ordetotlyearly;
                 objChkout.CashOrderAmtMax = objGenralsetting.CashLimitPerOrder.Value;
                 objChkout.CashOrderAmtYerly = objGenralsetting.CashLimitPerYear.Value;
+                objChkout.AvailablePincodes = _db.tbl_AvailablePincode.Select(o => o.AvailablePincode).ToList();
                 response.Data = objChkout;
             }
             catch (Exception ex)
@@ -1458,6 +1459,25 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
 
             return response;
         }
+
+        [Route("AvailablePincode"), HttpPost]
+        public ResponseDataModel<List<String>> AvailablePincode(GeneralVM objGen)
+        {
+            ResponseDataModel<List<String>> response = new ResponseDataModel<List<String>>();
+            List<String> lstpincodes = new List<String>();
+            try
+            {
+                lstpincodes = _db.tbl_AvailablePincode.Select(o => o.AvailablePincode).ToList();
+                response.Data = lstpincodes;
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+        }        
 
     }
 }

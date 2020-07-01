@@ -29,6 +29,13 @@
 
     if ($("#rzp-placeorder").length > 0) {
         $(document).off('click').on('click', '#rzp-placeorder', function (e) {       
+            if (lstpincodesstr != null && lstpincodesstr.length > 0) {
+                var pincodd = $("input[name=shippincode]").val();
+                if ($("input[name=shippincode]").val() != "" && lstpincodesstr.indexOf(pincodd.trim()) < 0) {
+                    alert("Currently delivery not available to this pincode "+pincodd);
+                    return false;
+                }
+            }
             if ($("#isCashondelivery").length > 0 && $("#isCashondelivery").val() == "True") {
                 var ord = parseFloat($("#Orderamout").val());
                 if ($("#cashlimitoforder").length > 0) {

@@ -12,8 +12,9 @@
     string iscashondelivery = Convert.ToString(ViewBag.IsCashOnDelivery);
     decimal AdvancePaymentWithoutShip = Convert.ToDecimal(ViewBag.AdvancePaymentAmt);
     decimal AdvancePaymentWithShip = Convert.ToDecimal(ViewBag.AdvancePaymentAmt) + Convert.ToDecimal(ViewBag.ShippingChargeTotal);
-     decimal extramt = Convert.ToDecimal(ViewBag.ExtraAmt);
+    decimal extramt = Convert.ToDecimal(ViewBag.ExtraAmt);
     TotalOrderamtt = TotalOrderamtt + extramt;
+    List<String> lstPincodes = ViewData["availablepincode"] as List<String>;
 }
 <style>
     .errorcls {
@@ -480,7 +481,8 @@
 
 </div>
 <script>
-    var strstate = '@objClientOther.ShipState'
+    var strstate = '@objClientOther.ShipState';
+       var lstpincodesstr = @Html.Raw(Json.Encode(lstPincodes));
     $("#shipstate").val(strstate);
     $(document).ready(function () {
         var amt = $("#Orderamout").val();

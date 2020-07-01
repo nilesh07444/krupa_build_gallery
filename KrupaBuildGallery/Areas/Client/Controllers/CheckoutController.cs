@@ -256,7 +256,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             ViewBag.ShippingMsg = objGenralsetting.ShippingMessage;
             ViewBag.CashOrderAmtMax = objGenralsetting.CashLimitPerOrder;
             ViewBag.CashOrderAmtYerly = objGenralsetting.CashLimitPerYear;
-            
+            ViewData["availablepincode"] = _db.tbl_AvailablePincode.Select(o => o.AvailablePincode).ToList();
             return View();
         }
 
@@ -1267,6 +1267,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 ViewBag.IsCashOnDelivery = IsCashOrd;
                 string GuidNew = Guid.NewGuid().ToString();
                 string cookiesessionval = "";
+                ViewData["availablepincode"] = _db.tbl_AvailablePincode.Select(o => o.AvailablePincode).ToList();
                 if (Request.Cookies["sessionkeyval"] != null)
                 {
                     cookiesessionval = Request.Cookies["sessionkeyval"].Value;

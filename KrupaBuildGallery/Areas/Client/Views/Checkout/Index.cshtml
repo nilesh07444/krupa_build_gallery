@@ -13,6 +13,7 @@
     
     decimal extramt = Convert.ToDecimal(ViewBag.ExtraAmt);
     TotalOrderamtt = TotalOrderamtt + extramt;
+    List<String> lstPincodes = ViewData["availablepincode"] as List<String>;
 }
 <style>
     .errorcls {
@@ -482,7 +483,8 @@
 
 </div>
 <script>
-    var strstate = '@objClientOther.ShipState'
+    var strstate = '@objClientOther.ShipState';
+    var lstpincodesstr = @Html.Raw(Json.Encode(lstPincodes));
     $("#shipstate").val(strstate);
     $(document).ready(function () {
         var amt = $("#Orderamout").val();
@@ -521,7 +523,7 @@
         $("#checkoutdetails").modal("show");
     }
 
-    function pincodechange() {    
+    function pincodechange() {
         if ($("input[name=shippincode]").val() != '' && $("input[name=shippincode]").val().length != 6) {
             alert("Please Enter Valid Postalcode");
             return;
@@ -569,8 +571,8 @@
 
         var amt = $("#Orderamout").val();
         if ($("#isCashondelivery").val() != "True") {
-            $("input[name=payment-group]").prop("checked", false).trigger("change"); 
-        }        
+            $("input[name=payment-group]").prop("checked", false).trigger("change");
+        }
         if ($("#Orderamout").length > 0 && amt != "" && amt != "0") {
              $.ajax({
                 url: '@Url.Action("CreateRazorPaymentOrder", "Checkout")',
@@ -590,24 +592,24 @@
         }
     }
 
-    $(document).on("change", 'input[name=payment-group]', function () {        
+    $(document).on("change", 'input[name=payment-group]', function () {
         var ordeamt = parseFloat($("#Orderamout").val());
         var wallamt = 0;
         var isfullothr = false;
         if ($("#payment-3").length > 0) {
             wallamt = parseFloat($("#payment-3").attr("data-attrblns"));
-        }        
+        }
         var credtamt = 0;
         if ($("#payment-1").length > 0) {
            credtamt = parseFloat($("#payment-1").attr("data-attrblns"));
         }
-        
+
         if ($(this).val() == "Bywallet" && $(this).is(":checked")) {
             if (parseFloat($(this).attr("data-attrblns")) >= ordeamt) {
-                $("input[name=payment-group]").not(this).prop("checked", false);         
+                $("input[name=payment-group]").not(this).prop("checked", false);
                 isfullothr = true;
                 $("#onlinepymt").html("₹ 0");
-            }            
+            }
         }
         if ($(this).val() == "ByCredit" && $(this).is(":checked")) {
             if (parseFloat($(this).attr("data-attrblns")) >= ordeamt) {
@@ -620,11 +622,11 @@
                     $("#payment-3").prop("checked", false);
                 }
             }
-        }     
+        }
 
         if ($(this).val() == "ByOther" && $(this).is(":checked")) {
             if (parseFloat($(this).attr("data-attrblns")) == 0) {
-                $("input[name=payment-group]").not(this).prop("checked", false);                
+                $("input[name=payment-group]").not(this).prop("checked", false);
                 $("#onlinepymt").html("₹ "+ordeamt);
             }
         }
@@ -673,7 +675,7 @@
                 wltused = ordeamt;
             }
         }
-        
+
         if ($("#payment-1").length > 0 && $("#payment-1").is(":checked")) {
             amtttl = credit + amtttl;
             if (credit < reminord) {
@@ -683,16 +685,16 @@
                 credtused = reminord;
             }
         }
-        
+
         var onlinpy = ordeamt - amtttl;
         if(onlinpy < 0) {
-           
+
         }
         $("#walletamtinorder").val(wltused.toFixed(2));
         $("#creditamtinorder").val(credtused.toFixed(2));
         $("#crdttused").html("₹" + credtused.toFixed(2));
         $("#wltamtused").html("₹" + wltused.toFixed(2));
-        
+
         return onlinpy.toFixed(2);
     }
 </script>
