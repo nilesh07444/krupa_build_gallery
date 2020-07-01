@@ -431,7 +431,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 {
                     long LoggedInUserId = Int64.Parse(clsAdminSession.UserID.ToString());
                     var existProductItem = _db.tbl_ProductItems.Where(x => x.ProductItemId != productItemVM.ProductItemId && x.ItemName.ToLower() == productItemVM.ItemName.ToLower()
-                      && x.CategoryId == productItemVM.CategoryId && x.ProductId == productItemVM.ProductId
+                      && x.CategoryId == productItemVM.CategoryId && x.ProductId == productItemVM.ProductId && x.SubProductId == productItemVM.SubProductId
                       && !x.IsDelete).FirstOrDefault();
 
                     if (existProductItem != null)

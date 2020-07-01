@@ -111,7 +111,7 @@
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.ItemDescription, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
 
-                                @Html.TextAreaFor(model => model.ItemDescription, new { @class = "form-control col-md-8", @placeholder = "Enter Item Description", maxlength = "200", cols = 35, @rows = 4, @style = "width:600px;height:80px;" })
+                                @Html.TextAreaFor(model => model.ItemDescription, new { @class = "form-control col-md-8", @placeholder = "Enter Item Description", maxlength = "10000", cols = 35, @rows = 4, @style = "width:600px;height:80px;" })
 
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.ItemDescription, "", new { @class = "text-danger" })
