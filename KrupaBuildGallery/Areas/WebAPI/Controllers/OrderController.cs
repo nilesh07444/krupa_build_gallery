@@ -1056,6 +1056,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             try
             {
                 long orderid = Convert.ToInt64(objOtpVM.OrderId);
+                string GetCashMessage = objOtpVM.PriceString;
                 var objOrder = _db.tbl_Orders.Where(o => o.OrderId == orderid).FirstOrDefault();
                 string mobilnumber = "";
                 if(objOrder != null)
@@ -1066,7 +1067,11 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 {
                     Random random = new Random();
                     int num = random.Next(555555, 999999);
-                    string msg = "Your OTP code for Item Delivery is " + num;
+                    if(!string.IsNullOrEmpty(GetCashMessage))
+                    {
+                        GetCashMessage = "Please Give Cash" + GetCashMessage + " And ";
+                    }
+                    string msg = GetCashMessage+"Your OTP code for Item Delivery is " + num;
                     string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + mobilnumber + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
                     var json = webClient.DownloadString(url);
                     if (json.Contains("invalidnumber"))

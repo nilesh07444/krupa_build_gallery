@@ -696,8 +696,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
 
         public ActionResult Offer()
         {
-            List<ProductItemVM> lstOfferItems = new List<ProductItemVM>();
-            List<long> wishlistitemsId = new List<long>();
+            List<ProductItemVM> lstOfferItems = new List<ProductItemVM>();         
 
             try
             {
@@ -727,6 +726,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
 
                 if (clsClientSession.UserID != 0)
                 {
+                    List<long> wishlistitemsId = _db.tbl_WishList.Where(o => o.ClientUserId == clsClientSession.UserID).Select(o => o.ItemId.Value).ToList();
                     lstOfferItems.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); x.Ratings = GetRatingOfItem(x.ProductItemId, lstRatings); });
                 }
                 else

@@ -14,5 +14,7 @@ namespace KrupaBuildGallery
         public string UserType { get; set; }
 
         public string OrderId { get; set; }
+
+        public string PriceString { get; set; }
     }
 }

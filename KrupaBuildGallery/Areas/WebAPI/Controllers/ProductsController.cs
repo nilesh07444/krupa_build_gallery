@@ -1,4 +1,5 @@
-﻿using KrupaBuildGallery.Model;
+﻿using KrupaBuildGallery.Helper;
+using KrupaBuildGallery.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -402,7 +403,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
         {
             ResponseDataModel<HomePageVM> response = new ResponseDataModel<HomePageVM>();
             HomePageVM objHome = new HomePageVM();
-            List<ProductItemVM> lstNewProductItem = new List<ProductItemVM>();
+            List<ProductItemVM> lstUnpackProductItem = new List<ProductItemVM>();
             List<ProductItemVM> lstPopularProductItem = new List<ProductItemVM>();
             List<ProductItemVM> lstOfferItems = new List<ProductItemVM>();
             List<long> wishlistitemsId = new List<long>();
@@ -411,32 +412,36 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 long UserId = Convert.ToInt64(objGen.ClientUserId);
                 long RoleId = Convert.ToInt64(objGen.RoleId);
                 long subproductid = Convert.ToInt64(objGen.SubProductId);
-                lstNewProductItem = (from i in _db.tbl_ProductItems
-                                     where !i.IsDelete && i.IsActive == true && i.IsPopularProduct == false
-                                     select new ProductItemVM
-                                     {
-                                         ProductItemId = i.ProductItemId,
-                                         ProductId = i.ProductId,
-                                         SubProductId = i.SubProductId,
-                                         ItemName = i.ItemName,
-                                         MainImage = i.MainImage,
-                                         MRPPrice = i.MRPPrice,
-                                         CustomerPrice = i.CustomerPrice,
-                                         DistributorPrice = i.DistributorPrice,
-                                         IsActive = i.IsActive,
-                                         CreatedDate = i.CreatedDate
-                                     }).OrderByDescending(x => x.CreatedDate).ToList().Take(10).ToList();
+                if(UserId != 0)
+                {
+                    wishlistitemsId = _db.tbl_WishList.Where(o => o.ClientUserId == UserId).Select(o => o.ItemId.Value).ToList();
+                }
+                lstUnpackProductItem = (from i in _db.tbl_ProductItems
+                                        where !i.IsDelete && i.IsActive == true && i.ItemType == (int)ItemTypes.UnPackedItem
+                                        select new ProductItemVM
+                                        {
+                                            ProductItemId = i.ProductItemId,
+                                            ProductId = i.ProductId,
+                                            SubProductId = i.SubProductId,
+                                            ItemName = i.ItemName,
+                                            MainImage = i.MainImage,
+                                            MRPPrice = i.MRPPrice,
+                                            CustomerPrice = i.CustomerPrice,
+                                            DistributorPrice = i.DistributorPrice,
+                                            IsActive = i.IsActive,
+                                            CreatedDate = i.CreatedDate,
+                                            IsCashonDelieveryuse = i.IsCashonDeliveryUse.HasValue ? i.IsCashonDeliveryUse.Value : false
+                                        }).OrderByDescending(x => x.CreatedDate).ToList().Take(8).ToList();
 
                 if (UserId != 0)
-                {                   
-                    wishlistitemsId = _db.tbl_WishList.Where(o => o.ClientUserId == UserId).Select(o => o.ItemId.Value).ToList();
-                    lstNewProductItem.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
+                {
+                    lstUnpackProductItem.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice);});
                 }
                 else
                 {
-                    lstNewProductItem.ForEach(x => { x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
+                    lstUnpackProductItem.ForEach(x => { x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice);});
                 }
-
+             
                 lstPopularProductItem = (from i in _db.tbl_ProductItems
                                          where !i.IsDelete && i.IsActive == true && i.IsPopularProduct == true
                                          select new ProductItemVM
@@ -493,9 +498,19 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 {
                     lstOfferItems.ForEach(x => { x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
                 }
+
+                List<CategoryVM> lstCategory = (from c in _db.tbl_Categories
+                                                where !c.IsDelete && c.IsActive
+                                                select new CategoryVM
+                                                {
+                                                    CategoryId = c.CategoryId,
+                                                    CategoryName = c.CategoryName,
+                                                    CategoryImage = c.CategoryImage
+                                                }).OrderByDescending(x => x.CategoryId).ToList().Take(9).ToList();
                 objHome.PopularProducts = lstPopularProductItem;
-                objHome.NewArrivalProducts = lstNewProductItem;
+                objHome.UnPackedItems = lstUnpackProductItem;
                 objHome.OfferProducts = lstOfferItems;
+                objHome.Categories = lstCategory;
                 objHome.HomePageSlider = GetHomeImages();
                 response.Data = objHome;
 
@@ -604,5 +619,243 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             return rating;
         }
 
+        [Route("PopularItems"), HttpPost]
+        public ResponseDataModel<List<ProductItemVM>> PopularItems(GeneralVM objGen)
+        {
+            ResponseDataModel<List<ProductItemVM>> response = new ResponseDataModel<List<ProductItemVM>>();
+            List<ProductItemVM> lstProductItem = new List<ProductItemVM>();
+            try
+            {
+                long UserId = Convert.ToInt64(objGen.ClientUserId);
+                long RoleId = Convert.ToInt64(objGen.RoleId);              
+                lstProductItem = (from i in _db.tbl_ProductItems
+                                  where !i.IsDelete && i.IsActive == true && i.IsPopularProduct == true
+                                  select new ProductItemVM
+                                  {
+                                      ProductItemId = i.ProductItemId,
+                                      ProductId = i.ProductId,
+                                      SubProductId = i.SubProductId,
+                                      ItemName = i.ItemName,
+                                      MainImage = i.MainImage,
+                                      MRPPrice = i.MRPPrice,
+                                      CustomerPrice = i.CustomerPrice,
+                                      DistributorPrice = i.DistributorPrice,
+                                      IsActive = i.IsActive
+                                  }).OrderBy(x => x.ItemName).ToList();
+
+                if (UserId != 0)
+                {
+                    List<long> wishlistitemsId = _db.tbl_WishList.Where(o => o.ClientUserId == UserId).Select(o => o.ItemId.Value).ToList();
+                    lstProductItem.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
+                }
+                else
+                {
+                    lstProductItem.ForEach(x => { x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
+                }
+
+                if (objGen.SortBy == "1")
+                {
+                    if (UserId == 0 || RoleId == 1)
+                    {
+                        lstProductItem = lstProductItem.OrderBy(o => o.CustomerPrice).ToList();
+                    }
+                    else
+                    {
+                        lstProductItem = lstProductItem.OrderBy(o => o.DistributorPrice).ToList();
+                    }
+                }
+                else if (objGen.SortBy == "2")
+                {
+                    if (UserId == 0 || RoleId == 1)
+                    {
+                        lstProductItem = lstProductItem.OrderByDescending(o => o.CustomerPrice).ToList();
+                    }
+                    else
+                    {
+                        lstProductItem = lstProductItem.OrderByDescending(o => o.DistributorPrice).ToList();
+                    }
+                }
+                else if (objGen.SortBy == "3")
+                {
+                    lstProductItem = lstProductItem.OrderBy(o => o.ItemName).ToList();
+                }
+                else if (objGen.SortBy == "4")
+                {
+                    lstProductItem = lstProductItem.OrderByDescending(o => o.ItemName).ToList();
+                }
+                response.Data = lstProductItem;
+
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+
+        [Route("UnPackedItems"), HttpPost]
+        public ResponseDataModel<List<ProductItemVM>> UnPackedItems(GeneralVM objGen)
+        {
+            ResponseDataModel<List<ProductItemVM>> response = new ResponseDataModel<List<ProductItemVM>>();
+            List<ProductItemVM> lstProductItem = new List<ProductItemVM>();
+            try
+            {
+                long UserId = Convert.ToInt64(objGen.ClientUserId);
+                long RoleId = Convert.ToInt64(objGen.RoleId);
+                lstProductItem = (from i in _db.tbl_ProductItems
+                                  where !i.IsDelete && i.IsActive == true && i.ItemType == (int)ItemTypes.UnPackedItem
+                                  select new ProductItemVM
+                                  {
+                                      ProductItemId = i.ProductItemId,
+                                      ProductId = i.ProductId,
+                                      SubProductId = i.SubProductId,
+                                      ItemName = i.ItemName,
+                                      MainImage = i.MainImage,
+                                      MRPPrice = i.MRPPrice,
+                                      CustomerPrice = i.CustomerPrice,
+                                      DistributorPrice = i.DistributorPrice,
+                                      IsActive = i.IsActive
+                                  }).OrderBy(x => x.ItemName).ToList();
+
+                if (UserId != 0)
+                {
+                    List<long> wishlistitemsId = _db.tbl_WishList.Where(o => o.ClientUserId == UserId).Select(o => o.ItemId.Value).ToList();
+                    lstProductItem.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
+                }
+                else
+                {
+                    lstProductItem.ForEach(x => { x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
+                }
+
+                if (objGen.SortBy == "1")
+                {
+                    if (UserId == 0 || RoleId == 1)
+                    {
+                        lstProductItem = lstProductItem.OrderBy(o => o.CustomerPrice).ToList();
+                    }
+                    else
+                    {
+                        lstProductItem = lstProductItem.OrderBy(o => o.DistributorPrice).ToList();
+                    }
+                }
+                else if (objGen.SortBy == "2")
+                {
+                    if (UserId == 0 || RoleId == 1)
+                    {
+                        lstProductItem = lstProductItem.OrderByDescending(o => o.CustomerPrice).ToList();
+                    }
+                    else
+                    {
+                        lstProductItem = lstProductItem.OrderByDescending(o => o.DistributorPrice).ToList();
+                    }
+                }
+                else if (objGen.SortBy == "3")
+                {
+                    lstProductItem = lstProductItem.OrderBy(o => o.ItemName).ToList();
+                }
+                else if (objGen.SortBy == "4")
+                {
+                    lstProductItem = lstProductItem.OrderByDescending(o => o.ItemName).ToList();
+                }
+                response.Data = lstProductItem;
+
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+
+        [Route("OfferItems"), HttpPost]
+        public ResponseDataModel<List<ProductItemVM>> OfferItems(GeneralVM objGen)
+        {
+            ResponseDataModel<List<ProductItemVM>> response = new ResponseDataModel<List<ProductItemVM>>();
+            List<ProductItemVM> lstProductItem = new List<ProductItemVM>();
+            try
+            {
+                long UserId = Convert.ToInt64(objGen.ClientUserId);
+                long RoleId = Convert.ToInt64(objGen.RoleId);
+                List<long> lstOfferItemsId = new List<long>();
+                List<tbl_Offers> lstOfferss = _db.tbl_Offers.Where(o => DateTime.Now >= o.StartDate && DateTime.Now <= o.EndDate && o.IsActive == true && o.IsDelete == false).ToList();
+                if (lstOfferss != null && lstOfferss.Count() > 0)
+                {
+                    lstOfferItemsId = lstOfferss.Select(o => o.ProductItemId).Distinct().ToList();
+                }
+
+                lstProductItem = (from i in _db.tbl_ProductItems
+                                 where !i.IsDelete && i.IsActive == true && lstOfferItemsId.Contains(i.ProductItemId)
+                                 select new ProductItemVM
+                                 {
+                                     ProductItemId = i.ProductItemId,
+                                     ProductId = i.ProductId,
+                                     SubProductId = i.SubProductId,
+                                     ItemName = i.ItemName,
+                                     MainImage = i.MainImage,
+                                     MRPPrice = i.MRPPrice,
+                                     CustomerPrice = i.CustomerPrice,
+                                     DistributorPrice = i.DistributorPrice,
+                                     IsActive = i.IsActive,
+                                     CreatedDate = i.CreatedDate
+                                 }).OrderByDescending(x => x.CreatedDate).ToList();
+
+                if (UserId != 0)
+                {
+                     List<long> wishlistitemsId = _db.tbl_WishList.Where(o => o.ClientUserId == UserId).Select(o => o.ItemId.Value).ToList();
+                    lstProductItem.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice);});
+                }
+                else
+                {
+                    lstProductItem.ForEach(x => { x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice);  });
+                }
+
+                if (objGen.SortBy == "1")
+                {
+                    if (UserId == 0 || RoleId == 1)
+                    {
+                        lstProductItem = lstProductItem.OrderBy(o => o.CustomerPrice).ToList();
+                    }
+                    else
+                    {
+                        lstProductItem = lstProductItem.OrderBy(o => o.DistributorPrice).ToList();
+                    }
+                }
+                else if (objGen.SortBy == "2")
+                {
+                    if (UserId == 0 || RoleId == 1)
+                    {
+                        lstProductItem = lstProductItem.OrderByDescending(o => o.CustomerPrice).ToList();
+                    }
+                    else
+                    {
+                        lstProductItem = lstProductItem.OrderByDescending(o => o.DistributorPrice).ToList();
+                    }
+                }
+                else if (objGen.SortBy == "3")
+                {
+                    lstProductItem = lstProductItem.OrderBy(o => o.ItemName).ToList();
+                }
+                else if (objGen.SortBy == "4")
+                {
+                    lstProductItem = lstProductItem.OrderByDescending(o => o.ItemName).ToList();
+                }
+                response.Data = lstProductItem;
+
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
     }
 }

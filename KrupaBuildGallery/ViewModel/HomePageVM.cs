@@ -12,9 +12,11 @@ namespace KrupaBuildGallery
 
         public List<ProductItemVM> OfferProducts { get; set; }
 
-        public List<ProductItemVM> NewArrivalProducts { get; set; }
+        public List<ProductItemVM> UnPackedItems { get; set; }
 
         public List<HomeImageVM> HomePageSlider { get; set; }
+
+        public List<CategoryVM> Categories { get; set; }
 
 
     }
