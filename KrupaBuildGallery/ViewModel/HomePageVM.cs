@@ -18,6 +18,6 @@ namespace KrupaBuildGallery
 
         public List<CategoryVM> Categories { get; set; }
 
-
+        public List<AdvertiseImageVM> lstAds { get; set; }
     }
 }

@@ -507,10 +507,22 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                                     CategoryName = c.CategoryName,
                                                     CategoryImage = c.CategoryImage
                                                 }).OrderByDescending(x => x.CategoryId).ToList().Take(9).ToList();
+
+                List<AdvertiseImageVM> lstAdvertiseImages = new List<AdvertiseImageVM>();
+                // Get Advertise Images
+                lstAdvertiseImages = (from c in _db.tbl_AdvertiseImages
+                                      where !c.IsDeleted && c.IsActive
+                                      select new AdvertiseImageVM
+                                      {
+                                          AdvertiseImageId = c.AdvertiseImageId,
+                                          ImageUrl = c.AdvertiseImage
+                                      }).OrderByDescending(x => x.AdvertiseImageId).ToList();
+
                 objHome.PopularProducts = lstPopularProductItem;
                 objHome.UnPackedItems = lstUnpackProductItem;
                 objHome.OfferProducts = lstOfferItems;
                 objHome.Categories = lstCategory;
+                objHome.lstAds = lstAdvertiseImages;
                 objHome.HomePageSlider = GetHomeImages();
                 response.Data = objHome;
 

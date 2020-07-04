@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Runtime.Remoting.Metadata.W3cXsd2001;
 using System.Security.AccessControl;
 using System.Web;
 using System.Web.Http;
@@ -1172,6 +1173,33 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 {
                     objrt.Rating = Convert.ToDecimal(Ratings);
                     objrt.Review = Reviews;
+                }
+                _db.SaveChanges();
+
+                response.Data = "Success";
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+
+        [Route("UpdateOrderShipMobileNumber"), HttpPost]
+        public ResponseDataModel<string> UpdateOrderShipMobileNumber(GeneralVM objGen)
+        {
+            ResponseDataModel<string> response = new ResponseDataModel<string>();
+            try
+            {
+                long OrderId = Convert.ToInt64(objGen.OrderId);
+                string MobileNumber = Convert.ToString(objGen.MobileNumber);
+                tbl_Orders objOrdr = _db.tbl_Orders.Where(o => o.OrderId == OrderId).FirstOrDefault();
+                if(objOrdr != null)
+                {
+                    objOrdr.OrderShipClientPhone = MobileNumber;
                 }
                 _db.SaveChanges();
 

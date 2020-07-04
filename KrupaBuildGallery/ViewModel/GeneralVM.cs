@@ -38,5 +38,7 @@ namespace KrupaBuildGallery
         public string TotalWalletAmt { get; set; }
         public string TotalPoints { get; set; }
 
+        public string MobileNumber { get; set; }
+
     }
 }
