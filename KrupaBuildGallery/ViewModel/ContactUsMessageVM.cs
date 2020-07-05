@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace KrupaBuildGallery.ViewModel
+namespace KrupaBuildGallery
 {
     public class ContactUsMessageVM
     {

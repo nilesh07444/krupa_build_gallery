@@ -146,10 +146,10 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
 
             // Get website statistics data
             var ClientUserData = _db.tbl_ClientUsers.Where(x => !x.IsDelete && x.IsActive).ToList();
-            objStatistics.TotalCustomers = ClientUserData.Where(x => x.ClientRoleId == (int)ClientRoles.Customer).ToList().Count + 500;
-            objStatistics.TotalDistributers = ClientUserData.Where(x => x.ClientRoleId == (int)ClientRoles.Distributor).ToList().Count + 200;
-            objStatistics.TotalHappyCustomers = _db.tbl_HappyCustomers.Where(x => !x.IsDelete && x.IsActive).ToList().Count + 400;
-            objStatistics.TotalSiteVisitors = 1548;
+            objStatistics.TotalCustomers = ClientUserData.Where(x => x.ClientRoleId == (int)ClientRoles.Customer).ToList().Count;
+            objStatistics.TotalDistributers = ClientUserData.Where(x => x.ClientRoleId == (int)ClientRoles.Distributor).ToList().Count;
+            objStatistics.TotalHappyCustomers = _db.tbl_HappyCustomers.Where(x => !x.IsDelete && x.IsActive).ToList().Count;
+            objStatistics.TotalSiteVisitors = 500;
 
             // Get Advertise Images
             lstAdvertiseImages = (from c in _db.tbl_AdvertiseImages

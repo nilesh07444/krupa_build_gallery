@@ -2,7 +2,7 @@
 @using Newtonsoft.Json;
 @using KrupaBuildGallery.Model;
 
-@model List<KrupaBuildGallery.ViewModel.ContactUsMessageVM>
+@model List<ContactUsMessageVM>
 @{
     ViewBag.Title = "Contact Us Messages";
 
@@ -68,7 +68,7 @@
                     <tbody>
                         @if (Model != null && Model.Count > 0)
                         {
-                            foreach (KrupaBuildGallery.ViewModel.ContactUsMessageVM objcontact in Model)
+                            foreach (ContactUsMessageVM objcontact in Model)
                             {
                                 <tr class="gradeX">
                                     <td style="width:50px !important;">@counter.</td>
@@ -79,6 +79,10 @@
                                     <td>@objcontact.FromWhere</td>
                                     <td>@objcontact.MessageDate.ToString("MMM dd,yyyy")</td>
                                     <td>
+                                        @if (IsSA || objPermission.ContactRequest >= (int)ModulePermission.View)
+                                        {
+                                            <a title="View" href="/admin/category/view/@objcontact.ContactUsMsgId"><i class="fa fa-eye mr-2 font-success"></i></a>
+                                        }
                                         @if (IsSA || objPermission.ContactRequest >= (int)ModulePermission.Full)
                                         {
                                             <a href="javascript:void(0);" onclick="fnDeleteContactus('@objcontact.ContactUsMsgId');"><i class="fa fa-trash font-danger"></i></a>

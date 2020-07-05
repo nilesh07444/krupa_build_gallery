@@ -27,7 +27,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                    CategoryName = c.CategoryName,
                                    CategoryImage = c.CategoryImage,
                                    IsActive = c.IsActive
-                               }).OrderByDescending(x => x.CategoryId).ToList();
+                               }).OrderBy(x => x.CategoryName).ToList();
             }
             catch (Exception ex)
             {

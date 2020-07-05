@@ -17,7 +17,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         {
             _db = new krupagallarydbEntities();
         }
-        // GET: Admin/ContactUsMessage
+         
         public ActionResult Index()
         {
             List<ContactUsMessageVM> lstContactUsMessageVM = new List<ContactUsMessageVM>();
@@ -72,6 +72,34 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return ReturnMessage;
         }
 
-        
+        public ActionResult View(long Id)
+        {
+            ContactUsMessageVM lstContactUsMessageVM = new ContactUsMessageVM();
+
+            try
+            {
+
+                lstContactUsMessageVM = (from cu in _db.tbl_ContactFormData
+                                         where cu.ContactForm_Id == Id
+                                         select new ContactUsMessageVM
+                                         {
+                                             ContactUsMsgId = cu.ContactForm_Id,
+                                             Name = cu.Name,
+                                             MobileNumber = cu.PhoneNumber,
+                                             Email = cu.Email,
+                                             FromWhere = cu.FromWhere,
+                                             Message = cu.Message,
+                                             MessageDate = cu.MessageDate
+                                         }).FirstOrDefault();
+
+            }
+            catch (Exception ex)
+            {
+                string ErrorMessage = ex.Message.ToString();
+            }
+
+            return View(lstContactUsMessageVM);
+        }
+
     }
 }

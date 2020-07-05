@@ -4023,6 +4023,7 @@
     <Content Include="Documents\ItemImportSample.xlsx" />
     <Content Include="Documents\ProductImportSample.xlsx" />
     <Content Include="Documents\SubProductImportSample.xlsx" />
+    <Content Include="Areas\Admin\Views\ContactUsMessage\View.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />

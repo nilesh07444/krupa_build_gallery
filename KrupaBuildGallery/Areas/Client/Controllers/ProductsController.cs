@@ -629,7 +629,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                              DistributorPrice = i.DistributorPrice,
                                              IsActive = i.IsActive,
                                              CreatedDate = i.CreatedDate
-                                         }).OrderByDescending(x => x.CreatedDate).ToList();
+                                         }).OrderBy(x => x.ItemName).ToList();
                  
                 if (clsClientSession.UserID != 0)
                 {
@@ -673,7 +673,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                             DistributorPrice = i.DistributorPrice,
                                             IsActive = i.IsActive,
                                             CreatedDate = i.CreatedDate
-                                        }).OrderByDescending(x => x.CreatedDate).ToList();
+                                        }).OrderBy(x => x.ItemName).ToList();
 
                 if (clsClientSession.UserID != 0)
                 {
@@ -722,7 +722,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                      DistributorPrice = i.DistributorPrice,
                                      IsActive = i.IsActive,
                                      CreatedDate = i.CreatedDate
-                                 }).OrderByDescending(x => x.CreatedDate).ToList();
+                                 }).OrderBy(x => x.ItemName).ToList();
 
                 if (clsClientSession.UserID != 0)
                 {

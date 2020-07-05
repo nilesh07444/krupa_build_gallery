@@ -485,7 +485,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         decimal IGSTAmt = Math.Round(objItem.GSTAmt);
                         decimal IGST = Math.Round(Convert.ToDecimal(objItem.GST_Per));
                         decimal FinalPrice = Math.Round(basicTotalPrice + objItem.GSTAmt - objItem.Discount, 2);
-                        decimal TaxableAmt = Math.Round(basicTotalPrice + objItem.Discount, 2);
+                        decimal TaxableAmt = Math.Round(basicTotalPrice - objItem.Discount, 2);
                         TotalFinal = TotalFinal + FinalPrice;
                         srBuild.Append("<tr>");
                         srBuild.Append("<td>" + cntsrNo + "</td>");
