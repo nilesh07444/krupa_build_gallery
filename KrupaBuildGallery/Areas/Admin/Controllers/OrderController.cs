@@ -99,9 +99,11 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                              ShipmentCharge = p.ShippingCharge.HasValue ? p.ShippingCharge.Value : 0,
                              ShippingStatus = p.ShippingStatus.HasValue ? p.ShippingStatus.Value : 2,
                              CreditUsed = p.CreditAmountUsed.HasValue ? p.CreditAmountUsed.Value : 0,
+                             OrderAmountDue = p.AmountDue.HasValue ? p.AmountDue.Value : 0,
                              WalletAmtUsed = p.WalletAmountUsed.HasValue ? p.WalletAmountUsed.Value : 0,
                              OrderTypeId = p.OrderType.HasValue ? p.OrderType.Value : 1,
-                             ExtraAmount = p.ExtraAmount.HasValue ? p.ExtraAmount.Value : 0
+                             ExtraAmount = p.ExtraAmount.HasValue ? p.ExtraAmount.Value : 0,
+                             AdvancePay = p.AdvancePaymentRecieved.HasValue ? p.AdvancePaymentRecieved.Value : 0
                          }).OrderByDescending(x => x.OrderDate).FirstOrDefault();          
             if(objOrder != null)
             {   
@@ -226,6 +228,49 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             
             return "";
         }
+
+
+
+        [HttpPost]
+        public string SendMessageForDueAmount(long OrderId)
+        {
+            tbl_Orders objordr = _db.tbl_Orders.Where(o => o.OrderId == OrderId).FirstOrDefault();
+            clsCommon objcmn = new clsCommon();
+            if (objordr != null)
+            {              
+                long clientusrid = objordr.ClientUserId;
+                tbl_ClientUsers objclntusr = _db.tbl_ClientUsers.Where(o => o.ClientUserId == clientusrid).FirstOrDefault();
+                if (objclntusr != null)
+                {
+                    using (WebClient webClient = new WebClient())
+                    {
+
+                        string msg = "Your order no." + objordr.OrderId + ". Please pay remaining amount of order to confirm order.";
+                        string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objclntusr.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                        var json = webClient.DownloadString(url);
+                        if (json.Contains("invalidnumber"))
+                        {
+                            return "InvalidNumber";
+                        }
+                        else
+                        {
+                            if (!string.IsNullOrEmpty(objclntusr.Email))
+                            {
+                                tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
+                                string FromEmail = objGensetting.FromEmail;
+
+                                string msg1 = "Your order no." + objordr.OrderId + ". Please pay remaining amount of order to confirm order.";
+                                clsCommon.SendEmail(objclntusr.Email, FromEmail, "Your Order's Remaining Payment - Shopping & Saving", msg1);
+                            }
+                        }
+
+                    }
+                }
+
+            }
+
+            return "";
+        }        
 
         [HttpPost]
         public string SetShipCharge(long OrderId,decimal ShippingCharge)

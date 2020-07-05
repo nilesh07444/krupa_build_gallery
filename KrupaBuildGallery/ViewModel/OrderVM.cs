@@ -41,5 +41,6 @@ namespace KrupaBuildGallery.ViewModel
         public long ClientRoleId { get; set; }
         public decimal ExtraAmount { get; set; }
         public bool IsExtraAmountReceived { get; set; }
+        public decimal AdvancePay { get; set; }
     }
 }

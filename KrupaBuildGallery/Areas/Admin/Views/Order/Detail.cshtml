@@ -96,6 +96,10 @@
                                 {
                                     <div class="form-text-row">Second Cart</div>
                                 }
+                                <input type="hidden" value="@Model.OrderTypeId" id="hdnordrtypeid" />
+                                <input type="hidden" value="@Model.OrderAmountDue" id="hdnAmoutDue" />
+                                <input type="hidden" value="@Model.CreditUsed" id="hdnCreditused" />
+                                <input type="hidden" value="@Model.OrderId" id="hdnOrderId" />
                             </div>
                         </div>
 
@@ -484,6 +488,30 @@
             if ($("#hdnShippingStatus").val() == "1") {
                 alert("Shipmment Charges Remaining");
                 return;
+            }
+
+            if ($("#hdnordrtypeid").val() == "2") {
+                var ammt = parseFloat($("#hdnAmoutDue").val()) - parseFloat($("#hdnCreditused").val());
+                if (ammt > 0) {
+                    if (confirm("Order amount to receive remaining. Do you want to send message ?")) {
+                        StartLoading();
+                        var URL = '/Admin/Order/SendMessageForDueAmount';
+                        jQuery.ajax({
+                            type: 'POST',
+                            async: true,
+                            url: URL + "?OrderId=" + $("#hdnOrderId").val(),
+                            success: function (result) {
+                                StopLoading();
+                                alert("Message Sent");
+                            },
+                            error: function (error) {
+                                StopLoading();
+                                console.log("error");
+                            }
+                        });
+                    }                    
+                    return;
+                }
             }
             $("#changestatustoconfirmed").modal("show");
             $("#changestatustoconfirmed #orderidshdn").val(orderid);

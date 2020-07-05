@@ -56,6 +56,7 @@
           <Property Name="AlternateMobile" Type="nvarchar" MaxLength="50" />
           <Property Name="Address" Type="nvarchar" MaxLength="450" />
           <Property Name="City" Type="nvarchar" MaxLength="200" />
+          <Property Name="ParentAgentId" Type="bigint" />
           <Property Name="Designation" Type="nvarchar" MaxLength="350" />
           <Property Name="Dob" Type="datetime" />
           <Property Name="DateOfJoin" Type="datetime" />
@@ -71,7 +72,6 @@
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="UpdatedBy" Type="bigint" />
           <Property Name="UpdatedDate" Type="datetime" />
-          <Property Name="ParentAgentId" Type="bigint" />
         </EntityType>
         <EntityType Name="tbl_AdvertiseImages">
           <Key>
@@ -130,11 +130,11 @@
           <Property Name="CategoryImage" Type="nvarchar" MaxLength="450" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
           <Property Name="IsDelete" Type="bit" Nullable="false" />
+          <Property Name="IsImported" Type="bit" />
           <Property Name="CreatedBy" Type="bigint" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="UpdatedBy" Type="bigint" />
           <Property Name="UpdatedDate" Type="datetime" />
-          <Property Name="IsImported" Type="bit" />
         </EntityType>
         <EntityType Name="tbl_ClientOtherDetails">
           <Key>
@@ -279,7 +279,7 @@
           <Property Name="AddharPhoto" Type="nvarchar" MaxLength="450" />
           <Property Name="ProfilePhoto" Type="nvarchar" MaxLength="450" />
           <Property Name="Status" Type="int" />
-          <Property Name="Reason" Type="nvarchar" MaxLength="800" />
+          <Property Name="Reason" Type="nvarchar(max)" />
           <Property Name="CancellationChequePhoto" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="tbl_ExtraAmount">
@@ -302,12 +302,12 @@
           <Property Name="GeneralSettingId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="InitialPointCustomer" Type="decimal" Precision="18" Scale="2" />
           <Property Name="ShippingMessage" Type="nvarchar(max)" />
-          <Property Name="SMTPHost" Type="nvarchar" MaxLength="400" />
-          <Property Name="SMTPPort" Type="nvarchar" MaxLength="10" />
+          <Property Name="SMTPHost" Type="nvarchar" MaxLength="150" />
+          <Property Name="SMTPPort" Type="nvarchar" MaxLength="150" />
           <Property Name="EnableSSL" Type="bit" />
-          <Property Name="SMTPEmail" Type="nvarchar" MaxLength="200" />
-          <Property Name="SMTPPwd" Type="nvarchar" MaxLength="100" />
-          <Property Name="AdminSMSNumber" Type="nvarchar" MaxLength="20" />
+          <Property Name="SMTPEmail" Type="nvarchar" MaxLength="150" />
+          <Property Name="SMTPPwd" Type="nvarchar" MaxLength="150" />
+          <Property Name="AdminSMSNumber" Type="nvarchar" MaxLength="150" />
           <Property Name="AdminEmail" Type="nvarchar" MaxLength="150" />
           <Property Name="FromEmail" Type="nvarchar" MaxLength="150" />
           <Property Name="IsShowBannerImage" Type="bit" />
@@ -549,6 +549,7 @@
           <Property Name="OnlinePaymentAmtRefund" Type="decimal" Precision="18" Scale="2" />
           <Property Name="ExtraAmount" Type="decimal" Precision="18" Scale="2" />
           <Property Name="IsExtraAmountReceived" Type="bit" />
+          <Property Name="AdvancePaymentRecieved" Type="decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="tbl_PaymentHistory">
           <Key>
@@ -625,7 +626,7 @@
           <Property Name="HSNCode" Type="nvarchar" MaxLength="150" />
           <Property Name="ItemType" Type="int" />
           <Property Name="IsReturnable" Type="bit" />
-          <Property Name="PayAdvancePer" Type="decimal" Precision="6" Scale="2" />
+          <Property Name="PayAdvancePer" Type="decimal" Precision="18" Scale="2" />
           <Property Name="IsCashonDeliveryUse" Type="bit" />
           <Property Name="UnitType" Type="int" />
           <Property Name="MinimumStock" Type="int" />
@@ -643,11 +644,11 @@
           <Property Name="ProductImage" Type="nvarchar" MaxLength="450" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
           <Property Name="IsDelete" Type="bit" Nullable="false" />
+          <Property Name="IsImported" Type="bit" />
           <Property Name="CreatedBy" Type="bigint" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="UpdatedBy" Type="bigint" />
           <Property Name="UpdatedDate" Type="datetime" />
-          <Property Name="IsImported" Type="bit" />
         </EntityType>
         <EntityType Name="tbl_ReviewRating">
           <Key>
@@ -684,11 +685,11 @@
           <Property Name="SubProductImage" Type="nvarchar" MaxLength="350" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
           <Property Name="IsDelete" Type="bit" Nullable="false" />
+          <Property Name="IsImported" Type="bit" />
           <Property Name="CreatedBy" Type="bigint" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="UpdatedBy" Type="bigint" />
           <Property Name="UpdatedDate" Type="datetime" />
-          <Property Name="IsImported" Type="bit" />
         </EntityType>
         <EntityType Name="tbl_Transactions">
           <Key>
@@ -955,7 +956,7 @@
           <Property Name="AddharPhoto" Type="String" MaxLength="450" FixedLength="false" Unicode="true" />
           <Property Name="ProfilePhoto" Type="String" MaxLength="450" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Int32" />
-          <Property Name="Reason" Type="String" MaxLength="800" FixedLength="false" Unicode="true" />
+          <Property Name="Reason" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="CancellationChequePhoto" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_Godown">
@@ -1091,6 +1092,7 @@
           <Property Name="OnlinePaymentAmtRefund" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="ExtraAmount" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="IsExtraAmountReceived" Type="Boolean" />
+          <Property Name="AdvancePaymentRecieved" Type="Decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="tbl_PaymentHistory">
           <Key>
@@ -1155,7 +1157,7 @@
           <Property Name="HSNCode" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="ItemType" Type="Int32" />
           <Property Name="IsReturnable" Type="Boolean" />
-          <Property Name="PayAdvancePer" Type="Decimal" Precision="6" Scale="2" />
+          <Property Name="PayAdvancePer" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="IsCashonDeliveryUse" Type="Boolean" />
           <Property Name="MinimumStock" Type="Int32" />
           <Property Name="UnitType" Type="Int32" />
@@ -1362,12 +1364,12 @@
           <Property Name="GeneralSettingId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="InitialPointCustomer" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="ShippingMessage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="SMTPHost" Type="String" MaxLength="400" FixedLength="false" Unicode="true" />
-          <Property Name="SMTPPort" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="SMTPHost" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="SMTPPort" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="EnableSSL" Type="Boolean" />
-          <Property Name="SMTPEmail" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="SMTPPwd" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="AdminSMSNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="SMTPEmail" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="SMTPPwd" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="AdminSMSNumber" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="AdminEmail" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="FromEmail" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="AdvertiseBannerImage" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
@@ -1884,6 +1886,7 @@
           <EntitySetMapping Name="tbl_Orders">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_Orders">
               <MappingFragment StoreEntitySet="tbl_Orders">
+                <ScalarProperty Name="AdvancePaymentRecieved" ColumnName="AdvancePaymentRecieved" />
                 <ScalarProperty Name="IsExtraAmountReceived" ColumnName="IsExtraAmountReceived" />
                 <ScalarProperty Name="ExtraAmount" ColumnName="ExtraAmount" />
                 <ScalarProperty Name="OnlinePaymentAmtRefund" ColumnName="OnlinePaymentAmtRefund" />

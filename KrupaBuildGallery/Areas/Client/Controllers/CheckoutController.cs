@@ -428,6 +428,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
 
                     tbl_Orders objOrder = new tbl_Orders();
                     objOrder.ClientUserId = clientusrid;
+                    objOrder.AdvancePaymentRecieved = 0;
                     decimal ordramt = Convert.ToDecimal(objCheckout.Orderamount);
                     decimal shippingcharge = 0;
                     decimal extraamt = 0;
@@ -468,6 +469,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 decimal totlordewithship = ordramt + shippingcharge + extraamt;
                                 decimal remaingammt = totlordewithship - advncpay;
                                 amtorderdue = remaingammt + amtcredit;
+                                objOrder.AdvancePaymentRecieved = advncpay;
                             }
                         }
                     }
@@ -820,6 +822,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             decimal ordramt = Convert.ToDecimal(objCheckout.Orderamount);
                             decimal shippingcharge = 0;
                             decimal extraamount = 0;
+                            decimal advncpay = 0;
                             if (objCheckout.shippincode == "389001")
                             {
                                 shippingcharge = Convert.ToDecimal(objCheckout.shipamount);
@@ -848,18 +851,20 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             }
                             else
                             {
-                                decimal advncpay = 0;
+                                
                                 if (!string.IsNullOrEmpty(objCheckout.advanceamtpay))
                                 {
                                     advncpay = Convert.ToDecimal(objCheckout.advanceamtpay);
                                     decimal totlordewithship = ordramt + shippingcharge + extraamount;
                                     decimal remaingammt = totlordewithship - advncpay;
                                     amountdue = remaingammt + amtcredit;
+                                  
                                 }
                             }
                             paymentmethod = string.Join(",", lstpymenymthod);
                             tbl_Orders objOrder = new tbl_Orders();
                             objOrder.ClientUserId = clientusrid;
+                            objOrder.AdvancePaymentRecieved = advncpay;
                             objOrder.OrderAmount = ordramt;
                             objOrder.OrderShipCity = objCheckout.shipcity;
                             objOrder.OrderShipAddress = objCheckout.shipaddress;

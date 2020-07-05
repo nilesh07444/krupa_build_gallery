@@ -39,6 +39,7 @@ namespace KrupaBuildGallery
         public string TotalPoints { get; set; }
 
         public string MobileNumber { get; set; }
+        public string searchq { get; set; }
 
     }
 }

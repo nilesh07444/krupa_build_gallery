@@ -394,6 +394,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     decimal ordramt = Convert.ToDecimal(objPlaceOrderVM.Orderamount);
                     decimal shippingcharge = 0;
                     decimal extraamt = 0;
+                    decimal advncpay = 0;
                     if (objPlaceOrderVM.shippincode == "389001")
                     {
                         shippingcharge = Convert.ToDecimal(objPlaceOrderVM.shipamount);
@@ -424,7 +425,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         }
                         else
                         {
-                            decimal advncpay = 0;
+                        
                             if (!string.IsNullOrEmpty(objPlaceOrderVM.advanceamtpay))
                             {
                                 advncpay = Convert.ToDecimal(objPlaceOrderVM.advanceamtpay);
@@ -434,6 +435,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                             }
                         }
                     }
+                    objOrder.AdvancePaymentRecieved = advncpay;
                     objOrder.OrderAmount = ordramt;
                     objOrder.OrderShipCity = objPlaceOrderVM.shipcity;
                     objOrder.OrderShipAddress = objPlaceOrderVM.shipaddress;
@@ -779,6 +781,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                             decimal ordramt = Convert.ToDecimal(objPlaceOrderVM.Orderamount);
                             decimal shippingcharge = 0;
                             decimal extraamount = 0;
+                            decimal advncpay = 0;
                             if (objPlaceOrderVM.shippincode == "389001")
                             {
                                 shippingcharge = Convert.ToDecimal(objPlaceOrderVM.shipamount);
@@ -806,7 +809,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                             }
                             else
                             {
-                                decimal advncpay = 0;
+                              
                                 if (!string.IsNullOrEmpty(objPlaceOrderVM.advanceamtpay))
                                 {
                                     advncpay = Convert.ToDecimal(objPlaceOrderVM.advanceamtpay);
@@ -818,6 +821,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                             paymentmethod = string.Join(",", lstpymenymthod);
                             tbl_Orders objOrder = new tbl_Orders();
                             objOrder.ClientUserId = clientusrid;
+                            objOrder.AdvancePaymentRecieved = advncpay;
                             objOrder.OrderAmount = ordramt;
                             objOrder.OrderShipCity = objPlaceOrderVM.shipcity;
                             objOrder.OrderShipAddress = objPlaceOrderVM.shipaddress;

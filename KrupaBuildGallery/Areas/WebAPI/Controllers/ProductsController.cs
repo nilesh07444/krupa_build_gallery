@@ -105,6 +105,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 long UserId = Convert.ToInt64(objGen.ClientUserId);
                 long RoleId = Convert.ToInt64(objGen.RoleId);
                 long productid = Convert.ToInt64(objGen.ProductId);
+                List<tbl_ReviewRating> lstRatings = _db.tbl_ReviewRating.ToList();
                 lstProductItem = (from i in _db.tbl_ProductItems
                                   where !i.IsDelete && i.IsActive == true && i.ProductId == productid
                                   select new ProductItemVM
@@ -123,11 +124,11 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 if (UserId != 0)
                 {
                     List<long> wishlistitemsId = _db.tbl_WishList.Where(o => o.ClientUserId == UserId).Select(o => o.ItemId.Value).ToList();
-                    lstProductItem.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
+                    lstProductItem.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); x.Ratings = GetRatingOfItem(x.ProductItemId, lstRatings); });
                 }
                 else
                 {
-                    lstProductItem.ForEach(x => { x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
+                    lstProductItem.ForEach(x => { x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); x.Ratings = GetRatingOfItem(x.ProductItemId, lstRatings);});
                 }
 
                 if (objGen.SortBy == "1")
@@ -159,6 +160,10 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 else if (objGen.SortBy == "4")
                 {
                     lstProductItem = lstProductItem.OrderByDescending(o => o.ItemName).ToList();
+                }
+                else if(objGen.SortBy == "5")
+                {
+                    lstProductItem = lstProductItem.OrderByDescending(o => o.Ratings).ToList();
                 }
                 response.Data = lstProductItem;
 
@@ -638,6 +643,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             List<ProductItemVM> lstProductItem = new List<ProductItemVM>();
             try
             {
+                List<tbl_ReviewRating> lstRatings = _db.tbl_ReviewRating.ToList();
                 long UserId = Convert.ToInt64(objGen.ClientUserId);
                 long RoleId = Convert.ToInt64(objGen.RoleId);              
                 lstProductItem = (from i in _db.tbl_ProductItems
@@ -658,11 +664,11 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 if (UserId != 0)
                 {
                     List<long> wishlistitemsId = _db.tbl_WishList.Where(o => o.ClientUserId == UserId).Select(o => o.ItemId.Value).ToList();
-                    lstProductItem.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
+                    lstProductItem.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); x.Ratings = GetRatingOfItem(x.ProductItemId, lstRatings); });
                 }
                 else
                 {
-                    lstProductItem.ForEach(x => { x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
+                    lstProductItem.ForEach(x => { x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); x.Ratings = GetRatingOfItem(x.ProductItemId, lstRatings); });
                 }
 
                 if (objGen.SortBy == "1")
@@ -694,6 +700,10 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 else if (objGen.SortBy == "4")
                 {
                     lstProductItem = lstProductItem.OrderByDescending(o => o.ItemName).ToList();
+                }
+                else if (objGen.SortBy == "5")
+                {
+                    lstProductItem = lstProductItem.OrderByDescending(o => o.Ratings).ToList();
                 }
                 response.Data = lstProductItem;
 
@@ -715,6 +725,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             List<ProductItemVM> lstProductItem = new List<ProductItemVM>();
             try
             {
+                List<tbl_ReviewRating> lstRatings = _db.tbl_ReviewRating.ToList();
                 long UserId = Convert.ToInt64(objGen.ClientUserId);
                 long RoleId = Convert.ToInt64(objGen.RoleId);
                 lstProductItem = (from i in _db.tbl_ProductItems
@@ -735,11 +746,11 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 if (UserId != 0)
                 {
                     List<long> wishlistitemsId = _db.tbl_WishList.Where(o => o.ClientUserId == UserId).Select(o => o.ItemId.Value).ToList();
-                    lstProductItem.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
+                    lstProductItem.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); x.Ratings = GetRatingOfItem(x.ProductItemId, lstRatings); });
                 }
                 else
                 {
-                    lstProductItem.ForEach(x => { x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
+                    lstProductItem.ForEach(x => { x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); x.Ratings = GetRatingOfItem(x.ProductItemId, lstRatings); });
                 }
 
                 if (objGen.SortBy == "1")
@@ -771,6 +782,10 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 else if (objGen.SortBy == "4")
                 {
                     lstProductItem = lstProductItem.OrderByDescending(o => o.ItemName).ToList();
+                }
+                else if (objGen.SortBy == "5")
+                {
+                    lstProductItem = lstProductItem.OrderByDescending(o => o.Ratings).ToList();
                 }
                 response.Data = lstProductItem;
 
@@ -794,6 +809,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             {
                 long UserId = Convert.ToInt64(objGen.ClientUserId);
                 long RoleId = Convert.ToInt64(objGen.RoleId);
+                List<tbl_ReviewRating> lstRatings = _db.tbl_ReviewRating.ToList();
                 List<long> lstOfferItemsId = new List<long>();
                 List<tbl_Offers> lstOfferss = _db.tbl_Offers.Where(o => DateTime.Now >= o.StartDate && DateTime.Now <= o.EndDate && o.IsActive == true && o.IsDelete == false).ToList();
                 if (lstOfferss != null && lstOfferss.Count() > 0)
@@ -820,11 +836,11 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 if (UserId != 0)
                 {
                      List<long> wishlistitemsId = _db.tbl_WishList.Where(o => o.ClientUserId == UserId).Select(o => o.ItemId.Value).ToList();
-                    lstProductItem.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice);});
+                    lstProductItem.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); x.Ratings = GetRatingOfItem(x.ProductItemId, lstRatings); });
                 }
                 else
                 {
-                    lstProductItem.ForEach(x => { x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice);  });
+                    lstProductItem.ForEach(x => { x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); x.Ratings = GetRatingOfItem(x.ProductItemId, lstRatings); });
                 }
 
                 if (objGen.SortBy == "1")
@@ -857,6 +873,10 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 {
                     lstProductItem = lstProductItem.OrderByDescending(o => o.ItemName).ToList();
                 }
+                else if (objGen.SortBy == "5")
+                {
+                    lstProductItem = lstProductItem.OrderByDescending(o => o.Ratings).ToList();
+                }
                 response.Data = lstProductItem;
 
             }
@@ -869,5 +889,96 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             return response;
 
         }
+
+        [Route("SearchItems"), HttpPost]
+        public ResponseDataModel<List<ProductItemVM>> SearchItems(GeneralVM objGen)
+        {
+            ResponseDataModel<List<ProductItemVM>> response = new ResponseDataModel<List<ProductItemVM>>();
+            List<ProductItemVM> lstProductItem = new List<ProductItemVM>();
+            try
+            {
+                List<tbl_ReviewRating> lstRatings = _db.tbl_ReviewRating.ToList();
+                long UserId = Convert.ToInt64(objGen.ClientUserId);
+                long RoleId = Convert.ToInt64(objGen.RoleId);
+                string q = objGen.searchq;
+                
+                lstProductItem = (from i in _db.tbl_ProductItems
+                                  join c in _db.tbl_Categories on i.CategoryId equals c.CategoryId
+                                  join p in _db.tbl_Products on i.ProductId equals p.Product_Id
+                                  join s in _db.tbl_SubProducts on i.SubProductId equals s.SubProductId into outerJoinSubProduct
+                                  from s in outerJoinSubProduct.DefaultIfEmpty()
+                                      //where !i.IsDelete && !c.IsDelete && !p.IsDelete
+                                  where !i.IsDelete && i.IsActive == true && !c.IsDelete && !p.IsDelete && (q.ToLower().Contains(i.ItemName.ToLower()) || (i.Tags != "" && i.Tags.ToLower().Contains(q.ToLower())) || i.ItemName.ToLower().Contains(q.ToLower()) || q.ToLower().Contains(c.CategoryName.ToLower()) || c.CategoryName.ToLower().Contains(q.ToLower()) || q.ToLower().Contains(p.ProductName.ToLower()) || p.ProductName.ToLower().Contains(q.ToLower()) || q.ToLower().Contains(s.SubProductName.ToLower()) || s.SubProductName.ToLower().Contains(q.ToLower()))
+                                  select new ProductItemVM
+                                  {
+                                      ProductItemId = i.ProductItemId,
+                                      ProductId = i.ProductId,
+                                      SubProductId = i.SubProductId,
+                                      ItemName = i.ItemName,
+                                      MainImage = i.MainImage,
+                                      MRPPrice = i.MRPPrice,
+                                      CustomerPrice = i.CustomerPrice,
+                                      DistributorPrice = i.DistributorPrice,
+                                      IsActive = i.IsActive
+                                  }).OrderBy(x => x.ItemName).ToList();
+
+                if (UserId != 0)
+                {                   
+                    List<long> wishlistitemsId = _db.tbl_WishList.Where(o => o.ClientUserId == UserId).Select(o => o.ItemId.Value).ToList();
+                    lstProductItem.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); x.Ratings = GetRatingOfItem(x.ProductItemId, lstRatings); });
+                }
+                else
+                {
+                    lstProductItem.ForEach(x => { x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); x.Ratings = GetRatingOfItem(x.ProductItemId, lstRatings); });
+                }
+
+
+                if (objGen.SortBy == "1")
+                {
+                    if (UserId == 0 || RoleId == 1)
+                    {
+                        lstProductItem = lstProductItem.OrderBy(o => o.CustomerPrice).ToList();
+                    }
+                    else
+                    {
+                        lstProductItem = lstProductItem.OrderBy(o => o.DistributorPrice).ToList();
+                    }
+                }
+                else if (objGen.SortBy == "2")
+                {
+                    if (UserId == 0 || RoleId == 1)
+                    {
+                        lstProductItem = lstProductItem.OrderByDescending(o => o.CustomerPrice).ToList();
+                    }
+                    else
+                    {
+                        lstProductItem = lstProductItem.OrderByDescending(o => o.DistributorPrice).ToList();
+                    }
+                }
+                else if (objGen.SortBy == "3")
+                {
+                    lstProductItem = lstProductItem.OrderBy(o => o.ItemName).ToList();
+                }
+                else if (objGen.SortBy == "4")
+                {
+                    lstProductItem = lstProductItem.OrderByDescending(o => o.ItemName).ToList();
+                }
+                else if (objGen.SortBy == "5")
+                {
+                    lstProductItem = lstProductItem.OrderByDescending(o => o.Ratings).ToList();
+                }
+                response.Data = lstProductItem;
+
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+                
     }
 }
