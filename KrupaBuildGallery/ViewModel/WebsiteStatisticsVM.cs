@@ -11,5 +11,6 @@ namespace KrupaBuildGallery
         public int TotalDistributers { get; set; }
         public int TotalHappyCustomers { get; set; }
         public int TotalSiteVisitors { get; set; }
+        public int TotalItems { get; set; }
     }
 }

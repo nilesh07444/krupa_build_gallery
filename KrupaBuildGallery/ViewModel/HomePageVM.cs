@@ -19,5 +19,8 @@ namespace KrupaBuildGallery
         public List<CategoryVM> Categories { get; set; }
 
         public List<AdvertiseImageVM> lstAds { get; set; }
+        public string BannerImage { get; set; }
+        public WebsiteStatisticsVM webstats { get; set; }
+
     }
 }
