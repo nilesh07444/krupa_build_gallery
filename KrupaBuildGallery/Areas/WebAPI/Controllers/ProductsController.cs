@@ -537,6 +537,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 objWebStats.TotalDistributers = ClientUserData.Where(x => x.ClientRoleId == (int)ClientRoles.Distributor).ToList().Count;
                 objWebStats.TotalHappyCustomers = _db.tbl_HappyCustomers.Where(x => !x.IsDelete && x.IsActive).ToList().Count;
                 objWebStats.TotalItems = _db.tbl_ProductItems.Where(o => o.IsActive == true && o.IsDelete == false).ToList().Count;
+                objHome.webstats = objWebStats;
                 response.Data = objHome;
 
             }
