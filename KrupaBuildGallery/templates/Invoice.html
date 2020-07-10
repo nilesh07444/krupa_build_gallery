@@ -3,7 +3,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <style>
 
-    @media print {
+    /*@media print {
 
         html, body {
             height: 100vh;
@@ -11,7 +11,7 @@
             padding: 0 !important;
             overflow: hidden;
         }
-    }
+    }*/
 
     #invoice {
         padding: 30px;
@@ -242,15 +242,15 @@
                                                 <td class="text-center" style="width:10%;"><strong>Item</strong></td>
                                                 <td class="text-center" style="width:10%;"><strong>HSN Code</strong></td>
                                                 <td class="text-center" style="width:10%;"><strong>Qty</strong></td>
-                                                <td class="text-center" style="width:5%;"><strong>Unit</strong></td> <!--TODO-->
+                                                <td class="text-center" style="width:5%;"><strong>Unit</strong></td>
                                                 <td class="text-center" style="width:10%;"><strong>Price</strong></td>
-                                                <td class="text-center" style="width:10%;"><strong>Final Amount</strong></td>
+                                                <td class="text-center" style="width:10%;"><strong>Without Taxable Amount</strong></td>
                                                 <td class="text-center" style="width:10%;"><strong>Point Discount</strong></td>
-                                                <td class="text-center" style="width:10%;"><strong>Taxable Amount</strong></td> <!--TODO: FA X Discount -->
+                                                <td class="text-center" style="width:10%;"><strong>Taxable Amount</strong></td>
                                                 <!--<td class="text-right"><strong>CGST</strong></td>
-                                                <td class="text-right"><strong>CGST Amt.</strong></td>
-                                                <td class="text-right"><strong>SGST</strong></td>
-                                                <td class="text-right"><strong>SGST Amt.</strong></td>-->
+                                    <td class="text-right"><strong>CGST Amt.</strong></td>
+                                    <td class="text-right"><strong>SGST</strong></td>
+                                    <td class="text-right"><strong>SGST Amt.</strong></td>-->
                                                 <td class="text-center" style="width:10%;"><strong>GST(%)</strong>
                                                 <td class="text-center" style="width:10%;"><strong>Total</strong></td>
                                             </tr>
@@ -260,53 +260,53 @@
                                             --ITEMLIST--
                                             <tr>
                                                 <!--<td class="thick-liner"></td>
-                                                <td class="thick-line"></td>
-                                                <td class="thick-liner"></td>
-                                                <td class="thick-line"></td>
-                                                <td class="thick-liner"></td>
-                                                <td class="thick-line"></td>
-                                                <td class="thick-line"></td>
-                                                <td class="thick-line"></td>
-                                                <td class="thick-line"></td>-->
+                                    <td class="thick-line"></td>
+                                    <td class="thick-liner"></td>
+                                    <td class="thick-line"></td>
+                                    <td class="thick-liner"></td>
+                                    <td class="thick-line"></td>
+                                    <td class="thick-line"></td>
+                                    <td class="thick-line"></td>
+                                    <td class="thick-line"></td>-->
                                                 <td colspan="10" class="thick-line text-right"><strong>Sub Total</strong></td>
                                                 <td class="thick-line text-right">--SUBTOTAL--</td>
                                             </tr>
                                             <tr>
                                                 <!--<td class="thick-liner"></td>
-                                                <td class="thick-line"></td>
-                                                <td class="thick-liner"></td>
-                                                <td class="thick-line"></td>
-                                                <td class="thick-liner"></td>
-                                                <td class="thick-line"></td>
-                                                <td class="thick-line"></td>
-                                                <td class="thick-line"></td>
-                                                <td class="thick-line"></td>-->
+                                    <td class="thick-line"></td>
+                                    <td class="thick-liner"></td>
+                                    <td class="thick-line"></td>
+                                    <td class="thick-liner"></td>
+                                    <td class="thick-line"></td>
+                                    <td class="thick-line"></td>
+                                    <td class="thick-line"></td>
+                                    <td class="thick-line"></td>-->
                                                 <td colspan="10" class="thick-line text-right"><strong>Shipping Charge</strong></td>
                                                 <td class="thick-line text-right">--SHIPPING--</td>
                                             </tr>
                                             <tr>
                                                 <!--<td class="thick-liner"></td>
-                                                <td class="thick-line"></td>
-                                                <td class="thick-liner"></td>
-                                                <td class="thick-line"></td>
-                                                <td class="thick-liner"></td>
-                                                <td class="thick-line"></td>
-                                                <td class="thick-line"></td>
-                                                <td class="thick-line"></td>
-                                                <td class="thick-line"></td>-->
+                                    <td class="thick-line"></td>
+                                    <td class="thick-liner"></td>
+                                    <td class="thick-line"></td>
+                                    <td class="thick-liner"></td>
+                                    <td class="thick-line"></td>
+                                    <td class="thick-line"></td>
+                                    <td class="thick-line"></td>
+                                    <td class="thick-line"></td>-->
                                                 <td colspan="10" class="thick-line text-right"><strong>Minimum Purchase Charge</strong></td>
                                                 <td class="thick-line text-right">--EXTRAAMOUNT--</td>
                                             </tr>
                                             <tr>
                                                 <!--<td class="thick-liner"></td>
-                                                <td class="thick-line"></td>
-                                                <td class="thick-liner"></td>
-                                                <td class="thick-line"></td>
-                                                <td class="thick-liner"></td>
-                                                <td class="thick-line"></td>
-                                                <td class="thick-line"></td>
-                                                <td class="thick-line"></td>
-                                                <td class="thick-line"></td>-->
+                                    <td class="thick-line"></td>
+                                    <td class="thick-liner"></td>
+                                    <td class="thick-line"></td>
+                                    <td class="thick-liner"></td>
+                                    <td class="thick-line"></td>
+                                    <td class="thick-line"></td>
+                                    <td class="thick-line"></td>
+                                    <td class="thick-line"></td>-->
                                                 <td colspan="10" class="thick-line text-right"><strong>Final Bill Amount</strong></td>
                                                 <td class="thick-line text-right">--TOTAL--</td>
                                             </tr>
@@ -317,6 +317,37 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="panel panel-default">
+                            <div class="panel-heading">
+                                <h3 class="panel-title"><strong>GST Calculation</strong></h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="table-responsive">
+                                    <table class="table table-condensed">
+                                        <thead>
+                                            <tr>
+                                                <td class="text-center" style="width:5%;"><strong>GST</strong></td>
+                                                <td class="text-center" style="width:10%;"><strong>Taxable Amount</strong></td>
+                                                <td class="text-center" style="width:10%;"><strong>IGST TAX</strong></td>
+                                                <td class="text-center" style="width:10%;"><strong>CGST TAX</strong></td>
+                                                <td class="text-center" style="width:5%;"><strong>SGST TAX</strong></td>
+                                                <td class="text-center" style="width:5%;"><strong>Final Amount</strong></td>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            --GSTCALCULATIONDATA--
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
             </main>
             <footer>
                 Invoice was created on a computer and is valid without the signature and seal.

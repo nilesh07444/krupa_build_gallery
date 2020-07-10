@@ -430,7 +430,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 objOrder.OrderStatus = GetOrderStatus(objOrder.OrderStatusId);
                 List<OrderItemsVM> lstOrderItms = (from p in _db.tbl_OrderItemDetails
                                                    join c in _db.tbl_ProductItems on p.ProductItemId equals c.ProductItemId
-                                                   join u in _db.tbl_ItemVariant on p.VariantItemId equals u.VariantItemId                                                   
+                                                   join u in _db.tbl_ItemVariant on p.VariantItemId equals u.VariantItemId
                                                    where p.OrderId == OrderId
                                                    select new OrderItemsVM
                                                    {
@@ -516,18 +516,89 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         srBuild.Append("<td class=\"text-center\">" + Math.Round(FinalPrice, 2) + "</td>");
                         srBuild.Append("</tr>");
                         cntsrNo = cntsrNo + 1;
-                         
+
                     }
                 }
                 SubTotal = TotalFinal;
                 TotalFinal = TotalFinal + objOrder.ShipmentCharge + objOrder.ExtraAmount;
                 ItemHtmls = srBuild.ToString();
-                newhtmldata = htmldata.Replace("--INVOICENO--", InvoiceNo).Replace("--INVOICEDATE--", DateOfInvoice).Replace("--ORDERNO--", orderNo).Replace("--CLIENTUSERNAME--", ClientUserName).Replace("--CLIENTUSERADDRESS--", objOrder.ClientAddress).Replace("--CLIENTUSEREMAIL--", objOrder.ClientEmail).Replace("--CLIENTUSERMOBILE--", objOrder.ClientMobileNo).Replace("--ITEMLIST--", ItemHtmls).Replace("--SHIPPING--", Math.Round(objOrder.ShipmentCharge, 2).ToString()).Replace("--SUBTOTAL--", Math.Round(SubTotal, 2).ToString()).Replace("--TOTAL--", Math.Round(TotalFinal, 2).ToString()).Replace("--EXTRAAMOUNT--", Math.Round(objOrder.ExtraAmount, 2).ToString());
+
+                string GST_HTML_DATA = getGSTCalculationHtmlDataByOrder(lstOrderItms, objOrder.OrderShipState != "Gujarat");
+
+                newhtmldata = htmldata.Replace("--INVOICENO--", InvoiceNo).Replace("--INVOICEDATE--", DateOfInvoice).Replace("--ORDERNO--", orderNo).Replace("--CLIENTUSERNAME--", ClientUserName).Replace("--CLIENTUSERADDRESS--", objOrder.ClientAddress).Replace("--CLIENTUSEREMAIL--", objOrder.ClientEmail).Replace("--CLIENTUSERMOBILE--", objOrder.ClientMobileNo).Replace("--ITEMLIST--", ItemHtmls).Replace("--GSTCALCULATIONDATA--", GST_HTML_DATA).Replace("--SHIPPING--", Math.Round(objOrder.ShipmentCharge, 2).ToString()).Replace("--SUBTOTAL--", Math.Round(SubTotal, 2).ToString()).Replace("--TOTAL--", Math.Round(TotalFinal, 2).ToString()).Replace("--EXTRAAMOUNT--", Math.Round(objOrder.ExtraAmount, 2).ToString());
 
             }
 
             return newhtmldata;
             //return "Receipt_" + objPymt.PaymentHistory_Id+".pdf";
+        }
+
+        private string getGSTCalculationHtmlDataByOrder(List<OrderItemsVM> lstOrderItms, bool IsIGST)
+        {
+            string htmlData = string.Empty;
+
+            StringBuilder srBuild = new StringBuilder();
+
+
+            decimal[] lstGSTPer = new decimal[] { 5.00m, 12.00m, 18.00m, 28.00m };
+
+            decimal Grand_TotaltaxableAmount = 0;
+            decimal Grand_IGST_Amt = 0;
+            decimal Grand_CGST_Amt = 0;
+            decimal Grand_SGST_Amt = 0;
+            decimal Grand_FinalAmt = 0;
+
+            lstGSTPer.ToList().ForEach(per =>
+            {
+                decimal TotaltaxableAmount = lstOrderItms.Where(x => x.GST_Per == per).Select(x => x.Price * x.Qty - x.Discount).Sum();
+
+                decimal IGST_Amt = 0;
+                decimal CGST_Amt = 0;
+                decimal SGST_Amt = 0;
+
+                if (IsIGST)
+                {
+                    IGST_Amt = (TotaltaxableAmount * per) / 100;
+                }
+                else
+                {
+                    decimal half_per = per / 2;
+                    CGST_Amt = (TotaltaxableAmount * half_per) / 100;
+                    SGST_Amt = (TotaltaxableAmount * half_per) / 100;
+                }
+
+                decimal FinalAmt = TotaltaxableAmount + IGST_Amt + CGST_Amt + SGST_Amt;
+
+                srBuild.Append("<tr>");
+                srBuild.Append("<td class=\"text-center\"><strong> " + per.ToString("0.##") + "%</strong></td>");
+                srBuild.Append("<td class=\"text-center\">" + TotaltaxableAmount.ToString("0.##") + "</td>");
+                srBuild.Append("<td class=\"text-center\">" + IGST_Amt.ToString("0.##") + "</td>");
+                srBuild.Append("<td class=\"text-center\">" + CGST_Amt.ToString("0.##") + "</td>");
+                srBuild.Append("<td class=\"text-center\">" + SGST_Amt.ToString("0.##") + "</td>");
+                srBuild.Append("<td class=\"text-center\">" + FinalAmt.ToString("0.##") + "</td>");
+                srBuild.Append("</tr>");
+
+                Grand_TotaltaxableAmount += TotaltaxableAmount;
+                Grand_IGST_Amt += IGST_Amt;
+                Grand_CGST_Amt += CGST_Amt;
+                Grand_SGST_Amt += SGST_Amt;
+                Grand_FinalAmt += FinalAmt;
+
+            });
+
+            // Taxable Amount
+            srBuild.Append("<tr>");
+            srBuild.Append("<td class=\"text-center\"><strong>Taxable Amount</strong></td>");
+            srBuild.Append("<td class=\"text-center\">"+ Grand_TotaltaxableAmount.ToString("0.##") + "</td>");
+            srBuild.Append("<td class=\"text-center\">"+ Grand_IGST_Amt.ToString("0.##") + "</td>");
+            srBuild.Append("<td class=\"text-center\">"+ Grand_CGST_Amt.ToString("0.##") + "</td>");
+            srBuild.Append("<td class=\"text-center\">"+ Grand_SGST_Amt.ToString("0.##") + "</td>");
+            srBuild.Append("<td class=\"text-center\">"+ Grand_FinalAmt.ToString("0.##") + "</td>");
+            srBuild.Append("</tr>");
+
+            htmlData = srBuild.ToString();
+
+            return htmlData;
         }
 
         public ActionResult RequestDetail(int Id)
@@ -964,7 +1035,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 DateTime dt = DateTime.ParseExact(dob, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                 objclientoth.Dob = dt;
                 if (!string.IsNullOrEmpty(shopphotoname))
-                {                    
+                {
                     objclientoth.ShopPhoto = shopphotoname;
                 }
                 if (!string.IsNullOrEmpty(addharphoto))
