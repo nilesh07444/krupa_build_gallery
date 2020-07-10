@@ -64,7 +64,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                    ProductImage = c.ProductImage,
                                    IsActive = c.IsActive
                                }).OrderBy(x => x.ProductName).ToList();
-
+                lstProducts.ForEach(x => { x.TotalItems = TotalItemsByProduct(x.ProductId); x.TotalSubItems = TotalSubProductinProduc(x.ProductId); });
                 response.Data = lstProducts;
 
             }
@@ -96,8 +96,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                    SubProductId = c.SubProductId,
                                    SubProductImage = c.SubProductImage,
                                    IsActive = c.IsActive
-                               }).OrderBy(x => x.ProductName).ToList();
-
+                               }).OrderBy(x => x.SubProductName).ToList();
+                lstSubProducts.ForEach(x => x.TotalItems = TotalItemsBySubProduct(x.SubProductId));
                 response.Data = lstSubProducts;
 
             }
@@ -113,8 +113,22 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
 
         public int TotalItemsinCategory(long CatId)
         {
-            return _db.tbl_ProductItems.Where(o => o.CategoryId == CatId && o.IsDelete == false && o.IsActive == true).ToList().Count;
+            return _db.tbl_Products.Where(o => o.CategoryId == CatId && o.IsDelete == false && o.IsActive == true).ToList().Count;
         }
 
+        public int TotalSubProductinProduc(long ProductId)
+        {
+            return _db.tbl_SubProducts.Where(o => o.ProductId == ProductId && o.IsDelete == false && o.IsActive == true).ToList().Count;
+        }
+
+        public int TotalItemsBySubProduct(long SubProductId)
+        {
+            return _db.tbl_ProductItems.Where(o => o.SubProductId == SubProductId && o.IsDelete == false && o.IsActive == true).ToList().Count;
+        }
+
+        public int TotalItemsByProduct(long ProductId)
+        {
+            return _db.tbl_ProductItems.Where(o => o.ProductId == ProductId && o.IsDelete == false && o.IsActive == true).ToList().Count;
+        }
     }
 }

@@ -529,6 +529,15 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 objHome.Categories = lstCategory;
                 objHome.lstAds = lstAdvertiseImages;
                 objHome.HomePageSlider = GetHomeImages();
+
+                objHome.BannerImage = _db.tbl_GeneralSetting.FirstOrDefault().AdvertiseBannerImage;
+                WebsiteStatisticsVM objWebStats = new WebsiteStatisticsVM();
+                var ClientUserData = _db.tbl_ClientUsers.Where(x => !x.IsDelete && x.IsActive).ToList();
+                objWebStats.TotalCustomers = ClientUserData.Where(x => x.ClientRoleId == (int)ClientRoles.Customer).ToList().Count;
+                objWebStats.TotalDistributers = ClientUserData.Where(x => x.ClientRoleId == (int)ClientRoles.Distributor).ToList().Count;
+                objWebStats.TotalHappyCustomers = _db.tbl_HappyCustomers.Where(x => !x.IsDelete && x.IsActive).ToList().Count;
+                objWebStats.TotalItems = _db.tbl_ProductItems.Where(o => o.IsActive == true && o.IsDelete == false).ToList().Count;
+                objHome.webstats = objWebStats;
                 response.Data = objHome;
 
             }
