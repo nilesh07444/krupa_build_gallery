@@ -24,5 +24,6 @@ namespace KrupaBuildGallery
         public string isCashondelivery { get; set; }
         public string advanceamtpay { get; set; }
         public string extraamount { get; set; }
+        public string GSTNo { get; set; }
     }
 }

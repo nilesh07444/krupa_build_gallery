@@ -334,6 +334,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                             //Price = clsClientSession.RoleID == 1 ? i.CustomerPrice : i.DistributorPrice,
                                             Price = RoleId == 1 ? vr.CustomerPrice.Value : vr.DistributorPrice.Value,
                                             ItemImage = i.MainImage,
+                                            MRPPrice = i.MRPPrice,
                                             VariantId = crt.VariantItemId.Value,
                                             VariantQtytxt = vr.UnitQty,
                                             Qty = crt.CartItemQty.Value,
@@ -356,6 +357,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                             ItemId = i.ProductItemId,
                                             Price = RoleId == 1 ? vr.CustomerPrice.Value : vr.DistributorPrice.Value,
                                             ItemImage = i.MainImage,
+                                            MRPPrice = i.MRPPrice,
                                             Qty = crt.CartItemQty.Value,
                                             VariantId = crt.VariantItemId.Value,
                                             VariantQtytxt = vr.UnitQty,
@@ -364,8 +366,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                             IGSTPer = i.IGST_Per
                                         }).OrderByDescending(x => x.CartId).ToList();
                     }
-                      
-                    lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price, RoleId,x.VariantId); });
+                   
+                    lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price, RoleId,x.VariantId); x.MRPPrice = GetVarintPrc(x.VariantId, x.MRPPrice); });
                     // List<tbl_Cart> lstCarts = _db.tbl_Cart.Where(o => o.ClientUserId == clientusrid).ToList();
                     
                     int year = DateTime.UtcNow.Year;
@@ -451,6 +453,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     objOrder.CreatedDate = DateTime.UtcNow;
                     objOrder.UpdatedBy = clientusrid;
                     objOrder.UpdatedDate = DateTime.UtcNow;
+                    objOrder.GSTNo = objPlaceOrderVM.GSTNo;
                     objOrder.AmountDue = amtorderdue;
                     objOrder.RazorpayOrderId = "";
                     objOrder.RazorpayPaymentId = objPlaceOrderVM.razorpay_payment_id;
@@ -521,6 +524,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         objotherdetails.AmountDue = amtdue + ordramt;
                         objotherdetails.ShipAddress = objPlaceOrderVM.shipaddress;
                         objotherdetails.ShipCity = objPlaceOrderVM.shipcity;
+                        objotherdetails.ShipGSTNo = objPlaceOrderVM.GSTNo;
                         objotherdetails.ShipFirstName = objPlaceOrderVM.shipfirstname;
                         objotherdetails.ShipLastName = objPlaceOrderVM.shiplastname;
                         objotherdetails.ShipPhoneNumber = objPlaceOrderVM.shipphone;
@@ -560,6 +564,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                             objOrderItem.Price = objCart.Price;
                             objOrderItem.Sku = objCart.ItemSku;
                             objOrderItem.IsActive = true;
+                            objOrderItem.MRPPrice = objCart.MRPPrice;
                             objOrderItem.IsDelete = false;
                             objOrderItem.CreatedBy = clientusrid;
                             objOrderItem.CreatedDate = DateTime.UtcNow;
@@ -603,6 +608,17 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                             objOrderItem.ItemStatus = Convert.ToInt32(OrderStatus.NewOrder); 
                             objOrderItem.FinalItemPrice = AfterTax;
                             _db.tbl_OrderItemDetails.Add(objOrderItem);
+                            tbl_StockReport objstkreport = new tbl_StockReport();
+                            objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
+                            objstkreport.StockDate = DateTime.UtcNow;
+                            objstkreport.Qty = Convert.ToInt64(objOrderItem.QtyUsed);
+                            objstkreport.IsCredit = false;
+                            objstkreport.IsAdmin = false;
+                            objstkreport.CreatedBy = clientusrid;
+                            objstkreport.ItemId = objOrderItem.ProductItemId;
+                            objstkreport.Remarks = "Ordered Item for Order:" + objOrderItem.OrderId;
+                            _db.tbl_StockReport.Add(objstkreport);
+                            _db.SaveChanges();
                             objcmn.SaveTransaction(objCart.ItemId, objOrderItem.OrderDetailId, objOrderItem.OrderId.Value, "Order Placed for Item", objOrderItem.FinalItemPrice.Value, clientusrid, 0, DateTime.UtcNow, "New Order Item");
                             if (objPlaceOrderVM.ordertype == "1")
                             {
@@ -716,6 +732,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                                     VariantId = crt.VariantItemId.Value,
                                                     VariantQtytxt = vr.UnitQty,
                                                     Qty = crt.CartItemQty.Value,
+                                                    MRPPrice = i.MRPPrice,
                                                     ItemSku = i.Sku,
                                                     GSTPer = i.GST_Per,
                                                     IGSTPer = i.IGST_Per
@@ -735,6 +752,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                                     Price = RoleId == 1 ? vr.CustomerPrice.Value : vr.DistributorPrice.Value,
                                                     ItemImage = i.MainImage,
                                                     VariantId = crt.VariantItemId.Value,
+                                                    MRPPrice = i.MRPPrice,
                                                     Qty = crt.CartItemQty.Value,
                                                     VariantQtytxt = vr.UnitQty,
                                                     ItemSku = i.Sku,
@@ -839,6 +857,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                             objOrder.UpdatedDate = DateTime.UtcNow;
                             objOrder.AmountDue = amountdue;
                             objOrder.InvoiceNo = Invno;
+                            objOrder.GSTNo = objPlaceOrderVM.GSTNo;
                             objOrder.InvoiceYear = year + "-" + toyear;
                             objOrder.RazorpayOrderId = "";
                             objOrder.RazorpayPaymentId = objPlaceOrderVM.razorpay_payment_id;
@@ -945,6 +964,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                     objOrderItem.Qty = objCart.Qty;
                                     objOrderItem.Price = objCart.Price;
                                     objOrderItem.Sku = objCart.ItemSku;
+                                    objOrderItem.MRPPrice = objCart.MRPPrice;
                                     objOrderItem.IsActive = true;
                                     objOrderItem.IsDelete = false;
                                     objOrderItem.CreatedBy = clientusrid;
@@ -981,6 +1001,17 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                     objOrderItem.FinalItemPrice = AfterTax;
                                     objOrderItem.ItemStatus = Convert.ToInt32(OrderStatus.NewOrder); 
                                     _db.tbl_OrderItemDetails.Add(objOrderItem);
+                                    _db.SaveChanges();
+                                    tbl_StockReport objstkreport = new tbl_StockReport();
+                                    objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
+                                    objstkreport.StockDate = DateTime.UtcNow;
+                                    objstkreport.Qty = Convert.ToInt64(objOrderItem.QtyUsed);
+                                    objstkreport.IsCredit = false;
+                                    objstkreport.IsAdmin = false;
+                                    objstkreport.CreatedBy = clientusrid;
+                                    objstkreport.ItemId = objOrderItem.ProductItemId;
+                                    objstkreport.Remarks = "Ordered Item for Order:" + objOrderItem.OrderId;
+                                    _db.tbl_StockReport.Add(objstkreport);
                                     _db.SaveChanges();
                                     objcmn.SaveTransaction(objCart.ItemId, objOrderItem.OrderDetailId, objOrderItem.OrderId.Value, "Order Placed for Item", objOrderItem.FinalItemPrice.Value,clientusrid, 0, DateTime.UtcNow, "New Order Item");
                                     if (objPlaceOrderVM.ordertype == "1")
@@ -1041,6 +1072,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                 objotherdetails.ShipFirstName = objPlaceOrderVM.shipfirstname;
                                 objotherdetails.ShipLastName = objPlaceOrderVM.shiplastname;
                                 objotherdetails.ShipPhoneNumber = objPlaceOrderVM.shipphone;
+                                objotherdetails.ShipGSTNo = objPlaceOrderVM.GSTNo;
                                 objotherdetails.ShipPostalcode = objPlaceOrderVM.shippincode;
                                 objotherdetails.ShipState = objPlaceOrderVM.shipstate;
                                 objotherdetails.ShipEmail = objPlaceOrderVM.shipemailaddress;

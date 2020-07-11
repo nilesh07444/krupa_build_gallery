@@ -115,6 +115,23 @@ namespace KrupaBuildGallery.Model
             _db.SaveChanges();
         }
 
+        public void SavePaymentTransaction(long OrderItemId, long OrderId,bool IsCredit,decimal Amount,string Remarks,long TransactionBy, bool IsAdmin, DateTime TransactionDate, string ModeOfPayment)
+        {
+            krupagallarydbEntities _db = new krupagallarydbEntities();
+            tbl_PaymentTransaction objTrans = new tbl_PaymentTransaction();            
+            objTrans.OrderItemId = OrderItemId;
+            objTrans.OrderId = OrderId;
+            objTrans.Remarks = Remarks;
+            objTrans.TransactionBy = TransactionBy;
+            objTrans.IsAdmin = IsAdmin;
+            objTrans.IsCredit = IsCredit;
+            objTrans.Amount = Amount;
+            objTrans.TransactionDate = TransactionDate;
+            objTrans.ModeOfPayment = ModeOfPayment;
+            _db.tbl_PaymentTransaction.Add(objTrans);
+            _db.SaveChanges();
+        }
+
         public static EmailMessageVM GetSampleEmailTemplate()
         {
             string HeaderContent = GetFileText("EmailTemplates\\Header.htm");
@@ -196,6 +213,25 @@ namespace KrupaBuildGallery.Model
                 throw ex;
             }
 
+        }
+
+        public static string GetCurrentFinancialYear()
+        {
+            TimeZoneInfo nzTimeZone = TimeZoneInfo.FindSystemTimeZoneById("India Standard Time");
+            DateTime dateTimeAsTimeZone = TimeZoneInfo.ConvertTimeFromUtc(Convert.ToDateTime(DateTime.UtcNow), nzTimeZone);
+            int CurrentYear = dateTimeAsTimeZone.Year;
+            int PreviousYear = dateTimeAsTimeZone.Year - 1;
+            int NextYear = dateTimeAsTimeZone.Year + 1;
+            string PreYear = PreviousYear.ToString();
+            string NexYear = NextYear.ToString();
+            string CurYear = CurrentYear.ToString();
+            string FinYear = null;
+
+            if (DateTime.Today.Month > 3)
+                FinYear = CurYear + "-" + NexYear;
+            else
+                FinYear = PreYear + "-" + CurYear;
+            return FinYear.Trim();
         }
 
     }

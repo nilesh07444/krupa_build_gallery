@@ -35,5 +35,6 @@ namespace KrupaBuildGallery.Model
         public Nullable<decimal> FinalItemPrice { get; set; }
         public Nullable<long> VariantItemId { get; set; }
         public Nullable<decimal> QtyUsed { get; set; }
+        public Nullable<decimal> MRPPrice { get; set; }
     }
 }

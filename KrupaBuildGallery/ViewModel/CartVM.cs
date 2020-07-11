@@ -29,5 +29,6 @@ namespace KrupaBuildGallery
         public decimal VariantDistriPrice { get; set; }
         public string VariantQtytxt { get; set; }
         public string IsCash { get; set; }
+        public decimal MRPPrice { get; set; }
     }
 }

@@ -337,6 +337,17 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         _db.tbl_ItemStocks.Add(objItemStock);
                         _db.SaveChanges();
 
+                        tbl_StockReport objstkreport = new tbl_StockReport();
+                        objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
+                        objstkreport.StockDate = DateTime.UtcNow;
+                        objstkreport.Qty = Convert.ToInt64(productItemVM.InitialQty);
+                        objstkreport.IsCredit = true;
+                        objstkreport.IsAdmin = true;
+                        objstkreport.CreatedBy = LoggedInUserId;
+                        objstkreport.ItemId = objProductItem.ProductItemId;
+                        objstkreport.Remarks = "Opening Stock";
+                        _db.tbl_StockReport.Add(objstkreport);
+                        _db.SaveChanges();
                         //productItemVM = new ProductItemVM();
                         //productItemVM.ItemName = "";
                         //productItemVM.ItemDescription = "";

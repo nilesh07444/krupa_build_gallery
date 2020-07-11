@@ -365,6 +365,9 @@
     <Compile Include="Model\tbl_PaymentHistory.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\tbl_PaymentTransaction.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\tbl_PointDetails.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
@@ -381,6 +384,9 @@
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\tbl_SecondCart.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_StockReport.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\tbl_SubProducts.cs">

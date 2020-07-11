@@ -51,5 +51,6 @@ namespace KrupaBuildGallery.Model
         public Nullable<decimal> ExtraAmount { get; set; }
         public Nullable<bool> IsExtraAmountReceived { get; set; }
         public Nullable<decimal> AdvancePaymentRecieved { get; set; }
+        public string GSTNo { get; set; }
     }
 }

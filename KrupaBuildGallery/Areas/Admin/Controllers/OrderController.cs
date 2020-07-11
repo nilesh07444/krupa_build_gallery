@@ -570,6 +570,17 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     objCommon.SaveTransaction(objOrderItm.ProductItemId.Value, objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, "Refunded amount to "+ amtrefundtext, 0, 0, clsAdminSession.UserID, DateTime.UtcNow, "Accepted Return Item Request Refund");
                     SendMessageSMS(mobilenumber, msgsms);
                     _db.SaveChanges();
+                    tbl_StockReport objstkreport = new tbl_StockReport();
+                    objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
+                    objstkreport.StockDate = DateTime.UtcNow;
+                    objstkreport.Qty = Convert.ToInt64(objOrderItm.QtyUsed);
+                    objstkreport.IsCredit = true;
+                    objstkreport.IsAdmin = false;
+                    objstkreport.CreatedBy = clsClientSession.UserID;
+                    objstkreport.ItemId = objOrderItm.ProductItemId;
+                    objstkreport.Remarks = "Ordered Item Returned:" + objOrderItm.OrderId;
+                    _db.tbl_StockReport.Add(objstkreport);
+                    _db.SaveChanges();
                 }
                 else if (objReq.ItemStatus == 7)
                 {
@@ -578,7 +589,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     objReq.ModifiedBy = clsAdminSession.UserID;
                     objOrderItm.UpdatedDate = DateTime.UtcNow;
                     _db.SaveChanges();
-                    msgsms = "You Item to Return for Order No." + objReq.OrderId +" is Accepted. You will get Item asap";
+                    msgsms = "Your Item to Replace for Order No." + objReq.OrderId +" is Accepted. You will get Item asap";
                     SendMessageSMS(mobilenumber, msgsms);
                     objCommon.SaveTransaction(objOrderItm.ProductItemId.Value, objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, "Item Replace Request Accepted", 0, 0, clsAdminSession.UserID, DateTime.UtcNow, "Accepted Replace Item Request");
                 }
@@ -608,6 +619,17 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     }
                     objReq.DateModified = DateTime.UtcNow;
                     objReq.ModifiedBy = clsAdminSession.UserID;
+                    _db.SaveChanges();
+                    tbl_StockReport objstkreport = new tbl_StockReport();
+                    objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
+                    objstkreport.StockDate = DateTime.UtcNow;
+                    objstkreport.Qty = Convert.ToInt64(objOrderItm.QtyUsed);
+                    objstkreport.IsCredit = true;
+                    objstkreport.IsAdmin = false;
+                    objstkreport.CreatedBy = clsClientSession.UserID;
+                    objstkreport.ItemId = objOrderItm.ProductItemId;
+                    objstkreport.Remarks = "Ordered Item Exchanged:" + objOrderItm.OrderId;
+                    _db.tbl_StockReport.Add(objstkreport);
                     _db.SaveChanges();
                     msgsms = "You Item is Exchanged for Order No." + objReq.OrderId + " . Amount Rs." + amtredund + " Refunded to your wallet";
                     SendMessageSMS(mobilenumber, msgsms);

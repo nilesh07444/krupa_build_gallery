@@ -563,6 +563,18 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         //SendMessageSMS(objClient.MobileNo,);
                         _db.SaveChanges();                        
                     }
+
+                    tbl_StockReport objstkreport = new tbl_StockReport();
+                    objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
+                    objstkreport.StockDate = DateTime.UtcNow;
+                    objstkreport.Qty = Convert.ToInt64(objitm.QtyUsed);
+                    objstkreport.IsCredit = true;
+                    objstkreport.IsAdmin = false;
+                    objstkreport.CreatedBy = clsClientSession.UserID;
+                    objstkreport.ItemId = objitm.ProductItemId;
+                    objstkreport.Remarks = "Ordered Item Cancelled:" + objitm.OrderId;
+                    _db.tbl_StockReport.Add(objstkreport);
+                    _db.SaveChanges();
                 }
                 else if(status == "6")
                 {

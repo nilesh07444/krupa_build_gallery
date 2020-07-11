@@ -45,5 +45,6 @@ namespace KrupaBuildGallery.Model
         public string GSTPhoto { get; set; }
         public string DistributorCode { get; set; }
         public string AddharPhoto { get; set; }
+        public string ShipGSTNo { get; set; }
     }
 }

@@ -50,6 +50,8 @@
         <EntityTypeShape EntityType="krupagalleryModel.tbl_ImportExcel" Width="1.5" PointX="3.375" PointY="21.75" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_AvailablePincode" Width="1.5" PointX="21.375" PointY="4.75" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_CashDeliveryAmount" Width="1.5" PointX="21.375" PointY="7.75" />
+        <EntityTypeShape EntityType="krupagalleryModel.tbl_PaymentTransaction" Width="1.5" PointX="9.375" PointY="21.75" />
+        <EntityTypeShape EntityType="krupagalleryModel.tbl_StockReport" Width="1.5" PointX="21.375" PointY="10.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

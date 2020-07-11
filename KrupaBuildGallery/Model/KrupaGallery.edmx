@@ -171,6 +171,7 @@
           <Property Name="GSTPhoto" Type="nvarchar" MaxLength="450" />
           <Property Name="DistributorCode" Type="nvarchar" MaxLength="150" />
           <Property Name="AddharPhoto" Type="nvarchar(max)" />
+          <Property Name="ShipGSTNo" Type="nvarchar" MaxLength="30" />
         </EntityType>
         <EntityType Name="tbl_ClientRoles">
           <Key>
@@ -508,6 +509,7 @@
           <Property Name="FinalItemPrice" Type="decimal" Precision="18" Scale="2" />
           <Property Name="VariantItemId" Type="bigint" />
           <Property Name="QtyUsed" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="MRPPrice" Type="decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="tbl_Orders">
           <Key>
@@ -550,6 +552,7 @@
           <Property Name="ExtraAmount" Type="decimal" Precision="18" Scale="2" />
           <Property Name="IsExtraAmountReceived" Type="bit" />
           <Property Name="AdvancePaymentRecieved" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="GSTNo" Type="nvarchar" MaxLength="30" />
         </EntityType>
         <EntityType Name="tbl_PaymentHistory">
           <Key>
@@ -567,6 +570,21 @@
           <Property Name="RazorpayPaymentId" Type="nvarchar" MaxLength="300" />
           <Property Name="RazorSignature" Type="nvarchar" MaxLength="300" />
           <Property Name="PaymentFor" Type="nvarchar" MaxLength="250" />
+        </EntityType>
+        <EntityType Name="tbl_PaymentTransaction">
+          <Key>
+            <PropertyRef Name="PK_PaymentTransactionId" />
+          </Key>
+          <Property Name="PK_PaymentTransactionId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IsCredit" Type="bit" Nullable="false" />
+          <Property Name="Amount" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="OrderId" Type="bigint" Nullable="false" />
+          <Property Name="OrderItemId" Type="bigint" />
+          <Property Name="Remarks" Type="nvarchar(max)" />
+          <Property Name="ModeOfPayment" Type="nvarchar" MaxLength="350" />
+          <Property Name="TransactionDate" Type="datetime" />
+          <Property Name="TransactionBy" Type="bigint" />
+          <Property Name="IsAdmin" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="tbl_PointDetails">
           <Key>
@@ -673,6 +691,20 @@
           <Property Name="ClientUserId" Type="bigint" />
           <Property Name="CreatedDate" Type="datetime" />
           <Property Name="VariantItemId" Type="bigint" />
+        </EntityType>
+        <EntityType Name="tbl_StockReport">
+          <Key>
+            <PropertyRef Name="Pk_StockReport_Id" />
+          </Key>
+          <Property Name="Pk_StockReport_Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="StockDate" Type="datetime" />
+          <Property Name="IsCredit" Type="bit" />
+          <Property Name="Remarks" Type="nvarchar(max)" />
+          <Property Name="Qty" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="ItemId" Type="bigint" />
+          <Property Name="FinancialYear" Type="nvarchar" MaxLength="100" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="IsAdmin" Type="bit" />
         </EntityType>
         <EntityType Name="tbl_SubProducts">
           <Key>
@@ -781,12 +813,14 @@
           <EntitySet Name="tbl_OrderItemDetails" EntityType="Self.tbl_OrderItemDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Orders" EntityType="Self.tbl_Orders" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_PaymentHistory" EntityType="Self.tbl_PaymentHistory" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_PaymentTransaction" EntityType="Self.tbl_PaymentTransaction" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_PointDetails" EntityType="Self.tbl_PointDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ProductItemImages" EntityType="Self.tbl_ProductItemImages" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ProductItems" EntityType="Self.tbl_ProductItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Products" EntityType="Self.tbl_Products" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ReviewRating" EntityType="Self.tbl_ReviewRating" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_SecondCart" EntityType="Self.tbl_SecondCart" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_StockReport" EntityType="Self.tbl_StockReport" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_SubProducts" EntityType="Self.tbl_SubProducts" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Transactions" EntityType="Self.tbl_Transactions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Units" EntityType="Self.tbl_Units" Schema="dbo" store:Type="Tables" />
@@ -875,6 +909,7 @@
           <Property Name="GSTPhoto" Type="String" MaxLength="450" FixedLength="false" Unicode="true" />
           <Property Name="DistributorCode" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="AddharPhoto" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ShipGSTNo" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_ClientRoles">
           <Key>
@@ -1093,6 +1128,7 @@
           <Property Name="ExtraAmount" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="IsExtraAmountReceived" Type="Boolean" />
           <Property Name="AdvancePaymentRecieved" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="GSTNo" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_PaymentHistory">
           <Key>
@@ -1259,6 +1295,8 @@
           <EntitySet Name="tbl_ImportExcel" EntityType="krupagalleryModel.tbl_ImportExcel" />
           <EntitySet Name="tbl_AvailablePincode" EntityType="krupagalleryModel.tbl_AvailablePincode" />
           <EntitySet Name="tbl_CashDeliveryAmount" EntityType="krupagalleryModel.tbl_CashDeliveryAmount" />
+          <EntitySet Name="tbl_PaymentTransaction" EntityType="krupagalleryModel.tbl_PaymentTransaction" />
+          <EntitySet Name="tbl_StockReport" EntityType="krupagalleryModel.tbl_StockReport" />
         </EntityContainer>
         <EntityType Name="tbl_AdminRoles">
           <Key>
@@ -1540,6 +1578,7 @@
           <Property Name="FinalItemPrice" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="VariantItemId" Type="Int64" />
           <Property Name="QtyUsed" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="MRPPrice" Type="Decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="tbl_ReviewRating">
           <Key>
@@ -1613,6 +1652,35 @@
           <Property Name="IsAccept" Type="Boolean" />
           <Property Name="Amount" Type="Decimal" Precision="18" Scale="2" />
         </EntityType>
+        <EntityType Name="tbl_PaymentTransaction">
+          <Key>
+            <PropertyRef Name="PK_PaymentTransactionId" />
+          </Key>
+          <Property Name="PK_PaymentTransactionId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IsCredit" Type="Boolean" Nullable="false" />
+          <Property Name="Amount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="OrderId" Type="Int64" Nullable="false" />
+          <Property Name="OrderItemId" Type="Int64" />
+          <Property Name="Remarks" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ModeOfPayment" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="TransactionDate" Type="DateTime" Precision="3" />
+          <Property Name="TransactionBy" Type="Int64" />
+          <Property Name="IsAdmin" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_StockReport">
+          <Key>
+            <PropertyRef Name="Pk_StockReport_Id" />
+          </Key>
+          <Property Name="Pk_StockReport_Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="StockDate" Type="DateTime" Precision="3" />
+          <Property Name="IsCredit" Type="Boolean" />
+          <Property Name="Remarks" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Qty" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="ItemId" Type="Int64" />
+          <Property Name="FinancialYear" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="IsAdmin" Type="Boolean" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1662,6 +1730,7 @@
           <EntitySetMapping Name="tbl_ClientOtherDetails">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_ClientOtherDetails">
               <MappingFragment StoreEntitySet="tbl_ClientOtherDetails">
+                <ScalarProperty Name="ShipGSTNo" ColumnName="ShipGSTNo" />
                 <ScalarProperty Name="ClientOtherDetailsId" ColumnName="ClientOtherDetailsId" />
                 <ScalarProperty Name="ClientUserId" ColumnName="ClientUserId" />
                 <ScalarProperty Name="Addharcardno" ColumnName="Addharcardno" />
@@ -1886,6 +1955,7 @@
           <EntitySetMapping Name="tbl_Orders">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_Orders">
               <MappingFragment StoreEntitySet="tbl_Orders">
+                <ScalarProperty Name="GSTNo" ColumnName="GSTNo" />
                 <ScalarProperty Name="AdvancePaymentRecieved" ColumnName="AdvancePaymentRecieved" />
                 <ScalarProperty Name="IsExtraAmountReceived" ColumnName="IsExtraAmountReceived" />
                 <ScalarProperty Name="ExtraAmount" ColumnName="ExtraAmount" />
@@ -2292,6 +2362,7 @@
           <EntitySetMapping Name="tbl_OrderItemDetails">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_OrderItemDetails">
               <MappingFragment StoreEntitySet="tbl_OrderItemDetails">
+                <ScalarProperty Name="MRPPrice" ColumnName="MRPPrice" />
                 <ScalarProperty Name="QtyUsed" ColumnName="QtyUsed" />
                 <ScalarProperty Name="VariantItemId" ColumnName="VariantItemId" />
                 <ScalarProperty Name="FinalItemPrice" ColumnName="FinalItemPrice" />
@@ -2390,6 +2461,37 @@
                 <ScalarProperty Name="SentBy" ColumnName="SentBy" />
                 <ScalarProperty Name="ReceivedBy" ColumnName="ReceivedBy" />
                 <ScalarProperty Name="tbl_CashOrderAmount_Id" ColumnName="tbl_CashOrderAmount_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_PaymentTransaction">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_PaymentTransaction">
+              <MappingFragment StoreEntitySet="tbl_PaymentTransaction">
+                <ScalarProperty Name="IsAdmin" ColumnName="IsAdmin" />
+                <ScalarProperty Name="TransactionBy" ColumnName="TransactionBy" />
+                <ScalarProperty Name="TransactionDate" ColumnName="TransactionDate" />
+                <ScalarProperty Name="ModeOfPayment" ColumnName="ModeOfPayment" />
+                <ScalarProperty Name="Remarks" ColumnName="Remarks" />
+                <ScalarProperty Name="OrderItemId" ColumnName="OrderItemId" />
+                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="IsCredit" ColumnName="IsCredit" />
+                <ScalarProperty Name="PK_PaymentTransactionId" ColumnName="PK_PaymentTransactionId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_StockReport">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_StockReport">
+              <MappingFragment StoreEntitySet="tbl_StockReport">
+                <ScalarProperty Name="IsAdmin" ColumnName="IsAdmin" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="FinancialYear" ColumnName="FinancialYear" />
+                <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+                <ScalarProperty Name="Qty" ColumnName="Qty" />
+                <ScalarProperty Name="Remarks" ColumnName="Remarks" />
+                <ScalarProperty Name="IsCredit" ColumnName="IsCredit" />
+                <ScalarProperty Name="StockDate" ColumnName="StockDate" />
+                <ScalarProperty Name="Pk_StockReport_Id" ColumnName="Pk_StockReport_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

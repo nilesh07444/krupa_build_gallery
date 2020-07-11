@@ -68,5 +68,7 @@ namespace KrupaBuildGallery.Model
         public DbSet<tbl_ImportExcel> tbl_ImportExcel { get; set; }
         public DbSet<tbl_AvailablePincode> tbl_AvailablePincode { get; set; }
         public DbSet<tbl_CashDeliveryAmount> tbl_CashDeliveryAmount { get; set; }
+        public DbSet<tbl_PaymentTransaction> tbl_PaymentTransaction { get; set; }
+        public DbSet<tbl_StockReport> tbl_StockReport { get; set; }
     }
 }

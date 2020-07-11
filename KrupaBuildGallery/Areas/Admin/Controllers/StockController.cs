@@ -141,8 +141,19 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         objItemStock.UpdatedBy = LoggedInUserId;
                         objItemStock.UpdatedDate = DateTime.UtcNow;
                         _db.tbl_ItemStocks.Add(objItemStock);
-                        _db.SaveChanges();
 
+                        tbl_StockReport objstkreport = new tbl_StockReport();
+                        objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
+                        objstkreport.StockDate = DateTime.UtcNow;
+                        objstkreport.Qty = Convert.ToInt64(itemStockVM.Quantity);
+                        objstkreport.IsCredit = true;
+                        objstkreport.IsAdmin = true;
+                        objstkreport.CreatedBy = LoggedInUserId;
+                        objstkreport.ItemId = itemStockVM.ProductItemId;
+                        objstkreport.Remarks = "Stock Added";
+                        _db.tbl_StockReport.Add(objstkreport);
+                        _db.SaveChanges();
+                   
                         return RedirectToAction("Index");
 
                     } 
@@ -221,6 +232,17 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         objtbl_ItemStocks.UpdatedBy = LoggedInUserId;
                         objtbl_ItemStocks.UpdatedDate = DateTime.UtcNow;
 
+                        _db.SaveChanges();
+                        tbl_StockReport objstkreport = new tbl_StockReport();
+                        objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
+                        objstkreport.StockDate = DateTime.UtcNow;
+                        objstkreport.Qty = Convert.ToInt64(objtbl_ItemStocks.Qty);
+                        objstkreport.IsCredit = false;
+                        objstkreport.IsAdmin = true;
+                        objstkreport.CreatedBy = LoggedInUserId;
+                        objstkreport.ItemId = objtbl_ItemStocks.ProductItemId;
+                        objstkreport.Remarks = "Stock Deleted";
+                        _db.tbl_StockReport.Add(objstkreport);
                         _db.SaveChanges();
                         ReturnMessage = "success";
                     }
