@@ -312,6 +312,7 @@
                                         <th>GST</th>
                                         <th>Total</th>
                                         <th>Dispatch Item</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -390,6 +391,12 @@
                                                     else
                                                     {
                                                         <span class="badge @stauscolor">@objorderItem.ItemStatustxt</span>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    @if (objorderItem.IsDeleted == true && (objorderItem.ItemStatus == 5 || objorderItem.ItemStatus == 6 || objorderItem.ItemStatus == 8))
+                                                    {
+                                                        <a href="javascript:void(0);" onclick="invoiceprintItem('@objorderItem.OrderItemId','@objorderItem.OrderId');" title="Print Invoice"><i class="fa fa-file font-success"></i></a>
                                                     }
                                                 </td>
                                             </tr>
@@ -482,6 +489,9 @@
         </div>
     </div>
 </div>
+<div style="display: none;" id="dvPrint">
+
+</div>
 <script>
     function changestatus(status, statusid, orderid) {
         if (statusid == 2) {
@@ -509,7 +519,7 @@
                                 console.log("error");
                             }
                         });
-                    }                    
+                    }
                     return;
                 }
             }
@@ -527,7 +537,16 @@
             $("#changestatustodisplatched #statusids").val(statusid);
         }
     }
-
+    function invoiceprintItem(orderiddetailitm,orderid) {
+        $("#dvPrint").load('/admin/Distributor/PrintInvoiceOrderItem?OrderItemId=' + orderiddetailitm + '&OrderId=' + orderid, function () {
+            w = window.open();
+            w.document.write($("#dvPrint").html());
+            setTimeout(function () {
+                w.print();
+                w.close();
+            }, 100);
+        });
+    }
     function setshipchargemodl(orderid) {
         $("#setshipchargemodal").modal("show");
         $("#setshipchargemodal #orderids").val(orderid);
@@ -537,7 +556,7 @@
             alert("Please Enter displatch time");
             return;
         }
-        
+
         $("#changestatustoconfirmed").modal("hide");
         StartLoading();
         var URL = '/Admin/Order/ChangeOrderStatus';
@@ -565,7 +584,7 @@
     });
 
     jQuery(document).on("click", "#savestatustodispatched", function () {
-        
+
         $("#changestatustodisplatched").modal("hide");
         StartLoading();
 
@@ -648,7 +667,7 @@
             $(".chkrdr:checked").each(function () {
                 stritddd = stritddd + $(this).val() + '^';
             });
-             
+
             $("#assignpersonmodal").modal("hide");
             StartLoading();
 
@@ -663,8 +682,8 @@
                     StopLoading();
 
                     alert("Item Assigned");
-                    
-                    location.reload(); 
+
+                    location.reload();
                 },
                 error: function (error) {
                     StopLoading();
@@ -683,11 +702,11 @@
                 async: true,
                 url: URL + "?OrderId=" + $("#orderidd").val() + "&OrderItemId=" + $("#orderitmidd").val() + "&PersonId=" + $("#Personname").val(),
                 success: function (result) {
-                    StopLoading(); 
+                    StopLoading();
                     $("#assignpersonmodal").modal("hide");
                     alert("Item Assigned");
                     location.reload();
-                    
+
                 },
                 error: function (error) {
                     StopLoading();

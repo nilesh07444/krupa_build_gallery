@@ -27,5 +27,7 @@ namespace KrupaBuildGallery.ViewModel
         public decimal FinalAmt { get; set; }
         public decimal ShipingChargeOf1Item { get; set; }
         public string DeliveryPersonName { get; set; }
+        public bool IsDeleted { get; set; }
+        public DateTime modifieddate { get; set; }
     }
 }

@@ -124,6 +124,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                 GSTAmt = p.GSTAmt.Value,
                                 IGSTAmt = p.IGSTAmt.Value,
                                 ItemImg = c.MainImage,
+                                IsDeleted = p.IsDelete,
                                 ItemStatus = p.ItemStatus.Value,
                                 VariantQtytxt = vr.UnitQty,
                                 Discount = p.Discount.HasValue ? p.Discount.Value : 0
@@ -393,6 +394,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     decimal amtCrd = 0;
                     decimal amronl = 0;
                     decimal amtwlt1 = 0;
+                    objOrderItm.IsDelete = true;
+                    objOrderItm.UpdatedDate = DateTime.UtcNow;
                     tbl_Orders objtbl_Orders = _db.tbl_Orders.Where(o => o.OrderId == objReq.OrderId).FirstOrDefault();
                     if(objtbl_Orders != null)
                     {
@@ -573,6 +576,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     objReq.IsApproved = true;
                     objReq.DateModified = DateTime.UtcNow;
                     objReq.ModifiedBy = clsAdminSession.UserID;
+                    objOrderItm.UpdatedDate = DateTime.UtcNow;
                     _db.SaveChanges();
                     msgsms = "You Item to Return for Order No." + objReq.OrderId +" is Accepted. You will get Item asap";
                     SendMessageSMS(mobilenumber, msgsms);
@@ -582,6 +586,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 {
                     objReq.IsApproved = true;
                     objOrderItm.IsDelete = true;
+                    objOrderItm.UpdatedDate = DateTime.UtcNow;
                     decimal amt = objReq.Amount.Value;
                     decimal deprc = Math.Round((objReq.Amount.Value * objSettings.ExchangePer.Value) / 100, 2);
                     decimal amtredund = amt - deprc;

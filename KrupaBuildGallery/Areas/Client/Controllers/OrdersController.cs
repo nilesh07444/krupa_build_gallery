@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 
@@ -145,6 +146,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                                        GSTAmt = p.GSTAmt.Value,
                                                        IGSTAmt = p.IGSTAmt.Value,
                                                        ItemImg = c.MainImage,
+                                                       IsDeleted = p.IsDelete,
                                                        VariantQtytxt = vr.UnitQty,
                                                        Discount = p.Discount.HasValue ? p.Discount.Value : 0,
                                                        ItemStatus = p.ItemStatus.HasValue ? p.ItemStatus.Value : 1,
@@ -528,6 +530,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     }
                     objitm.ItemStatus = 5;
                     objitm.IsDelete = true;
+                    objitm.UpdatedDate = DateTime.UtcNow;
                     if (objordr.IsCashOnDelivery.Value == true)
                     {
                         objordr.AmountDue = objordr.AmountDue - amtrefund;
@@ -694,6 +697,253 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             }
             _db.SaveChanges();
             return "Success";
+        }
+
+        public string PrintInvoiceOrderItem(long OrderItemId, long OrderId)
+        {
+            StreamReader sr;
+            string newhtmldata = "";
+            var objSettings = _db.tbl_GeneralSetting.FirstOrDefault();
+            OrderVM objOrder = new OrderVM();
+            objOrder = (from p in _db.tbl_Orders
+                        join c in _db.tbl_ClientUsers on p.ClientUserId equals c.ClientUserId
+                        join u in _db.tbl_ClientOtherDetails on c.ClientUserId equals u.ClientUserId
+                        where p.OrderId == OrderId
+                        select new OrderVM
+                        {
+                            OrderId = p.OrderId,
+                            ClientUserName = c.FirstName + " " + c.LastName,
+                            ClientUserId = p.ClientUserId,
+                            ClientAddress = u.Address + ", " + u.City,
+                            ClientEmail = c.Email,
+                            ClientMobileNo = c.MobileNo,
+                            OrderAmount = p.OrderAmount,
+                            OrderShipCity = p.OrderShipCity,
+                            OrderShipState = p.OrderShipState,
+                            OrderShipAddress = p.OrderShipAddress,
+                            OrderPincode = p.OrderShipPincode,
+                            OrderShipClientName = p.OrderShipClientName,
+                            OrderShipClientPhone = p.OrderShipClientPhone,
+                            OrderStatusId = p.OrderStatusId,
+                            PaymentType = p.PaymentType,
+                            OrderDate = p.CreatedDate,
+                            InvoiceNo = p.InvoiceNo.Value,
+                            InvoiceYear = p.InvoiceYear,
+                            ShipmentCharge = p.ShippingCharge.HasValue ? p.ShippingCharge.Value : 0,
+                            ShippingStatus = p.ShippingStatus.HasValue ? p.ShippingStatus.Value : 2,
+                            ExtraAmount = p.ExtraAmount.HasValue ? p.ExtraAmount.Value : 0
+                        }).OrderByDescending(x => x.OrderDate).FirstOrDefault();
+
+            if (objOrder != null)
+            {
+                objOrder.OrderStatus = GetOrderStatus(objOrder.OrderStatusId);
+                OrderItemsVM objItem = (from p in _db.tbl_OrderItemDetails
+                                        join c in _db.tbl_ProductItems on p.ProductItemId equals c.ProductItemId
+                                        join u in _db.tbl_ItemVariant on p.VariantItemId equals u.VariantItemId
+                                        where p.OrderId == OrderId && p.OrderDetailId == OrderItemId
+                                        select new OrderItemsVM
+                                        {
+                                            OrderId = p.OrderId.Value,
+                                            OrderItemId = p.OrderDetailId,
+                                            ProductItemId = p.ProductItemId.Value,
+                                            ItemName = p.ItemName,
+                                            Qty = p.Qty.Value,
+                                            Price = p.Price.Value,
+                                            FinalAmt = p.FinalItemPrice.HasValue ? p.FinalItemPrice.Value : 0,
+                                            Sku = p.Sku,
+                                            IsDeleted = p.IsDelete,
+                                            GSTAmt = p.GSTAmt.Value,
+                                            IGSTAmt = p.IGSTAmt.Value,
+                                            ItemImg = c.MainImage,
+                                            ItemStatus = p.ItemStatus.HasValue ? p.ItemStatus.Value : 0,
+                                            ShipingChargeOf1Item = c.ShippingCharge.HasValue ? c.ShippingCharge.Value : 0,
+                                            VariantQtytxt = u.UnitQty,
+                                            GST_Per = (p.GSTPer.HasValue ? p.GSTPer.Value : 0),
+                                            Discount = p.Discount.HasValue ? p.Discount.Value : 0,
+                                            modifieddate = p.UpdatedDate.HasValue ? p.UpdatedDate.Value : DateTime.Now
+                                        }).OrderByDescending(x => x.GST_Per).FirstOrDefault();
+
+                string file = Server.MapPath("~/templates/Invoice.html");
+                if (objItem.ItemStatus == 5 && objItem.IsDeleted == true)
+                {
+                    file = Server.MapPath("~/templates/InvoiceCancel.html");
+                }
+                else if (objItem.ItemStatus == 6 && objItem.IsDeleted == true)
+                {
+                    file = Server.MapPath("~/templates/InvoiceReturn.html");
+                }
+                else if (objItem.ItemStatus == 8 && objItem.IsDeleted == true)
+                {
+                    file = Server.MapPath("~/templates/InvoiceExchange.html");
+                }
+                //if (objOrder.OrderShipState != "Gujarat")
+                //{
+                //    file = Server.MapPath("~/templates/InvoiceIGST.html");
+                //}
+                string htmldata = "";
+
+                FileInfo fi = new FileInfo(file);
+                sr = System.IO.File.OpenText(file);
+                htmldata += sr.ReadToEnd();
+                string InvoiceNo = "S&S/" + objOrder.InvoiceYear + "/" + objOrder.InvoiceNo;
+                string DateOfInvoice = objOrder.OrderDate.ToString("dd-MM-yyyy");
+                string orderNo = objOrder.OrderId.ToString(); ;
+                string ClientUserName = objOrder.ClientUserName;
+                string ItemHtmls = "";
+                decimal TotalFinal = 0;
+                decimal SubTotal = 0;
+                string DateOfCancelReturnExchage = objItem.modifieddate.ToString("dd-MM-yyyy");
+                StringBuilder srBuild = new StringBuilder();
+
+                int cntsrNo = 1;
+
+
+                // decimal InclusiveGST = Math.Round(objItem.Price - objItem.Price * (100 / (100 + objItem.GST_Per)), 2);
+                // decimal PreGSTPrice = Math.Round(objItem.Price - InclusiveGST, 2);
+
+                decimal basicTotalPrice = Math.Round(objItem.Price * objItem.Qty, 2);
+                decimal SGST = Math.Round(Convert.ToDecimal(objItem.GST_Per / 2), 2);
+                decimal CGST = Math.Round(Convert.ToDecimal(objItem.GST_Per / 2), 2);
+                decimal SGSTAmt = Math.Round(objItem.GSTAmt / 2, 2);
+                decimal CGSTAmt = Math.Round(objItem.GSTAmt / 2, 2);
+                decimal IGSTAmt = Math.Round(objItem.GSTAmt);
+                decimal IGST = Math.Round(Convert.ToDecimal(objItem.GST_Per));
+                decimal FinalPrice = Math.Round(basicTotalPrice + objItem.GSTAmt - objItem.Discount, 2);
+                decimal TaxableAmt = Math.Round(basicTotalPrice - objItem.Discount, 2);
+                TotalFinal = TotalFinal + FinalPrice;
+                srBuild.Append("<tr>");
+                srBuild.Append("<td>" + cntsrNo + "</td>");
+                srBuild.Append("<td>" + objItem.ItemName + "</td>");
+                srBuild.Append("<td>" + objItem.HSNCode + "</td>");
+                srBuild.Append("<td class=\"text-center\">" + objItem.Qty + "</td>");
+                srBuild.Append("<td class=\"text-center\">" + objItem.VariantQtytxt + "</td>");
+                srBuild.Append("<td class=\"text-center\">" + objItem.Price + "</td>");
+                srBuild.Append("<td class=\"text-center\">" + basicTotalPrice + "</td>");
+                srBuild.Append("<td class=\"text-center\">" + objItem.Discount + "</td>");
+                srBuild.Append("<td class=\"text-center\">" + TaxableAmt + "</td>");
+
+
+                srBuild.Append("<td class=\"text-center\">" + Convert.ToDecimal(objItem.GST_Per).ToString("0.##") + "%</td>");
+                srBuild.Append("<td class=\"text-center\">" + Math.Round(FinalPrice, 2) + "</td>");
+                srBuild.Append("</tr>");
+                cntsrNo = cntsrNo + 1;
+
+
+                decimal shipcharge = objItem.ShipingChargeOf1Item;
+                SubTotal = TotalFinal;
+                if (objItem.ItemStatus == 5)
+                {
+                    if (objOrder.OrderPincode == "389001")
+                    {
+                        TotalFinal = TotalFinal + objItem.ShipingChargeOf1Item;
+                    }
+                    else
+                    {
+                        shipcharge = 0;
+                    }
+                }
+
+                decimal amtcut = 0;
+                if (objItem.ItemStatus == 6)
+                {
+                    if (objOrder.OrderPincode == "389001")
+                    {
+                        amtcut = Math.Round((objItem.FinalAmt * objSettings.ReturnPerInGodhra.Value) / 100, 2);
+                    }
+                    else
+                    {
+                        amtcut = Math.Round((objItem.FinalAmt * objSettings.ReturnPerOutGodhra.Value) / 100, 2);
+                    }
+
+                    TotalFinal = TotalFinal - amtcut;
+                }
+                else if (objItem.ItemStatus == 8)
+                {
+                    amtcut = Math.Round((objItem.FinalAmt * objSettings.ExchangePer.Value) / 100, 2);
+                    TotalFinal = TotalFinal - amtcut;
+                }
+                // decimal refundamtt = objOrderItm.FinalItemPrice.Value - amtcut;
+
+                ItemHtmls = srBuild.ToString();
+                List<OrderItemsVM> lstitms = new List<OrderItemsVM>();
+                lstitms.Add(objItem);
+                string GST_HTML_DATA = getGSTCalculationHtmlDataByOrder(lstitms, objOrder.OrderShipState != "Gujarat");
+
+                newhtmldata = htmldata.Replace("--INVOICENO--", InvoiceNo).Replace("--CANCELEDDATE--", DateOfCancelReturnExchage).Replace("--RETURNDATE--", DateOfCancelReturnExchage).Replace("--INVOICEDATE--", DateOfInvoice).Replace("--ORDERNO--", orderNo).Replace("--CLIENTUSERNAME--", ClientUserName).Replace("--CLIENTUSERADDRESS--", objOrder.ClientAddress).Replace("--CLIENTUSEREMAIL--", objOrder.ClientEmail).Replace("--CLIENTUSERMOBILE--", objOrder.ClientMobileNo).Replace("--ITEMLIST--", ItemHtmls).Replace("--GSTCALCULATIONDATA--", GST_HTML_DATA).Replace("--SHIPPING--", Math.Round(shipcharge, 2).ToString()).Replace("--SUBTOTAL--", Math.Round(SubTotal, 2).ToString()).Replace("--TOTAL--", Math.Round(TotalFinal, 2).ToString()).Replace("--EXTRAAMOUNT--", Math.Round(objOrder.ExtraAmount, 2).ToString()).Replace("--ExchangeCHARGE--", Math.Round(amtcut, 2).ToString()).Replace("--RETURNCHARGE--", Math.Round(amtcut, 2).ToString());
+
+            }
+
+            return newhtmldata;
+            //return "Receipt_" + objPymt.PaymentHistory_Id+".pdf";
+        }
+
+
+        private string getGSTCalculationHtmlDataByOrder(List<OrderItemsVM> lstOrderItms, bool IsIGST)
+        {
+            string htmlData = string.Empty;
+
+            StringBuilder srBuild = new StringBuilder();
+
+
+            decimal[] lstGSTPer = new decimal[] { 5.00m, 12.00m, 18.00m, 28.00m };
+
+            decimal Grand_TotaltaxableAmount = 0;
+            decimal Grand_IGST_Amt = 0;
+            decimal Grand_CGST_Amt = 0;
+            decimal Grand_SGST_Amt = 0;
+            decimal Grand_FinalAmt = 0;
+
+            lstGSTPer.ToList().ForEach(per =>
+            {
+                decimal TotaltaxableAmount = lstOrderItms.Where(x => x.GST_Per == per).Select(x => x.Price * x.Qty - x.Discount).Sum();
+
+                decimal IGST_Amt = 0;
+                decimal CGST_Amt = 0;
+                decimal SGST_Amt = 0;
+
+                if (IsIGST)
+                {
+                    IGST_Amt = (TotaltaxableAmount * per) / 100;
+                }
+                else
+                {
+                    decimal half_per = per / 2;
+                    CGST_Amt = (TotaltaxableAmount * half_per) / 100;
+                    SGST_Amt = (TotaltaxableAmount * half_per) / 100;
+                }
+
+                decimal FinalAmt = TotaltaxableAmount + IGST_Amt + CGST_Amt + SGST_Amt;
+
+                srBuild.Append("<tr>");
+                srBuild.Append("<td class=\"text-center\"><strong> " + per.ToString("0.##") + "%</strong></td>");
+                srBuild.Append("<td class=\"text-center\">" + TotaltaxableAmount.ToString("0.##") + "</td>");
+                srBuild.Append("<td class=\"text-center\">" + IGST_Amt.ToString("0.##") + "</td>");
+                srBuild.Append("<td class=\"text-center\">" + CGST_Amt.ToString("0.##") + "</td>");
+                srBuild.Append("<td class=\"text-center\">" + SGST_Amt.ToString("0.##") + "</td>");
+                srBuild.Append("<td class=\"text-center\">" + FinalAmt.ToString("0.##") + "</td>");
+                srBuild.Append("</tr>");
+
+                Grand_TotaltaxableAmount += TotaltaxableAmount;
+                Grand_IGST_Amt += IGST_Amt;
+                Grand_CGST_Amt += CGST_Amt;
+                Grand_SGST_Amt += SGST_Amt;
+                Grand_FinalAmt += FinalAmt;
+
+            });
+
+            // Taxable Amount
+            srBuild.Append("<tr>");
+            srBuild.Append("<td class=\"text-center\"><strong>Taxable Amount</strong></td>");
+            srBuild.Append("<td class=\"text-center\">" + Grand_TotaltaxableAmount.ToString("0.##") + "</td>");
+            srBuild.Append("<td class=\"text-center\">" + Grand_IGST_Amt.ToString("0.##") + "</td>");
+            srBuild.Append("<td class=\"text-center\">" + Grand_CGST_Amt.ToString("0.##") + "</td>");
+            srBuild.Append("<td class=\"text-center\">" + Grand_SGST_Amt.ToString("0.##") + "</td>");
+            srBuild.Append("<td class=\"text-center\">" + Grand_FinalAmt.ToString("0.##") + "</td>");
+            srBuild.Append("</tr>");
+
+            htmlData = srBuild.ToString();
+
+            return htmlData;
         }
     }
 }

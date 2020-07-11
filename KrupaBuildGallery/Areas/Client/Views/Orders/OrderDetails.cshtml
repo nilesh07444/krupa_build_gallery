@@ -369,7 +369,12 @@
                                                     {
                                                         <a href="javascript:void(0)" onclick="ratingreview('@objorderItem.OrderItemId');" style="margin-left:15px;">Rate it</a>
                                                     }
+                                                    @if (objorderItem.IsDeleted == true && (objorderItem.ItemStatus == 5 || objorderItem.ItemStatus == 6 || objorderItem.ItemStatus == 8))
+                                                    {
+                                                        <a href="javascript:void(0);" onclick="invoiceprintItem('@objorderItem.OrderItemId','@objorderItem.OrderId');" title="Print Invoice"><i class="fa fa-file font-success"></i></a>
+                                                    }
                                                 </td>
+
                                             </tr>
                                         }
                                     }
@@ -873,6 +878,18 @@
         }
      });
         
+    }
+
+    function invoiceprintItem(orderiddetailitm, orderid) {
+        $("#dvPrint").load('/client/orders/PrintInvoiceOrderItem?OrderItemId=' + orderiddetailitm + '&OrderId=' + orderid, function () {
+            w = window.open();
+            w.document.write($("#dvPrint").html());
+            setTimeout(function () {
+                $("#dvPrint").html("");
+                w.print();
+                w.close();
+            }, 100);
+        });
     }
 
 </script>
