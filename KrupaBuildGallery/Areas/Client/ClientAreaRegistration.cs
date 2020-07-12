@@ -160,7 +160,16 @@ namespace KrupaBuildGallery.Areas.Client
                 "myprofile/changepassword",
                 new { controller = "MyProfile", action = "ChangePassword", id = UrlParameter.Optional }
             );
-
+            context.MapRoute(
+              "Client_paymentreport",
+              "myprofile/paymentreport",
+              new { controller = "MyProfile", action = "PaymentReport", id = UrlParameter.Optional }
+          );
+            context.MapRoute(
+             "Client_paymentreportexport",
+             "myprofile/paymentreportexport",
+             new { controller = "MyProfile", action = "ExportPaymentReport", id = UrlParameter.Optional }
+         );
             context.MapRoute(
                 "Client_default",
                 "client/{controller}/{action}/{id}",

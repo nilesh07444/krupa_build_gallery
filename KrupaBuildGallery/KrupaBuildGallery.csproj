@@ -4036,6 +4036,7 @@
     <Content Include="Areas\Admin\Views\ContactUsMessage\View.cshtml" />
     <Content Include="Areas\Admin\Views\Stock\StockReport.cshtml" />
     <Content Include="Areas\Admin\Views\Order\PaymentReport.cshtml" />
+    <Content Include="Areas\Client\Views\MyProfile\PaymentReport.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />
@@ -4055,7 +4056,10 @@
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\prism.min.js" />
     <Content Include="templates\Invoice.html" />
+    <Content Include="templates\InvoiceCancel.html" />
+    <Content Include="templates\InvoiceExchange.html" />
     <Content Include="templates\InvoiceIGST.html" />
+    <Content Include="templates\InvoiceReturn.html" />
     <Content Include="templates\ReceiptLatest.html" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">

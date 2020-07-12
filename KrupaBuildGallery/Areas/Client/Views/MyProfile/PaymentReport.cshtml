@@ -1,0 +1,86 @@
+﻿@using KrupaBuildGallery.Model;
+@{
+    ViewBag.Title = "Payment Report";
+}
+<style>
+    .contact-page .theme-form input {
+        padding: 10px 25px;
+    }
+</style>
+<!-- breadcrumb start -->
+<div class="breadcrumb-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="page-title">
+                    <h2>Payment Report</h2>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <nav aria-label="breadcrumb" class="theme-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active">Payment Report</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<section class="section-b-space">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-3">
+                <label>Payment Method *</label>
+                <select id="paymentmode" class="form-control">
+                    <option value="All">All</option>
+                    <option value="OnlinePayment">OnlinePayment</option>
+                    <option value="Cash">Cash</option>
+                    <option value="Wallet">Wallet</option>
+                    <option value="Credit">Credit</option>
+                </select>
+            </div>
+            <div class="col-sm-3">
+                <label>Start Date *</label>
+                <input class="form-control col-md-8 clsDatePicker text-box single-line valid" id="StartDate" name="StartDate" placeholder="DD/MM/YYY" readonly="readonly" type="text" value="">
+            </div>
+            <div class="col-sm-3">
+                <label>End Date *</label>
+                <input class="form-control col-md-8 clsDatePicker text-box single-line valid" id="EndDate" name="EndDate" placeholder="DD/MM/YYY" readonly="readonly" type="text" value="">
+            </div>
+            <div class="col-sm-2">
+                <input type="button" value="Export To Excel" class="btn btn-info" onclick="exporttoexcel();" style="position: absolute; bottom: 0;" />
+            </div>
+        </div>
+        <a href="" id="export" target="_blank" style="display:none;">export</a>
+    </div>
+</section>
+
+<script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script>
+    jQuery(document).ready(function () {
+
+        jQuery(".clsDatePicker").datepicker({
+            format: "dd/mm/yyyy",
+            autoclose: true
+        });
+
+    });
+
+    function exporttoexcel() {
+        if ($("#StartDate").val() == "") {
+            alert("Please select Start Date");
+            return false;
+        }
+
+        if ($("#EndDate").val() == "") {
+            alert("Please select End Date");
+            return false;
+        }
+
+        $("#export").attr("href", "/myprofile/paymentreportexport?StartDate=" + $("#StartDate").val() + "&EndDate=" + $("#EndDate").val()+"&PaymentMode=" + $('#paymentmode').val());
+        $("#export")[0].click();
+    }
+</script>
