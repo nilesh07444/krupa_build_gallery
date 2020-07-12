@@ -545,9 +545,10 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             objclientuss.WalletAmt = objclientuss.WalletAmt - amtwallet;
                         }
                         _db.SaveChanges();
+                        objcmn.SavePaymentTransaction(0, objOrder.OrderId, true, amtwallet, "Payment By Wallet", clsClientSession.UserID, false, DateTime.UtcNow, "Wallet");
+                        objcmn.SaveTransaction(0, 0, objOrder.OrderId, "Payment By Wallet : Rs" + amtwallet, amtwallet, clsClientSession.UserID, 0, DateTime.UtcNow, "Wallet Payment");
                     }
-                    objcmn.SavePaymentTransaction(0, objOrder.OrderId, true, amtwallet, "Payment By Wallet", clsClientSession.UserID,false, DateTime.UtcNow, "Wallet");
-                    objcmn.SaveTransaction(0,0,objOrder.OrderId, "Payment By Wallet : Rs"+ amtwallet,amtwallet, clsClientSession.UserID, 0, DateTime.UtcNow, "Wallet Payment");
+                    
                     if(amtcredit > 0)
                     {
                         objcmn.SaveTransaction(0, 0, objOrder.OrderId, "Payment By Credit Used : Rs" + amtcredit, amtcredit, clsClientSession.UserID, 0, DateTime.UtcNow, "Credit Used Payment");

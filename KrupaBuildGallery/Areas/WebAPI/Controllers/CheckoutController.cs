@@ -506,9 +506,10 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                             objclientuss.WalletAmt = objclientuss.WalletAmt - amtwallet;
                         }
                         _db.SaveChanges();
+                        objcmn.SavePaymentTransaction(0, objOrder.OrderId, true, amtwallet, "Payment By Wallet", clientusrid, false, DateTime.UtcNow, "Wallet");
+                        objcmn.SaveTransaction(0, 0, objOrder.OrderId, "Payment By Wallet : Rs" + amtwallet, amtwallet, clientusrid, 0, DateTime.UtcNow, "Wallet Payment");
                     }
-                    objcmn.SavePaymentTransaction(0, objOrder.OrderId, true, amtwallet, "Payment By Wallet",clientusrid, false, DateTime.UtcNow, "Wallet");
-                    objcmn.SaveTransaction(0, 0, objOrder.OrderId, "Payment By Wallet : Rs" + amtwallet, amtwallet, clientusrid, 0, DateTime.UtcNow, "Wallet Payment");
+                    
                     if (amtcredit > 0)
                     {
                         objcmn.SavePaymentTransaction(0, objOrder.OrderId, true, amtcredit, "Payment By Credit", clientusrid, false, DateTime.UtcNow, "Credit");

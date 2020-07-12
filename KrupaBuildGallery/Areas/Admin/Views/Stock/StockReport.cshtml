@@ -1,0 +1,225 @@
+﻿
+@{
+    ViewBag.Title = "StockReport";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    List<SelectListItem> lstCats = ViewData["CategoryList"] as List<SelectListItem>;
+    List<SelectListItem> lstProdts = ViewData["ProductList"] as List<SelectListItem>;
+    List<SelectListItem> lstSubProdts = ViewData["SubProductList"] as List<SelectListItem>;
+}
+
+    <div class="page-body">
+
+        <!-- Container-fluid starts-->
+        <div class="container-fluid">
+            <div class="page-header">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="page-header-left">
+                            <h3>
+                                Stock Report
+                            </h3>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <ol class="breadcrumb pull-right">
+                            <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
+                            <li class="breadcrumb-item active">Stock Report</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Container-fluid Ends-->
+        <!-- Container-fluid starts-->
+        <div class="container-fluid">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Stock Report</h5>
+                </div>
+                <div class="card-body vendor-table">
+                    <h3>Filter:</h3>
+                    <div class="row" style="margin-top:25px;border-bottom: 2px solid #f8f8f9;padding-bottom: 25px;margin-bottom: 10px;">
+                        <div class="col-sm-3">
+                            <label>Categories</label>
+                            <select id="CategoryId" class="form-control">
+                                <option value="-1">All</option>
+                                @if (lstCats != null && lstCats.Count() > 0)
+                                {
+                                    foreach (var objc in lstCats)
+                                    {
+                                        <option value="@objc.Value">@objc.Text</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-sm-3">
+                            <label>Products</label>
+                            <select id="ProductId" class="form-control">
+                                <option value="-1">--Select--</option>
+                                @if (lstProdts != null && lstProdts.Count() > 0)
+                                {
+                                    foreach (var objc in lstProdts)
+                                    {
+                                        <option value="@objc.Value">@objc.Text</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <div class="col-sm-3">
+                            <label>Sub Products</label>
+                            <select id="SubProductId" class="form-control">
+                                <option value="-1">--Select--</option>
+                                @if (lstSubProdts != null && lstSubProdts.Count() > 0)
+                                {
+                                    foreach (var objc in lstSubProdts)
+                                    {
+                                        <option value="@objc.Value">@objc.Text</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top:25px;border-bottom: 2px solid #f8f8f9;padding-bottom: 25px;margin-bottom: 10px;">
+                        <div class="col-sm-3">
+                            <label>Items *</label>
+                            <select id="ProductItemId" class="form-control">
+                                <option value="0">-Select Product Item-</option>
+                            </select>
+                        </div>
+                        <div class="col-sm-3">
+                            <label>Start Date *</label>
+                            <input class="form-control col-md-8 clsDatePicker text-box single-line valid" id="StartDate" name="StartDate" placeholder="DD/MM/YYY" readonly="readonly" type="text" value="">
+                        </div>
+                        <div class="col-sm-3">
+                            <label>End Date *</label>
+                            <input class="form-control col-md-8 clsDatePicker text-box single-line valid" id="EndDate" name="EndDate" placeholder="DD/MM/YYY" readonly="readonly" type="text" value="">
+                        </div>
+                        <div class="col-sm-2">
+                            <input type="button" value="Export To Excel" class="btn btn-info" onclick="exporttoexcel();" style="position: absolute; bottom: 0;" />
+                        </div>
+                    </div>
+                    <a href="" id="export" target="_blank" style="display:none;">export</a>
+
+                </div>
+            </div>
+        </div>
+        <!-- Container-fluid Ends-->
+
+    </div>
+
+<script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script>
+
+    jQuery(document).on("change", "#CategoryId", function () {
+
+        var CategoryId = jQuery("#CategoryId option:selected").val();
+
+        if (CategoryId != "" && CategoryId != null) {
+
+            var URL = '@Url.Action("GetProductListByCategoryId", "SubProduct")';
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: URL + "/" + CategoryId,
+                success: function (result) {
+                    var htmlData = "<option value='0'>-Select Product-</option>";
+                    if (result && result.length > 0) {
+                        result.forEach(element => {
+                            htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
+                        });
+                    }
+                    $("#ProductId").html(htmlData);
+                },
+                error: function (error) {
+                }
+            });
+        }
+       else {
+             var htmlSubData = "<option value='0'>- Select Product -</option>";
+            $("#ProductId").html(htmlSubData);
+        }
+    });
+
+    jQuery(document).on("change", "#ProductId", function () {
+
+        var ProductId = jQuery("#ProductId option:selected").val();
+
+        if (ProductId != "" && ProductId != null) {
+
+            var URL = '@Url.Action("GetSubProductListByProductId", "SubProduct")';
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: URL + "/" + ProductId,
+                success: function (result) {
+                    var htmlData = "<option value='0'>-Select SubProduct-</option>";
+                    if (result && result.length > 0) {
+                        result.forEach(element => {
+                            htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
+                        });
+                    }
+                    $("#SubProductId").html(htmlData);
+                },
+                error: function (error) {
+                }
+            });
+        }
+        else {
+             var htmlSubData = "<option value='0'>- Select SubProduct -</option>";
+            $("#SubProductId").html(htmlSubData);
+        }
+    });
+
+    jQuery(document).on("change", "#ProductId,#SubProductId", function () {
+
+        var ProductId = jQuery("#ProductId option:selected").val();
+        var SubProductId = jQuery("#SubProductId option:selected").val();
+         var itmtypid = parseInt($(".chkitemtype:checked").val());
+        if ((ProductId != "" && ProductId != null) || (SubProductId != "" && SubProductId != null)) {
+            var URL = '@Url.Action("GetItemList", "Stock")';
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: URL + "?ProductId=" + ProductId + "&SubProductId=" + SubProductId+ "&ItemType=" + itmtypid,
+                success: function (result) {
+                    var htmlData = "<option value='0'>-Select Product Item-</option>";
+                    if (result && result.length > 0) {
+                        result.forEach(element => {
+                            htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
+                        });
+                    }
+                    $("#ProductItemId").html(htmlData);
+                },
+                error: function (error) {
+                }
+            });
+        }
+       else {
+            var htmlSubData = "<option value='0'>- Select Product Item -</option>";
+            $("#ProductItemId").html(htmlSubData);
+        }
+    });
+
+    function exporttoexcel() {
+        if($("#ProductItemId").val() == "0")
+        {
+            alert("Please select Item");
+            return false;
+        }
+
+        if ($("#StartDate").val() == "") {
+            alert("Please select Start Date");
+            return false;
+        }
+
+        if ($("#EndDate").val() == "") {
+            alert("Please select End Date");
+            return false;
+        }
+
+        $("#export").attr("href", "/admin/Stock/ExportStockReport?ItemId=" + $("#ProductItemId").val() + "&StartDate=" + $("#StartDate").val() + "&EndDate=" + $("#EndDate").val());
+        $("#export")[0].click();
+    }
+</script>
