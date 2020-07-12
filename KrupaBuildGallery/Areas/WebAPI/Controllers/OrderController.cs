@@ -261,6 +261,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         _db.tbl_PaymentHistory.Add(objPayment);
                         _db.SaveChanges();
                         objCom.SaveTransaction(0, 0, objordr.OrderId, "Shipping Price Paid Online Amount: Rs" + objordr.ShippingCharge.Value, objordr.ShippingCharge.Value, UserId, 0, DateTime.UtcNow, "Shipping Charge Payment");
+                        objCom.SavePaymentTransaction(0, objordr.OrderId, true, objordr.ShippingCharge.Value, "Payment By Online for Shipping Charge", UserId, false, DateTime.UtcNow, "Online Payment");
                         response.Data = "Success";
                     }
                 }               
@@ -325,6 +326,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         _db.tbl_PaymentHistory.Add(objPayment);
                         _db.SaveChanges();
                         objCom.SaveTransaction(0, 0, orderid64, "Due Order Amount Paid Online: Rs" + amountpaid, amountpaid, UserId, 0, DateTime.UtcNow, "Amount Due Paid");
+                        objCom.SavePaymentTransaction(0, orderid64, true, amountpaid, "Payment By Online for Due Amount", UserId, false, DateTime.UtcNow, "Online Payment");
                         response.Data = "Success";
                     }
                 }
@@ -477,6 +479,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         }
                         if(IsRetunfalse == false)
                         {
+                            objitm.UpdatedDate = DateTime.UtcNow;
                             objitm.ItemStatus = 5;
                             objitm.IsDelete = true;
                             if (objordr.IsCashOnDelivery.Value == true)
@@ -508,6 +511,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                 msgsms = "Items has been Cancelled for Order No." + objitm.OrderId;
                                 SendMessageSMS(adminmobilenumber, msgsms);
                                 objCom.SaveTransaction(objproditm.ProductItemId, objitm.OrderDetailId, objitm.OrderId.Value, "Cancel Item amount Refund to Wallet Rs" + amtrefund, amtrefund, UserId, 0, DateTime.UtcNow, "Item Cancel Refund");
+                                objCom.SavePaymentTransaction(objitm.OrderDetailId, objitm.OrderId.Value, false, amtrefund, "Payment To Wallet Refund", UserId, false, DateTime.UtcNow, "Wallet");
                                 //SendMessageSMS(objClient.MobileNo,);
                                 _db.SaveChanges();
                             }
@@ -994,6 +998,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                     {
                                         objj.AmountToReceived = shipcharge + objOrderItm.FinalItemPrice;
                                     }
+                                    objCommon.SavePaymentTransaction(0, objrd.OrderId, true, objj.AmountToReceived.Value, "Payment By Cash", ClientUserId, false, DateTime.UtcNow, "Cash");
                                 }
                                 else if(objrd.IsCashOnDelivery == true && objrd.OrderShipPincode != "389001")
                                 {
@@ -1007,6 +1012,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                     {
                                         objj.AmountToReceived = objOrderItm.FinalItemPrice;
                                     }
+                                    objCommon.SavePaymentTransaction(0, objrd.OrderId, true, objj.AmountToReceived.Value, "Payment By Cash", ClientUserId, false, DateTime.UtcNow, "Cash");
                                 }
                                 if(objj.DelieveryPersonId != DelieveryPrsnId)
                                 {
@@ -1019,6 +1025,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         }
                         objOrderItm.ItemStatus = 4;
                         _db.SaveChanges();
+                        
                         objCommon.SaveTransaction(objOrderItm.ProductItemId.Value, objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, "Delivered By " + objAdminUsr.FirstName + " " + objAdminUsr.LastName, 0, 0, AgentId, DateTime.UtcNow, "Delievered Items");
                     }
                     _db.SaveChanges();

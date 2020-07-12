@@ -556,15 +556,19 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     if(amtCrd > 0)
                     {
                         amtrefundtext = amtrefundtext + "\n Credit : Rs." + amtCrd;
+                        objCommon.SavePaymentTransaction(objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, false, amtCrd, "Payment To Credit Refund", clsAdminSession.UserID, true, DateTime.UtcNow, "Credit");
                     }
                     if (amtwlt1 > 0)
                     {
                         amtrefundtext = amtrefundtext + "\n Wallet : Rs." + amtwlt1;
+                        objCommon.SavePaymentTransaction(objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, false, amtwlt1, "Payment To Wallet Refund", clsAdminSession.UserID, true, DateTime.UtcNow, "Wallet");
                     }
                     if (amronl > 0)
                     {
                         amtrefundtext = amtrefundtext + "\n Online : Rs." + amronl;
+                        objCommon.SavePaymentTransaction(objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, false, amronl, "Payment To Online Refund", clsAdminSession.UserID, true, DateTime.UtcNow, "Online Payment");
                     }
+                    
                     msgsms = "You Item is Returned for Order No." + objReq.OrderId + " . Amount Refunded to "+ amtrefundtext;
                     objCommon.SaveTransaction(objOrderItm.ProductItemId.Value, objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, "Item Return Request Accepted", 0, 0, clsAdminSession.UserID, DateTime.UtcNow, "Accepted Return Item Request");
                     objCommon.SaveTransaction(objOrderItm.ProductItemId.Value, objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, "Refunded amount to "+ amtrefundtext, 0, 0, clsAdminSession.UserID, DateTime.UtcNow, "Accepted Return Item Request Refund");
@@ -633,6 +637,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     _db.SaveChanges();
                     msgsms = "You Item is Exchanged for Order No." + objReq.OrderId + " . Amount Rs." + amtredund + " Refunded to your wallet";
                     SendMessageSMS(mobilenumber, msgsms);
+                    objCommon.SavePaymentTransaction(objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, false, amtredund, "Payment To Wallet Refund",clsAdminSession.UserID, true, DateTime.UtcNow, "Wallet");
                     objCommon.SaveTransaction(objOrderItm.ProductItemId.Value, objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, "Item Exchanged Request Accepted", 0, 0, clsAdminSession.UserID, DateTime.UtcNow, "Accepted Exchanged Item Request");
                     objCommon.SaveTransaction(objOrderItm.ProductItemId.Value, objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, "Amount Rs." + amtredund + " Refunded to your wallet", 0, 0, clsAdminSession.UserID, DateTime.UtcNow, "Accepted Exchanged Item Request Refund");
                 }

@@ -239,6 +239,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     objPayment.PaymentFor = "ShippingCharge";
                     _db.tbl_PaymentHistory.Add(objPayment);
                     _db.SaveChanges();
+                    objCom.SavePaymentTransaction(0, objordr.OrderId, true, objordr.ShippingCharge.Value, "Payment By Online for Shipping Charge", clsClientSession.UserID, false, DateTime.UtcNow, "Online Payment");
                     objCom.SaveTransaction(0, 0, objordr.OrderId, "Shipping Price Paid Online Amount: Rs" + objordr.ShippingCharge.Value, objordr.ShippingCharge.Value, clsClientSession.UserID, 0, DateTime.UtcNow, "Shipping Charge Payment");
                     return "Success";
                 }            
@@ -285,6 +286,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     objPayment.PaymentFor = "Order Amount";
                     _db.tbl_PaymentHistory.Add(objPayment);
                     _db.SaveChanges();
+                    objCom.SavePaymentTransaction(0, orderid64, true, amountpaid, "Payment By Online for Due Amount", clsClientSession.UserID, false, DateTime.UtcNow, "Online Payment");
                     objCom.SaveTransaction(0, 0, orderid64, "Due Order Amount Paid Online: Rs" + amountpaid, amountpaid, clsClientSession.UserID, 0, DateTime.UtcNow, "Amount Due Paid");
                     return "Success";
                    
@@ -559,6 +561,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         objCom.SaveTransaction(objproditm.ProductItemId, objitm.OrderDetailId, objitm.OrderId.Value, "Item Cancel Request", objitm.FinalItemPrice.Value, clsClientSession.UserID, 0, DateTime.UtcNow, "Item Cancel Request");
                         msgsms = "Items has been Cancelled for Order No." + objitm.OrderId;
                         SendMessageSMS(adminmobilenumber, msgsms);
+                        objCom.SavePaymentTransaction(objitm.OrderDetailId, objitm.OrderId.Value, false, amtrefund, "Payment To Wallet Refund", clsClientSession.UserID, false, DateTime.UtcNow, "Wallet");
                         objCom.SaveTransaction(objproditm.ProductItemId, objitm.OrderDetailId, objitm.OrderId.Value, "Cancel Item amount Refund to Wallet Rs"+ amtrefund, amtrefund, clsClientSession.UserID, 0, DateTime.UtcNow, "Item Cancel Refund");
                         //SendMessageSMS(objClient.MobileNo,);
                         _db.SaveChanges();                        

@@ -546,10 +546,12 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         }
                         _db.SaveChanges();
                     }
+                    objcmn.SavePaymentTransaction(0, objOrder.OrderId, true, amtwallet, "Payment By Wallet", clsClientSession.UserID,false, DateTime.UtcNow, "Wallet");
                     objcmn.SaveTransaction(0,0,objOrder.OrderId, "Payment By Wallet : Rs"+ amtwallet,amtwallet, clsClientSession.UserID, 0, DateTime.UtcNow, "Wallet Payment");
                     if(amtcredit > 0)
                     {
                         objcmn.SaveTransaction(0, 0, objOrder.OrderId, "Payment By Credit Used : Rs" + amtcredit, amtcredit, clsClientSession.UserID, 0, DateTime.UtcNow, "Credit Used Payment");
+                        objcmn.SavePaymentTransaction(0, objOrder.OrderId, true, amtcredit, "Payment By Credit", clsClientSession.UserID, false, DateTime.UtcNow, "Credit");
                     }
                     
                     var objotherdetails = _db.tbl_ClientOtherDetails.Where(o => o.ClientUserId == clientusrid).FirstOrDefault();
@@ -735,6 +737,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         objPyment.PaymentFor = "OrderPayment";
                         _db.tbl_PaymentHistory.Add(objPyment);
                         objcmn.SaveTransaction(0, 0, objOrder.OrderId, "Order Online Payment : Rs" + amtonline, amtonline, clsClientSession.UserID, 0, DateTime.UtcNow, "Online Payment");
+                        objcmn.SavePaymentTransaction(0, objOrder.OrderId, true, amtonline, "Payment By Online", clsClientSession.UserID, false, DateTime.UtcNow, "Online Payment");
                     }
                     _db.SaveChanges();
                     string orderid = clsCommon.EncryptString(objOrder.OrderId.ToString());                   
@@ -940,6 +943,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                     objclientuss.WalletAmt = objclientuss.WalletAmt - amtwallet;
                                 }
                                 _db.SaveChanges();
+                                objcmn.SavePaymentTransaction(0, objOrder.OrderId, true, amtwallet, "Payment By Wallet", clsClientSession.UserID, false, DateTime.UtcNow, "Wallet");
                                 objcmn.SaveTransaction(0, 0, objOrder.OrderId, "Payment By Wallet : Rs" + amtwallet, amtwallet, clsClientSession.UserID, 0, DateTime.UtcNow, "Wallet Payment");
                             }
 
@@ -976,6 +980,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 objPyment.RazorSignature = razorpay_signature;
                                 objPyment.PaymentFor = "OrderPayment";
                                 _db.tbl_PaymentHistory.Add(objPyment);
+                                objcmn.SavePaymentTransaction(0, objOrder.OrderId, true, amtonline, "Payment By Online", clsClientSession.UserID, false, DateTime.UtcNow, "Online Payment");
                                 objcmn.SaveTransaction(0, 0, objOrder.OrderId, "Order Online Payment : Rs" + amtonline, amtonline, clsClientSession.UserID, 0, DateTime.UtcNow, "Online Payment");
                             }                           
                             _db.SaveChanges();
@@ -1126,6 +1131,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 if(amtcredit > 0)
                                 {
                                     objcmn.SaveTransaction(0, 0, objOrder.OrderId, "Payment By Credit Used : Rs" + amtcredit, amtcredit, clsClientSession.UserID, 0, DateTime.UtcNow, "Credit Used Payment");
+                                    objcmn.SavePaymentTransaction(0, objOrder.OrderId, true, amtcredit, "Payment By Credit", clsClientSession.UserID, false, DateTime.UtcNow, "Credit");
                                 }
                             }
                             string orderid = clsCommon.EncryptString(objOrder.OrderId.ToString());
