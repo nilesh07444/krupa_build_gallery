@@ -1,0 +1,65 @@
+﻿@model List<KrupaBuildGallery.ViewModel.ReportVM>
+@{
+    ViewBag.Title = "Stock Report";   
+
+}
+<style>
+    #tblstk {       
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+        #tblstk td, #customers th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #tblstk tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        #tblstk tr:hover {
+            background-color: #ddd;
+        }
+
+        #tblstk th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #4CAF50;
+            color: white;
+        }
+</style>
+
+    <table style="width:100%;border-collapse:collapse;" id="tblstk">
+        <tr>
+            <th>Date</th>
+            <th>Opening</th>
+            <th>Credit</th>
+            <th>Debit</th>
+            <th>Closing</th>
+        </tr>
+        @if (Model != null && Model.Count() > 0)
+        {
+            foreach (var obj in Model)
+            {
+                <tr>
+                    <td>@obj.Date</td>
+                    <td>@obj.Opening</td>
+                    <td>@obj.Credit</td>
+                    <td>@obj.Debit</td>
+                    <td>@obj.Closing</td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="5">
+                    No Stock Data....
+                </td>
+            </tr>
+        }
+
+
+    </table>

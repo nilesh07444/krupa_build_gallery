@@ -29,5 +29,6 @@ namespace KrupaBuildGallery.ViewModel
         public string DeliveryPersonName { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime modifieddate { get; set; }
+        public decimal MRPPrice { get; set; }
     }
 }

@@ -78,14 +78,15 @@
                                 }
                             </select>
                         </div>
-                    </div>
-                    <div class="row" style="margin-top:25px;border-bottom: 2px solid #f8f8f9;padding-bottom: 25px;margin-bottom: 10px;">
                         <div class="col-sm-3">
                             <label>Items *</label>
                             <select id="ProductItemId" class="form-control">
                                 <option value="0">-Select Product Item-</option>
                             </select>
                         </div>
+                    </div>
+                    <div class="row" style="margin-top:25px;border-bottom: 2px solid #f8f8f9;padding-bottom: 25px;margin-bottom: 10px;">
+                       
                         <div class="col-sm-3">
                             <label>Start Date *</label>
                             <input class="form-control col-md-8 clsDatePicker text-box single-line valid" id="StartDate" name="StartDate" placeholder="DD/MM/YYY" readonly="readonly" type="text" value="">
@@ -95,11 +96,17 @@
                             <input class="form-control col-md-8 clsDatePicker text-box single-line valid" id="EndDate" name="EndDate" placeholder="DD/MM/YYY" readonly="readonly" type="text" value="">
                         </div>
                         <div class="col-sm-2">
+                            <input type="button" value="View Report" class="btn btn-info" onclick="viewreport();" style="position: absolute; bottom: 0;" />                            
+                        </div>
+                        <div class="col-sm-2">
                             <input type="button" value="Export To Excel" class="btn btn-info" onclick="exporttoexcel();" style="position: absolute; bottom: 0;" />
                         </div>
                     </div>
                     <a href="" id="export" target="_blank" style="display:none;">export</a>
 
+                    <div id="dvreport">
+
+                    </div>
                 </div>
             </div>
         </div>
@@ -201,6 +208,27 @@
             $("#ProductItemId").html(htmlSubData);
         }
     });
+
+    function viewreport() {
+        if ($("#ProductItemId").val() == "0") {
+            alert("Please select Item");
+            return false;
+        }
+
+        if ($("#StartDate").val() == "") {
+            alert("Please select Start Date");
+            return false;
+        }
+
+        if ($("#EndDate").val() == "") {
+            alert("Please select End Date");
+            return false;
+        }
+        $("#dvreport").load("/admin/Stock/GetStockReport?ItemId=" + $("#ProductItemId").val() + "&StartDate=" + $("#StartDate").val() + "&EndDate=" + $("#EndDate").val(), function () {
+
+        });
+     
+    }
 
     function exporttoexcel() {
         if($("#ProductItemId").val() == "0")

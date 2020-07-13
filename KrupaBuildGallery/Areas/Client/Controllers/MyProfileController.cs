@@ -1,5 +1,6 @@
 ﻿using KrupaBuildGallery.Filters;
 using KrupaBuildGallery.Model;
+using KrupaBuildGallery.ViewModel;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using System;
@@ -369,6 +370,87 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 Response.Flush();
                 Response.End();
             }
+        }
+
+        public ActionResult GetPaymentReport(string StartDate, string EndDate,string PaymentMode)
+        {
+            List<ReportVM> lstReportVm = new List<ReportVM>();
+            ExcelPackage excel = new ExcelPackage();
+            if (PaymentMode == "OnlinePayment")
+            {
+                PaymentMode = "Online Payment";
+            }
+            DateTime dtStart = DateTime.ParseExact(StartDate, "dd/MM/yyyy", null);
+            DateTime dtEnd = DateTime.ParseExact(EndDate, "dd/MM/yyyy", null);
+            List<tbl_ClientUsers> lstClients = new List<tbl_ClientUsers>();
+            string[] arrycolmns = new string[] { "Date", "Opening", "Credit", "Debit", "Closing", "PaymentMethod", "Remarks" };
+
+            lstClients = _db.tbl_ClientUsers.Where(o => o.ClientUserId == clsClientSession.UserID).ToList();
+            if (lstClients != null && lstClients.Count() > 0)
+            {
+                foreach (var client in lstClients)
+                {
+                    string strRol = "Distributor";
+                    if (client.ClientRoleId == 1)
+                    {
+                        strRol = "Customer";
+                    }
+                   
+                    var lstordes = _db.tbl_Orders.Where(o => o.ClientUserId == client.ClientUserId).ToList();
+                    List<long> orderIds = new List<long>();
+                    if (lstordes != null && lstordes.Count() > 0)
+                    {
+                        orderIds = lstordes.Select(o => o.OrderId).ToList();
+                        List<tbl_PaymentTransaction> lstCrdt = _db.tbl_PaymentTransaction.Where(o => orderIds.Contains(o.OrderId) && o.TransactionDate < dtStart && o.IsCredit == true && (PaymentMode == "All" || o.ModeOfPayment == PaymentMode)).ToList();
+                        List<tbl_PaymentTransaction> lstDebt = _db.tbl_PaymentTransaction.Where(o => orderIds.Contains(o.OrderId) && o.TransactionDate < dtStart && o.IsCredit == false && (PaymentMode == "All" || o.ModeOfPayment == PaymentMode)).ToList();
+                        decimal TotalCredit = 0;
+                        decimal TotalDebit = 0;
+                        TotalCredit = lstCrdt.Sum(x => x.Amount.HasValue ? x.Amount.Value : 0);
+                        TotalDebit = lstDebt.Sum(x => x.Amount.HasValue ? x.Amount.Value : 0);
+                        decimal TotalOpening = TotalCredit - TotalDebit;
+                        List<tbl_PaymentTransaction> lstAllTransaction = _db.tbl_PaymentTransaction.Where(o => orderIds.Contains(o.OrderId) && o.TransactionDate >= dtStart && o.TransactionDate <= dtEnd && (PaymentMode == "All" || o.ModeOfPayment == PaymentMode)).ToList();
+                        int row1 = 1;
+                        if (lstAllTransaction != null && lstAllTransaction.Count() > 0)
+                        {
+                            foreach (var objTrn in lstAllTransaction)
+                            {
+                                ReportVM objrp = new ReportVM();
+                                objrp.Date = objTrn.TransactionDate.Value.ToString("dd-MM-yyyy");
+                                objrp.Opening = TotalOpening.ToString();
+                                if (objTrn.IsCredit == true)
+                                {
+                                    objrp.Credit = objTrn.Amount.Value.ToString();
+                                    TotalOpening = TotalOpening + objTrn.Amount.Value;
+                                }
+                                else
+                                {
+                                    objrp.Credit = "";
+                                }
+
+
+                                if (objTrn.IsCredit == false)
+                                {
+                                    objrp.Debit = objTrn.Amount.Value.ToString();
+                                    TotalOpening = TotalOpening - objTrn.Amount.Value;
+                                }
+                                else
+                                {
+                                    objrp.Debit = "";
+                                }
+
+                                objrp.Closing = TotalOpening.ToString();
+                                objrp.PaymentMethod = objTrn.ModeOfPayment;
+                                objrp.Remarks = objTrn.Remarks;
+                                lstReportVm.Add(objrp);
+                                row1 = row1 + 1;
+                            }
+                        }
+                    }
+
+                }
+            }
+        
+            return PartialView("~/Areas/Admin/Views/Order/_PaymentReport.cshtml", lstReportVm);
         }
     }
 }
