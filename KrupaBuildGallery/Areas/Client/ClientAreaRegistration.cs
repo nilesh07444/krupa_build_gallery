@@ -171,6 +171,12 @@ namespace KrupaBuildGallery.Areas.Client
              new { controller = "MyProfile", action = "ExportPaymentReport", id = UrlParameter.Optional }
          );
             context.MapRoute(
+             "Client_paymentGetPaymentReportt",
+             "myprofile/GetPaymentReport",
+             new { controller = "MyProfile", action = "GetPaymentReport", id = UrlParameter.Optional }
+         );
+            
+            context.MapRoute(
                 "Client_default",
                 "client/{controller}/{action}/{id}",
                 new { action = "Index", id = UrlParameter.Optional }

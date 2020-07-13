@@ -1,6 +1,7 @@
 ﻿using ConstructionDiary.Models;
 using KrupaBuildGallery.Helper;
 using KrupaBuildGallery.Model;
+using KrupaBuildGallery.ViewModel;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using System;
@@ -565,6 +566,59 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 Response.Flush();
                 Response.End();
             }
+        }
+
+        public ActionResult GetStockReport(long ItemId, string StartDate, string EndDate)
+        {           
+            DateTime dtStart = DateTime.ParseExact(StartDate, "dd/MM/yyyy", null);
+            DateTime dtEnd = DateTime.ParseExact(EndDate, "dd/MM/yyyy", null);
+            var objPrdItm = _db.tbl_ProductItems.Where(o => o.ProductItemId == ItemId).FirstOrDefault();
+            List<tbl_StockReport> creditstock = _db.tbl_StockReport.Where(o => o.ItemId == ItemId && o.StockDate < dtStart && o.IsCredit == true).ToList();
+            List<tbl_StockReport> debitstock = _db.tbl_StockReport.Where(o => o.ItemId == ItemId && o.StockDate < dtStart && o.IsCredit == false).ToList();
+            decimal TotalCredit = 0;
+            decimal TotalDebit = 0;
+            TotalCredit = creditstock.Sum(x => x.Qty.HasValue ? x.Qty.Value : 0);
+            TotalDebit = debitstock.Sum(x => x.Qty.HasValue ? x.Qty.Value : 0);
+            decimal TotalOpening = TotalCredit - TotalDebit;
+            StringBuilder sb = new StringBuilder();
+            string[] arrycolmns = new string[] { "Date", "Opening", "Credit", "Debit", "Closing" };
+            List<ReportVM> lstReportVm = new List<ReportVM>();
+            List<tbl_StockReport> lstStockss = _db.tbl_StockReport.Where(o => o.ItemId == ItemId && o.StockDate >= dtStart && o.StockDate <= dtEnd).OrderBy(x => x.StockDate).ToList();
+            decimal OpStock = TotalOpening;
+            int row1 = 1;
+            if (lstStockss != null && lstStockss.Count() > 0)
+            {
+                foreach (var objj in lstStockss)
+                {
+                    ReportVM objrp = new ReportVM();
+                    objrp.Date = objj.StockDate.Value.ToString("dd-MM-yyyy");
+                    objrp.Opening = OpStock.ToString();
+                    if (objj.IsCredit == true)
+                    {
+                        objrp.Credit = objj.Qty.Value.ToString();                        
+                        OpStock = OpStock + objj.Qty.Value;
+                    }
+                    else
+                    {
+                        objrp.Credit = "";
+                    }
+                    
+                    if (objj.IsCredit == false)
+                    {
+                        objrp.Debit = objj.Qty.Value.ToString();
+                        OpStock = OpStock - objj.Qty.Value;
+                    }
+                    else
+                    {
+                        objrp.Debit = "";
+                    }
+                    objrp.Closing = OpStock.ToString();
+                    lstReportVm.Add(objrp);
+                    row1 = row1 + 1;
+                }
+            }
+          
+            return PartialView("~/Areas/Admin/Views/Stock/_StockReport.cshtml", lstReportVm);
         }
 
         public void AddOldStock()

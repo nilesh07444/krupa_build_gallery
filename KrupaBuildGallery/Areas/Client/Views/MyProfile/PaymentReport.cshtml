@@ -29,7 +29,7 @@
 </div>
 <section class="section-b-space">
     <div class="container">
-        <div class="row">
+        <div class="row" style="margin-bottom:60px;">
             <div class="col-sm-3">
                 <label>Payment Method *</label>
                 <select id="paymentmode" class="form-control">
@@ -48,9 +48,17 @@
                 <label>End Date *</label>
                 <input class="form-control col-md-8 clsDatePicker text-box single-line valid" id="EndDate" name="EndDate" placeholder="DD/MM/YYY" readonly="readonly" type="text" value="">
             </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-2">
+                <input type="button" value="View Report" class="btn btn-info" onclick="viewreport();" style="position: absolute; bottom: 0;" />
+            </div>
             <div class="col-sm-2">
                 <input type="button" value="Export To Excel" class="btn btn-info" onclick="exporttoexcel();" style="position: absolute; bottom: 0;" />
             </div>
+        </div>
+        <div id="dvreport" style="margin-top:15px;">
+
         </div>
         <a href="" id="export" target="_blank" style="display:none;">export</a>
     </div>
@@ -68,6 +76,22 @@
         });
 
     });
+
+    function viewreport() {
+        if ($("#StartDate").val() == "") {
+            alert("Please select Start Date");
+            return false;
+        }
+
+        if ($("#EndDate").val() == "") {
+            alert("Please select End Date");
+            return false;
+        }
+        $("#dvreport").load("/myprofile/GetPaymentReport?StartDate=" + $("#StartDate").val() + "&EndDate=" + $("#EndDate").val() + "&MobileNo=" + $('#MobileNo').val() + "&PaymentMode=" + $('#paymentmode').val(), function () {
+
+        });
+
+    }
 
     function exporttoexcel() {
         if ($("#StartDate").val() == "") {

@@ -769,6 +769,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                             Sku = p.Sku,
                                             IsDeleted = p.IsDelete,
                                             GSTAmt = p.GSTAmt.Value,
+                                            MRPPrice = p.MRPPrice.HasValue ? p.MRPPrice.Value : p.Price.Value,
                                             IGSTAmt = p.IGSTAmt.Value,
                                             ItemImg = c.MainImage,
                                             ItemStatus = p.ItemStatus.HasValue ? p.ItemStatus.Value : 0,
@@ -833,8 +834,9 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 srBuild.Append("<td>" + objItem.HSNCode + "</td>");
                 srBuild.Append("<td class=\"text-center\">" + objItem.Qty + "</td>");
                 srBuild.Append("<td class=\"text-center\">" + objItem.VariantQtytxt + "</td>");
+                srBuild.Append("<td class=\"text-center\">" + objItem.MRPPrice + "</td>");
                 srBuild.Append("<td class=\"text-center\">" + objItem.Price + "</td>");
-                srBuild.Append("<td class=\"text-center\">" + basicTotalPrice + "</td>");
+                //srBuild.Append("<td class=\"text-center\">" + basicTotalPrice + "</td>");
                 srBuild.Append("<td class=\"text-center\">" + objItem.Discount + "</td>");
                 srBuild.Append("<td class=\"text-center\">" + TaxableAmt + "</td>");
 
