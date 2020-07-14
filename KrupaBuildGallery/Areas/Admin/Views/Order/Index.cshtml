@@ -132,6 +132,7 @@
      $(document).ready(function () {
          $("#selectstatus").val("@ViewBag.Status");
          $('#basic-111').DataTable({
+             "pageLength": 100,
              "order": [[ 0, "desc" ]]
          });
     });
