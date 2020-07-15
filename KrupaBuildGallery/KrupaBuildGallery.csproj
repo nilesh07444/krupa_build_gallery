@@ -4041,6 +4041,7 @@
     <Content Include="Areas\Admin\Views\Stock\_StockReport.cshtml" />
     <Content Include="Areas\Admin\Views\Order\_PaymentReport.cshtml" />
     <Content Include="Areas\Client\Views\MyProfile\_PaymentReport.cshtml" />
+    <Content Include="Areas\Admin\Views\Order\SalesReport.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />

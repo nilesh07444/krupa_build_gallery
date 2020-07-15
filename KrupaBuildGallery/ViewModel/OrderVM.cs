@@ -43,5 +43,6 @@ namespace KrupaBuildGallery.ViewModel
         public bool IsExtraAmountReceived { get; set; }
         public decimal AdvancePay { get; set; }
         public string GSTNo { get; set; }
+        public string strOrderDate { get; set; }
     }
 }
