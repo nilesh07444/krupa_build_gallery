@@ -1347,44 +1347,66 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
         public void ExportSalesReport(string StartDate, string EndDate, string ReportType)
         {
+           
+            
+            DateTime dtStart = DateTime.ParseExact(StartDate, "dd/MM/yyyy", null);
+            DateTime dtEnd = DateTime.ParseExact(EndDate, "dd/MM/yyyy", null);
+            if(ReportType == "Sales")
+            {
+                SalesReportData(dtStart, dtEnd, StartDate, EndDate);
+            }
+            else if(ReportType == "SalesCancel")
+            {
+                SalesCancelReportData(dtStart, dtEnd, StartDate, EndDate);
+            }
+            else if (ReportType == "SalesReturn")
+            {
+                SalesReturnReportData(dtStart, dtEnd, StartDate, EndDate);
+            }
+            else if (ReportType == "SalesExchange")
+            {
+                SalesExchangeReportData(dtStart, dtEnd, StartDate, EndDate);
+            }
+        }
+
+        public void SalesReportData(DateTime dtStart, DateTime dtEnd,string StartDate, string EndDate)
+        {
             ExcelPackage excel = new ExcelPackage();
             decimal TotalWhole = 0;
             decimal TotalWholeQty = 0;
-            DateTime dtStart = DateTime.ParseExact(StartDate, "dd/MM/yyyy", null);
-            DateTime dtEnd = DateTime.ParseExact(EndDate, "dd/MM/yyyy", null);
             List<string> dtlist = new List<string>();
             List<OrderVM> lstOrderss = new List<OrderVM>();
             lstOrderss = (from p in _db.tbl_Orders
-                        join c in _db.tbl_ClientUsers on p.ClientUserId equals c.ClientUserId
-                        where p.CreatedDate >= dtStart && p.CreatedDate <= dtEnd && p.IsDelete == false
-                        select new OrderVM
-                        {
-                            OrderId = p.OrderId,
-                            ClientUserName = c.FirstName + " " + c.LastName,
-                            ClientUserId = p.ClientUserId,
-                            OrderAmount = p.OrderAmount + (p.ExtraAmount.HasValue ? p.ExtraAmount.Value : 0) + (p.ShippingCharge.HasValue ? p.ShippingCharge.Value : 0),
-                            OrderShipCity = p.OrderShipCity,
-                            OrderShipState = p.OrderShipState,
-                            OrderShipAddress = p.OrderShipAddress,
-                            OrderPincode = p.OrderShipPincode,
-                            InvoiceYear = p.InvoiceYear,
-                            InvoiceNo = p.InvoiceNo.Value,
-                            OrderShipClientName = p.OrderShipClientName,
-                            OrderShipClientPhone = p.OrderShipClientPhone,
-                            OrderStatusId = p.OrderStatusId,
-                            PaymentType = p.PaymentType,
-                            OrderDate = p.CreatedDate,
-                            ClientRoleId = c.ClientRoleId,
-                            ShipmentCharge = p.ShippingCharge.HasValue ? p.ShippingCharge.Value : 0,
-                            ShippingStatus = p.ShippingStatus.HasValue ? p.ShippingStatus.Value : 2,
-                            CreditUsed = p.CreditAmountUsed.HasValue ? p.CreditAmountUsed.Value : 0,
-                            OrderAmountDue = p.AmountDue.HasValue ? p.AmountDue.Value : 0,
-                            WalletAmtUsed = p.WalletAmountUsed.HasValue ? p.WalletAmountUsed.Value : 0,
-                            OrderTypeId = p.OrderType.HasValue ? p.OrderType.Value : 1,
-                            ExtraAmount = p.ExtraAmount.HasValue ? p.ExtraAmount.Value : 0,
-                            AdvancePay = p.AdvancePaymentRecieved.HasValue ? p.AdvancePaymentRecieved.Value : 0
-                        }).OrderBy(x => x.OrderDate).ToList();
-        
+                          join c in _db.tbl_ClientUsers on p.ClientUserId equals c.ClientUserId
+                          where p.CreatedDate >= dtStart && p.CreatedDate <= dtEnd && p.IsDelete == false
+                          select new OrderVM
+                          {
+                              OrderId = p.OrderId,
+                              ClientUserName = c.FirstName + " " + c.LastName,
+                              ClientUserId = p.ClientUserId,
+                              OrderAmount = p.OrderAmount + (p.ExtraAmount.HasValue ? p.ExtraAmount.Value : 0) + (p.ShippingCharge.HasValue ? p.ShippingCharge.Value : 0),
+                              OrderShipCity = p.OrderShipCity,
+                              OrderShipState = p.OrderShipState,
+                              OrderShipAddress = p.OrderShipAddress,
+                              OrderPincode = p.OrderShipPincode,
+                              InvoiceYear = p.InvoiceYear,
+                              InvoiceNo = p.InvoiceNo.Value,
+                              OrderShipClientName = p.OrderShipClientName,
+                              OrderShipClientPhone = p.OrderShipClientPhone,
+                              OrderStatusId = p.OrderStatusId,
+                              PaymentType = p.PaymentType,
+                              OrderDate = p.CreatedDate,
+                              ClientRoleId = c.ClientRoleId,
+                              ShipmentCharge = p.ShippingCharge.HasValue ? p.ShippingCharge.Value : 0,
+                              ShippingStatus = p.ShippingStatus.HasValue ? p.ShippingStatus.Value : 2,
+                              CreditUsed = p.CreditAmountUsed.HasValue ? p.CreditAmountUsed.Value : 0,
+                              OrderAmountDue = p.AmountDue.HasValue ? p.AmountDue.Value : 0,
+                              WalletAmtUsed = p.WalletAmountUsed.HasValue ? p.WalletAmountUsed.Value : 0,
+                              OrderTypeId = p.OrderType.HasValue ? p.OrderType.Value : 1,
+                              ExtraAmount = p.ExtraAmount.HasValue ? p.ExtraAmount.Value : 0,
+                              AdvancePay = p.AdvancePaymentRecieved.HasValue ? p.AdvancePaymentRecieved.Value : 0
+                          }).OrderBy(x => x.OrderDate).ToList();
+
             if (lstOrderss != null && lstOrderss.Count() > 0)
             {
                 dtlist = lstOrderss.Select(x => x.OrderDate.ToString("dd-MMM-yy")).Distinct().ToList();
@@ -1411,7 +1433,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 workSheet.Cells[2, col].Style.Border.Right.Style = ExcelBorderStyle.Thin;
                 workSheet.Cells[2, col].Style.WrapText = true;
             }
-            int row1 = 1;            
+            int row1 = 1;
             foreach (string dtstr in dtlist)
             {
                 decimal TotalDateWise = 0;
@@ -1433,9 +1455,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
                 row1 = row1 + 1;
                 var llstordrs = lstOrderss.Where(o => o.OrderDate.ToString("dd-MMM-yy") == dtstr).ToList();
-                if(llstordrs != null && llstordrs.Count() > 0)
+                if (llstordrs != null && llstordrs.Count() > 0)
                 {
-                    foreach(var ordrr in llstordrs)
+                    foreach (var ordrr in llstordrs)
                     {
                         string InvoiceNo = "S&S/" + ordrr.InvoiceYear + "/" + ordrr.InvoiceNo;
                         workSheet.Cells[row1 + 2, 2].Style.Font.Bold = false;
@@ -1448,7 +1470,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         workSheet.Cells[row1 + 2, 2].Style.Border.Left.Style = ExcelBorderStyle.Thin;
                         workSheet.Cells[row1 + 2, 2].Style.Border.Right.Style = ExcelBorderStyle.Thin;
                         workSheet.Cells[row1 + 2, 2].Style.WrapText = true;
-                        workSheet.Cells[row1 + 2, 2].AutoFitColumns(30, 70);                     
+                        workSheet.Cells[row1 + 2, 2].AutoFitColumns(30, 70);
 
                         workSheet.Cells[row1 + 2, 3].Style.Font.Bold = false;
                         workSheet.Cells[row1 + 2, 3].Style.Font.Size = 12;
@@ -1459,9 +1481,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         workSheet.Cells[row1 + 2, 3, row1 + 2, arrycolmns.Length].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
                         workSheet.Cells[row1 + 2, 3, row1 + 2, arrycolmns.Length].Style.Border.Left.Style = ExcelBorderStyle.Thin;
                         workSheet.Cells[row1 + 2, 3, row1 + 2, arrycolmns.Length].Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                        workSheet.Cells[row1 + 2, 3].Style.WrapText = true;                        
+                        workSheet.Cells[row1 + 2, 3].Style.WrapText = true;
                         workSheet.Cells[row1 + 2, 3, row1 + 2, arrycolmns.Length].Merge = true;
-                        workSheet.Cells[row1 + 2, 3].AutoFitColumns(30, 70);                       
+                        workSheet.Cells[row1 + 2, 3].AutoFitColumns(30, 70);
                         row1 = row1 + 1;
                         decimal TotalFinal = 0;
                         decimal TotlQty = 0;
@@ -1486,11 +1508,11 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                                                GST_Per = (p.GSTPer.HasValue ? p.GSTPer.Value : 0),
                                                                Discount = p.Discount.HasValue ? p.Discount.Value : 0
                                                            }).OrderByDescending(x => x.GST_Per).ToList();
-                        if(lstOrderItms != null && lstOrderItms.Count() > 0)
+                        if (lstOrderItms != null && lstOrderItms.Count() > 0)
                         {
                             foreach (var objItem in lstOrderItms)
                             {
-                           
+
                                 decimal basicTotalPrice = Math.Round(objItem.Price * objItem.Qty, 2);
                                 decimal SGST = Math.Round(Convert.ToDecimal(objItem.GST_Per / 2), 2);
                                 decimal CGST = Math.Round(Convert.ToDecimal(objItem.GST_Per / 2), 2);
@@ -1508,7 +1530,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                     {
                                         workSheet.Cells[row1 + 2, col].Value = objItem.ItemName;
                                     }
-                                    else if(arrycolmns[col - 1] == "HSNCode")
+                                    else if (arrycolmns[col - 1] == "HSNCode")
                                     {
                                         workSheet.Cells[row1 + 2, col].Value = objItem.HSNCode;
                                     }
@@ -1516,36 +1538,36 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                     {
                                         workSheet.Cells[row1 + 2, col].Value = objItem.Qty;
                                     }
-                                    else if (arrycolmns[col-1] == "Unit")
+                                    else if (arrycolmns[col - 1] == "Unit")
                                     {
                                         workSheet.Cells[row1 + 2, col].Value = objItem.VariantQtytxt;
                                     }
-                                    else if (arrycolmns[col-1] == "MRP Price")
+                                    else if (arrycolmns[col - 1] == "MRP Price")
                                     {
                                         workSheet.Cells[row1 + 2, col].Value = objItem.MRPPrice;
                                     }
-                                    else if (arrycolmns[col-1] == "Price")
+                                    else if (arrycolmns[col - 1] == "Price")
                                     {
                                         workSheet.Cells[row1 + 2, col].Value = objItem.Price;
                                     }
-                                    else if (arrycolmns[col-1] == "Point Discount")
+                                    else if (arrycolmns[col - 1] == "Point Discount")
                                     {
                                         workSheet.Cells[row1 + 2, col].Value = objItem.Discount;
                                     }
-                                    else if (arrycolmns[col-1] == "Taxable Amount")
+                                    else if (arrycolmns[col - 1] == "Taxable Amount")
                                     {
                                         workSheet.Cells[row1 + 2, col].Value = TaxableAmt;
                                     }
-                                    else if (arrycolmns[col-1] == "GST")
+                                    else if (arrycolmns[col - 1] == "GST")
                                     {
                                         workSheet.Cells[row1 + 2, col].Value = Convert.ToDecimal(objItem.GST_Per).ToString("0.##") + "%";
                                     }
-                                    else if (arrycolmns[col-1] == "Total")
+                                    else if (arrycolmns[col - 1] == "Total")
                                     {
                                         workSheet.Cells[row1 + 2, col].Value = Math.Round(FinalPrice, 2);
                                     }
                                     workSheet.Cells[row1 + 2, col].Style.Font.Bold = false;
-                                    workSheet.Cells[row1 + 2, col].Style.Font.Size = 12;                                    
+                                    workSheet.Cells[row1 + 2, col].Style.Font.Size = 12;
                                     workSheet.Cells[row1 + 2, col].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
                                     workSheet.Cells[row1 + 2, col].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
                                     workSheet.Cells[row1 + 2, col].Style.Border.Top.Style = ExcelBorderStyle.Thin;
@@ -1573,7 +1595,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
                         workSheet.Cells[row1 + 2, 5].Style.Font.Bold = true;
                         workSheet.Cells[row1 + 2, 5].Style.Font.Size = 12;
-                        workSheet.Cells[row1 + 2, 5].Value = "Grand Total: "+ TotalFinal;
+                        workSheet.Cells[row1 + 2, 5].Value = "Grand Total: " + TotalFinal;
                         workSheet.Cells[row1 + 2, 5].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
                         workSheet.Cells[row1 + 2, 5].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
                         workSheet.Cells[row1 + 2, 5].Style.Border.Top.Style = ExcelBorderStyle.Thin;
@@ -1585,7 +1607,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
                         workSheet.Cells[row1 + 2, 6].Style.Font.Bold = true;
                         workSheet.Cells[row1 + 2, 6].Style.Font.Size = 12;
-                        workSheet.Cells[row1 + 2, 6].Value = "Shipping Charge: "+ ordrr.ShipmentCharge;
+                        workSheet.Cells[row1 + 2, 6].Value = "Shipping Charge: " + ordrr.ShipmentCharge;
                         workSheet.Cells[row1 + 2, 6].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
                         workSheet.Cells[row1 + 2, 6].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
                         workSheet.Cells[row1 + 2, 6].Style.Border.Top.Style = ExcelBorderStyle.Thin;
@@ -1651,7 +1673,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
                     workSheet.Cells[row1 + 2, 3].Style.Font.Bold = true;
                     workSheet.Cells[row1 + 2, 3].Style.Font.Size = 13;
-                    workSheet.Cells[row1 + 2, 3].Value = "Total Net Amount: " +  TotalDateWise;
+                    workSheet.Cells[row1 + 2, 3].Value = "Total Net Amount: " + TotalDateWise;
                     workSheet.Cells[row1 + 2, 3].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
                     workSheet.Cells[row1 + 2, 3].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
                     workSheet.Cells[row1 + 2, 3].Style.Border.Top.Style = ExcelBorderStyle.Thin;
@@ -1724,5 +1746,789 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             }
         }
 
+        public void SalesCancelReportData(DateTime dtStart, DateTime dtEnd, string StartDate, string EndDate)
+        {
+            ExcelPackage excel = new ExcelPackage();
+            decimal TotalWhole = 0;
+            decimal TotalWholeQty = 0;
+            List<string> dtlist = new List<string>();
+
+            List<OrderItemsVM> lstOrderItms = (from p in _db.tbl_OrderItemDetails
+                                               join c in _db.tbl_ProductItems on p.ProductItemId equals c.ProductItemId
+                                               join u in _db.tbl_ItemVariant on p.VariantItemId equals u.VariantItemId
+                                               join o in _db.tbl_Orders on p.OrderId equals o.OrderId
+                                               where p.UpdatedDate >= dtStart && p.UpdatedDate <= dtEnd && p.ItemStatus == 5 && p.IsDelete == true
+                                               select new OrderItemsVM
+                                               {
+                                                   OrderId = p.OrderId.Value,
+                                                   OrderItemId = p.OrderDetailId,
+                                                   ProductItemId = p.ProductItemId.Value,
+                                                   ItemName = p.ItemName,
+                                                   Qty = p.Qty.Value,
+                                                   Price = p.Price.Value,
+                                                   Sku = p.Sku,
+                                                   GSTAmt = p.GSTAmt.Value,
+                                                   IGSTAmt = p.IGSTAmt.Value,
+                                                   ItemImg = c.MainImage,
+                                                   MRPPrice = p.MRPPrice.HasValue ? p.MRPPrice.Value : p.Price.Value,
+                                                   VariantQtytxt = u.UnitQty,
+                                                   modifieddate = p.UpdatedDate.HasValue ? p.UpdatedDate.Value : DateTime.MinValue,
+                                                   GST_Per = (p.GSTPer.HasValue ? p.GSTPer.Value : 0),
+                                                   Discount = p.Discount.HasValue ? p.Discount.Value : 0,
+                                                   InvoiceNo = o.InvoiceNo.HasValue ? o.InvoiceNo.Value : 0,
+                                                   InvoiceYear = o.InvoiceYear,
+                                                   ClientUserId = o.ClientUserId
+                                               }).OrderBy(x => x.modifieddate).ToList();
+
+
+            if (lstOrderItms != null && lstOrderItms.Count() > 0)
+            {
+                dtlist = lstOrderItms.Select(x => x.modifieddate.ToString("dd-MMM-yy")).Distinct().ToList();
+            }
+            // var llst = lstorders.Where(o => o.CreatedDate.ToShortDateString() == "7/11/2020").ToList();
+            List<tbl_ClientUsers> lstClients = new List<tbl_ClientUsers>();
+            string[] arrycolmns = new string[] { "Date", "Invoice No", "Item", "HSNCode", "Qty", "Unit", "MRP Price", "Price", "Point Discount", "Taxable Amount", "GST", "Total" };
+            var workSheet = excel.Workbook.Worksheets.Add("Report");
+            workSheet.Cells[1, 1].Style.Font.Bold = true;
+            workSheet.Cells[1, 1].Style.Font.Size = 20;
+            workSheet.Cells[1, 1].Style.VerticalAlignment = ExcelVerticalAlignment.Top;
+            workSheet.Cells[1, 1].Value = "Sales Cancel Report: " + StartDate + " to " + EndDate;
+            for (var col = 1; col < arrycolmns.Length + 1; col++)
+            {
+                workSheet.Cells[2, col].Style.Font.Bold = true;
+                workSheet.Cells[2, col].Style.Font.Size = 12;
+                workSheet.Cells[2, col].Value = arrycolmns[col - 1];
+                workSheet.Cells[2, col].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                workSheet.Cells[2, col].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                workSheet.Cells[2, col].AutoFitColumns(30, 70);
+                workSheet.Cells[2, col].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[2, col].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[2, col].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[2, col].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[2, col].Style.WrapText = true;
+            }
+            int row1 = 1;
+            foreach (string dtstr in dtlist)
+            {
+                decimal TotalDateWise = 0;
+                decimal TotalDateWiseQty = 0;
+                workSheet.Cells[row1 + 2, 1].Style.Font.Bold = true;
+                workSheet.Cells[row1 + 2, 1].Style.Font.Size = 12;
+                workSheet.Cells[row1 + 2, 1].Value = dtstr;
+                workSheet.Cells[row1 + 2, 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                workSheet.Cells[row1 + 2, 1].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                workSheet.Cells[row1 + 2, 1].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[row1 + 2, 1].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[row1 + 2, 1].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[row1 + 2, 1].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[row1 + 2, 1].Style.WrapText = true;
+                workSheet.Cells[row1 + 2, 1].AutoFitColumns(30, 70);
+                workSheet.Cells[row1 + 2, 1, row1 + 2, arrycolmns.Length - 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                workSheet.Cells[row1 + 2, 1, row1 + 2, arrycolmns.Length - 1].Style.Fill.BackgroundColor.SetColor(Color.AliceBlue);
+                workSheet.Cells[row1 + 2, 1, row1 + 2, arrycolmns.Length - 1].Merge = true;
+
+                row1 = row1 + 1;
+                var llstordrs = lstOrderItms.Where(o => o.modifieddate.ToString("dd-MMM-yy") == dtstr).ToList();
+                if (llstordrs != null && llstordrs.Count() > 0)
+                {
+                    foreach (var objItem in llstordrs)           
+                    {
+                        string InvoiceNo = "S&S/" + objItem.InvoiceYear + "/" + objItem.InvoiceNo;                       
+
+                        decimal basicTotalPrice = Math.Round(objItem.Price * objItem.Qty, 2);
+                        decimal SGST = Math.Round(Convert.ToDecimal(objItem.GST_Per / 2), 2);
+                        decimal CGST = Math.Round(Convert.ToDecimal(objItem.GST_Per / 2), 2);
+                        decimal SGSTAmt = Math.Round(objItem.GSTAmt / 2, 2);
+                        decimal CGSTAmt = Math.Round(objItem.GSTAmt / 2, 2);
+                        decimal IGSTAmt = Math.Round(objItem.GSTAmt);
+                        decimal IGST = Math.Round(Convert.ToDecimal(objItem.GST_Per));
+                        decimal FinalPrice = Math.Round(basicTotalPrice + objItem.GSTAmt - objItem.Discount, 2);
+                        decimal TaxableAmt = Math.Round(basicTotalPrice - objItem.Discount, 2);
+                        TotalDateWise = TotalDateWise + FinalPrice;
+                        TotalDateWiseQty = TotalDateWiseQty + objItem.Qty;
+                        TotalWhole = TotalWhole + FinalPrice;
+                        TotalWholeQty = TotalWholeQty + TotalDateWiseQty;
+                        for (var col = 2; col < arrycolmns.Length + 1; col++)
+                        {
+
+                            if (arrycolmns[col - 1] == "Invoice No")
+                            {
+                                workSheet.Cells[row1 + 2, col].Value = InvoiceNo;
+                            }
+                            else if (arrycolmns[col - 1] == "Item")
+                            {
+                                workSheet.Cells[row1 + 2, col].Value = objItem.ItemName;
+                            }
+                            else if (arrycolmns[col - 1] == "HSNCode")
+                            {
+                                workSheet.Cells[row1 + 2, col].Value = objItem.HSNCode;
+                            }
+                            else if (arrycolmns[col - 1] == "Qty")
+                            {
+                                workSheet.Cells[row1 + 2, col].Value = objItem.Qty;
+                            }
+                            else if (arrycolmns[col - 1] == "Unit")
+                            {
+                                workSheet.Cells[row1 + 2, col].Value = objItem.VariantQtytxt;
+                            }
+                            else if (arrycolmns[col - 1] == "MRP Price")
+                            {
+                                workSheet.Cells[row1 + 2, col].Value = objItem.MRPPrice;
+                            }
+                            else if (arrycolmns[col - 1] == "Price")
+                            {
+                                workSheet.Cells[row1 + 2, col].Value = objItem.Price;
+                            }
+                            else if (arrycolmns[col - 1] == "Point Discount")
+                            {
+                                workSheet.Cells[row1 + 2, col].Value = objItem.Discount;
+                            }
+                            else if (arrycolmns[col - 1] == "Taxable Amount")
+                            {
+                                workSheet.Cells[row1 + 2, col].Value = TaxableAmt;
+                            }
+                            else if (arrycolmns[col - 1] == "GST")
+                            {
+                                workSheet.Cells[row1 + 2, col].Value = Convert.ToDecimal(objItem.GST_Per).ToString("0.##") + "%";
+                            }
+                            else if (arrycolmns[col - 1] == "Total")
+                            {
+                                workSheet.Cells[row1 + 2, col].Value = Math.Round(FinalPrice, 2);
+                            }
+                            workSheet.Cells[row1 + 2, col].Style.Font.Bold = false;
+                            workSheet.Cells[row1 + 2, col].Style.Font.Size = 12;
+                            workSheet.Cells[row1 + 2, col].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                            workSheet.Cells[row1 + 2, col].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                            workSheet.Cells[row1 + 2, col].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                            workSheet.Cells[row1 + 2, col].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                            workSheet.Cells[row1 + 2, col].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                            workSheet.Cells[row1 + 2, col].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                            workSheet.Cells[row1 + 2, col].Style.WrapText = true;
+                            workSheet.Cells[row1 + 2, col].AutoFitColumns(30, 70);
+                        }
+                        row1 = row1 + 1;
+                    }        
+                    workSheet.Cells[row1 + 2, 2].Style.Font.Bold = true;
+                    workSheet.Cells[row1 + 2, 2].Style.Font.Size = 13;
+                    workSheet.Cells[row1 + 2, 2].Value = "Date Wise Total: ";
+                    workSheet.Cells[row1 + 2, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                    workSheet.Cells[row1 + 2, 2].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                    workSheet.Cells[row1 + 2, 2].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 2].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 2].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 2].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 2].Style.WrapText = true;
+                    workSheet.Cells[row1 + 2, 2].AutoFitColumns(30, 70);
+
+                    workSheet.Cells[row1 + 2, 3].Style.Font.Bold = true;
+                    workSheet.Cells[row1 + 2, 3].Style.Font.Size = 13;
+                    workSheet.Cells[row1 + 2, 3].Value = "Total Net Cancel Amount: ";
+                    workSheet.Cells[row1 + 2, 3].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                    workSheet.Cells[row1 + 2, 3].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                    workSheet.Cells[row1 + 2, 3].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 3].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 3].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 3].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 3].Style.WrapText = true;
+                    workSheet.Cells[row1 + 2, 3].AutoFitColumns(30, 70);
+
+                    workSheet.Cells[row1 + 2, 4].Style.Font.Bold = true;
+                    workSheet.Cells[row1 + 2, 4].Style.Font.Size = 13;
+                    workSheet.Cells[row1 + 2, 4].Value = TotalDateWise; // "Total Qty: " + TotalDateWiseQty;
+                    workSheet.Cells[row1 + 2, 4].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                    workSheet.Cells[row1 + 2, 4].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                    workSheet.Cells[row1 + 2, 4].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 4].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 4].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 4].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 4].Style.WrapText = true;
+                    workSheet.Cells[row1 + 2, 4].AutoFitColumns(30, 70);
+
+                    workSheet.Cells[row1 + 2, 5].Style.Font.Bold = true;
+                    workSheet.Cells[row1 + 2, 5].Style.Font.Size = 13;
+                    workSheet.Cells[row1 + 2, 5].Value = "Total Qty: " + TotalDateWiseQty;
+                    workSheet.Cells[row1 + 2, 5].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                    workSheet.Cells[row1 + 2, 5].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                    workSheet.Cells[row1 + 2, 5].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 5].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 5].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 5].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 5].Style.WrapText = true;
+                    workSheet.Cells[row1 + 2, 5].AutoFitColumns(30, 70);
+
+
+                    row1 = row1 + 1;
+                }
+            }
+
+            row1 = row1 + 1;
+            workSheet.Cells[row1 + 2, 2].Style.Font.Bold = true;
+            workSheet.Cells[row1 + 2, 2].Style.Font.Size = 13;
+            workSheet.Cells[row1 + 2, 2].Value = "Total Net Cancel Amount: ";
+            workSheet.Cells[row1 + 2, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+            workSheet.Cells[row1 + 2, 2].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+            workSheet.Cells[row1 + 2, 2].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+            workSheet.Cells[row1 + 2, 2].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+            workSheet.Cells[row1 + 2, 2].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+            workSheet.Cells[row1 + 2, 2].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+            workSheet.Cells[row1 + 2, 2].Style.WrapText = true;
+            workSheet.Cells[row1 + 2, 2].AutoFitColumns(30, 70);
+
+            workSheet.Cells[row1 + 2, 3].Style.Font.Bold = true;
+            workSheet.Cells[row1 + 2, 3].Style.Font.Size = 13;
+            workSheet.Cells[row1 + 2, 3].Value = TotalWhole;
+            workSheet.Cells[row1 + 2, 3].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+            workSheet.Cells[row1 + 2, 3].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+            workSheet.Cells[row1 + 2, 3].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+            workSheet.Cells[row1 + 2, 3].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+            workSheet.Cells[row1 + 2, 3].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+            workSheet.Cells[row1 + 2, 3].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+            workSheet.Cells[row1 + 2, 3].Style.WrapText = true;
+            workSheet.Cells[row1 + 2, 3].AutoFitColumns(30, 70);
+
+            workSheet.Cells[row1 + 2, 4].Style.Font.Bold = true;
+            workSheet.Cells[row1 + 2, 4].Style.Font.Size = 13;
+            workSheet.Cells[row1 + 2, 4].Value = "Total Qty: " + TotalWholeQty;
+            workSheet.Cells[row1 + 2, 4].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+            workSheet.Cells[row1 + 2, 4].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+            workSheet.Cells[row1 + 2, 4].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+            workSheet.Cells[row1 + 2, 4].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+            workSheet.Cells[row1 + 2, 4].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+            workSheet.Cells[row1 + 2, 4].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+            workSheet.Cells[row1 + 2, 4].Style.WrapText = true;
+            workSheet.Cells[row1 + 2, 4].AutoFitColumns(30, 70);
+            using (var memoryStream = new MemoryStream())
+            {
+                //excel.Workbook.Worksheets.MoveToStart("Summary");  //move sheet from last to first : Code by Gunjan
+                Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                Response.AddHeader("content-disposition", "attachment;  filename=SalesCancelReport.xlsx");
+                excel.SaveAs(memoryStream);
+                memoryStream.WriteTo(Response.OutputStream);
+                Response.Flush();
+                Response.End();
+            }
+        }
+
+        public void SalesReturnReportData(DateTime dtStart, DateTime dtEnd, string StartDate, string EndDate)
+        {
+            ExcelPackage excel = new ExcelPackage();
+            decimal TotalWhole = 0;
+            decimal TotalWholeQty = 0;
+            List<string> dtlist = new List<string>();
+
+            List<OrderItemsVM> lstOrderItms = (from p in _db.tbl_OrderItemDetails
+                                               join c in _db.tbl_ProductItems on p.ProductItemId equals c.ProductItemId
+                                               join u in _db.tbl_ItemVariant on p.VariantItemId equals u.VariantItemId
+                                               join o in _db.tbl_Orders on p.OrderId equals o.OrderId
+                                               where p.UpdatedDate >= dtStart && p.UpdatedDate <= dtEnd && p.ItemStatus == 6 && p.IsDelete == true
+                                               select new OrderItemsVM
+                                               {
+                                                   OrderId = p.OrderId.Value,
+                                                   OrderItemId = p.OrderDetailId,
+                                                   ProductItemId = p.ProductItemId.Value,
+                                                   ItemName = p.ItemName,
+                                                   Qty = p.Qty.Value,
+                                                   Price = p.Price.Value,
+                                                   Sku = p.Sku,
+                                                   GSTAmt = p.GSTAmt.Value,
+                                                   IGSTAmt = p.IGSTAmt.Value,
+                                                   ItemImg = c.MainImage,
+                                                   MRPPrice = p.MRPPrice.HasValue ? p.MRPPrice.Value : p.Price.Value,
+                                                   VariantQtytxt = u.UnitQty,
+                                                   modifieddate = p.UpdatedDate.HasValue ? p.UpdatedDate.Value : DateTime.MinValue,
+                                                   GST_Per = (p.GSTPer.HasValue ? p.GSTPer.Value : 0),
+                                                   Discount = p.Discount.HasValue ? p.Discount.Value : 0,
+                                                   InvoiceNo = o.InvoiceNo.HasValue ? o.InvoiceNo.Value : 0,
+                                                   InvoiceYear = o.InvoiceYear,
+                                                   ClientUserId = o.ClientUserId
+                                               }).OrderBy(x => x.modifieddate).ToList();
+
+
+            if (lstOrderItms != null && lstOrderItms.Count() > 0)
+            {
+                dtlist = lstOrderItms.Select(x => x.modifieddate.ToString("dd-MMM-yy")).Distinct().ToList();
+            }
+            // var llst = lstorders.Where(o => o.CreatedDate.ToShortDateString() == "7/11/2020").ToList();
+            List<tbl_ClientUsers> lstClients = new List<tbl_ClientUsers>();
+            string[] arrycolmns = new string[] { "Date", "Invoice No", "Item", "HSNCode", "Qty", "Unit", "MRP Price", "Price", "Point Discount", "Taxable Amount", "GST", "Total" };
+            var workSheet = excel.Workbook.Worksheets.Add("Report");
+            workSheet.Cells[1, 1].Style.Font.Bold = true;
+            workSheet.Cells[1, 1].Style.Font.Size = 20;
+            workSheet.Cells[1, 1].Style.VerticalAlignment = ExcelVerticalAlignment.Top;
+            workSheet.Cells[1, 1].Value = "Sales Return Report: " + StartDate + " to " + EndDate;
+            for (var col = 1; col < arrycolmns.Length + 1; col++)
+            {
+                workSheet.Cells[2, col].Style.Font.Bold = true;
+                workSheet.Cells[2, col].Style.Font.Size = 12;
+                workSheet.Cells[2, col].Value = arrycolmns[col - 1];
+                workSheet.Cells[2, col].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                workSheet.Cells[2, col].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                workSheet.Cells[2, col].AutoFitColumns(30, 70);
+                workSheet.Cells[2, col].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[2, col].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[2, col].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[2, col].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[2, col].Style.WrapText = true;
+            }
+            int row1 = 1;
+            foreach (string dtstr in dtlist)
+            {
+                decimal TotalDateWise = 0;
+                decimal TotalDateWiseQty = 0;
+                workSheet.Cells[row1 + 2, 1].Style.Font.Bold = true;
+                workSheet.Cells[row1 + 2, 1].Style.Font.Size = 12;
+                workSheet.Cells[row1 + 2, 1].Value = dtstr;
+                workSheet.Cells[row1 + 2, 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                workSheet.Cells[row1 + 2, 1].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                workSheet.Cells[row1 + 2, 1].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[row1 + 2, 1].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[row1 + 2, 1].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[row1 + 2, 1].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[row1 + 2, 1].Style.WrapText = true;
+                workSheet.Cells[row1 + 2, 1].AutoFitColumns(30, 70);
+                workSheet.Cells[row1 + 2, 1, row1 + 2, arrycolmns.Length - 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                workSheet.Cells[row1 + 2, 1, row1 + 2, arrycolmns.Length - 1].Style.Fill.BackgroundColor.SetColor(Color.AliceBlue);
+                workSheet.Cells[row1 + 2, 1, row1 + 2, arrycolmns.Length - 1].Merge = true;
+
+                row1 = row1 + 1;
+                var llstordrs = lstOrderItms.Where(o => o.modifieddate.ToString("dd-MMM-yy") == dtstr).ToList();
+                if (llstordrs != null && llstordrs.Count() > 0)
+                {
+                    foreach (var objItem in llstordrs)
+                    {
+                        string InvoiceNo = "S&S/" + objItem.InvoiceYear + "/" + objItem.InvoiceNo;
+
+                        decimal basicTotalPrice = Math.Round(objItem.Price * objItem.Qty, 2);
+                        decimal SGST = Math.Round(Convert.ToDecimal(objItem.GST_Per / 2), 2);
+                        decimal CGST = Math.Round(Convert.ToDecimal(objItem.GST_Per / 2), 2);
+                        decimal SGSTAmt = Math.Round(objItem.GSTAmt / 2, 2);
+                        decimal CGSTAmt = Math.Round(objItem.GSTAmt / 2, 2);
+                        decimal IGSTAmt = Math.Round(objItem.GSTAmt);
+                        decimal IGST = Math.Round(Convert.ToDecimal(objItem.GST_Per));
+                        decimal FinalPrice = Math.Round(basicTotalPrice + objItem.GSTAmt - objItem.Discount, 2);
+                        decimal TaxableAmt = Math.Round(basicTotalPrice - objItem.Discount, 2);
+                        TotalDateWise = TotalDateWise + FinalPrice;
+                        TotalDateWiseQty = TotalDateWiseQty + objItem.Qty;
+                        TotalWhole = TotalWhole + FinalPrice;
+                        TotalWholeQty = TotalWholeQty + TotalDateWiseQty;
+                        for (var col = 2; col < arrycolmns.Length + 1; col++)
+                        {
+
+                            if (arrycolmns[col - 1] == "Invoice No")
+                            {
+                                workSheet.Cells[row1 + 2, col].Value = InvoiceNo;
+                            }
+                            else if (arrycolmns[col - 1] == "Item")
+                            {
+                                workSheet.Cells[row1 + 2, col].Value = objItem.ItemName;
+                            }
+                            else if (arrycolmns[col - 1] == "HSNCode")
+                            {
+                                workSheet.Cells[row1 + 2, col].Value = objItem.HSNCode;
+                            }
+                            else if (arrycolmns[col - 1] == "Qty")
+                            {
+                                workSheet.Cells[row1 + 2, col].Value = objItem.Qty;
+                            }
+                            else if (arrycolmns[col - 1] == "Unit")
+                            {
+                                workSheet.Cells[row1 + 2, col].Value = objItem.VariantQtytxt;
+                            }
+                            else if (arrycolmns[col - 1] == "MRP Price")
+                            {
+                                workSheet.Cells[row1 + 2, col].Value = objItem.MRPPrice;
+                            }
+                            else if (arrycolmns[col - 1] == "Price")
+                            {
+                                workSheet.Cells[row1 + 2, col].Value = objItem.Price;
+                            }
+                            else if (arrycolmns[col - 1] == "Point Discount")
+                            {
+                                workSheet.Cells[row1 + 2, col].Value = objItem.Discount;
+                            }
+                            else if (arrycolmns[col - 1] == "Taxable Amount")
+                            {
+                                workSheet.Cells[row1 + 2, col].Value = TaxableAmt;
+                            }
+                            else if (arrycolmns[col - 1] == "GST")
+                            {
+                                workSheet.Cells[row1 + 2, col].Value = Convert.ToDecimal(objItem.GST_Per).ToString("0.##") + "%";
+                            }
+                            else if (arrycolmns[col - 1] == "Total")
+                            {
+                                workSheet.Cells[row1 + 2, col].Value = Math.Round(FinalPrice, 2);
+                            }
+                            workSheet.Cells[row1 + 2, col].Style.Font.Bold = false;
+                            workSheet.Cells[row1 + 2, col].Style.Font.Size = 12;
+                            workSheet.Cells[row1 + 2, col].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                            workSheet.Cells[row1 + 2, col].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                            workSheet.Cells[row1 + 2, col].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                            workSheet.Cells[row1 + 2, col].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                            workSheet.Cells[row1 + 2, col].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                            workSheet.Cells[row1 + 2, col].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                            workSheet.Cells[row1 + 2, col].Style.WrapText = true;
+                            workSheet.Cells[row1 + 2, col].AutoFitColumns(30, 70);
+                        }
+                        row1 = row1 + 1;
+                    }
+                    workSheet.Cells[row1 + 2, 2].Style.Font.Bold = true;
+                    workSheet.Cells[row1 + 2, 2].Style.Font.Size = 13;
+                    workSheet.Cells[row1 + 2, 2].Value = "Date Wise Total: ";
+                    workSheet.Cells[row1 + 2, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                    workSheet.Cells[row1 + 2, 2].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                    workSheet.Cells[row1 + 2, 2].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 2].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 2].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 2].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 2].Style.WrapText = true;
+                    workSheet.Cells[row1 + 2, 2].AutoFitColumns(30, 70);
+
+                    workSheet.Cells[row1 + 2, 3].Style.Font.Bold = true;
+                    workSheet.Cells[row1 + 2, 3].Style.Font.Size = 13;
+                    workSheet.Cells[row1 + 2, 3].Value = "Total Net Return Amount: ";
+                    workSheet.Cells[row1 + 2, 3].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                    workSheet.Cells[row1 + 2, 3].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                    workSheet.Cells[row1 + 2, 3].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 3].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 3].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 3].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 3].Style.WrapText = true;
+                    workSheet.Cells[row1 + 2, 3].AutoFitColumns(30, 70);
+
+                    workSheet.Cells[row1 + 2, 4].Style.Font.Bold = true;
+                    workSheet.Cells[row1 + 2, 4].Style.Font.Size = 13;
+                    workSheet.Cells[row1 + 2, 4].Value = TotalDateWise;
+                    workSheet.Cells[row1 + 2, 4].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                    workSheet.Cells[row1 + 2, 4].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                    workSheet.Cells[row1 + 2, 4].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 4].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 4].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 4].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 4].Style.WrapText = true;
+                    workSheet.Cells[row1 + 2, 4].AutoFitColumns(30, 70);
+
+                    workSheet.Cells[row1 + 2, 5].Style.Font.Bold = true;
+                    workSheet.Cells[row1 + 2, 5].Style.Font.Size = 13;
+                    workSheet.Cells[row1 + 2, 5].Value = "Total Qty: " + TotalDateWiseQty;
+                    workSheet.Cells[row1 + 2, 5].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                    workSheet.Cells[row1 + 2, 5].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                    workSheet.Cells[row1 + 2, 5].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 5].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 5].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 5].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 5].Style.WrapText = true;
+                    workSheet.Cells[row1 + 2, 5].AutoFitColumns(30, 70);
+                    row1 = row1 + 1;
+                }
+            }
+
+            row1 = row1 + 1;
+            workSheet.Cells[row1 + 2, 2].Style.Font.Bold = true;
+            workSheet.Cells[row1 + 2, 2].Style.Font.Size = 13;
+            workSheet.Cells[row1 + 2, 2].Value = "Total Net Return Amount: ";
+            workSheet.Cells[row1 + 2, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+            workSheet.Cells[row1 + 2, 2].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+            workSheet.Cells[row1 + 2, 2].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+            workSheet.Cells[row1 + 2, 2].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+            workSheet.Cells[row1 + 2, 2].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+            workSheet.Cells[row1 + 2, 2].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+            workSheet.Cells[row1 + 2, 2].Style.WrapText = true;
+            workSheet.Cells[row1 + 2, 2].AutoFitColumns(30, 70);
+
+            workSheet.Cells[row1 + 2, 3].Style.Font.Bold = true;
+            workSheet.Cells[row1 + 2, 3].Style.Font.Size = 13;
+            workSheet.Cells[row1 + 2, 3].Value = TotalWhole;
+            workSheet.Cells[row1 + 2, 3].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+            workSheet.Cells[row1 + 2, 3].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+            workSheet.Cells[row1 + 2, 3].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+            workSheet.Cells[row1 + 2, 3].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+            workSheet.Cells[row1 + 2, 3].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+            workSheet.Cells[row1 + 2, 3].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+            workSheet.Cells[row1 + 2, 3].Style.WrapText = true;
+            workSheet.Cells[row1 + 2, 3].AutoFitColumns(30, 70);
+
+            workSheet.Cells[row1 + 2, 4].Style.Font.Bold = true;
+            workSheet.Cells[row1 + 2, 4].Style.Font.Size = 13;
+            workSheet.Cells[row1 + 2, 4].Value = "Total Qty: " + TotalWholeQty;
+            workSheet.Cells[row1 + 2, 4].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+            workSheet.Cells[row1 + 2, 4].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+            workSheet.Cells[row1 + 2, 4].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+            workSheet.Cells[row1 + 2, 4].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+            workSheet.Cells[row1 + 2, 4].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+            workSheet.Cells[row1 + 2, 4].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+            workSheet.Cells[row1 + 2, 4].Style.WrapText = true;
+            workSheet.Cells[row1 + 2, 4].AutoFitColumns(30, 70);
+            using (var memoryStream = new MemoryStream())
+            {
+                //excel.Workbook.Worksheets.MoveToStart("Summary");  //move sheet from last to first : Code by Gunjan
+                Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                Response.AddHeader("content-disposition", "attachment;  filename=SalesReturnReport.xlsx");
+                excel.SaveAs(memoryStream);
+                memoryStream.WriteTo(Response.OutputStream);
+                Response.Flush();
+                Response.End();
+            }
+        }
+
+        public void SalesExchangeReportData(DateTime dtStart, DateTime dtEnd, string StartDate, string EndDate)
+        {
+            ExcelPackage excel = new ExcelPackage();
+            decimal TotalWhole = 0;
+            decimal TotalWholeQty = 0;
+            List<string> dtlist = new List<string>();
+
+            List<OrderItemsVM> lstOrderItms = (from p in _db.tbl_OrderItemDetails
+                                               join c in _db.tbl_ProductItems on p.ProductItemId equals c.ProductItemId
+                                               join u in _db.tbl_ItemVariant on p.VariantItemId equals u.VariantItemId
+                                               join o in _db.tbl_Orders on p.OrderId equals o.OrderId
+                                               where p.UpdatedDate >= dtStart && p.UpdatedDate <= dtEnd && p.ItemStatus == 8 && p.IsDelete == true
+                                               select new OrderItemsVM
+                                               {
+                                                   OrderId = p.OrderId.Value,
+                                                   OrderItemId = p.OrderDetailId,
+                                                   ProductItemId = p.ProductItemId.Value,
+                                                   ItemName = p.ItemName,
+                                                   Qty = p.Qty.Value,
+                                                   Price = p.Price.Value,
+                                                   Sku = p.Sku,
+                                                   GSTAmt = p.GSTAmt.Value,
+                                                   IGSTAmt = p.IGSTAmt.Value,
+                                                   ItemImg = c.MainImage,
+                                                   MRPPrice = p.MRPPrice.HasValue ? p.MRPPrice.Value : p.Price.Value,
+                                                   VariantQtytxt = u.UnitQty,
+                                                   modifieddate = p.UpdatedDate.HasValue ? p.UpdatedDate.Value : DateTime.MinValue,
+                                                   GST_Per = (p.GSTPer.HasValue ? p.GSTPer.Value : 0),
+                                                   Discount = p.Discount.HasValue ? p.Discount.Value : 0,
+                                                   InvoiceNo = o.InvoiceNo.HasValue ? o.InvoiceNo.Value : 0,
+                                                   InvoiceYear = o.InvoiceYear,
+                                                   ClientUserId = o.ClientUserId
+                                               }).OrderBy(x => x.modifieddate).ToList();
+
+
+            if (lstOrderItms != null && lstOrderItms.Count() > 0)
+            {
+                dtlist = lstOrderItms.Select(x => x.modifieddate.ToString("dd-MMM-yy")).Distinct().ToList();
+            }
+            // var llst = lstorders.Where(o => o.CreatedDate.ToShortDateString() == "7/11/2020").ToList();
+            List<tbl_ClientUsers> lstClients = new List<tbl_ClientUsers>();
+            string[] arrycolmns = new string[] { "Date", "Invoice No", "Item", "HSNCode", "Qty", "Unit", "MRP Price", "Price", "Point Discount", "Taxable Amount", "GST", "Total" };
+            var workSheet = excel.Workbook.Worksheets.Add("Report");
+            workSheet.Cells[1, 1].Style.Font.Bold = true;
+            workSheet.Cells[1, 1].Style.Font.Size = 20;
+            workSheet.Cells[1, 1].Style.VerticalAlignment = ExcelVerticalAlignment.Top;
+            workSheet.Cells[1, 1].Value = "Sales Exchange Report: " + StartDate + " to " + EndDate;
+            for (var col = 1; col < arrycolmns.Length + 1; col++)
+            {
+                workSheet.Cells[2, col].Style.Font.Bold = true;
+                workSheet.Cells[2, col].Style.Font.Size = 12;
+                workSheet.Cells[2, col].Value = arrycolmns[col - 1];
+                workSheet.Cells[2, col].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                workSheet.Cells[2, col].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                workSheet.Cells[2, col].AutoFitColumns(30, 70);
+                workSheet.Cells[2, col].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[2, col].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[2, col].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[2, col].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[2, col].Style.WrapText = true;
+            }
+            int row1 = 1;
+            foreach (string dtstr in dtlist)
+            {
+                decimal TotalDateWise = 0;
+                decimal TotalDateWiseQty = 0;
+                workSheet.Cells[row1 + 2, 1].Style.Font.Bold = true;
+                workSheet.Cells[row1 + 2, 1].Style.Font.Size = 12;
+                workSheet.Cells[row1 + 2, 1].Value = dtstr;
+                workSheet.Cells[row1 + 2, 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                workSheet.Cells[row1 + 2, 1].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                workSheet.Cells[row1 + 2, 1].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[row1 + 2, 1].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[row1 + 2, 1].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[row1 + 2, 1].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[row1 + 2, 1].Style.WrapText = true;
+                workSheet.Cells[row1 + 2, 1].AutoFitColumns(30, 70);
+                workSheet.Cells[row1 + 2, 1, row1 + 2, arrycolmns.Length - 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                workSheet.Cells[row1 + 2, 1, row1 + 2, arrycolmns.Length - 1].Style.Fill.BackgroundColor.SetColor(Color.AliceBlue);
+                workSheet.Cells[row1 + 2, 1, row1 + 2, arrycolmns.Length - 1].Merge = true;
+
+                row1 = row1 + 1;
+                var llstordrs = lstOrderItms.Where(o => o.modifieddate.ToString("dd-MMM-yy") == dtstr).ToList();
+                if (llstordrs != null && llstordrs.Count() > 0)
+                {
+                    foreach (var objItem in llstordrs)
+                    {
+                        string InvoiceNo = "S&S/" + objItem.InvoiceYear + "/" + objItem.InvoiceNo;
+
+                        decimal basicTotalPrice = Math.Round(objItem.Price * objItem.Qty, 2);
+                        decimal SGST = Math.Round(Convert.ToDecimal(objItem.GST_Per / 2), 2);
+                        decimal CGST = Math.Round(Convert.ToDecimal(objItem.GST_Per / 2), 2);
+                        decimal SGSTAmt = Math.Round(objItem.GSTAmt / 2, 2);
+                        decimal CGSTAmt = Math.Round(objItem.GSTAmt / 2, 2);
+                        decimal IGSTAmt = Math.Round(objItem.GSTAmt);
+                        decimal IGST = Math.Round(Convert.ToDecimal(objItem.GST_Per));
+                        decimal FinalPrice = Math.Round(basicTotalPrice + objItem.GSTAmt - objItem.Discount, 2);
+                        decimal TaxableAmt = Math.Round(basicTotalPrice - objItem.Discount, 2);
+                        TotalDateWise = TotalDateWise + FinalPrice;
+                        TotalDateWiseQty = TotalDateWiseQty + objItem.Qty;
+                        TotalWhole = TotalWhole + FinalPrice;
+                        TotalWholeQty = TotalWholeQty + TotalDateWiseQty;
+                        for (var col = 2; col < arrycolmns.Length + 1; col++)
+                        {
+
+                            if (arrycolmns[col - 1] == "Invoice No")
+                            {
+                                workSheet.Cells[row1 + 2, col].Value = InvoiceNo;
+                            }
+                            else if (arrycolmns[col - 1] == "Item")
+                            {
+                                workSheet.Cells[row1 + 2, col].Value = objItem.ItemName;
+                            }
+                            else if (arrycolmns[col - 1] == "HSNCode")
+                            {
+                                workSheet.Cells[row1 + 2, col].Value = objItem.HSNCode;
+                            }
+                            else if (arrycolmns[col - 1] == "Qty")
+                            {
+                                workSheet.Cells[row1 + 2, col].Value = objItem.Qty;
+                            }
+                            else if (arrycolmns[col - 1] == "Unit")
+                            {
+                                workSheet.Cells[row1 + 2, col].Value = objItem.VariantQtytxt;
+                            }
+                            else if (arrycolmns[col - 1] == "MRP Price")
+                            {
+                                workSheet.Cells[row1 + 2, col].Value = objItem.MRPPrice;
+                            }
+                            else if (arrycolmns[col - 1] == "Price")
+                            {
+                                workSheet.Cells[row1 + 2, col].Value = objItem.Price;
+                            }
+                            else if (arrycolmns[col - 1] == "Point Discount")
+                            {
+                                workSheet.Cells[row1 + 2, col].Value = objItem.Discount;
+                            }
+                            else if (arrycolmns[col - 1] == "Taxable Amount")
+                            {
+                                workSheet.Cells[row1 + 2, col].Value = TaxableAmt;
+                            }
+                            else if (arrycolmns[col - 1] == "GST")
+                            {
+                                workSheet.Cells[row1 + 2, col].Value = Convert.ToDecimal(objItem.GST_Per).ToString("0.##") + "%";
+                            }
+                            else if (arrycolmns[col - 1] == "Total")
+                            {
+                                workSheet.Cells[row1 + 2, col].Value = Math.Round(FinalPrice, 2);
+                            }
+                            workSheet.Cells[row1 + 2, col].Style.Font.Bold = false;
+                            workSheet.Cells[row1 + 2, col].Style.Font.Size = 12;
+                            workSheet.Cells[row1 + 2, col].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                            workSheet.Cells[row1 + 2, col].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                            workSheet.Cells[row1 + 2, col].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                            workSheet.Cells[row1 + 2, col].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                            workSheet.Cells[row1 + 2, col].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                            workSheet.Cells[row1 + 2, col].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                            workSheet.Cells[row1 + 2, col].Style.WrapText = true;
+                            workSheet.Cells[row1 + 2, col].AutoFitColumns(30, 70);
+                        }
+                        row1 = row1 + 1;
+                    }
+                    workSheet.Cells[row1 + 2, 2].Style.Font.Bold = true;
+                    workSheet.Cells[row1 + 2, 2].Style.Font.Size = 13;
+                    workSheet.Cells[row1 + 2, 2].Value = "Date Wise Total: ";
+                    workSheet.Cells[row1 + 2, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                    workSheet.Cells[row1 + 2, 2].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                    workSheet.Cells[row1 + 2, 2].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 2].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 2].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 2].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 2].Style.WrapText = true;
+                    workSheet.Cells[row1 + 2, 2].AutoFitColumns(30, 70);
+
+                    workSheet.Cells[row1 + 2, 3].Style.Font.Bold = true;
+                    workSheet.Cells[row1 + 2, 3].Style.Font.Size = 13;
+                    workSheet.Cells[row1 + 2, 3].Value = "Total Net Exchange Amount: ";
+                    workSheet.Cells[row1 + 2, 3].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                    workSheet.Cells[row1 + 2, 3].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                    workSheet.Cells[row1 + 2, 3].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 3].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 3].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 3].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 3].Style.WrapText = true;
+                    workSheet.Cells[row1 + 2, 3].AutoFitColumns(30, 70);
+
+                    workSheet.Cells[row1 + 2, 4].Style.Font.Bold = true;
+                    workSheet.Cells[row1 + 2, 4].Style.Font.Size = 13;
+                    workSheet.Cells[row1 + 2, 4].Value = TotalDateWise;
+                    workSheet.Cells[row1 + 2, 4].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                    workSheet.Cells[row1 + 2, 4].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                    workSheet.Cells[row1 + 2, 4].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 4].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 4].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 4].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 4].Style.WrapText = true;
+                    workSheet.Cells[row1 + 2, 4].AutoFitColumns(30, 70);
+
+                    workSheet.Cells[row1 + 2, 5].Style.Font.Bold = true;
+                    workSheet.Cells[row1 + 2, 5].Style.Font.Size = 13;
+                    workSheet.Cells[row1 + 2, 5].Value = "Total Qty: " + TotalDateWiseQty;
+                    workSheet.Cells[row1 + 2, 5].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                    workSheet.Cells[row1 + 2, 5].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                    workSheet.Cells[row1 + 2, 5].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 5].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 5].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 5].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 5].Style.WrapText = true;
+                    workSheet.Cells[row1 + 2, 5].AutoFitColumns(30, 70);
+                    row1 = row1 + 1;
+                }
+            }
+
+            row1 = row1 + 1;
+            workSheet.Cells[row1 + 2, 2].Style.Font.Bold = true;
+            workSheet.Cells[row1 + 2, 2].Style.Font.Size = 13;
+            workSheet.Cells[row1 + 2, 2].Value = "Total Net Exchange Amount: ";
+            workSheet.Cells[row1 + 2, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+            workSheet.Cells[row1 + 2, 2].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+            workSheet.Cells[row1 + 2, 2].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+            workSheet.Cells[row1 + 2, 2].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+            workSheet.Cells[row1 + 2, 2].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+            workSheet.Cells[row1 + 2, 2].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+            workSheet.Cells[row1 + 2, 2].Style.WrapText = true;
+            workSheet.Cells[row1 + 2, 2].AutoFitColumns(30, 70);
+
+            workSheet.Cells[row1 + 2, 3].Style.Font.Bold = true;
+            workSheet.Cells[row1 + 2, 3].Style.Font.Size = 13;
+            workSheet.Cells[row1 + 2, 3].Value = TotalWhole;
+            workSheet.Cells[row1 + 2, 3].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+            workSheet.Cells[row1 + 2, 3].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+            workSheet.Cells[row1 + 2, 3].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+            workSheet.Cells[row1 + 2, 3].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+            workSheet.Cells[row1 + 2, 3].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+            workSheet.Cells[row1 + 2, 3].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+            workSheet.Cells[row1 + 2, 3].Style.WrapText = true;
+            workSheet.Cells[row1 + 2, 3].AutoFitColumns(30, 70);
+
+            workSheet.Cells[row1 + 2, 4].Style.Font.Bold = true;
+            workSheet.Cells[row1 + 2, 4].Style.Font.Size = 13;
+            workSheet.Cells[row1 + 2, 4].Value = "Total Qty: " + TotalWholeQty;
+            workSheet.Cells[row1 + 2, 4].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+            workSheet.Cells[row1 + 2, 4].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+            workSheet.Cells[row1 + 2, 4].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+            workSheet.Cells[row1 + 2, 4].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+            workSheet.Cells[row1 + 2, 4].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+            workSheet.Cells[row1 + 2, 4].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+            workSheet.Cells[row1 + 2, 4].Style.WrapText = true;
+            workSheet.Cells[row1 + 2, 4].AutoFitColumns(30, 70);
+            using (var memoryStream = new MemoryStream())
+            {
+                //excel.Workbook.Worksheets.MoveToStart("Summary");  //move sheet from last to first : Code by Gunjan
+                Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                Response.AddHeader("content-disposition", "attachment;  filename=SalesExchangeReport.xlsx");
+                excel.SaveAs(memoryStream);
+                memoryStream.WriteTo(Response.OutputStream);
+                Response.Flush();
+                Response.End();
+            }
+        }
     }
 }

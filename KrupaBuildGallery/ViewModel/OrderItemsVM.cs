@@ -30,5 +30,8 @@ namespace KrupaBuildGallery.ViewModel
         public bool IsDeleted { get; set; }
         public DateTime modifieddate { get; set; }
         public decimal MRPPrice { get; set; }
+        public string InvoiceYear { get; set; }
+        public long InvoiceNo { get; set; }
+        public long ClientUserId { get; set; }
     }
 }
