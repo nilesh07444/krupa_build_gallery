@@ -1631,8 +1631,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         decimal netamt = TotalFinal + ordrr.ShipmentCharge + ordrr.ExtraAmount;
                         TotalDateWise = TotalDateWise + netamt;
                         TotalDateWiseQty = TotalDateWiseQty + TotlQty;
-                        TotalWhole = TotalWhole + TotalDateWise;
-                        TotalWholeQty = TotalWholeQty + TotalDateWiseQty;
+                        TotalWhole = TotalWhole + netamt;
+                        TotalWholeQty = TotalWholeQty + TotlQty;
                         workSheet.Cells[row1 + 2, 8].Style.Font.Bold = true;
                         workSheet.Cells[row1 + 2, 8].Style.Font.Size = 12;
                         workSheet.Cells[row1 + 2, 8].Value = "Net Amount: " + netamt;
@@ -1847,7 +1847,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         TotalDateWise = TotalDateWise + FinalPrice;
                         TotalDateWiseQty = TotalDateWiseQty + objItem.Qty;
                         TotalWhole = TotalWhole + FinalPrice;
-                        TotalWholeQty = TotalWholeQty + TotalDateWiseQty;
+                        TotalWholeQty = TotalWholeQty + objItem.Qty;
                         for (var col = 2; col < arrycolmns.Length + 1; col++)
                         {
 
@@ -2110,7 +2110,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         TotalDateWise = TotalDateWise + FinalPrice;
                         TotalDateWiseQty = TotalDateWiseQty + objItem.Qty;
                         TotalWhole = TotalWhole + FinalPrice;
-                        TotalWholeQty = TotalWholeQty + TotalDateWiseQty;
+                        TotalWholeQty = TotalWholeQty + objItem.Qty;
                         for (var col = 2; col < arrycolmns.Length + 1; col++)
                         {
 
@@ -2371,7 +2371,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         TotalDateWise = TotalDateWise + FinalPrice;
                         TotalDateWiseQty = TotalDateWiseQty + objItem.Qty;
                         TotalWhole = TotalWhole + FinalPrice;
-                        TotalWholeQty = TotalWholeQty + TotalDateWiseQty;
+                        TotalWholeQty = TotalWholeQty + objItem.Qty;
                         for (var col = 2; col < arrycolmns.Length + 1; col++)
                         {
 
