@@ -609,7 +609,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
 
             try
             {
-                List<tbl_HomeImages> lst = _db.tbl_HomeImages.Where(x => x.IsActive).ToList();
+                List<tbl_HomeImages> lst = _db.tbl_HomeImages.Where(x => x.IsActive && x.HomeImageFor == 2).ToList();
                 if (lst.Count > 0)
                 {
                     lst.ForEach(obj =>
