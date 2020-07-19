@@ -32,6 +32,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 decimal ShippingChargeTotal = 0;
                 decimal Ordetotlyearly = 0;
                 decimal TotalDiscount = 0;
+                decimal AdvancePayment = 0;
                 decimal TotalOrder = 0;
                 bool IsCashOrd = false;
                 if (type == "Cash")
@@ -215,6 +216,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 objChkout.YearlyOrderPlaced = Ordetotlyearly;
                 objChkout.CashOrderAmtMax = objGenralsetting.CashLimitPerOrder.Value;
                 objChkout.CashOrderAmtYerly = objGenralsetting.CashLimitPerYear.Value;
+                objChkout.AdvancePaymentAmt = AdvancePayment;
                 objChkout.AvailablePincodes = _db.tbl_AvailablePincode.Select(o => o.AvailablePincode).ToList();
                 response.Data = objChkout;
             }
@@ -1333,13 +1335,13 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 if (UserId > 0)
                 {
                     long ClientUserId = Convert.ToInt64(UserId);
-                    lstCartItems = (from crt in _db.tbl_Cart
+                    lstCartItems = (from crt in _db.tbl_SecondCart
                                     join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
                                     join vr in _db.tbl_ItemVariant on crt.VariantItemId equals vr.VariantItemId
-                                    where crt.ClientUserId == ClientUserId && crt.IsCashonDelivery == IsCashOrd
+                                    where crt.ClientUserId == ClientUserId
                                     select new CartVM
                                     {
-                                        CartId = crt.Cart_Id,
+                                        CartId = crt.SecondCartId,
                                         ItemName = i.ItemName,
                                         ItemId = i.ProductItemId,
                                         Price = RoledId == 1 ? vr.CustomerPrice.Value : vr.DistributorPrice.Value,
@@ -1349,7 +1351,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                         Qty = crt.CartItemQty.Value,
                                         ShippingCharge = i.ShippingCharge.HasValue ? i.ShippingCharge.Value : 0,
                                         GSTPer = i.GST_Per,
-                                        IsCashonDelivery = crt.IsCashonDelivery.HasValue ? crt.IsCashonDelivery.Value : false,
+                                        IsCashonDelivery = false,
                                         AdvncePayPer = i.PayAdvancePer.HasValue ? i.PayAdvancePer.Value : 0
                                     }).OrderByDescending(x => x.CartId).ToList();
                     lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price, RoledId, x.VariantId); });
@@ -1520,8 +1522,9 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             }
 
             return response;
-        }        
+        }
 
+  
 
     }
 }
