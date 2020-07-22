@@ -167,7 +167,10 @@
                                 <div class="label-wrapper"><label class="control-label">Order Total Amount:</label></div>
                             </div>
                             <div class="col-md-9">
-                                <div class="form-text-row">₹ @Model.OrderAmount</div>
+                                @{ 
+                                    double RoundAmt = CommonMethod.GetRoundValue(Convert.ToDouble(Model.OrderAmount));
+                                }
+                                <div class="form-text-row">₹ @RoundAmt</div>
                             </div>
                         </div>
                         @if (Model.WalletAmtUsed > 0)

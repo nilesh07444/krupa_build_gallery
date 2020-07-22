@@ -530,17 +530,18 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         }
                         //amtrefund = shipchrge + amtrefund;
                     }
+                    double amtrefundround = CommonMethod.GetRoundValue(Convert.ToDouble(amtrefund));
                     objitm.ItemStatus = 5;
                     objitm.IsDelete = true;
                     objitm.UpdatedDate = DateTime.UtcNow;
                     if (objordr.IsCashOnDelivery.Value == true)
                     {
-                        objordr.AmountDue = objordr.AmountDue - amtrefund;
+                        objordr.AmountDue = objordr.AmountDue - Convert.ToDecimal(amtrefundround);
                     }
                     else
                     {
                         tbl_Wallet objWlt = new tbl_Wallet();
-                        objWlt.Amount = amtrefund;
+                        objWlt.Amount = Convert.ToDecimal(amtrefundround);
                         objWlt.CreditDebit = "Credit";
                         objWlt.ItemId = objitm.OrderDetailId;
                         objWlt.OrderId = objitm.OrderId;
@@ -552,16 +553,16 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         if(objClient != null)
                         {
                             decimal amtwlt = objClient.WalletAmt.HasValue ? objClient.WalletAmt.Value : 0;
-                            amtwlt = amtwlt + amtrefund;
+                            amtwlt = amtwlt + Convert.ToDecimal(amtrefundround);
                             objClient.WalletAmt = amtwlt;
                             _db.SaveChanges();
                         }
-                        msgsms = "You Item is Cancelled for Order No." + objitm.OrderId + " . Amount Rs." + amtrefund + " Refunded to your wallet";
+                        msgsms = "You Item is Cancelled for Order No." + objitm.OrderId + " . Amount Rs." + Convert.ToDecimal(amtrefundround) + " Refunded to your wallet";
                         SendMessageSMS(objClient.MobileNo, msgsms);
                         objCom.SaveTransaction(objproditm.ProductItemId, objitm.OrderDetailId, objitm.OrderId.Value, "Item Cancel Request", objitm.FinalItemPrice.Value, clsClientSession.UserID, 0, DateTime.UtcNow, "Item Cancel Request");
                         msgsms = "Items has been Cancelled for Order No." + objitm.OrderId;
                         SendMessageSMS(adminmobilenumber, msgsms);
-                        objCom.SavePaymentTransaction(objitm.OrderDetailId, objitm.OrderId.Value, false, amtrefund, "Payment To Wallet Refund", clsClientSession.UserID, false, DateTime.UtcNow, "Wallet");
+                        objCom.SavePaymentTransaction(objitm.OrderDetailId, objitm.OrderId.Value, false, Convert.ToDecimal(amtrefundround), "Payment To Wallet Refund", clsClientSession.UserID, false, DateTime.UtcNow, "Wallet");
                         objCom.SaveTransaction(objproditm.ProductItemId, objitm.OrderDetailId, objitm.OrderId.Value, "Cancel Item amount Refund to Wallet Rs"+ amtrefund, amtrefund, clsClientSession.UserID, 0, DateTime.UtcNow, "Item Cancel Refund");
                         //SendMessageSMS(objClient.MobileNo,);
                         _db.SaveChanges();                        
@@ -891,7 +892,9 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 {
                     GSTNo = "GST No." + objOrder.GSTNo;
                 }
-                newhtmldata = htmldata.Replace("--INVOICENO--", InvoiceNo).Replace("--GSTNo--", GSTNo).Replace("--CANCELEDDATE--", DateOfCancelReturnExchage).Replace("--RETURNDATE--", DateOfCancelReturnExchage).Replace("--INVOICEDATE--", DateOfInvoice).Replace("--ORDERNO--", orderNo).Replace("--CLIENTUSERNAME--", ClientUserName).Replace("--CLIENTUSERADDRESS--", objOrder.ClientAddress).Replace("--CLIENTUSEREMAIL--", objOrder.ClientEmail).Replace("--CLIENTUSERMOBILE--", objOrder.ClientMobileNo).Replace("--ITEMLIST--", ItemHtmls).Replace("--GSTCALCULATIONDATA--", GST_HTML_DATA).Replace("--SHIPPING--", Math.Round(shipcharge, 2).ToString()).Replace("--SUBTOTAL--", Math.Round(SubTotal, 2).ToString()).Replace("--TOTAL--", Math.Round(TotalFinal, 2).ToString()).Replace("--EXTRAAMOUNT--", Math.Round(objOrder.ExtraAmount, 2).ToString()).Replace("--ExchangeCHARGE--", Math.Round(amtcut, 2).ToString()).Replace("--RETURNCHARGE--", Math.Round(amtcut, 2).ToString());
+                double RoundAmt = CommonMethod.GetRoundValue(Convert.ToDouble(TotalFinal));
+                double RoundedAmt = CommonMethod.GetRoundedValue(Convert.ToDouble(TotalFinal));
+                newhtmldata = htmldata.Replace("--INVOICENO--", InvoiceNo).Replace("--GSTNo--", GSTNo).Replace("--CANCELEDDATE--", DateOfCancelReturnExchage).Replace("--RETURNDATE--", DateOfCancelReturnExchage).Replace("--INVOICEDATE--", DateOfInvoice).Replace("--ORDERNO--", orderNo).Replace("--CLIENTUSERNAME--", ClientUserName).Replace("--CLIENTUSERADDRESS--", objOrder.ClientAddress).Replace("--CLIENTUSEREMAIL--", objOrder.ClientEmail).Replace("--CLIENTUSERMOBILE--", objOrder.ClientMobileNo).Replace("--ITEMLIST--", ItemHtmls).Replace("--GSTCALCULATIONDATA--", GST_HTML_DATA).Replace("--SHIPPING--", Math.Round(shipcharge, 2).ToString()).Replace("--SUBTOTAL--", Math.Round(SubTotal, 2).ToString()).Replace("--TOTAL--", Math.Round(TotalFinal, 2).ToString()).Replace("--EXTRAAMOUNT--", Math.Round(objOrder.ExtraAmount, 2).ToString()).Replace("--ExchangeCHARGE--", Math.Round(amtcut, 2).ToString()).Replace("--RETURNCHARGE--", Math.Round(amtcut, 2).ToString()).Replace("--ROUNDOFF--", Math.Round(RoundedAmt, 2).ToString()).Replace("--ROUNDTOTAL--", Math.Round(RoundAmt, 2).ToString()); ;
 
             }
 

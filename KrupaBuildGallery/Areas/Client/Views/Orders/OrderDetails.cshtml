@@ -174,8 +174,8 @@
                             <div class="col-md-9">
                                 @{ 
                                     decimal OrderTotalAmt = Model.OrderAmount + Model.ExtraAmount + Model.ShipmentCharge;
-                                }
-                                <div class="form-text-row">₹ @OrderTotalAmt</div>
+                                    double OrderRoundedAmt = CommonMethod.GetRoundValue(Convert.ToDouble(OrderTotalAmt));                                }
+                                <div class="form-text-row">₹ @OrderRoundedAmt</div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -380,6 +380,8 @@
                                     }
                                     @{
                                         decimal NetTotals = Math.Round(Model.OrderAmount + Model.ShipmentCharge + Model.ExtraAmount, 2);
+                                        double RoundAmtTotl = CommonMethod.GetRoundValue(Convert.ToDouble(NetTotals));
+                                        double RoundedAmtTotl = CommonMethod.GetRoundedValue(Convert.ToDouble(NetTotals));
                                     }
                                     <tr>
                                         <td></td>
@@ -431,6 +433,30 @@
                                         <td></td>
                                         <td>Total Net Amount</td>
                                         <td>₹ @NetTotals</td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>Round Off</td>
+                                        <td>₹ @RoundedAmtTotl</td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>Total Net Pay Amount</td>
+                                        <td>₹ @RoundAmtTotl</td>
                                         <td></td>
                                         <td></td>
                                     </tr>

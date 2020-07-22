@@ -58,5 +58,27 @@ namespace KrupaBuildGallery
             return list;
         }
 
+        public static double GetRoundedValue(double amt)
+        {
+            double originalVal = amt;  // value before round off
+
+            double roudedVal = Math.Round(originalVal, MidpointRounding.AwayFromZero); // rounded value
+
+            double GetVal = 0;  // to know rounded value
+
+            GetVal -= originalVal - roudedVal;
+
+            GetVal = Math.Round(GetVal, 2);  // to again roundup value with just 2 decimal precision, if it 
+            return GetVal;
+        }
+
+        public static double GetRoundValue(double amt)
+        {
+            double originalVal = amt;  // value before round off
+
+            double roudedVal = Math.Round(originalVal, MidpointRounding.AwayFromZero); // rounded value          
+
+            return roudedVal;
+        }
     }
 }

@@ -414,8 +414,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             amtcut = Math.Round((objOrderItm.FinalItemPrice.Value * objSettings.ReturnPerOutGodhra.Value) / 100, 2);
                         }
                         decimal refundamtt = objOrderItm.FinalItemPrice.Value - amtcut;
-                        decimal remaing = refundamtt;
-
+                        double RoundAmt = CommonMethod.GetRoundValue(Convert.ToDouble(refundamtt));
+                        decimal remaing = Convert.ToDecimal(RoundAmt);
+                         
                         if (objtbl_Orders.CreditAmountUsed > 0 && remaing > 0 && objtbl_Orders.IsCashOnDelivery == false)
                         {
                             decimal credtrefuned = objtbl_Orders.CreditAmountRefund.HasValue ? objtbl_Orders.CreditAmountRefund.Value : 0;
@@ -610,8 +611,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     decimal amt = objReq.Amount.Value;
                     decimal deprc = Math.Round((objReq.Amount.Value * objSettings.ExchangePer.Value) / 100, 2);
                     decimal amtredund = amt - deprc;
+                    double RoundAmt = CommonMethod.GetRoundValue(Convert.ToDouble(amtredund));
                     tbl_Wallet objWlt = new tbl_Wallet();
-                    objWlt.Amount = amtredund;
+                    objWlt.Amount = Convert.ToDecimal(RoundAmt);
                     objWlt.CreditDebit = "Credit";
                     objWlt.ItemId = objReq.ItemId;
                     objWlt.OrderId = objReq.OrderId;
@@ -622,7 +624,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     if (objClient != null)
                     {
                         decimal amtwlt = objClient.WalletAmt.HasValue ? objClient.WalletAmt.Value : 0;
-                        amtwlt = amtwlt + amtredund;
+                        amtwlt = amtwlt + Convert.ToDecimal(RoundAmt);
                         objClient.WalletAmt = amtwlt;
                         _db.SaveChanges();
                     }
@@ -640,11 +642,11 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     objstkreport.Remarks = "Ordered Item Exchanged:" + objOrderItm.OrderId;
                     _db.tbl_StockReport.Add(objstkreport);
                     _db.SaveChanges();
-                    msgsms = "You Item is Exchanged for Order No." + objReq.OrderId + " . Amount Rs." + amtredund + " Refunded to your wallet";
+                    msgsms = "You Item is Exchanged for Order No." + objReq.OrderId + " . Amount Rs." + RoundAmt + " Refunded to your wallet";
                     SendMessageSMS(mobilenumber, msgsms);
-                    objCommon.SavePaymentTransaction(objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, false, amtredund, "Payment To Wallet Refund", clsAdminSession.UserID, true, DateTime.UtcNow, "Wallet");
+                    objCommon.SavePaymentTransaction(objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, false, Convert.ToDecimal(RoundAmt), "Payment To Wallet Refund", clsAdminSession.UserID, true, DateTime.UtcNow, "Wallet");
                     objCommon.SaveTransaction(objOrderItm.ProductItemId.Value, objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, "Item Exchanged Request Accepted", 0, 0, clsAdminSession.UserID, DateTime.UtcNow, "Accepted Exchanged Item Request");
-                    objCommon.SaveTransaction(objOrderItm.ProductItemId.Value, objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, "Amount Rs." + amtredund + " Refunded to your wallet", 0, 0, clsAdminSession.UserID, DateTime.UtcNow, "Accepted Exchanged Item Request Refund");
+                    objCommon.SaveTransaction(objOrderItm.ProductItemId.Value, objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, "Amount Rs." + RoundAmt + " Refunded to your wallet", 0, 0, clsAdminSession.UserID, DateTime.UtcNow, "Accepted Exchanged Item Request Refund");
                 }
             }
 
@@ -951,10 +953,13 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             decimal TotalOpening = TotalCredit - TotalDebit;
                             List<tbl_PaymentTransaction> lstAllTransaction = _db.tbl_PaymentTransaction.Where(o => orderIds.Contains(o.OrderId) && o.TransactionDate >= dtStart && o.TransactionDate <= dtEnd && (PaymentMode == "All" || o.ModeOfPayment == PaymentMode)).ToList();
                             int row1 = 1;
+                           
                             if (lstAllTransaction != null && lstAllTransaction.Count() > 0)
                             {
                                 foreach (var objTrn in lstAllTransaction)
                                 {
+                                    double RoundAmt = CommonMethod.GetRoundValue(Convert.ToDouble(objTrn.Amount));
+                                    objTrn.Amount = Convert.ToDecimal(RoundAmt);
                                     workSheet.Cells[row1 + 2, 1].Style.Font.Bold = false;
                                     workSheet.Cells[row1 + 2, 1].Style.Font.Size = 12;
                                     workSheet.Cells[row1 + 2, 1].Value = objTrn.TransactionDate.Value.ToString("dd-MM-yyyy");
@@ -1097,6 +1102,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 {
                     foreach (var objTrn in lstAllTransaction)
                     {
+                        double RoundAmt = CommonMethod.GetRoundValue(Convert.ToDouble(objTrn.Amount));
+                        objTrn.Amount = Convert.ToDecimal(RoundAmt);
                         workSheet.Cells[row1 + 2, 1].Style.Font.Bold = false;
                         workSheet.Cells[row1 + 2, 1].Style.Font.Size = 12;
                         workSheet.Cells[row1 + 2, 1].Value = objTrn.TransactionDate.Value.ToString("dd-MM-yyyy");
@@ -1254,6 +1261,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         {
                             foreach (var objTrn in lstAllTransaction)
                             {
+                                double RoundAmt = CommonMethod.GetRoundValue(Convert.ToDouble(objTrn.Amount));
+                                objTrn.Amount = Convert.ToDecimal(RoundAmt);
                                 ReportVM objrp = new ReportVM();
                                 objrp.Date = objTrn.TransactionDate.Value.ToString("dd-MM-yyyy");
                                 objrp.Opening = TotalOpening.ToString();
@@ -1304,6 +1313,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 {
                     foreach (var objTrn in lstAllTransaction)
                     {
+                        double RoundAmt = CommonMethod.GetRoundValue(Convert.ToDouble(objTrn.Amount));
+                        objTrn.Amount = Convert.ToDecimal(RoundAmt);
                         ReportVM objrp = new ReportVM();
                         objrp.Date = objTrn.TransactionDate.Value.ToString("dd-MM-yyyy");
                         objrp.Opening = TotalOpening.ToString();
@@ -1629,10 +1640,12 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         workSheet.Cells[row1 + 2, 7].Style.WrapText = true;
                         workSheet.Cells[row1 + 2, 7].AutoFitColumns(30, 70);
                         decimal netamt = TotalFinal + ordrr.ShipmentCharge + ordrr.ExtraAmount;
+                        double RoundAmt = CommonMethod.GetRoundValue(Convert.ToDouble(netamt));
+                        netamt = Convert.ToDecimal(RoundAmt);
                         TotalDateWise = TotalDateWise + netamt;
                         TotalDateWiseQty = TotalDateWiseQty + TotlQty;
                         TotalWhole = TotalWhole + netamt;
-                        TotalWholeQty = TotalWholeQty + TotlQty;
+                        TotalWholeQty = TotalWholeQty + TotlQty;                  
                         workSheet.Cells[row1 + 2, 8].Style.Font.Bold = true;
                         workSheet.Cells[row1 + 2, 8].Style.Font.Size = 12;
                         workSheet.Cells[row1 + 2, 8].Value = "Net Amount: " + netamt;
@@ -1844,6 +1857,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         decimal IGST = Math.Round(Convert.ToDecimal(objItem.GST_Per));
                         decimal FinalPrice = Math.Round(basicTotalPrice + objItem.GSTAmt - objItem.Discount, 2);
                         decimal TaxableAmt = Math.Round(basicTotalPrice - objItem.Discount, 2);
+                        double RoundAmt = CommonMethod.GetRoundValue(Convert.ToDouble(FinalPrice));
+                        FinalPrice = Convert.ToDecimal(RoundAmt);
                         TotalDateWise = TotalDateWise + FinalPrice;
                         TotalDateWiseQty = TotalDateWiseQty + objItem.Qty;
                         TotalWhole = TotalWhole + FinalPrice;
@@ -2107,6 +2122,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         decimal IGST = Math.Round(Convert.ToDecimal(objItem.GST_Per));
                         decimal FinalPrice = Math.Round(basicTotalPrice + objItem.GSTAmt - objItem.Discount, 2);
                         decimal TaxableAmt = Math.Round(basicTotalPrice - objItem.Discount, 2);
+                        double RoundAmt = CommonMethod.GetRoundValue(Convert.ToDouble(FinalPrice));
+                        FinalPrice = Convert.ToDecimal(RoundAmt);
                         TotalDateWise = TotalDateWise + FinalPrice;
                         TotalDateWiseQty = TotalDateWiseQty + objItem.Qty;
                         TotalWhole = TotalWhole + FinalPrice;
@@ -2368,6 +2385,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         decimal IGST = Math.Round(Convert.ToDecimal(objItem.GST_Per));
                         decimal FinalPrice = Math.Round(basicTotalPrice + objItem.GSTAmt - objItem.Discount, 2);
                         decimal TaxableAmt = Math.Round(basicTotalPrice - objItem.Discount, 2);
+                        double RoundAmt = CommonMethod.GetRoundValue(Convert.ToDouble(FinalPrice));
+                        FinalPrice = Convert.ToDecimal(RoundAmt);
                         TotalDateWise = TotalDateWise + FinalPrice;
                         TotalDateWiseQty = TotalDateWiseQty + objItem.Qty;
                         TotalWhole = TotalWhole + FinalPrice;

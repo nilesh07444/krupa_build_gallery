@@ -38,7 +38,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                  OrderId = p.OrderId,
                                  ClientUserName = c.FirstName + " " + c.LastName,
                                  ClientUserId = p.ClientUserId,
-                                 OrderAmount = p.OrderAmount,
+                                 OrderAmount = p.OrderAmount + (p.ExtraAmount.HasValue ? p.ExtraAmount.Value : 0) + (p.ShippingCharge.HasValue ? p.ShippingCharge.Value : 0),
                                  OrderShipCity = p.OrderShipCity,
                                  OrderShipState = p.OrderShipState,
                                  OrderShipAddress = p.OrderShipAddress,
