@@ -131,9 +131,15 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                                        ItemImg = c.MainImage,
                                                        IsDeleted = p.IsDelete,
                                                        ItemStatus = p.ItemStatus.Value,
+                                                       FinalAmt = p.FinalItemPrice.Value,
                                                        VariantQtytxt = vr.UnitQty,
-                                                       Discount = p.Discount.HasValue ? p.Discount.Value : 0
-                                                   }).OrderByDescending(x => x.OrderItemId).ToList();
+                                                       Discount = p.Discount.HasValue ? p.Discount.Value : 0,
+                                                       IsCombo = p.IsCombo.HasValue ? p.IsCombo.Value : false,
+                                                       ComboId = p.ComboId.HasValue ? p.ComboId.Value : 0,
+                                                       IsMainItem = p.IsMainItem.HasValue ? p.IsMainItem.Value : false,
+                                                       ComboName = p.ComboOfferName,
+                                                       ComboQty = p.ComboQty.HasValue ? p.ComboQty.Value : p.Qty.Value
+                                                   }).OrderBy(x => x.OrderItemId).ToList();
                 if (lstOrderItms != null && lstOrderItms.Count() > 0)
                 {
                     lstOrderItms.ForEach(x => x.ItemStatustxt = GetItemStatus(x.ItemStatus));
@@ -598,6 +604,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     objReq.DateModified = DateTime.UtcNow;
                     objReq.ModifiedBy = clsAdminSession.UserID;
                     objOrderItm.UpdatedDate = DateTime.UtcNow;
+                    objOrderItm.IsReplacedItem = true;
                     _db.SaveChanges();
                     msgsms = "Your Item to Replace for Order No." + objReq.OrderId + " is Accepted. You will get Item asap";
                     SendMessageSMS(mobilenumber, msgsms);
@@ -709,36 +716,124 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         public string AssignDeliveryPerson(long OrderId, long OrderItemId, long PersonId)
         {
             clsCommon objCommon = new clsCommon();
+            string ItemList = "";
             tbl_OrderItemDetails objOrderItm = _db.tbl_OrderItemDetails.Where(o => o.OrderDetailId == OrderItemId).FirstOrDefault();
             tbl_AdminUsers objAdminUsr = _db.tbl_AdminUsers.Where(o => o.AdminUserId == PersonId).FirstOrDefault();
-            objOrderItm.ItemStatus = 3;
-            _db.SaveChanges();
             tbl_Orders objOrdr = _db.tbl_Orders.Where(o => o.OrderId == OrderId).FirstOrDefault();
-            if (objOrdr.OrderStatusId == 2)
+            if (objOrderItm.IsCombo == true)
             {
-                List<tbl_OrderItemDetails> lstOrderTms = _db.tbl_OrderItemDetails.Where(o => o.OrderId == OrderId && o.ItemStatus != 5 && o.ItemStatus != 3).ToList();
-                if (lstOrderTms == null || lstOrderTms.Count == 0)
+                long comboid = objOrderItm.ComboId.Value;
+                List<tbl_OrderItemDetails> lstordritms =_db.tbl_OrderItemDetails.Where(o => o.ComboId == comboid && o.OrderId == OrderId).ToList();
+                if(lstordritms != null && lstordritms.Count() > 0)
                 {
-                    objOrdr.OrderStatusId = 3;
+                    foreach(var objorr in lstordritms)
+                    {
+                        long RplceId = 0;
+                        if(objorr.IsReplacedItem == true)
+                        {
+                            tbl_ItemReplace objItemReplc = new tbl_ItemReplace();
+                            objItemReplc.ItemDetailId = objorr.OrderDetailId;
+                            objItemReplc.OrderId = objorr.OrderId;
+                            objItemReplc.ItemStatus = 3;
+                            objItemReplc.ReplaceDate = DateTime.UtcNow;
+                            _db.tbl_ItemReplace.Add(objItemReplc);
+                            _db.SaveChanges();
+                            RplceId = objItemReplc.ItemReplaceId;
+                            objorr.ItemStatus = 3;
+                        }
+                        else
+                        {
+                            objorr.ItemStatus = 3;
+                        }
+                        
+                        _db.SaveChanges();
+                       
+                        tbl_OrderItemDelivery objOrderItmDlv = new tbl_OrderItemDelivery();
+                        objOrderItmDlv.OrderId = OrderId;
+                        objOrderItmDlv.OrderItemId = objorr.OrderDetailId;
+                        objOrderItmDlv.Status = 3;
+                        objOrderItmDlv.DelieveryPersonId = PersonId;
+                        objOrderItmDlv.AssignedBy = clsAdminSession.UserID;
+                        objOrderItmDlv.AssignedDate = DateTime.UtcNow;
+                        objOrderItmDlv.ReplaceId = RplceId;
+                        _db.tbl_OrderItemDelivery.Add(objOrderItmDlv);
+                        _db.SaveChanges();
+                        tbl_ItemVariant objVrnt = _db.tbl_ItemVariant.Where(o => o.VariantItemId == objorr.VariantItemId).FirstOrDefault();
+                        if (objVrnt != null)
+                        {
+                            ItemList = ItemList + objorr.ItemName + "-" + objVrnt.UnitQty + ",";
+                        }
+                        else
+                        {
+                            ItemList = ItemList + objorr.ItemName + ",";
+                        }
+                        objCommon.SaveTransaction(objorr.ProductItemId.Value, objorr.OrderDetailId, objorr.OrderId.Value, "Delivery Person " + objAdminUsr.FirstName + " " + objAdminUsr.LastName + " Assign to Dispatch Item", 0, 0, clsAdminSession.UserID, DateTime.UtcNow, "Item Status Changed");
+                    }
                 }
+            
+                if (objOrdr.OrderStatusId == 2)
+                {
+                    List<tbl_OrderItemDetails> lstOrderTms = _db.tbl_OrderItemDetails.Where(o => o.OrderId == OrderId && o.ItemStatus != 5 && o.ItemStatus != 3).ToList();
+                    if (lstOrderTms == null || lstOrderTms.Count == 0)
+                    {
+                        objOrdr.OrderStatusId = 3;
+                    }
+                }             
             }
-            tbl_OrderItemDelivery objOrderItmDlv = new tbl_OrderItemDelivery();
-            objOrderItmDlv.OrderId = OrderId;
-            objOrderItmDlv.OrderItemId = OrderItemId;
-            objOrderItmDlv.Status = 3;
-            objOrderItmDlv.DelieveryPersonId = PersonId;
-            objOrderItmDlv.AssignedBy = clsAdminSession.UserID;
-            objOrderItmDlv.AssignedDate = DateTime.UtcNow;
-            _db.tbl_OrderItemDelivery.Add(objOrderItmDlv);
-            _db.SaveChanges();
-            objCommon.SaveTransaction(objOrderItm.ProductItemId.Value, objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, "Delivery Person " + objAdminUsr.FirstName + " " + objAdminUsr.LastName + " Assign to Dispatch Item", 0, 0, clsAdminSession.UserID, DateTime.UtcNow, "Item Status Changed");
+            else
+            {
+                ItemList = objOrderItm.ItemName;
+                long RplceId = 0;
+                if (objOrderItm.IsReplacedItem == true)
+                {
+                    tbl_ItemReplace objItemReplc = new tbl_ItemReplace();
+                    objItemReplc.ItemDetailId = objOrderItm.OrderDetailId;
+                    objItemReplc.OrderId = objOrderItm.OrderId;
+                    objItemReplc.ItemStatus = 3;
+                    objItemReplc.ReplaceDate = DateTime.UtcNow;
+                    _db.tbl_ItemReplace.Add(objItemReplc);
+                    _db.SaveChanges();
+                    RplceId = objItemReplc.ItemReplaceId;
+                    objOrderItm.ItemStatus = 3;
+                }
+                else
+                {
+                    objOrderItm.ItemStatus = 3;
+                }
+
+                _db.SaveChanges();
+
+                if (objOrdr.OrderStatusId == 2)
+                {
+                    List<tbl_OrderItemDetails> lstOrderTms = _db.tbl_OrderItemDetails.Where(o => o.OrderId == OrderId && o.ItemStatus != 5 && o.ItemStatus != 3).ToList();
+                    if (lstOrderTms == null || lstOrderTms.Count == 0)
+                    {
+                        objOrdr.OrderStatusId = 3;
+                    }
+                }
+
+                tbl_OrderItemDelivery objOrderItmDlv = new tbl_OrderItemDelivery();
+                objOrderItmDlv.OrderId = OrderId;
+                objOrderItmDlv.OrderItemId = OrderItemId;
+                objOrderItmDlv.Status = 3;
+                objOrderItmDlv.DelieveryPersonId = PersonId;
+                objOrderItmDlv.AssignedBy = clsAdminSession.UserID;
+                objOrderItmDlv.AssignedDate = DateTime.UtcNow;
+                objOrderItmDlv.ReplaceId = RplceId;
+                _db.tbl_OrderItemDelivery.Add(objOrderItmDlv);
+                _db.SaveChanges();
+                objCommon.SaveTransaction(objOrderItm.ProductItemId.Value, objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, "Delivery Person " + objAdminUsr.FirstName + " " + objAdminUsr.LastName + " Assign to Dispatch Item", 0, 0, clsAdminSession.UserID, DateTime.UtcNow, "Item Status Changed");
+
+            }          
+          
+            
             tbl_ClientUsers objclntusr = _db.tbl_ClientUsers.Where(o => o.ClientUserId == objOrdr.ClientUserId).FirstOrDefault();
             if (objclntusr != null)
             {
                 using (WebClient webClient = new WebClient())
                 {
 
-                    string msg = "Your Order No: " + objOrdr.OrderId + "\n Item: " + objOrderItm.ItemName + "\n Has Been Dispatched";
+                    string msg = "Your Order No: " + objOrdr.OrderId + "\n Item: " + ItemList + "\n Has Been Dispatched";
                     string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objclntusr.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
                     var json = webClient.DownloadString(url);
                     if (json.Contains("invalidnumber"))
@@ -752,7 +847,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
                             string FromEmail = objGensetting.FromEmail;
 
-                            string msg1 = "Your Order #" + objOrdr.OrderId + "Item: " + objOrderItm.ItemName + "\n Has Been Dispatched";
+                            string msg1 = "Your Order #" + objOrdr.OrderId + "Item: " + ItemList + "\n Has Been Dispatched";
                             clsCommon.SendEmail(objclntusr.Email, FromEmail, "Your Order has been dispatched - Shopping & Saving", msg1);
                         }
                     }
@@ -761,7 +856,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
                 using (WebClient webClient = new WebClient())
                 {
-                    string msg = "Order No: " + objOrdr.OrderId + " \nItem: " + objOrderItm.ItemName + " \nHas Been Assigned To You for Delivery";
+                    string msg = "Order No: " + objOrdr.OrderId + " \nItem: " + ItemList + " \nHas Been Assigned To You for Delivery";
                     string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objAdminUsr.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
                     var json = webClient.DownloadString(url);
                     if (json.Contains("invalidnumber"))
@@ -775,7 +870,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
                             string FromEmail = objGensetting.FromEmail;
 
-                            string msg1 = "Order No: " + objOrdr.OrderId + "Item: " + objOrderItm.ItemName + "Has Been Assigned To You for Delivery";
+                            string msg1 = "Order No: " + objOrdr.OrderId + "Item: " + ItemList + "Has Been Assigned To You for Delivery";
                             clsCommon.SendEmail(objAdminUsr.Email, FromEmail, "Assigned New Item Delivery - Shopping & Saving", msg1);
                         }
                     }
@@ -800,32 +895,103 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 {
                     long OrderItemId = Convert.ToInt64(ss);
                     tbl_OrderItemDetails objOrderItm = _db.tbl_OrderItemDetails.Where(o => o.OrderDetailId == OrderItemId).FirstOrDefault();
-                    objOrderItm.ItemStatus = 3;
-                    _db.SaveChanges();
-
-                    tbl_ItemVariant objVrnt = _db.tbl_ItemVariant.Where(o => o.VariantItemId == objOrderItm.VariantItemId).FirstOrDefault();
-                    if (objVrnt != null)
+                    if (objOrderItm.IsCombo == true)
                     {
-                        ItmsText = ItmsText + objOrderItm.ItemName + "-" + objVrnt.UnitQty + ",";
+                        long comboid = objOrderItm.ComboId.Value;
+                        List<tbl_OrderItemDetails> lstordritms = _db.tbl_OrderItemDetails.Where(o => o.ComboId == comboid && o.OrderId == OrderId).ToList();
+                        if (lstordritms != null && lstordritms.Count() > 0)
+                        {
+                            foreach (var objorr in lstordritms)
+                            {
+                                long RplceId = 0;
+                                if (objorr.IsReplacedItem == true)
+                                {
+                                    tbl_ItemReplace objItemReplc = new tbl_ItemReplace();
+                                    objItemReplc.ItemDetailId = objorr.OrderDetailId;
+                                    objItemReplc.OrderId = objorr.OrderId;
+                                    objItemReplc.ItemStatus = 3;
+                                    objItemReplc.ReplaceDate = DateTime.UtcNow;
+                                    _db.tbl_ItemReplace.Add(objItemReplc);
+                                    _db.SaveChanges();
+                                    RplceId = objItemReplc.ItemReplaceId;
+                                    objorr.ItemStatus = 3;
+                                }
+                                else
+                                {
+                                    objorr.ItemStatus = 3;
+                                }
+                              
+                                _db.SaveChanges();
+                                tbl_OrderItemDelivery objOrderItmDlv1 = new tbl_OrderItemDelivery();
+                                objOrderItmDlv1.OrderId = OrderId;
+                                objOrderItmDlv1.OrderItemId = objorr.OrderDetailId;
+                                objOrderItmDlv1.Status = 3;
+                                objOrderItmDlv1.DelieveryPersonId = PersonId;
+                                objOrderItmDlv1.AssignedBy = clsAdminSession.UserID;
+                                objOrderItmDlv1.AssignedDate = DateTime.UtcNow;
+                                objOrderItmDlv1.ReplaceId = RplceId;
+                                _db.tbl_OrderItemDelivery.Add(objOrderItmDlv1);
+                                _db.SaveChanges();
+                                tbl_ItemVariant objVrnt1 = _db.tbl_ItemVariant.Where(o => o.VariantItemId == objorr.VariantItemId).FirstOrDefault();
+                                if (objVrnt1 != null)
+                                {
+                                    ItmsText = ItmsText + objorr.ItemName + "-" + objVrnt1.UnitQty + ",";
+                                }
+                                else
+                                {
+                                    ItmsText = ItmsText + objorr.ItemName + ",";
+                                }
+                                objCommon.SaveTransaction(objorr.ProductItemId.Value, objorr.OrderDetailId, objorr.OrderId.Value, "Delivery Person " + objAdminUsr.FirstName + " " + objAdminUsr.LastName + " Assign to Dispatch Item", 0, 0, clsAdminSession.UserID, DateTime.UtcNow, "Item Status Changed");
+                            }
+                        }
                     }
                     else
                     {
-                        ItmsText = ItmsText + objOrderItm.ItemName + ",";
+                        long RplceId = 0;
+                        if (objOrderItm.IsReplacedItem == true)
+                        {
+                            tbl_ItemReplace objItemReplc = new tbl_ItemReplace();
+                            objItemReplc.ItemDetailId = objOrderItm.OrderDetailId;
+                            objItemReplc.OrderId = objOrderItm.OrderId;
+                            objItemReplc.ItemStatus = 3;
+                            objItemReplc.ReplaceDate = DateTime.UtcNow;
+                            _db.tbl_ItemReplace.Add(objItemReplc);
+                            _db.SaveChanges();
+                            RplceId = objItemReplc.ItemReplaceId;
+                            objOrderItm.ItemStatus = 3;
+                        }
+                        else
+                        {
+                            objOrderItm.ItemStatus = 3;
+                        }
+                     
+                        _db.SaveChanges();
+                        tbl_ItemVariant objVrnt = _db.tbl_ItemVariant.Where(o => o.VariantItemId == objOrderItm.VariantItemId).FirstOrDefault();
+                        if (objVrnt != null)
+                        {
+                            ItmsText = ItmsText + objOrderItm.ItemName + "-" + objVrnt.UnitQty + ",";
+                        }
+                        else
+                        {
+                            ItmsText = ItmsText + objOrderItm.ItemName + ",";
+                        }
+                        tbl_OrderItemDelivery objOrderItmDlv = new tbl_OrderItemDelivery();
+                        objOrderItmDlv.OrderId = OrderId;
+                        objOrderItmDlv.OrderItemId = OrderItemId;
+                        objOrderItmDlv.Status = 3;
+                        objOrderItmDlv.DelieveryPersonId = PersonId;
+                        objOrderItmDlv.AssignedBy = clsAdminSession.UserID;
+                        objOrderItmDlv.AssignedDate = DateTime.UtcNow;
+                        objOrderItmDlv.ReplaceId = RplceId;
+                        _db.tbl_OrderItemDelivery.Add(objOrderItmDlv);
+                        objCommon.SaveTransaction(objOrderItm.ProductItemId.Value, objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, "Delivery Person " + objAdminUsr.FirstName + " " + objAdminUsr.LastName + " Assign to Dispatch Item", 0, 0, clsAdminSession.UserID, DateTime.UtcNow, "Item Status Changed");
                     }
-                    tbl_OrderItemDelivery objOrderItmDlv = new tbl_OrderItemDelivery();
-                    objOrderItmDlv.OrderId = OrderId;
-                    objOrderItmDlv.OrderItemId = OrderItemId;
-                    objOrderItmDlv.Status = 3;
-                    objOrderItmDlv.DelieveryPersonId = PersonId;
-                    objOrderItmDlv.AssignedBy = clsAdminSession.UserID;
-                    objOrderItmDlv.AssignedDate = DateTime.UtcNow;
-                    _db.tbl_OrderItemDelivery.Add(objOrderItmDlv);
-                    objCommon.SaveTransaction(objOrderItm.ProductItemId.Value, objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, "Delivery Person " + objAdminUsr.FirstName + " " + objAdminUsr.LastName + " Assign to Dispatch Item", 0, 0, clsAdminSession.UserID, DateTime.UtcNow, "Item Status Changed");
+                  
                 }
                 _db.SaveChanges();
             }
 
-
+            _db.SaveChanges();
 
             tbl_Orders objOrdr = _db.tbl_Orders.Where(o => o.OrderId == OrderId).FirstOrDefault();
             if (objOrdr.OrderStatusId == 2)

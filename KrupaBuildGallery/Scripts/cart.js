@@ -11,6 +11,17 @@
     }
 }
 
+function AddtoCartfuncCombo(comboid,qty,iscash) {
+    if (iscash == "False") {
+        addtoCartCombo(comboid, qty, "false");
+    }
+    else {
+        $("#cashondeliverymodalcombo").modal("show");
+        $("#cashondeliverymodalcombo #hdnCartComboId").val(comboid);
+        $("#cashondeliverymodalcombo #hdnComboQty").val(qty);
+    }
+}
+
 function PlaceOrder(razorpay_payment_id, razorpay_order_id, razorpay_signature) {
     var URL = '/Client/Checkout/PlaceOrder';
     var formId = $("#frmcheckout");
@@ -321,5 +332,59 @@ function addtoCartCashOndelivery(iscash) {
     else {
         $("#cashondeliverymodal").modal("hide");
         addtoCart(varintid,itemid, qty,"false");      
+    }
+}
+
+function addtoCartCombo(comboid,qty, iscash) {
+    var URL = '/Client/Cart/AddtoCartCombo';
+    jQuery.ajax({
+        type: 'POST',
+        async: true,
+        url: URL + "?ComboId=" + comboid + "&Qty=" + qty + "&IsCash=" + iscash,
+        success: function (result) {
+            if (result == "OutofStock") {
+                msgdisplayFail("Combo Item is out of stock can not add to cart");                
+                return false;
+            }
+            else {
+                msgdisplay("Combo Items Successfully added to your cart");
+            }
+
+            // if (result == "notfound") {
+            //  alert("Product Not Found");
+            // }         
+            $.ajax({
+                url: '/Client/Cart/CartItemsListTop',
+                type: "post",
+                dataType: "html",
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    //success
+                    $("#ulCartitems").html(data); //populate the tab content.
+
+                },
+                error: function (e) {
+                    alert("error");
+                }
+            });
+        },
+        error: function (resultData) {
+            console.log("error");
+
+        }
+    });
+}
+
+function addtoCartCashOndeliveryCombo(iscash) {
+    var comboid = $("#cashondeliverymodalcombo #hdnCartComboId").val();
+    var qty = $("#cashondeliverymodalcombo #hdnComboQty").val();
+   
+    if (iscash == "yes") {
+        $("#cashondeliverymodalcombo").modal("hide");
+        addtoCartCombo(comboid, qty, "true");
+    }
+    else {
+        $("#cashondeliverymodalcombo").modal("hide");
+        addtoCartCombo(comboid, qty, "false");
     }
 }

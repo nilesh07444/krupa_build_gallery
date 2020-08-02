@@ -147,11 +147,17 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                                        IGSTAmt = p.IGSTAmt.Value,
                                                        ItemImg = c.MainImage,
                                                        IsDeleted = p.IsDelete,
+                                                       FinalAmt = p.FinalItemPrice.Value,
                                                        VariantQtytxt = vr.UnitQty,
                                                        Discount = p.Discount.HasValue ? p.Discount.Value : 0,
                                                        ItemStatus = p.ItemStatus.HasValue ? p.ItemStatus.Value : 1,
-                                                       IsReturnable = c.IsReturnable.HasValue ? c.IsReturnable.Value : false
-                                                   }).OrderByDescending(x => x.OrderItemId).ToList();
+                                                       IsReturnable = c.IsReturnable.HasValue ? c.IsReturnable.Value : false,
+                                                       IsCombo = p.IsCombo.HasValue ? p.IsCombo.Value : false,
+                                                       ComboId = p.ComboId.HasValue ? p.ComboId.Value : 0,
+                                                       IsMainItem = p.IsMainItem.HasValue? p.IsMainItem.Value : false,
+                                                       ComboName = p.ComboOfferName,
+                                                       ComboQty = p.ComboQty.HasValue ? p.ComboQty.Value : p.Qty.Value
+                                                   }).OrderBy(x => x.OrderItemId).ToList();
                 if (lstOrderItms != null && lstOrderItms.Count() > 0)
                 {
                     lstOrderItms.ForEach(x => x.ItemStatustxt = GetItemStatus(x.ItemStatus));
@@ -462,7 +468,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 if (status == "5")
                 {
                     IsApprov = true;
-                     amtrefund = objitm.FinalItemPrice.Value;
+                    amtrefund = objitm.FinalItemPrice.Value;
                     if (objordr.OrderShipPincode == "389001")
                     {
                         List<OrderItemsVM> lstOrderItms = (from p in _db.tbl_OrderItemDetails
@@ -486,7 +492,10 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                                                FinalAmt = p.FinalItemPrice.HasValue ? p.FinalItemPrice.Value : 0,
                                                                Discount = p.Discount.HasValue ? p.Discount.Value : 0,
                                                                ItemStatus = p.ItemStatus.HasValue ? p.ItemStatus.Value : 1,
-                                                               IsReturnable = c.IsReturnable.HasValue ? c.IsReturnable.Value : false
+                                                               IsReturnable = c.IsReturnable.HasValue ? c.IsReturnable.Value : false,
+                                                               IsCombo = p.IsCombo.HasValue ? p.IsCombo.Value : false,
+                                                               ComboQty = p.ComboQty.HasValue ? p.ComboQty.Value : 0,
+                                                               ComboId = p.ComboId.HasValue ? p.ComboId.Value : 0
                                                            }).OrderByDescending(x => x.OrderItemId).ToList();
                         
                         decimal totlmt = 0;
@@ -497,7 +506,15 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             foreach(var objj in lstOrderItms)
                             {
                                 totlmt = totlmt + objj.FinalAmt;
-                                shipingchrgs = shipingchrgs + Math.Round(objj.ShipingChargeOf1Item * objj.Qty, 2);
+                                if(objj.IsCombo)
+                                {
+                                    shipingchrgs = shipingchrgs + Math.Round(objj.ShipingChargeOf1Item * objj.ComboQty, 2);
+                                }
+                                else
+                                {
+                                    shipingchrgs = shipingchrgs + Math.Round(objj.ShipingChargeOf1Item * objj.Qty, 2);
+                                }
+                               
                             }
                         }
                         OldOrderTotl = totlmt;
@@ -509,6 +526,10 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         }
                         OldOrderTotl = OldOrderTotl + extramt + shipingchrgs;
                         decimal shipchrge = Math.Round(objproditm.ShippingCharge.Value * objitm.Qty.Value, 2);
+                        if(objitm.IsCombo == true)
+                        {
+                            shipchrge = Math.Round(objproditm.ShippingCharge.Value * objitm.Qty.Value, 2);
+                        }
                         decimal NewShipingCharge = shipingchrgs - shipchrge;
                         decimal NewOrdeAmt = totlmt - objitm.FinalItemPrice.Value;
                         var objtbl_ExtraAmountnew = _db.tbl_ExtraAmount.Where(o => o.AmountFrom <= NewOrdeAmt && o.AmountTo >= NewOrdeAmt).FirstOrDefault();
@@ -579,6 +600,31 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     objstkreport.Remarks = "Ordered Item Cancelled:" + objitm.OrderId;
                     _db.tbl_StockReport.Add(objstkreport);
                     _db.SaveChanges();
+
+                    if(objitm.IsCombo == true)
+                    {
+                       List<tbl_OrderItemDetails> lstitmms =_db.tbl_OrderItemDetails.Where(o => o.ComboId == objitm.ComboId && o.OrderDetailId != objitm.OrderDetailId).ToList();
+                       if(lstitmms != null && lstitmms.Count() > 0)
+                        {
+                           foreach(tbl_OrderItemDetails objj in lstitmms)
+                            {
+                                objj.ItemStatus = 5;
+                                objj.IsDelete = true;
+                                objj.UpdatedDate = DateTime.UtcNow;
+                                tbl_StockReport objstkreports = new tbl_StockReport();
+                                objstkreports.FinancialYear = clsCommon.GetCurrentFinancialYear();
+                                objstkreports.StockDate = DateTime.UtcNow;
+                                objstkreports.Qty = Convert.ToInt64(objitm.QtyUsed);
+                                objstkreports.IsCredit = true;
+                                objstkreports.IsAdmin = false;
+                                objstkreports.CreatedBy = clsClientSession.UserID;
+                                objstkreports.ItemId = objj.ProductItemId;
+                                objstkreports.Remarks = "Ordered Item Cancelled:" + objitm.OrderId;
+                                _db.tbl_StockReport.Add(objstkreports);
+                                _db.SaveChanges();
+                            }
+                        }
+                    }
                 }
                 else if(status == "6")
                 {
@@ -618,6 +664,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 objitmreplce.DateCreated = DateTime.UtcNow;
                 objitmreplce.ModifiedBy = objordr.ClientUserId;
                 objitmreplce.DateModified = DateTime.UtcNow;
+                objitmreplce.IsCombo = objitm.IsCombo.HasValue ? objitm.IsCombo.Value : false;
+                objitmreplce.ComboId = objitm.ComboId.HasValue ? objitm.ComboId.Value : 0;
                 _db.tbl_ItemReturnCancelReplace.Add(objitmreplce);
                 _db.SaveChanges();
             }

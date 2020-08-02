@@ -22,7 +22,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         // GET: Client/Checkout
         public ActionResult Index(string type = "Online")
         {
-            List<CartVM> lstCartItems = new List<CartVM>();          
+            List<CartVM> lstCartItems = new List<CartVM>();
+            List<CartVM> lstComboCrt = new List<CartVM>();
             try
             {
 
@@ -32,7 +33,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 decimal TotalOrder = 0;
                 ViewBag.WebsiteOrderId = "1";
                 bool IsCashOrd = false;
-                if(type == "Cash")
+                if (type == "Cash")
                 {
                     IsCashOrd = true;
                     int year1 = DateTime.UtcNow.Year;
@@ -45,19 +46,19 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     DateTime dtfincialyear = new DateTime(year1, 4, 1);
                     DateTime dtendyear = new DateTime(toyear, 3, 31);
                     List<OrderItemsVM> lstOrderItms = (from p in _db.tbl_OrderItemDetails
-                                                       join c in _db.tbl_Orders on p.OrderId equals c.OrderId                                                       
+                                                       join c in _db.tbl_Orders on p.OrderId equals c.OrderId
                                                        where c.ClientUserId == clsClientSession.UserID && c.IsCashOnDelivery == true && p.ItemStatus != 5 && p.ItemStatus != 6 && p.ItemStatus != 8 && c.CreatedDate >= dtfincialyear && c.CreatedDate <= dtendyear
                                                        select new OrderItemsVM
                                                        {
-                                                          FinalAmt = p.FinalItemPrice.Value
+                                                           FinalAmt = p.FinalItemPrice.Value
                                                        }).ToList();
-                   
-                    if(lstOrderItms != null && lstOrderItms.Count() > 0)
+
+                    if (lstOrderItms != null && lstOrderItms.Count() > 0)
                     {
                         Ordetotlyearly = lstOrderItms.Sum(x => x.FinalAmt);
                     }
                 }
-               
+
                 string GuidNew = Guid.NewGuid().ToString();
                 string cookiesessionval = "";
                 if (Request.Cookies["sessionkeyval"] != null)
@@ -76,7 +77,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     lstCartItems = (from crt in _db.tbl_Cart
                                     join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
                                     join vr in _db.tbl_ItemVariant on crt.VariantItemId equals vr.VariantItemId
-                                    where crt.ClientUserId == ClientUserId && crt.IsCashonDelivery == IsCashOrd
+                                    where crt.ClientUserId == ClientUserId && crt.IsCashonDelivery == IsCashOrd && (crt.IsCombo == null || crt.IsCombo == false)
                                     select new CartVM
                                     {
                                         CartId = crt.Cart_Id,
@@ -88,11 +89,43 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                         VariantQtytxt = vr.UnitQty,
                                         ItemImage = i.MainImage,
                                         Qty = crt.CartItemQty.Value,
+                                        IsCombo = false,
                                         ShippingCharge = i.ShippingCharge.HasValue ? i.ShippingCharge.Value : 0,
                                         GSTPer = i.GST_Per,
                                         IsCashonDelivery = crt.IsCashonDelivery.HasValue ? crt.IsCashonDelivery.Value : false
                                     }).OrderByDescending(x => x.CartId).ToList();
-                    lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price,x.VariantId); });
+                    lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price, x.VariantId); });
+
+                    List<tbl_Cart> lst = _db.tbl_Cart.Where(o => o.ClientUserId == ClientUserId && o.IsCombo == true && o.ComboId > 0 && o.IsCashonDelivery == IsCashOrd).ToList();
+
+                    if (lst != null && lst.Count() > 0)
+                    {
+                        List<long> comboids = lst.Select(x => x.ComboId.Value).ToList().Distinct().ToList();
+                        foreach (long combId in comboids)
+                        {
+                            var objcrt = lst.Where(o => o.ComboId == combId && o.IsCashonDelivery == IsCashOrd).FirstOrDefault();
+                            long qty = objcrt.ComboQty.Value;
+                            CartVM objcrt1 = new CartVM();
+                            tbl_ComboOfferMaster objjj = _db.tbl_ComboOfferMaster.Where(o => o.ComboOfferId == combId).FirstOrDefault();
+                            if (objjj != null)
+                            {
+                                objcrt1.ItemName = objjj.OfferTitle;
+                                objcrt1.Price = objjj.OfferPrice;
+                                objcrt1.Qty = qty;
+                                objcrt1.ComboQty = objjj.MainItemQty * qty;
+                                objcrt1.IsCombo = true;
+                                objcrt1.IsCashonDelivery = objjj.IsCashOnDelivery.HasValue ? objjj.IsCashOnDelivery.Value : false;
+                                objcrt1.CartId = objcrt.Cart_Id;
+                                objcrt1.ItemImage = objjj.OfferImage;
+                                objcrt1.ItemId = objjj.MainItemId;
+                                tbl_ProductItems objprd = _db.tbl_ProductItems.Where(o => o.ProductItemId == objjj.MainItemId).FirstOrDefault();
+                                objcrt1.GSTPer = objprd.GST_Per;
+                                objcrt1.ShippingCharge = objprd.ShippingCharge.HasValue ? objprd.ShippingCharge.Value : 0;
+                                lstComboCrt.Add(objcrt1);
+                            }
+                        }
+                    }
+                    lstCartItems.AddRange(lstComboCrt);
                 }
                 else
                 {
@@ -106,7 +139,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                         ItemName = i.ItemName,
                                         ItemId = i.ProductItemId,
                                         Price = vr.CustomerPrice.Value,
-                                       // Price = i.CustomerPrice,
+                                        // Price = i.CustomerPrice,
                                         ItemImage = i.MainImage,
                                         VariantId = crt.VariantItemId.Value,
                                         VariantQtytxt = vr.UnitQty,
@@ -115,7 +148,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                         IsCashonDelivery = crt.IsCashonDelivery.HasValue ? crt.IsCashonDelivery.Value : false,
                                         GSTPer = i.GST_Per
                                     }).OrderByDescending(x => x.CartId).ToList();
-                    lstCartItems.ForEach(x => { x.Price = GetOfferPrice(x.ItemId, x.Price,x.VariantId); });
+                    lstCartItems.ForEach(x => { x.Price = GetOfferPrice(x.ItemId, x.Price, x.VariantId); });
                 }
 
                 decimal creditlimitreminng = 0;
@@ -123,41 +156,41 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 {
                     long UserID = clsClientSession.UserID;
                     tbl_ClientOtherDetails objclientothr = _db.tbl_ClientOtherDetails.Where(o => o.ClientUserId == UserID).FirstOrDefault();
-                    if(objclientothr != null && objclientothr.CreditLimitAmt != null && objclientothr.CreditLimitAmt > 0)
+                    if (objclientothr != null && objclientothr.CreditLimitAmt != null && objclientothr.CreditLimitAmt > 0)
                     {
                         decimal amountdue = 0;
-                        if(objclientothr.AmountDue != null)
+                        if (objclientothr.AmountDue != null)
                         {
-                            amountdue = objclientothr.AmountDue.Value;                            
+                            amountdue = objclientothr.AmountDue.Value;
                         }
                         creditlimitreminng = objclientothr.CreditLimitAmt.Value - amountdue;
                     }
                 }
                 List<InvoiceItemVM> lstInvItem = new List<InvoiceItemVM>();
-                if (clsClientSession.RoleID  == 1)
+                if (clsClientSession.RoleID == 1)
                 {
                     var lstCartItemsnew = lstCartItems.OrderByDescending(o => o.GSTPer).ToList();
                     DateTime dtNow = DateTime.UtcNow;
                     long clientusrrId = clsClientSession.UserID;
                     List<tbl_PointDetails> lstpoints = _db.tbl_PointDetails.Where(o => o.ClientUserId == clientusrrId && o.ExpiryDate >= dtNow && o.Points.Value > o.UsedPoints.Value).ToList().OrderBy(x => x.ExpiryDate).ToList();
                     decimal pointreamining = 0;
-                    if(lstpoints != null && lstpoints.Count() > 0)
+                    if (lstpoints != null && lstpoints.Count() > 0)
                     {
                         pointreamining = lstpoints.Sum(x => (x.Points - x.UsedPoints).Value);
                     }
                     decimal totalremining = pointreamining;
                     if (lstCartItemsnew.Count() > 0)
                     {
-                        foreach(var objcr in lstCartItemsnew)
+                        foreach (var objcr in lstCartItemsnew)
                         {
-                            if(objcr != null)
+                            if (objcr != null)
                             {
                                 //decimal InclusiveGST = Math.Round(objcr.Price - objcr.Price * (100 / (100 + objcr.GSTPer)), 2);
                                 //decimal PreGSTPrice = Math.Round(objcr.Price - InclusiveGST, 2);
-                                decimal originalbasicprice = Math.Round(((objcr.Price / (100 + objcr.GSTPer)) * 100),2);
+                                decimal originalbasicprice = Math.Round(((objcr.Price / (100 + objcr.GSTPer)) * 100), 2);
                                 decimal totalItembasicprice = originalbasicprice * objcr.Qty;
-                                decimal disc = Math.Round((totalItembasicprice * 5)/100,2);
-                                if(disc <= totalremining)
+                                decimal disc = Math.Round((totalItembasicprice * 5) / 100, 2);
+                                if (disc <= totalremining)
                                 {
                                     totalremining = totalremining - disc;
                                 }
@@ -167,9 +200,17 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                     totalremining = totalremining - disc;
                                 }
                                 TotalDiscount = TotalDiscount + disc;
-                                ShippingChargeTotal = ShippingChargeTotal + (objcr.ShippingCharge * objcr.Qty);
-                                decimal beforetaxamount = Math.Round(totalItembasicprice - disc,2);
-                                decimal gstamt = Math.Round((beforetaxamount * objcr.GSTPer)/100, 2);
+                                if(objcr.IsCombo)
+                                {
+                                    ShippingChargeTotal = ShippingChargeTotal + (objcr.ShippingCharge * objcr.ComboQty);
+                                }
+                                else
+                                {
+                                    ShippingChargeTotal = ShippingChargeTotal + (objcr.ShippingCharge * objcr.Qty);
+                                }
+                           
+                                decimal beforetaxamount = Math.Round(totalItembasicprice - disc, 2);
+                                decimal gstamt = Math.Round((beforetaxamount * objcr.GSTPer) / 100, 2);
                                 decimal AfterTax = beforetaxamount + gstamt;
                                 InvoiceItemVM objInvItm = new InvoiceItemVM();
                                 objInvItm.ItemName = objcr.ItemName;
@@ -187,12 +228,12 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         }
                     }
                 }
-                else if(clsClientSession.RoleID == 2)
+                else if (clsClientSession.RoleID == 2)
                 {
                     var lstCartItemsnew = lstCartItems.OrderByDescending(o => o.GSTPer).ToList();
                     decimal pointreamining = 0;
                     decimal totalremining = pointreamining;
-                  
+
                     if (lstCartItemsnew.Count() > 0)
                     {
                         foreach (var objcr in lstCartItemsnew)
@@ -202,8 +243,16 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 decimal originalbasicprice = Math.Round(((objcr.Price / (100 + objcr.GSTPer)) * 100), 2);
                                 decimal totalItembasicprice = originalbasicprice * objcr.Qty;
                                 decimal disc = 0;// Math.Round((totalItembasicprice * 5) / 100, 2);
-                                ShippingChargeTotal = ShippingChargeTotal + (objcr.ShippingCharge * objcr.Qty);
-                                decimal beforetaxamount = Math.Round(totalItembasicprice - disc,2);
+                                if (objcr.IsCombo)
+                                {
+                                    ShippingChargeTotal = ShippingChargeTotal + (objcr.ShippingCharge * objcr.ComboQty);
+                                }
+                                else
+                                {
+                                    ShippingChargeTotal = ShippingChargeTotal + (objcr.ShippingCharge * objcr.Qty);
+                                }
+                            
+                                decimal beforetaxamount = Math.Round(totalItembasicprice - disc, 2);
                                 decimal gstamt = Math.Round((beforetaxamount * objcr.GSTPer) / 100, 2);
                                 decimal AfterTax = beforetaxamount + gstamt;
                                 InvoiceItemVM objInvItm = new InvoiceItemVM();
@@ -237,8 +286,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     ViewBag.ExtraAmt = objtbl_ExtraAmount.ExtraAmount;
                 }
                 decimal WalletAmt = 0;
-                var objuserclient =_db.tbl_ClientUsers.Where(o => o.ClientUserId == clsClientSession.UserID).FirstOrDefault();
-                if(objuserclient != null)
+                var objuserclient = _db.tbl_ClientUsers.Where(o => o.ClientUserId == clsClientSession.UserID).FirstOrDefault();
+                if (objuserclient != null)
                 {
                     WalletAmt = objuserclient.WalletAmt.HasValue ? objuserclient.WalletAmt.Value : 0;
                 }
@@ -289,7 +338,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         }).OrderByDescending(x => x.OrderDate).FirstOrDefault();
             if (objOrder != null)
             {
-             //   objOrder.OrderStatus = GetOrderStatus(objOrder.OrderStatusId);
+                //   objOrder.OrderStatus = GetOrderStatus(objOrder.OrderStatusId);
                 List<OrderItemsVM> lstOrderItms = (from p in _db.tbl_OrderItemDetails
                                                    join c in _db.tbl_ProductItems on p.ProductItemId equals c.ProductItemId
                                                    join vr in _db.tbl_ItemVariant on p.VariantItemId equals vr.VariantItemId
@@ -314,8 +363,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             return View(objOrder);
         }
 
-        public PartialViewResult CreateRazorPaymentOrder(decimal Amount,string description)
-        {            
+        public PartialViewResult CreateRazorPaymentOrder(decimal Amount, string description)
+        {
             Dictionary<string, object> input = new Dictionary<string, object>();
             input.Add("amount", Amount * 100); // this amount should be same as transaction amount
             input.Add("currency", "INR");
@@ -337,7 +386,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         }
 
         [HttpPost]
-        public JsonResult PlaceOrder(CheckoutVM objCheckout,string razorpay_payment_id,string razorpay_order_id,string razorpay_signature)
+        public JsonResult PlaceOrder(CheckoutVM objCheckout, string razorpay_payment_id, string razorpay_order_id, string razorpay_signature)
         {
             string ReturnMessage = "";
             long clientusrid = clsClientSession.UserID;
@@ -358,35 +407,69 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         Iscashondelivery = true;
                     }
                     List<CartVM> lstCartItems = new List<CartVM>();
+                    List<CartVM> lstComboItms = new List<CartVM>();
                     if (objCheckout.ordertype == "1")
                     {
                         lstCartItems = (from crt in _db.tbl_Cart
-                                                     join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
+                                        join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
                                         join vr in _db.tbl_ItemVariant on crt.VariantItemId equals vr.VariantItemId
-                                        where crt.ClientUserId == clientusrid && crt.IsCashonDelivery == Iscashondelivery
-                                                     select new CartVM
-                                                     {
-                                                         CartId = crt.Cart_Id,
-                                                         ItemName = i.ItemName,
-                                                         ItemId = i.ProductItemId,
-                                                         //Price = clsClientSession.RoleID == 1 ? i.CustomerPrice : i.DistributorPrice,
-                                                         Price = clsClientSession.RoleID == 1 ? vr.CustomerPrice.Value : vr.DistributorPrice.Value,
-                                                         ItemImage = i.MainImage,
-                                                         VariantId = crt.VariantItemId.Value,
-                                                         VariantQtytxt = vr.UnitQty,
-                                                         Qty = crt.CartItemQty.Value,
-                                                         ItemSku = i.Sku,
-                                                         MRPPrice = i.MRPPrice,
-                                                         GSTPer = i.GST_Per,
-                                                         IGSTPer = i.IGST_Per
-                                                     }).OrderByDescending(x => x.CartId).ToList();
+                                        where crt.ClientUserId == clientusrid && crt.IsCashonDelivery == Iscashondelivery && (crt.IsCombo == null || crt.IsCombo == false)
+                                        select new CartVM
+                                        {
+                                            CartId = crt.Cart_Id,
+                                            ItemName = i.ItemName,
+                                            ItemId = i.ProductItemId,
+                                            //Price = clsClientSession.RoleID == 1 ? i.CustomerPrice : i.DistributorPrice,
+                                            Price = clsClientSession.RoleID == 1 ? vr.CustomerPrice.Value : vr.DistributorPrice.Value,
+                                            ItemImage = i.MainImage,
+                                            VariantId = crt.VariantItemId.Value,
+                                            VariantQtytxt = vr.UnitQty,
+                                            Qty = crt.CartItemQty.Value,
+                                            ItemSku = i.Sku,
+                                            IsCombo = false,
+                                            MRPPrice = i.MRPPrice,
+                                            GSTPer = i.GST_Per,
+                                            IGSTPer = i.IGST_Per
+                                        }).OrderByDescending(x => x.CartId).ToList();
+                        lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price, x.VariantId); x.MRPPrice = GetVarintPrc(x.VariantId, x.MRPPrice); });
+                        List<tbl_Cart> lst = _db.tbl_Cart.Where(o => o.ClientUserId == clientusrid && o.IsCombo == true && o.ComboId > 0 && o.IsCashonDelivery == Iscashondelivery).ToList();
+
+                        if (lst != null && lst.Count() > 0)
+                        {
+                            List<long> comboids = lst.Select(x => x.ComboId.Value).ToList().Distinct().ToList();
+                            foreach (long combId in comboids)
+                            {
+                                var objcrt = lst.Where(o => o.ComboId == combId && o.IsCashonDelivery == Iscashondelivery).FirstOrDefault();
+                                long qty = objcrt.ComboQty.Value;
+                                CartVM objcrt1 = new CartVM();
+                                tbl_ComboOfferMaster objjj = _db.tbl_ComboOfferMaster.Where(o => o.ComboOfferId == combId).FirstOrDefault();
+                                if (objjj != null)
+                                {
+                                    objcrt1.ItemName = objjj.OfferTitle;
+                                    objcrt1.Price = objjj.OfferPrice;
+                                    objcrt1.Qty = qty;
+                                    objcrt1.ComboQty = objjj.MainItemQty * qty;
+                                    objcrt1.IsCashonDelivery = objjj.IsCashOnDelivery.HasValue ? objjj.IsCashOnDelivery.Value : false;
+                                    objcrt1.CartId = objcrt.Cart_Id;
+                                    objcrt1.ItemImage = objjj.OfferImage;
+                                    objcrt1.ItemId = objjj.MainItemId;
+                                    tbl_ProductItems objprd = _db.tbl_ProductItems.Where(o => o.ProductItemId == objjj.MainItemId).FirstOrDefault();
+                                    objcrt1.GSTPer = objprd.GST_Per;
+                                    objcrt1.IsCombo = true;
+                                    objcrt1.ComboId = combId;
+                                    objcrt1.ShippingCharge = objprd.ShippingCharge.HasValue ? objprd.ShippingCharge.Value : 0;
+                                    lstComboItms.Add(objcrt1);
+                                }
+                            }
+                        }
+                        lstCartItems.AddRange(lstComboItms);
                     }
                     else
                     {
                         lstCartItems = (from crt in _db.tbl_SecondCart
                                         join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
                                         join vr in _db.tbl_ItemVariant on crt.VariantItemId equals vr.VariantItemId
-                                        where crt.ClientUserId == clientusrid 
+                                        where crt.ClientUserId == clientusrid
                                         select new CartVM
                                         {
                                             CartId = crt.SecondCartId,
@@ -402,11 +485,12 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                             GSTPer = i.GST_Per,
                                             IGSTPer = i.IGST_Per
                                         }).OrderByDescending(x => x.CartId).ToList();
+                        lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price, x.VariantId); x.MRPPrice = GetVarintPrc(x.VariantId, x.MRPPrice); });
                     }
-                 
-                    lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price,x.VariantId); x.MRPPrice = GetVarintPrc(x.VariantId,x.MRPPrice); });
+
+
                     // List<tbl_Cart> lstCarts = _db.tbl_Cart.Where(o => o.ClientUserId == clientusrid).ToList();
-                   
+
                     int year = DateTime.Now.Year;
                     int toyear = year + 1;
                     if (DateTime.UtcNow.Month <= 3)
@@ -414,11 +498,11 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         year = year - 1;
                         toyear = year;
                     }
-                    DateTime dtfincialyear = new DateTime(year,4,1);
-                    DateTime dtendyear = new DateTime(toyear,3,31);
+                    DateTime dtfincialyear = new DateTime(year, 4, 1);
+                    DateTime dtendyear = new DateTime(toyear, 3, 31);
                     var objOrdertemp = _db.tbl_Orders.Where(o => o.CreatedDate >= dtfincialyear && o.CreatedDate <= dtendyear).OrderByDescending(o => o.CreatedDate).FirstOrDefault();
                     long Invno = 1;
-                    if(objOrdertemp != null)
+                    if (objOrdertemp != null)
                     {
                         if (objOrdertemp.InvoiceNo == null)
                         {
@@ -426,7 +510,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         }
                         Invno = objOrdertemp.InvoiceNo.Value + 1;
                     }
-                    
+
 
                     tbl_Orders objOrder = new tbl_Orders();
                     objOrder.ClientUserId = clientusrid;
@@ -442,30 +526,30 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     }
                     if (objCheckout.isCashondelivery.ToLower() == "true")
                     {
-                        amtorderdue = ordramt + shippingcharge + extraamt;                        
+                        amtorderdue = ordramt + shippingcharge + extraamt;
                     }
                     else
                     {
-                        if(amtwallet > 0 && amtcredit > 0)
+                        if (amtwallet > 0 && amtcredit > 0)
                         {
                             paymentmethod = "Wallet and Credit";
                         }
-                        else if(amtwallet > 0)
+                        else if (amtwallet > 0)
                         {
                             paymentmethod = "Wallet";
                         }
-                        else if(amtcredit > 0)
+                        else if (amtcredit > 0)
                         {
                             paymentmethod = "Credit";
                         }
                         if (objCheckout.ordertype == "1")
                         {
                             amtorderdue = amtcredit;
-                        }                       
+                        }
                         else
                         {
                             decimal advncpay = 0;
-                            if(!string.IsNullOrEmpty(objCheckout.advanceamtpay))
+                            if (!string.IsNullOrEmpty(objCheckout.advanceamtpay))
                             {
                                 advncpay = Convert.ToDecimal(objCheckout.advanceamtpay);
                                 decimal totlordewithship = ordramt + shippingcharge + extraamt;
@@ -498,13 +582,13 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     objOrder.InvoiceYear = year + "-" + toyear;
                     objOrder.ExtraAmount = extraamt;
                     objOrder.OrderType = Convert.ToInt32(objCheckout.ordertype);
-                   
+
                     objOrder.RazorSignature = "";
-                    if(objCheckout.shippincode == "389001")
+                    if (objCheckout.shippincode == "389001")
                     {
                         objOrder.ShippingCharge = Convert.ToDecimal(objCheckout.shipamount);
                         objOrder.ShippingStatus = 2;
-                    }                   
+                    }
                     else
                     {
                         objOrder.ShippingCharge = 0;
@@ -521,15 +605,15 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     {
                         objOrder.IsCashOnDelivery = false;
                     }
-                        _db.tbl_Orders.Add(objOrder);
+                    _db.tbl_Orders.Add(objOrder);
                     _db.SaveChanges();
-                    if(objOrder.IsCashOnDelivery == true)
+                    if (objOrder.IsCashOnDelivery == true)
                     {
                         objcmn.SaveTransaction(0, 0, objOrder.OrderId, "Cash On Delivery Order : Rs" + amtorderdue, amtorderdue, clsClientSession.UserID, 0, DateTime.UtcNow, "Cash On Delivery Order");
                     }
                     objOrder.RazorpayOrderId = objOrder.OrderId.ToString();
 
-                    if(amtwallet > 0)
+                    if (amtwallet > 0)
                     {
                         tbl_Wallet objwlt = new tbl_Wallet();
                         objwlt.Amount = amtwallet;
@@ -538,9 +622,9 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         objwlt.ClientUserId = clientusrid;
                         objwlt.WalletDate = DateTime.UtcNow;
                         objwlt.Description = "Paid Amount for order no." + objOrder.OrderId;
-                        _db.tbl_Wallet.Add(objwlt);                    
-                       var objclientuss = _db.tbl_ClientUsers.Where(o => o.ClientUserId == clientusrid).FirstOrDefault();
-                        if(objclientuss != null)
+                        _db.tbl_Wallet.Add(objwlt);
+                        var objclientuss = _db.tbl_ClientUsers.Where(o => o.ClientUserId == clientusrid).FirstOrDefault();
+                        if (objclientuss != null)
                         {
                             objclientuss.WalletAmt = objclientuss.WalletAmt - amtwallet;
                         }
@@ -548,21 +632,21 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         objcmn.SavePaymentTransaction(0, objOrder.OrderId, true, amtwallet, "Payment By Wallet", clsClientSession.UserID, false, DateTime.UtcNow, "Wallet");
                         objcmn.SaveTransaction(0, 0, objOrder.OrderId, "Payment By Wallet : Rs" + amtwallet, amtwallet, clsClientSession.UserID, 0, DateTime.UtcNow, "Wallet Payment");
                     }
-                    
-                    if(amtcredit > 0)
+
+                    if (amtcredit > 0)
                     {
                         objcmn.SaveTransaction(0, 0, objOrder.OrderId, "Payment By Credit Used : Rs" + amtcredit, amtcredit, clsClientSession.UserID, 0, DateTime.UtcNow, "Credit Used Payment");
                         objcmn.SavePaymentTransaction(0, objOrder.OrderId, true, amtcredit, "Payment By Credit", clsClientSession.UserID, false, DateTime.UtcNow, "Credit");
                     }
-                    
+
                     var objotherdetails = _db.tbl_ClientOtherDetails.Where(o => o.ClientUserId == clientusrid).FirstOrDefault();
-                    if(objotherdetails != null)
+                    if (objotherdetails != null)
                     {
                         decimal amtdue = 0;
-                        if(objotherdetails.AmountDue != null)
+                        if (objotherdetails.AmountDue != null)
                         {
                             amtdue = objotherdetails.AmountDue.Value;
-                            
+
                         }
                         objotherdetails.AmountDue = amtdue + amtcredit;
                         objotherdetails.ShipAddress = objCheckout.shipaddress;
@@ -597,81 +681,193 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     {
                         foreach (var objCart in lstCartItems)
                         {
-                            tbl_OrderItemDetails objOrderItem = new tbl_OrderItemDetails();
-                            objOrderItem.OrderId = objOrder.OrderId;
-                            objOrderItem.ProductItemId = objCart.ItemId;
-                            objOrderItem.VariantItemId = objCart.VariantId;
-                            objOrderItem.ItemName = objCart.ItemName;
-                            objOrderItem.IGSTAmt = 0;
-                            objOrderItem.Qty = objCart.Qty;
-                            objOrderItem.Price = objCart.Price;
-                            objOrderItem.Sku = objCart.ItemSku;
-                            objOrderItem.IsActive = true;
-                            objOrderItem.IsDelete = false;
-                            objOrderItem.CreatedBy = clientusrid;
-                            objOrderItem.CreatedDate = DateTime.UtcNow;
-                            objOrderItem.MRPPrice = objCart.MRPPrice;
-                            objOrderItem.UpdatedBy = clientusrid;
-                            objOrderItem.UpdatedDate = DateTime.UtcNow;
-                            decimal qtty = GetVarintQtyy(objCart.VariantQtytxt);
-                            objOrderItem.QtyUsed = qtty * objCart.Qty;
-                            //decimal InclusiveGST = Math.Round(Convert.ToDecimal(objOrderItem.Price) - Convert.ToDecimal(objOrderItem.Price) * (100 / (100 + objCart.GSTPer)), 2);
-                            //decimal PreGSTPrice = Math.Round(Convert.ToDecimal(objOrderItem.Price) - InclusiveGST, 2);
-                            //decimal basicTotalPrice = Math.Round(Convert.ToDecimal(PreGSTPrice * objOrderItem.Qty), 2);
-                            //decimal SGST = Math.Round(Convert.ToDecimal(objCart.GSTPer / 2), 2);
-                            //decimal CGST = Math.Round(Convert.ToDecimal(objCart.GSTPer / 2), 2);
-                            //decimal SGSTAmt = Math.Round((basicTotalPrice * SGST) / 100, 2);
-                            //decimal CGSTAmt = Math.Round((basicTotalPrice * CGST) / 100, 2);
-                            //objOrderItem.GSTAmt = SGSTAmt + CGSTAmt;
-                            decimal originalbasicprice = Math.Round(((objCart.Price / (100 + objCart.GSTPer)) * 100), 2);
-                            decimal totalItembasicprice = originalbasicprice * objCart.Qty;
-                           
-                            if (clsClientSession.RoleID == 1)
+                            if (objCart.IsCombo == true && objCheckout.ordertype == "1")
                             {
-                                disc = Math.Round((totalItembasicprice * 5) / 100, 2);
-                                if (disc <= totalremining)
+                                long ComboId = objCart.ComboId;
+                                List<CartVM> lstCombCrt = (from crt in _db.tbl_Cart
+                                                           join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
+                                                           join vr in _db.tbl_ItemVariant on crt.VariantItemId equals vr.VariantItemId
+                                                           where crt.ClientUserId == clientusrid && crt.IsCashonDelivery == Iscashondelivery && crt.ComboId == ComboId
+                                                           select new CartVM
+                                                           {
+                                                               CartId = crt.Cart_Id,
+                                                               ItemName = i.ItemName,
+                                                               ItemId = i.ProductItemId,                                                               
+                                                               Price = 0,
+                                                               ItemImage = i.MainImage,
+                                                               VariantId = crt.VariantItemId.Value,
+                                                               VariantQtytxt = vr.UnitQty,
+                                                               Qty = crt.CartItemQty.Value,
+                                                               ItemSku = i.Sku,
+                                                               IsCombo = true,
+                                                               MRPPrice = i.MRPPrice,
+                                                               GSTPer = i.GST_Per,
+                                                               IGSTPer = i.IGST_Per,
+                                                               ComboQty = crt.ComboQty.Value
+                                                           }).OrderBy(x => x.CartId).ToList();                                
+                                if (lstCombCrt != null && lstCombCrt.Count() > 0)
                                 {
-                                    totalremining = totalremining - disc;
-                                }
-                                else
-                                {
-                                    disc = totalremining;
-                                    totalremining = totalremining - disc;
-                                }
-                            }
-                            TotalDiscount = TotalDiscount + disc;
-                            decimal beforetaxamount = Math.Round(totalItembasicprice - disc,2);
-                            decimal gstamt = Math.Round((beforetaxamount * objCart.GSTPer) / 100, 2);
-                            decimal AfterTax = beforetaxamount + gstamt;
-                            objOrderItem.GSTPer = objCart.GSTPer;
-                            objOrderItem.GSTAmt = gstamt;
-                            objOrderItem.Price = originalbasicprice;
-                            objOrderItem.Discount = disc;
-                            objOrderItem.ItemStatus = Convert.ToInt32(OrderStatus.NewOrder); 
-                            objOrderItem.FinalItemPrice = AfterTax;
-                            _db.tbl_OrderItemDetails.Add(objOrderItem);
-                            _db.SaveChanges();
-                            tbl_StockReport objstkreport = new tbl_StockReport();
-                            objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
-                            objstkreport.StockDate = DateTime.UtcNow;
-                            objstkreport.Qty = Convert.ToInt64(objOrderItem.QtyUsed);
-                            objstkreport.IsCredit = false;
-                            objstkreport.IsAdmin = false;
-                            objstkreport.CreatedBy = clientusrid;
-                            objstkreport.ItemId = objOrderItem.ProductItemId;
-                            objstkreport.Remarks = "Ordered Item for Order:" + objOrderItem.OrderId;
-                            _db.tbl_StockReport.Add(objstkreport);
-                            _db.SaveChanges();
-                            objcmn.SaveTransaction(objCart.ItemId, objOrderItem.OrderDetailId, objOrderItem.OrderId.Value, "Order Placed for Item", objOrderItem.FinalItemPrice.Value, clsClientSession.UserID, 0, DateTime.UtcNow, "New Order Item");
-                            if (objCheckout.ordertype == "1")
-                            {
-                                var objCartforremove = _db.tbl_Cart.Where(o => o.Cart_Id == objCart.CartId).FirstOrDefault();
-                                _db.tbl_Cart.Remove(objCartforremove);
+                                    tbl_ComboOfferMaster objcmb = _db.tbl_ComboOfferMaster.Where(o => o.ComboOfferId == ComboId).FirstOrDefault();
+                                    foreach(var objjCmbb in lstCombCrt)
+                                    {                                        
+                                        tbl_OrderItemDetails objOrderItem = new tbl_OrderItemDetails();
+                                        objOrderItem.ComboOfferName = objcmb.OfferTitle;
+                                        if (objjCmbb.CartId == objCart.CartId)
+                                        {
+                                            objjCmbb.MRPPrice = objcmb.TotalActualPrice.Value;
+                                            objjCmbb.Price = objcmb.OfferPrice;
+                                            objOrderItem.IsMainItem = true;
+                                        }
+                                        else
+                                        {
+                                            objjCmbb.MRPPrice = 0;
+                                            objjCmbb.Price = 0;
+                                            objOrderItem.IsMainItem = false;
+                                        }
+                                        objOrderItem.IsCombo = true;
+                                        objOrderItem.ComboId = ComboId;
+                                        objOrderItem.OrderId = objOrder.OrderId;
+                                        objOrderItem.ProductItemId = objjCmbb.ItemId;
+                                        objOrderItem.VariantItemId = objjCmbb.VariantId;
+                                        objOrderItem.ItemName = objjCmbb.ItemName;
+                                        objOrderItem.IGSTAmt = 0;
+                                        objOrderItem.Qty = objjCmbb.Qty;
+                                        objOrderItem.Price = objjCmbb.Price;
+                                        objOrderItem.Sku = objjCmbb.ItemSku;
+                                        objOrderItem.IsActive = true;
+                                        objOrderItem.IsDelete = false;
+                                        objOrderItem.CreatedBy = clientusrid;
+                                        objOrderItem.CreatedDate = DateTime.UtcNow;
+                                        objOrderItem.MRPPrice = objjCmbb.MRPPrice;
+                                        objOrderItem.UpdatedBy = clientusrid;
+                                        objOrderItem.UpdatedDate = DateTime.UtcNow;
+                                        decimal qtty = GetVarintQtyy(objjCmbb.VariantQtytxt);
+                                        objOrderItem.QtyUsed = qtty * objjCmbb.Qty;
+                                        objOrderItem.ComboQty = objjCmbb.ComboQty;
+                                        decimal originalbasicprice = Math.Round(((objjCmbb.Price / (100 + objjCmbb.GSTPer)) * 100), 2);
+                                        decimal totalItembasicprice = originalbasicprice * objjCmbb.ComboQty;
+
+                                        if (clsClientSession.RoleID == 1)
+                                        {
+                                            disc = Math.Round((totalItembasicprice * 5) / 100, 2);
+                                            if (disc <= totalremining)
+                                            {
+                                                totalremining = totalremining - disc;
+                                            }
+                                            else
+                                            {
+                                                disc = totalremining;
+                                                totalremining = totalremining - disc;
+                                            }
+                                        }
+                                        TotalDiscount = TotalDiscount + disc;
+                                        decimal beforetaxamount = Math.Round(totalItembasicprice - disc, 2);
+                                        decimal gstamt = Math.Round((beforetaxamount * objjCmbb.GSTPer) / 100, 2);
+                                        decimal AfterTax = beforetaxamount + gstamt;
+                                        objOrderItem.GSTPer = objjCmbb.GSTPer;
+                                        objOrderItem.GSTAmt = gstamt;
+                                        objOrderItem.Price = originalbasicprice;
+                                        objOrderItem.Discount = disc;
+                                        objOrderItem.ItemStatus = Convert.ToInt32(OrderStatus.NewOrder);
+                                        objOrderItem.FinalItemPrice = AfterTax;
+                                        _db.tbl_OrderItemDetails.Add(objOrderItem);
+                                        _db.SaveChanges();
+                                        tbl_StockReport objstkreport = new tbl_StockReport();
+                                        objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
+                                        objstkreport.StockDate = DateTime.UtcNow;
+                                        objstkreport.Qty = Convert.ToInt64(objOrderItem.QtyUsed);
+                                        objstkreport.IsCredit = false;
+                                        objstkreport.IsAdmin = false;
+                                        objstkreport.CreatedBy = clientusrid;
+                                        objstkreport.ItemId = objOrderItem.ProductItemId;
+                                        objstkreport.Remarks = "Ordered Item for Order:" + objOrderItem.OrderId;
+                                        _db.tbl_StockReport.Add(objstkreport);
+                                        _db.SaveChanges();
+                                        objcmn.SaveTransaction(objjCmbb.ItemId, objOrderItem.OrderDetailId, objOrderItem.OrderId.Value, "Order Placed for Item", objOrderItem.FinalItemPrice.Value, clsClientSession.UserID, 0, DateTime.UtcNow, "New Order Item");
+                                        if (objCheckout.ordertype == "1")
+                                        {
+                                            var objCartforremove = _db.tbl_Cart.Where(o => o.Cart_Id == objjCmbb.CartId).FirstOrDefault();
+                                            _db.tbl_Cart.Remove(objCartforremove);
+                                        }
+                                        else
+                                        {
+                                            var objCartforremove = _db.tbl_SecondCart.Where(o => o.SecondCartId == objjCmbb.CartId).FirstOrDefault();
+                                            _db.tbl_SecondCart.Remove(objCartforremove);
+                                        }
+                                    }
+                                }                              
                             }
                             else
                             {
-                                var objCartforremove = _db.tbl_SecondCart.Where(o => o.SecondCartId == objCart.CartId).FirstOrDefault();
-                                _db.tbl_SecondCart.Remove(objCartforremove);
+                                tbl_OrderItemDetails objOrderItem = new tbl_OrderItemDetails();
+                                objOrderItem.OrderId = objOrder.OrderId;
+                                objOrderItem.ProductItemId = objCart.ItemId;
+                                objOrderItem.VariantItemId = objCart.VariantId;
+                                objOrderItem.ItemName = objCart.ItemName;
+                                objOrderItem.IGSTAmt = 0;
+                                objOrderItem.Qty = objCart.Qty;
+                                objOrderItem.Price = objCart.Price;
+                                objOrderItem.Sku = objCart.ItemSku;
+                                objOrderItem.IsActive = true;
+                                objOrderItem.IsDelete = false;
+                                objOrderItem.CreatedBy = clientusrid;
+                                objOrderItem.CreatedDate = DateTime.UtcNow;
+                                objOrderItem.MRPPrice = objCart.MRPPrice;
+                                objOrderItem.UpdatedBy = clientusrid;
+                                objOrderItem.UpdatedDate = DateTime.UtcNow;
+                                decimal qtty = GetVarintQtyy(objCart.VariantQtytxt);
+                                objOrderItem.QtyUsed = qtty * objCart.Qty;
+
+                                decimal originalbasicprice = Math.Round(((objCart.Price / (100 + objCart.GSTPer)) * 100), 2);
+                                decimal totalItembasicprice = originalbasicprice * objCart.Qty;
+
+                                if (clsClientSession.RoleID == 1)
+                                {
+                                    disc = Math.Round((totalItembasicprice * 5) / 100, 2);
+                                    if (disc <= totalremining)
+                                    {
+                                        totalremining = totalremining - disc;
+                                    }
+                                    else
+                                    {
+                                        disc = totalremining;
+                                        totalremining = totalremining - disc;
+                                    }
+                                }
+                                TotalDiscount = TotalDiscount + disc;
+                                decimal beforetaxamount = Math.Round(totalItembasicprice - disc, 2);
+                                decimal gstamt = Math.Round((beforetaxamount * objCart.GSTPer) / 100, 2);
+                                decimal AfterTax = beforetaxamount + gstamt;
+                                objOrderItem.GSTPer = objCart.GSTPer;
+                                objOrderItem.GSTAmt = gstamt;
+                                objOrderItem.Price = originalbasicprice;
+                                objOrderItem.Discount = disc;
+                                objOrderItem.ItemStatus = Convert.ToInt32(OrderStatus.NewOrder);
+                                objOrderItem.FinalItemPrice = AfterTax;
+                                _db.tbl_OrderItemDetails.Add(objOrderItem);
+                                _db.SaveChanges();
+                                tbl_StockReport objstkreport = new tbl_StockReport();
+                                objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
+                                objstkreport.StockDate = DateTime.UtcNow;
+                                objstkreport.Qty = Convert.ToInt64(objOrderItem.QtyUsed);
+                                objstkreport.IsCredit = false;
+                                objstkreport.IsAdmin = false;
+                                objstkreport.CreatedBy = clientusrid;
+                                objstkreport.ItemId = objOrderItem.ProductItemId;
+                                objstkreport.Remarks = "Ordered Item for Order:" + objOrderItem.OrderId;
+                                _db.tbl_StockReport.Add(objstkreport);
+                                _db.SaveChanges();
+                                objcmn.SaveTransaction(objCart.ItemId, objOrderItem.OrderDetailId, objOrderItem.OrderId.Value, "Order Placed for Item", objOrderItem.FinalItemPrice.Value, clsClientSession.UserID, 0, DateTime.UtcNow, "New Order Item");
+                                if (objCheckout.ordertype == "1")
+                                {
+                                    var objCartforremove = _db.tbl_Cart.Where(o => o.Cart_Id == objCart.CartId).FirstOrDefault();
+                                    _db.tbl_Cart.Remove(objCartforremove);
+                                }
+                                else
+                                {
+                                    var objCartforremove = _db.tbl_SecondCart.Where(o => o.SecondCartId == objCart.CartId).FirstOrDefault();
+                                    _db.tbl_SecondCart.Remove(objCartforremove);
+                                }
                             }
                         }
                         _db.SaveChanges();
@@ -741,7 +937,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         objcmn.SavePaymentTransaction(0, objOrder.OrderId, true, amtonline, "Payment By Online", clsClientSession.UserID, false, DateTime.UtcNow, "Online Payment");
                     }
                     _db.SaveChanges();
-                    string orderid = clsCommon.EncryptString(objOrder.OrderId.ToString());                   
+                    string orderid = clsCommon.EncryptString(objOrder.OrderId.ToString());
                     tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
                     string AdminMobileNumber = objGensetting.AdminSMSNumber;
                     string msgsms = "New Order Received - Order No " + objOrder.OrderId + " - Shopping & Saving";
@@ -759,35 +955,69 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         if (objpymn["status"] != null && Convert.ToString(objpymn["status"]) == "captured")
                         {
                             List<CartVM> lstCartItems = new List<CartVM>();
-                            if(objCheckout.ordertype == "1")
+                            List<CartVM> lstComboItms = new List<CartVM>();
+                            if (objCheckout.ordertype == "1")
                             {
-                                
+
                                 lstCartItems = (from crt in _db.tbl_Cart
-                                                             join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
+                                                join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
                                                 join vr in _db.tbl_ItemVariant on crt.VariantItemId equals vr.VariantItemId
-                                                where crt.ClientUserId == clientusrid && crt.IsCashonDelivery == false
-                                                             select new CartVM
-                                                             {
-                                                                 CartId = crt.Cart_Id,
-                                                                 ItemName = i.ItemName,
-                                                                 ItemId = i.ProductItemId,
-                                                                 Price = clsClientSession.RoleID == 1 ? vr.CustomerPrice.Value : vr.DistributorPrice.Value,
-                                                                 ItemImage = i.MainImage,
-                                                                 VariantId = crt.VariantItemId.Value,
-                                                                 VariantQtytxt = vr.UnitQty,
-                                                                 Qty = crt.CartItemQty.Value,
-                                                                 ItemSku = i.Sku,
-                                                                 MRPPrice = i.MRPPrice,
-                                                                 GSTPer = i.GST_Per,
-                                                                 IGSTPer = i.IGST_Per
-                                                             }).OrderByDescending(x => x.CartId).ToList();
+                                                where crt.ClientUserId == clientusrid && crt.IsCashonDelivery == false && (crt.IsCombo == null || crt.IsCombo == false)
+                                                select new CartVM
+                                                {
+                                                    CartId = crt.Cart_Id,
+                                                    ItemName = i.ItemName,
+                                                    ItemId = i.ProductItemId,
+                                                    Price = clsClientSession.RoleID == 1 ? vr.CustomerPrice.Value : vr.DistributorPrice.Value,
+                                                    ItemImage = i.MainImage,
+                                                    VariantId = crt.VariantItemId.Value,
+                                                    VariantQtytxt = vr.UnitQty,
+                                                    Qty = crt.CartItemQty.Value,
+                                                    ItemSku = i.Sku,
+                                                    MRPPrice = i.MRPPrice,
+                                                    GSTPer = i.GST_Per,
+                                                    IGSTPer = i.IGST_Per
+                                                }).OrderByDescending(x => x.CartId).ToList();
+
+                                lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price, x.VariantId); x.MRPPrice = GetVarintPrc(x.VariantId, x.MRPPrice); });
+
+                                List<tbl_Cart> lst = _db.tbl_Cart.Where(o => o.ClientUserId == clientusrid && o.IsCombo == true && o.ComboId > 0 && o.IsCashonDelivery == Iscashondelivery).ToList();
+
+                                if (lst != null && lst.Count() > 0)
+                                {
+                                    List<long> comboids = lst.Select(x => x.ComboId.Value).ToList().Distinct().ToList();
+                                    foreach (long combId in comboids)
+                                    {
+                                        var objcrt = lst.Where(o => o.ComboId == combId && o.IsCashonDelivery == Iscashondelivery).FirstOrDefault();
+                                        long qty = objcrt.ComboQty.Value;
+                                        CartVM objcrt1 = new CartVM();
+                                        tbl_ComboOfferMaster objjj = _db.tbl_ComboOfferMaster.Where(o => o.ComboOfferId == combId).FirstOrDefault();
+                                        if (objjj != null)
+                                        {
+                                            objcrt1.ItemName = objjj.OfferTitle;
+                                            objcrt1.Price = objjj.OfferPrice;
+                                            objcrt1.Qty = qty;
+                                            objcrt1.IsCashonDelivery = objjj.IsCashOnDelivery.HasValue ? objjj.IsCashOnDelivery.Value : false;
+                                            objcrt1.CartId = objcrt.Cart_Id;
+                                            objcrt1.ItemImage = objjj.OfferImage;
+                                            objcrt1.ItemId = objjj.MainItemId;
+                                            tbl_ProductItems objprd = _db.tbl_ProductItems.Where(o => o.ProductItemId == objjj.MainItemId).FirstOrDefault();
+                                            objcrt1.GSTPer = objprd.GST_Per;
+                                            objcrt1.IsCombo = true;
+                                            objcrt1.ComboId = combId;
+                                            objcrt1.ShippingCharge = objprd.ShippingCharge.HasValue ? objprd.ShippingCharge.Value : 0;
+                                            lstComboItms.Add(objcrt1);
+                                        }
+                                    }
+                                }
+                                lstCartItems.AddRange(lstComboItms);
                             }
                             else
                             {
                                 lstCartItems = (from crt in _db.tbl_SecondCart
                                                 join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
                                                 join vr in _db.tbl_ItemVariant on crt.VariantItemId equals vr.VariantItemId
-                                                where crt.ClientUserId == clientusrid 
+                                                where crt.ClientUserId == clientusrid
                                                 select new CartVM
                                                 {
                                                     CartId = crt.SecondCartId,
@@ -803,9 +1033,10 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                                     GSTPer = i.GST_Per,
                                                     IGSTPer = i.IGST_Per
                                                 }).OrderByDescending(x => x.CartId).ToList();
+                                lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price, x.VariantId); x.MRPPrice = GetVarintPrc(x.VariantId, x.MRPPrice); });
                             }
-                            lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price, x.VariantId); x.MRPPrice = GetVarintPrc(x.VariantId, x.MRPPrice); });
                             
+
                             // List<tbl_Cart> lstCarts = _db.tbl_Cart.Where(o => o.ClientUserId == clientusrid).ToList();
                             string paymentmethod = objpymn["method"];
                             string paymentdetails = "";
@@ -835,7 +1066,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             long Invno = 1;
                             if (objOrdertemp != null)
                             {
-                                if(objOrdertemp.InvoiceNo == null)
+                                if (objOrdertemp.InvoiceNo == null)
                                 {
                                     objOrdertemp.InvoiceNo = 1;
                                 }
@@ -857,12 +1088,12 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             {
                                 lstpymenymthod.Add("Wallet");
                             }
-                            if(amtcredit > 0)
+                            if (amtcredit > 0)
                             {
                                 lstpymenymthod.Add("Credit");
                             }
-                            
-                            if(amtonline > 0)
+
+                            if (amtonline > 0)
                             {
                                 lstpymenymthod.Add(paymentmethod);
                             }
@@ -873,14 +1104,14 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             }
                             else
                             {
-                                
+
                                 if (!string.IsNullOrEmpty(objCheckout.advanceamtpay))
                                 {
                                     advncpay = Convert.ToDecimal(objCheckout.advanceamtpay);
                                     decimal totlordewithship = ordramt + shippingcharge + extraamount;
                                     decimal remaingammt = totlordewithship - advncpay;
                                     amountdue = remaingammt + amtcredit;
-                                  
+
                                 }
                             }
                             paymentmethod = string.Join(",", lstpymenymthod);
@@ -949,7 +1180,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             }
 
                             decimal amttTotlordepy = ordramt + shippingcharge + extraamount;
-                            if(amtwallet > 0)
+                            if (amtwallet > 0)
                             {
                                 tbl_PaymentHistory objPyment1 = new tbl_PaymentHistory();
                                 objPyment1.OrderId = objOrder.OrderId;
@@ -966,7 +1197,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 _db.tbl_PaymentHistory.Add(objPyment1);
                                 amttTotlordepy = amttTotlordepy - amtwallet;
                             }
-                            if(amtonline > 0 && Iscashondelivery == false)
+                            if (amtonline > 0 && Iscashondelivery == false)
                             {
                                 tbl_PaymentHistory objPyment = new tbl_PaymentHistory();
                                 objPyment.OrderId = objOrder.OrderId;
@@ -983,7 +1214,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 _db.tbl_PaymentHistory.Add(objPyment);
                                 objcmn.SavePaymentTransaction(0, objOrder.OrderId, true, amtonline, "Payment By Online", clsClientSession.UserID, false, DateTime.UtcNow, "Online Payment");
                                 objcmn.SaveTransaction(0, 0, objOrder.OrderId, "Order Online Payment : Rs" + amtonline, amtonline, clsClientSession.UserID, 0, DateTime.UtcNow, "Online Payment");
-                            }                           
+                            }
                             _db.SaveChanges();
                             decimal pointreamining = 0;
                             decimal totalremining = 0;
@@ -994,7 +1225,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 DateTime dtNow = DateTime.UtcNow;
                                 long clientusrrId = clsClientSession.UserID;
                                 lstpoints = _db.tbl_PointDetails.Where(o => o.ClientUserId == clientusrrId && o.ExpiryDate >= dtNow && o.Points.Value > o.UsedPoints.Value).ToList().OrderBy(x => x.ExpiryDate).ToList();
-                             
+
                                 if (lstpoints != null && lstpoints.Count() > 0)
                                 {
                                     pointreamining = lstpoints.Sum(x => (x.Points - x.UsedPoints).Value);
@@ -1007,108 +1238,229 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             {
                                 foreach (var objCart in lstCartItemsnew)
                                 {
-                                    tbl_OrderItemDetails objOrderItem = new tbl_OrderItemDetails();
-                                    objOrderItem.OrderId = objOrder.OrderId;
-                                    objOrderItem.ProductItemId = objCart.ItemId;
-                                    objOrderItem.VariantItemId = objCart.VariantId;
-                                    objOrderItem.ItemName = objCart.ItemName;
-                                    objOrderItem.IGSTAmt = 0;
-                                    objOrderItem.Qty = objCart.Qty;
-                                    objOrderItem.Price = objCart.Price;
-                                    objOrderItem.Sku = objCart.ItemSku;
-                                    objOrderItem.IsActive = true;
-                                    objOrderItem.IsDelete = false;
-                                    objOrderItem.CreatedBy = clientusrid;
-                                    objOrderItem.CreatedDate = DateTime.Now;
-                                    objOrderItem.UpdatedBy = clientusrid;
-                                    objOrderItem.UpdatedDate = DateTime.Now;
-                                    objOrderItem.MRPPrice = objCart.MRPPrice;
-                                     decimal qtty = GetVarintQtyy(objCart.VariantQtytxt);
-                                    objOrderItem.QtyUsed = qtty * objCart.Qty;
-                                    decimal originalbasicprice = Math.Round(((objCart.Price / (100 + objCart.GSTPer)) * 100), 2);
-                                    decimal totalItembasicprice = originalbasicprice * objCart.Qty;
-                                  
-                                    if (clsClientSession.RoleID == 1)
+                                    if (objCart.IsCombo == true && objCheckout.ordertype == "1")
                                     {
-                                        disc = Math.Round((totalItembasicprice * 5) / 100, 2);
-                                        if (disc <= totalremining)
+                                        long ComboId = objCart.ComboId;
+                                        List<CartVM> lstCombCrt = (from crt in _db.tbl_Cart
+                                                                   join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
+                                                                   join vr in _db.tbl_ItemVariant on crt.VariantItemId equals vr.VariantItemId
+                                                                   where crt.ClientUserId == clientusrid && crt.IsCashonDelivery == Iscashondelivery && crt.ComboId == ComboId
+                                                                   select new CartVM
+                                                                   {
+                                                                       CartId = crt.Cart_Id,
+                                                                       ItemName = i.ItemName,
+                                                                       ItemId = i.ProductItemId,
+                                                                       Price = 0,
+                                                                       ItemImage = i.MainImage,
+                                                                       VariantId = crt.VariantItemId.Value,
+                                                                       VariantQtytxt = vr.UnitQty,
+                                                                       Qty = crt.CartItemQty.Value,
+                                                                       ItemSku = i.Sku,
+                                                                       IsCombo = true,
+                                                                       MRPPrice = i.MRPPrice,
+                                                                       GSTPer = i.GST_Per,
+                                                                       ComboQty = crt.ComboQty.Value,
+                                                                       IGSTPer = i.IGST_Per
+                                                                   }).OrderBy(x => x.CartId).ToList();
+                                        if (lstCombCrt != null && lstCombCrt.Count() > 0)
                                         {
-                                            totalremining = totalremining - disc;
+                                            tbl_ComboOfferMaster objcmb = _db.tbl_ComboOfferMaster.Where(o => o.ComboOfferId == ComboId).FirstOrDefault();
+                                            foreach (var objjCmbb in lstCombCrt)
+                                            {
+                                                tbl_OrderItemDetails objOrderItem = new tbl_OrderItemDetails();
+                                                objOrderItem.ComboOfferName = objcmb.OfferTitle;
+                                                if (objjCmbb.CartId == objCart.CartId)
+                                                {
+                                                    objjCmbb.MRPPrice = objcmb.TotalActualPrice.Value;
+                                                    objjCmbb.Price = objcmb.OfferPrice;
+                                                    objOrderItem.IsMainItem = true;                                                   
+                                                }
+                                                else
+                                                {
+                                                    objjCmbb.MRPPrice = 0;
+                                                    objjCmbb.Price = 0;
+                                                    objOrderItem.IsMainItem = false;                                                  
+                                                }
+                                                objOrderItem.IsCombo = true;
+                                                objOrderItem.ComboId = ComboId;
+                                                objOrderItem.OrderId = objOrder.OrderId;
+                                                objOrderItem.ProductItemId = objjCmbb.ItemId;
+                                                objOrderItem.VariantItemId = objjCmbb.VariantId;
+                                                objOrderItem.ItemName = objjCmbb.ItemName;
+                                                objOrderItem.IGSTAmt = 0;
+                                                objOrderItem.Qty = objjCmbb.Qty;
+                                                objOrderItem.ComboQty = objjCmbb.ComboQty;
+                                                objOrderItem.Price = objjCmbb.Price;
+                                                objOrderItem.Sku = objjCmbb.ItemSku;
+                                                objOrderItem.IsActive = true;
+                                                objOrderItem.IsDelete = false;
+                                                objOrderItem.CreatedBy = clientusrid;
+                                                objOrderItem.CreatedDate = DateTime.Now;
+                                                objOrderItem.UpdatedBy = clientusrid;
+                                                objOrderItem.UpdatedDate = DateTime.Now;
+                                                objOrderItem.MRPPrice = objjCmbb.MRPPrice;
+                                                
+                                                decimal qtty = GetVarintQtyy(objjCmbb.VariantQtytxt);
+                                                objOrderItem.QtyUsed = qtty * objjCmbb.Qty;
+                                                decimal originalbasicprice = Math.Round(((objjCmbb.Price / (100 + objjCmbb.GSTPer)) * 100), 2);
+                                                decimal totalItembasicprice = originalbasicprice * objjCmbb.ComboQty;
+
+                                                if (clsClientSession.RoleID == 1)
+                                                {
+                                                    disc = Math.Round((totalItembasicprice * 5) / 100, 2);
+                                                    if (disc <= totalremining)
+                                                    {
+                                                        totalremining = totalremining - disc;
+                                                    }
+                                                    else
+                                                    {
+                                                        disc = totalremining;
+                                                        totalremining = totalremining - disc;
+                                                    }
+                                                }
+
+                                                TotalDiscount = TotalDiscount + disc;
+                                                decimal beforetaxamount = Math.Round(totalItembasicprice - disc, 2);
+                                                decimal gstamt = Math.Round((beforetaxamount * objjCmbb.GSTPer) / 100, 2);
+                                                decimal AfterTax = beforetaxamount + gstamt;
+                                                objOrderItem.GSTPer = objjCmbb.GSTPer;
+                                                objOrderItem.GSTAmt = gstamt;
+                                                objOrderItem.Price = originalbasicprice;
+                                                objOrderItem.Discount = disc;
+                                                objOrderItem.FinalItemPrice = AfterTax;
+                                                objOrderItem.ItemStatus = Convert.ToInt32(OrderStatus.NewOrder);
+                                                _db.tbl_OrderItemDetails.Add(objOrderItem);
+                                                _db.SaveChanges();
+                                                tbl_StockReport objstkreport = new tbl_StockReport();
+                                                objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
+                                                objstkreport.StockDate = DateTime.UtcNow;
+                                                objstkreport.Qty = Convert.ToInt64(objOrderItem.QtyUsed);
+                                                objstkreport.IsCredit = false;
+                                                objstkreport.IsAdmin = false;
+                                                objstkreport.CreatedBy = clientusrid;
+                                                objstkreport.ItemId = objOrderItem.ProductItemId;
+                                                objstkreport.Remarks = "Ordered Item for Order:" + objOrderItem.OrderId;
+                                                _db.tbl_StockReport.Add(objstkreport);
+                                                _db.SaveChanges();
+                                                objcmn.SaveTransaction(objjCmbb.ItemId, objOrderItem.OrderDetailId, objOrderItem.OrderId.Value, "Order Placed for Item", objOrderItem.FinalItemPrice.Value, clsClientSession.UserID, 0, DateTime.UtcNow, "New Order Item");
+                                                if (objCheckout.ordertype == "1")
+                                                {
+                                                    var objCartforremove = _db.tbl_Cart.Where(o => o.Cart_Id == objjCmbb.CartId).FirstOrDefault();
+                                                    _db.tbl_Cart.Remove(objCartforremove);
+                                                }
+                                                else
+                                                {
+                                                    var objCartforremove = _db.tbl_SecondCart.Where(o => o.SecondCartId == objjCmbb.CartId).FirstOrDefault();
+                                                    _db.tbl_SecondCart.Remove(objCartforremove);
+                                                }
+                                            }
                                         }
-                                        else
-                                        {
-                                            disc = totalremining;
-                                            totalremining = totalremining - disc;
-                                        }
-                                    }
-                                   
-                                    TotalDiscount = TotalDiscount + disc;
-                                    decimal beforetaxamount = Math.Round(totalItembasicprice - disc,2);
-                                    decimal gstamt = Math.Round((beforetaxamount * objCart.GSTPer) / 100, 2);
-                                    decimal AfterTax = beforetaxamount + gstamt;
-                                    objOrderItem.GSTPer = objCart.GSTPer;
-                                    objOrderItem.GSTAmt = gstamt;
-                                    objOrderItem.Price = originalbasicprice;
-                                    objOrderItem.Discount = disc;
-                                    objOrderItem.FinalItemPrice = AfterTax;
-                                    objOrderItem.ItemStatus = Convert.ToInt32(OrderStatus.NewOrder); 
-                                    _db.tbl_OrderItemDetails.Add(objOrderItem);
-                                    _db.SaveChanges();
-                                    tbl_StockReport objstkreport = new tbl_StockReport();
-                                    objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
-                                    objstkreport.StockDate = DateTime.UtcNow;
-                                    objstkreport.Qty = Convert.ToInt64(objOrderItem.QtyUsed);
-                                    objstkreport.IsCredit = false;
-                                    objstkreport.IsAdmin = false;
-                                    objstkreport.CreatedBy = clientusrid;
-                                    objstkreport.ItemId = objOrderItem.ProductItemId;
-                                    objstkreport.Remarks = "Ordered Item for Order:"+ objOrderItem.OrderId;
-                                    _db.tbl_StockReport.Add(objstkreport);
-                                    _db.SaveChanges();
-                                    objcmn.SaveTransaction(objCart.ItemId, objOrderItem.OrderDetailId, objOrderItem.OrderId.Value, "Order Placed for Item", objOrderItem.FinalItemPrice.Value, clsClientSession.UserID, 0, DateTime.UtcNow, "New Order Item");
-                                    if (objCheckout.ordertype == "1")
-                                    {
-                                        var objCartforremove = _db.tbl_Cart.Where(o => o.Cart_Id == objCart.CartId).FirstOrDefault();
-                                        _db.tbl_Cart.Remove(objCartforremove);
                                     }
                                     else
                                     {
-                                        var objCartforremove = _db.tbl_SecondCart.Where(o => o.SecondCartId == objCart.CartId).FirstOrDefault();
-                                        _db.tbl_SecondCart.Remove(objCartforremove);
-                                    }
-                                    
+                                        tbl_OrderItemDetails objOrderItem = new tbl_OrderItemDetails();
+                                        objOrderItem.OrderId = objOrder.OrderId;
+                                        objOrderItem.ProductItemId = objCart.ItemId;
+                                        objOrderItem.VariantItemId = objCart.VariantId;
+                                        objOrderItem.ItemName = objCart.ItemName;
+                                        objOrderItem.IGSTAmt = 0;
+                                        objOrderItem.Qty = objCart.Qty;
+                                        objOrderItem.Price = objCart.Price;
+                                        objOrderItem.Sku = objCart.ItemSku;
+                                        objOrderItem.IsActive = true;
+                                        objOrderItem.IsDelete = false;
+                                        objOrderItem.CreatedBy = clientusrid;
+                                        objOrderItem.CreatedDate = DateTime.Now;
+                                        objOrderItem.UpdatedBy = clientusrid;
+                                        objOrderItem.UpdatedDate = DateTime.Now;
+                                        objOrderItem.MRPPrice = objCart.MRPPrice;
+                                        decimal qtty = GetVarintQtyy(objCart.VariantQtytxt);
+                                        objOrderItem.QtyUsed = qtty * objCart.Qty;
+                                        decimal originalbasicprice = Math.Round(((objCart.Price / (100 + objCart.GSTPer)) * 100), 2);
+                                        decimal totalItembasicprice = originalbasicprice * objCart.Qty;
+
+                                        if (clsClientSession.RoleID == 1)
+                                        {
+                                            disc = Math.Round((totalItembasicprice * 5) / 100, 2);
+                                            if (disc <= totalremining)
+                                            {
+                                                totalremining = totalremining - disc;
+                                            }
+                                            else
+                                            {
+                                                disc = totalremining;
+                                                totalremining = totalremining - disc;
+                                            }
+                                        }
+
+                                        TotalDiscount = TotalDiscount + disc;
+                                        decimal beforetaxamount = Math.Round(totalItembasicprice - disc, 2);
+                                        decimal gstamt = Math.Round((beforetaxamount * objCart.GSTPer) / 100, 2);
+                                        decimal AfterTax = beforetaxamount + gstamt;
+                                        objOrderItem.GSTPer = objCart.GSTPer;
+                                        objOrderItem.GSTAmt = gstamt;
+                                        objOrderItem.Price = originalbasicprice;
+                                        objOrderItem.Discount = disc;
+                                        objOrderItem.FinalItemPrice = AfterTax;
+                                        objOrderItem.ItemStatus = Convert.ToInt32(OrderStatus.NewOrder);
+                                        _db.tbl_OrderItemDetails.Add(objOrderItem);
+                                        _db.SaveChanges();
+                                        tbl_StockReport objstkreport = new tbl_StockReport();
+                                        objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
+                                        objstkreport.StockDate = DateTime.UtcNow;
+                                        objstkreport.Qty = Convert.ToInt64(objOrderItem.QtyUsed);
+                                        objstkreport.IsCredit = false;
+                                        objstkreport.IsAdmin = false;
+                                        objstkreport.CreatedBy = clientusrid;
+                                        objstkreport.ItemId = objOrderItem.ProductItemId;
+                                        objstkreport.Remarks = "Ordered Item for Order:" + objOrderItem.OrderId;
+                                        _db.tbl_StockReport.Add(objstkreport);
+                                        _db.SaveChanges();
+                                        objcmn.SaveTransaction(objCart.ItemId, objOrderItem.OrderDetailId, objOrderItem.OrderId.Value, "Order Placed for Item", objOrderItem.FinalItemPrice.Value, clsClientSession.UserID, 0, DateTime.UtcNow, "New Order Item");
+                                        if (objCheckout.ordertype == "1")
+                                        {
+                                            var objCartforremove = _db.tbl_Cart.Where(o => o.Cart_Id == objCart.CartId).FirstOrDefault();
+                                            _db.tbl_Cart.Remove(objCartforremove);
+                                        }
+                                        else
+                                        {
+                                            var objCartforremove = _db.tbl_SecondCart.Where(o => o.SecondCartId == objCart.CartId).FirstOrDefault();
+                                            _db.tbl_SecondCart.Remove(objCartforremove);
+                                        }
+                                    }                                  
+
                                 }
                                 _db.SaveChanges();
                             }
 
-                            if(TotalDiscount > 0 && clsClientSession.RoleID == 1)
+                            if (TotalDiscount > 0 && clsClientSession.RoleID == 1)
                             {
                                 if (lstpoints != null && lstpoints.Count() > 0)
                                 {
                                     decimal reminingdisc = TotalDiscount;
                                     foreach (tbl_PointDetails objpoint in lstpoints)
                                     {
-                                        if(objpoint != null)
+                                        if (objpoint != null)
                                         {
                                             decimal pnts = objpoint.Points.Value;
                                             decimal usedpnts = objpoint.UsedPoints.Value;
                                             decimal remainingpnts = pnts - usedpnts;
-                                            if(remainingpnts <= reminingdisc)
+                                            if (remainingpnts <= reminingdisc)
                                             {
                                                 objpoint.UsedPoints = objpoint.UsedPoints + remainingpnts;
                                                 reminingdisc = reminingdisc - remainingpnts;
                                             }
                                             else
                                             {
-                                                objpoint.UsedPoints = objpoint.UsedPoints + reminingdisc;                                                
+                                                objpoint.UsedPoints = objpoint.UsedPoints + reminingdisc;
                                             }
                                         }
                                         _db.SaveChanges();
                                     }
-                                    objcmn.SaveTransaction(0,0, objOrder.OrderId, "Points Used", TotalDiscount, clsClientSession.UserID, 0, DateTime.UtcNow, "Points Used");
+                                    objcmn.SaveTransaction(0, 0, objOrder.OrderId, "Points Used", TotalDiscount, clsClientSession.UserID, 0, DateTime.UtcNow, "Points Used");
                                 }
                             }
-                          
+
                             var objotherdetails = _db.tbl_ClientOtherDetails.Where(o => o.ClientUserId == clientusrid).FirstOrDefault();
                             if (objotherdetails != null)
                             {
@@ -1129,7 +1481,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 objotherdetails.ShipState = objCheckout.shipstate;
                                 objotherdetails.ShipEmail = objCheckout.shipemailaddress;
                                 _db.SaveChanges();
-                                if(amtcredit > 0)
+                                if (amtcredit > 0)
                                 {
                                     objcmn.SaveTransaction(0, 0, objOrder.OrderId, "Payment By Credit Used : Rs" + amtcredit, amtcredit, clsClientSession.UserID, 0, DateTime.UtcNow, "Credit Used Payment");
                                     objcmn.SavePaymentTransaction(0, objOrder.OrderId, true, amtcredit, "Payment By Credit", clsClientSession.UserID, false, DateTime.UtcNow, "Credit");
@@ -1215,30 +1567,30 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             bool isOutofStock = false;
             try
             {
-                if(clsClientSession.UserID > 0)
+                if (clsClientSession.UserID > 0)
                 {
                     bool IsCashOrdr = false;
-                    if(IsCash == "true")
+                    if (IsCash == "true")
                     {
                         IsCashOrdr = true;
                     }
                     var cartlist = _db.tbl_Cart.Where(o => o.ClientUserId == clsClientSession.UserID && o.IsCashonDelivery == IsCashOrdr).ToList();
-                    if(cartlist != null && cartlist.Count() > 0)
-                    {                        
+                    if (cartlist != null && cartlist.Count() > 0)
+                    {
                         foreach (var objcrt in cartlist)
                         {
-                            if(objcrt != null)
+                            if (objcrt != null)
                             {
-                              int cntremingstk = RemainingStock(objcrt.CartItemId.Value);
-                               decimal qtyy = GetVarintQnty(objcrt.VariantItemId.Value);
-                              if (cntremingstk < (Convert.ToInt32(objcrt.CartItemQty) * qtyy))
-                              {
-                                    isOutofStock = true; 
-                              }
+                                int cntremingstk = RemainingStock(objcrt.CartItemId.Value);
+                                decimal qtyy = GetVarintQnty(objcrt.VariantItemId.Value);
+                                if (cntremingstk < (Convert.ToInt32(objcrt.CartItemQty) * qtyy))
+                                {
+                                    isOutofStock = true;
+                                }
                             }
                         }
                     }
-                 
+
                 }
                 if (isOutofStock == true)
                 {
@@ -1274,12 +1626,12 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             return Convert.ToInt32(remiaing);
         }
 
-        public string SendSMSForNewOrder(string MobileNumber,string Msg)
+        public string SendSMSForNewOrder(string MobileNumber, string Msg)
         {
             try
             {
                 using (WebClient webClient = new WebClient())
-                { 
+                {
                     string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + Msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + MobileNumber + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
                     var json = webClient.DownloadString(url);
                     if (json.Contains("invalidnumber"))
@@ -1342,10 +1694,10 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                         VariantQtytxt = vr.UnitQty,
                                         ShippingCharge = i.ShippingCharge.HasValue ? i.ShippingCharge.Value : 0,
                                         GSTPer = i.GST_Per,
-                                        IsCashonDelivery = i.IsCashonDeliveryUse.HasValue?i.IsCashonDeliveryUse.Value : false,
+                                        IsCashonDelivery = i.IsCashonDeliveryUse.HasValue ? i.IsCashonDeliveryUse.Value : false,
                                         AdvncePayPer = i.PayAdvancePer.HasValue ? i.PayAdvancePer.Value : 0
                                     }).OrderByDescending(x => x.CartId).ToList();
-                    lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price,x.VariantId); });
+                    lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price, x.VariantId); });
                 }
                 else
                 {
@@ -1368,7 +1720,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                         GSTPer = i.GST_Per,
                                         AdvncePayPer = i.PayAdvancePer.HasValue ? i.PayAdvancePer.Value : 0
                                     }).OrderByDescending(x => x.CartId).ToList();
-                    lstCartItems.ForEach(x => { x.Price = GetOfferPrice(x.ItemId, x.Price,x.VariantId); });
+                    lstCartItems.ForEach(x => { x.Price = GetOfferPrice(x.ItemId, x.Price, x.VariantId); });
                 }
 
                 decimal creditlimitreminng = 0;
@@ -1485,7 +1837,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 ViewBag.ShippingChargeTotal = ShippingChargeTotal;
                 ViewBag.TotalDiscount = TotalDiscount;
                 ViewBag.TotalOrder = TotalOrder;
-                var objtbl_ExtraAmount =  _db.tbl_ExtraAmount.Where(o => o.AmountFrom <= TotalOrder && o.AmountTo >= TotalOrder).FirstOrDefault();
+                var objtbl_ExtraAmount = _db.tbl_ExtraAmount.Where(o => o.AmountFrom <= TotalOrder && o.AmountTo >= TotalOrder).FirstOrDefault();
                 ViewBag.ExtraAmt = 0;
                 if (objtbl_ExtraAmount != null)
                 {
@@ -1496,7 +1848,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 if (objuserclient != null)
                 {
                     WalletAmt = objuserclient.WalletAmt.HasValue ? objuserclient.WalletAmt.Value : 0;
-                }              
+                }
                 //_db.tbl_ClientOtherDetails.Where(o => o.ClientUserId == clsClientSession.UserID).FirstOrDefault();
                 ViewBag.WalletAmt = WalletAmt;
                 ViewBag.AdvancePaymentAmt = AdvancePaymentAmt;
@@ -1508,7 +1860,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             ViewData["lstCartItems"] = lstCartItems;
             var objGenralsetting = _db.tbl_GeneralSetting.FirstOrDefault();
             ViewBag.ShippingMsg = objGenralsetting.ShippingMessage;
-           
+
             return View();
         }
 
@@ -1586,10 +1938,10 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 decimal qtt = Convert.ToDecimal(ltrsQty[idxxx].ToString());
                 return qtt;
             }
-            else 
+            else
             {
                 return 1;
-            }            
+            }
         }
 
         public decimal GetVarintQnty(long VariantId)

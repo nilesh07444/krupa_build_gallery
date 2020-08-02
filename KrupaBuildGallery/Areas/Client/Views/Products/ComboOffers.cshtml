@@ -1,0 +1,109 @@
+﻿@using KrupaBuildGallery.Model;
+@using KrupaBuildGallery.Helper;
+@{
+    ViewBag.Title = "Combo Offers";
+}
+
+@model List<ComboOfferVM>
+
+<!-- breadcrumb start -->
+<div class="breadcrumb-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="page-title">
+                    <h2>Combo Offers</h2>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <nav aria-label="breadcrumb" class="theme-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Combo Offers</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- breadcrumb end -->
+<!-- section start -->
+<section class="section-b-space ratio_asos">
+    <div class="collection-wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="collection-content col">
+                    <div class="page-main-content">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <div class="collection-product-wrapper">
+                                    <div class="product-wrapper-grid">
+                                        <div class="row">
+                                            @if (Model != null && Model.Count() > 0)
+                                            {
+                                                foreach (var objItem in Model)
+                                                {
+                                                    string imgpath = "";                                                 
+                                                    if (!string.IsNullOrEmpty(objItem.OfferImage))
+                                                    {
+                                                        if (File.Exists(Server.MapPath("~/Images/ComboOffer/" + objItem.OfferImage)))
+                                                        {
+                                                            imgpath = "/Images/ComboOffer/" + objItem.OfferImage;
+                                                        }
+                                                        else
+                                                        {
+                                                            imgpath = @ErrorMessage.DefaultImagePath;
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        imgpath = @ErrorMessage.DefaultImagePath;
+                                                    }                                                 
+
+                                                    <div class="col-lg-3 col-md-6 col-grid-box">
+                                                        <div class="product-box">
+                                                            <div class="img-wrapper">
+                                                                <div class="front">
+                                                                    <a href="/products/offerdetail/@objItem.ComboOfferId">
+                                                                        <img src="@imgpath" class="img-fluid blur-up lazyload bg-img" alt="">
+                                                                    </a>
+                                                                </div>
+                                                                <div class="back">
+                                                                    <a href="/products/offerdetail/@objItem.ComboOfferId">
+                                                                        <img src="@imgpath" class="img-fluid blur-up lazyload bg-img" alt="">
+                                                                    </a>
+                                                                </div>
+                                                                <div class="cart-info cart-wrap">
+                                                                    <button data-toggle="modal" style="display:none;" data-target="#addtocart" title="Add to cart">
+                                                                        <i class="ti-shopping-cart"></i>
+                                                                    </button>                                                                 
+                                                                </div>
+                                                            </div>
+                                                            <div class="product-detail">
+                                                                <div>
+                                                                    <div class="rating" style="display:none;">
+                                                                        <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i> <i class="fa fa-star"></i>
+                                                                    </div>
+                                                                    <a href="/products/offerdetail/@objItem.ComboOfferId">
+                                                                        <h6>@objItem.OfferTitle </h6>
+                                                                    </a>
+                                                                    <h4>₹ @objItem.ComboOfferPrice <del>₹ @objItem.TotlOriginalOfferPrice</del></h4>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            }
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- section End -->

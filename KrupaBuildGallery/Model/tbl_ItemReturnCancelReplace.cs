@@ -26,5 +26,7 @@ namespace KrupaBuildGallery.Model
         public Nullable<System.DateTime> DateModified { get; set; }
         public Nullable<long> ModifiedBy { get; set; }
         public Nullable<long> VariantItemId { get; set; }
+        public Nullable<bool> IsCombo { get; set; }
+        public Nullable<long> ComboId { get; set; }
     }
 }

@@ -36,5 +36,12 @@ namespace KrupaBuildGallery.Model
         public Nullable<long> VariantItemId { get; set; }
         public Nullable<decimal> QtyUsed { get; set; }
         public Nullable<decimal> MRPPrice { get; set; }
+        public Nullable<bool> IsCombo { get; set; }
+        public Nullable<long> ComboId { get; set; }
+        public Nullable<bool> IsMainItem { get; set; }
+        public Nullable<long> ComboQty { get; set; }
+        public string ComboOfferName { get; set; }
+        public Nullable<bool> IsReplacedItem { get; set; }
+        public Nullable<long> ReferenceItemDetailId { get; set; }
     }
 }

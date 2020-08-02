@@ -23,6 +23,18 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             //EmailMessageVM emailModel = clsCommon.GetSampleEmailTemplate();
             //clsCommon.SendEmail2(emailModel);
             //clsCommon.SendEmail("prajapati.nileshbhai@gmail.com", "admin@shopping-saving.com", "Test Email", emailModel.Body);
+            if(clsClientSession.UserID == 0)
+            {
+                if (Request.Cookies["sessionkeyval"] != null)
+                {
+                   string strcokki = Request.Cookies["sessionkeyval"].Value;
+                    if(strcokki.Contains("cust"))
+                    {
+                        Response.Cookies["sessionkeyval"].Value = Guid.NewGuid().ToString();
+                        Response.Cookies["sessionkeyval"].Expires = DateTime.Now.AddDays(30);
+                    }
+                }
+            }      
 
             List<AdvertiseImageVM> lstAdvertiseImages = new List<AdvertiseImageVM>();
             WebsiteStatisticsVM objStatistics = new WebsiteStatisticsVM();
@@ -30,6 +42,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             List<ProductItemVM> lstPopularProductItem = new List<ProductItemVM>();
             List<ProductItemVM> lstUnpackProductItem = new List<ProductItemVM>();
             List<ProductItemVM> lstOfferItems = new List<ProductItemVM>();
+            List<ComboOfferVM> lstComboOffers = new List<ComboOfferVM>();
             List<long> wishlistitemsId = new List<long>();
             List<tbl_ReviewRating> lstRatings = _db.tbl_ReviewRating.ToList();
             if (clsClientSession.UserID != 0)
@@ -160,6 +173,18 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                       ImageUrl = c.AdvertiseImage 
                                   }).OrderByDescending(x => x.AdvertiseImageId).ToList();
 
+            lstComboOffers = (from i in _db.tbl_ComboOfferMaster
+                             where i.IsActive == true && DateTime.UtcNow >= i.OfferStartDate && DateTime.UtcNow <= i.OfferEndDate && i.IsDeleted == false
+                              select new ComboOfferVM
+                             {
+                                 OfferTitle = i.OfferTitle,
+                                 ComboOfferId = i.ComboOfferId,
+                                 ComboOfferPrice = i.OfferPrice,
+                                 OfferImage = i.OfferImage,
+                                 TotlOriginalOfferPrice = i.TotalActualPrice.Value                              
+                             }).OrderBy(x => x.OfferTitle).ToList().Take(8).ToList();
+            
+
             ViewData["lstPopularProductItem"] = lstPopularProductItem;
             ViewData["lstOfferItems"] = lstOfferItems;
             ViewData["lstImages"] = lstImages;
@@ -168,7 +193,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             ViewData["lstHappyCustomers"] = lstHappyCustomers;
             ViewData["objStatistics"] = objStatistics;
             ViewData["lstAdvertiseImages"] = lstAdvertiseImages;
-            
+            ViewData["lstComboOffers"] = lstComboOffers;
 
             return View();
         }

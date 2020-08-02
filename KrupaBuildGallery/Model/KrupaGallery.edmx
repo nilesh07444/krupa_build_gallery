@@ -109,6 +109,9 @@
           <Property Name="CreatedDate" Type="datetime" />
           <Property Name="IsCashonDelivery" Type="bit" />
           <Property Name="VariantItemId" Type="bigint" />
+          <Property Name="IsCombo" Type="bit" />
+          <Property Name="ComboId" Type="bigint" />
+          <Property Name="ComboQty" Type="bigint" />
         </EntityType>
         <EntityType Name="tbl_CashDeliveryAmount">
           <Key>
@@ -236,6 +239,53 @@
           <Property Name="ModifiedBy" Type="bigint" />
           <Property Name="IsActive" Type="bit" />
           <Property Name="IsDeleted" Type="bit" />
+        </EntityType>
+        <EntityType Name="tbl_ComboOfferMaster">
+          <Key>
+            <PropertyRef Name="ComboOfferId" />
+          </Key>
+          <Property Name="ComboOfferId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MainItemCatId" Type="bigint" Nullable="false" />
+          <Property Name="MainItemsSubProductId" Type="bigint" />
+          <Property Name="MainItemProductId" Type="bigint" />
+          <Property Name="MainItemId" Type="bigint" Nullable="false" />
+          <Property Name="MainItemVarintId" Type="bigint" Nullable="false" />
+          <Property Name="MainItemQty" Type="bigint" Nullable="false" />
+          <Property Name="OfferTitle" Type="nvarchar" MaxLength="850" Nullable="false" />
+          <Property Name="OfferPrice" Type="decimal" Precision="18" Scale="2" Nullable="false" />
+          <Property Name="OfferStartDate" Type="datetime" Nullable="false" />
+          <Property Name="OfferEndDate" Type="datetime" Nullable="false" />
+          <Property Name="OfferImage" Type="nvarchar" MaxLength="900" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="ModifiedBy" Type="bigint" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="IsDeleted" Type="bit" />
+          <Property Name="TotalActualPrice" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="MainItemActualPrice" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="IsCashOnDelivery" Type="bit" />
+        </EntityType>
+        <EntityType Name="tbl_ComboOfferSubItems">
+          <Key>
+            <PropertyRef Name="ComboOfferSubItemId" />
+          </Key>
+          <Property Name="ComboOfferSubItemId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CategoryId" Type="bigint" Nullable="false" />
+          <Property Name="ProductId" Type="bigint" Nullable="false" />
+          <Property Name="SubProductId" Type="bigint" />
+          <Property Name="ProductItemId" Type="bigint" Nullable="false" />
+          <Property Name="VariantItemId" Type="bigint" Nullable="false" />
+          <Property Name="Qty" Type="bigint" Nullable="false" />
+          <Property Name="ActualPrice" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="OfferPrice" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="ComboOfferId" Type="bigint" />
+          <Property Name="IsDeleted" Type="bit" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="ModifiedBy" Type="bigint" />
         </EntityType>
         <EntityType Name="tbl_ContactFormData">
           <Key>
@@ -383,6 +433,17 @@
           <Property Name="ImportedBy" Type="bigint" />
           <Property Name="ImportType" Type="int" />
         </EntityType>
+        <EntityType Name="tbl_ItemReplace">
+          <Key>
+            <PropertyRef Name="ItemReplaceId" />
+          </Key>
+          <Property Name="ItemReplaceId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ItemDetailId" Type="bigint" />
+          <Property Name="OrderId" Type="bigint" />
+          <Property Name="ItemStatus" Type="int" />
+          <Property Name="ReplaceDate" Type="datetime" />
+          <Property Name="AssignPersonId" Type="bigint" />
+        </EntityType>
         <EntityType Name="tbl_ItemReturnCancelReplace">
           <Key>
             <PropertyRef Name="ItemReturnCancelReplaceId" />
@@ -399,6 +460,8 @@
           <Property Name="DateModified" Type="datetime" />
           <Property Name="ModifiedBy" Type="bigint" />
           <Property Name="VariantItemId" Type="bigint" />
+          <Property Name="IsCombo" Type="bit" />
+          <Property Name="ComboId" Type="bigint" />
         </EntityType>
         <EntityType Name="tbl_ItemStocks">
           <Key>
@@ -483,6 +546,7 @@
           <Property Name="AssignedDate" Type="datetime" />
           <Property Name="AmountToReceived" Type="decimal" Precision="18" Scale="2" />
           <Property Name="IsAmountReceived" Type="bit" />
+          <Property Name="ReplaceId" Type="bigint" />
         </EntityType>
         <EntityType Name="tbl_OrderItemDetails">
           <Key>
@@ -510,6 +574,13 @@
           <Property Name="VariantItemId" Type="bigint" />
           <Property Name="QtyUsed" Type="decimal" Precision="18" Scale="2" />
           <Property Name="MRPPrice" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="IsCombo" Type="bit" />
+          <Property Name="ComboId" Type="bigint" />
+          <Property Name="IsMainItem" Type="bit" />
+          <Property Name="ComboQty" Type="bigint" />
+          <Property Name="ComboOfferName" Type="nvarchar(max)" />
+          <Property Name="IsReplacedItem" Type="bit" />
+          <Property Name="ReferenceItemDetailId" Type="bigint" />
         </EntityType>
         <EntityType Name="tbl_Orders">
           <Key>
@@ -794,6 +865,8 @@
           <EntitySet Name="tbl_ClientRoles" EntityType="Self.tbl_ClientRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ClientUsers" EntityType="Self.tbl_ClientUsers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ComboOffer" EntityType="Self.tbl_ComboOffer" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_ComboOfferMaster" EntityType="Self.tbl_ComboOfferMaster" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_ComboOfferSubItems" EntityType="Self.tbl_ComboOfferSubItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ContactFormData" EntityType="Self.tbl_ContactFormData" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_DistributorRequestDetails" EntityType="Self.tbl_DistributorRequestDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ExtraAmount" EntityType="Self.tbl_ExtraAmount" Schema="dbo" store:Type="Tables" />
@@ -803,6 +876,7 @@
           <EntitySet Name="tbl_HappyCustomers" EntityType="Self.tbl_HappyCustomers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_HomeImages" EntityType="Self.tbl_HomeImages" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ImportExcel" EntityType="Self.tbl_ImportExcel" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_ItemReplace" EntityType="Self.tbl_ItemReplace" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ItemReturnCancelReplace" EntityType="Self.tbl_ItemReturnCancelReplace" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ItemStocks" EntityType="Self.tbl_ItemStocks" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Itemtext_master" EntityType="Self.tbl_Itemtext_master" Schema="dbo" store:Type="Tables" />
@@ -858,6 +932,9 @@
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="IsCashonDelivery" Type="Boolean" />
           <Property Name="VariantItemId" Type="Int64" />
+          <Property Name="IsCombo" Type="Boolean" />
+          <Property Name="ComboId" Type="Int64" />
+          <Property Name="ComboQty" Type="Int64" />
         </EntityType>
         <EntityType Name="tbl_Categories">
           <Key>
@@ -1297,6 +1374,9 @@
           <EntitySet Name="tbl_CashDeliveryAmount" EntityType="krupagalleryModel.tbl_CashDeliveryAmount" />
           <EntitySet Name="tbl_PaymentTransaction" EntityType="krupagalleryModel.tbl_PaymentTransaction" />
           <EntitySet Name="tbl_StockReport" EntityType="krupagalleryModel.tbl_StockReport" />
+          <EntitySet Name="tbl_ComboOfferMaster" EntityType="krupagalleryModel.tbl_ComboOfferMaster" />
+          <EntitySet Name="tbl_ComboOfferSubItems" EntityType="krupagalleryModel.tbl_ComboOfferSubItems" />
+          <EntitySet Name="tbl_ItemReplace" EntityType="krupagalleryModel.tbl_ItemReplace" />
         </EntityContainer>
         <EntityType Name="tbl_AdminRoles">
           <Key>
@@ -1446,6 +1526,7 @@
           <Property Name="AssignedDate" Type="DateTime" Precision="3" />
           <Property Name="AmountToReceived" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="IsAmountReceived" Type="Boolean" />
+          <Property Name="ReplaceId" Type="Int64" />
         </EntityType>
         <EntityType Name="tbl_ItemReturnCancelReplace">
           <Key>
@@ -1463,6 +1544,8 @@
           <Property Name="DateModified" Type="DateTime" Precision="3" />
           <Property Name="ModifiedBy" Type="Int64" />
           <Property Name="VariantItemId" Type="Int64" />
+          <Property Name="IsCombo" Type="Boolean" />
+          <Property Name="ComboId" Type="Int64" />
         </EntityType>
         <EntityType Name="tbl_Transactions">
           <Key>
@@ -1579,6 +1662,13 @@
           <Property Name="VariantItemId" Type="Int64" />
           <Property Name="QtyUsed" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="MRPPrice" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="IsCombo" Type="Boolean" />
+          <Property Name="ComboId" Type="Int64" />
+          <Property Name="IsMainItem" Type="Boolean" />
+          <Property Name="ComboQty" Type="Int64" />
+          <Property Name="ComboOfferName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IsReplacedItem" Type="Boolean" />
+          <Property Name="ReferenceItemDetailId" Type="Int64" />
         </EntityType>
         <EntityType Name="tbl_ReviewRating">
           <Key>
@@ -1681,6 +1771,64 @@
           <Property Name="CreatedBy" Type="Int64" />
           <Property Name="IsAdmin" Type="Boolean" />
         </EntityType>
+        <EntityType Name="tbl_ComboOfferMaster">
+          <Key>
+            <PropertyRef Name="ComboOfferId" />
+          </Key>
+          <Property Name="ComboOfferId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MainItemCatId" Type="Int64" Nullable="false" />
+          <Property Name="MainItemsSubProductId" Type="Int64" />
+          <Property Name="MainItemProductId" Type="Int64" />
+          <Property Name="MainItemId" Type="Int64" Nullable="false" />
+          <Property Name="MainItemVarintId" Type="Int64" Nullable="false" />
+          <Property Name="MainItemQty" Type="Int64" Nullable="false" />
+          <Property Name="OfferTitle" Type="String" Nullable="false" MaxLength="850" FixedLength="false" Unicode="true" />
+          <Property Name="OfferPrice" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="OfferStartDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="OfferEndDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="OfferImage" Type="String" MaxLength="900" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="ModifiedBy" Type="Int64" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <Property Name="TotalActualPrice" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="MainItemActualPrice" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IsCashOnDelivery" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="tbl_ComboOfferSubItems">
+          <Key>
+            <PropertyRef Name="ComboOfferSubItemId" />
+          </Key>
+          <Property Name="ComboOfferSubItemId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CategoryId" Type="Int64" Nullable="false" />
+          <Property Name="ProductId" Type="Int64" Nullable="false" />
+          <Property Name="SubProductId" Type="Int64" />
+          <Property Name="ProductItemId" Type="Int64" Nullable="false" />
+          <Property Name="VariantItemId" Type="Int64" Nullable="false" />
+          <Property Name="Qty" Type="Int64" Nullable="false" />
+          <Property Name="ActualPrice" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="OfferPrice" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="ComboOfferId" Type="Int64" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="ModifiedBy" Type="Int64" />
+        </EntityType>
+        <EntityType Name="tbl_ItemReplace">
+          <Key>
+            <PropertyRef Name="ItemReplaceId" />
+          </Key>
+          <Property Name="ItemReplaceId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ItemDetailId" Type="Int64" />
+          <Property Name="OrderId" Type="Int64" />
+          <Property Name="ItemStatus" Type="Int32" />
+          <Property Name="ReplaceDate" Type="DateTime" Precision="3" />
+          <Property Name="AssignPersonId" Type="Int64" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1700,6 +1848,9 @@
           <EntitySetMapping Name="tbl_Cart">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_Cart">
               <MappingFragment StoreEntitySet="tbl_Cart">
+                <ScalarProperty Name="ComboQty" ColumnName="ComboQty" />
+                <ScalarProperty Name="ComboId" ColumnName="ComboId" />
+                <ScalarProperty Name="IsCombo" ColumnName="IsCombo" />
                 <ScalarProperty Name="VariantItemId" ColumnName="VariantItemId" />
                 <ScalarProperty Name="IsCashonDelivery" ColumnName="IsCashonDelivery" />
                 <ScalarProperty Name="Cart_Id" ColumnName="Cart_Id" />
@@ -2233,6 +2384,7 @@
           <EntitySetMapping Name="tbl_OrderItemDelivery">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_OrderItemDelivery">
               <MappingFragment StoreEntitySet="tbl_OrderItemDelivery">
+                <ScalarProperty Name="ReplaceId" ColumnName="ReplaceId" />
                 <ScalarProperty Name="IsAmountReceived" ColumnName="IsAmountReceived" />
                 <ScalarProperty Name="AmountToReceived" ColumnName="AmountToReceived" />
                 <ScalarProperty Name="AssignedDate" ColumnName="AssignedDate" />
@@ -2248,6 +2400,8 @@
           <EntitySetMapping Name="tbl_ItemReturnCancelReplace">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_ItemReturnCancelReplace">
               <MappingFragment StoreEntitySet="tbl_ItemReturnCancelReplace">
+                <ScalarProperty Name="ComboId" ColumnName="ComboId" />
+                <ScalarProperty Name="IsCombo" ColumnName="IsCombo" />
                 <ScalarProperty Name="VariantItemId" ColumnName="VariantItemId" />
                 <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
                 <ScalarProperty Name="DateModified" ColumnName="DateModified" />
@@ -2362,6 +2516,13 @@
           <EntitySetMapping Name="tbl_OrderItemDetails">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_OrderItemDetails">
               <MappingFragment StoreEntitySet="tbl_OrderItemDetails">
+                <ScalarProperty Name="ReferenceItemDetailId" ColumnName="ReferenceItemDetailId" />
+                <ScalarProperty Name="IsReplacedItem" ColumnName="IsReplacedItem" />
+                <ScalarProperty Name="ComboOfferName" ColumnName="ComboOfferName" />
+                <ScalarProperty Name="ComboQty" ColumnName="ComboQty" />
+                <ScalarProperty Name="IsMainItem" ColumnName="IsMainItem" />
+                <ScalarProperty Name="ComboId" ColumnName="ComboId" />
+                <ScalarProperty Name="IsCombo" ColumnName="IsCombo" />
                 <ScalarProperty Name="MRPPrice" ColumnName="MRPPrice" />
                 <ScalarProperty Name="QtyUsed" ColumnName="QtyUsed" />
                 <ScalarProperty Name="VariantItemId" ColumnName="VariantItemId" />
@@ -2492,6 +2653,67 @@
                 <ScalarProperty Name="IsCredit" ColumnName="IsCredit" />
                 <ScalarProperty Name="StockDate" ColumnName="StockDate" />
                 <ScalarProperty Name="Pk_StockReport_Id" ColumnName="Pk_StockReport_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_ComboOfferMaster">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_ComboOfferMaster">
+              <MappingFragment StoreEntitySet="tbl_ComboOfferMaster">
+                <ScalarProperty Name="IsCashOnDelivery" ColumnName="IsCashOnDelivery" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="MainItemActualPrice" ColumnName="MainItemActualPrice" />
+                <ScalarProperty Name="TotalActualPrice" ColumnName="TotalActualPrice" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="OfferImage" ColumnName="OfferImage" />
+                <ScalarProperty Name="OfferEndDate" ColumnName="OfferEndDate" />
+                <ScalarProperty Name="OfferStartDate" ColumnName="OfferStartDate" />
+                <ScalarProperty Name="OfferPrice" ColumnName="OfferPrice" />
+                <ScalarProperty Name="OfferTitle" ColumnName="OfferTitle" />
+                <ScalarProperty Name="MainItemQty" ColumnName="MainItemQty" />
+                <ScalarProperty Name="MainItemVarintId" ColumnName="MainItemVarintId" />
+                <ScalarProperty Name="MainItemId" ColumnName="MainItemId" />
+                <ScalarProperty Name="MainItemProductId" ColumnName="MainItemProductId" />
+                <ScalarProperty Name="MainItemsSubProductId" ColumnName="MainItemsSubProductId" />
+                <ScalarProperty Name="MainItemCatId" ColumnName="MainItemCatId" />
+                <ScalarProperty Name="ComboOfferId" ColumnName="ComboOfferId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_ComboOfferSubItems">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_ComboOfferSubItems">
+              <MappingFragment StoreEntitySet="tbl_ComboOfferSubItems">
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="ComboOfferId" ColumnName="ComboOfferId" />
+                <ScalarProperty Name="OfferPrice" ColumnName="OfferPrice" />
+                <ScalarProperty Name="ActualPrice" ColumnName="ActualPrice" />
+                <ScalarProperty Name="Qty" ColumnName="Qty" />
+                <ScalarProperty Name="VariantItemId" ColumnName="VariantItemId" />
+                <ScalarProperty Name="ProductItemId" ColumnName="ProductItemId" />
+                <ScalarProperty Name="SubProductId" ColumnName="SubProductId" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+                <ScalarProperty Name="ComboOfferSubItemId" ColumnName="ComboOfferSubItemId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_ItemReplace">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_ItemReplace">
+              <MappingFragment StoreEntitySet="tbl_ItemReplace">
+                <ScalarProperty Name="AssignPersonId" ColumnName="AssignPersonId" />
+                <ScalarProperty Name="ReplaceDate" ColumnName="ReplaceDate" />
+                <ScalarProperty Name="ItemStatus" ColumnName="ItemStatus" />
+                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
+                <ScalarProperty Name="ItemDetailId" ColumnName="ItemDetailId" />
+                <ScalarProperty Name="ItemReplaceId" ColumnName="ItemReplaceId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -154,9 +154,9 @@
                                     }
 
                                     @*<a href="#" class="dropdown-item">Reports</a>
-        <a href="#" class="dropdown-item">Settings</a>
-        <div class="dropdown-divider"></div>
-        <a href="#" class="dropdown-item">Logout</a>*@
+                                        <a href="#" class="dropdown-item">Settings</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="#" class="dropdown-item">Logout</a>*@
                                 </div>
                             </li>
 
@@ -620,6 +620,25 @@
                 <div class="modal-footer">
                     <button data-dismiss="modal" class="btn btn-danger" type="button" onclick="addtoCartCashOndelivery('no');">Online Payment</button>
                     <button id="btnCashOnDelivery" class="btn btn-primary" type="button" onclick="addtoCartCashOndelivery('yes');">Cash On Delivery</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade open" id="cashondeliverymodalcombo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    This Combo is Cash on Delivery. Select Payment Option:"Cash On Delivery / Onine Payment"
+                    <input type="hidden" id="hdnCartComboId" value="" />
+                    <input type="hidden" id="hdnComboQty" value="" />                    
+                </div>
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-danger" type="button" onclick="addtoCartCashOndeliveryCombo('no');">Online Payment</button>
+                    <button id="btnCashOnDelivery" class="btn btn-primary" type="button" onclick="addtoCartCashOndeliveryCombo('yes');">Cash On Delivery</button>
                 </div>
             </div>
         </div>

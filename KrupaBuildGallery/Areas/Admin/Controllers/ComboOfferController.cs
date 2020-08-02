@@ -1,6 +1,7 @@
 ﻿using ConstructionDiary.Models;
 using KrupaBuildGallery.Helper;
 using KrupaBuildGallery.Model;
+using KrupaBuildGallery.ViewModel.Admin;
 using System;
 using System.Collections.Generic;
 using System.Data.Objects.SqlClient;
@@ -24,9 +25,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             List<ComboOfferVM> lstOfferVm = new List<ComboOfferVM>();
             try
             {
-                lstOfferVm = (from i in _db.tbl_ComboOffer
-                              join p in _db.tbl_ProductItems on i.MainItemId equals p.ProductItemId
-                              join s in _db.tbl_ProductItems on i.SubItemProductId equals s.ProductItemId
+                lstOfferVm = (from i in _db.tbl_ComboOfferMaster
+                              join p in _db.tbl_ProductItems on i.MainItemId equals p.ProductItemId                              
                               where i.IsDeleted == false
                              select new ComboOfferVM
                              {
@@ -35,14 +35,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                 Main_ProductId = i.MainItemProductId.Value,
                                 Main_SubProductId = i.MainItemsSubProductId,
                                 Main_ProductItemId = i.MainItemId,
-                                Main_Qty = i.MainItemQty,
-                                Sub_CategoryId = i.SubItemCatId.Value,
-                                Sub_ProductItemId = i.SubItemId.Value,
-                                Sub_ProductId = i.SubItemProductId.Value,
-                                Sub_SubProductId = i.SubItemSubProductId.Value,
-                                Sub_Qty = i.SubItemQty.Value,
-                                Main_ProductItemName = p.ItemName,
-                                Sub_ProductItemName = s.ItemName,
+                                Main_Qty = i.MainItemQty,                               
+                                Main_ProductItemName = p.ItemName,                               
                                 OfferTitle = i.OfferTitle,
                                 OfferImage = i.OfferImage,
                                 dtOfferEndDate = i.OfferEndDate,
@@ -76,7 +70,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Add(ComboOfferVM objOffer, HttpPostedFileBase OfferImageFile)
+        public ActionResult Add(ComboOfferVM objOffer, HttpPostedFileBase OfferImageFile,FormCollection frm)
         {
             try
             {
@@ -97,19 +91,15 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         fileName = objOffer.OfferImage;
                     }
 
-                    tbl_ComboOffer objComoffer = new tbl_ComboOffer();
+                    tbl_ComboOfferMaster objComoffer = new tbl_ComboOfferMaster();
                     objComoffer.MainItemCatId = objOffer.Main_CategoryId;
                     objComoffer.MainItemId = objOffer.Main_ProductItemId;
                     objComoffer.MainItemProductId = objOffer.Main_ProductId;
                     objComoffer.MainItemsSubProductId = objOffer.Main_SubProductId;
-                    objComoffer.MainItemQty = objOffer.Main_Qty;
-
-                    objComoffer.SubItemCatId = objOffer.Sub_CategoryId;
-                    objComoffer.SubItemId = objOffer.Sub_ProductItemId;
-                    objComoffer.SubItemProductId = objOffer.Sub_ProductId;
-                    objComoffer.SubItemSubProductId = objOffer.Sub_SubProductId;
-                    objComoffer.SubItemQty = objOffer.Sub_Qty;
+                    objComoffer.MainItemQty = Convert.ToInt64(objOffer.Main_Qty);
+                    objComoffer.MainItemVarintId = Convert.ToInt64(frm["MainVariantItem"].ToString());
                     objComoffer.OfferTitle = objOffer.OfferTitle;
+                    objComoffer.Description = objOffer.OfferDescription;
                     DateTime dtStart = DateTime.ParseExact(objOffer.OfferStartDate, "dd/MM/yyyy", null);
                     objComoffer.OfferStartDate = dtStart;
 
@@ -123,10 +113,46 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     objComoffer.CreatedDate = DateTime.UtcNow;
                     objComoffer.ModifiedBy = LoggedInUserId;
                     objComoffer.ModifiedDate = DateTime.UtcNow;
-
-                    _db.tbl_ComboOffer.Add(objComoffer);
+                    objComoffer.IsCashOnDelivery = objOffer.IsCashonDelieveryuse;
+                    objComoffer.TotalActualPrice = Convert.ToDecimal(frm["hdnTotalActualOfferPrice"].ToString());
+                    objComoffer.MainItemActualPrice = Convert.ToDecimal(frm["hdnTotalMain"].ToString());
+                    _db.tbl_ComboOfferMaster.Add(objComoffer);
                     _db.SaveChanges();
+                    if(frm["SubItemProductItem"] != null)
+                    {
+                        string[] arrySubItems = Request.Form.GetValues("SubItemProductItem");
+                        string[] arrySubItemsCat = Request.Form.GetValues("SubItemCategory");
+                        string[] arrySubItemsProd = Request.Form.GetValues("SubItemProduct");
+                        string[] arrySubItemsSubProd = Request.Form.GetValues("SubItemSubProduct");
+                        string[] arrySubItemsVariant = Request.Form.GetValues("SubItemVarints");
+                        string[] arrySubItemsQty = Request.Form.GetValues("SubItemQty");
+                        string[] arrySubItemsTtl = Request.Form.GetValues("hdntotl");
+                        for (int j=0; j< arrySubItems.Length;j++)
+                        {
+                            tbl_ComboOfferSubItems objSub = new tbl_ComboOfferSubItems();
+                            objSub.ComboOfferId = objComoffer.ComboOfferId;
+                            if(arrySubItems[j] != "" && arrySubItems[j] != "0")
+                            {
+                                objSub.CategoryId = GetInt64Val(arrySubItemsCat[j]);
+                                objSub.ProductId = GetInt64Val(arrySubItemsProd[j]);
+                                objSub.SubProductId = GetInt64Val(arrySubItemsSubProd[j]);
+                                objSub.VariantItemId = GetInt64Val(arrySubItemsVariant[j]);
+                                objSub.ProductItemId = GetInt64Val(arrySubItems[j]);
+                                objSub.Qty = GetInt64Val(arrySubItemsQty[j]);
+                                objSub.OfferPrice = 0;
+                                objSub.ActualPrice = Convert.ToDecimal(arrySubItemsTtl[j]);
+                                objSub.IsDeleted = false;
+                                objSub.CreatedBy = LoggedInUserId;
+                                objSub.CreatedDate = DateTime.UtcNow;
+                                objSub.ModifiedBy = LoggedInUserId;
+                                objSub.ModifiedDate = DateTime.UtcNow;
+                                _db.tbl_ComboOfferSubItems.Add(objSub);
+                                _db.SaveChanges();
+                            }
+                        }
+                    }
                    
+
                     return RedirectToAction("Add");
                 }
             }
@@ -150,12 +176,10 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         public ActionResult Edit(int Id)
         {
             ComboOfferVM objOffer = new ComboOfferVM();
-
             try
             {
-
-                objOffer = (from i in _db.tbl_ComboOffer
-                                  where i.ComboOfferId == Id
+                objOffer = (from i in _db.tbl_ComboOfferMaster
+                            where i.ComboOfferId == Id
                                   select new ComboOfferVM
                                   {
                                       ComboOfferId = i.ComboOfferId,
@@ -164,16 +188,14 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                       Main_SubProductId = i.MainItemsSubProductId,
                                       Main_ProductItemId = i.MainItemId,
                                       Main_Qty = i.MainItemQty,
-                                      Sub_CategoryId = i.SubItemCatId.Value,
-                                      Sub_ProductItemId = i.SubItemId.Value,
-                                      Sub_ProductId = i.SubItemProductId.Value,
-                                      Sub_SubProductId = i.SubItemSubProductId.Value,
-                                      Sub_Qty = i.SubItemQty.Value,
                                       OfferTitle = i.OfferTitle,
                                       OfferImage = i.OfferImage,
+                                      IsCashonDelieveryuse = i.IsCashOnDelivery.HasValue ? i.IsCashOnDelivery.Value : false,
                                       dtOfferEndDate = i.OfferEndDate,
                                       dtOfferStartDate = i.OfferStartDate,
-                                      ComboOfferPrice = i.OfferPrice                                      
+                                      OfferDescription = i.Description,
+                                      ComboOfferPrice = i.OfferPrice,
+                                      MainVariantId = i.MainItemVarintId
                                   }).FirstOrDefault();
 
                 objOffer.OfferStartDate = Convert.ToDateTime(objOffer.dtOfferStartDate).ToString("dd/MM/yyyy");
@@ -182,13 +204,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 objOffer.Main_ProductList = GetProductListByCategoryId(objOffer.Main_CategoryId);
                 objOffer.Main_SubProductList = GetSubProductListByProductId(objOffer.Main_ProductId);
                 objOffer.Main_ProductItemList = GetProductItems(objOffer.Main_ProductId, objOffer.Main_SubProductId);
+                ViewData["MainVariantList"] = _db.tbl_ItemVariant.Where(x => (Id == -1 || x.ProductItemId.Value == objOffer.Main_ProductItemId) && x.IsActive == true).OrderBy(x => x.UnitQty).ToList();
+                              
 
-                objOffer.Sub_CategoryList = GetCategoryList();
-                objOffer.Sub_ProductList = GetProductListByCategoryId(objOffer.Sub_CategoryId);
-                objOffer.Sub_SubProductList = GetSubProductListByProductId(objOffer.Sub_ProductId);
-                objOffer.Sub_ProductItemList = GetProductItems(objOffer.Sub_ProductId, objOffer.Sub_SubProductId);
-
-                
             }
             catch (Exception ex)
             {
@@ -207,7 +225,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 {
                     long LoggedInUserId = Int64.Parse(clsAdminSession.UserID.ToString());
                     // Check for exist
-                    tbl_ComboOffer objComoffer = _db.tbl_ComboOffer.Where(o => o.ComboOfferId == objOffer.ComboOfferId).FirstOrDefault();
+                    tbl_ComboOfferMaster objComoffer = _db.tbl_ComboOfferMaster.Where(o => o.ComboOfferId == objOffer.ComboOfferId).FirstOrDefault();
                     string fileName = string.Empty;
                     string path = Server.MapPath("~/Images/ComboOffer/");
                     if (OfferImageFile != null)
@@ -224,17 +242,17 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     objComoffer.MainItemId = objOffer.Main_ProductItemId;
                     objComoffer.MainItemProductId = objOffer.Main_ProductId;
                     objComoffer.MainItemsSubProductId = objOffer.Main_SubProductId;
-                    objComoffer.MainItemQty = objOffer.Main_Qty;
-
-                    objComoffer.SubItemCatId = objOffer.Sub_CategoryId;
-                    objComoffer.SubItemId = objOffer.Sub_ProductItemId;
-                    objComoffer.SubItemProductId = objOffer.Sub_ProductId;
-                    objComoffer.SubItemSubProductId = objOffer.Sub_SubProductId;
-                    objComoffer.SubItemQty = objOffer.Sub_Qty;
+                    objComoffer.MainItemQty = Convert.ToInt64(objOffer.Main_Qty);
+                    objComoffer.Description = objOffer.OfferDescription;
+                    //objComoffer.SubItemCatId = objOffer.Sub_CategoryId;
+                    //objComoffer.SubItemId = objOffer.Sub_ProductItemId;
+                    //objComoffer.SubItemProductId = objOffer.Sub_ProductId;
+                    //objComoffer.SubItemSubProductId = objOffer.Sub_SubProductId;
+                    //objComoffer.SubItemQty = objOffer.Sub_Qty;
                     objComoffer.OfferTitle = objOffer.OfferTitle;
                     DateTime dtStart = DateTime.ParseExact(objOffer.OfferStartDate, "dd/MM/yyyy", null);
                     objComoffer.OfferStartDate = dtStart;
-
+                    objComoffer.IsCashOnDelivery = objOffer.IsCashonDelieveryuse;
                     DateTime dtEnd = DateTime.ParseExact(objOffer.OfferEndDate, "dd/MM/yyyy", null);
                     objComoffer.OfferEndDate = dtEnd;
                     objComoffer.OfferImage = fileName;
@@ -280,7 +298,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             try
             {
-                tbl_ComboOffer objtbloffer = _db.tbl_ComboOffer.Where(x => x.ComboOfferId == ComboOfferId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
+                tbl_ComboOfferMaster objtbloffer = _db.tbl_ComboOfferMaster.Where(x => x.ComboOfferId == ComboOfferId && x.IsActive == true && x.IsDeleted == false).FirstOrDefault();
 
                 if (objtbloffer == null)
                 {
@@ -313,7 +331,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             string ReturnMessage = "";
             try
             {
-                tbl_ComboOffer objtbl_Offers = _db.tbl_ComboOffer.Where(x => x.ComboOfferId == Id).FirstOrDefault();
+                tbl_ComboOfferMaster objtbl_Offers = _db.tbl_ComboOfferMaster.Where(x => x.ComboOfferId == Id).FirstOrDefault();
 
                 if (objtbl_Offers != null)
                 {
@@ -370,5 +388,63 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return ProductItemList;
         }
 
+        public JsonResult GetVariantListByItemId(double Id)
+        {
+            var tbl_ItemVariantList = _db.tbl_ItemVariant.Where(x => (Id == -1 || x.ProductItemId.Value == Id) && x.IsActive == true).OrderBy(x => x.UnitQty).ToList();
+
+            return Json(tbl_ItemVariantList, JsonRequestBehavior.AllowGet);
+        }
+
+        public ActionResult GetSubItemsOfCombo(int Id)
+        {
+            ViewBag.Id = Id;
+            ViewData["catrgories"] = GetCategoryList();
+            return PartialView("~/Areas/Admin/Views/ComboOffer/_SubItems.cshtml");
+        }
+
+        public ActionResult GetSubItemsOfComboEdit(long ComboId)
+        {
+            List<tbl_ComboOfferSubItems> lstComboSub = _db.tbl_ComboOfferSubItems.Where(o => o.ComboOfferId == ComboId).ToList();
+            List<ComboSubItemVM> lstSubItemss = new List<ComboSubItemVM>();
+            if (lstComboSub != null && lstComboSub.Count() > 0)
+            {
+                foreach (var objsub in lstComboSub)
+                {
+                    if (objsub != null)
+                    {
+                        ComboSubItemVM objj = new ComboSubItemVM();
+                        objj.CategoryId = objsub.CategoryId;
+                        objj.ProductId = objsub.ProductId;
+                        objj.SubProductId = objsub.SubProductId.Value;
+                        objj.Qty = objsub.Qty;
+                        objj.ProductItemId = objsub.ProductItemId;
+                        objj.VarintId = objsub.VariantItemId;
+                        objj.ActualPrice = objsub.ActualPrice.Value;
+                        objj.Sub_CategoryList = GetCategoryList();
+                        objj.Sub_ProductList = GetProductListByCategoryId(objj.CategoryId);
+                        objj.Sub_SubProductList = GetSubProductListByProductId(objj.ProductId);
+                        objj.Sub_ProductItemList = GetProductItems(objj.ProductId, objj.SubProductId);
+                        objj.Sub_ProductVariantList = _db.tbl_ItemVariant.Where(x => (ComboId == -1 || x.ProductItemId.Value == objj.ProductItemId) && x.IsActive == true).OrderBy(x => x.UnitQty).ToList();
+                        lstSubItemss.Add(objj);
+                    }
+                }
+            }
+            //objOffer.Sub_CategoryList = GetCategoryList();
+            //objOffer.Sub_ProductList = GetProductListByCategoryId(objOffer.Sub_CategoryId);
+            //objOffer.Sub_SubProductList = GetSubProductListByProductId(objOffer.Sub_ProductId);
+            //objOffer.Sub_ProductItemList = GetProductItems(objOffer.Sub_ProductId, objOffer.Sub_SubProductId);
+            ViewData["lstSubItemss"] = lstSubItemss;
+            return PartialView("~/Areas/Admin/Views/ComboOffer/_SubItemsEdit.cshtml");
+        }
+
+        public long GetInt64Val(string vl)
+        {
+            long reurnvl = 0;
+            if(!string.IsNullOrEmpty(vl))
+            {
+                reurnvl = Convert.ToInt64(vl);
+            }
+            return reurnvl;
+        }
     }
 }

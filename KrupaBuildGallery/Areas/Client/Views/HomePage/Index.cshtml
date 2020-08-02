@@ -10,6 +10,7 @@
     List<HappyCustomerVM> lstHappyCustomers = ViewData["lstHappyCustomers"] as List<HappyCustomerVM>;
     WebsiteStatisticsVM objStatistics = ViewData["objStatistics"] as WebsiteStatisticsVM;
     List<AdvertiseImageVM> lstAdvertiseImages = ViewData["lstAdvertiseImages"] as List<AdvertiseImageVM>;
+    var lstComboOffers = ViewData["lstComboOffers"] as List<ComboOfferVM>;
 
 }
 <style>
@@ -131,6 +132,92 @@
     </section>
 }
 <!-- Category list Section end -->
+<!-- Combo Offer List -->
+@if (lstComboOffers != null && lstComboOffers.Count() > 0)
+{
+    <div class="title1 section-t-space">
+        <div class="title4">
+            <h2 class="title-inner4">Combo Offers</h2>
+            <div class="line"><span></span></div>
+        </div>
+    </div>
+    @*<div class="container">
+            <div class="row">
+                <div class="col-lg-6 offset-lg-3">
+                    <div class="product-para">
+                        <p class="text-center">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,</p>
+                    </div>
+                </div>
+            </div>
+        </div>*@
+    <!-- Paragraph end -->
+    <!-- Product slider -->
+    <section class="section-b-space p-t-0 ratio_asos">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="viewmore">
+                        <a href="/products/combooffers" class="btn btn-solid btn-xs" style="float: right; margin-bottom: 25px; border-radius: 10px;">
+                            <i class="fa fa-angle-double-right"></i>View More
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="product-4 product-m no-arrow">
+                        @if (lstComboOffers != null && lstComboOffers.Count() > 0)
+                        {
+                            foreach (var objItem in lstComboOffers)
+                            {
+                                string imgpath = "";                           
+                                if (!string.IsNullOrEmpty(objItem.OfferImage))
+                                {
+                                    if (File.Exists(Server.MapPath("~/Images/ComboOffer/" + objItem.OfferImage)))
+                                    {
+                                        imgpath = "/Images/ComboOffer/" + objItem.OfferImage;
+                                    }
+                                    else
+                                    {
+                                        imgpath = @ErrorMessage.DefaultImagePath;
+                                    }
+                                }
+                                else
+                                {
+                                    imgpath = @ErrorMessage.DefaultImagePath;
+                                }                             
+                                <div class="product-box">
+                                    <div class="img-wrapper">
+                                        <div class="front">
+                                            <a href="/products/offerdetail/@objItem.ComboOfferId"><img src="@imgpath" class="img-fluid blur-up lazyload bg-img" alt=""></a>
+                                        </div>
+                                        <div class="back">
+                                            <a href="/products/offerdetail/@objItem.ComboOfferId"><img src="@imgpath" class="img-fluid blur-up lazyload bg-img" alt=""></a>
+                                        </div>
+                                        <div class="cart-info cart-wrap">
+                                            <button data-toggle="modal" style="display:none;" data-target="#addtocart" title="Add to cart" >
+                                                <i class="ti-shopping-cart"></i>
+                                            </button>                                           
+                                        </div>
+                                    </div>
+                                    <div class="product-detail">
+                                        <a href="/products/offerdetail/@objItem.ComboOfferId">
+                                            <h6 class="dashboardItemName">@objItem.OfferTitle</h6>
+                                        </a>
+                                        <h4>₹ @objItem.ComboOfferPrice <del>₹ @objItem.TotlOriginalOfferPrice</del></h4>
+                                    </div>
+                                </div>
+
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Product slider end -->
+}
+<!-- Combo Offer List end -->
 <!-- Offer Product List start-->
 @if (lstOffers != null && lstOffers.Count() > 0)
 {
@@ -644,36 +731,36 @@
             title: 'Success!',
             message: msg
         }, {
-                element: 'body',
-                position: null,
-                type: "info",
-                allow_dismiss: true,
-                newest_on_top: false,
-                showProgressbar: false,
-                placement: {
-                    from: "top",
-                    align: "right"
-                },
-                offset: 20,
-                spacing: 10,
-                z_index: 1031,
-                delay: 5000,
-                animate: {
-                    enter: 'animated fadeInDown',
-                    exit: 'animated fadeOutUp'
-                },
-                icon_type: 'class',
-                template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
-                    '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
-                    '<span data-notify="icon"></span> ' +
-                    '<span data-notify="title">{1}</span> ' +
-                    '<span data-notify="message">{2}</span>' +
-                    '<div class="progress" data-notify="progressbar">' +
-                    '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
-                    '</div>' +
-                    '<a href="{3}" target="{4}" data-notify="url"></a>' +
-                    '</div>'
-            });
+            element: 'body',
+            position: null,
+            type: "info",
+            allow_dismiss: true,
+            newest_on_top: false,
+            showProgressbar: false,
+            placement: {
+                from: "top",
+                align: "right"
+            },
+            offset: 20,
+            spacing: 10,
+            z_index: 1031,
+            delay: 5000,
+            animate: {
+                enter: 'animated fadeInDown',
+                exit: 'animated fadeOutUp'
+            },
+            icon_type: 'class',
+            template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
+                '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+                '<span data-notify="icon"></span> ' +
+                '<span data-notify="title">{1}</span> ' +
+                '<span data-notify="message">{2}</span>' +
+                '<div class="progress" data-notify="progressbar">' +
+                '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
+                '</div>' +
+                '<a href="{3}" target="{4}" data-notify="url"></a>' +
+                '</div>'
+        });
     }
 
 </script>

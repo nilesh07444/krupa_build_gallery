@@ -1,0 +1,268 @@
+﻿@{
+    List<KrupaBuildGallery.ViewModel.Admin.ComboSubItemVM> lstSubItmss = ViewData["lstSubItemss"] as List<KrupaBuildGallery.ViewModel.Admin.ComboSubItemVM>;
+    int cnt = 99;
+}
+@if (lstSubItmss != null && lstSubItmss.Count() > 0)
+{
+    foreach (var objSub in lstSubItmss)
+    {
+      <div class="dvsubitm_@cnt">
+        <div class="row" style="margin-top:15px;">
+            <div class="col-sm-2">
+                <label>Sub Item:</label>
+            </div>
+            <div class="col-sm-3">
+                <label class="" for="Category_@cnt">Category</label>
+                <select class="form-control" id="Category_@cnt" name="SubItemCategory" readonly data-id="@cnt" style="pointer-events:none">
+                    <option value="">- Select -</option>
+                    @if (objSub.Sub_CategoryList != null && objSub.Sub_CategoryList.Count() > 0)
+                    {
+                        foreach (var objj in objSub.Sub_CategoryList)
+                        {
+                            string strselc = "";
+                            if(Convert.ToInt64(objj.Value) == objSub.CategoryId)
+                            {
+                                strselc = "selected";
+                            }
+                            <option value="@objj.Value" @strselc>@objj.Text</option>
+                        }
+                    }
+                </select>
+                <lable class=""></lable>
+                <span class="field-validation-valid text-danger"></span>
+            </div>
+            <div class="col-sm-3">
+                <label class="" for="Product_@cnt">Product</label>
+                <select class="form-control" id="Product_@cnt" name="SubItemProduct" readonly data-id="@cnt" style="pointer-events: none">
+                    <option value='0'>- Select Product -</option>
+                    @if (objSub.Sub_ProductList != null && objSub.Sub_ProductList.Count() > 0)
+                    {
+                        foreach (var objj in objSub.Sub_ProductList)
+                        {
+                            string strselc = "";
+                            if (Convert.ToInt64(objj.Value) == objSub.ProductId)
+                            {
+                                strselc = "selected";
+                            }
+                            <option value="@objj.Value" @strselc>@objj.Text</option>
+                        }
+                    }
+                </select>
+
+                <lable class=""></lable>
+                <span class="field-validation-valid text-danger"></span>
+            </div>
+            <div class="col-sm-3">
+                <label class="" for="SubProduct_@cnt">Sub Product</label>
+                <select class="form-control" id="SubProduct_@cnt" name="SubItemSubProduct" readonly data-id="@cnt" style="pointer-events: none">
+                    <option value='0'>- Select Product -</option>
+                    @if (objSub.Sub_SubProductList != null && objSub.Sub_SubProductList.Count() > 0)
+                    {
+                        foreach (var objj in objSub.Sub_SubProductList)
+                        {
+                            string strselc = "";
+                            if (Convert.ToInt64(objj.Value) == objSub.SubProductId)
+                            {
+                                strselc = "selected";
+                            }
+                            <option value="@objj.Value" @strselc>@objj.Text</option>
+                        }
+                    }
+                </select>
+                <lable class=""></lable>
+                <span class="field-validation-valid text-danger"></span>
+            </div>
+        </div>
+        <div class="row" style="margin-top:30px;">
+            <div class="col-sm-2">
+
+            </div>
+            <div class="col-sm-4">
+                <label class="" for="ProductItem_@cnt">Product Item</label>
+                <select class="form-control" id="ProductItem_@cnt" data-id="@cnt" readonly name="SubItemProductItem" style="pointer-events: none">
+                    <option value="0">- Select Product Item -</option>
+                    @if (objSub.Sub_ProductItemList != null && objSub.Sub_ProductItemList.Count() > 0)
+                    {
+                        foreach (var objj in objSub.Sub_ProductItemList)
+                        {
+                            string strselc = "";
+                            if (Convert.ToInt64(objj.Value) == objSub.ProductItemId)
+                            {
+                                strselc = "selected";
+                            }
+                            <option value="@objj.Value" @strselc>@objj.Text</option>
+                        }
+                    }
+                </select>
+
+                <lable class=""></lable>
+                <span class="field-validation-valid text-danger"></span>
+            </div>
+            <div class="col-sm-2">
+                <label class="" for="VarintItem_@cnt">Variant Item</label>
+                <select class="form-control" id="VarintItem_@cnt" data-id="@cnt" readonly name="SubItemVarints" style="pointer-events: none" onchange="calculateprice('@cnt');">
+                    <option value="">- Select Variant -</option>
+                    @if (objSub.Sub_ProductVariantList != null && objSub.Sub_ProductVariantList.Count() > 0)
+                    {
+                        foreach (var objj in objSub.Sub_ProductVariantList)
+                        {
+                            string strselc = "";
+                            if (Convert.ToInt64(objj.VariantItemId) == objSub.VarintId)
+                            {
+                                strselc = "selected";
+                            }
+                            <option value="@objj.VariantItemId" @strselc data-custprc="@objj.CustomerPrice">@objj.UnitQty</option>
+                        }
+                    }
+                </select>
+                <lable class=""></lable>
+                <span class="field-validation-valid text-danger"></span>
+            </div>
+            <div class="col-sm-2">
+                <label class="" for="Qty_@cnt">Qty</label>
+                <input class="form-control text-box single-line" id="Qty_@cnt" readonly data-id="@cnt" maxlength="100" name="SubItemQty" placeholder="Qty" type="text" value="@objSub.Qty" onblur="calculateprice('@cnt');">
+
+                <lable class=""></lable>
+                <span class="field-validation-valid text-danger"></span>
+            </div>
+            <div class="col-sm-2">
+                <label id="lbltotl_@cnt" style="font-weight:bold;">Total: Rs @objSub.ActualPrice</label>
+                <br />
+                <input type="hidden" id="hdntotl_@cnt" name="hdntotl" value="@objSub.ActualPrice" />
+                <a href="javascipt:void(0)" style="color:red;display:none;" title="Remove" onclick="removesubitem('@cnt');"><i class="fa fa-trash font-danger"></i></a>
+            </div>
+        </div>
+
+        <script>
+    $(document).ready(function () {
+          jQuery(document).on("change", "#Category_@cnt", function () {
+
+        var CategoryId = jQuery("#Category_@cnt option:selected").val();
+
+        if (CategoryId != "" && CategoryId != null) {
+
+            var URL = '@Url.Action("GetProductListByCategoryId", "SubProduct")';
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: URL + "/" + CategoryId,
+                success: function (result) {
+                    var htmlData = "<option value='0'>-Select Product-</option>";
+                    if (result && result.length > 0) {
+                        result.forEach(element => {
+                            htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
+                        });
+                    }
+                    $("#Product_@cnt").html(htmlData);
+                },
+                error: function (error) {
+                }
+            });
+        }
+       else {
+             var htmlSubData = "<option value='0'>- Select Product -</option>";
+            $("#Product_@cnt").html(htmlSubData);
+        }
+    });
+
+    jQuery(document).on("change", "#Product_@cnt", function () {
+
+        var ProductId = jQuery("#Product_@cnt option:selected").val();
+
+        if (ProductId != "" && ProductId != null) {
+
+            var URL = '@Url.Action("GetSubProductListByProductId", "SubProduct")';
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: URL + "/" + ProductId,
+                success: function (result) {
+                    var htmlData = "<option value='0'>-Select SubProduct-</option>";
+                    if (result && result.length > 0) {
+                        result.forEach(element => {
+                            htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
+                        });
+                    }
+                    $("#SubProduct_@cnt").html(htmlData);
+                },
+                error: function (error) {
+                }
+            });
+        }
+        else {
+             var htmlSubData = "<option value='0'>- Select SubProduct -</option>";
+            $("#SubProduct_@cnt").html(htmlSubData);
+        }
+    });
+
+    jQuery(document).on("change", "#Product_@cnt,#SubProduct_@cnt", function () {
+
+        var ProductId = jQuery("#Product_@cnt option:selected").val();
+        var SubProductId = jQuery("#SubProduct_@cnt option:selected").val();
+        var htmlSubDatavrnt = "<option value='0'>- Select Variant Item -</option>";
+        $("#VarintItem_@cnt").html(htmlSubDatavrnt);
+
+        if ((ProductId != "" && ProductId != null) || (SubProductId != "" && SubProductId != null)) {
+            var URL = '@Url.Action("GetItemList", "Stock")';
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: URL + "?ProductId=" + ProductId + "&SubProductId=" + SubProductId,
+                success: function (result) {
+                    var htmlData = "<option value='0'>-Select Product Item-</option>";
+                    if (result && result.length > 0) {
+                        result.forEach(element => {
+                            htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
+                        });
+                    }
+                    $("#ProductItem_@cnt").html(htmlData);
+                },
+                error: function (error) {
+                }
+            });
+        }
+       else {
+            var htmlSubData = "<option value='0'>- Select Product Item -</option>";
+            $("#ProductItem_@cnt").html(htmlSubData);
+        }
+    });
+
+    jQuery(document).on("change", "#ProductItem_@cnt", function () {
+
+        var ItemIdd = jQuery("#ProductItem_@cnt option:selected").val();
+
+        if (ItemIdd != "" && ItemIdd != null) {
+
+            var URL = '@Url.Action("GetVariantListByItemId", "ComboOffer")';
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: URL + "/" + ItemIdd,
+                success: function (result) {
+                    var htmlData = "<option value='0'>-Select Variants-</option>";
+                    if (result && result.length > 0) {
+                        result.forEach(element => {
+                            htmlData += "<option value='" + element.VariantItemId + "' data-custprc='" + element.CustomerPrice+"'> " + element.UnitQty + " </option>";
+                        });
+                    }
+                    $("#VarintItem_@cnt").html(htmlData);
+                },
+                error: function (error) {
+                }
+            });
+        }
+        else {
+            var htmlSubData = "<option value='0'>- Select Variants -</option>";
+            $("#VarintItem_@cnt").html(htmlSubData);
+        }
+    });
+
+    });
+
+        </script>
+
+    </div>
+    }
+}
+
+

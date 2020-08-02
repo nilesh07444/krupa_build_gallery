@@ -1,8 +1,8 @@
-﻿
-
-@model ComboOfferVM
+﻿@model ComboOfferVM
 @{
     ViewBag.Title = "Add Combo Offer";
+    List<KrupaBuildGallery.Model.tbl_ItemVariant> lstMainVarint = ViewData["MainVariantList"] as List<KrupaBuildGallery.Model.tbl_ItemVariant>;
+  
 }
 
 <div class="page-body">
@@ -43,91 +43,6 @@
 
                             @Html.AntiForgeryToken()
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-                            <div class="row">
-
-                                <div class="col-sm-2">
-                                    <label>Main Item:</label>
-                                </div>
-                                <div class="col-sm-2">
-                                    @Html.LabelFor(model => model.Main_CategoryId, htmlAttributes: new { @class = "" })
-                                    @Html.DropDownListFor(model => model.Main_CategoryId, new SelectList(Model.Main_CategoryList, "Value", "Text"), "- Select -", new { @class = "form-control", style = "" })
-
-                                    <lable class=""></lable>
-                                    @Html.ValidationMessageFor(model => model.Main_CategoryId, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="col-sm-2">
-                                    @Html.LabelFor(model => model.Main_ProductId, htmlAttributes: new { @class = "" })
-                                    @Html.DropDownListFor(model => model.Main_ProductId, new SelectList(Model.Main_ProductList, "Value", "Text"), "- Select -", new { @class = "form-control", style = "" })
-
-                                    <lable class=""></lable>
-                                    @Html.ValidationMessageFor(model => model.Main_ProductId, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="col-sm-2">
-                                    @Html.LabelFor(model => model.Main_SubProductId, htmlAttributes: new { @class = "" })
-                                    @Html.DropDownListFor(model => model.Main_SubProductId, new SelectList(Model.Main_ProductList, "Value", "Text"), "- Select -", new { @class = "form-control", style = "" })
-
-                                    <lable class=""></lable>
-                                    @Html.ValidationMessageFor(model => model.Main_SubProductId, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="col-sm-2">
-                                    @Html.LabelFor(model => model.Main_ProductItemId, htmlAttributes: new { @class = "" })
-                                    @Html.DropDownListFor(model => model.Main_ProductItemId, new SelectList(Model.Main_ProductItemList, "Value", "Text"), "- Select -", new { @class = "form-control", style = "" })
-
-                                    <lable class=""></lable>
-                                    @Html.ValidationMessageFor(model => model.Main_ProductItemId, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="col-sm-2">
-                                    @Html.LabelFor(model => model.Main_Qty, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.Main_Qty, new { htmlAttributes = new { @class = "form-control", @placeholder = "Qty", maxlength = "100" } })
-
-                                    <lable class=""></lable>
-                                    @Html.ValidationMessageFor(model => model.Main_Qty, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-
-                            <div class="row" style="margin-top:30px;">
-
-                                <div class="col-sm-2">
-                                    <label>Sub Item:</label>
-                                </div>
-                                <div class="col-sm-2">
-                                    @Html.LabelFor(model => model.Sub_CategoryId, htmlAttributes: new { @class = "" })
-                                    @Html.DropDownListFor(model => model.Sub_CategoryId, new SelectList(Model.Sub_CategoryList, "Value", "Text"), "- Select -", new { @class = "form-control", style = "" })
-
-                                    <lable class=""></lable>
-                                    @Html.ValidationMessageFor(model => model.Sub_CategoryId, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="col-sm-2">
-                                    @Html.LabelFor(model => model.Sub_ProductId, htmlAttributes: new { @class = "" })
-                                    @Html.DropDownListFor(model => model.Sub_ProductId, new SelectList(Model.Sub_ProductList, "Value", "Text"), "- Select -", new { @class = "form-control", style = "" })
-
-                                    <lable class=""></lable>
-                                    @Html.ValidationMessageFor(model => model.Sub_ProductId, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="col-sm-2">
-                                    @Html.LabelFor(model => model.Sub_SubProductId, htmlAttributes: new { @class = "" })
-                                    @Html.DropDownListFor(model => model.Sub_SubProductId, new SelectList(Model.Sub_ProductList, "Value", "Text"), "- Select -", new { @class = "form-control", style = "" })
-
-                                    <lable class=""></lable>
-                                    @Html.ValidationMessageFor(model => model.Sub_SubProductId, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="col-sm-2">
-                                    @Html.LabelFor(model => model.Sub_ProductItemId, htmlAttributes: new { @class = "" })
-                                    @Html.DropDownListFor(model => model.Sub_ProductItemId, new SelectList(Model.Sub_ProductItemList, "Value", "Text"), "- Select -", new { @class = "form-control", style = "" })
-
-                                    <lable class=""></lable>
-                                    @Html.ValidationMessageFor(model => model.Sub_ProductItemId, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="col-sm-2">
-                                    @Html.LabelFor(model => model.Sub_Qty, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.Sub_Qty, new { htmlAttributes = new { @class = "form-control", @placeholder = "Qty", maxlength = "100" } })
-
-                                    <lable class=""></lable>
-                                    @Html.ValidationMessageFor(model => model.Sub_Qty, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-
                             <div class="form-group row" style="margin-top: 30px;">
                                 @Html.LabelFor(model => model.OfferTitle, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.EditorFor(model => model.OfferTitle, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Offer Title", maxlength = "600" } })
@@ -138,9 +53,9 @@
 
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.ComboOfferPrice, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
-                                @Html.EditorFor(model => model.ComboOfferPrice, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Offer Price", maxlength = "150" } })
+                                @Html.EditorFor(model => model.ComboOfferPrice, new { htmlAttributes = new { @class = "form-control col-md-4", @placeholder = "Enter Offer Price", maxlength = "150" } })
 
-                                <lable class="col-xl-3 col-md-4"></lable>
+                                <lable class="col-xl-3 col-md-4" id="actualprice"></lable>
                                 @Html.ValidationMessageFor(model => model.ComboOfferPrice, "", new { @class = "text-danger" })
                             </div>
 
@@ -166,7 +81,110 @@
 
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.OfferImageFile, "", new { @class = "text-danger" })
+
+                                <input type="hidden" value="@Model.OfferImage" name="OfferImage" />
                             </div>
+                            if (!string.IsNullOrEmpty(Model.OfferImage))
+                            {
+                                <div class="form-group row">
+                                    <p><a target="_blank" href="~/Images/ComboOffer/@Model.OfferImage"> Click here to view image </a></p>
+                                </div>
+                            }
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.OfferDescription, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+
+                                @Html.TextAreaFor(model => model.OfferDescription, new { @class = "form-control col-md-8", @placeholder = "Enter Item Description", maxlength = "10000", cols = 35, @rows = 4, @style = "width:600px;height:80px;" })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.OfferDescription, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.IsCashonDelieveryuse, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.CheckBoxFor(model => model.IsCashonDelieveryuse, new { htmlAttributes = new { @class = "form-control col-md-8" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.IsCashonDelieveryuse, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="row">
+
+                                <div class="col-sm-2">
+                                    <label>Main Item:</label>
+                                </div>
+                                <div class="col-sm-3">
+                                    @Html.LabelFor(model => model.Main_CategoryId, htmlAttributes: new { @class = "" })
+                                    @Html.DropDownListFor(model => model.Main_CategoryId, new SelectList(Model.Main_CategoryList, "Value", "Text"), "- Select -", new { @class = "form-control", @readonly = "readonly", style = "pointer-events:none" })
+
+                                    <lable class=""></lable>
+                                    @Html.ValidationMessageFor(model => model.Main_CategoryId, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-sm-3">
+                                    @Html.LabelFor(model => model.Main_ProductId, htmlAttributes: new { @class = "" })
+                                    @Html.DropDownListFor(model => model.Main_ProductId, new SelectList(Model.Main_ProductList, "Value", "Text"), "- Select -", new { @class = "form-control", @readonly = "readonly", style = "pointer-events:none" })
+
+                                    <lable class=""></lable>
+                                    @Html.ValidationMessageFor(model => model.Main_ProductId, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-sm-3">
+                                    @Html.LabelFor(model => model.Main_SubProductId, htmlAttributes: new { @class = "" })
+                                    @Html.DropDownListFor(model => model.Main_SubProductId, new SelectList(Model.Main_SubProductList, "Value", "Text"), "- Select -", new { @class = "form-control", @readonly = "readonly", style = "pointer-events:none" })
+
+                                    <lable class=""></lable>
+                                    @Html.ValidationMessageFor(model => model.Main_SubProductId, "", new { @class = "text-danger" })
+                                </div>
+
+                            </div>
+                            <div class="row" style="margin-top:30px;">
+                                <div class="col-sm-2">
+
+                                </div>
+                                <div class="col-sm-4">
+                                    @Html.LabelFor(model => model.Main_ProductItemId, htmlAttributes: new { @class = "" })
+                                    @Html.DropDownListFor(model => model.Main_ProductItemId, new SelectList(Model.Main_ProductItemList, "Value", "Text"), "- Select -", new { @class = "form-control", @readonly = "readonly", style = "pointer-events:none" })
+
+                                    <lable class=""></lable>
+                                    @Html.ValidationMessageFor(model => model.Main_ProductItemId, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-sm-2">
+                                    <label class="" for="MainVariantItem">Main Variant Item</label>
+                                    <select class="form-control" id="MainVariantItem" name="MainVariantItem" readonly style="pointer-events: none;" onchange="calculatmain();">
+                                        <option value='0'>- Select Variants -</option>
+                                        @if (lstMainVarint != null && lstMainVarint.Count() > 0)
+                                        {
+                                            foreach (var objj in lstMainVarint)
+                                            {
+                                                string selectt = "";
+                                                if (objj.VariantItemId == Model.MainVariantId)
+                                                {
+                                                    selectt = "selected";
+                                                }
+                                                <option value="@objj.VariantItemId" @selectt data-custprc="@objj.CustomerPrice">@objj.UnitQty</option>
+
+                                            }
+                                        }
+                                    </select>
+                                    <lable class=""></lable>
+                                    <span class="field-validation-valid text-danger"></span>
+                                </div>
+                                <div class="col-sm-2">
+                                    @Html.LabelFor(model => model.Main_Qty, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.Main_Qty, new { htmlAttributes = new { @class = "form-control", @placeholder = "Qty", maxlength = "100", @readonly = "readonly", @onblur = "calculatmain();" } })
+
+                                    <lable class=""></lable>
+                                    @Html.ValidationMessageFor(model => model.Main_Qty, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="col-sm-2">
+                                    <label id="lbltotl" style="font-weight:bold;"></label>
+                                    <input type="hidden" value="0" id="hdnTotalMain" />
+                                </div>
+                            </div>
+                            <div id="SubItems">
+                                @Html.Action("GetSubItemsOfComboEdit", "ComboOffer", new { ComboId = Model.ComboOfferId })
+                            </div>
+                            <div class="row" style="margin-top:20px;">
+                                <div class="col-sm-8"></div>
+                                <div class="col-sm-4"><a href="javascript:void(0)" onclick="AddSubItem();" style="font-size: 15px;font-weight: bold;display:none;">Add Sub Item</a></div>
+                            </div>
+
 
                             <div class="form-group row">
                                 @Html.HiddenFor(x => x.ComboOfferId)
@@ -190,7 +208,7 @@
 <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
 
 <script>
-
+    var jid = 0;
     $(document).on("click", "#btnCancel", function () {
         window.location.href = "/admin/combooffer";
     });
@@ -285,94 +303,99 @@
         }
     });
 
-      jQuery(document).on("change", "#Sub_CategoryId", function () {
+     jQuery(document).on("change", "#Main_ProductItemId", function () {
 
-        var CategoryId = jQuery("#Sub_CategoryId option:selected").val();
+        var ItemIdd = jQuery("#Main_ProductItemId option:selected").val();
 
-        if (CategoryId != "" && CategoryId != null) {
+        if (ItemIdd != "" && ItemIdd != null) {
 
-            var URL = '@Url.Action("GetProductListByCategoryId", "SubProduct")';
+            var URL = '@Url.Action("GetVariantListByItemId", "ComboOffer")';
             $.ajax({
                 type: 'GET',
                 async: true,
-                url: URL + "/" + CategoryId,
+                url: URL + "/" + ItemIdd,
                 success: function (result) {
-                    var htmlData = "<option value='0'>-Select Product-</option>";
+                    var htmlData = "<option value='0'>-Select Variants-</option>";
                     if (result && result.length > 0) {
                         result.forEach(element => {
-                            htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
+                            htmlData += "<option value='" + element.VariantItemId + "' data-custprc='" + element.CustomerPrice+"'> " + element.UnitQty + " </option>";
                         });
                     }
-                    $("#Sub_ProductId").html(htmlData);
-                },
-                error: function (error) {
-                }
-            });
-        }
-       else {
-             var htmlSubData = "<option value='0'>- Select Product -</option>";
-            $("#Sub_ProductId").html(htmlSubData);
-        }
-    });
-
-    jQuery(document).on("change", "#Sub_ProductId", function () {
-
-        var ProductId = jQuery("#Sub_ProductId option:selected").val();
-
-        if (ProductId != "" && ProductId != null) {
-
-            var URL = '@Url.Action("GetSubProductListByProductId", "SubProduct")';
-            $.ajax({
-                type: 'GET',
-                async: true,
-                url: URL + "/" + ProductId,
-                success: function (result) {
-                    var htmlData = "<option value='0'>-Select SubProduct-</option>";
-                    if (result && result.length > 0) {
-                        result.forEach(element => {
-                            htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
-                        });
-                    }
-                    $("#Sub_SubProductId").html(htmlData);
+                    $("#MainVariantItem").html(htmlData);
                 },
                 error: function (error) {
                 }
             });
         }
         else {
-             var htmlSubData = "<option value='0'>- Select SubProduct -</option>";
-            $("#Sub_SubProductId").html(htmlSubData);
+            var htmlSubData = "<option value='0'>- Select Variants -</option>";
+            $("#MainVariantItem").html(htmlSubData);
         }
     });
 
-    jQuery(document).on("change", "#Sub_ProductId,#Sub_SubProductId", function () {
+    function AddSubItem() {
+        jid = jid + 1;
+            $("#SubItems").append($("<div class='dvsubitm_"+jid+"'>").load('@Url.Action("GetSubItemsOfCombo", "ComboOffer")' + '?Id=' + jid, function () {
 
-        var ProductId = jQuery("#Sub_ProductId option:selected").val();
-        var SubProductId = jQuery("#Sub_SubProductId option:selected").val();
+        }));
+    }
 
-        if ((ProductId != "" && ProductId != null) || (SubProductId != "" && SubProductId != null)) {
-            var URL = '@Url.Action("GetItemList", "Stock")';
-            $.ajax({
-                type: 'GET',
-                async: true,
-                url: URL + "?ProductId=" + ProductId + "&SubProductId=" + SubProductId,
-                success: function (result) {
-                    var htmlData = "<option value='0'>-Select Product Item-</option>";
-                    if (result && result.length > 0) {
-                        result.forEach(element => {
-                            htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
-                        });
-                    }
-                    $("#Sub_ProductItemId").html(htmlData);
-                },
-                error: function (error) {
-                }
-            });
+    function removesubitem(idds) {
+        $(".dvsubitm_" + idds).remove();
+    }
+
+    function validateandsubmit() {
+        var flgisvalid = true;    
+     
+            $("#ComboOfferFormId").submit();
+      
+
+    }
+
+    function calculateprice(idds) {
+        var prcc = 0;
+        var qtyy = 0;
+        if ($("#Qty_" + idds).val() != "" && $("#Qty_" + idds).val() != "0") {
+            qtyy = $("#Qty_" + idds).val();
         }
-       else {
-            var htmlSubData = "<option value='0'>- Select Product Item -</option>";
-            $("#Sub_ProductItemId").html(htmlSubData);
+        if($("#VarintItem_" + idds).val() != "" && $("#VarintItem_" + idds).val() != "0") {
+            prcc = Math.round(parseFloat($("#VarintItem_" + idds + " option:selected").attr("data-custprc")),2);
         }
-    });
+        var totll = Math.round(prcc * qtyy,2);
+        $("#hdntotl_" + idds).val(totll);
+        $("#lbltotl_" + idds).text("Total: Rs " + totll);
+        TotalActualPrice();
+    }
+
+    function calculatmain() {
+        var prcc = 0;
+        var qtyy = 0;
+        if ($("#Main_Qty").val() != "" && $("#Main_Qty").val() != "0") {
+            qtyy = $("#Main_Qty").val();
+        }
+        if ($("#MainVariantItem").val() != "" && $("#MainVariantItem").val() != "0") {
+            prcc = Math.round(parseFloat($("#MainVariantItem option:selected").attr("data-custprc")), 2);
+        }
+        var totll = Math.round(prcc * qtyy, 2);
+        $("#lbltotl").text("Total: Rs " + totll);
+        $("#hdnTotalMain").val(totll);
+        TotalActualPrice();
+    }
+
+
+    function TotalActualPrice() {
+        var ttl = 0;
+        $("input[name=hdntotl]").each(function () {
+            if ($(this).val() != "" && $(this).val() != "0") {
+                ttl = ttl + Math.round(parseFloat($(this).val()),2);
+            }
+        })
+        if ($("#hdnTotalMain").val() != "" && $("#hdnTotalMain").val() != "0") {
+            ttl = ttl + Math.round(parseFloat($("#hdnTotalMain").val()), 2);
+        }
+
+        $("#actualprice").text("Actual Total: Rs " + ttl);
+    }
+
 </script>
 
