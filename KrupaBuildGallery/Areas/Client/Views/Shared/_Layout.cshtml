@@ -154,9 +154,9 @@
                                     }
 
                                     @*<a href="#" class="dropdown-item">Reports</a>
-        <a href="#" class="dropdown-item">Settings</a>
-        <div class="dropdown-divider"></div>
-        <a href="#" class="dropdown-item">Logout</a>*@
+                                        <a href="#" class="dropdown-item">Settings</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="#" class="dropdown-item">Logout</a>*@
                                 </div>
                             </li>
 
@@ -624,6 +624,25 @@
             </div>
         </div>
     </div>
+    <div class="modal fade open" id="cashondeliverymodalcombo" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title"></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                </div>
+                <div class="modal-body">
+                    This Combo is Cash on Delivery. Select Payment Option:"Cash On Delivery / Onine Payment"
+                    <input type="hidden" id="hdnCartComboId" value="" />
+                    <input type="hidden" id="hdnComboQty" value="" />                    
+                </div>
+                <div class="modal-footer">
+                    <button data-dismiss="modal" class="btn btn-danger" type="button" onclick="addtoCartCashOndeliveryCombo('no');">Online Payment</button>
+                    <button id="btnCashOnDelivery" class="btn btn-primary" type="button" onclick="addtoCartCashOndeliveryCombo('yes');">Cash On Delivery</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- tap to top -->
     <div class="tap-top top-cls">
         <div>
@@ -631,10 +650,10 @@
         </div>
     </div>
     <!-- tap to top end -->
-    @if (objSetting != null && !string.IsNullOrEmpty(objSetting.AdvertiseBannerImage))
+    @if (objSetting != null && !string.IsNullOrEmpty(objSetting.AdvertiseBannerImage) && objSetting.IsShowBannerImage == true)
     {
         <!--modal popup start-->
-        @*<div class="modal fade bd-example-modal-lg theme-modal" id="exampleModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal fade bd-example-modal-lg theme-modal" id="exampleModal" tabindex="-1" role="dialog" aria-hidden="true">
             <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-body modal1">
@@ -651,7 +670,7 @@
                     </div>
                 </div>
             </div>
-        </div>*@
+        </div>
         <!--modal popup end-->
     }
 
@@ -696,15 +715,15 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
 
     <script>
-        //$(window).on('load', function () {
-        //    var adss = getCookie("adsdisplay");
-        //    if (adss == "") {
-        //        if ($('#exampleModal').length > 0) {
-        //            $('#exampleModal').modal('show');
-        //        }
-        //        setCookie("adsdisplay", "shown", 1);
-        //    }
-        //});
+        $(window).on('load', function () {
+            var adss = getCookie("adsdisplay");
+            if (adss == "") {
+                if ($('#exampleModal').length > 0) {
+                    $('#exampleModal').modal('show');
+                }
+                setCookie("adsdisplay", "shown", 0.5);
+            }
+        });
         function openSearch() {
             document.getElementById("search-overlay").style.display = "block";
         }
@@ -794,9 +813,9 @@
         }
 
         function setCookie(cname, cvalue, exdays) {
-          var d = new Date();
-          d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
-          var expires = "expires="+d.toUTCString();
+        var now = new Date();
+        var exp = new Date(now.getTime() + (exdays * 24 * 60 * 60 * 1000));
+         var expires = "expires=" + exp.toUTCString();
           document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
         }
 

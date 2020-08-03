@@ -8,12 +8,16 @@
     tbl_ClientOtherDetails objClientOther = ViewData["objotherdetails"] as tbl_ClientOtherDetails;
     List<InvoiceItemVM> lstInvoiceItemVM = ViewData["lstInvItem"] as List<InvoiceItemVM>;
     decimal TotalOrderamtt = Convert.ToDecimal(ViewBag.ShippingChargeTotal) + Convert.ToDecimal(ViewBag.TotalOrder);
-     decimal WalletAmt = Convert.ToDecimal(ViewBag.WalletAmt);
+    decimal WalletAmt = Convert.ToDecimal(ViewBag.WalletAmt);
     string iscashondelivery = Convert.ToString(ViewBag.IsCashOnDelivery);
-    
+
     decimal extramt = Convert.ToDecimal(ViewBag.ExtraAmt);
     TotalOrderamtt = TotalOrderamtt + extramt;
     List<String> lstPincodes = ViewData["availablepincode"] as List<String>;
+    double roundoffship = 0;
+    double roundoff = 0;
+    double NetPayShip = 0;
+    double NetPay = 0;
 }
 <style>
     .errorcls {
@@ -24,7 +28,235 @@
         overflow: auto !important;
     }
 </style>
+<div class="modal fade open" id="checkoutdetails" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="max-width: 80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Payment Calculation</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                @if (lstInvoiceItemVM != null && lstInvoiceItemVM.Count() > 0)
+                {
+                    int countr = 1;
+                    decimal totalamts = 0;
+                    <table class="table table-bordered table-border-radius" style="width:100%;">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Sr.
+                                </th>
+                                <th>
+                                    Item
+                                </th>
+                                <th>
+                                    Amount
+                                </th>
+                                <th>
+                                    Qty
+                                </th>
+                                <th>
+                                    Final Amount
+                                </th>
+                                <th>
+                                    Point Discount
+                                </th>
+                                <th>
+                                    Taxable Amount
+                                </th>
+                                <th>
+                                    GST(%)
+                                </th>
+                                <th>
+                                    GST Amount
+                                </th>
+                                <th>
+                                    Total
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var objj in lstInvoiceItemVM)
+                            {
+                                totalamts = totalamts + objj.ItemAmount;
+                                <tr>
+                                    <td>
+                                        @countr.
+                                    </td>
+                                    <td>
+                                        @objj.ItemName - @objj.VariantQtytxt
+                                    </td>
+                                    <td>
+                                        ₹ @objj.BasicAmount
+                                    </td>
+                                    <td>
+                                        @objj.Qty
+                                    </td>
+                                    <td>
+                                        ₹ @(objj.Qty * objj.BasicAmount)
+                                    </td>
+                                    <td>
+                                        ₹ @objj.Discount
+                                    </td>
+                                    <td>
+                                        ₹ @objj.beforetaxamount
+                                    </td>
+                                    <td>
+                                        @objj.GSTPer.ToString("0.##") %
+                                    </td>
+                                    <td>
+                                        ₹ @objj.GSTAmount
+                                    </td>
+                                    <td>
+                                        ₹ @objj.ItemAmount
+                                    </td>
+                                </tr>
+                                countr++;
+                            }
+                            @{
+                                decimal totlnetamount = Convert.ToDecimal(ViewBag.ShippingChargeTotal) + totalamts;
+                                totlnetamount = totlnetamount + extramt;
+                                roundoffship = CommonMethod.GetRoundedValue(Convert.ToDouble(totlnetamount));
+                                roundoff = CommonMethod.GetRoundedValue(Convert.ToDouble(totalamts));
+                                NetPayShip = CommonMethod.GetRoundValue(Convert.ToDouble(totlnetamount));
+                                NetPay = CommonMethod.GetRoundValue(Convert.ToDouble(totalamts));
+                            }
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <th>Grand Total</th>
+                                <td>₹ @totalamts</td>
+                            </tr>
+                            <tr class="shipexist">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <th>Shipping Charge</th>
+                                <td>₹ @ViewBag.ShippingChargeTotal</td>
+                            </tr>
+                            <tr class="shipnotexist">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <th>Shipping Charge</th>
+                                <td>@ViewBag.ShippingMsg</td>
+                            </tr>
+                            @if (extramt > 0)
+                            {
+                                <tr class="shipexist">
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <th>Minimum Purchase Charge</th>
+                                    <td>₹ @extramt</td>
+                                </tr>
+                            }
 
+                            <tr class="shipexist">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <th>Net Amount</th>
+                                <td>₹ @totlnetamount</td>
+                            </tr>
+                            <tr class="shipnotexist">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <th>Net Amount</th>
+                                <td>₹ @totalamts</td>
+                            </tr>
+                            <tr class="shipexist">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <th>Round Off</th>
+                                <td>₹ @roundoffship</td>
+                            </tr>
+                            <tr class="shipnotexist">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <th>Round Off</th>
+                                <td>₹ @roundoff</td>
+                            </tr>
+                            <tr class="shipexist">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <th>Net Pay</th>
+                                <td>₹ @NetPayShip</td>
+                            </tr>
+                            <tr class="shipnotexist">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <th>Net Pay</th>
+                                <td>₹ @NetPay</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                }
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="hdndataId" />
+                <input type="hidden" id="hdnstatus" />
+                <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- breadcrumb start -->
 <div class="breadcrumb-section">
     <div class="container">
@@ -165,26 +397,31 @@
                                         </ul>
                                         <ul class="sub-total">
                                             @*<li>Subtotal <span class="count">&#8377; @CartTotal</span></li>
-                                            <li>Point Discount <span class="count">&#8377; @ViewBag.TotalDiscount</span></li>*@
+                <li>Point Discount <span class="count">&#8377; @ViewBag.TotalDiscount</span></li>*@
                                             <li>
                                                 Shipping
                                                 <div class="shipping" style="color:#ff4c3b">
                                                     <span id="spnshipmsg">@ViewBag.ShippingMsg</span>
-                                                    @*<span id="spnshipamt" style="display:none;">&#8377; @ViewBag.ShippingChargeTotal</span>*@ 
+                                                    @*<span id="spnshipamt" style="display:none;">&#8377; @ViewBag.ShippingChargeTotal</span>*@
                                                 </div>
                                             </li>
                                         </ul>
                                         <ul class="total">
                                             @*@if (extramt > 0)
-                                            {
-                                                <li class="shippingexist">Minimum Purchase Charge<span class="count">&#8377; @extramt</span></li>
-                                            }*@
+                {
+                    <li class="shippingexist">Minimum Purchase Charge<span class="count">&#8377; @extramt</span></li>
+                }*@
                                             <li class="shippingnotexist">Total <span class="count">&#8377; @ViewBag.TotalOrder</span></li>
                                             <li class="shippingexist" style="display:none;">Total <span class="count">&#8377; @TotalOrderamtt</span></li>
+                                            <li class="shippingexist">Round Off <span class="count">&#8377; @roundoffship</span></li>
+                                            <li class="shippingnotexist" style="display:none;">Round Off<span class="count">&#8377; @roundoff</span></li>
+                                            <li class="shippingexist">Net Pay<span class="count">&#8377; @NetPayShip</span></li>
+                                            <li class="shippingnotexist" style="display:none;">Net Pay<span class="count">&#8377; @NetPay</span></li>
                                             <li><a href="javascript:void(0);" style="font-size:12px;" onclick="ViewDetails();">View Details</a></li>
                                         </ul>
                                     </div>
                                     <input type="hidden" name="Orderamount" id="Orderamout" data-withship="@TotalOrderamtt" data-wihoutship="@ViewBag.TotalOrder" value="@ViewBag.TotalOrder" />
+                                    <input type="hidden" name="PayAmount" id="PayAmount" data-withship="@NetPayShip" data-wihoutship="@ViewBag.NetPay" value="@ViewBag.NetPay" />
                                     <input type="hidden" name="Orderdesc" id="Orderdesc" value="Total @lstCartItmms.Count() items" />
                                     <input type="hidden" id="creditremaining" value="@ViewBag.CreditRemaining" />
                                     <input type="hidden" id="shipamount" name="shipamount" value="@ViewBag.ShippingChargeTotal" />
@@ -197,7 +434,7 @@
                                     <input type="hidden" id="cashlimitoforder" name="cashlimitoforder" value="@ViewBag.CashOrderAmtMax" />
                                     <input type="hidden" id="cashorderyear" name="cashorderyear" value="@ViewBag.YearlyOrderPlaced" />
                                     <input type="hidden" id="cashlimitoforderyear" name="cashlimitoforderyear" value="@ViewBag.CashOrderAmtYerly" />
-                                    
+
 
                                     <div class="payment-box">
                                         <div class="upper-box">
@@ -306,183 +543,7 @@
         </div>
     </div>
 </section>
-<div class="modal fade open" id="checkoutdetails" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-    <div class="modal-dialog" style="max-width: 80%;">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Payment Calculation</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            </div>
-            <div class="modal-body">
-                @if (lstInvoiceItemVM != null && lstInvoiceItemVM.Count() > 0)
-                {
-                    int countr = 1;
-                    decimal totalamts = 0;
-                    <table class="table table-bordered table-border-radius" style="width:100%;">
-                        <thead>
-                            <tr>
-                                <th>
-                                    Sr.
-                                </th>
-                                <th>
-                                    Item
-                                </th>
-                                <th>
-                                    Amount
-                                </th>
-                                <th>
-                                    Qty
-                                </th>
-                                <th>
-                                    Final Amount
-                                </th>
-                                <th>
-                                    Point Discount
-                                </th>
-                                <th>
-                                    Taxable Amount
-                                </th>
-                                <th>
-                                    GST(%)
-                                </th>
-                                <th>
-                                    GST Amount
-                                </th>
-                                <th>
-                                    Total
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var objj in lstInvoiceItemVM)
-                            {
-                                totalamts = totalamts + objj.ItemAmount;
-                                <tr>
-                                    <td>
-                                        @countr.
-                                    </td>
-                                    <td>
-                                        @objj.ItemName - @objj.VariantQtytxt
-                                    </td>
-                                    <td>
-                                        ₹ @objj.BasicAmount
-                                    </td>
-                                    <td>
-                                        @objj.Qty
-                                    </td>
-                                    <td>
-                                        ₹ @(objj.Qty * objj.BasicAmount)
-                                    </td>
-                                    <td>
-                                        ₹ @objj.Discount
-                                    </td>
-                                    <td>
-                                        ₹ @objj.beforetaxamount
-                                    </td>
-                                    <td>
-                                        @objj.GSTPer.ToString("0.##") %
-                                    </td>
-                                    <td>
-                                        ₹ @objj.GSTAmount
-                                    </td>
-                                    <td>
-                                        ₹ @objj.ItemAmount
-                                    </td>
-                                </tr>
-                                countr++;
-                            }
-                            @{
-                                decimal totlnetamount = Convert.ToDecimal(ViewBag.ShippingChargeTotal) + totalamts;
-                                totlnetamount = totlnetamount + extramt;
-                            }
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <th>Grand Total</th>
-                                <td>₹ @totalamts</td>
-                            </tr>
-                            <tr class="shipexist">
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <th>Shipping Charge</th>
-                                <td>₹ @ViewBag.ShippingChargeTotal</td>
-                            </tr>
-                            <tr class="shipnotexist">
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <th>Shipping Charge</th>
-                                <td>@ViewBag.ShippingMsg</td>
-                            </tr>
-                            @if (extramt > 0)
-                            {
-                                <tr class="shipexist">
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <th>Minimum Purchase Charge</th>
-                                    <td>₹ @extramt</td>
-                                </tr>
-                            }
 
-                            <tr class="shipexist">
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <th>Net Amount</th>
-                                <td>₹ @totlnetamount</td>
-                            </tr>
-                            <tr class="shipnotexist">
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <th>Net Amount</th>
-                                <td>₹ @totalamts</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                }
-            </div>
-            <div class="modal-footer">
-                <input type="hidden" id="hdndataId" />
-                <input type="hidden" id="hdnstatus" />
-                <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
 <!-- section end -->
 <div class="dvrazorpayscript">
 
@@ -540,6 +601,7 @@
             $(".shippingnotexist").hide();
             var ammt = $("#Orderamout").attr("data-withship");
             $("#Orderamout").val(ammt);
+            $("#PayAmount").val($("#PayAmount").attr("data-withship"))
              if ($(".creditremainingcls").length > 0) {
                  var crdtremaining = $("#creditremaining").val();
                  var ordamtt = $("#Orderamout").val();
@@ -560,6 +622,7 @@
             $(".shippingnotexist").show();
             var ammt = $("#Orderamout").attr("data-wihoutship");
             $("#Orderamout").val(ammt);
+            $("#PayAmount").val($("#PayAmount").attr("data-wihoutship"))
              if ($(".creditremainingcls").length > 0) {
                  var crdtremaining = $("#creditremaining").val();
                  var ordamtt = $("#Orderamout").val();
@@ -574,11 +637,11 @@
             }
         }
 
-        var amt = $("#Orderamout").val();
+        var amt = $("#PayAmount").val();
         if ($("#isCashondelivery").val() != "True") {
             $("input[name=payment-group]").prop("checked", false).trigger("change");
         }
-        if ($("#Orderamout").length > 0 && amt != "" && amt != "0") {
+        if ($("#PayAmount").length > 0 && amt != "" && amt != "0") {
              $.ajax({
                 url: '@Url.Action("CreateRazorPaymentOrder", "Checkout")',
                 type: "post",
@@ -598,7 +661,7 @@
     }
 
     $(document).on("change", 'input[name=payment-group]', function () {
-        var ordeamt = parseFloat($("#Orderamout").val());
+        var ordeamt = parseFloat($("#PayAmount").val());
         var wallamt = 0;
         var isfullothr = false;
         if ($("#payment-3").length > 0) {

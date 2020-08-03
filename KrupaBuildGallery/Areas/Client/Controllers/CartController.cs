@@ -1,7 +1,9 @@
 ﻿using KrupaBuildGallery.Model;
+using KrupaBuildGallery.ViewModel.Admin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
 
@@ -19,7 +21,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         public ActionResult Index()
         {
             List<CartVM> lstCartItems = new List<CartVM>();
-
+            List<CartVM> lstComboCrt = new List<CartVM>();
             try
             {          
                 string GuidNew = Guid.NewGuid().ToString();
@@ -40,7 +42,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     lstCartItems = (from crt in _db.tbl_Cart
                                  join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
                                  join vr in _db.tbl_ItemVariant on crt.VariantItemId equals vr.VariantItemId
-                                    where crt.ClientUserId == ClientUserId 
+                                    where crt.ClientUserId == ClientUserId  && (crt.IsCombo == null || crt.IsCombo == false)
                                  select new CartVM
                                  {
                                      CartId = crt.Cart_Id,
@@ -55,13 +57,55 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                      Price = clsClientSession.RoleID == 1 ? vr.CustomerPrice.Value : vr.DistributorPrice.Value,
                                  }).OrderByDescending(x => x.CartId).ToList();
                     lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price,x.VariantId);x.StockQty = RemainingStock(x.ItemId);});
+                    List<tbl_Cart> lst = _db.tbl_Cart.Where(o => o.ClientUserId == ClientUserId && o.IsCombo == true && o.ComboId > 0).ToList();
+
+                    if (lst != null && lst.Count() > 0)
+                    {
+                        List<long> comboids = lst.Where(o => o.IsCashonDelivery == true).Select(x => x.ComboId.Value).ToList().Distinct().ToList();
+                        foreach (long combId in comboids)
+                        {
+                            var objcrt = lst.Where(o => o.ComboId == combId && o.IsCashonDelivery == true).FirstOrDefault();
+                            long qty = objcrt.ComboQty.Value;
+                            CartVM objcrt1 = new CartVM();
+                            tbl_ComboOfferMaster objjj = _db.tbl_ComboOfferMaster.Where(o => o.ComboOfferId == combId).FirstOrDefault();
+                            if (objjj != null)
+                            {
+                                objcrt1.ItemName = objjj.OfferTitle;
+                                objcrt1.Price = objjj.OfferPrice;
+                                objcrt1.Qty = qty;
+                                objcrt1.IsCashonDelivery = true;
+                                objcrt1.CartId = objcrt.Cart_Id;
+                                objcrt1.ItemImage = objjj.OfferImage;
+                                lstComboCrt.Add(objcrt1);
+                            }
+                        }
+
+                        List<long> comboidsonlin = lst.Where(o => o.IsCashonDelivery == false).Select(x => x.ComboId.Value).ToList().Distinct().ToList();
+                        foreach (long combId in comboidsonlin)
+                        {
+                            var objcrt = lst.Where(o => o.ComboId == combId && o.IsCashonDelivery == false).FirstOrDefault();
+                            long qty = objcrt.ComboQty.Value;
+                            CartVM objcrt1 = new CartVM();
+                            tbl_ComboOfferMaster objjj = _db.tbl_ComboOfferMaster.Where(o => o.ComboOfferId == combId).FirstOrDefault();
+                            if (objjj != null)
+                            {
+                                objcrt1.ItemName = objjj.OfferTitle;
+                                objcrt1.Price = objjj.OfferPrice;
+                                objcrt1.Qty = qty;
+                                objcrt1.IsCashonDelivery = false;
+                                objcrt1.CartId = objcrt.Cart_Id;
+                                objcrt1.ItemImage = objjj.OfferImage;
+                                lstComboCrt.Add(objcrt1);
+                            }
+                        }
+                    }
                 }
                 else
                 {
                     lstCartItems = (from crt in _db.tbl_Cart
                                     join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
                                     join vr in _db.tbl_ItemVariant on crt.VariantItemId equals vr.VariantItemId
-                                    where crt.CartSessionId == cookiesessionval
+                                    where crt.CartSessionId == cookiesessionval && (crt.IsCombo == null || crt.IsCombo == false)
                                     select new CartVM
                                     {
                                         CartId = crt.Cart_Id,
@@ -76,6 +120,49 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                         Price = vr.CustomerPrice.Value
                                     }).OrderByDescending(x => x.CartId).ToList();
                     lstCartItems.ForEach(x => { x.Price = GetOfferPrice(x.ItemId, x.Price, x.VariantId); x.StockQty = RemainingStock(x.ItemId);});
+
+                    List<tbl_Cart> lst = _db.tbl_Cart.Where(o => o.CartSessionId == cookiesessionval && o.IsCombo == true && o.ComboId > 0).ToList();
+
+                    if (lst != null && lst.Count() > 0)
+                    {
+                        List<long> comboids = lst.Where(o => o.IsCashonDelivery == true).Select(x => x.ComboId.Value).ToList().Distinct().ToList();
+                        foreach (long combId in comboids)
+                        {
+                            var objcrt = lst.Where(o => o.ComboId == combId && o.IsCashonDelivery == true).FirstOrDefault();
+                            long qty = objcrt.ComboQty.Value;
+                            CartVM objcrt1 = new CartVM();
+                            tbl_ComboOfferMaster objjj = _db.tbl_ComboOfferMaster.Where(o => o.ComboOfferId == combId).FirstOrDefault();
+                            if (objjj != null)
+                            {
+                                objcrt1.ItemName = objjj.OfferTitle;
+                                objcrt1.Price = objjj.OfferPrice;
+                                objcrt1.Qty = qty;
+                                objcrt1.IsCashonDelivery = true;
+                                objcrt1.CartId = objcrt.Cart_Id;
+                                objcrt1.ItemImage = objjj.OfferImage;
+                                lstComboCrt.Add(objcrt1);
+                            }
+                        }
+
+                        List<long> comboidsonlin = lst.Where(o => o.IsCashonDelivery == false).Select(x => x.ComboId.Value).ToList().Distinct().ToList();
+                        foreach (long combId in comboidsonlin)
+                        {
+                            var objcrt = lst.Where(o => o.ComboId == combId && o.IsCashonDelivery == false).FirstOrDefault();
+                            long qty = objcrt.ComboQty.Value;
+                            CartVM objcrt1 = new CartVM();
+                            tbl_ComboOfferMaster objjj = _db.tbl_ComboOfferMaster.Where(o => o.ComboOfferId == combId).FirstOrDefault();
+                            if (objjj != null)
+                            {
+                                objcrt1.ItemName = objjj.OfferTitle;
+                                objcrt1.Price = objjj.OfferPrice;
+                                objcrt1.Qty = qty;
+                                objcrt1.IsCashonDelivery = false;
+                                objcrt1.CartId = objcrt.Cart_Id;
+                                objcrt1.ItemImage = objjj.OfferImage;
+                                lstComboCrt.Add(objcrt1);
+                            }
+                        }
+                    }
                 }
                    
             }
@@ -85,6 +172,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             }
             ViewData["CashCartItems"] = lstCartItems.Where(o => o.IsCashonDelivery == true).ToList();
             ViewData["OnlinePaymentCartItems"] = lstCartItems.Where(o => o.IsCashonDelivery == false).ToList();
+            ViewData["ComboCashItems"] = lstComboCrt.Where(o => o.IsCashonDelivery == true).ToList();
+            ViewData["ComboOnlineItems"] = lstComboCrt.Where(o => o.IsCashonDelivery == false).ToList();
             return View();
         }
 
@@ -125,7 +214,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         {
                             decimal Qtnty = GetVarintQnty(VarintId);
                             decimal TotlQty = (lstcrt.Sum(x => x.CartItemQty).Value + Qty) *Qtnty;
-                            var crtobj1 = lstcrt.Where(o => o.VariantItemId == VarintId && o.IsCashonDelivery == IsCashOrdr).FirstOrDefault();
+                            var crtobj1 = lstcrt.Where(o => o.VariantItemId == VarintId && o.IsCashonDelivery == IsCashOrdr && (o.IsCombo == null || o.IsCombo == false)).FirstOrDefault();
                             if(crtobj1 != null)
                             {
                                 crtobj1.CartItemQty = crtobj1.CartItemQty + Qty;
@@ -139,6 +228,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 crtobj.ClientUserId = 0;
                                 crtobj.VariantItemId = VarintId;
                                 crtobj.IsCashonDelivery = IsCashOrdr;
+                                crtobj.IsCombo = false;
+                                crtobj.ComboId = 0;
                                 crtobj.CreatedDate = DateTime.Now;
                                 _db.tbl_Cart.Add(crtobj);
                             }
@@ -157,6 +248,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             crtobj.ClientUserId = 0;
                             crtobj.IsCashonDelivery = IsCashOrdr;
                             crtobj.VariantItemId = VarintId;
+                            crtobj.IsCombo = false;
+                            crtobj.ComboId = 0;
                             crtobj.CreatedDate = DateTime.Now;
                             _db.tbl_Cart.Add(crtobj);
                             if (InStock < (crtobj.CartItemQty * Qtnty))
@@ -173,6 +266,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         crtobj.CartSessionId = cookiesessionval;
                         crtobj.ClientUserId = 0;
                         crtobj.VariantItemId = VarintId;
+                        crtobj.IsCombo = false;
+                        crtobj.ComboId = 0;
                         crtobj.CreatedDate = DateTime.Now;
                         crtobj.IsCashonDelivery = IsCashOrdr;
                         _db.tbl_Cart.Add(crtobj);
@@ -196,7 +291,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         {                            
                             decimal Qtnty = GetVarintQnty(VarintId);
                             decimal TotlQty = (lstcrt.Sum(x => x.CartItemQty).Value + Qty) * Qtnty;
-                            var crtobj1 = lstcrt.Where(o => o.VariantItemId == VarintId && o.IsCashonDelivery == IsCashOrdr).FirstOrDefault();
+                            var crtobj1 = lstcrt.Where(o => o.VariantItemId == VarintId && o.IsCashonDelivery == IsCashOrdr && (o.IsCombo == null || o.IsCombo == false)).FirstOrDefault();
                             if (crtobj1 != null)
                             {
                                 crtobj1.CartItemQty = crtobj1.CartItemQty + Qty;
@@ -209,6 +304,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 crtobj11.CartSessionId = cartlist.FirstOrDefault().CartSessionId;
                                 crtobj11.ClientUserId = clientusrid;
                                 crtobj11.IsCashonDelivery = IsCashOrdr;
+                                crtobj11.IsCombo = false;
+                                crtobj11.ComboId = 0;
                                 crtobj11.CreatedDate = DateTime.Now;
                                 crtobj11.VariantItemId = VarintId;
                                 _db.tbl_Cart.Add(crtobj11);
@@ -228,6 +325,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             crtobj2.IsCashonDelivery = IsCashOrdr;
                             crtobj2.VariantItemId = VarintId;
                             crtobj2.CreatedDate = DateTime.Now;
+                            crtobj2.IsCombo = false;
+                            crtobj2.ComboId = 0;
                             _db.tbl_Cart.Add(crtobj2);
                             decimal Qtnty = GetVarintQnty(VarintId);
                             if (InStock < (crtobj2.CartItemQty * Qtnty))
@@ -244,6 +343,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         crtobj.CartSessionId = cookiesessionval;
                         crtobj.ClientUserId = clientusrid;
                         crtobj.IsCashonDelivery = IsCashOrdr;
+                        crtobj.IsCombo = false;
+                        crtobj.ComboId = 0;
                         crtobj.VariantItemId = VarintId;
                         crtobj.CreatedDate = DateTime.Now;
                         _db.tbl_Cart.Add(crtobj);
@@ -340,8 +441,25 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             try
             {
                 var objCart = _db.tbl_Cart.Where(o => o.Cart_Id == CartItemId).FirstOrDefault();
-                _db.tbl_Cart.Remove(objCart);
-                _db.SaveChanges();                
+                if (objCart.IsCombo == true && objCart.ComboId > 0)
+                {
+                    bool IsCashDlev = objCart.IsCashonDelivery.HasValue ? objCart.IsCashonDelivery.Value : false;
+                    List<tbl_Cart> lstCartts = _db.tbl_Cart.Where(o => o.ComboId == objCart.ComboId && o.IsCashonDelivery == IsCashDlev).ToList();
+                    if (lstCartts != null && lstCartts.Count() > 0)
+                    {                     
+                        foreach (tbl_Cart objCrt in lstCartts)
+                        {
+                            _db.tbl_Cart.Remove(objCrt);
+                            _db.SaveChanges();
+                        }
+                    }
+                }
+                else
+                {
+                    _db.tbl_Cart.Remove(objCart);
+                    _db.SaveChanges();
+                }
+                              
                 ReturnMessage = "Success";
             }
             catch (Exception ex)
@@ -356,6 +474,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         public ActionResult CartItemsListTop()
         {
             List<CartVM> lstCartItems = new List<CartVM>();
+            List<CartVM> lstComboCrt = new List<CartVM>();
             try
             {
                 
@@ -377,7 +496,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     lstCartItems = (from crt in _db.tbl_Cart
                                     join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
                                     join vr in _db.tbl_ItemVariant on crt.VariantItemId equals vr.VariantItemId
-                                    where crt.ClientUserId == ClientUserId
+                                    where crt.ClientUserId == ClientUserId && (crt.IsCombo == null || crt.IsCombo == false)
                                     select new CartVM
                                     {
                                         CartId = crt.Cart_Id,
@@ -392,13 +511,56 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                         Price = clsClientSession.RoleID == 1 ? vr.CustomerPrice.Value : vr.DistributorPrice.Value
                                     }).OrderByDescending(x => x.CartId).ToList();
                     lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price,x.VariantId); });
+
+                    List<tbl_Cart> lst = _db.tbl_Cart.Where(o => o.ClientUserId == ClientUserId && o.IsCombo == true && o.ComboId > 0).ToList();
+
+                    if (lst != null && lst.Count() > 0)
+                    {
+                        List<long> comboids = lst.Where(o => o.IsCashonDelivery == true).Select(x => x.ComboId.Value).ToList().Distinct().ToList();
+                        foreach (long combId in comboids)
+                        {
+                            var objcrt = lst.Where(o => o.ComboId == combId && o.IsCashonDelivery == true).FirstOrDefault();
+                            long qty = objcrt.ComboQty.Value;
+                            CartVM objcrt1 = new CartVM();
+                            tbl_ComboOfferMaster objjj = _db.tbl_ComboOfferMaster.Where(o => o.ComboOfferId == combId).FirstOrDefault();
+                            if (objjj != null)
+                            {
+                                objcrt1.ItemName = objjj.OfferTitle;
+                                objcrt1.Price = objjj.OfferPrice;
+                                objcrt1.Qty = qty;
+                                objcrt1.IsCashonDelivery = true;
+                                objcrt1.CartId = objcrt.Cart_Id;
+                                objcrt1.ItemImage = objjj.OfferImage;
+                                lstComboCrt.Add(objcrt1);
+                            }
+                        }
+
+                        List<long> comboidsonlin = lst.Where(o => o.IsCashonDelivery == false).Select(x => x.ComboId.Value).ToList().Distinct().ToList();
+                        foreach (long combId in comboidsonlin)
+                        {
+                            var objcrt = lst.Where(o => o.ComboId == combId && o.IsCashonDelivery == false).FirstOrDefault();
+                            long qty = objcrt.ComboQty.Value;
+                            CartVM objcrt1 = new CartVM();
+                            tbl_ComboOfferMaster objjj = _db.tbl_ComboOfferMaster.Where(o => o.ComboOfferId == combId).FirstOrDefault();
+                            if (objjj != null)
+                            {
+                                objcrt1.ItemName = objjj.OfferTitle;
+                                objcrt1.Price = objjj.OfferPrice;
+                                objcrt1.Qty = qty;
+                                objcrt1.IsCashonDelivery = false;
+                                objcrt1.CartId = objcrt.Cart_Id;
+                                objcrt1.ItemImage = objjj.OfferImage;
+                                lstComboCrt.Add(objcrt1);
+                            }
+                        }
+                    }
                 }
                 else
                 {
                     lstCartItems = (from crt in _db.tbl_Cart
                                     join i in _db.tbl_ProductItems on crt.CartItemId equals i.ProductItemId
                                     join vr in _db.tbl_ItemVariant on crt.VariantItemId equals vr.VariantItemId
-                                    where crt.CartSessionId == cookiesessionval
+                                    where crt.CartSessionId == cookiesessionval && (crt.IsCombo == null || crt.IsCombo == false)
                                     select new CartVM
                                     {
                                         CartId = crt.Cart_Id,
@@ -413,6 +575,49 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                         Price = vr.CustomerPrice.Value
                                     }).OrderByDescending(x => x.CartId).ToList();
                     lstCartItems.ForEach(x => { x.Price = GetOfferPrice(x.ItemId, x.Price,x.VariantId); });
+
+                    List<tbl_Cart> lst = _db.tbl_Cart.Where(o => o.CartSessionId == cookiesessionval && o.IsCombo == true && o.ComboId > 0).ToList();
+                 
+                    if(lst != null && lst.Count() > 0)
+                    {
+                       List<long> comboids = lst.Where(o =>o.IsCashonDelivery == true).Select(x => x.ComboId.Value).ToList().Distinct().ToList();
+                       foreach(long combId in comboids)
+                       {
+                          var objcrt = lst.Where(o => o.ComboId == combId && o.IsCashonDelivery == true).FirstOrDefault();
+                          long qty = objcrt.ComboQty.Value;
+                          CartVM objcrt1 = new CartVM();
+                          tbl_ComboOfferMaster objjj = _db.tbl_ComboOfferMaster.Where(o => o.ComboOfferId == combId).FirstOrDefault();
+                          if(objjj != null)
+                          {
+                             objcrt1.ItemName = objjj.OfferTitle;
+                             objcrt1.Price = objjj.OfferPrice;
+                             objcrt1.Qty = qty;
+                             objcrt1.IsCashonDelivery = true;
+                             objcrt1.CartId = objcrt.Cart_Id;
+                             objcrt1.ItemImage = objjj.OfferImage;
+                             lstComboCrt.Add(objcrt1);
+                          }                            
+                       }
+
+                        List<long> comboidsonlin = lst.Where(o => o.IsCashonDelivery == false).Select(x => x.ComboId.Value).ToList().Distinct().ToList();
+                        foreach (long combId in comboidsonlin)
+                        {
+                            var objcrt = lst.Where(o => o.ComboId == combId && o.IsCashonDelivery == false).FirstOrDefault();
+                            long qty = objcrt.ComboQty.Value;
+                            CartVM objcrt1 = new CartVM();
+                            tbl_ComboOfferMaster objjj = _db.tbl_ComboOfferMaster.Where(o => o.ComboOfferId == combId).FirstOrDefault();
+                            if (objjj != null)
+                            {
+                                objcrt1.ItemName = objjj.OfferTitle;
+                                objcrt1.Price = objjj.OfferPrice;
+                                objcrt1.Qty = qty;
+                                objcrt1.IsCashonDelivery = false;
+                                objcrt1.CartId = objcrt.Cart_Id;
+                                objcrt1.ItemImage = objjj.OfferImage;
+                                lstComboCrt.Add(objcrt1);
+                            }
+                        }
+                    }
                 }
 
             }
@@ -421,6 +626,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 string ErrorMessage = ex.Message.ToString();
             }
             ViewData["CashCartItems"] = lstCartItems.Where(o => o.IsCashonDelivery == true).ToList();
+            ViewData["ComboCashItems"] = lstComboCrt.Where(o => o.IsCashonDelivery == true).ToList();
+            ViewData["ComboOnlineItems"] = lstComboCrt.Where(o => o.IsCashonDelivery == false).ToList();
             ViewData["OnlinePaymentCartItems"] = lstCartItems.Where(o => o.IsCashonDelivery == false).ToList();
             return PartialView("~/Areas/Client/Views/Cart/_CartItemsTop.cshtml");
         }
@@ -446,8 +653,28 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 if (!string.IsNullOrEmpty(arrstr[1].ToString()))
                                 {
                                     var objCart = _db.tbl_Cart.Where(o => o.Cart_Id == cartids).FirstOrDefault();
-                                    objCart.CartItemQty = Convert.ToInt32(arrstr[1]);
-                                    _db.SaveChanges();
+                                    if(objCart.IsCombo == true && objCart.ComboId > 0)
+                                    {
+                                        bool IsCashDlev = objCart.IsCashonDelivery.HasValue ? objCart.IsCashonDelivery.Value : false;
+                                        List<tbl_Cart> lstCartts = _db.tbl_Cart.Where(o => o.ComboId == objCart.ComboId && o.IsCashonDelivery == IsCashDlev).ToList();
+                                        if(lstCartts != null && lstCartts.Count() > 0)
+                                        {
+                                            int Qtyy = Convert.ToInt32(arrstr[1]);
+                                            foreach (tbl_Cart objCrt in lstCartts)
+                                            {
+                                                long qtyy = objCrt.ComboQty.Value;
+                                                long qtyEach = objCart.CartItemQty.Value / qtyy;
+                                                objCart.CartItemQty = qtyEach * Qtyy;
+                                                objCart.ComboQty = Qtyy;
+                                                _db.SaveChanges();
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        objCart.CartItemQty = Convert.ToInt32(arrstr[1]);
+                                        _db.SaveChanges();
+                                    }                                  
                                 }
                             }
                         }
@@ -936,6 +1163,256 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             }
 
             return 1;
+        }
+
+        [HttpPost]
+        public string AddtoCartCombo(long ComboId, long Qty, string IsCash)
+        {
+            string ReturnMessage = "";
+            bool isOutofStock = false;
+            bool IsCashOrdr = false;
+            string GuidNew = Guid.NewGuid().ToString();
+            string cookiesessionval = "";
+            if (IsCash == "true")
+            {
+                IsCashOrdr = true;
+            }
+            try
+            {
+                tbl_ComboOfferMaster objcmb = _db.tbl_ComboOfferMaster.Where(o => o.ComboOfferId == ComboId).FirstOrDefault();
+                List<ComboSubItemVM> lstCommbb = new List<ComboSubItemVM>();
+                if(objcmb != null)
+                {
+                    ComboSubItemVM objcombo = new ComboSubItemVM();
+                    objcombo.VarintId = objcmb.MainItemVarintId;
+                    objcombo.ProductItemId = objcmb.MainItemId;
+                    objcombo.Qty = objcmb.MainItemQty;
+                    lstCommbb.Add(objcombo);
+                }
+                List<ComboSubItemVM> lstCommbblstSubItemss = (from c in _db.tbl_ComboOfferSubItems                               
+                                where c.ComboOfferId == ComboId
+                                select new ComboSubItemVM
+                                {
+                                    ProductItemId = c.ProductItemId,                                    
+                                    VarintId = c.VariantItemId,
+                                    Qty = c.Qty                                    
+                                }).ToList();
+                lstCommbb.AddRange(lstCommbblstSubItemss);
+                long qtytemp = Qty;
+                if (lstCommbb != null && lstCommbb.Count() > 0)
+                {
+                    foreach(var objcmbs in lstCommbb)
+                    {
+                        long ItemId = objcmbs.ProductItemId;
+                        long VarintId = objcmbs.VarintId;
+                        int TotalStk = ItemStock(ItemId);
+                        int TotalSold = SoldItems(ItemId);
+                        int InStock = TotalStk - TotalSold;
+                        Qty = qtytemp * objcmbs.Qty;
+                        if (Request.Cookies["sessionkeyval"] != null)
+                        {
+                            cookiesessionval = Request.Cookies["sessionkeyval"].Value;
+                        }
+                        else
+                        {
+                            Response.Cookies["sessionkeyval"].Value = GuidNew;
+                            Response.Cookies["sessionkeyval"].Expires = DateTime.Now.AddDays(30);
+                        }
+                        if (clsClientSession.UserID == 0)
+                        {
+                            var cartlist = _db.tbl_Cart.Where(o => o.CartSessionId == cookiesessionval).ToList();
+                            if (cartlist != null && cartlist.Count() > 0)
+                            {
+                                //var crtobj = cartlist.Where(o => o.CartItemId == ItemId).FirstOrDefault();
+                                var lstcrt = cartlist.Where(o => o.CartItemId == ItemId).ToList();
+                                if (lstcrt != null && lstcrt.Count() > 0)
+                                {
+                                    decimal Qtnty = GetVarintQnty(VarintId);
+                                    decimal TotlQty = (lstcrt.Sum(x => x.CartItemQty).Value + Qty) * Qtnty;
+                                    var crtobj1 = lstcrt.Where(o => o.VariantItemId == VarintId && o.IsCashonDelivery == IsCashOrdr && o.IsCombo == true && o.ComboId == ComboId).FirstOrDefault();
+                                    if (crtobj1 != null)
+                                    {
+                                        crtobj1.CartItemQty = crtobj1.CartItemQty + Qty;
+                                        crtobj1.ComboQty = crtobj1.ComboQty + qtytemp;
+                                    }
+                                    else
+                                    {
+                                        tbl_Cart crtobj = new tbl_Cart();
+                                        crtobj.CartItemId = ItemId;
+                                        crtobj.CartItemQty = Qty;
+                                        crtobj.ComboQty = qtytemp;
+                                        crtobj.CartSessionId = cookiesessionval;
+                                        crtobj.ClientUserId = 0;
+                                        crtobj.VariantItemId = VarintId;
+                                        crtobj.IsCashonDelivery = IsCashOrdr;
+                                        crtobj.ComboId = ComboId;
+                                        crtobj.IsCombo = true;
+                                        crtobj.CreatedDate = DateTime.Now;
+                                        _db.tbl_Cart.Add(crtobj);
+                                    }
+                                    if (Convert.ToDecimal(InStock) < TotlQty)
+                                    {
+                                        isOutofStock = true;
+                                        ReturnMessage = "OutofStock";
+                                        return ReturnMessage;
+                                    }
+                                }
+                                else
+                                {
+                                    decimal Qtnty = GetVarintQnty(VarintId);
+                                    tbl_Cart crtobj = new tbl_Cart();
+                                    crtobj.CartItemId = ItemId;
+                                    crtobj.CartItemQty = Qty;
+                                    crtobj.ComboQty = qtytemp;
+                                    crtobj.ComboId = ComboId;
+                                    crtobj.IsCombo = true;
+                                    crtobj.CartSessionId = cookiesessionval;
+                                    crtobj.ClientUserId = 0;
+                                    crtobj.IsCashonDelivery = IsCashOrdr;
+                                    crtobj.VariantItemId = VarintId;
+                                    crtobj.CreatedDate = DateTime.Now;
+                                    _db.tbl_Cart.Add(crtobj);
+                                    if (InStock < (crtobj.CartItemQty * Qtnty))
+                                    {
+                                        isOutofStock = true;
+                                        ReturnMessage = "OutofStock";
+                                        return ReturnMessage;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                tbl_Cart crtobj = new tbl_Cart();
+                                crtobj.CartItemId = ItemId;
+                                crtobj.CartItemQty = Qty;
+                                crtobj.ComboQty = qtytemp;
+                                crtobj.CartSessionId = cookiesessionval;
+                                crtobj.ClientUserId = 0;
+                                crtobj.ComboId = ComboId;
+                                crtobj.IsCombo = true;
+                                crtobj.VariantItemId = VarintId;
+                                crtobj.CreatedDate = DateTime.Now;
+                                crtobj.IsCashonDelivery = IsCashOrdr;
+                                _db.tbl_Cart.Add(crtobj);
+                                decimal Qtnty = GetVarintQnty(VarintId);
+                                if (InStock < (crtobj.CartItemQty * Qtnty))
+                                {
+                                    isOutofStock = true;
+                                    ReturnMessage = "OutofStock";
+                                    return ReturnMessage;
+                                }
+
+                            }
+
+                        }
+                        else
+                        {
+                            long clientusrid = Convert.ToInt64(clsClientSession.UserID);
+                            var cartlist = _db.tbl_Cart.Where(o => o.ClientUserId == clientusrid).ToList();
+                            if (cartlist != null && cartlist.Count() > 0)
+                            {
+                                var lstcrt = cartlist.Where(o => o.CartItemId == ItemId).ToList();
+                                if (lstcrt != null && lstcrt.Count() > 0)
+                                {
+                                    decimal Qtnty = GetVarintQnty(VarintId);
+                                    decimal TotlQty = (lstcrt.Sum(x => x.CartItemQty).Value + Qty) * Qtnty;
+                                    var crtobj1 = lstcrt.Where(o => o.VariantItemId == VarintId && o.IsCashonDelivery == IsCashOrdr && o.IsCombo == true && o.ComboId == ComboId).FirstOrDefault();
+                                    if (crtobj1 != null)
+                                    {
+                                        crtobj1.CartItemQty = crtobj1.CartItemQty + Qty;
+                                        crtobj1.ComboQty = crtobj1.ComboQty + qtytemp;
+                                    }
+                                    else
+                                    {
+                                        tbl_Cart crtobj11 = new tbl_Cart();
+                                        crtobj11.CartItemId = ItemId;
+                                        crtobj11.CartItemQty = Qty;
+                                        crtobj11.ComboQty = qtytemp;
+                                        crtobj11.CartSessionId = cartlist.FirstOrDefault().CartSessionId;
+                                        crtobj11.ClientUserId = clientusrid;
+                                        crtobj11.IsCashonDelivery = IsCashOrdr;
+                                        crtobj11.ComboId = ComboId;
+                                        crtobj11.IsCombo = true;
+                                        crtobj11.CreatedDate = DateTime.Now;
+                                        crtobj11.VariantItemId = VarintId;
+                                        _db.tbl_Cart.Add(crtobj11);
+                                    }
+                                    if (Convert.ToDecimal(InStock) < TotlQty)
+                                    {
+                                        isOutofStock = true;
+                                        ReturnMessage = "OutofStock";
+                                        return ReturnMessage;
+                                    }
+                                }
+                                else
+                                {
+                                    tbl_Cart crtobj2 = new tbl_Cart();
+                                    crtobj2.CartItemId = ItemId;
+                                    crtobj2.CartItemQty = Qty;
+                                    crtobj2.ComboQty = qtytemp;
+                                    crtobj2.CartSessionId = cartlist.FirstOrDefault().CartSessionId;
+                                    crtobj2.ClientUserId = clientusrid;
+                                    crtobj2.IsCashonDelivery = IsCashOrdr;
+                                    crtobj2.VariantItemId = VarintId;
+                                    crtobj2.ComboId = ComboId;
+                                    crtobj2.IsCombo = true;
+                                    crtobj2.CreatedDate = DateTime.Now;
+                                    _db.tbl_Cart.Add(crtobj2);
+                                    decimal Qtnty = GetVarintQnty(VarintId);
+                                    if (InStock < (crtobj2.CartItemQty * Qtnty))
+                                    {
+                                        isOutofStock = true;
+                                        ReturnMessage = "OutofStock";
+                                        return ReturnMessage;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                var crtobj = new tbl_Cart();
+                                crtobj.CartItemId = ItemId;
+                                crtobj.CartItemQty = Qty;
+                                crtobj.CartSessionId = cookiesessionval;
+                                crtobj.ClientUserId = clientusrid;
+                                crtobj.IsCashonDelivery = IsCashOrdr;
+                                crtobj.ComboQty = qtytemp;
+                                crtobj.VariantItemId = VarintId;
+                                crtobj.ComboId = ComboId;
+                                crtobj.IsCombo = true;
+                                crtobj.CreatedDate = DateTime.Now;
+                                _db.tbl_Cart.Add(crtobj);
+                                decimal Qtnty = GetVarintQnty(VarintId);
+                                if (InStock < (crtobj.CartItemQty * Qtnty))
+                                {
+                                    isOutofStock = true;
+                                    ReturnMessage = "OutofStock";
+                                    return ReturnMessage;
+                                }
+
+                            }
+                        }
+                        
+                    }
+
+                    if (isOutofStock == false)
+                    {
+                        _db.SaveChanges();
+                        ReturnMessage = "Success";
+                    }
+                    else
+                    {
+                        ReturnMessage = "OutofStock";
+                    }
+                }               
+
+            }
+            catch (Exception ex)
+            {
+                string msg = ex.Message.ToString();
+                ReturnMessage = "exception";
+            }
+
+            return ReturnMessage;
         }
     }
 }

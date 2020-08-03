@@ -30,5 +30,9 @@ namespace KrupaBuildGallery
         public string VariantQtytxt { get; set; }
         public string IsCash { get; set; }
         public decimal MRPPrice { get; set; }
+        public long ComboId { get; set; }
+        public bool IsCombo { get; set; }
+        public bool IsMainItem { get; set; }   
+        public long ComboQty { get; set; }
     }
 }

@@ -73,6 +73,7 @@
                                     {
                                         string stauscolor = "badge-secondary";
                                         decimal shippingchrge = 0;
+                                        double amtordr = CommonMethod.GetRoundValue(Convert.ToDouble(objorder.OrderAmount));
                                         if (objorder.ShippingStatus == 2)
                                         {
                                             shippingchrge = objorder.ShipmentCharge;
@@ -93,7 +94,7 @@
                                         <tr>
                                             <td># @objorder.OrderId</td>
                                             <td>@objorder.OrderDate.ToString("MMM dd,yyyy")</td>
-                                            <td>₹ @Convert.ToDecimal(objorder.OrderAmount).ToString("0.##")</td>
+                                            <td>₹ @Convert.ToDecimal(amtordr).ToString("0.##")</td>
                                             <td><span class="badge @stauscolor">@objorder.OrderStatus</span></td>
                                             <td>@objorder.PaymentType</td>
                                             <td> <a href="/orders/orderdetails/@objorder.OrderId"><i class="fa fa-eye font-success"></i></a></td>

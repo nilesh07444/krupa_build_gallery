@@ -22,5 +22,7 @@ namespace KrupaBuildGallery
         public string BannerImage { get; set; }
         public WebsiteStatisticsVM webstats { get; set; }
 
+        public List<ComboOfferVM> lstComboOffers { get; set; }
+
     }
 }

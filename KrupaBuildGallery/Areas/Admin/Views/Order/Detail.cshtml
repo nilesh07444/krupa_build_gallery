@@ -167,7 +167,10 @@
                                 <div class="label-wrapper"><label class="control-label">Order Total Amount:</label></div>
                             </div>
                             <div class="col-md-9">
-                                <div class="form-text-row">₹ @Model.OrderAmount</div>
+                                @{ 
+                                    double RoundAmt = CommonMethod.GetRoundValue(Convert.ToDouble(Model.OrderAmount));
+                                }
+                                <div class="form-text-row">₹ @RoundAmt</div>
                             </div>
                         </div>
                         @if (Model.WalletAmtUsed > 0)
@@ -299,7 +302,7 @@
                             Assign Delivery Person
                         </button>
                         <div class="card-body vendor-table">
-                            <table class="display" id="basic-1">
+                            <table class="display" id="basic-111">
                                 <thead>
                                     <tr>
                                         <th></th>
@@ -318,9 +321,10 @@
                                 <tbody>
                                     @if (Model.OrderItems != null && Model.OrderItems.Count > 0)
                                     {
-                                        foreach (KrupaBuildGallery.ViewModel.OrderItemsVM objorderItem in Model.OrderItems)
+                                        for (int jj = 0; jj < Model.OrderItems.Count; jj++)
                                         {
-                                            decimal Totl = Math.Round((objorderItem.Price * objorderItem.Qty) - objorderItem.Discount + objorderItem.GSTAmt, 2);
+                                            KrupaBuildGallery.ViewModel.OrderItemsVM objorderItem = Model.OrderItems[jj];
+                                            decimal Totl = Math.Round(objorderItem.FinalAmt, 2);
                                             string stauscolor = "badge-secondary";
 
                                             if (objorderItem.ItemStatus == 1)
@@ -351,55 +355,103 @@
                                             {
                                                 stauscolor = "badge-sample2";
                                             }
-                                            <tr>
-                                                <td>
-                                                    @if (objorderItem.ItemStatus == 2 || objorderItem.ItemStatus == 7)
-                                                    {
-                                                        <input type="checkbox" class="chkrdr" data-ordridss="@objorderItem.OrderId" data-ordrprdtitmidss="@objorderItem.ProductItemId" value="@objorderItem.OrderItemId" />
-                                                    }
-                                                </td>
-                                                <td>
-                                                    @if (!string.IsNullOrEmpty(objorderItem.ItemImg))
-                                                    {
-                                                        if (File.Exists(Server.MapPath("~/Images/ProductItemMedia/" + objorderItem.ItemImg)))
-                                                        {
-                                                            <img src="~/Images/ProductItemMedia/@objorderItem.ItemImg" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
-                                                        }
-                                                        else
-                                                        {
-                                                            <img src="@ErrorMessage.DefaultImagePath" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        <img src="@ErrorMessage.DefaultImagePath" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
-                                                    }
-                                                </td>
-                                                <td>@objorderItem.ItemName - @objorderItem.VariantQtytxt</td>
-                                                <td>@objorderItem.Sku</td>
-                                                <td>₹ @Math.Round(objorderItem.Price, 2)</td>
-                                                <td>@objorderItem.Qty</td>
-                                                <td>₹ @objorderItem.Discount</td>
-                                                <td>₹ @objorderItem.GSTAmt</td>
-                                                <td>₹ @Totl</td>
-                                                <td id="td_@objorderItem.OrderItemId">
-                                                    @if (objorderItem.ItemStatus == 2 || objorderItem.ItemStatus == 7)
-                                                    {
-                                                        <span class="badge @stauscolor">@objorderItem.ItemStatustxt</span> <a href="javascript:void(0);" title="Assign Delivery Person and Dispatched" onclick="assigndeliveryperson('@objorderItem.OrderId','@objorderItem.OrderItemId','@objorderItem.ProductItemId');"><i class="fa fa-user-o font-info"></i></a>
+                                            if (objorderItem.IsCombo == true && objorderItem.IsMainItem == true)
+                                            {
+                                    <tr>
+                                        <td>
+                                            @if (objorderItem.ItemStatus == 2 || objorderItem.ItemStatus == 7)
+                                            {
+                                                <input type="checkbox" class="chkrdr" data-ordridss="@objorderItem.OrderId" data-ordrprdtitmidss="@objorderItem.ProductItemId" value="@objorderItem.OrderItemId" />
+                                            }
+                                        </td>
+                                        <td>
+                                            <b>Combo: @objorderItem.ComboName</b>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>₹ @Math.Round(objorderItem.Price, 2)</td>
+                                        <td>@objorderItem.ComboQty</td>
+                                        <td>₹ @objorderItem.Discount</td>
+                                        <td>₹ @objorderItem.GSTAmt</td>
+                                        <td>₹ @objorderItem.FinalAmt</td>
+                                        <td id="td_@objorderItem.OrderItemId">
+                                            @if (objorderItem.ItemStatus == 2 || objorderItem.ItemStatus == 7)
+                                            {
+                                                <span class="badge @stauscolor">@objorderItem.ItemStatustxt</span> <a href="javascript:void(0);" title="Assign Delivery Person and Dispatched" onclick="assigndeliveryperson('@objorderItem.OrderId','@objorderItem.OrderItemId','@objorderItem.ProductItemId');"><i class="fa fa-user-o font-info"></i></a>
 
-                                                    }
-                                                    else
-                                                    {
-                                                        <span class="badge @stauscolor">@objorderItem.ItemStatustxt</span>
-                                                    }
-                                                </td>
-                                                <td>
-                                                    @if (objorderItem.IsDeleted == true && (objorderItem.ItemStatus == 5 || objorderItem.ItemStatus == 6 || objorderItem.ItemStatus == 8))
-                                                    {
-                                                        <a href="javascript:void(0);" onclick="invoiceprintItem('@objorderItem.OrderItemId','@objorderItem.OrderId');" title="Print Invoice"><i class="fa fa-file font-success"></i></a>
-                                                    }
-                                                </td>
-                                            </tr>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge @stauscolor">@objorderItem.ItemStatustxt</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (objorderItem.IsDeleted == true && (objorderItem.ItemStatus == 5 || objorderItem.ItemStatus == 6 || objorderItem.ItemStatus == 8))
+                                            {
+                                                <a href="javascript:void(0);" onclick="invoiceprintItem('@objorderItem.OrderItemId','@objorderItem.OrderId');" title="Print Invoice"><i class="fa fa-file font-success"></i></a>
+                                            }
+                                        </td>
+                                    </tr>
+                                            }
+                                <tr>
+                                    <td>
+                                        @if ((objorderItem.ItemStatus == 2 || objorderItem.ItemStatus == 7) && objorderItem.IsCombo == false)
+                                        {
+                                            <input type="checkbox" class="chkrdr" data-ordridss="@objorderItem.OrderId" data-ordrprdtitmidss="@objorderItem.ProductItemId" value="@objorderItem.OrderItemId" />
+                                        }
+                                    </td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(objorderItem.ItemImg))
+                                        {
+                                            if (File.Exists(Server.MapPath("~/Images/ProductItemMedia/" + objorderItem.ItemImg)))
+                                            {
+                                                <img src="~/Images/ProductItemMedia/@objorderItem.ItemImg" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                            }
+                                            else
+                                            {
+                                                <img src="@ErrorMessage.DefaultImagePath" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <img src="@ErrorMessage.DefaultImagePath" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                        }
+                                    </td>
+                                    <td>@objorderItem.ItemName - @objorderItem.VariantQtytxt</td>
+                                    <td>@objorderItem.Sku</td>
+                                    <td>₹ @Math.Round(objorderItem.Price, 2)</td>
+                                    <td>@objorderItem.Qty</td>
+                                    <td>₹ @objorderItem.Discount</td>
+                                    <td>₹ @objorderItem.GSTAmt</td>
+                                    @if (objorderItem.IsCombo == false)
+                                    {
+                                        <td>₹ @Totl</td>
+                                        <td id="td_@objorderItem.OrderItemId">
+                                            @if (objorderItem.ItemStatus == 2 || objorderItem.ItemStatus == 7)
+                                            {
+                                                <span class="badge @stauscolor">@objorderItem.ItemStatustxt</span> <a href="javascript:void(0);" title="Assign Delivery Person and Dispatched" onclick="assigndeliveryperson('@objorderItem.OrderId','@objorderItem.OrderItemId','@objorderItem.ProductItemId');"><i class="fa fa-user-o font-info"></i></a>
+
+                                            }
+                                            else
+                                            {
+                                                <span class="badge @stauscolor">@objorderItem.ItemStatustxt</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (objorderItem.IsDeleted == true && (objorderItem.ItemStatus == 5 || objorderItem.ItemStatus == 6 || objorderItem.ItemStatus == 8))
+                                            {
+                                                <a href="javascript:void(0);" onclick="invoiceprintItem('@objorderItem.OrderItemId','@objorderItem.OrderId');" title="Print Invoice"><i class="fa fa-file font-success"></i></a>
+                                            }
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    }
+
+                                </tr>
                                         }
                                     }
 
@@ -493,6 +545,15 @@
 
 </div>
 <script>
+      $(document).ready(function () {
+         $('#basic-111').DataTable({
+             "pageLength": 100,             
+             "columnDefs": [{
+                 "targets": [1,2,3,4,5,6,7],
+                 "orderable": false
+             }]
+         });
+    });
     function changestatus(status, statusid, orderid) {
         if (statusid == 2) {
             if ($("#hdnShippingStatus").val() == "1") {

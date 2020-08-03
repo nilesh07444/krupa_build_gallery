@@ -1,0 +1,254 @@
+﻿@using KrupaBuildGallery.Model;
+@using KrupaBuildGallery.Helper;
+
+@model  tbl_ComboOfferMaster
+@{
+    ProductItemVM objMainItm = ViewData["MainItem"] as ProductItemVM;
+    List<KrupaBuildGallery.ViewModel.Admin.ComboSubItemVM> lstCombosSubItem = ViewData["lstSubItemss"] as List<KrupaBuildGallery.ViewModel.Admin.ComboSubItemVM>;
+}
+
+@{
+    ViewBag.Title = Model.OfferTitle;
+}
+
+<style>
+    .wishlistcls {
+        color: #ff4c3b !important;
+    }
+
+    .imgmain1 img {
+        cursor: crosshair;
+    }
+</style>
+<!-- breadcrumb start -->
+<div class="breadcrumb-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="page-title">
+                    <h2>Combo Offer Detail</h2>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <nav aria-label="breadcrumb" class="theme-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Combo Offer Detail</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- breadcrumb End -->
+<!-- section start -->
+<section>
+    <div class="collection-wrapper">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="product-slick">
+                        @{
+                            string imgpath = "";
+                        }
+                        @if (!string.IsNullOrEmpty(Model.OfferImage))
+                        {
+                            if (File.Exists(Server.MapPath("~/Images/ComboOffer/" + Model.OfferImage)))
+                            {
+                                imgpath = "/Images/ComboOffer/" + Model.OfferImage;
+                            }
+                            else
+                            {
+                                imgpath = @ErrorMessage.DefaultImagePath;
+                            }
+                        }
+                        else
+                        {
+                            imgpath = @ErrorMessage.DefaultImagePath;
+                        }
+                        <div class="imgmain1"><img src="@imgpath" alt="" class="img-fluid blur-up lazyload image_zoom_cls-0" data-zoom-image="@imgpath" style="cursor: crosshair;"></div>
+                    </div>
+                    <div class="row">
+                        <div class="col-12 p-0">
+                            <div class="slider-nav">
+                           
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-8 rtl-text">
+                    <div class="product-right">
+                        <h2>@Model.OfferTitle</h2>
+                        <h4>₹ <span id="prcc">@Model.OfferPrice</span> <del>₹ <span id="mrpprcc">@Model.TotalActualPrice</span></del></h4>
+                        <div class="product-description border-product">
+                            <h6 class="product-title">quantity</h6>
+                            <div class="qty-box">
+                                <div class="input-group">
+                                    <span class="input-group-prepend"><button type="button" class="btn quantity-left-minus" data-type="minus" data-field=""><i class="ti-angle-left"></i></button> </span>
+                                    <input type="text" name="quantity" id="txtqty" class="form-control input-number" value="1"> <span class="input-group-prepend"><button type="button" class="btn quantity-right-plus" data-type="plus" data-field=""><i class="ti-angle-right"></i></button></span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="product-buttons">
+                            <a href="javascript:void(0);" data-toggle="modal" data-target="#addtocart" class="btn btn-solid" onclick="addtocrt();">add to cart</a>
+                            @if (clsClientSession.UserID > 0)
+                            {
+                                <a href="/checkout" class="btn btn-solid" style="display:none;">checkout</a>
+                            }
+                            else
+                            {
+                                <a href="/login?referer=checkout" class="btn btn-solid" style="display:none;">checkout</a>
+                            }
+                        </div>
+                        <div class="border-product">
+                            <h6 class="product-title">SKU</h6>
+                            <p>@objMainItm.Sku</p>
+                        </div>
+                        <div class="border-product">
+                            <h6 class="product-title">Offer details</h6>
+                            <p>@Model.Description</p>
+                        </div>
+                        <div class="border-product">
+                            <h6 class="product-title">Combo Item details</h6>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <b>Item Name</b>
+                                </div>
+                                <div class="col-md-3">
+                                    <b>Qty</b>
+                                </div>
+                                <div class="col-md-3">
+                                    <b>Total Price</b>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    @objMainItm.ItemName - @objMainItm.UnitTyp
+                                </div>
+                                <div class="col-md-3">
+                                    @Model.MainItemQty
+                                </div>
+                                <div class="col-md-3">
+                                    @Model.MainItemActualPrice
+                                </div>
+                            </div>
+                            @if (lstCombosSubItem != null)
+                            {
+                                foreach (var obj in lstCombosSubItem)
+                                {
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            @obj.Sub_ProductItemName - @obj.VarintNm
+                                        </div>
+                                        <div class="col-md-3">
+                                            @obj.Qty
+                                        </div>
+                                        <div class="col-md-3">
+                                            @obj.ActualPrice
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
+        </div>
+    </div>
+</section>
+<!-- Section ends -->
+<!-- product-tab starts -->
+<!-- product-tab ends -->
+<script>
+    $(document).ready(function () {
+        if ($("#variantoption").length > 0) {
+            setTimeout(function () {
+                $("#variantoption").trigger('change');
+            },250);
+        }
+    });
+    function addtocrt(itmid) {
+        var qtyy = $("#txtqty").val();
+        AddtoCartfuncCombo('@Model.ComboOfferId',qtyy,'@Model.IsCashOnDelivery.ToString()');
+    }
+
+
+    function addremovewishlist(itemid, objthis) {
+        var URL = '/Client/Products/AddRemoveWishList';
+        jQuery.ajax({
+            type: 'POST',
+            async: true,
+            url: URL + "?ItemId=" + itemid,
+            success: function (result) {
+                if (result == "Success") {
+                    if ($(objthis).find('.fa-heart').hasClass("wishlistcls")) {
+                        $(objthis).find('.fa-heart').removeClass("wishlistcls");
+                        msgsuccess('Item Successfully removed from wishlist');
+                    }
+                    else {
+                        $(objthis).find('.fa-heart').addClass("wishlistcls");
+                        msgsuccess('Item Successfully added in wishlist');
+                    }
+                }
+            },
+            error: function (resultData) {
+                console.log("error");
+
+            }
+        });
+    }
+    function msgsuccess(msg) {
+        $.notify({
+            icon: 'fa fa-check',
+            title: 'Success!',
+            message: msg
+        }, {
+            element: 'body',
+            position: null,
+            type: "info",
+            allow_dismiss: true,
+            newest_on_top: false,
+            showProgressbar: false,
+            placement: {
+                from: "top",
+                align: "right"
+            },
+            offset: 20,
+            spacing: 10,
+            z_index: 1031,
+            delay: 5000,
+            animate: {
+                enter: 'animated fadeInDown',
+                exit: 'animated fadeOutUp'
+            },
+            icon_type: 'class',
+            template: '<div data-notify="container" class="col-xs-11 col-sm-3 alert alert-{0}" role="alert">' +
+                '<button type="button" aria-hidden="true" class="close" data-notify="dismiss">×</button>' +
+                '<span data-notify="icon"></span> ' +
+                '<span data-notify="title">{1}</span> ' +
+                '<span data-notify="message">{2}</span>' +
+                '<div class="progress" data-notify="progressbar">' +
+                '<div class="progress-bar progress-bar-{0}" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>' +
+                '</div>' +
+                '<a href="{3}" target="{4}" data-notify="url"></a>' +
+                '</div>'
+        });
+    }
+    $(document).ready(function () {
+          if ($("#variantoption").length > 0) {
+             $(document).on("change", "#variantoption", function () {
+                 $("#prcc").html($(this).find("option:selected").attr("data-attrprc"));
+                 $("#mrpprcc").html($(this).find("option:selected").attr("data-attrmrpprc"));
+                 $("#hdnvarintIds").val($("#variantoption").val());
+             });
+              $("#hdnvarintIds").val($("#variantoption").val());
+        }
+    });
+
+</script>
+<script src="~/Content/assets/js/jquery.zoom.js"></script>
+<script>
+    $('.imgmain1').zoom();
+
+</script>

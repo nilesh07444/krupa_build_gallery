@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Http;
+using KrupaBuildGallery.ViewModel.Admin;
+using KrupaBuildGallery.ViewModel;
 
 namespace KrupaBuildGallery.Areas.WebAPI.Controllers
 {
@@ -411,6 +413,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             List<ProductItemVM> lstUnpackProductItem = new List<ProductItemVM>();
             List<ProductItemVM> lstPopularProductItem = new List<ProductItemVM>();
             List<ProductItemVM> lstOfferItems = new List<ProductItemVM>();
+            List<ComboOfferVM> lstComboOffers = new List<ComboOfferVM>();
             List<long> wishlistitemsId = new List<long>();
             try
             {
@@ -523,11 +526,24 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                           ImageUrl = c.AdvertiseImage
                                       }).OrderByDescending(x => x.AdvertiseImageId).ToList();
 
+                lstComboOffers = (from i in _db.tbl_ComboOfferMaster
+                                  where i.IsActive == true && DateTime.UtcNow >= i.OfferStartDate && DateTime.UtcNow <= i.OfferEndDate && i.IsDeleted == false
+                                  select new ComboOfferVM
+                                  {
+                                      OfferTitle = i.OfferTitle,
+                                      ComboOfferId = i.ComboOfferId,
+                                      ComboOfferPrice = i.OfferPrice,
+                                      OfferImage = i.OfferImage,
+                                      TotlOriginalOfferPrice = i.TotalActualPrice.Value
+                                  }).OrderBy(x => x.OfferTitle).ToList().Take(8).ToList();
+
+
                 objHome.PopularProducts = lstPopularProductItem;
                 objHome.UnPackedItems = lstUnpackProductItem;
                 objHome.OfferProducts = lstOfferItems;
                 objHome.Categories = lstCategory;
                 objHome.lstAds = lstAdvertiseImages;
+                objHome.lstComboOffers = lstComboOffers;
                 objHome.HomePageSlider = GetHomeImages();
 
                 objHome.BannerImage = _db.tbl_GeneralSetting.FirstOrDefault().AdvertiseBannerImage;
@@ -609,7 +625,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
 
             try
             {
-                List<tbl_HomeImages> lst = _db.tbl_HomeImages.Where(x => x.IsActive).ToList();
+                List<tbl_HomeImages> lst = _db.tbl_HomeImages.Where(x => x.IsActive && x.HomeImageFor == 2).ToList();
                 if (lst.Count > 0)
                 {
                     lst.ForEach(obj =>
@@ -988,6 +1004,138 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             return response;
 
         }
+
+        [Route("ComboOffers"), HttpPost]
+        public ResponseDataModel<List<ComboOfferVM>> ComboOffers(GeneralVM objGen)
+        {
+            ResponseDataModel<List<ComboOfferVM>> response = new ResponseDataModel<List<ComboOfferVM>>();
+            List<ComboOfferVM> lstCombo = new List<ComboOfferVM>();
+            try
+            {  
+                lstCombo = (from i in _db.tbl_ComboOfferMaster
+                            where i.IsActive == true && DateTime.UtcNow >= i.OfferStartDate && DateTime.UtcNow <= i.OfferEndDate && i.IsDeleted == false
+                            select new ComboOfferVM
+                            {
+                                OfferTitle = i.OfferTitle,
+                                ComboOfferId = i.ComboOfferId,
+                                ComboOfferPrice = i.OfferPrice,
+                                OfferImage = i.OfferImage,
+                                TotlOriginalOfferPrice = i.TotalActualPrice.Value
+                            }).OrderBy(x => x.OfferTitle).ToList();
+
+                if (objGen.SortBy == "1")
+                {
+                    lstCombo = lstCombo.OrderBy(o => o.ComboOfferPrice).ToList();
+                }
+                else if (objGen.SortBy == "2")
+                {
+                    lstCombo = lstCombo.OrderByDescending(o => o.ComboOfferPrice).ToList();
+                }
+                else if (objGen.SortBy == "3")
+                {
+                    lstCombo = lstCombo.OrderBy(o => o.OfferTitle).ToList();
+                }
+                else if (objGen.SortBy == "4")
+                {
+                    lstCombo = lstCombo.OrderByDescending(o => o.OfferTitle).ToList();
+                }
                 
+                response.Data = lstCombo;
+
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+
+        [Route("OfferDetail"), HttpPost]
+        public ResponseDataModel<ComboOfferClientVM> OfferDetail(GeneralVM objGen)
+        {
+            ResponseDataModel<ComboOfferClientVM> response = new ResponseDataModel<ComboOfferClientVM>();           
+            try
+            {
+                long UserId = Convert.ToInt64(objGen.ClientUserId);
+                long RoleId = Convert.ToInt64(objGen.RoleId);
+                long ProdItem = Convert.ToInt64(objGen.ItemId);
+                long OfferId = Convert.ToInt64(objGen.ComboId);
+                ProductItemVM objProductItem = new ProductItemVM();
+                tbl_ComboOfferMaster objCommbo = _db.tbl_ComboOfferMaster.Where(o => o.ComboOfferId == OfferId).FirstOrDefault();
+                objProductItem = (from i in _db.tbl_ProductItems
+                                  join v in _db.tbl_ItemVariant on i.ProductItemId equals v.ProductItemId
+                                  where i.ProductItemId == objCommbo.MainItemId && v.VariantItemId == objCommbo.MainItemVarintId
+                                  select new ProductItemVM
+                                  {
+                                      ProductItemId = i.ProductItemId,
+                                      CategoryId = i.CategoryId,
+                                      ProductId = i.ProductId,
+                                      SubProductId = i.SubProductId,
+                                      ItemName = i.ItemName,
+                                      ItemDescription = i.ItemDescription,
+                                      MainImage = i.MainImage,
+                                      MRPPrice = i.MRPPrice,
+                                      CustomerPrice = i.CustomerPrice,
+                                      DistributorPrice = i.DistributorPrice,
+                                      GST_Per = i.GST_Per,
+                                      IGST_Per = i.IGST_Per,
+                                      Notification = i.Notification,
+                                      IsPopularProduct = i.IsPopularProduct,
+                                      Sku = i.Sku,
+                                      IsActive = i.IsActive,
+                                      UnitType = i.UnitType.HasValue ? i.UnitType.Value : 0,
+                                      UnitTyp = v.UnitQty,
+                                      IsCashonDelieveryuse = i.IsCashonDeliveryUse.HasValue ? i.IsCashonDeliveryUse.Value : false
+                                  }).FirstOrDefault();
+
+                ComboOfferVM objComboVM = new ComboOfferVM();
+                objComboVM.OfferTitle = objCommbo.OfferTitle;
+                objComboVM.ComboOfferPrice = objCommbo.OfferPrice;
+                objComboVM.TotlOriginalOfferPrice = objCommbo.TotalActualPrice.Value;
+                objComboVM.Main_ProductItemId = objCommbo.MainItemId;
+                objComboVM.Main_ProductItemName = objProductItem.ItemName;
+                objComboVM.Main_Qty = objCommbo.MainItemQty;
+                objComboVM.Sku = objProductItem.Sku;
+                objComboVM.IsCashonDelieveryuse = objCommbo.IsCashOnDelivery.HasValue ? objCommbo.IsCashOnDelivery.Value : false;
+                objComboVM.MainItemVariantName = objProductItem.UnitTyp;
+                objComboVM.OfferDescription = objCommbo.Description;
+                objComboVM.MainItemMRPPrice = objCommbo.MainItemActualPrice.Value;
+                objComboVM.OfferImage = objCommbo.OfferImage;
+
+                List<ComboSubItemVM> lstSubItemss = new List<ComboSubItemVM>();
+                lstSubItemss = (from c in _db.tbl_ComboOfferSubItems
+                                join i in _db.tbl_ProductItems on c.ProductItemId equals i.ProductItemId
+                                join v in _db.tbl_ItemVariant on c.VariantItemId equals v.VariantItemId
+                                where c.ComboOfferId == OfferId
+                                select new ComboSubItemVM
+                                {
+                                    ProductItemId = i.ProductItemId,
+                                    CategoryId = i.CategoryId,
+                                    ProductId = i.ProductId,
+                                    Sub_ProductItemName = i.ItemName,
+                                    ActualPrice = c.ActualPrice.Value,
+                                    VarintId = c.VariantItemId,
+                                    Qty = c.Qty,
+                                    VarintNm = v.UnitQty
+                                }).ToList();
+                ComboOfferClientVM objComboo = new ComboOfferClientVM();
+                objComboo.SubItems = lstSubItemss;
+                objComboo.Combo = objComboVM;                
+                response.Data = objComboo;
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+
+
     }
 }

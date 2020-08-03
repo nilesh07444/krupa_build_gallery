@@ -1,5 +1,6 @@
 ﻿using KrupaBuildGallery.Helper;
 using KrupaBuildGallery.Model;
+using KrupaBuildGallery.ViewModel.Admin;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -742,6 +743,85 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             return View(lstOfferItems);
         }
 
+        public ActionResult ComboOffers()
+        {
+            List<ComboOfferVM> lstCombo = new List<ComboOfferVM>();       
+         
+            try
+            {
+                lstCombo = (from i in _db.tbl_ComboOfferMaster
+                                  where i.IsActive == true && DateTime.UtcNow >= i.OfferStartDate && DateTime.UtcNow <= i.OfferEndDate && i.IsDeleted == false
+                                  select new ComboOfferVM
+                                  {
+                                      OfferTitle = i.OfferTitle,
+                                      ComboOfferId = i.ComboOfferId,
+                                      ComboOfferPrice = i.OfferPrice,
+                                      OfferImage = i.OfferImage,
+                                      TotlOriginalOfferPrice = i.TotalActualPrice.Value
+                                  }).OrderBy(x => x.OfferTitle).ToList();
+
+            }
+            catch (Exception ex)
+            {
+            }
+
+            return View("~/Areas/Client/Views/Products/ComboOffers.cshtml", lstCombo);
+        }
+
+        public ActionResult OfferDetail(int Id)
+        {
+            long UserId = clsClientSession.UserID;
+            long OfferId = Convert.ToInt64(Id);
+            ProductItemVM objProductItem = new ProductItemVM();
+            tbl_ComboOfferMaster objCommbo = _db.tbl_ComboOfferMaster.Where(o => o.ComboOfferId == OfferId).FirstOrDefault();           
+            objProductItem = (from i in _db.tbl_ProductItems
+                              join v in _db.tbl_ItemVariant on i.ProductItemId equals v.ProductItemId
+                              where i.ProductItemId == objCommbo.MainItemId && v.VariantItemId == objCommbo.MainItemVarintId
+                              select new ProductItemVM
+                              {
+                                  ProductItemId = i.ProductItemId,
+                                  CategoryId = i.CategoryId,
+                                  ProductId = i.ProductId,
+                                  SubProductId = i.SubProductId,
+                                  ItemName = i.ItemName,
+                                  ItemDescription = i.ItemDescription,
+                                  MainImage = i.MainImage,
+                                  MRPPrice = i.MRPPrice,
+                                  CustomerPrice = i.CustomerPrice,
+                                  DistributorPrice = i.DistributorPrice,
+                                  GST_Per = i.GST_Per,
+                                  IGST_Per = i.IGST_Per,
+                                  Notification = i.Notification,
+                                  IsPopularProduct = i.IsPopularProduct,
+                                  Sku = i.Sku,                                 
+                                  IsActive = i.IsActive,
+                                  UnitType = i.UnitType.HasValue ? i.UnitType.Value : 0,
+                                  UnitTyp = v.UnitQty,
+                                  IsCashonDelieveryuse = i.IsCashonDeliveryUse.HasValue ? i.IsCashonDeliveryUse.Value : false
+                              }).FirstOrDefault();
+
+            List<ComboSubItemVM> lstSubItemss = new List<ComboSubItemVM>();
+            lstSubItemss = (  from c in _db.tbl_ComboOfferSubItems
+                              join i in _db.tbl_ProductItems on c.ProductItemId equals i.ProductItemId
+                              join v in _db.tbl_ItemVariant on c.VariantItemId equals v.VariantItemId
+                              where c.ComboOfferId == OfferId
+                              select new ComboSubItemVM
+                              {
+                                  ProductItemId = i.ProductItemId,
+                                  CategoryId = i.CategoryId,
+                                  ProductId = i.ProductId,
+                                  Sub_ProductItemName = i.ItemName,                                                                   
+                                  ActualPrice = c.ActualPrice.Value,
+                                  VarintId = c.VariantItemId,
+                                  Qty = c.Qty,
+                                  VarintNm = v.UnitQty                              
+                              }).ToList();
+
+            ViewData["MainItem"] = objProductItem;
+            ViewData["lstSubItemss"] = lstSubItemss;
+            return View("~/Areas/Client/Views/Products/OfferDetail.cshtml", objCommbo);
+        }
+        
         public decimal GetRatingOfItem(long ItemId, List<tbl_ReviewRating> lstreviewratings)
         {
             decimal rating = 0;

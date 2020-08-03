@@ -312,6 +312,12 @@
     <Compile Include="Model\tbl_ComboOffer.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\tbl_ComboOfferMaster.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_ComboOfferSubItems.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\tbl_ContactFormData.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
@@ -337,6 +343,9 @@
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\tbl_ImportExcel.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_ItemReplace.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\tbl_ItemReturnCancelReplace.cs">
@@ -412,6 +421,7 @@
     <Compile Include="ViewModel\Admin\AdminUserVM.cs" />
     <Compile Include="ViewModel\Admin\AvailablePincodeVM.cs" />
     <Compile Include="ViewModel\Admin\ComboOfferVM.cs" />
+    <Compile Include="ViewModel\Admin\ComboSubItemVM.cs" />
     <Compile Include="ViewModel\Admin\GeneralSettingVM.cs" />
     <Compile Include="ViewModel\Admin\GodownVM.cs" />
     <Compile Include="ViewModel\Admin\HappyCustomerVM.cs" />
@@ -428,6 +438,7 @@
     <Compile Include="ViewModel\CheckoutGenVM.cs" />
     <Compile Include="ViewModel\CheckoutVM.cs" />
     <Compile Include="ViewModel\ClientUserVM.cs" />
+    <Compile Include="ViewModel\ComboOfferClientVM.cs" />
     <Compile Include="ViewModel\ContactUsMessageVM.cs" />
     <Compile Include="ViewModel\DashboardCountVM.cs" />
     <Compile Include="ViewModel\DistributorRequestVM.cs" />
@@ -4041,6 +4052,11 @@
     <Content Include="Areas\Admin\Views\Stock\_StockReport.cshtml" />
     <Content Include="Areas\Admin\Views\Order\_PaymentReport.cshtml" />
     <Content Include="Areas\Client\Views\MyProfile\_PaymentReport.cshtml" />
+    <Content Include="Areas\Admin\Views\Order\SalesReport.cshtml" />
+    <Content Include="Areas\Admin\Views\ComboOffer\_SubItems.cshtml" />
+    <Content Include="Areas\Admin\Views\ComboOffer\_SubItemsEdit.cshtml" />
+    <Content Include="Areas\Client\Views\Products\ComboOffers.cshtml" />
+    <Content Include="Areas\Client\Views\Products\OfferDetail.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />

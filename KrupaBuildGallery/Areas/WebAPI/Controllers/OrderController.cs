@@ -38,7 +38,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                  OrderId = p.OrderId,
                                  ClientUserName = c.FirstName + " " + c.LastName,
                                  ClientUserId = p.ClientUserId,
-                                 OrderAmount = p.OrderAmount,
+                                 OrderAmount = p.OrderAmount + (p.ExtraAmount.HasValue ? p.ExtraAmount.Value : 0) + (p.ShippingCharge.HasValue ? p.ShippingCharge.Value : 0),
                                  OrderShipCity = p.OrderShipCity,
                                  OrderShipState = p.OrderShipState,
                                  OrderShipAddress = p.OrderShipAddress,
@@ -157,11 +157,17 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                                            GSTAmt = p.GSTAmt.Value,
                                                            IGSTAmt = p.IGSTAmt.Value,
                                                            ItemImg = c.MainImage,
+                                                           FinalAmt = p.FinalItemPrice.Value,
                                                            Discount = p.Discount.HasValue ? p.Discount.Value : 0,
                                                            VariantQtytxt = vr.UnitQty,                                                           
                                                            ItemStatus = p.ItemStatus.HasValue ? p.ItemStatus.Value : 1,
-                                                           IsReturnable = c.IsReturnable.HasValue ? c.IsReturnable.Value : false
-                                                       }).OrderByDescending(x => x.OrderItemId).ToList();
+                                                           IsReturnable = c.IsReturnable.HasValue ? c.IsReturnable.Value : false,
+                                                           IsCombo = p.IsCombo.HasValue ? p.IsCombo.Value : false,
+                                                           ComboId = p.ComboId.HasValue ? p.ComboId.Value : 0,
+                                                           IsMainItem = p.IsMainItem.HasValue ? p.IsMainItem.Value : false,
+                                                           ComboName = p.ComboOfferName,
+                                                           ComboQty = p.ComboQty.HasValue ? p.ComboQty.Value : p.Qty.Value
+                                                       }).OrderBy(x => x.OrderItemId).ToList();
                     if (lstOrderItms != null && lstOrderItms.Count() > 0)
                     {
                         lstOrderItms.ForEach(x => x.ItemStatustxt = GetItemStatus(x.ItemStatus));
@@ -432,7 +438,10 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                                                    FinalAmt = p.FinalItemPrice.HasValue ? p.FinalItemPrice.Value : 0,
                                                                    Discount = p.Discount.HasValue ? p.Discount.Value : 0,
                                                                    ItemStatus = p.ItemStatus.HasValue ? p.ItemStatus.Value : 1,
-                                                                   IsReturnable = c.IsReturnable.HasValue ? c.IsReturnable.Value : false
+                                                                   IsReturnable = c.IsReturnable.HasValue ? c.IsReturnable.Value : false,
+                                                                   IsCombo = p.IsCombo.HasValue ? p.IsCombo.Value : false,
+                                                                   ComboQty = p.ComboQty.HasValue ? p.ComboQty.Value : 0,
+                                                                   ComboId = p.ComboId.HasValue ? p.ComboId.Value : 0
                                                                }).OrderByDescending(x => x.OrderItemId).ToList();
 
                             decimal totlmt = 0;
@@ -443,7 +452,14 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                 foreach (var objj in lstOrderItms)
                                 {
                                     totlmt = totlmt + objj.FinalAmt;
-                                    shipingchrgs = shipingchrgs + Math.Round(objj.ShipingChargeOf1Item * objj.Qty, 2);
+                                    if (objj.IsCombo)
+                                    {
+                                        shipingchrgs = shipingchrgs + Math.Round(objj.ShipingChargeOf1Item * objj.ComboQty, 2);
+                                    }
+                                    else
+                                    {
+                                        shipingchrgs = shipingchrgs + Math.Round(objj.ShipingChargeOf1Item * objj.Qty, 2);
+                                    }                                 
                                 }
                             }
                             OldOrderTotl = totlmt;
@@ -455,6 +471,10 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                             }
                             OldOrderTotl = OldOrderTotl + extramt + shipingchrgs;
                             decimal shipchrge = Math.Round(objproditm.ShippingCharge.Value * objitm.Qty.Value, 2);
+                            if (objitm.IsCombo == true)
+                            {
+                                shipchrge = Math.Round(objproditm.ShippingCharge.Value * objitm.Qty.Value, 2);
+                            }
                             decimal NewShipingCharge = shipingchrgs - shipchrge;
                             decimal NewOrdeAmt = totlmt - objitm.FinalItemPrice.Value;
                             var objtbl_ExtraAmountnew = _db.tbl_ExtraAmount.Where(o => o.AmountFrom <= NewOrdeAmt && o.AmountTo >= NewOrdeAmt).FirstOrDefault();
@@ -528,6 +548,30 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         objstkreport.Remarks = "Ordered Item Cancelled:" + objitm.OrderId;
                         _db.tbl_StockReport.Add(objstkreport);
                         _db.SaveChanges();
+                        if (objitm.IsCombo == true)
+                        {
+                            List<tbl_OrderItemDetails> lstitmms = _db.tbl_OrderItemDetails.Where(o => o.ComboId == objitm.ComboId && o.OrderDetailId != objitm.OrderDetailId).ToList();
+                            if (lstitmms != null && lstitmms.Count() > 0)
+                            {
+                                foreach (tbl_OrderItemDetails objj in lstitmms)
+                                {
+                                    objj.ItemStatus = 5;
+                                    objj.IsDelete = true;
+                                    objj.UpdatedDate = DateTime.UtcNow;
+                                    tbl_StockReport objstkreports = new tbl_StockReport();
+                                    objstkreports.FinancialYear = clsCommon.GetCurrentFinancialYear();
+                                    objstkreports.StockDate = DateTime.UtcNow;
+                                    objstkreports.Qty = Convert.ToInt64(objitm.QtyUsed);
+                                    objstkreports.IsCredit = true;
+                                    objstkreports.IsAdmin = false;
+                                    objstkreports.CreatedBy = clsClientSession.UserID;
+                                    objstkreports.ItemId = objj.ProductItemId;
+                                    objstkreports.Remarks = "Ordered Item Cancelled:" + objitm.OrderId;
+                                    _db.tbl_StockReport.Add(objstkreports);
+                                    _db.SaveChanges();
+                                }
+                            }
+                        }
                     }
                     else if (status == "6")
                     {
@@ -567,6 +611,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     objitmreplce.DateCreated = DateTime.UtcNow;
                     objitmreplce.ModifiedBy = objordr.ClientUserId;
                     objitmreplce.DateModified = DateTime.UtcNow;
+                    objitmreplce.IsCombo = objitm.IsCombo.HasValue ? objitm.IsCombo.Value : false;
+                    objitmreplce.ComboId = objitm.ComboId.HasValue ? objitm.ComboId.Value : 0;
                     _db.tbl_ItemReturnCancelReplace.Add(objitmreplce);
                     _db.SaveChanges();
                 }
@@ -779,9 +825,38 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                                            ShipingChargeOf1Item = c.ShippingCharge.HasValue ? c.ShippingCharge.Value : 0,
                                                            Discount = p.Discount.HasValue ? p.Discount.Value : 0,
                                                            VariantQtytxt = vr.UnitQty,
-                                                           ItemStatus = p.ItemStatus.HasValue ? p.ItemStatus.Value : 1,
+                                                           IsReplace = p.IsReplacedItem.HasValue ? p.IsReplacedItem.Value : false,
+                                                           ItemStatus = p.IsReplacedItem == true ? 4 : p.ItemStatus.HasValue ? p.ItemStatus.Value : 1,
                                                            IsReturnable = c.IsReturnable.HasValue ? c.IsReturnable.Value : false
                                                        }).OrderByDescending(x => x.OrderItemId).ToList();
+
+                    List<OrderItemsVM> lstOrderItmsReplace = (from r in _db.tbl_ItemReplace
+                                                              join p in _db.tbl_OrderItemDetails on r.ItemDetailId equals p.OrderDetailId
+                                                              join c in _db.tbl_ProductItems on p.ProductItemId equals c.ProductItemId
+                                                              join vr in _db.tbl_ItemVariant on p.VariantItemId equals vr.VariantItemId
+                                                              where p.OrderId == OrderId && lstOrdritmid.Contains(r.ItemDetailId.Value)
+                                                              select new OrderItemsVM
+                                                              {
+                                                                  OrderId = p.OrderId.Value,
+                                                                  OrderItemId = p.OrderDetailId,
+                                                                  ProductItemId = p.ProductItemId.Value,
+                                                                  ItemName = p.ItemName,
+                                                                  Qty = p.Qty.Value,
+                                                                  Price = 0,
+                                                                  Sku = p.Sku,
+                                                                  GSTAmt = p.GSTAmt.Value,
+                                                                  FinalAmt = 0,
+                                                                  IGSTAmt = p.IGSTAmt.Value,
+                                                                  ItemImg = c.MainImage,
+                                                                  ShipingChargeOf1Item = 0,
+                                                                  Discount = 0,
+                                                                  VariantQtytxt = vr.UnitQty,
+                                                                  ItemStatus = r.ItemStatus.Value,
+                                                                  IsReplace = false,
+                                                                  IsReturnable = c.IsReturnable.HasValue ? c.IsReturnable.Value : false
+                                                              }).OrderByDescending(x => x.OrderItemId).ToList();
+
+                    lstOrderItms.AddRange(lstOrderItmsReplace);
                 List<AdminUserVM> lstAdminusers = (from p in _db.tbl_AdminUsers                              
                                 select new AdminUserVM
                                 {
@@ -959,7 +1034,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         long OrderItemId = Convert.ToInt64(ss);
                         if (DelieveryPrsnId == AgentId)
                         {
-                            var objDelvItmm = _db.tbl_OrderItemDelivery.Where(o => o.DelieveryPersonId != AgentId && o.OrderItemId == OrderItemId).FirstOrDefault();
+                            var objDelvItmm = _db.tbl_OrderItemDelivery.Where(o => o.DelieveryPersonId != AgentId && o.Status == 3 && o.OrderItemId == OrderItemId).FirstOrDefault();
                             if (objDelvItmm != null)
                             {
                                 _db.tbl_OrderItemDelivery.Remove(objDelvItmm);
@@ -978,52 +1053,79 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                             ItmsText = ItmsText + objOrderItm.ItemName + ",";
                         }
                      
-                        List<tbl_OrderItemDelivery> lstorddelv = _db.tbl_OrderItemDelivery.Where(o => o.OrderItemId == OrderItemId).ToList();
+                        List<tbl_OrderItemDelivery> lstorddelv = _db.tbl_OrderItemDelivery.Where(o => o.OrderItemId == OrderItemId && o.Status == 3).ToList();
                         if(lstorddelv != null && lstorddelv.Count() > 0)
                         {
+                            bool IsExtrp = true;
                             foreach(var objj in lstorddelv)
                             {
                                 objj.Status = 4;
                                 if (objrd.IsCashOnDelivery == true && objrd.OrderShipPincode == "389001")
                                 {
-                                    tbl_ProductItems objprod = _db.tbl_ProductItems.Where(o => o.ProductItemId == objOrderItm.ProductItemId).FirstOrDefault();
-                                    decimal shipcharge = Math.Round(objOrderItm.Qty.Value * objprod.ShippingCharge.Value,2);
-                                    decimal extramtt = objrd.ExtraAmount.HasValue ? objrd.ExtraAmount.Value : 0;
-                                    bool IsExtramtrec = objrd.IsExtraAmountReceived.HasValue ? objrd.IsExtraAmountReceived.Value : false;
-                                    if (IsExtrapaid == false && IsExtramtrec == false)
-                                    {                                       
-                                        objj.AmountToReceived = shipcharge + objOrderItm.FinalItemPrice + extramtt;
+                                    if(objj.ReplaceId != null && objj.ReplaceId > 0)
+                                    {
+                                        IsExtrp = false;
+                                        objj.AmountToReceived = 0;
+                                        var objItmrplc = _db.tbl_ItemReplace.Where(o => o.ItemReplaceId == objj.ReplaceId).FirstOrDefault();
+                                        objItmrplc.ItemStatus = 4;
                                     }
                                     else
                                     {
-                                        objj.AmountToReceived = shipcharge + objOrderItm.FinalItemPrice;
+                                        tbl_ProductItems objprod = _db.tbl_ProductItems.Where(o => o.ProductItemId == objOrderItm.ProductItemId).FirstOrDefault();
+                                        decimal shipcharge = Math.Round(objOrderItm.Qty.Value * objprod.ShippingCharge.Value, 2);
+                                        decimal extramtt = objrd.ExtraAmount.HasValue ? objrd.ExtraAmount.Value : 0;
+                                        bool IsExtramtrec = objrd.IsExtraAmountReceived.HasValue ? objrd.IsExtraAmountReceived.Value : false;
+                                        if (IsExtrapaid == false && IsExtramtrec == false)
+                                        {
+                                            objj.AmountToReceived = shipcharge + objOrderItm.FinalItemPrice + extramtt;
+                                        }
+                                        else
+                                        {
+                                            objj.AmountToReceived = shipcharge + objOrderItm.FinalItemPrice;
+                                        }
+                                        objCommon.SavePaymentTransaction(0, objrd.OrderId, true, objj.AmountToReceived.Value, "Payment By Cash", ClientUserId, false, DateTime.UtcNow, "Cash");
                                     }
-                                    objCommon.SavePaymentTransaction(0, objrd.OrderId, true, objj.AmountToReceived.Value, "Payment By Cash", ClientUserId, false, DateTime.UtcNow, "Cash");
+                                   
                                 }
                                 else if(objrd.IsCashOnDelivery == true && objrd.OrderShipPincode != "389001")
                                 {
-                                    decimal extramtt = objrd.ExtraAmount.HasValue ? objrd.ExtraAmount.Value : 0;
-                                    bool IsExtramtrec = objrd.IsExtraAmountReceived.HasValue ? objrd.IsExtraAmountReceived.Value : false;
-                                    if (IsExtrapaid == false && IsExtramtrec == false)
+                                    if (objj.ReplaceId != null && objj.ReplaceId > 0)
                                     {
-                                        objj.AmountToReceived =  objOrderItm.FinalItemPrice + extramtt;
+                                        IsExtrp = false;
+                                        objj.AmountToReceived = 0;
+                                        var objItmrplc = _db.tbl_ItemReplace.Where(o => o.ItemReplaceId == objj.ReplaceId).FirstOrDefault();
+                                        objItmrplc.ItemStatus = 4;
                                     }
                                     else
                                     {
-                                        objj.AmountToReceived = objOrderItm.FinalItemPrice;
+                                        decimal extramtt = objrd.ExtraAmount.HasValue ? objrd.ExtraAmount.Value : 0;
+                                        bool IsExtramtrec = objrd.IsExtraAmountReceived.HasValue ? objrd.IsExtraAmountReceived.Value : false;
+                                        if (IsExtrapaid == false && IsExtramtrec == false)
+                                        {
+                                            objj.AmountToReceived = objOrderItm.FinalItemPrice + extramtt;
+                                        }
+                                        else
+                                        {
+                                            objj.AmountToReceived = objOrderItm.FinalItemPrice;
+                                        }
+                                        objCommon.SavePaymentTransaction(0, objrd.OrderId, true, objj.AmountToReceived.Value, "Payment By Cash", ClientUserId, false, DateTime.UtcNow, "Cash");
                                     }
-                                    objCommon.SavePaymentTransaction(0, objrd.OrderId, true, objj.AmountToReceived.Value, "Payment By Cash", ClientUserId, false, DateTime.UtcNow, "Cash");
+                                   
                                 }
                                 if(objj.DelieveryPersonId != DelieveryPrsnId)
                                 {
                                     objj.AmountToReceived = 0;
                                 }
                             }
-                            IsExtrapaid = true;
-                            objrd.IsExtraAmountReceived = true;
+                            if(IsExtrp == true)
+                            {
+                                IsExtrapaid = true;
+                                objrd.IsExtraAmountReceived = true;
+                            }                            
                             _db.SaveChanges();
                         }
                         objOrderItm.ItemStatus = 4;
+                        objOrderItm.IsReplacedItem = false;
                         _db.SaveChanges();
                         
                         objCommon.SaveTransaction(objOrderItm.ProductItemId.Value, objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, "Delivered By " + objAdminUsr.FirstName + " " + objAdminUsr.LastName, 0, 0, AgentId, DateTime.UtcNow, "Delievered Items");

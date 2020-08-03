@@ -75,7 +75,7 @@
                                         shippingchrge = objorder.ShipmentCharge;
                                     }
                                     //decimal OrdAmt = Math.Round(objorder.OrderAmount + shippingchrge, 2);
-
+                                    double RoundAmt = CommonMethod.GetRoundValue(Convert.ToDouble(objorder.OrderAmount));
                                     string stauscolor = "badge-secondary";
                                     if (objorder.OrderStatusId == 1)
                                     {
@@ -93,7 +93,7 @@
                                         <td>@objorder.OrderId</td>
                                         <td>@objorder.ClientUserName</td>
                                         <td>@objorder.OrderDate.ToString("dd/MM/yyyy")</td>
-                                        <td>₹ @Convert.ToDecimal(objorder.OrderAmount).ToString("0.##")</td>
+                                        <td>₹ @Convert.ToDecimal(RoundAmt).ToString("0.##")</td>
                                         <td><span class="badge @stauscolor">@objorder.OrderStatus</span></td>
                                         <td>@objorder.PaymentType</td>
                                         <td>
@@ -132,6 +132,7 @@
      $(document).ready(function () {
          $("#selectstatus").val("@ViewBag.Status");
          $('#basic-111').DataTable({
+             "pageLength": 100,
              "order": [[ 0, "desc" ]]
          });
     });

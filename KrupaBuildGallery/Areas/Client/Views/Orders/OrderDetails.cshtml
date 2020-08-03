@@ -172,10 +172,10 @@
                                 <div class="label-wrapper"><label class="control-label">Order Total Amount:</label></div>
                             </div>
                             <div class="col-md-9">
-                                @{ 
+                                @{
                                     decimal OrderTotalAmt = Model.OrderAmount + Model.ExtraAmount + Model.ShipmentCharge;
-                                }
-                                <div class="form-text-row">₹ @OrderTotalAmt</div>
+                                    double OrderRoundedAmt = CommonMethod.GetRoundValue(Convert.ToDouble(OrderTotalAmt)); }
+                                <div class="form-text-row">₹ @OrderRoundedAmt</div>
                             </div>
                         </div>
                         <div class="form-group">
@@ -293,15 +293,16 @@
                                         <th>GST</th>
                                         <th>Total</th>
                                         <th>Status</th>
-                                        <th></th>                                        
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @if (Model.OrderItems != null && Model.OrderItems.Count > 0)
                                     {
-                                        foreach (KrupaBuildGallery.ViewModel.OrderItemsVM objorderItem in Model.OrderItems)
+                                        for (int jidx = 0; jidx < Model.OrderItems.Count; jidx++)
                                         {
-                                            decimal Totl = Math.Round((objorderItem.Price * objorderItem.Qty) - objorderItem.Discount + objorderItem.GSTAmt, 2);
+                                            KrupaBuildGallery.ViewModel.OrderItemsVM objorderItem = Model.OrderItems[jidx];
+                                            decimal Totl = objorderItem.FinalAmt;  // Math.Round((objorderItem.Price * objorderItem.Qty) - objorderItem.Discount + objorderItem.GSTAmt, 2);
                                             SubTotl = SubTotl + Totl;
                                             string stauscolor = "badge-secondary";
 
@@ -333,53 +334,100 @@
                                             {
                                                 stauscolor = "badge-sample2";
                                             }
-                                            <tr>
-                                                <td>
-                                                    @if (!string.IsNullOrEmpty(objorderItem.ItemImg))
-                                                    {
-                                                        if (File.Exists(Server.MapPath("~/Images/ProductItemMedia/" + objorderItem.ItemImg)))
+                                            if (objorderItem.IsCombo == true && objorderItem.IsMainItem)
+                                            {
+                                                <tr>
+                                                    <td colspan="3">
+                                                        <b>Combo: @objorderItem.ComboName</b>
+                                                    </td>
+                                                    <td>
+                                                        @objorderItem.Price
+                                                    </td>
+                                                    <td>
+                                                        @objorderItem.ComboQty
+                                                    </td>
+                                                    <td>₹ @objorderItem.Discount</td>
+                                                    <td>₹ @objorderItem.GSTAmt</td>
+                                                    <td>₹ @objorderItem.FinalAmt</td>
+                                                    <td><span class="badge @stauscolor">@objorderItem.ItemStatustxt</span></td>
+                                                    <td>
+                                                        @if (((objorderItem.ItemStatus == 1 || objorderItem.ItemStatus == 2) && Model.OrderTypeId == 1) || objorderItem.ItemStatus == 4)
                                                         {
-                                                            <img src="~/Images/ProductItemMedia/@objorderItem.ItemImg" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                                            <a href="javascript:void(0)" onclick="itemaction('@objorderItem.OrderItemId','@Model.OrderTypeId','@objorderItem.ItemStatus','@objorderItem.IsReturnable.ToString()','true');"><i class="fa fa-wrench font-success"></i></a>
                                                         }
-                                                        else
+
+                                                        @if (objorderItem.ItemStatus != 1 && objorderItem.ItemStatus != 2 && objorderItem.ItemStatus != 3 && objorderItem.ItemStatus != 5)
                                                         {
-                                                            <img src="@ErrorMessage.DefaultImagePath" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                                            <a href="javascript:void(0)" onclick="ratingreview('@objorderItem.OrderItemId');" style="margin-left:15px;">Rate it</a>
                                                         }
-                                                    }
-                                                    else
-                                                    {
-                                                        <img src="@ErrorMessage.DefaultImagePath" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
-                                                    }
-                                                </td>
-                                                <td>@objorderItem.ItemName - @objorderItem.VariantQtytxt</td>
-                                                <td>@objorderItem.Sku</td>
-                                                <td>₹ @Math.Round(objorderItem.Price, 2)</td>
-                                                <td>@objorderItem.Qty</td>
-                                                <td>₹ @objorderItem.Discount</td>
-                                                <td>₹ @objorderItem.GSTAmt</td>
-                                                <td>₹ @Totl</td>
-                                                <td><span class="badge @stauscolor">@objorderItem.ItemStatustxt</span></td>
-                                                <td>
-                                                    @if (((objorderItem.ItemStatus == 1 || objorderItem.ItemStatus == 2) && Model.OrderTypeId == 1) || objorderItem.ItemStatus == 4)
-                                                    {
-                                                        <a href="javascript:void(0)" onclick="itemaction('@objorderItem.OrderItemId','@Model.OrderTypeId','@objorderItem.ItemStatus','@objorderItem.IsReturnable.ToString()');"><i class="fa fa-wrench font-success"></i></a>
-                                                    }
-
-                                                    @if (objorderItem.ItemStatus != 1 && objorderItem.ItemStatus != 2 && objorderItem.ItemStatus != 3 && objorderItem.ItemStatus != 5)
-                                                    {
-                                                        <a href="javascript:void(0)" onclick="ratingreview('@objorderItem.OrderItemId');" style="margin-left:15px;">Rate it</a>
-                                                    }
-                                                    @if (objorderItem.IsDeleted == true && (objorderItem.ItemStatus == 5 || objorderItem.ItemStatus == 6 || objorderItem.ItemStatus == 8))
-                                                    {
-                                                        <a href="javascript:void(0);" onclick="invoiceprintItem('@objorderItem.OrderItemId','@objorderItem.OrderId');" title="Print Invoice"><i class="fa fa-file font-success"></i></a>
-                                                    }
-                                                </td>
-
-                                            </tr>
+                                                        @if (objorderItem.IsDeleted == true && (objorderItem.ItemStatus == 5 || objorderItem.ItemStatus == 6 || objorderItem.ItemStatus == 8))
+                                                        {
+                                                            <a href="javascript:void(0);" onclick="invoiceprintItem('@objorderItem.OrderItemId','@objorderItem.OrderId');" title="Print Invoice"><i class="fa fa-file font-success"></i></a>
+                                                        }
+                                                    </td>
+                                                </tr>
+                                            }                                            
+                                <tr>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(objorderItem.ItemImg))
+                                        {
+                                            if (File.Exists(Server.MapPath("~/Images/ProductItemMedia/" + objorderItem.ItemImg)))
+                                            {
+                                                <img src="~/Images/ProductItemMedia/@objorderItem.ItemImg" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                            }
+                                            else
+                                            {
+                                                <img src="@ErrorMessage.DefaultImagePath" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                            }
                                         }
+                                        else
+                                        {
+                                            <img src="@ErrorMessage.DefaultImagePath" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                        }
+                                    </td>
+                                    <td>@objorderItem.ItemName - @objorderItem.VariantQtytxt</td>
+                                    <td>@objorderItem.Sku</td>
+                                    <td>₹ @Math.Round(objorderItem.Price, 2)</td>
+                                    <td>@objorderItem.Qty</td>
+                                    <td>₹ @objorderItem.Discount</td>
+                                    <td>₹ @objorderItem.GSTAmt</td>
+                                    @if (objorderItem.IsCombo == false)
+                                    {
+                                        <td>₹ @Totl</td>
+                                        <td><span class="badge @stauscolor">@objorderItem.ItemStatustxt</span></td>
+                                        <td>
+                                            @if (((objorderItem.ItemStatus == 1 || objorderItem.ItemStatus == 2) && Model.OrderTypeId == 1) || objorderItem.ItemStatus == 4)
+                                            {
+                                                <a href="javascript:void(0)" onclick="itemaction('@objorderItem.OrderItemId','@Model.OrderTypeId','@objorderItem.ItemStatus','@objorderItem.IsReturnable.ToString()','false');"><i class="fa fa-wrench font-success"></i></a>
+                                            }
+
+                                            @if (objorderItem.ItemStatus != 1 && objorderItem.ItemStatus != 2 && objorderItem.ItemStatus != 3 && objorderItem.ItemStatus != 5)
+                                            {
+                                                <a href="javascript:void(0)" onclick="ratingreview('@objorderItem.OrderItemId');" style="margin-left:15px;">Rate it</a>
+                                            }
+                                            @if (objorderItem.IsDeleted == true && (objorderItem.ItemStatus == 5 || objorderItem.ItemStatus == 6 || objorderItem.ItemStatus == 8))
+                                            {
+                                                <a href="javascript:void(0);" onclick="invoiceprintItem('@objorderItem.OrderItemId','@objorderItem.OrderId');" title="Print Invoice"><i class="fa fa-file font-success"></i></a>
+                                            }
+                                        </td>
+                                    }
+                                    else
+                                    {
+                                        <td colspan="3">
+
+                                        </td>
+                                    }
+
+
+
+                                </tr>
+                                        }
+
                                     }
                                     @{
                                         decimal NetTotals = Math.Round(Model.OrderAmount + Model.ShipmentCharge + Model.ExtraAmount, 2);
+                                        double RoundAmtTotl = CommonMethod.GetRoundValue(Convert.ToDouble(NetTotals));
+                                        double RoundedAmtTotl = CommonMethod.GetRoundedValue(Convert.ToDouble(NetTotals));
                                     }
                                     <tr>
                                         <td></td>
@@ -431,6 +479,30 @@
                                         <td></td>
                                         <td>Total Net Amount</td>
                                         <td>₹ @NetTotals</td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>Round Off</td>
+                                        <td>₹ @RoundedAmtTotl</td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td>Total Net Pay Amount</td>
+                                        <td>₹ @RoundAmtTotl</td>
                                         <td></td>
                                         <td></td>
                                     </tr>
@@ -543,9 +615,9 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             </div>
             <div class="modal-body">
-                
+
             </div>
-            <div class="modal-footer">              
+            <div class="modal-footer">
                 <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
                 <button class="btn btn-primary" type="button" onclick="SaveRatingReview();">Save</button>
             </div>
@@ -560,7 +632,7 @@
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true" onclick="$('#hdnotptxt').val('');$('#otptxt').val('');">&times;</button>
             </div>
             <div class="modal-body">
-                <label>Enter Otp from Registered Mobile</label><input type="text" id="otptxt" value="" class="form-control" />                
+                <label>Enter Otp from Registered Mobile</label><input type="text" id="otptxt" value="" class="form-control" />
             </div>
             <div class="modal-footer">
                 <input type="hidden" id="hdnDeleteProductItem" />
@@ -728,8 +800,8 @@
      });
    }
 
-    function itemaction(ordritmid,ordertypeid,itmstatusid,isreturnable) {
-        if (isreturnable != "True" || itmstatusid != "4" || ordertypeid == "2") {
+    function itemaction(ordritmid,ordertypeid,itmstatusid,isreturnable,iscombo) {
+        if (isreturnable != "True" || itmstatusid != "4" || ordertypeid == "2" || iscombo == 'true') {
             $("#itmstatusselect option[value=6]").hide();
         }
         else {
@@ -745,7 +817,13 @@
 
         if (itmstatusid == "4" && ordertypeid == "1") {
             $("#itmstatusselect option[value=7]").show();
-            $("#itmstatusselect option[value=8]").show();
+            if (iscombo == 'true') {
+                $("#itmstatusselect option[value=8]").hide();
+            }
+            else {
+                $("#itmstatusselect option[value=8]").show();
+            }
+            
         }
         else {
             $("#itmstatusselect option[value=7]").hide();
@@ -781,8 +859,8 @@
                         alert("Mobile Number is invalid");
                         return false;
                     }
-                    else {                        
-                        $('#hdnotptxt').val(result);                
+                    else {
+                        $('#hdnotptxt').val(result);
                         $("#otpmodal").modal();
                     }
                 },
@@ -791,7 +869,7 @@
             });
                 return false;
          }
-        
+
     }
 
      function submitotpforitem() {
@@ -807,10 +885,10 @@
          var ststuid = $("#itmstatusselect").val();
          var ordritmid = $("#hdnOrdritmid").val();
          var strreson = encodeURIComponent($("#txtresn").val());
-         
+
          $("#otpmodal").modal('hide');
          $("#itemactionmodal").modal("hide");
-         
+
           StartLoading();
           var URL = '@Url.Action("SaveItemAction", "Orders")';
         jQuery.ajax({
@@ -818,7 +896,7 @@
         async: true,
         url: URL + "?orderitemid=" + ordritmid + "&status=" + ststuid+"&reason="+strreson ,
         success: function (result) {
-            if (result == "Success") {              
+            if (result == "Success") {
                 location.reload();
             }
             else if (result == "Can Not Cancel")
@@ -826,7 +904,7 @@
                 alert("Item can not be cancel.");
                  location.reload();
             }
-            else {                 
+            else {
             }
                StopLoading();
         },
@@ -836,27 +914,27 @@
 
         }
      });
-        
+
     }
 
     function ratingreview(orderdetailid) {
         $("#ratingsmodel .modal-body").load('@Url.Action("GetRatingReview", "Orders")' + '?OrderDetailId=' + orderdetailid, function() {
             $("#ratingsmodel").modal("show");
-        });        
+        });
     }
     function SaveRatingReview() {
         if ($("#ratings").rateit('value') == 0) {
             alert("Please Give Rating");
             return;
-        }        
+        }
 
-        
+
          var rtvl = $("#ratings").rateit('value');
          var ordritmid = $("#hdnOrderDetailsItmId").val();
          var review = encodeURIComponent($("#txtreview").val());
-         
+
          $("#ratingsmodel").modal("hide");
-         
+
           StartLoading();
           var URL = '@Url.Action("SaveRatingReview", "Orders")';
         jQuery.ajax({
@@ -865,9 +943,9 @@
         url: URL + "?OrderDetailsId=" + ordritmid + "&rating=" + rtvl+"&review="+review ,
         success: function (result) {
             if (result == "Success") {
-                alert("Rating/Review Submitted Successfully");                
+                alert("Rating/Review Submitted Successfully");
             }
-            else {                 
+            else {
             }
                StopLoading();
         },
@@ -877,7 +955,7 @@
 
         }
      });
-        
+
     }
 
     function invoiceprintItem(orderiddetailitm, orderid) {

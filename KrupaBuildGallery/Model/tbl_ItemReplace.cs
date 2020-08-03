@@ -12,17 +12,13 @@ namespace KrupaBuildGallery.Model
     using System;
     using System.Collections.Generic;
     
-    public partial class tbl_OrderItemDelivery
+    public partial class tbl_ItemReplace
     {
-        public long OrderItemDeliveryId { get; set; }
+        public long ItemReplaceId { get; set; }
+        public Nullable<long> ItemDetailId { get; set; }
         public Nullable<long> OrderId { get; set; }
-        public Nullable<long> OrderItemId { get; set; }
-        public Nullable<int> Status { get; set; }
-        public Nullable<long> DelieveryPersonId { get; set; }
-        public Nullable<long> AssignedBy { get; set; }
-        public Nullable<System.DateTime> AssignedDate { get; set; }
-        public Nullable<decimal> AmountToReceived { get; set; }
-        public Nullable<bool> IsAmountReceived { get; set; }
-        public Nullable<long> ReplaceId { get; set; }
+        public Nullable<int> ItemStatus { get; set; }
+        public Nullable<System.DateTime> ReplaceDate { get; set; }
+        public Nullable<long> AssignPersonId { get; set; }
     }
 }
