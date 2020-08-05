@@ -53,12 +53,32 @@
                 <h5>Distributor List</h5>
             </div>
             <div class="card-body vendor-table">
-                <select class="form-control" id="selectstatus" style="width:150px;" onchange="changestatus();">
-                    <option value="-1">All</option>
-                    <option value="1">Pending Shipping Charge</option>
-                    <option value="2">Pending Order Payment</option>                    
-                </select>
-                <br />
+                <div class="row" style="margin-top:25px;padding-bottom: 25px;margin-bottom: 10px;">
+                    <div class="col-sm-3">
+                        <label>Status</label>
+                        <select class="form-control" id="selectstatus" style="width:150px;" onchange="changestatus();">
+                            <option value="-1">All</option>
+                            <option value="1">Pending Shipping Charge</option>
+                            <option value="2">Pending Order Payment</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <label>Start Date *</label>
+                        <input class="form-control col-md-8 clsDatePicker text-box single-line valid" id="StartDate" name="StartDate" placeholder="DD/MM/YYY" readonly="readonly" type="text" value="@ViewBag.StartDate">
+                    </div>
+                    <div class="col-sm-3">
+                        <label>End Date *</label>
+                        <input class="form-control col-md-8 clsDatePicker text-box single-line valid" id="EndDate" name="EndDate" placeholder="DD/MM/YYY" readonly="readonly" type="text" value="@ViewBag.EndDate">
+                    </div>
+                </div>
+                <div class="row" style="margin-top:25px;border-bottom: 2px solid #f8f8f9;padding-bottom: 25px;margin-bottom: 10px;">
+                    <div class="col-sm-1" style="margin-right:25px;">
+                        <input type="button" value="View" class="btn btn-info" onclick="viewreport();" style="position: absolute; bottom: 0;" />
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="button" value="Export To Excel" class="btn btn-info" onclick="exporttoexcel();" style="position: absolute; bottom: 0;" />
+                    </div>
+                </div>              
                 <table class="display" id="basic-1">
                     <thead>
                         <tr>
@@ -100,20 +120,20 @@
                                     {
                                         <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@objusr.ClientUserId','Active');">InActive</span></td>
                                     }
-                                <td>
-                                    @if (IsSA || objPermission.Distibutors >= (int)ModulePermission.View)
-                                    {
-                                        <a href="/admin/distributor/detail/@objusr.ClientUserId"><i class="fa fa-eye font-success"></i></a>
-                                    }
-                                    @if (IsSA || objPermission.Distibutors >= (int)ModulePermission.Edit)
-                                    {
-                                        <a href="/admin/distributor/edit/@objusr.ClientUserId"><i class="fa fa-edit mr-2 font-success"></i></a>
-                                    }
-                                    @if (IsSA || objPermission.Distibutors == (int)ModulePermission.Full)
-                                    {
-                                        <a href="javascript:void(0);" style="display:none;"><i class="fa fa-trash font-danger"></i></a>
-                                    }
-                                </td>
+                                    <td>
+                                        @if (IsSA || objPermission.Distibutors >= (int)ModulePermission.View)
+                                        {
+                                            <a href="/admin/distributor/detail/@objusr.ClientUserId"><i class="fa fa-eye font-success"></i></a>
+                                        }
+                                        @if (IsSA || objPermission.Distibutors >= (int)ModulePermission.Edit)
+                                        {
+                                            <a href="/admin/distributor/edit/@objusr.ClientUserId"><i class="fa fa-edit mr-2 font-success"></i></a>
+                                        }
+                                        @if (IsSA || objPermission.Distibutors == (int)ModulePermission.Full)
+                                        {
+                                            <a href="javascript:void(0);" style="display:none;"><i class="fa fa-trash font-danger"></i></a>
+                                        }
+                                    </td>
                                 </tr>
                                 counter++;
                             }
@@ -127,7 +147,7 @@
     <!-- Container-fluid Ends-->
 
 </div>
-
+<a href="" id="export" target="_blank" style="display:none;">export</a>
 <div class="modal fade open" id="activeinactiveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -194,8 +214,16 @@
      $(document).ready(function () {
         $("#selectstatus").val("@ViewBag.Status");
     });
-    function changestatus() {       
+   
+    function viewreport() {
+
         var statusid = $("#selectstatus").val();
-        location.href = "/admin/distributor?Status="+statusid;       
+        location.href = "/admin/distributor?Status=" + statusid + "&StartDate=" + $("#StartDate").val() + "&EndDate=" + $("#EndDate").val();
+    }
+
+    function exporttoexcel() {
+        var statusid = $("#selectstatus").val();
+        $("#export").attr("href", "/admin/distributor/Export?Status=" + statusid + "&StartDate=" + $("#StartDate").val() + "&EndDate=" + $("#EndDate").val());
+        $("#export")[0].click();
     }
 </script>

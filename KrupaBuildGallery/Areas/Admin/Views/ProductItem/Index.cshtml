@@ -25,7 +25,8 @@
     List<SelectListItem> lstProdts = ViewData["ProductList"] as List<SelectListItem>;
     List<SelectListItem> lstSubProdts = ViewData["SubProductList"] as List<SelectListItem>;
 }
-
+<style>
+</style>
 <div class="page-body">
 
     <!-- Container-fluid starts-->
@@ -115,17 +116,19 @@
 
                 @if (IsSA || objPermission.ProductItem >= (int)ModulePermission.Add)
                 {
-            <div class="btn-popup pull-right">
-                <button type="button" class="btn btn-primary" id="btnAdd">Add Product Item</button>
-                <button type="button" class="btn btn-primary" id="btnImport">Import Product Item</button>
-            </div>
+                    <div class="btn-popup pull-right">
+                        <button type="button" class="btn btn-primary" id="btnAdd">Add Product Item</button>
+                        <button type="button" class="btn btn-primary" id="btnImport">Import Product Item</button>
+                        <button type="button" class="btn btn-primary" id="btndelte">Delete Items</button>
+                    </div>
                 }
                 <br />
 
-                <table class="display" id="basic-1">
+                <table class="display" id="basic-19">
                     <thead>
                         <tr>
-                            <th width="5%;">#</th>
+                            <th><input type="checkbox" id="mass_select_all" data-to-table="tasks" /></th>
+                            <th>#</th>
                             <th width="10%;">Image</th>
                             <th>Category</th>
                             <th>Product</th>
@@ -147,6 +150,7 @@
                             foreach (ProductItemVM item in Model)
                             {
                                 <tr class="gradeX">
+                                    <td><input type="checkbox" class="chkitm" data-id="@item.ProductItemId" /></td>
                                     <td>@counter.</td>
                                     <td>
                                         @if (!string.IsNullOrEmpty(item.MainImage))
@@ -232,6 +236,26 @@
     </div>
 </div>
 <!-- Delete modal -->
+<!-- Delete Modal -->
+<div class="modal fade open" id="deleteallProductItemModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete Confirm</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete selected items ?
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="hdnDeleteProductItems" />
+                <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
+                <button id="btnDeleteAllProductItem" class="btn btn-primary" type="button">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Delete modal -->
 <div class="modal fade open" id="activeinactiveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -253,9 +277,39 @@
 </div>
 @*<script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>*@
 <script>
+    $(document).ready(function () {
+        $('#basic-19').DataTable({
+            "pageLength": 100,
+            "columnDefs": [{
+                "targets": [0,1],
+                "orderable": false
+            }]
+        });
+    });
 
+    $('body').on('change', '#mass_select_all', function () {
+        var rows, checked;
+        rows = $('#basic-19').find('tbody tr');
+        checked = $(this).prop('checked');
+        $.each(rows, function () {
+            var checkbox = $($(this).find('td').eq(0)).find('input').prop('checked', checked);
+        });
+    });
     $(document).on("click", "#btnAdd", function () {
         window.location.href = "/admin/productitem/add";
+    });
+    $(document).on("click", "#btndelte", function () {
+        if ($('#basic-19').find('tbody tr td input:checked').length == 0) {
+            alert("Please select atleast 1 item");
+        }
+        else {
+            var valuesArray = $('#basic-19').find('tbody tr td input:checked').map(function () {
+                return $(this).attr("data-id");
+            }).get().join();
+            $("#hdnDeleteProductItems").val(valuesArray);
+            $("#deleteallProductItemModal").modal('show');
+        }
+
     });
 
     //jQuery(document).ready(function () {
@@ -425,7 +479,41 @@
     }
 
       $(document).on("click", "#btnImport", function () {
-               // $("#importmodal").modal("show"); 
+               // $("#importmodal").modal("show");
          window.location.href = "/admin/ImportExcel/ProductItem";
       });
+
+    jQuery(document).on("click", "#btnDeleteAllProductItem", function () {
+
+        var ProductItem_ids = jQuery("#hdnDeleteProductItems").val();
+        if (ProductItem_ids != "" && ProductItem_ids != null) {
+            $('#deleteallProductItemModal').modal('hide');
+
+            StartLoading();
+
+            var URL = '@Url.Action("DeleteProductItems", "ProductItem")';
+            $.ajax({
+                type: 'POST',
+                async: true,
+                url: URL + "?ProductItemIds=" + ProductItem_ids,
+                success: function (result) {
+                    if (result == "success") {
+                        alert("ProductItems deleted successfully");
+                        window.location.reload();
+                    }
+                    else if (result == "notfound") {
+                        alert("ProductItem Not Found");
+                    }
+                    else {
+                        alert("Something went wrong. Please try again");
+                    }
+
+                   StopLoading();
+                },
+                error: function (resultData) {
+                    StopLoading();
+                }
+            });
+        }
+    });
 </script>

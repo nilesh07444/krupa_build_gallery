@@ -1032,5 +1032,51 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             ViewBag.Ratings = Rating;
             return View(lstRatings);
         }
+
+        [HttpPost]
+        public string DeleteProductItems(string ProductItemIds)
+        {
+            string ReturnMessage = "";
+
+            try
+            {
+                if(!string.IsNullOrEmpty(ProductItemIds))
+                {
+                  string[] arryitmsid = ProductItemIds.Split(',');
+                  if(arryitmsid != null && arryitmsid.Count() > 0)
+                    {
+                        foreach(string sid in arryitmsid)
+                        {
+                            long ItmId = Convert.ToInt32(sid);
+                            tbl_ProductItems objProductItem = _db.tbl_ProductItems.Where(x => x.ProductItemId == ItmId && x.IsActive && !x.IsDelete).FirstOrDefault();
+
+                            if (objProductItem == null)
+                            {
+                                ReturnMessage = "notfound";
+                            }
+                            else
+                            {
+                                long LoggedInUserId = Int64.Parse(clsAdminSession.UserID.ToString());
+
+                                objProductItem.IsDelete = true;
+                                objProductItem.UpdatedBy = LoggedInUserId;
+                                objProductItem.UpdatedDate = DateTime.UtcNow;
+
+                                _db.SaveChanges();
+                                ReturnMessage = "success";
+                            }
+                        }
+                    }
+                }
+              
+            }
+            catch (Exception ex)
+            {
+                string msg = ex.Message.ToString();
+                ReturnMessage = "exception";
+            }
+
+            return "success";
+        }
     }
 }
