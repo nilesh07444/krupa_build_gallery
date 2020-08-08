@@ -20,6 +20,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         public ActionResult Index(string referer = "")
         {
             ViewBag.Referer = referer;
+           List<tbl_ReferenceMaster> lstref = _db.tbl_ReferenceMaster.Where(o => o.IsDeleted == false).ToList();
+            ViewData["lstref"] = lstref;
             return View();
         }
         public ActionResult CreateAccount(FormCollection frm)
@@ -52,6 +54,13 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 }
                 else
                 {
+                    int refrnceid = Convert.ToInt32(frm["reference"]);
+                    string refrc = "";
+                    tbl_ReferenceMaster objref = _db.tbl_ReferenceMaster.Where(o => o.ReferenceId == refrnceid).FirstOrDefault();
+                    if(objref != null)
+                    {
+                        refrc = objref.Reference;
+                    }
                     string EncyptedPassword = clsCommon.EncryptString(password); // Encrypt(userLogin.Password);
                     objClientUsr = new tbl_ClientUsers();
                     objClientUsr.Email = email;
@@ -66,6 +75,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     objClientUsr.ProfilePicture = "";
                     objClientUsr.UserName = firstnm + lastnm;
                     objClientUsr.Password = EncyptedPassword;
+                    objClientUsr.Reference = refrc;
                     _db.tbl_ClientUsers.Add(objClientUsr);
                     _db.SaveChanges();
 

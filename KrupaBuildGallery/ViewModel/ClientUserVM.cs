@@ -45,5 +45,6 @@ namespace KrupaBuildGallery.ViewModel
         public decimal TotalAmountOfOrderPlaced { get; set; }
         public decimal PointRemaining { get; set; }
         public DateTime CreatedDate { get; set; }
+        public string Refrence { get; set; }
     }
 }

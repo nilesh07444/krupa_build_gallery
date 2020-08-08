@@ -188,6 +188,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         objProductItem.IsCashonDeliveryUse = productItemVM.IsCashonDelieveryuse;
                         objProductItem.MinimumStock = productItemVM.MinimumQty;
                         objProductItem.UnitType = productItemVM.UnitType;
+                        objProductItem.IsAssured = productItemVM.IsAssured;
                         objProductItem.Tags = productItemVM.Tags;
                         _db.tbl_ProductItems.Add(objProductItem);
                         _db.SaveChanges();
@@ -420,7 +421,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                   UnitType = i.UnitType.HasValue ? i.UnitType.Value : 0,
                                   MinimumQty = i.MinimumStock.HasValue ? i.MinimumStock.Value : 0,
                                   IsCashonDelieveryuse = i.IsCashonDeliveryUse.HasValue ? i.IsCashonDeliveryUse.Value : false,
-                                  GodownId = i.GodownId.HasValue ? i.GodownId.Value : 0
+                                  GodownId = i.GodownId.HasValue ? i.GodownId.Value : 0,
+                                  IsAssured = i.IsAssured.HasValue ? i.IsAssured.Value : false
                               }).FirstOrDefault();
 
             objProductItem.CategoryList = GetCategoryList();
@@ -489,6 +491,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         objProductItem.UnitType = productItemVM.UnitType;
                         objProductItem.IsCashonDeliveryUse = productItemVM.IsCashonDelieveryuse;
                         objProductItem.Tags = productItemVM.Tags;
+                        objProductItem.IsAssured = productItemVM.IsAssured;
                         objProductItem.ItemType = productItemVM.ItemType;
                         _db.SaveChanges();
 

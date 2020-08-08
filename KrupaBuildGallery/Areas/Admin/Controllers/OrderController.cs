@@ -108,7 +108,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             WalletAmtUsed = p.WalletAmountUsed.HasValue ? p.WalletAmountUsed.Value : 0,
                             OrderTypeId = p.OrderType.HasValue ? p.OrderType.Value : 1,
                             ExtraAmount = p.ExtraAmount.HasValue ? p.ExtraAmount.Value : 0,
-                            AdvancePay = p.AdvancePaymentRecieved.HasValue ? p.AdvancePaymentRecieved.Value : 0
+                            AdvancePay = p.AdvancePaymentRecieved.HasValue ? p.AdvancePaymentRecieved.Value : 0,
+                            Remarks = p.Remarks
                         }).OrderByDescending(x => x.OrderDate).FirstOrDefault();
             if (objOrder != null)
             {

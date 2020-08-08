@@ -582,7 +582,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     objOrder.InvoiceYear = year + "-" + toyear;
                     objOrder.ExtraAmount = extraamt;
                     objOrder.OrderType = Convert.ToInt32(objCheckout.ordertype);
-
+                    objOrder.Remarks = objCheckout.remarks;
                     objOrder.RazorSignature = "";
                     if (objCheckout.shippincode == "389001")
                     {
@@ -1146,6 +1146,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             objOrder.CreditAmountUsed = amtcredit;
                             objOrder.AmountByRazorPay = amtonline;
                             objOrder.ExtraAmount = extraamount;
+                            objOrder.Remarks = objCheckout.remarks;
                             if (objCheckout.shippincode == "389001")
                             {
                                 objOrder.ShippingCharge = shippingcharge;

@@ -33,5 +33,6 @@ namespace KrupaBuildGallery.Model
         public string AlternateMobileNo { get; set; }
         public string Prefix { get; set; }
         public Nullable<decimal> WalletAmt { get; set; }
+        public string Reference { get; set; }
     }
 }

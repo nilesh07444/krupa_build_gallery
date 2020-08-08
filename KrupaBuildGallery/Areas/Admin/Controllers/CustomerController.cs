@@ -283,7 +283,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                                 ShipAddress = co.ShipAddress,
                                                 ShipCity = co.ShipCity,
                                                 ShipPostalCode = co.ShipPostalcode,
-                                                ShipState = co.ShipState
+                                                ShipState = co.ShipState,
+                                                Refrence = cu.Reference                                                
                                             }).FirstOrDefault();
 
             List<OrderVM> lstOrders = new List<OrderVM>();

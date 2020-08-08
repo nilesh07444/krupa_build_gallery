@@ -393,6 +393,9 @@
     <Compile Include="Model\tbl_Products.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\tbl_ReferenceMaster.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\tbl_ReviewRating.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
@@ -3597,6 +3600,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="Images\default_image.png" />
     <Content Include="Images\default_user_image.png" />
+    <Content Include="Images\ssassured.png" />
     <Content Include="Model\KrupaGallery.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>KrupaGallery.edmx</DependentUpon>

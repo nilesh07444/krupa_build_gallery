@@ -212,6 +212,7 @@
           <Property Name="AlternateMobileNo" Type="nvarchar(max)" />
           <Property Name="Prefix" Type="nvarchar" MaxLength="10" />
           <Property Name="WalletAmt" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="Reference" Type="nvarchar" MaxLength="690" />
         </EntityType>
         <EntityType Name="tbl_ComboOffer">
           <Key>
@@ -624,6 +625,7 @@
           <Property Name="IsExtraAmountReceived" Type="bit" />
           <Property Name="AdvancePaymentRecieved" Type="decimal" Precision="18" Scale="2" />
           <Property Name="GSTNo" Type="nvarchar" MaxLength="30" />
+          <Property Name="Remarks" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="tbl_PaymentHistory">
           <Key>
@@ -722,6 +724,7 @@
           <Property Name="IsImported" Type="bit" />
           <Property Name="IsComboOffer" Type="bit" />
           <Property Name="ComboOfferId" Type="bigint" />
+          <Property Name="IsAssured" Type="bit" />
         </EntityType>
         <EntityType Name="tbl_Products">
           <Key>
@@ -738,6 +741,18 @@
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="UpdatedBy" Type="bigint" />
           <Property Name="UpdatedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="tbl_ReferenceMaster">
+          <Key>
+            <PropertyRef Name="ReferenceId" />
+          </Key>
+          <Property Name="ReferenceId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Reference" Type="nvarchar(max)" />
+          <Property Name="IsDeleted" Type="bit" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="UpdatedDate" Type="datetime" />
+          <Property Name="UpdatedBy" Type="bigint" />
         </EntityType>
         <EntityType Name="tbl_ReviewRating">
           <Key>
@@ -892,6 +907,7 @@
           <EntitySet Name="tbl_ProductItemImages" EntityType="Self.tbl_ProductItemImages" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ProductItems" EntityType="Self.tbl_ProductItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Products" EntityType="Self.tbl_Products" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_ReferenceMaster" EntityType="Self.tbl_ReferenceMaster" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ReviewRating" EntityType="Self.tbl_ReviewRating" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_SecondCart" EntityType="Self.tbl_SecondCart" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_StockReport" EntityType="Self.tbl_StockReport" Schema="dbo" store:Type="Tables" />
@@ -1024,6 +1040,7 @@
           <Property Name="AlternateMobileNo" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Prefix" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="WalletAmt" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="Reference" Type="String" MaxLength="690" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_ContactFormData">
           <Key>
@@ -1206,6 +1223,7 @@
           <Property Name="IsExtraAmountReceived" Type="Boolean" />
           <Property Name="AdvancePaymentRecieved" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="GSTNo" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="Remarks" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_PaymentHistory">
           <Key>
@@ -1277,6 +1295,7 @@
           <Property Name="IsComboOffer" Type="Boolean" />
           <Property Name="ComboOfferId" Type="Int64" />
           <Property Name="IsImported" Type="Boolean" />
+          <Property Name="IsAssured" Type="Boolean" />
         </EntityType>
         <EntityType Name="tbl_Products">
           <Key>
@@ -1377,6 +1396,7 @@
           <EntitySet Name="tbl_ComboOfferMaster" EntityType="krupagalleryModel.tbl_ComboOfferMaster" />
           <EntitySet Name="tbl_ComboOfferSubItems" EntityType="krupagalleryModel.tbl_ComboOfferSubItems" />
           <EntitySet Name="tbl_ItemReplace" EntityType="krupagalleryModel.tbl_ItemReplace" />
+          <EntitySet Name="tbl_ReferenceMaster" EntityType="krupagalleryModel.tbl_ReferenceMaster" />
         </EntityContainer>
         <EntityType Name="tbl_AdminRoles">
           <Key>
@@ -1829,6 +1849,18 @@
           <Property Name="ReplaceDate" Type="DateTime" Precision="3" />
           <Property Name="AssignPersonId" Type="Int64" />
         </EntityType>
+        <EntityType Name="tbl_ReferenceMaster">
+          <Key>
+            <PropertyRef Name="ReferenceId" />
+          </Key>
+          <Property Name="ReferenceId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Reference" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdatedBy" Type="Int64" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1933,6 +1965,7 @@
           <EntitySetMapping Name="tbl_ClientUsers">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_ClientUsers">
               <MappingFragment StoreEntitySet="tbl_ClientUsers">
+                <ScalarProperty Name="Reference" ColumnName="Reference" />
                 <ScalarProperty Name="WalletAmt" ColumnName="WalletAmt" />
                 <ScalarProperty Name="ClientUserId" ColumnName="ClientUserId" />
                 <ScalarProperty Name="FirstName" ColumnName="FirstName" />
@@ -2106,6 +2139,7 @@
           <EntitySetMapping Name="tbl_Orders">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_Orders">
               <MappingFragment StoreEntitySet="tbl_Orders">
+                <ScalarProperty Name="Remarks" ColumnName="Remarks" />
                 <ScalarProperty Name="GSTNo" ColumnName="GSTNo" />
                 <ScalarProperty Name="AdvancePaymentRecieved" ColumnName="AdvancePaymentRecieved" />
                 <ScalarProperty Name="IsExtraAmountReceived" ColumnName="IsExtraAmountReceived" />
@@ -2183,6 +2217,7 @@
           <EntitySetMapping Name="tbl_ProductItems">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_ProductItems">
               <MappingFragment StoreEntitySet="tbl_ProductItems">
+                <ScalarProperty Name="IsAssured" ColumnName="IsAssured" />
                 <ScalarProperty Name="IsImported" ColumnName="IsImported" />
                 <ScalarProperty Name="ComboOfferId" ColumnName="ComboOfferId" />
                 <ScalarProperty Name="IsComboOffer" ColumnName="IsComboOffer" />
@@ -2714,6 +2749,19 @@
                 <ScalarProperty Name="OrderId" ColumnName="OrderId" />
                 <ScalarProperty Name="ItemDetailId" ColumnName="ItemDetailId" />
                 <ScalarProperty Name="ItemReplaceId" ColumnName="ItemReplaceId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_ReferenceMaster">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_ReferenceMaster">
+              <MappingFragment StoreEntitySet="tbl_ReferenceMaster">
+                <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
+                <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="Reference" ColumnName="Reference" />
+                <ScalarProperty Name="ReferenceId" ColumnName="ReferenceId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
