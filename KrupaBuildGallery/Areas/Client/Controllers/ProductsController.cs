@@ -513,6 +513,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 objVM.CustomerPrice = objvv.CustomerPrice.Value;
                                 objVM.DistributorPrice = objvv.DistributorPrice.Value;
                                 objVM.MRPPrice = Math.Round((objProductItem.MRPPrice * qtt * objvv.PricePecentage.Value) / 100, 2);
+                                objVM.VariantImg = objvv.VariantImage;
                             }
                             else
                             {
@@ -521,6 +522,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 objVM.CustomerPrice = objvv.CustomerPrice.Value;
                                 objVM.DistributorPrice = objvv.DistributorPrice.Value;
                                 objVM.MRPPrice = Math.Round((objProductItem.MRPPrice * objvv.PricePecentage.Value) / 100, 2);
+                                objVM.VariantImg = objvv.VariantImage;
                             }
                         }
                         else if (objUnt.UnitName.ToLower().Contains("litr"))
@@ -534,6 +536,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 objVM.CustomerPrice = objvv.CustomerPrice.Value;
                                 objVM.DistributorPrice = objvv.DistributorPrice.Value;
                                 objVM.MRPPrice = Math.Round((objProductItem.MRPPrice * qtt * objvv.PricePecentage.Value) / 100, 2);
+                                objVM.VariantImg = objvv.VariantImage;
                             }
                             else
                             {
@@ -542,6 +545,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 objVM.CustomerPrice = objvv.CustomerPrice.Value;
                                 objVM.DistributorPrice = objvv.DistributorPrice.Value;
                                 objVM.MRPPrice = Math.Round((objProductItem.MRPPrice * objvv.PricePecentage.Value) / 100, 2);
+                                objVM.VariantImg = objvv.VariantImage;
                             }
                         }
                         else if (objUnt.UnitName.ToLower().Contains("sheet"))
@@ -553,12 +557,21 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             objVM.CustomerPrice = objvv.CustomerPrice.Value;
                             objVM.DistributorPrice = objvv.DistributorPrice.Value;
                             objVM.MRPPrice = Math.Round(sqft * objProductItem.MRPPrice, 2);
+                            objVM.VariantImg = objvv.VariantImage;
+                        }
+                        else if (objUnt.UnitName.ToLower().Contains("piece"))
+                        {  
+                            objVM.CustomerPrice = Math.Round(objvv.CustomerPrice.Value,2);
+                            objVM.DistributorPrice = Math.Round(objvv.DistributorPrice.Value,2);
+                            objVM.MRPPrice = Math.Round(objvv.MRPPrice.Value, 2);
+                            objVM.VariantImg = objvv.VariantImage;
                         }
                         else
                         {
                             objVM.CustomerPrice = objvv.CustomerPrice.Value;
                             objVM.DistributorPrice = objvv.DistributorPrice.Value;
                             objVM.MRPPrice = Math.Round(objProductItem.MRPPrice, 2);
+                            objVM.VariantImg = objvv.VariantImage;
                         }
                         lstVrntVM.Add(objVM);
                     }

@@ -4125,6 +4125,7 @@
     <Folder Include="Images\ProductItemMedia\" />
     <Folder Include="Images\ProductMedia\" />
     <Folder Include="Images\SubProductMedia\" />
+    <Folder Include="Images\VariantMedia\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

@@ -355,6 +355,37 @@
                   
                 }
 
+                });
+
+            $("input[name^=variantmrpprice]").each(function () {
+                var idss = $(this).attr("data-itmmid");
+                if ($(this).parents('tr').find('input[type=checkbox]:checked').length > 0) {
+                    if ($(this).val() == "" || parseFloat($(this).val()) <= 0) {
+                        if (flgtrue == true) {
+                            alert("Please Enter MRP Price for variant");
+                            flgtrue = false;
+                        }
+                    }
+                    if ($("#variantcustprice_" + idss).val() == "" || parseFloat($("#variantcustprice_" + idss).val()) <= 0) {
+                        if (flgtrue == true) {
+                            alert("Please Enter Customer Price for variant");
+                            flgtrue = false;
+                        }
+                    }
+                    if ($("#variantdistriprice_" + idss).val() == "" || parseFloat($("#variantdistriprice_" + idss).val()) <= 0) {
+                        if (flgtrue == true) {
+                            alert("Please Enter Distributor Price for variant");
+                            flgtrue = false;
+                        }
+                    }
+                    if ($("#variantnm_" + idss).val() == "") {
+                        if (flgtrue == true) {
+                            alert("Please Enter Variant Name");
+                            flgtrue = false;
+                        }
+                    }
+                }
+
             });
             if (flgtrue == true) {
                 $("#ProductItemFormId").submit();

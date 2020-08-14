@@ -22,5 +22,8 @@ namespace KrupaBuildGallery.Model
         public Nullable<decimal> DistributorPrice { get; set; }
         public Nullable<bool> IsActive { get; set; }
         public Nullable<System.DateTime> CreatedDate { get; set; }
+        public Nullable<decimal> MRPPrice { get; set; }
+        public string VariantImage { get; set; }
+        public Nullable<bool> IsDeleted { get; set; }
     }
 }

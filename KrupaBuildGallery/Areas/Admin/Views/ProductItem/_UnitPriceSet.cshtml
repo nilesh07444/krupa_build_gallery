@@ -2,38 +2,273 @@
     List<VariantItemVM> lstVarint = ViewData["lstVarintss"] as List<VariantItemVM>;
     string strunittp = Convert.ToString(ViewBag.UntTyp);
     strunittp = strunittp.ToLower();
+    int ProdItemId = Convert.ToInt32(ViewBag.ProductItemId);
 }
-@if (lstVarint != null && lstVarint.Count() > 0)
+<style>
+    input:focus {
+        color: #495057;
+        background-color: #fff;
+        border-color: #80bdff;
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+    #tblvaritn input[type=file] {
+        width: 155px !important;
+    }
+</style>
+@if (lstVarint != null && lstVarint.Count() > 0 && !strunittp.Contains("piece"))
 {
     <lable class="col-xl-3 col-md-4"></lable>
-    <input type="hidden" value="" id="hdnUntType"/>
-    <table class="col-xl-4 col-md-4">
+    <input type="hidden" value="@strunittp" id="hdnUntType" />
+    <table class="col-xl-8 col-md-8">
         <tr>
-            <td colspan="3" style="text-align:center;font-size:19px;">
+            <td colspan="4" style="text-align:center;font-size:19px;">
                 Item Variants
-            </td> 
-        </tr> 
+            </td>
+        </tr>
+        <tr>
+            <td>
+            </td>
+            <td style="width:200px;">
+                Units
+            </td>
+            @if (strunittp != "sheets")
+            {
+                <td>
+                    Percentage
+                </td>
+            }
+            else
+            {
+                <td style="display:none;">
+                    Percentage
+                </td>
+            }
+            @if (strunittp != "sheets")
+            {
+                <td>
+                    Price
+                </td>
+            }
+            else
+            {
+                <td style="display: none;">
+                    Price
+                </td>
+            }
+            <td>
+                Image
+            </td>
+
+        </tr>
         @foreach (var objj in lstVarint)
         {
             string chk = "";
-            if(objj.IsActive == true)
+            if (objj.IsActive == true)
             {
                 chk = "checked";
             }
-    <tr>
-        <td><input class="" @chk style="width:50px;" type="checkbox" name="chkvariant_@objj.VariantItemId" /></td>
-        <td style="width:200px;">@objj.UnitQtyText</td>
-        @if (strunittp == "sheets")
-        {
-            <td><input type="number" id="variantper_@objj.VariantItemId" style="width:100px;display:none;" placeholder="Percentage %" name="variantper_@objj.VariantItemId" value="100" /></td>
-        }
-        else
-        {
-            <td><input type="number" id="variantper_@objj.VariantItemId" style="width:100px;" placeholder="Percentage %" name="variantper_@objj.VariantItemId" value="@objj.PricePercentage" /></td>
-        }
-    </tr>
+            <tr>
+                <td><input class="" @chk style="width:50px;" type="checkbox" name="chkvariant_@objj.VariantItemId" /></td>
+                <td style="width:200px;">@objj.UnitQtyText</td>
+                @if (strunittp == "sheets")
+                {
+                    <td style="display: none;"><input type="number" id="variantper_@objj.VariantItemId" data-idd="@objj.VariantItemId" style="width:0px;display:none;" placeholder="Percentage %" name="variantper_@objj.VariantItemId" value="100" /></td>
+                }
+                else
+                {
+                    if (Convert.ToDecimal(objj.UnitQtys) == 1)
+                    {
+                        <td><input type="number" id="variantper_@objj.VariantItemId" data-idd="@objj.VariantItemId" data-unit="@objj.UnitQtys" readonly style="width:100px;" placeholder="Percentage %" name="variantper_@objj.VariantItemId" value="100" onblur="calprcfromperc('@objj.VariantItemId','@objj.UnitQtys');" /></td>
+                    }
+                    else
+                    {
+                        <td><input type="number" id="variantper_@objj.VariantItemId" data-idd="@objj.VariantItemId" data-unit="@objj.UnitQtys" style="width:100px;" placeholder="Percentage %" name="variantper_@objj.VariantItemId" value="@objj.PricePercentage" onblur="calprcfromperc('@objj.VariantItemId','@objj.UnitQtys');" /></td>
+                    }
+
+                }
+                @if (strunittp == "sheets")
+                {
+                    <td style="display:none;"></td>
+                }
+                else
+                {
+                    if (Convert.ToDecimal(objj.UnitQtys) == 1)
+                    {
+                        <td><input type="number" id="variantpice_@objj.VariantItemId" data-idd="@objj.VariantItemId" readonly data-unit="@objj.UnitQtys" style="width:100px;" placeholder="" name="variantpice_@objj.VariantItemId" value="@objj.CustomerPrice" onblur="calpercfromprice('@objj.VariantItemId','@objj.UnitQtys');" /></td>
+                    }
+                    else
+                    {
+                        <td><input type="number" id="variantpice_@objj.VariantItemId" data-idd="@objj.VariantItemId" style="width:100px;" data-unit="@objj.UnitQtys" placeholder="" name="variantpice_@objj.VariantItemId" value="@objj.CustomerPrice" onblur="calpercfromprice('@objj.VariantItemId','@objj.UnitQtys');" /></td>
+                    }
+
+                }
+            <td>
+                <input type="file" id="variantimg_@objj.VariantItemId" name="variantimg_@objj.VariantItemId" style="width:150px;" />
+                @if (!string.IsNullOrEmpty(objj.VariantImg))
+                {
+                    <a href="~/Images/VariantMedia/@objj.VariantImg" target="_blank" style="color:blue;">View</a>
+                }
+            </td>
+            </tr>
         }
 
     </table>
 }
+else if (strunittp.Contains("piece"))
+{
 
+    <lable class="col-xl-2 col-md-2"></lable>
+    <input type="hidden" value="" id="hdnUntType" />
+    <table class="col-xl-10 col-md-10" id="tblvaritn" style="display:block;">
+        <tr>
+            <td colspan="3" style="text-align:center;font-size:19px;">
+                Item Variants
+            </td>
+        </tr>
+        <tr>
+            <td>
+            </td>
+            <td>
+                Units
+            </td>
+            <td>
+                MRP Price
+            </td>
+            <td>
+                Customer Price
+            </td>
+            <td>
+                Distributor Price
+            </td>
+            <td>
+                Image
+            </td>
+            <td></td>
+        </tr>
+        @if (lstVarint != null && lstVarint.Count() > 0)
+        {
+            foreach (var objj in lstVarint)
+            {
+                string chk = "";
+                if (objj.IsActive == true)
+                {
+                    chk = "checked";
+                }
+                <tr>
+                    <td><input class="" @chk style="width:50px;" type="checkbox" name="chkvariant_@objj.VariantItemId" /></td>
+                    <td style="width:200px;"><input type="text" value="@objj.UnitQtyText" name="variantnm_@objj.VariantItemId" id="variantnm_@objj.VariantItemId" /></td>
+                    <td><input type="number" id="variantmrpprice_@objj.VariantItemId" data-itmmid="@objj.VariantItemId" style="width:100px;" placeholder="" name="variantmrpprice_@objj.VariantItemId" value="@objj.MRPPrice" /></td>
+                    <td><input type="number" id="variantcustprice_@objj.VariantItemId" style="width:100px;" placeholder="" name="variantcustprice_@objj.VariantItemId" value="@objj.CustomerPrice" /></td>
+                    <td><input type="number" id="variantdistriprice_@objj.VariantItemId" style="width:100px;" placeholder="" name="variantdistriprice_@objj.VariantItemId" value="@objj.DistributorPrice" /></td>
+                    <td>
+                        <input type="file" id="variantimg_@objj.VariantItemId" name="variantimg_@objj.VariantItemId" />
+                        @if (!string.IsNullOrEmpty(objj.VariantImg))
+                        {
+                            <a href="~/Images/VariantMedia/@objj.VariantImg" target="_blank" style="color:blue;">View</a>
+                        }
+                        <input type="hidden" name="hdnvrtn" value="@objj.VariantItemId" />
+                    </td>
+
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td><input class="" style="width:50px;" type="checkbox" name="chkvariant_1" /></td>
+                <td style="width:200px;"><input type="text" value="" name="variantnm_1" id="variantnm_1" /></td>
+                <td><input type="number" id="variantmrpprice_1" style="width:100px;" data-itmmid="1" placeholder="" name="variantmrpprice_1" value="0" /></td>
+                <td><input type="number" id="variantcustprice_1" style="width:100px;" placeholder="" name="variantcustprice_1" value="0" /></td>
+                <td><input type="number" id="variantdistriprice_1" style="width:100px;" placeholder="" name="variantdistriprice_1" value="0" /></td>
+                <td><input type="file" id="variantimg_1" name="variantimg_1" /><input type="hidden" name="hdnvrtn" value="1" /></td>
+
+            </tr>
+
+        }
+    </table>
+    <div class="col-xl-3 col-md-3"></div>
+    if (ProdItemId == 0)
+    {
+        <a href="javascript:void(0);" class="col-xl-3 col-md-3" style="width:200px;margin-top:15px;" onclick="AddNewVarint();">Add New</a>
+    }
+
+}
+
+<script>
+    var cntvr = 1;
+    function AddNewVarint() {
+        cntvr = cntvr + 1;
+        var htmls = '<tr id="tr_' + cntvr + '"><td><input style="width:50px;" type="checkbox" name="chkvariant_' + cntvr + '" /></td>' +
+            '<td style="width:200px;"><input type="text" value="" name="variantnm_' + cntvr + '" id="variantnm_' + cntvr + '" /></td>' +
+            '<td><input type="number" id="variantmrpprice_' + cntvr + '" style="width:100px;" data-itmmid="'+cntvr+'" placeholder="" name="variantmrpprice_' + cntvr + '" value="0" /></td>' +
+            '<td><input type="number" id="variantcustprice_' + cntvr + '" style="width:100px;" placeholder="" name="variantcustprice_' + cntvr + '" value="0" /></td>' +
+            '<td><input type="number" id="variantdistriprice_' + cntvr + '" style="width:100px;" placeholder="" name="variantdistriprice_' + cntvr + '" value="0" /></td>' +
+            '<td><input type="file" id="variantimg_' + cntvr + '" name="variantimg_' + cntvr + '" /></td>' +
+            '<td><a href="javascipt:void(0)" style="color:red" title="Remove" onclick="removeitmm(\'' + cntvr + '\');"><i class="fa fa-trash font-danger"></i></a>' +
+            '<input type="hidden" name="hdnvrtn" value="' + cntvr + '" /></td><tr/>';
+
+        $("#tblvaritn").append(htmls);
+    }
+    function removeitmm(id) {
+        $("#tr_" + id).remove();
+    }
+
+    function calprcfromperc(idss, vrianttxt) {
+        var custprc = $("#CustomerPrice").val();
+        if (custprc != "" || parseInt(custprc) > 0) {
+            var vlper = $("#variantper_" + idss).val();
+            if (parseFloat(vrianttxt) >= 1) {
+                var vll = ((parseFloat(custprc) * parseFloat(vlper) * parseFloat(vrianttxt)) / 100).toFixed(2);
+                $("#variantpice_" + idss).val(vll);
+            }
+            else {
+                var vll = ((parseFloat(custprc) * parseFloat(vlper)) / 100).toFixed(2);
+                $("#variantpice_" + idss).val(vll);
+            }
+        }
+    }
+
+    function calpercfromprice(idss, vrianttxt) {
+        var custprc = $("#CustomerPrice").val();
+        if (custprc != "" && parseInt(custprc) > 0) {
+            var vlper = $("#variantpice_" + idss).val();
+            if (parseFloat(vrianttxt) >= 1) {
+                var perk = parseFloat(vlper) / parseFloat(vrianttxt);
+                var vll = ((parseFloat(perk) * 100) / parseFloat(custprc)).toFixed(2);
+                $("#variantper_" + idss).val(vll);
+            }
+            else {
+                var vll = ((parseFloat(vlper) * 100) / parseFloat(custprc)).toFixed(2);
+                $("#variantper_" + idss).val(vll);
+            }
+        }
+    }
+
+    $(document).on("blur", "#CustomerPrice", function () {
+        var custprc = $("#CustomerPrice").val();
+        if (custprc == "" || parseInt(custprc) <= 0) {
+            alert("Please Enter Customer Price");
+            return;
+        }
+        if ($("#hdnUntType").length > 0 && $("#hdnUntType").val() != "" && $("#hdnUntType").val() != "sheets") {
+            $("input[name^=variantper]").each(function () {
+                var idv = $(this).attr("data-idd");
+                var vlper = $("#variantper_" + idv).val();
+                if (vlper != "" && parseFloat(vlper) > 0) {
+                    var vrianttxt = $("#variantper_" + idv).attr("data-unit");
+                    if (parseFloat(vrianttxt) >= 1) {
+                        var vll = ((parseFloat(custprc) * parseFloat(vlper) * parseFloat(vrianttxt)) / 100).toFixed(2);
+                        $("#variantpice_" + idv).val(vll);
+                    }
+                    else {
+                        var vll = ((parseFloat(custprc) * parseFloat(vlper)) / 100).toFixed(2);
+                        $("#variantpice_" + idv).val(vll);
+                    }
+                }
+               
+            });
+        }
+    });
+</script>

@@ -502,6 +502,9 @@
           <Property Name="DistributorPrice" Type="decimal" Precision="18" Scale="2" />
           <Property Name="IsActive" Type="bit" />
           <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="MRPPrice" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="VariantImage" Type="nvarchar" MaxLength="800" />
+          <Property Name="IsDeleted" Type="bit" />
         </EntityType>
         <EntityType Name="tbl_LoginHistory">
           <Key>
@@ -1609,6 +1612,9 @@
           <Property Name="DistributorPrice" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="IsActive" Type="Boolean" />
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="MRPPrice" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="VariantImage" Type="String" MaxLength="800" FixedLength="false" Unicode="true" />
+          <Property Name="IsDeleted" Type="Boolean" />
         </EntityType>
         <EntityType Name="tbl_Units">
           <Key>
@@ -2487,6 +2493,9 @@
           <EntitySetMapping Name="tbl_ItemVariant">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_ItemVariant">
               <MappingFragment StoreEntitySet="tbl_ItemVariant">
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="VariantImage" ColumnName="VariantImage" />
+                <ScalarProperty Name="MRPPrice" ColumnName="MRPPrice" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="DistributorPrice" ColumnName="DistributorPrice" />
