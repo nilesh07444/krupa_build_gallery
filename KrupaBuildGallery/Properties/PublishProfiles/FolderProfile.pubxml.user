@@ -190,7 +190,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>05/02/2020 12:51:07</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Order/Detail.cshtml">
-      <publishTime>07/05/2020 21:13:15</publishTime>
+      <publishTime>07/11/2020 17:07:50</publishTime>
     </File>
     <File Include="Areas/Admin/Views/Order/Index.cshtml">
       <publishTime>06/29/2020 10:43:22</publishTime>
@@ -340,7 +340,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>06/28/2020 18:52:49</publishTime>
     </File>
     <File Include="Areas/Client/Views/Orders/OrderDetails.cshtml">
-      <publishTime>06/28/2020 22:08:51</publishTime>
+      <publishTime>07/11/2020 17:07:50</publishTime>
     </File>
     <File Include="Areas/Client/Views/Orders/_RatingReview.cshtml">
       <publishTime>06/03/2020 10:37:48</publishTime>
@@ -409,10 +409,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>03/01/2020 10:00:03</publishTime>
     </File>
     <File Include="bin/KrupaBuildGallery.dll">
-      <publishTime>07/05/2020 21:20:31</publishTime>
+      <publishTime>07/11/2020 17:33:31</publishTime>
     </File>
     <File Include="bin/KrupaBuildGallery.pdb">
-      <publishTime>07/05/2020 21:20:31</publishTime>
+      <publishTime>07/11/2020 17:33:31</publishTime>
     </File>
     <File Include="bin/Microsoft.CodeDom.Providers.DotNetCompilerPlatform.dll">
       <publishTime>05/24/2018 13:38:22</publishTime>
@@ -7702,7 +7702,7 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>02/11/2020 22:53:14</publishTime>
     </File>
     <File Include="Content/assets/js/datatables/custom-basic.js">
-      <publishTime>02/11/2020 22:53:14</publishTime>
+      <publishTime>07/05/2020 21:30:59</publishTime>
     </File>
     <File Include="Content/assets/js/datatables/jquery.dataTables.min.js">
       <publishTime>02/11/2020 22:53:14</publishTime>
@@ -10972,10 +10972,10 @@ by editing this MSBuild file. In order to learn more about this please visit htt
       <publishTime>03/22/2020 18:11:18</publishTime>
     </File>
     <File Include="templates/Invoice.html">
-      <publishTime>06/29/2020 23:55:18</publishTime>
+      <publishTime>07/10/2020 23:17:48</publishTime>
     </File>
     <File Include="templates/InvoiceIGST.html">
-      <publishTime>04/18/2020 17:24:57</publishTime>
+      <publishTime>07/11/2020 17:07:50</publishTime>
     </File>
     <File Include="templates/ReceiptLatest.html">
       <publishTime>04/18/2020 17:24:57</publishTime>
