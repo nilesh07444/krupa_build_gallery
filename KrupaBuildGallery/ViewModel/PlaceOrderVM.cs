@@ -29,5 +29,6 @@ namespace KrupaBuildGallery
         public string extraamount { get; set; }
         public string MobileNumber {get;set;}
         public string GSTNo { get; set; }
+        public string Remarks { get; set; }
     }
 }

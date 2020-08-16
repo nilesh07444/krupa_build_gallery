@@ -124,5 +124,7 @@ namespace KrupaBuildGallery
 
         [Display(Name = "Assured Item")]
         public bool IsAssured { get; set; }
+
+        public List<ProductItemVM> RelatedItems { get; set; }
     }
 }
