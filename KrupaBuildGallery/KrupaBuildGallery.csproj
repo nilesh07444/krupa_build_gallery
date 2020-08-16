@@ -209,6 +209,7 @@
     <Compile Include="Areas\Admin\Controllers\OrderController.cs" />
     <Compile Include="Areas\Admin\Controllers\ProductController.cs" />
     <Compile Include="Areas\Admin\Controllers\ProductItemController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ReferenceController.cs" />
     <Compile Include="Areas\Admin\Controllers\RoleController.cs" />
     <Compile Include="Areas\Admin\Controllers\StockController.cs" />
     <Compile Include="Areas\Admin\Controllers\SubProductController.cs" />
@@ -432,6 +433,7 @@
     <Compile Include="ViewModel\Admin\ImportExcelDataVM.cs" />
     <Compile Include="ViewModel\Admin\LoginHistoryVM.cs" />
     <Compile Include="ViewModel\Admin\RatingReviewVM.cs" />
+    <Compile Include="ViewModel\Admin\ReferenceVM.cs" />
     <Compile Include="ViewModel\Admin\RoleModuleVM.cs" />
     <Compile Include="ViewModel\Admin\RoleVM.cs" />
     <Compile Include="ViewModel\Admin\UserPermissionVM.cs" />
@@ -4061,6 +4063,9 @@
     <Content Include="Areas\Admin\Views\ComboOffer\_SubItemsEdit.cshtml" />
     <Content Include="Areas\Client\Views\Products\ComboOffers.cshtml" />
     <Content Include="Areas\Client\Views\Products\OfferDetail.cshtml" />
+    <Content Include="Areas\Admin\Views\Reference\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Reference\Add.cshtml" />
+    <Content Include="Areas\Admin\Views\Reference\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />
