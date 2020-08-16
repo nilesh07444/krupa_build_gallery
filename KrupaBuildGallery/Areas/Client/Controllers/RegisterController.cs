@@ -20,7 +20,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         public ActionResult Index(string referer = "")
         {
             ViewBag.Referer = referer;
-           List<tbl_ReferenceMaster> lstref = _db.tbl_ReferenceMaster.Where(o => o.IsDeleted == false).ToList();
+            List<tbl_ReferenceMaster> lstref = _db.tbl_ReferenceMaster.Where(o => o.IsDeleted == false).OrderBy(x => x.Reference).ToList();
             ViewData["lstref"] = lstref;
             return View();
         }
@@ -34,9 +34,9 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 string lastnm = frm["lname"].ToString();
                 string mobileno = frm["mobileno"].ToString();
                 string password = frm["password"].ToString();
-              
+
                 tbl_ClientUsers objClientUsr = _db.tbl_ClientUsers.Where(o => (o.MobileNo == mobileno || (email != "" && o.Email.ToLower() == email.ToLower())) && o.ClientRoleId == 1).FirstOrDefault();
-                if(objClientUsr != null)
+                if (objClientUsr != null)
                 {
                     TempData["RegisterError"] = "Your Account is already exist.Please go to Login or Contact to support";
                     TempData["email"] = email;
@@ -50,14 +50,14 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     else
                     {
                         return RedirectToAction("Index", "Register", new { area = "Client", referer = referer });
-                    }                  
+                    }
                 }
                 else
                 {
                     int refrnceid = Convert.ToInt32(frm["reference"]);
                     string refrc = "";
                     tbl_ReferenceMaster objref = _db.tbl_ReferenceMaster.Where(o => o.ReferenceId == refrnceid).FirstOrDefault();
-                    if(objref != null)
+                    if (objref != null)
                     {
                         refrc = objref.Reference;
                     }
@@ -96,7 +96,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     clsClientSession.Email = objClientUsr.Email;
 
                     var objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
-                    if(objGensetting != null)
+                    if (objGensetting != null)
                     {
                         tbl_PointDetails objPoint = new tbl_PointDetails();
                         objPoint.ClientUserId = clsClientSession.UserID;
@@ -123,12 +123,12 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         else
                         {
                             return RedirectToAction("secondcartcheckout", "Checkout");
-                        }                        
+                        }
                     }
                     else
                     {
                         return RedirectToAction("Index", "HomePage", new { area = "Client" });
-                    }                  
+                    }
                 }
             }
             catch (Exception ex)
@@ -153,7 +153,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             try
             {
                 tbl_ClientUsers objClientUsr = _db.tbl_ClientUsers.Where(o => o.MobileNo.ToLower() == MobileNumber.ToLower() && o.ClientRoleId == 1).FirstOrDefault();
-                
+
                 if (objClientUsr != null)
                 {
                     return "AlreadyExist";
@@ -172,8 +172,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         return "InvalidNumber";
                     }
                     else
-                    {                                                                        
-                        return num.ToString(); 
+                    {
+                        return num.ToString();
                     }
 
                 }
