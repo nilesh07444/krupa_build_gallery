@@ -1,9 +1,14 @@
 ﻿using ConstructionDiary.Models;
 using KrupaBuildGallery.Model;
 using KrupaBuildGallery.ViewModel;
+using OfficeOpenXml;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.DateTime;
+using OfficeOpenXml.Style;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 
@@ -18,15 +23,26 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             _db = new krupagallarydbEntities();
         }
         // GET: Admin/Customer
-        public ActionResult Index(int Status = -1)
+        public ActionResult Index(int Status = -1,string StartDate = "",string EndDate = "")
         {
             List<ClientUserVM> lstClientUser = new List<ClientUserVM>();
             try
             {
-                
+                DateTime dtStart = DateTime.MinValue;
+                if (!string.IsNullOrEmpty(StartDate))
+                {
+                    dtStart = DateTime.ParseExact(StartDate, "dd/MM/yyyy", null);
+                }
+
+                DateTime dtEnd = DateTime.MaxValue;
+                if (!string.IsNullOrEmpty(StartDate))
+                {
+                    dtEnd = DateTime.ParseExact(EndDate, "dd/MM/yyyy", null);
+                }
+
                 lstClientUser = (from cu in _db.tbl_ClientUsers
                              join co in _db.tbl_ClientOtherDetails on cu.ClientUserId equals co.ClientUserId
-                             where !cu.IsDelete && cu.ClientRoleId == 1
+                             where !cu.IsDelete && cu.ClientRoleId == 1 && cu.CreatedDate >= dtStart && cu.CreatedDate <= dtEnd
                              select new ClientUserVM
                              {
                                  ClientUserId = cu.ClientUserId,
@@ -53,7 +69,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     lstClientUser = lstClientUser.Where(o => pendingshippingdistri.Contains(o.ClientUserId)).ToList();
                 }
                 ViewBag.Status = Status;
-
+                ViewBag.StartDate = StartDate;
+                ViewBag.EndDate = EndDate;
             }
             catch (Exception ex)
             {
@@ -61,6 +78,147 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             }
 
             return View(lstClientUser);
+        }
+
+        public void Export(int Status = -1, string StartDate = "", string EndDate = "")
+        {
+            ExcelPackage excel = new ExcelPackage();
+            List<ClientUserVM> lstClientUser = new List<ClientUserVM>();
+            DateTime dtStart = DateTime.MinValue;
+            if (!string.IsNullOrEmpty(StartDate))
+            {
+                dtStart = DateTime.ParseExact(StartDate, "dd/MM/yyyy", null);
+            }
+
+            DateTime dtEnd = DateTime.MaxValue;
+            if (!string.IsNullOrEmpty(StartDate))
+            {
+                dtEnd = DateTime.ParseExact(EndDate, "dd/MM/yyyy", null);
+            }
+
+            lstClientUser = (from cu in _db.tbl_ClientUsers
+                             join co in _db.tbl_ClientOtherDetails on cu.ClientUserId equals co.ClientUserId
+                             where !cu.IsDelete && cu.ClientRoleId == 1 && cu.CreatedDate >= dtStart && cu.CreatedDate <= dtEnd
+                             select new ClientUserVM
+                             {
+                                 ClientUserId = cu.ClientUserId,
+                                 FirstName = cu.FirstName,
+                                 LastName = cu.LastName,
+                                 UserName = cu.UserName,
+                                 Email = cu.Email,
+                                 Password = cu.Password,
+                                 RoleId = cu.ClientRoleId,
+                                 CompanyName = cu.CompanyName,
+                                 ProfilePic = cu.ProfilePicture,
+                                 MobileNo = cu.MobileNo,
+                                 IsActive = cu.IsActive,
+                                 City = co.City,
+                                 State = co.State,
+                                 AddharCardNo = co.Addharcardno,
+                                 PanCardNo = co.Pancardno,
+                                 GSTNo = co.GSTno,
+                                 CreatedDate = co.CreatedDate
+                             }).OrderBy(x => x.FirstName).ToList();
+            if (Status == 1)
+            {
+                List<long> clientuserids = lstClientUser.Select(o => o.ClientUserId).ToList();
+                List<long> pendingshippingdistri = _db.tbl_Orders.Where(o => o.ShippingStatus == 1 && clientuserids.Contains(o.ClientUserId)).Select(o => o.ClientUserId).Distinct().ToList();
+                lstClientUser = lstClientUser.Where(o => pendingshippingdistri.Contains(o.ClientUserId)).ToList();
+            }
+         
+            StringBuilder sb = new StringBuilder();
+            string[] arrycolmns = new string[] { "First Name", "Last Name", "Mobile Number", "Email", "City","State","Created Date","IsActive"};
+            var workSheet = excel.Workbook.Worksheets.Add("Report");
+            workSheet.Cells[1, 1].Style.Font.Bold = true;
+            workSheet.Cells[1, 1].Style.Font.Size = 20;
+            workSheet.Cells[1, 1].Style.VerticalAlignment = ExcelVerticalAlignment.Top;
+            workSheet.Cells[1, 1].Value = "Customer Report";
+            for (var col = 1; col < arrycolmns.Length + 1; col++)
+            {
+                workSheet.Cells[2, col].Style.Font.Bold = true;
+                workSheet.Cells[2, col].Style.Font.Size = 12;
+                workSheet.Cells[2, col].Value = arrycolmns[col - 1];
+                workSheet.Cells[2, col].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                workSheet.Cells[2, col].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                workSheet.Cells[2, col].AutoFitColumns(30, 70);
+                workSheet.Cells[2, col].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[2, col].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[2, col].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[2, col].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[2, col].Style.WrapText = true;
+            }
+        
+          
+            int row1 = 1;
+            if (lstClientUser != null && lstClientUser.Count() > 0)
+            {
+                foreach (var objj in lstClientUser)
+                {
+                    for(int j=1;j< arrycolmns.Length+1;j++)
+                    {
+                        workSheet.Cells[row1 + 2, j].Style.Font.Bold = false;
+                        workSheet.Cells[row1 + 2, j].Style.Font.Size = 12;                    
+                        workSheet.Cells[row1 + 2, j].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                        workSheet.Cells[row1 + 2, j].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                        workSheet.Cells[row1 + 2, j].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        workSheet.Cells[row1 + 2, j].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        workSheet.Cells[row1 + 2, j].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        workSheet.Cells[row1 + 2, j].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        workSheet.Cells[row1 + 2, j].Style.WrapText = true;
+                        workSheet.Cells[row1 + 2, j].AutoFitColumns(30, 70);
+                        string vl = "";
+                        if(arrycolmns[j-1] == "First Name")
+                        {
+                            vl = objj.FirstName;
+                        }
+                        else if(arrycolmns[j - 1] == "Last Name")
+                        {
+                            vl = objj.LastName;
+                        }
+                        else if (arrycolmns[j - 1] == "Mobile Number")
+                        {
+                            vl = objj.MobileNo;
+                        }
+                        else if (arrycolmns[j - 1] == "Email")
+                        {
+                            vl = objj.Email;
+                        }
+                        else if (arrycolmns[j - 1] == "City")
+                        {
+                            vl = objj.City;
+                        }
+                        else if (arrycolmns[j - 1] == "State")
+                        {
+                            vl = objj.State;
+                        }
+                        else if (arrycolmns[j - 1] == "Created Date")
+                        {
+                            vl = objj.CreatedDate.ToString("dd-MMM-yyyy");
+                        }
+                        else if (arrycolmns[j - 1] == "IsActive")
+                        {
+                            vl = objj.IsActive == true ? "Active":"Inactive";
+                        }
+                        workSheet.Cells[row1 + 2, j].Value = vl;
+                        
+                    }
+                   
+
+                   
+                    row1 = row1 + 1;
+                }
+            }
+
+            using (var memoryStream = new MemoryStream())
+            {
+                //excel.Workbook.Worksheets.MoveToStart("Summary");  //move sheet from last to first : Code by Gunjan
+                Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                Response.AddHeader("content-disposition", "attachment;  filename=Customers.xlsx");
+                excel.SaveAs(memoryStream);
+                memoryStream.WriteTo(Response.OutputStream);
+                Response.Flush();
+                Response.End();
+            }
         }
 
         [HttpPost]
@@ -125,7 +283,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                                 ShipAddress = co.ShipAddress,
                                                 ShipCity = co.ShipCity,
                                                 ShipPostalCode = co.ShipPostalcode,
-                                                ShipState = co.ShipState
+                                                ShipState = co.ShipState,
+                                                Refrence = cu.Reference                                                
                                             }).FirstOrDefault();
 
             List<OrderVM> lstOrders = new List<OrderVM>();

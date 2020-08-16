@@ -16,6 +16,8 @@
     }
     List<VariantItemVM> lstVarintss = ViewData["lstVarint"] as List<VariantItemVM>;
     string unittyppe = Convert.ToString(ViewBag.UnitTyp);
+    List<ProductItemVM> lstrelateditm = ViewData["lstRelatedItems"] as List<ProductItemVM>;
+    string imgpath = "";
 }
 
 @{
@@ -30,6 +32,56 @@
     .imgmain1 img {
         cursor: crosshair;
     }
+
+    .switch-field {
+        display: flex;
+        margin-bottom: 36px;
+        overflow: hidden;
+    }
+
+        .switch-field input {
+            position: absolute !important;
+            clip: rect(0, 0, 0, 0);
+            height: 1px;
+            width: 1px;
+            border: 0;
+            overflow: hidden;
+        }
+
+        .switch-field label {
+            background-color: #e4e4e4;
+            color: rgba(0, 0, 0, 0.6);
+            font-size: 14px;
+            line-height: 1;
+            text-align: center;
+            padding: 8px 16px;
+            margin-right: -1px;
+            border: 1px solid rgba(0, 0, 0, 0.2);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
+            transition: all 0.1s ease-in-out;
+            margin-right:10px;
+            
+        }
+
+            .switch-field label:hover {
+                cursor: pointer;
+            }
+
+        .switch-field input:checked + label {
+            background-color: #a5dc86;
+            box-shadow: none;
+        }
+
+        .switch-field label {
+            border-radius: 4px;
+            font-size: 15px;
+            font-weight: bold;
+        }
+        
+
+    /* This is just for CodePen. */
+
+  
 </style>
 <!-- breadcrumb start -->
 <div class="breadcrumb-section">
@@ -63,7 +115,7 @@
                         {
                             foreach (string imgstr in Model.OtherImages)
                             {
-                                string imgpath = "";
+                                imgpath = "";
                                 if (!string.IsNullOrEmpty(imgstr))
                                 {
                                     if (File.Exists(Server.MapPath("~/Images/ProductItemMedia/" + imgstr)))
@@ -83,6 +135,7 @@
                             }
                         }
                     </div>
+                    <input type="hidden" id="mainimgsrc" value="@imgpath" />
                     <div class="row">
                         <div class="col-12 p-0">
                             <div class="slider-nav">
@@ -90,7 +143,7 @@
                                 {
                                     foreach (string imgstr in Model.OtherImages)
                                     {
-                                        string imgpath = "";
+                                         imgpath = "";
                                         if (!string.IsNullOrEmpty(imgstr))
                                         {
                                             if (File.Exists(Server.MapPath("~/Images/ProductItemMedia/" + imgstr)))
@@ -117,24 +170,32 @@
                 <div class="col-lg-8 rtl-text">
                     <div class="product-right">
                         <h2>@Model.ItemName</h2>
-                        @if (clsClientSession.UserID == 0 || (clsClientSession.UserID > 0 && clsClientSession.RoleID == 1))
-                        {
-                            <h4>₹ <span id="prcc">@Model.CustomerPrice</span> <del>₹ <span id="mrpprcc">@Model.MRPPrice</span></del></h4>
-                        }
-                        else
-                        {
-                            <h4>₹ <span id="prcc">@Model.DistributorPrice</span> <del>₹ <span id="mrpprcc">@Model.MRPPrice</span></del></h4>
-                        }
-                        @if (unittyppe.ToLower().Contains("killo") || unittyppe.ToLower().Contains("litr") || unittyppe.ToLower().Contains("sheet"))
+                        <div>
+                            @if (clsClientSession.UserID == 0 || (clsClientSession.UserID > 0 && clsClientSession.RoleID == 1))
+                            {
+                                <h4 style="display:inline-block;">₹ <span id="prcc">@Model.CustomerPrice</span> <del>₹ <span id="mrpprcc">@Model.MRPPrice</span></del></h4>
+                            }
+                            else
+                            {
+                                <h4 style="display:inline-block;">₹ <span id="prcc">@Model.DistributorPrice</span> <del>₹ <span id="mrpprcc">@Model.MRPPrice</span></del></h4>
+                            }
+                            @if (Model.IsAssured == true)
+                            {
+                                <img src="/Images/ssassured.png" style="height: 45px; width: 145px;margin-left: 21px; margin-bottom: 15px;">
+                            }
+                        </div>
+                        @if (unittyppe.ToLower().Contains("killo") || unittyppe.ToLower().Contains("litr") || unittyppe.ToLower().Contains("sheet") || unittyppe.ToLower().Contains("piece"))
                         {
                             <div class="product-description border-product">
                                 <h6 class="product-title">Select Option</h6>
                                 <div class="qty-box">
-                                    @if (lstVarintss != null && lstVarintss.Count() > 0)
-                                    {
-                                        int cntt0 = 0;
-                                        <select id="variantoption" class="form-control" style="width:230px;">
-                                            @foreach (var objj in lstVarintss)
+                                    <div class="switch-field">
+
+                                        @if (lstVarintss != null && lstVarintss.Count() > 0)
+                                        {
+                                            int cntt0 = 0;
+
+                                            foreach (var objj in lstVarintss)
                                             {
                                                 decimal prc = objj.CustomerPrice;
                                                 string selected1 = "";
@@ -144,21 +205,22 @@
                                                 }
                                                 if (objj.UnitQtys == "1 Kg" || objj.UnitQtys == "1 Ltr")
                                                 {
-                                                    selected1 = "selected";
+                                                    selected1 = "checked";
                                                 }
                                                 else
                                                 {
-                                                    if(cntt0 == 0)
+                                                    if (cntt0 == 0)
                                                     {
-                                                        selected1 = "selected";
+                                                        selected1 = "checked";
                                                         cntt0 = cntt0 + 1;
                                                     }
                                                 }
-                                                <option value="@objj.VariantItemId" @selected1 data-attrmrpprc="@objj.MRPPrice" data-attrprc="@prc">@objj.UnitQtys</option>
+                                                <input type="radio" id="radio-@objj.VariantItemId" name="variants" data-attrmrpprc="@objj.MRPPrice" data-attrprc="@prc" data-attrvarinimg="@objj.VariantImg" value="@objj.VariantItemId" @selected1 />
+                                                <label for="radio-@objj.VariantItemId">@objj.UnitQtys</label>                                                
                                             }
-                                        </select>
-                                        <input type="hidden" value="" id="hdnvarintIds" />
-                                    }
+                                            <input type="hidden" value="" id="hdnvarintIds" />
+                                        }
+                                    </div>
                                 </div>
                             </div>
                         }
@@ -231,6 +293,102 @@
                 </div>
             </div>
             <br />
+            @if (lstrelateditm != null && lstrelateditm.Count() > 0)
+            {
+                <div class="title1 section-t-space">
+                    <div class="title4">
+                        <h2 class="title-inner4">Related Items</h2>
+                        <div class="line"><span></span></div>
+                    </div>
+                </div>
+                @*<div class="container">
+                <div class="row">
+                    <div class="col-lg-6 offset-lg-3">
+                        <div class="product-para">
+                            <p class="text-center">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,</p>
+                        </div>
+                    </div>
+                </div>
+            </div>*@
+                <!-- Paragraph end -->
+                <!-- Product slider -->
+                <section class="section-b-space p-t-0 ratio_asos">
+                    <div class="container">                        
+                        <div class="row">
+                            <div class="col">
+                                <div class="product-4 product-m no-arrow">
+                                    @if (lstrelateditm != null && lstrelateditm.Count() > 0)
+                                    {
+                                        foreach (var objItem in lstrelateditm)
+                                        {
+                                            imgpath = "";
+                                            string clswishlist1 = "";
+                                            if (!string.IsNullOrEmpty(objItem.MainImage))
+                                            {
+                                                if (File.Exists(Server.MapPath("~/Images/ProductItemMedia/" + objItem.MainImage)))
+                                                {
+                                                    imgpath = "/Images/ProductItemMedia/" + objItem.MainImage;
+                                                }
+                                                else
+                                                {
+                                                    imgpath = @ErrorMessage.DefaultImagePath;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                imgpath = @ErrorMessage.DefaultImagePath;
+                                            }
+                                            if (objItem.IsWishListItem)
+                                            {
+                                                clswishlist1 = "wishlistcls";
+                                            }
+                                            <div class="product-box">
+                                                <div class="img-wrapper">
+                                                    <div class="front">
+                                                        <a href="/products/detail/@objItem.ProductItemId"><img src="@imgpath" class="img-fluid blur-up lazyload bg-img" alt=""></a>
+                                                    </div>
+                                                    <div class="back">
+                                                        <a href="/products/detail/@objItem.ProductItemId"><img src="@imgpath" class="img-fluid blur-up lazyload bg-img" alt=""></a>
+                                                    </div>
+                                                    <div class="cart-info cart-wrap">
+                                                        <button data-toggle="modal" style="display:none;" data-target="#addtocart" title="Add to cart" onclick="AddtoCartfunc(@objItem.ProductItemId, 1,'@objItem.IsCashonDelieveryuse.ToString()');">
+                                                            <i class="ti-shopping-cart"></i>
+                                                        </button>
+                                                        @if (clsClientSession.UserID > 0)
+                                                        {
+                                                            <a href="javascript:void(0)" title="Add to Wishlist" tabindex="0" onclick="addremovewishlist('@objItem.ProductItemId',this);"><i class="fa fa-heart @clswishlist" aria-hidden="true"></i></a>
+                                                        }
+                                                        else
+                                                        {
+                                                            <a href="javascript:void(0)" title="Add to Wishlist" tabindex="0" onclick="alert('Please login for add item to wishlist');"><i class="fa fa-heart @clswishlist" aria-hidden="true"></i></a>
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div class="product-detail">
+                                                    <div class="rateit" data-rateit-value="@objItem.Ratings" style="margin-top:5px;" data-rateit-ispreset="true" data-rateit-readonly="true"></div>
+                                                    <a href="/products/detail/@objItem.ProductItemId">
+                                                        <h6 class="dashboardItemName">@objItem.ItemName</h6>
+                                                    </a>
+                                                    @if (clsClientSession.UserID == 0 || (clsClientSession.UserID > 0 && clsClientSession.RoleID == 1))
+                                                    {
+                                                        <h4>₹ @objItem.CustomerPrice <del>₹ @objItem.MRPPrice</del></h4>
+                                                    }
+                                                    else
+                                                    {
+                                                        <h4>₹ @objItem.DistributorPrice <del>₹ @objItem.MRPPrice</del></h4>
+                                                    }
+                                                </div>
+                                            </div>
+
+                                        }
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- Product slider end -->
+            }
         </div>
     </div>
 </section>
@@ -239,9 +397,9 @@
 <!-- product-tab ends -->
 <script>
     $(document).ready(function () {
-        if ($("#variantoption").length > 0) {
+        if ($("input[name=variants]").length > 0) {
             setTimeout(function () {
-                $("#variantoption").trigger('change');
+                $("input[name=variants]:checked").trigger('change');
             },250);
         }       
     });
@@ -314,13 +472,23 @@
         });
     }
     $(document).ready(function () {
-          if ($("#variantoption").length > 0) {
-             $(document).on("change", "#variantoption", function () {
-                 $("#prcc").html($(this).find("option:selected").attr("data-attrprc"));
-                 $("#mrpprcc").html($(this).find("option:selected").attr("data-attrmrpprc"));
-                 $("#hdnvarintIds").val($("#variantoption").val());
+        if ($("input[name=variants]").length > 0) {
+            $(document).on("change", "input[name=variants]", function () {
+                 $("#prcc").html($(this).attr("data-attrprc"));
+                 $("#mrpprcc").html($(this).attr("data-attrmrpprc"));
+                $("#hdnvarintIds").val($(this).val());
+                var imgrc = $(this).attr("data-attrvarinimg");
+                if (imgrc != "") {
+                    $(".imgmain1:eq(0) img").attr("src","/Images/VariantMedia/"+imgrc);
+                    $(".imgmain1:eq(0) > img").attr("data-zoom-image", "/Images/VariantMedia/" + imgrc);
+                }
+                else {
+                    $(".imgmain1:eq(0) img").attr("src", $("#mainimgsrc").val());
+                    $(".imgmain1:eq(0) > img").attr("data-zoom-image", $("#mainimgsrc").val());
+                }
+                
              });
-              $("#hdnvarintIds").val($("#variantoption").val());
+          //    $("#hdnvarintIds").val($("#variantoption").val());
         }
     });
 

@@ -465,7 +465,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                   OtherImages = lstimages,
                                   IsActive = i.IsActive,
                                   UnitType = i.UnitType.HasValue ? i.UnitType.Value : 0,
-                                  IsCashonDelieveryuse = i.IsCashonDeliveryUse.HasValue ? i.IsCashonDeliveryUse.Value : false
+                                  IsCashonDelieveryuse = i.IsCashonDeliveryUse.HasValue ? i.IsCashonDeliveryUse.Value : false,
+                                  IsAssured = i.IsAssured.HasValue ? i.IsAssured.Value : false
                               }).FirstOrDefault();
             if (clsClientSession.UserID != 0)
             {
@@ -512,6 +513,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 objVM.CustomerPrice = objvv.CustomerPrice.Value;
                                 objVM.DistributorPrice = objvv.DistributorPrice.Value;
                                 objVM.MRPPrice = Math.Round((objProductItem.MRPPrice * qtt * objvv.PricePecentage.Value) / 100, 2);
+                                objVM.VariantImg = objvv.VariantImage;
                             }
                             else
                             {
@@ -520,6 +522,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 objVM.CustomerPrice = objvv.CustomerPrice.Value;
                                 objVM.DistributorPrice = objvv.DistributorPrice.Value;
                                 objVM.MRPPrice = Math.Round((objProductItem.MRPPrice * objvv.PricePecentage.Value) / 100, 2);
+                                objVM.VariantImg = objvv.VariantImage;
                             }
                         }
                         else if (objUnt.UnitName.ToLower().Contains("litr"))
@@ -533,6 +536,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 objVM.CustomerPrice = objvv.CustomerPrice.Value;
                                 objVM.DistributorPrice = objvv.DistributorPrice.Value;
                                 objVM.MRPPrice = Math.Round((objProductItem.MRPPrice * qtt * objvv.PricePecentage.Value) / 100, 2);
+                                objVM.VariantImg = objvv.VariantImage;
                             }
                             else
                             {
@@ -541,6 +545,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 objVM.CustomerPrice = objvv.CustomerPrice.Value;
                                 objVM.DistributorPrice = objvv.DistributorPrice.Value;
                                 objVM.MRPPrice = Math.Round((objProductItem.MRPPrice * objvv.PricePecentage.Value) / 100, 2);
+                                objVM.VariantImg = objvv.VariantImage;
                             }
                         }
                         else if (objUnt.UnitName.ToLower().Contains("sheet"))
@@ -552,12 +557,21 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             objVM.CustomerPrice = objvv.CustomerPrice.Value;
                             objVM.DistributorPrice = objvv.DistributorPrice.Value;
                             objVM.MRPPrice = Math.Round(sqft * objProductItem.MRPPrice, 2);
+                            objVM.VariantImg = objvv.VariantImage;
+                        }
+                        else if (objUnt.UnitName.ToLower().Contains("piece"))
+                        {  
+                            objVM.CustomerPrice = Math.Round(objvv.CustomerPrice.Value,2);
+                            objVM.DistributorPrice = Math.Round(objvv.DistributorPrice.Value,2);
+                            objVM.MRPPrice = Math.Round(objvv.MRPPrice.Value, 2);
+                            objVM.VariantImg = objvv.VariantImage;
                         }
                         else
                         {
                             objVM.CustomerPrice = objvv.CustomerPrice.Value;
                             objVM.DistributorPrice = objvv.DistributorPrice.Value;
                             objVM.MRPPrice = Math.Round(objProductItem.MRPPrice, 2);
+                            objVM.VariantImg = objvv.VariantImage;
                         }
                         lstVrntVM.Add(objVM);
                     }
@@ -565,6 +579,39 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             }
             ViewData["lstVarint"] = lstVrntVM;
             ViewBag.UnitTyp = objUnt.UnitName;
+            List<tbl_ReviewRating> lstRatings = _db.tbl_ReviewRating.ToList();
+            List<long> wishlistitemsId = new List<long>();
+            if (clsClientSession.UserID != 0)
+            {               
+                wishlistitemsId = _db.tbl_WishList.Where(o => o.ClientUserId == UserId).Select(o => o.ItemId.Value).ToList();
+            }
+
+            List<ProductItemVM> lstRelatedItems = new List<ProductItemVM>();
+            lstRelatedItems = (from i in _db.tbl_ProductItems                           
+                              join p in _db.tbl_Products on i.ProductId equals p.Product_Id                                                            
+                                  //where !i.IsDelete && !c.IsDelete && !p.IsDelete
+                              where !i.IsDelete && i.IsActive == true && !p.IsDelete && i.ProductItemId != objProductItem.ProductItemId
+                               select new ProductItemVM
+                              {
+                                  ProductItemId = i.ProductItemId,
+                                  ProductId = i.ProductId,
+                                  SubProductId = i.SubProductId,
+                                  ItemName = i.ItemName,
+                                  MainImage = i.MainImage,
+                                  MRPPrice = i.MRPPrice,
+                                  CustomerPrice = i.CustomerPrice,
+                                  DistributorPrice = i.DistributorPrice,
+                                  IsActive = i.IsActive
+                              }).OrderBy(x => Guid.NewGuid()).ToList().Take(8).ToList();
+            if (clsClientSession.UserID != 0)
+            {
+                lstRelatedItems.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); x.Ratings = GetRatingOfItem(x.ProductItemId, lstRatings); });
+            }
+            else
+            {
+                lstRelatedItems.ForEach(x => { x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); x.Ratings = GetRatingOfItem(x.ProductItemId, lstRatings); });
+            }
+            ViewData["lstRelatedItems"] = lstRelatedItems;
             return View(objProductItem);
         }
         public decimal GetOfferPrice(long Itemid, decimal price)

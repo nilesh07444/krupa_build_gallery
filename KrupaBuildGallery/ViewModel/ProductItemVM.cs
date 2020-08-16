@@ -121,5 +121,8 @@ namespace KrupaBuildGallery
 
         public List<VariantItemVM> lstVariants { get; set; }        
         public string UnitTyp { get; set; }
+
+        [Display(Name = "Assured Item")]
+        public bool IsAssured { get; set; }
     }
 }

@@ -196,6 +196,13 @@
                                 @Html.ValidationMessageFor(model => model.IsCashonDelieveryuse, "", new { @class = "text-danger" })
                             </div>
                             <div class="form-group row">
+                                @Html.LabelFor(model => model.IsAssured, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.CheckBoxFor(model => model.IsAssured, new { htmlAttributes = new { @class = "form-control col-md-8" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.IsAssured, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group row">
                                 @Html.LabelFor(model => model.PayAdvancePer, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.EditorFor(model => model.PayAdvancePer, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Advance Payment Percentage", maxlength = "10" } })
 
@@ -346,6 +353,37 @@
                     }
                     
                   
+                }
+
+                });
+
+            $("input[name^=variantmrpprice]").each(function () {
+                var idss = $(this).attr("data-itmmid");
+                if ($(this).parents('tr').find('input[type=checkbox]:checked').length > 0) {
+                    if ($(this).val() == "" || parseFloat($(this).val()) <= 0) {
+                        if (flgtrue == true) {
+                            alert("Please Enter MRP Price for variant");
+                            flgtrue = false;
+                        }
+                    }
+                    if ($("#variantcustprice_" + idss).val() == "" || parseFloat($("#variantcustprice_" + idss).val()) <= 0) {
+                        if (flgtrue == true) {
+                            alert("Please Enter Customer Price for variant");
+                            flgtrue = false;
+                        }
+                    }
+                    if ($("#variantdistriprice_" + idss).val() == "" || parseFloat($("#variantdistriprice_" + idss).val()) <= 0) {
+                        if (flgtrue == true) {
+                            alert("Please Enter Distributor Price for variant");
+                            flgtrue = false;
+                        }
+                    }
+                    if ($("#variantnm_" + idss).val() == "") {
+                        if (flgtrue == true) {
+                            alert("Please Enter Variant Name");
+                            flgtrue = false;
+                        }
+                    }
                 }
 
             });

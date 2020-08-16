@@ -15,5 +15,6 @@ namespace KrupaBuildGallery
         public decimal MRPPrice { get; set; }
         public decimal CustomerPrice { get; set; }
         public decimal DistributorPrice { get; set; }
+        public string VariantImg { get; set; }
     }
 }

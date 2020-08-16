@@ -49,5 +49,6 @@ namespace KrupaBuildGallery.Model
         public Nullable<bool> IsComboOffer { get; set; }
         public Nullable<long> ComboOfferId { get; set; }
         public Nullable<bool> IsImported { get; set; }
+        public Nullable<bool> IsAssured { get; set; }
     }
 }

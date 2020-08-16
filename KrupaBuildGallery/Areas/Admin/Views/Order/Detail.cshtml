@@ -134,23 +134,23 @@
                             <div class="col-md-9">
                                 <div class="form-text-row" id="dvorderstatus">@Model.OrderStatus</div>
                                 @*<button type="button" name="" id="cancelorder" class="btn bg-red" style="margin-right: 3px;">
-                                        Cancel order
-                                    </button>*@
+                    Cancel order
+                </button>*@
                                 @if (Model.OrderStatusId == 1)
                                 {
                                     <button type="button" name="btnChangeOrderStatustoconfirm" id="btnChangeOrderStatustoconfirm" onclick="changestatus('Confirmed', 2,'@Model.OrderId');" class="btn btn-primary" style="display: inline-block;">
                                         Change status to Confirmed
                                     </button>
                                     @*<button type="button" name="btnChangeOrderStatustodispatched" id="btnChangeOrderStatustodispatched" class="btn btn-primary" onclick="changestatus('Dispatched',3,'@Model.OrderId');" style="display: none;">
-                                            Change status to Dispatched
-                                        </button>*@
+                        Change status to Dispatched
+                    </button>*@
                                 }
                                 @*else if (Model.OrderStatusId == 2)
-                                    {
-                                        <button type="button" name="btnChangeOrderStatustodispatched" id="btnChangeOrderStatustodispatched" class="btn btn-primary" onclick="changestatus('Dispatched',3,'@Model.OrderId');" style="display: inline-block;">
-                                            Change status to Dispatched
-                                        </button>
-                                    }*@
+                {
+                    <button type="button" name="btnChangeOrderStatustodispatched" id="btnChangeOrderStatustodispatched" class="btn btn-primary" onclick="changestatus('Dispatched',3,'@Model.OrderId');" style="display: inline-block;">
+                        Change status to Dispatched
+                    </button>
+                }*@
 
                             </div>
                         </div>
@@ -167,7 +167,7 @@
                                 <div class="label-wrapper"><label class="control-label">Order Total Amount:</label></div>
                             </div>
                             <div class="col-md-9">
-                                @{ 
+                                @{
                                     double RoundAmt = CommonMethod.GetRoundValue(Convert.ToDouble(Model.OrderAmount));
                                 }
                                 <div class="form-text-row">₹ @RoundAmt</div>
@@ -292,7 +292,14 @@
 
                             </div>
                         </div>
-
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Remarks</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@Model.Remarks</div>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-header">
                         <h5>Order Items</h5>

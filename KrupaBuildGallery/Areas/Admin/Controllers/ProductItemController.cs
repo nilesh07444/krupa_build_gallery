@@ -188,9 +188,12 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         objProductItem.IsCashonDeliveryUse = productItemVM.IsCashonDelieveryuse;
                         objProductItem.MinimumStock = productItemVM.MinimumQty;
                         objProductItem.UnitType = productItemVM.UnitType;
+                        objProductItem.IsAssured = productItemVM.IsAssured;
                         objProductItem.Tags = productItemVM.Tags;
                         _db.tbl_ProductItems.Add(objProductItem);
                         _db.SaveChanges();
+                        string variantpathImg = Server.MapPath("~/Images/VariantMedia/");
+                        string strvaritnimg = "";
                         string[] kgs = { "50 Grams", "100 Grams", "250 Grams", "500 Grams", "1 Kg", "2 Kg", "5 Kg" };
                         string[] kgsQty = { "0.05", "0.10", "0.25", "0.50", "1", "2", "5" };
                         string[] ltrs = { "50 ml", "100 ml", "250 ml", "500 ml", "1 Ltr", "2 Ltr", "5 Ltr" };
@@ -205,6 +208,12 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             {
                                 for(int kk = 1; kk <= kgs.Length; kk++)
                                 {
+                                    HttpPostedFileBase fileUpload = Request.Files.Get("variantimg_" + kk);
+                                    if (fileUpload != null && fileUpload.ContentLength > 0)
+                                    {
+                                        strvaritnimg = Guid.NewGuid() + "-" + Path.GetFileName(fileUpload.FileName);
+                                        fileUpload.SaveAs(variantpathImg + strvaritnimg);
+                                    }
                                     tbl_ItemVariant objtbl_ItemVariant = new tbl_ItemVariant();
                                     objtbl_ItemVariant.ProductItemId = objProductItem.ProductItemId;
                                     objtbl_ItemVariant.IsActive = false;
@@ -250,6 +259,10 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                         }
                                     }
                                     objtbl_ItemVariant.CreatedDate = DateTime.UtcNow;
+                                    if (!string.IsNullOrEmpty(strvaritnimg))
+                                    {
+                                        objtbl_ItemVariant.VariantImage = strvaritnimg;
+                                    }
                                     _db.tbl_ItemVariant.Add(objtbl_ItemVariant);
                                 }
                                 _db.SaveChanges();
@@ -272,6 +285,43 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                     objtbl_ItemVariant.DistributorPrice = Math.Round(sqft * objProductItem.DistributorPrice, 2);
                                     objtbl_ItemVariant.PricePecentage = 100;
                                     objtbl_ItemVariant.CreatedDate = DateTime.UtcNow;
+                                    if (!string.IsNullOrEmpty(strvaritnimg))
+                                    {
+                                        objtbl_ItemVariant.VariantImage = strvaritnimg;
+                                    }
+                                    _db.tbl_ItemVariant.Add(objtbl_ItemVariant);
+                                }
+                                _db.SaveChanges();
+                            }
+                            else if (objUnt.UnitName.ToLower().Contains("piece"))
+                            {
+                                string[] arryvrntid = Convert.ToString(frm["hdnvrtn"]).Split(',');
+                                for (int kk = 0; kk < arryvrntid.Length; kk++)
+                                {                                 
+                                    tbl_ItemVariant objtbl_ItemVariant = new tbl_ItemVariant();
+                                    HttpPostedFileBase fileUpload = Request.Files.Get("variantimg_" + arryvrntid[kk]);
+                                    string strvaritnimg1 = "";
+                                    if (fileUpload != null && fileUpload.ContentLength > 0)
+                                    {
+                                        strvaritnimg1 = Guid.NewGuid() + "-" + Path.GetFileName(fileUpload.FileName);
+                                        fileUpload.SaveAs(variantpathImg + strvaritnimg1);
+                                    }
+                                    objtbl_ItemVariant.ProductItemId = objProductItem.ProductItemId;
+                                    objtbl_ItemVariant.IsActive = false;
+                                    if (Request.Form["chkvariant_" + arryvrntid[kk]] != null)
+                                    {
+                                        objtbl_ItemVariant.IsActive = true;
+                                    }                                    
+                                    objtbl_ItemVariant.UnitQty = frm["variantnm_"+ arryvrntid[kk]].ToString();
+                                    objtbl_ItemVariant.CustomerPrice = Math.Round(Convert.ToDecimal(frm["variantcustprice_" + arryvrntid[kk]].ToString()),2);
+                                    objtbl_ItemVariant.DistributorPrice = Math.Round(Convert.ToDecimal(frm["variantdistriprice_" + arryvrntid[kk]].ToString()), 2);
+                                    objtbl_ItemVariant.MRPPrice = Math.Round(Convert.ToDecimal(frm["variantmrpprice_" + arryvrntid[kk]].ToString()), 2);
+                                    objtbl_ItemVariant.PricePecentage = 100;
+                                    objtbl_ItemVariant.CreatedDate = DateTime.UtcNow;
+                                    if (!string.IsNullOrEmpty(strvaritnimg1))
+                                    {
+                                        objtbl_ItemVariant.VariantImage = strvaritnimg1;
+                                    }
                                     _db.tbl_ItemVariant.Add(objtbl_ItemVariant);
                                 }
                                 _db.SaveChanges();
@@ -420,7 +470,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                   UnitType = i.UnitType.HasValue ? i.UnitType.Value : 0,
                                   MinimumQty = i.MinimumStock.HasValue ? i.MinimumStock.Value : 0,
                                   IsCashonDelieveryuse = i.IsCashonDeliveryUse.HasValue ? i.IsCashonDeliveryUse.Value : false,
-                                  GodownId = i.GodownId.HasValue ? i.GodownId.Value : 0
+                                  GodownId = i.GodownId.HasValue ? i.GodownId.Value : 0,
+                                  IsAssured = i.IsAssured.HasValue ? i.IsAssured.Value : false
                               }).FirstOrDefault();
 
             objProductItem.CategoryList = GetCategoryList();
@@ -489,9 +540,11 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         objProductItem.UnitType = productItemVM.UnitType;
                         objProductItem.IsCashonDeliveryUse = productItemVM.IsCashonDelieveryuse;
                         objProductItem.Tags = productItemVM.Tags;
+                        objProductItem.IsAssured = productItemVM.IsAssured;
                         objProductItem.ItemType = productItemVM.ItemType;
                         _db.SaveChanges();
 
+                        string variantpathImg = Server.MapPath("~/Images/VariantMedia/");
                         string[] kgs = { "50 Grams", "100 Grams", "250 Grams", "500 Grams", "1 Kg", "2 Kg", "5 Kg" };
                         string[] kgsQty = { "0.05", "0.10", "0.25", "0.50", "1", "2", "5" };
                         string[] ltrs = { "50 ml", "100 ml", "250 ml", "500 ml", "1 Ltr", "2 Ltr", "5 Ltr" };
@@ -509,6 +562,13 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                 {
                                     if (lstItmvrnt != null && lstItmvrnt.Count() > 0)
                                     {
+                                        string strvaritnimg = "";
+                                        HttpPostedFileBase fileUpload = Request.Files.Get("variantimg_" + kk);
+                                        if (fileUpload != null && fileUpload.ContentLength > 0)
+                                        {
+                                            strvaritnimg = Guid.NewGuid() + "-" + Path.GetFileName(fileUpload.FileName);
+                                            fileUpload.SaveAs(variantpathImg + strvaritnimg);                                          
+                                        }
                                         tbl_ItemVariant objtbl_ItemVariant = new tbl_ItemVariant();
                                         objtbl_ItemVariant.ProductItemId = objProductItem.ProductItemId;
                                         objtbl_ItemVariant.IsActive = false;
@@ -561,6 +621,10 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                             objtbl_ItemVariant1.CustomerPrice = objtbl_ItemVariant.CustomerPrice;
                                             objtbl_ItemVariant1.DistributorPrice = objtbl_ItemVariant.DistributorPrice;
                                             objtbl_ItemVariant1.IsActive = objtbl_ItemVariant.IsActive;
+                                            if(!string.IsNullOrEmpty(strvaritnimg))
+                                            {
+                                                objtbl_ItemVariant1.VariantImage = strvaritnimg;
+                                            }
                                             _db.SaveChanges();
                                         }
                                         else
@@ -581,6 +645,13 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                 {
                                     if(lstItmvrnt != null && lstItmvrnt.Count() > 0)
                                     {
+                                        string strvaritnimg = "";
+                                        HttpPostedFileBase fileUpload = Request.Files.Get("variantimg_" + kk);
+                                        if (fileUpload != null && fileUpload.ContentLength > 0)
+                                        {
+                                            strvaritnimg = Guid.NewGuid() + "-" + Path.GetFileName(fileUpload.FileName);
+                                            fileUpload.SaveAs(variantpathImg + strvaritnimg);
+                                        }
                                         int k = kk - 1;
                                         tbl_ItemVariant objtbl_ItemVariant = lstItmvrnt.Where(o => o.UnitQty == sheets[k]).FirstOrDefault();
                                         if(objtbl_ItemVariant != null)
@@ -596,9 +667,49 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                             objtbl_ItemVariant.CustomerPrice = Math.Round(sqft * objProductItem.CustomerPrice, 2);
                                             objtbl_ItemVariant.DistributorPrice = Math.Round(sqft * objProductItem.DistributorPrice, 2);
                                             objtbl_ItemVariant.PricePecentage = 100;
-                                            objtbl_ItemVariant.CreatedDate = DateTime.UtcNow;                                          
+                                            objtbl_ItemVariant.CreatedDate = DateTime.UtcNow;             
+                                            if(!string.IsNullOrEmpty(strvaritnimg))
+                                            {
+                                                objtbl_ItemVariant.VariantImage = strvaritnimg;
+                                            }                                            
                                         }
                                     }                                    
+                                }
+                                _db.SaveChanges();
+                            }
+                            else if (objUnt.UnitName.ToLower().Contains("piece"))
+                            {
+                                List<tbl_ItemVariant> lstItmvrnt = _db.tbl_ItemVariant.Where(o => o.ProductItemId == objProductItem.ProductItemId).ToList();
+                                string[] arryvrntid = Convert.ToString(frm["hdnvrtn"]).Split(',');
+                                for (int kk = 0; kk < arryvrntid.Length; kk++)
+                                {
+                                    long varitItmid = Convert.ToInt64(arryvrntid[kk]);
+                                    tbl_ItemVariant objtbl_ItemVariant = lstItmvrnt.Where(o => o.VariantItemId == varitItmid).FirstOrDefault();
+                                    if(objtbl_ItemVariant != null)
+                                    {
+                                        HttpPostedFileBase fileUpload = Request.Files.Get("variantimg_" + arryvrntid[kk]);
+                                        string strvaritnimg1 = "";
+                                        if (fileUpload != null && fileUpload.ContentLength > 0)
+                                        {
+                                            strvaritnimg1 = Guid.NewGuid() + "-" + Path.GetFileName(fileUpload.FileName);
+                                            fileUpload.SaveAs(variantpathImg + strvaritnimg1);
+                                        }
+                                        objtbl_ItemVariant.ProductItemId = objProductItem.ProductItemId;
+                                        objtbl_ItemVariant.IsActive = false;
+                                        if (Request.Form["chkvariant_" + arryvrntid[kk]] != null)
+                                        {
+                                            objtbl_ItemVariant.IsActive = true;
+                                        }
+                                        objtbl_ItemVariant.UnitQty = frm["variantnm_" + arryvrntid[kk]].ToString();
+                                        objtbl_ItemVariant.CustomerPrice = Math.Round(Convert.ToDecimal(frm["variantcustprice_" + arryvrntid[kk]].ToString()), 2);
+                                        objtbl_ItemVariant.DistributorPrice = Math.Round(Convert.ToDecimal(frm["variantdistriprice_" + arryvrntid[kk]].ToString()), 2);
+                                        objtbl_ItemVariant.MRPPrice = Math.Round(Convert.ToDecimal(frm["variantmrpprice_" + arryvrntid[kk]].ToString()), 2);
+                                        objtbl_ItemVariant.PricePecentage = 100;                                        
+                                        if (!string.IsNullOrEmpty(strvaritnimg1))
+                                        {
+                                            objtbl_ItemVariant.VariantImage = strvaritnimg1;
+                                        }                                       
+                                    }                                   
                                 }
                                 _db.SaveChanges();
                             }
@@ -989,7 +1100,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             {
                 var lstItmVarints = _db.tbl_ItemVariant.Where(o => o.ProductItemId == ProductItemId).ToList();
                 List<VariantItemVM> lstVarintss = new List<VariantItemVM>();
-                if (lstItmVarints != null && lstItmVarints.Count() > 0 && (obj.UnitName.ToLower().Contains("killo") || obj.UnitName.ToLower().Contains("litr") || obj.UnitName.ToLower().Contains("sheet")))
+                if (lstItmVarints != null && lstItmVarints.Count() > 0 && (obj.UnitName.ToLower().Contains("killo") || obj.UnitName.ToLower().Contains("litr") || obj.UnitName.ToLower().Contains("sheet") || obj.UnitName.ToLower().Contains("piece")))
                 {
                     int cnt = 1;
                     foreach(var objvarint in lstItmVarints)
@@ -997,16 +1108,48 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         VariantItemVM objVariant = new VariantItemVM();
                         objVariant.UnitQtyText = objvarint.UnitQty;                        
                         objVariant.PricePercentage = objvarint.PricePecentage.Value;
-                        objVariant.VariantItemId = cnt;
+                        if (obj.UnitName.ToLower().Contains("piece"))
+                        {
+                            objVariant.VariantItemId = Convert.ToInt32(objvarint.VariantItemId);
+                        }
+                        else
+                        {
+                            objVariant.VariantItemId = cnt;
+                        }
+                        
                         objVariant.IsActive = objvarint.IsActive.Value;
+                        objVariant.VariantImg = objvarint.VariantImage;
+                        objVariant.MRPPrice = objvarint.MRPPrice.HasValue ? objvarint.MRPPrice.Value : 0;
+                        objVariant.CustomerPrice = objvarint.CustomerPrice.HasValue ? objvarint.CustomerPrice.Value : 0;
+                        objVariant.DistributorPrice = objvarint.DistributorPrice.HasValue ? objvarint.DistributorPrice.Value : 0;
+                        if (!obj.UnitName.ToLower().Contains("piece"))
+                        {
+                            if (Array.IndexOf(kgs, objVariant.UnitQtyText) >= 0)
+                            {
+                                int idxxx = Array.IndexOf(kgs, objVariant.UnitQtyText);
+                                decimal qtt = Convert.ToDecimal(kgsQty[idxxx].ToString());
+                                objVariant.UnitQtys = Convert.ToString(qtt);
+                            }
+                            else if (Array.IndexOf(ltrs, objVariant.UnitQtyText) >= 0)
+                            {
+                                int idxxx = Array.IndexOf(ltrs, objVariant.UnitQtyText);
+                                decimal qtt = Convert.ToDecimal(ltrsQty[idxxx].ToString());
+                                objVariant.UnitQtys = Convert.ToString(qtt);
+                            }
+                            else
+                            {
+                                objVariant.UnitQtys = "1";
+                            }
+                        }
+                      
                         lstVarintss.Add(objVariant);
                         cnt = cnt + 1;
                     }
                  
                     ViewData["lstVarintss"] = lstVarintss;
-                }
+                }               
             }
-          
+            ViewBag.ProductItemId = ProductItemId;
             return PartialView("~/Areas/Admin/Views/ProductItem/_UnitPriceSet.cshtml");
         }
 
@@ -1031,6 +1174,52 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         }).OrderByDescending(x => x.RatingDate).ToList();
             ViewBag.Ratings = Rating;
             return View(lstRatings);
+        }
+
+        [HttpPost]
+        public string DeleteProductItems(string ProductItemIds)
+        {
+            string ReturnMessage = "";
+
+            try
+            {
+                if(!string.IsNullOrEmpty(ProductItemIds))
+                {
+                  string[] arryitmsid = ProductItemIds.Split(',');
+                  if(arryitmsid != null && arryitmsid.Count() > 0)
+                    {
+                        foreach(string sid in arryitmsid)
+                        {
+                            long ItmId = Convert.ToInt32(sid);
+                            tbl_ProductItems objProductItem = _db.tbl_ProductItems.Where(x => x.ProductItemId == ItmId && x.IsActive && !x.IsDelete).FirstOrDefault();
+
+                            if (objProductItem == null)
+                            {
+                                ReturnMessage = "notfound";
+                            }
+                            else
+                            {
+                                long LoggedInUserId = Int64.Parse(clsAdminSession.UserID.ToString());
+
+                                objProductItem.IsDelete = true;
+                                objProductItem.UpdatedBy = LoggedInUserId;
+                                objProductItem.UpdatedDate = DateTime.UtcNow;
+
+                                _db.SaveChanges();
+                                ReturnMessage = "success";
+                            }
+                        }
+                    }
+                }
+              
+            }
+            catch (Exception ex)
+            {
+                string msg = ex.Message.ToString();
+                ReturnMessage = "exception";
+            }
+
+            return "success";
         }
     }
 }

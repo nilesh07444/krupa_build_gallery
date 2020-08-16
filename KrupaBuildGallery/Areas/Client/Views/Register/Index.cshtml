@@ -1,6 +1,7 @@
-﻿
+﻿@using KrupaBuildGallery.Model
 @{
     ViewBag.Title = "Register";
+    List<tbl_ReferenceMaster> lstreff = ViewData["lstref"] as List<tbl_ReferenceMaster>;
 }
 
 <style>
@@ -69,6 +70,23 @@
                             </div>
                         </div>
                         <div class="form-row">
+                            <div class="col-md-6">
+                                <label for="password">Reference from:</label>
+                                <select class="form-control" id="reference" name="reference">
+                                    @if(lstreff != null && lstreff.Count() > 0)
+                                    {
+                                        foreach(var objrf in lstreff)
+                                        {
+                                            <option value="@objrf.ReferenceId">@objrf.Reference</option>
+                                        }
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                               
+                            </div>
+                        </div>
+                        <div class="form-row" style="margin-top:15px;margin-bottom:30px;">
                             <div class="col-md-6">
                                 <input type="checkbox" name="chktermcondition" id="chktermcondition" required /> I have read and accept the <a href="/termscondition" target="_blank">terms & conditions.</a>
                             </div>
