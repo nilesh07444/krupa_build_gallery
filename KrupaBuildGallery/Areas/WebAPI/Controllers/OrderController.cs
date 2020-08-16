@@ -136,7 +136,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                 OnlineUsed = p.AmountByRazorPay.HasValue ? p.AmountByRazorPay.Value : 0,
                                 OrderTypeId = p.OrderType.HasValue ? p.OrderType.Value : 1,
                                 IsCashOnDelivery = p.IsCashOnDelivery.HasValue ? p.IsCashOnDelivery.Value : false,
-                                ExtraAmount = p.ExtraAmount.HasValue ? p.ExtraAmount.Value : 0
+                                ExtraAmount = p.ExtraAmount.HasValue ? p.ExtraAmount.Value : 0,
+                                Remarks = p.Remarks
                             }).OrderByDescending(x => x.OrderDate).FirstOrDefault();
                 if (objOrder != null)
                 {

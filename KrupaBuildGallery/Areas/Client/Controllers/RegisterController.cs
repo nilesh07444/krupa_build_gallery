@@ -187,7 +187,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         public void UpdatCarts()
         {
 
-            string GuidNew = "cust" + clsClientSession.UserID; 
+            string GuidNew = "cust" + clsClientSession.UserID;
             string cookiesessionval = "";
             if (Request.Cookies["sessionkeyval"] != null)
             {
@@ -215,17 +215,27 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     if (cartlistsessions != null && cartlistsessions.Count() > 0)
                     {
                         foreach (var obj in cartlistsessions)
-                        {                            
+                        {
                             bool IsCashhOrd = obj.IsCashonDelivery.HasValue ? obj.IsCashonDelivery.Value : false;
-                            var lstcrtsessions = cartlist.Where(o => o.CartItemId == obj.CartItemId &&  o.VariantItemId == obj.VariantItemId).ToList();
+                            var lstcrtsessions = cartlist.Where(o => o.CartItemId == obj.CartItemId && o.VariantItemId == obj.VariantItemId && o.IsCombo == obj.IsCombo && o.ComboId == obj.ComboId).ToList();
                             if (lstcrtsessions != null && lstcrtsessions.Count() > 0)
                             {
 
                                 var objcrtsess = lstcrtsessions.Where(o => o.IsCashonDelivery == IsCashhOrd).FirstOrDefault();
                                 if (objcrtsess != null)
                                 {
-                                    objcrtsess.CartItemQty = objcrtsess.CartItemQty + obj.CartItemQty;
-                                    _db.tbl_Cart.Remove(obj);
+                                    if (objcrtsess.IsCombo == true)
+                                    {
+                                        objcrtsess.CartItemQty = objcrtsess.CartItemQty + obj.CartItemQty;
+                                        objcrtsess.ComboQty = objcrtsess.ComboQty + obj.ComboQty;
+                                        _db.tbl_Cart.Remove(obj);
+                                    }
+                                    else
+                                    {
+                                        objcrtsess.CartItemQty = objcrtsess.CartItemQty + obj.CartItemQty;
+                                        _db.tbl_Cart.Remove(obj);
+                                    }
+
                                 }
                                 else
                                 {
@@ -234,8 +244,11 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                     crtobj1.CartItemQty = obj.CartItemQty;
                                     crtobj1.CartSessionId = sessioncrtid;
                                     crtobj1.ClientUserId = clientusrid;
-                                    crtobj1.VariantItemId = obj.VariantItemId;
+                                    crtobj1.IsCombo = obj.IsCombo;
+                                    crtobj1.ComboId = obj.ComboId;
+                                    crtobj1.ComboQty = obj.ComboQty;
                                     crtobj1.IsCashonDelivery = IsCashhOrd;
+                                    crtobj1.VariantItemId = obj.VariantItemId;
                                     crtobj1.CreatedDate = DateTime.Now;
                                     _db.tbl_Cart.Add(crtobj1);
                                     _db.tbl_Cart.Remove(obj);
@@ -249,6 +262,9 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 crtobj1.CartSessionId = sessioncrtid;
                                 crtobj1.ClientUserId = clientusrid;
                                 crtobj1.IsCashonDelivery = IsCashhOrd;
+                                crtobj1.IsCombo = obj.IsCombo;
+                                crtobj1.ComboId = obj.ComboId;
+                                crtobj1.ComboQty = obj.ComboQty;
                                 crtobj1.VariantItemId = obj.VariantItemId;
                                 crtobj1.CreatedDate = DateTime.Now;
                                 _db.tbl_Cart.Add(crtobj1);
@@ -270,10 +286,13 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         crtobj1.CartItemId = obj.CartItemId;
                         crtobj1.CartItemQty = obj.CartItemQty;
                         crtobj1.CartSessionId = "cust" + clsClientSession.UserID;
-                        crtobj1.VariantItemId = obj.VariantItemId;                        
-                        crtobj1.IsCashonDelivery = obj.IsCashonDelivery;
                         crtobj1.ClientUserId = clientusrid;
                         crtobj1.CreatedDate = DateTime.Now;
+                        crtobj1.VariantItemId = obj.VariantItemId;
+                        crtobj1.IsCombo = obj.IsCombo;
+                        crtobj1.ComboId = obj.ComboId;
+                        crtobj1.ComboQty = obj.ComboQty;
+                        crtobj1.IsCashonDelivery = obj.IsCashonDelivery;
                         _db.tbl_Cart.Add(crtobj1);
                         _db.tbl_Cart.Remove(obj);
                         _db.SaveChanges();
@@ -303,9 +322,9 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 crtobj1.CartItemId = obj.CartItemId;
                                 crtobj1.CartItemQty = obj.CartItemQty;
                                 crtobj1.CartSessionId = sessioncrtid;
-                                crtobj1.VariantItemId = obj.VariantItemId;
                                 crtobj1.ClientUserId = clientusrid;
                                 crtobj1.CreatedDate = DateTime.Now;
+                                crtobj1.VariantItemId = obj.VariantItemId;
                                 _db.tbl_SecondCart.Add(crtobj1);
                                 _db.tbl_SecondCart.Remove(obj);
                             }
@@ -334,7 +353,10 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     }
                 }
 
+
             }
+
+
         }
     }
 }

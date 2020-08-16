@@ -1583,6 +1583,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     objOrder.RazorSignature = "";
                     objOrder.ExtraAmount = extraamt;
                     objOrder.OrderType = Convert.ToInt32(objPlaceOrderVM.ordertype);
+                    objOrder.Remarks = objPlaceOrderVM.Remarks;
                     if (objPlaceOrderVM.shippincode == "389001")
                     {
                         objOrder.ShippingCharge = Convert.ToDecimal(objPlaceOrderVM.shipamount);
@@ -2142,6 +2143,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                             objOrder.CreditAmountUsed = amtcredit;
                             objOrder.AmountByRazorPay = amtonline;
                             objOrder.ExtraAmount = extraamount;
+                            objOrder.Remarks = objPlaceOrderVM.Remarks;
                             if (objPlaceOrderVM.shippincode == "389001")
                             {
                                 objOrder.ShippingCharge = shippingcharge;
