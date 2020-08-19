@@ -107,7 +107,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
         public JsonResult GetItemList(long ProductId, long? SubProductId, int ItemType = 1)
         {
-            var ProductItemList = _db.tbl_ProductItems.Where(x => x.ProductId == ProductId && (SubProductId == 0 || x.SubProductId == SubProductId) && x.IsActive && !x.IsDelete && (ItemType == -1 || ((ItemType == 1 && x.ItemType == null) || x.ItemType == ItemType)))
+            var ProductItemList = _db.tbl_ProductItems.Where(x => x.ProductId == ProductId && (SubProductId == null || SubProductId == 0 || x.SubProductId == SubProductId) && x.IsActive && !x.IsDelete && (ItemType == -1 || ((ItemType == 1 && x.ItemType == null) || x.ItemType == ItemType)))
                          .Select(o => new SelectListItem { Value = SqlFunctions.StringConvert((double)o.ProductItemId).Trim(), Text = o.ItemName })
                          .OrderBy(x => x.Text).ToList();
 

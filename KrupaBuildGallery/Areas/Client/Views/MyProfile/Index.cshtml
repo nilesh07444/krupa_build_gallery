@@ -8,6 +8,9 @@
     .contact-page .theme-form input {
         padding: 10px 25px;
     }
+    .errorcls{
+        color:red;
+    }
 </style>
 <!-- breadcrumb start -->
 <div class="breadcrumb-section">
@@ -29,7 +32,7 @@
         </div>
     </div>
 </div>
-<form id="frmmyprfile" action="/client/myprofile/SaveProfile" method="post">
+<form id="frmmyprfile" action="/client/myprofile/SaveProfile" method="post" onsubmit="return checkvalidate()">
     <!-- breadcrumb End -->
     <section class="contact-page register-page">
         <div class="container">
@@ -114,7 +117,7 @@
                         </div>
                         <div class="col-md-4">
                             <label for="mobilenumber">Mobile Number</label>
-                            <input type="text" class="form-control" id="mobilenumber" name="mobilenumber" readonly value="@objclient.MobileNo" placeholder="Enter your mobile number" required>
+                            <input type="number" class="form-control" id="mobilenumber" name="mobilenumber" readonly value="@objclient.MobileNo" placeholder="Enter your mobile number" required>
                         </div>
                         <div class="col-md-4">
                             <label for="alternatemobile">Alternate Mobile Number</label>
@@ -164,7 +167,8 @@
                         </div>
                         <div class="col-md-4">
                             <label for="shipmobilenumber">Mobile No.</label>
-                            <input type="text" class="form-control" id="shipmobilenumber" name="shipmobilenumber" value="@objclientother.ShipPhoneNumber" placeholder="Mobile Number" required>
+                            <input type="number" class="form-control" id="shipmobilenumber" name="shipmobilenumber" value="@objclientother.ShipPhoneNumber" placeholder="Mobile Number" required>
+                            <span class="errorcls"></span>
                         </div>
                         <div class="col-md-4">
                             <label for="shipaddress">Address</label>
@@ -236,11 +240,34 @@
     $("#prefix").val(prefx);
     function pincodechange() {
           if ($("input[name=shippincode]").val() != '' && $("input[name=shippincode]").val().length != 6) {
-            alert("Please Enter Valid Postalcode");
+            alert("Please Enter Valid Pincode");
               $("input[name=shippincode]").val("");
             return;
         }
     }
+
+    function checkvalidate() {
+        var flg = true;
+        if ($("input[name=shipmobilenumber]").val() == "") {
+            $("input[name=shipmobilenumber]").siblings('.errorcls').html("Phone number is Required");
+            flg = false;
+        }
+        else {
+            var a = /^\d{10}$/;
+            if (!a.test(($("input[name=shipmobilenumber]").val()))) {
+                $("input[name=shipmobilenumber]").siblings('.errorcls').html("Invalid Shipping Phone number");
+                flg = false;
+            }
+        }   
+
+        if (flg == true) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
     function SaveProfile() {
          $.blockUI({ message: "<h4>Please Wait...</h4>" });
             var URL = '@Url.Action("SaveProfile", "MyProfile")';

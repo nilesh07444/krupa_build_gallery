@@ -56,6 +56,8 @@
         <EntityTypeShape EntityType="krupagalleryModel.tbl_ComboOfferSubItems" Width="1.5" PointX="21.375" PointY="20.75" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_ItemReplace" Width="1.5" PointX="22.375" PointY="0.75" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_ReferenceMaster" Width="1.5" PointX="5.375" PointY="22.75" />
+        <EntityTypeShape EntityType="krupagalleryModel.tbl_FreeOfferItems" Width="1.5" PointX="23.375" PointY="3.75" />
+        <EntityTypeShape EntityType="krupagalleryModel.tbl_FreeOffers" Width="1.5" PointX="23.375" PointY="7.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -575,6 +575,10 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     objOrder.CreatedDate = DateTime.UtcNow;
                     objOrder.UpdatedBy = clientusrid;
                     objOrder.UpdatedDate = DateTime.UtcNow;
+                    if(Convert.ToDecimal(amtorderdue) < 1)
+                    {
+                        amtorderdue = 0;
+                    }
                     objOrder.AmountDue = amtorderdue;
                     objOrder.RazorpayOrderId = razorpay_order_id;
                     objOrder.RazorpayPaymentId = "";
@@ -1134,6 +1138,10 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             objOrder.CreatedDate = DateTime.UtcNow;
                             objOrder.UpdatedBy = clientusrid;
                             objOrder.UpdatedDate = DateTime.UtcNow;
+                            if (Convert.ToDecimal(amountdue) < 1)
+                            {
+                                amountdue = 0;
+                            }
                             objOrder.AmountDue = amountdue;
                             objOrder.InvoiceNo = Invno;
                             objOrder.InvoiceYear = year + "-" + toyear;
@@ -1785,6 +1793,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 objInvItm.BasicAmount = originalbasicprice;
                                 objInvItm.Discount = disc;
                                 objInvItm.ItemAmount = AfterTax;
+                                objInvItm.VariantQtytxt = objcr.VariantQtytxt;
                                 objInvItm.beforetaxamount = beforetaxamount;
                                 TotalOrder = TotalOrder + AfterTax;
                                 objInvItm.AdvncePayAMt = Math.Round((AfterTax * objcr.AdvncePayPer) / 100, 2);
@@ -1820,6 +1829,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 objInvItm.Qty = Convert.ToInt32(objcr.Qty);
                                 objInvItm.BasicAmount = originalbasicprice;
                                 objInvItm.Discount = disc;
+                                objInvItm.VariantQtytxt = objcr.VariantQtytxt;
                                 objInvItm.ItemAmount = AfterTax;
                                 objInvItm.beforetaxamount = beforetaxamount;
                                 TotalOrder = TotalOrder + AfterTax;

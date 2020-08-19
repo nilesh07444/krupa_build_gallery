@@ -1072,6 +1072,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             }
             DateTime dtStart = DateTime.ParseExact(StartDate, "dd/MM/yyyy", null);
             DateTime dtEnd = DateTime.ParseExact(EndDate, "dd/MM/yyyy", null);
+            dtEnd = new DateTime(dtEnd.Year, dtEnd.Month, dtEnd.Day, 23, 59, 59);
             List<tbl_ClientUsers> lstClients = new List<tbl_ClientUsers>();
             string[] arrycolmns = new string[] { "Date", "Opening", "Credit", "Debit", "Closing", "PaymentMethod", "Remarks" };
             if (!string.IsNullOrEmpty(MobileNo))
@@ -1396,6 +1397,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             }
             DateTime dtStart = DateTime.ParseExact(StartDate, "dd/MM/yyyy", null);
             DateTime dtEnd = DateTime.ParseExact(EndDate, "dd/MM/yyyy", null);
+            dtEnd = new DateTime(dtEnd.Year, dtEnd.Month, dtEnd.Day, 23, 59, 59);
             List<tbl_ClientUsers> lstClients = new List<tbl_ClientUsers>();
             string[] arrycolmns = new string[] { "Date", "Opening", "Credit", "Debit", "Closing", "PaymentMethod", "Remarks" };
             if (!string.IsNullOrEmpty(MobileNo))

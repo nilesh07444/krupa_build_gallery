@@ -148,7 +148,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     objRequest.ShopPhoto = shopphotoname;
                     objRequest.AddharPhoto = addharphoto;
                     objRequest.GSTPhoto = gstphotoname;
-                    objRequest.Dob = Convert.ToDateTime(dob);
+                    DateTime dt = DateTime.ParseExact(dob, "dd/MM/yyyy", null);
+                    objRequest.Dob = dt;
                     objRequest.IsDelete = false;
                     objRequest.Status = 0;
                     objRequest.Reason = "";

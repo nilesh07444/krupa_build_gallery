@@ -292,6 +292,24 @@
 
                             </div>
                         </div>
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Shipping Charge Payment:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                @if (Model.ShippingStatus == 1)
+                                {
+                                    <div class="form-text-row"><span class="badge badge-danger">Pending</span></div>
+                                }
+                                else
+                                {
+                                    <div class="form-text-row"><span class="badge badge-secondary">Paid</span></div>
+                                }
+
+                            </div>
+                        </div>
+                        
                         <div class="form-group">
                             <div class="col-md-3">
                                 <div class="label-wrapper"><label class="control-label">Remarks</label></div>

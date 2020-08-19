@@ -713,6 +713,10 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     objOrder.UpdatedBy = clientusrid;
                     objOrder.UpdatedDate = DateTime.UtcNow;
                     objOrder.GSTNo = objPlaceOrderVM.GSTNo;
+                    if (Convert.ToDecimal(amtorderdue) < 1)
+                    {
+                        amtorderdue = 0;
+                    }                 
                     objOrder.AmountDue = amtorderdue;
                     objOrder.RazorpayOrderId = "";
                     objOrder.RazorpayPaymentId = objPlaceOrderVM.razorpay_payment_id;
@@ -1118,6 +1122,10 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                             objOrder.CreatedDate = DateTime.UtcNow;
                             objOrder.UpdatedBy = clientusrid;
                             objOrder.UpdatedDate = DateTime.UtcNow;
+                            if (Convert.ToDecimal(amountdue) < 1)
+                            {
+                                amountdue = 0;
+                            }
                             objOrder.AmountDue = amountdue;
                             objOrder.InvoiceNo = Invno;
                             objOrder.GSTNo = objPlaceOrderVM.GSTNo;
@@ -1575,6 +1583,10 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     objOrder.UpdatedBy = clientusrid;
                     objOrder.UpdatedDate = DateTime.UtcNow;
                     objOrder.GSTNo = objPlaceOrderVM.GSTNo;
+                    if (Convert.ToDecimal(amtorderdue) < 1)
+                    {
+                        amtorderdue = 0;
+                    }
                     objOrder.AmountDue = amtorderdue;
                     objOrder.RazorpayOrderId = "";
                     objOrder.RazorpayPaymentId = objPlaceOrderVM.razorpay_payment_id;
@@ -2130,6 +2142,10 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                             objOrder.CreatedDate = DateTime.UtcNow;
                             objOrder.UpdatedBy = clientusrid;
                             objOrder.UpdatedDate = DateTime.UtcNow;
+                            if (Convert.ToDecimal(amountdue) < 1)
+                            {
+                                amountdue = 0;
+                            }
                             objOrder.AmountDue = amountdue;
                             objOrder.InvoiceNo = Invno;
                             objOrder.GSTNo = objPlaceOrderVM.GSTNo;

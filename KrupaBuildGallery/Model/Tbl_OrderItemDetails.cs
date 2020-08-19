@@ -43,5 +43,6 @@ namespace KrupaBuildGallery.Model
         public string ComboOfferName { get; set; }
         public Nullable<bool> IsReplacedItem { get; set; }
         public Nullable<long> ReferenceItemDetailId { get; set; }
+        public Nullable<bool> IsFree { get; set; }
     }
 }

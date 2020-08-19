@@ -196,6 +196,7 @@
     <Compile Include="Areas\Admin\Controllers\CustomerController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Admin\Controllers\DistributorController.cs" />
+    <Compile Include="Areas\Admin\Controllers\FreeOfferController.cs" />
     <Compile Include="Areas\Admin\Controllers\GeneralSettingController.cs" />
     <Compile Include="Areas\Admin\Controllers\GodownController.cs" />
     <Compile Include="Areas\Admin\Controllers\HappyCustomerController.cs" />
@@ -328,6 +329,12 @@
     <Compile Include="Model\tbl_ExtraAmount.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\tbl_FreeOfferItems.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_FreeOffers.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\tbl_GeneralSetting.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
@@ -448,6 +455,7 @@
     <Compile Include="ViewModel\DashboardCountVM.cs" />
     <Compile Include="ViewModel\DistributorRequestVM.cs" />
     <Compile Include="ViewModel\EmailMessageVM.cs" />
+    <Compile Include="ViewModel\FreeOfferVM.cs" />
     <Compile Include="ViewModel\GeneralVM.cs" />
     <Compile Include="ViewModel\HomePageVM.cs" />
     <Compile Include="ViewModel\InvoiceItemVM.cs" />
@@ -4066,6 +4074,8 @@
     <Content Include="Areas\Admin\Views\Reference\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Reference\Add.cshtml" />
     <Content Include="Areas\Admin\Views\Reference\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\FreeOffer\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\FreeOffer\Add.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />

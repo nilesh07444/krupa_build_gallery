@@ -56,6 +56,7 @@
           <Property Name="AlternateMobile" Type="nvarchar" MaxLength="50" />
           <Property Name="Address" Type="nvarchar" MaxLength="450" />
           <Property Name="City" Type="nvarchar" MaxLength="200" />
+          <Property Name="ParentAgentId" Type="bigint" />
           <Property Name="Designation" Type="nvarchar" MaxLength="350" />
           <Property Name="Dob" Type="datetime" />
           <Property Name="DateOfJoin" Type="datetime" />
@@ -71,7 +72,6 @@
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="UpdatedBy" Type="bigint" />
           <Property Name="UpdatedDate" Type="datetime" />
-          <Property Name="ParentAgentId" Type="bigint" />
         </EntityType>
         <EntityType Name="tbl_AdvertiseImages">
           <Key>
@@ -133,11 +133,11 @@
           <Property Name="CategoryImage" Type="nvarchar" MaxLength="450" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
           <Property Name="IsDelete" Type="bit" Nullable="false" />
+          <Property Name="IsImported" Type="bit" />
           <Property Name="CreatedBy" Type="bigint" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="UpdatedBy" Type="bigint" />
           <Property Name="UpdatedDate" Type="datetime" />
-          <Property Name="IsImported" Type="bit" />
         </EntityType>
         <EntityType Name="tbl_ClientOtherDetails">
           <Key>
@@ -174,7 +174,7 @@
           <Property Name="GSTPhoto" Type="nvarchar" MaxLength="450" />
           <Property Name="DistributorCode" Type="nvarchar" MaxLength="150" />
           <Property Name="AddharPhoto" Type="nvarchar(max)" />
-          <Property Name="ShipGSTNo" Type="nvarchar" MaxLength="100" />
+          <Property Name="ShipGSTNo" Type="nvarchar" MaxLength="30" />
         </EntityType>
         <EntityType Name="tbl_ClientRoles">
           <Key>
@@ -331,7 +331,7 @@
           <Property Name="AddharPhoto" Type="nvarchar" MaxLength="450" />
           <Property Name="ProfilePhoto" Type="nvarchar" MaxLength="450" />
           <Property Name="Status" Type="int" />
-          <Property Name="Reason" Type="nvarchar" MaxLength="800" />
+          <Property Name="Reason" Type="nvarchar(max)" />
           <Property Name="CancellationChequePhoto" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="tbl_ExtraAmount">
@@ -347,6 +347,32 @@
           <Property Name="ModifiedBy" Type="bigint" />
           <Property Name="ModifiedDate" Type="datetime" />
         </EntityType>
+        <EntityType Name="tbl_FreeOfferItems">
+          <Key>
+            <PropertyRef Name="FreeofferItemId" />
+          </Key>
+          <Property Name="FreeofferItemId" Type="bigint" Nullable="false" />
+          <Property Name="FreeOfferId" Type="bigint" />
+          <Property Name="CategoryId" Type="bigint" />
+          <Property Name="ProductId" Type="bigint" />
+          <Property Name="SubProductId" Type="bigint" />
+          <Property Name="ProductItemId" Type="bigint" />
+          <Property Name="VariantItemId" Type="bigint" />
+          <Property Name="Qty" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_FreeOffers">
+          <Key>
+            <PropertyRef Name="FreeOfferId" />
+          </Key>
+          <Property Name="FreeOfferId" Type="bigint" Nullable="false" />
+          <Property Name="OrderAmountFrom" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="OrderAmountTo" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="OfferStartDate" Type="datetime" />
+          <Property Name="OfferEndDate" Type="datetime" />
+          <Property Name="IsDeleted" Type="bit" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="CreatedBy" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+        </EntityType>
         <EntityType Name="tbl_GeneralSetting">
           <Key>
             <PropertyRef Name="GeneralSettingId" />
@@ -354,12 +380,12 @@
           <Property Name="GeneralSettingId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="InitialPointCustomer" Type="decimal" Precision="18" Scale="2" />
           <Property Name="ShippingMessage" Type="nvarchar(max)" />
-          <Property Name="SMTPHost" Type="nvarchar" MaxLength="400" />
-          <Property Name="SMTPPort" Type="nvarchar" MaxLength="10" />
+          <Property Name="SMTPHost" Type="nvarchar" MaxLength="150" />
+          <Property Name="SMTPPort" Type="nvarchar" MaxLength="150" />
           <Property Name="EnableSSL" Type="bit" />
-          <Property Name="SMTPEmail" Type="nvarchar" MaxLength="200" />
-          <Property Name="SMTPPwd" Type="nvarchar" MaxLength="100" />
-          <Property Name="AdminSMSNumber" Type="nvarchar" MaxLength="20" />
+          <Property Name="SMTPEmail" Type="nvarchar" MaxLength="150" />
+          <Property Name="SMTPPwd" Type="nvarchar" MaxLength="150" />
+          <Property Name="AdminSMSNumber" Type="nvarchar" MaxLength="150" />
           <Property Name="AdminEmail" Type="nvarchar" MaxLength="150" />
           <Property Name="FromEmail" Type="nvarchar" MaxLength="150" />
           <Property Name="IsShowBannerImage" Type="bit" />
@@ -503,7 +529,7 @@
           <Property Name="IsActive" Type="bit" />
           <Property Name="CreatedDate" Type="datetime" />
           <Property Name="MRPPrice" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="VariantImage" Type="nvarchar(max)" />
+          <Property Name="VariantImage" Type="nvarchar" MaxLength="800" />
           <Property Name="IsDeleted" Type="bit" />
         </EntityType>
         <EntityType Name="tbl_LoginHistory">
@@ -585,6 +611,7 @@
           <Property Name="ComboOfferName" Type="nvarchar(max)" />
           <Property Name="IsReplacedItem" Type="bit" />
           <Property Name="ReferenceItemDetailId" Type="bigint" />
+          <Property Name="IsFree" Type="bit" />
         </EntityType>
         <EntityType Name="tbl_Orders">
           <Key>
@@ -627,8 +654,9 @@
           <Property Name="ExtraAmount" Type="decimal" Precision="18" Scale="2" />
           <Property Name="IsExtraAmountReceived" Type="bit" />
           <Property Name="AdvancePaymentRecieved" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="GSTNo" Type="nvarchar" MaxLength="100" />
+          <Property Name="GSTNo" Type="nvarchar" MaxLength="30" />
           <Property Name="Remarks" Type="nvarchar(max)" />
+          <Property Name="HasFreeItems" Type="bit" />
         </EntityType>
         <EntityType Name="tbl_PaymentHistory">
           <Key>
@@ -720,7 +748,7 @@
           <Property Name="HSNCode" Type="nvarchar" MaxLength="150" />
           <Property Name="ItemType" Type="int" />
           <Property Name="IsReturnable" Type="bit" />
-          <Property Name="PayAdvancePer" Type="decimal" Precision="6" Scale="2" />
+          <Property Name="PayAdvancePer" Type="decimal" Precision="18" Scale="2" />
           <Property Name="IsCashonDeliveryUse" Type="bit" />
           <Property Name="UnitType" Type="int" />
           <Property Name="MinimumStock" Type="int" />
@@ -739,11 +767,11 @@
           <Property Name="ProductImage" Type="nvarchar" MaxLength="450" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
           <Property Name="IsDelete" Type="bit" Nullable="false" />
+          <Property Name="IsImported" Type="bit" />
           <Property Name="CreatedBy" Type="bigint" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="UpdatedBy" Type="bigint" />
           <Property Name="UpdatedDate" Type="datetime" />
-          <Property Name="IsImported" Type="bit" />
         </EntityType>
         <EntityType Name="tbl_ReferenceMaster">
           <Key>
@@ -806,11 +834,11 @@
           <Property Name="SubProductImage" Type="nvarchar" MaxLength="350" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
           <Property Name="IsDelete" Type="bit" Nullable="false" />
+          <Property Name="IsImported" Type="bit" />
           <Property Name="CreatedBy" Type="bigint" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="UpdatedBy" Type="bigint" />
           <Property Name="UpdatedDate" Type="datetime" />
-          <Property Name="IsImported" Type="bit" />
         </EntityType>
         <EntityType Name="tbl_Transactions">
           <Key>
@@ -888,6 +916,8 @@
           <EntitySet Name="tbl_ContactFormData" EntityType="Self.tbl_ContactFormData" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_DistributorRequestDetails" EntityType="Self.tbl_DistributorRequestDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ExtraAmount" EntityType="Self.tbl_ExtraAmount" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_FreeOfferItems" EntityType="Self.tbl_FreeOfferItems" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_FreeOffers" EntityType="Self.tbl_FreeOffers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_GeneralSetting" EntityType="Self.tbl_GeneralSetting" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Godown" EntityType="Self.tbl_Godown" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_GSTMaster" EntityType="Self.tbl_GSTMaster" Schema="dbo" store:Type="Tables" />
@@ -1005,7 +1035,7 @@
           <Property Name="GSTPhoto" Type="String" MaxLength="450" FixedLength="false" Unicode="true" />
           <Property Name="DistributorCode" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="AddharPhoto" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="ShipGSTNo" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ShipGSTNo" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_ClientRoles">
           <Key>
@@ -1088,7 +1118,7 @@
           <Property Name="AddharPhoto" Type="String" MaxLength="450" FixedLength="false" Unicode="true" />
           <Property Name="ProfilePhoto" Type="String" MaxLength="450" FixedLength="false" Unicode="true" />
           <Property Name="Status" Type="Int32" />
-          <Property Name="Reason" Type="String" MaxLength="800" FixedLength="false" Unicode="true" />
+          <Property Name="Reason" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="CancellationChequePhoto" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_Godown">
@@ -1225,8 +1255,9 @@
           <Property Name="ExtraAmount" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="IsExtraAmountReceived" Type="Boolean" />
           <Property Name="AdvancePaymentRecieved" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="GSTNo" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="GSTNo" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="Remarks" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="HasFreeItems" Type="Boolean" />
         </EntityType>
         <EntityType Name="tbl_PaymentHistory">
           <Key>
@@ -1291,7 +1322,7 @@
           <Property Name="HSNCode" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="ItemType" Type="Int32" />
           <Property Name="IsReturnable" Type="Boolean" />
-          <Property Name="PayAdvancePer" Type="Decimal" Precision="6" Scale="2" />
+          <Property Name="PayAdvancePer" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="IsCashonDeliveryUse" Type="Boolean" />
           <Property Name="MinimumStock" Type="Int32" />
           <Property Name="UnitType" Type="Int32" />
@@ -1400,6 +1431,8 @@
           <EntitySet Name="tbl_ComboOfferSubItems" EntityType="krupagalleryModel.tbl_ComboOfferSubItems" />
           <EntitySet Name="tbl_ItemReplace" EntityType="krupagalleryModel.tbl_ItemReplace" />
           <EntitySet Name="tbl_ReferenceMaster" EntityType="krupagalleryModel.tbl_ReferenceMaster" />
+          <EntitySet Name="tbl_FreeOfferItems" EntityType="krupagalleryModel.tbl_FreeOfferItems" />
+          <EntitySet Name="tbl_FreeOffers" EntityType="krupagalleryModel.tbl_FreeOffers" />
         </EntityContainer>
         <EntityType Name="tbl_AdminRoles">
           <Key>
@@ -1505,12 +1538,12 @@
           <Property Name="GeneralSettingId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="InitialPointCustomer" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="ShippingMessage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-          <Property Name="SMTPHost" Type="String" MaxLength="400" FixedLength="false" Unicode="true" />
-          <Property Name="SMTPPort" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="SMTPHost" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="SMTPPort" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="EnableSSL" Type="Boolean" />
-          <Property Name="SMTPEmail" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="SMTPPwd" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="AdminSMSNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="SMTPEmail" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="SMTPPwd" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="AdminSMSNumber" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="AdminEmail" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="FromEmail" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="AdvertiseBannerImage" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
@@ -1613,7 +1646,7 @@
           <Property Name="IsActive" Type="Boolean" />
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="MRPPrice" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="VariantImage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="VariantImage" Type="String" MaxLength="800" FixedLength="false" Unicode="true" />
           <Property Name="IsDeleted" Type="Boolean" />
         </EntityType>
         <EntityType Name="tbl_Units">
@@ -1695,6 +1728,7 @@
           <Property Name="ComboOfferName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="IsReplacedItem" Type="Boolean" />
           <Property Name="ReferenceItemDetailId" Type="Int64" />
+          <Property Name="IsFree" Type="Boolean" />
         </EntityType>
         <EntityType Name="tbl_ReviewRating">
           <Key>
@@ -1866,6 +1900,32 @@
           <Property Name="CreatedBy" Type="Int64" />
           <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="Int64" />
+        </EntityType>
+        <EntityType Name="tbl_FreeOfferItems">
+          <Key>
+            <PropertyRef Name="FreeofferItemId" />
+          </Key>
+          <Property Name="FreeofferItemId" Type="Int64" Nullable="false" />
+          <Property Name="FreeOfferId" Type="Int64" />
+          <Property Name="CategoryId" Type="Int64" />
+          <Property Name="ProductId" Type="Int64" />
+          <Property Name="SubProductId" Type="Int64" />
+          <Property Name="ProductItemId" Type="Int64" />
+          <Property Name="VariantItemId" Type="Int64" />
+          <Property Name="Qty" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+        </EntityType>
+        <EntityType Name="tbl_FreeOffers">
+          <Key>
+            <PropertyRef Name="FreeOfferId" />
+          </Key>
+          <Property Name="FreeOfferId" Type="Int64" Nullable="false" />
+          <Property Name="OrderAmountFrom" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="OrderAmountTo" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="OfferStartDate" Type="DateTime" Precision="3" />
+          <Property Name="OfferEndDate" Type="DateTime" Precision="3" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -2145,6 +2205,7 @@
           <EntitySetMapping Name="tbl_Orders">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_Orders">
               <MappingFragment StoreEntitySet="tbl_Orders">
+                <ScalarProperty Name="HasFreeItems" ColumnName="HasFreeItems" />
                 <ScalarProperty Name="Remarks" ColumnName="Remarks" />
                 <ScalarProperty Name="GSTNo" ColumnName="GSTNo" />
                 <ScalarProperty Name="AdvancePaymentRecieved" ColumnName="AdvancePaymentRecieved" />
@@ -2560,6 +2621,7 @@
           <EntitySetMapping Name="tbl_OrderItemDetails">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_OrderItemDetails">
               <MappingFragment StoreEntitySet="tbl_OrderItemDetails">
+                <ScalarProperty Name="IsFree" ColumnName="IsFree" />
                 <ScalarProperty Name="ReferenceItemDetailId" ColumnName="ReferenceItemDetailId" />
                 <ScalarProperty Name="IsReplacedItem" ColumnName="IsReplacedItem" />
                 <ScalarProperty Name="ComboOfferName" ColumnName="ComboOfferName" />
@@ -2771,6 +2833,34 @@
                 <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
                 <ScalarProperty Name="Reference" ColumnName="Reference" />
                 <ScalarProperty Name="ReferenceId" ColumnName="ReferenceId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_FreeOfferItems">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_FreeOfferItems">
+              <MappingFragment StoreEntitySet="tbl_FreeOfferItems">
+                <ScalarProperty Name="Qty" ColumnName="Qty" />
+                <ScalarProperty Name="VariantItemId" ColumnName="VariantItemId" />
+                <ScalarProperty Name="ProductItemId" ColumnName="ProductItemId" />
+                <ScalarProperty Name="SubProductId" ColumnName="SubProductId" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+                <ScalarProperty Name="FreeOfferId" ColumnName="FreeOfferId" />
+                <ScalarProperty Name="FreeofferItemId" ColumnName="FreeofferItemId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_FreeOffers">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_FreeOffers">
+              <MappingFragment StoreEntitySet="tbl_FreeOffers">
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="OfferEndDate" ColumnName="OfferEndDate" />
+                <ScalarProperty Name="OfferStartDate" ColumnName="OfferStartDate" />
+                <ScalarProperty Name="OrderAmountTo" ColumnName="OrderAmountTo" />
+                <ScalarProperty Name="OrderAmountFrom" ColumnName="OrderAmountFrom" />
+                <ScalarProperty Name="FreeOfferId" ColumnName="FreeOfferId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

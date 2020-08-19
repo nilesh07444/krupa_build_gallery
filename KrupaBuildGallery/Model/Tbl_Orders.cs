@@ -53,5 +53,6 @@ namespace KrupaBuildGallery.Model
         public Nullable<decimal> AdvancePaymentRecieved { get; set; }
         public string GSTNo { get; set; }
         public string Remarks { get; set; }
+        public Nullable<bool> HasFreeItems { get; set; }
     }
 }

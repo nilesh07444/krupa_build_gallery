@@ -71,11 +71,12 @@
                         <div class="form-row">
                             <div class="col-md-6">
                                 <label for="mobileno">Mobile No *</label>
-                                <input type="text" class="form-control" id="mobileno" name="mobileno" value="@TempData["mobileno"]" placeholder="Enter Mobile No" required="">
+                                <input type="number" class="form-control" id="mobileno" name="mobileno" value="@TempData["mobileno"]" placeholder="Enter Mobile No" required="">
+                                <span class="errorcls"></span>
                             </div>
                             <div class="col-md-6">
                                 <label for="alternatemobileno">Alternate Mobile No</label>
-                                <input type="text" class="form-control" id="alternatemobileno" name="alternatemobileno" value="@TempData["alternatemobileno"]" placeholder="Enter Alternate Mobile No">
+                                <input type="number" class="form-control" id="alternatemobileno" name="alternatemobileno" value="@TempData["alternatemobileno"]" placeholder="Enter Alternate Mobile No">
                             </div>
                         </div>
                         <div class="form-row">
@@ -243,7 +244,23 @@
             return false;
         }
         else {
+            var flg = true;
+            if ($("input[name=mobileno]").val() == "") {
+                $("input[name=mobileno]").siblings('.errorcls').html("Mobile number is Required");
+                flg = false;
+            }
+            else {
+                var a = /^\d{10}$/;
+                if (!a.test(($("input[name=mobileno]").val()))) {
+                    $("input[name=mobileno]").siblings('.errorcls').html("Invalid Mobile number");
+                    flg = false;
+                }
+            }
 
+            if (flg == false) {
+                return false;
+            }
+           
             if ($('#hdnotptxt').val() == "") {
                  var URL = '@Url.Action("SendOTP", "DistributorRequest")';
                $.ajax({

@@ -12,6 +12,7 @@ using System.Web.Mvc;
 
 namespace KrupaBuildGallery.Areas.Admin.Controllers
 {
+    [CustomAuthorize]
     public class ComboOfferController : Controller
     {
         private readonly krupagallarydbEntities _db;

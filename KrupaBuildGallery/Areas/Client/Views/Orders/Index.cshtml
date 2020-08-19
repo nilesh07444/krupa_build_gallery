@@ -32,88 +32,88 @@
             <div class="col-sm-12" style="overflow-x:auto;">
                 @if (Convert.ToInt32(ViewBag.TotalOrders) > 0)
                 {
-                 
-                        if (clsClientSession.RoleID == 1)
-                        {
-                            <select class="form-control" id="selectstatus" style="width:250px;" onchange="changestatus();">
-                                <option value="-1">All</option>
-                                <option value="1">Pending Shipping Charge</option>
-                                <option value="3">Cash On Delivery</option>
-                                <option value="4">Second Cart Orders</option>
-                            </select>
-                            <br />
-                        }
-                        else
-                        {
-                            <select class="form-control" id="selectstatus" style="width:150px;" onchange="changestatus();">
-                                <option value="-1">All</option>
-                                <option value="1">Pending Shipping Charge</option>
-                                <option value="2">Pending Order Payment</option>
-                                <option value="3">Cash On Delivery</option>
-                                <option value="4">Second Cart Orders</option>
-                            </select>
-                            <br />
-                        }
 
-                        <table class="table cart-table table-responsive-xs">
-                            <thead>
-                                <tr class="table-head">
-                                    <th scope="col">Order No.</th>
-                                    <th scope="col">Order Date</th>
-                                    <th scope="col">Order Amount</th>
-                                    <th scope="col">Order Status</th>
-                                    <th scope="col">Payment Type</th>
-                                    <th scope="col">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (Model != null && Model.Count > 0)
+                    if (clsClientSession.RoleID == 1)
+                    {
+                        <select class="form-control" id="selectstatus" style="width:250px;" onchange="changestatus();">
+                            <option value="-1">All</option>
+                            <option value="1">Pending Shipping Charge</option>
+                            <option value="3">Cash On Delivery</option>
+                            <option value="4">Second Cart Orders</option>
+                        </select>
+                        <br />
+                    }
+                    else
+                    {
+                        <select class="form-control" id="selectstatus" style="width:150px;" onchange="changestatus();">
+                            <option value="-1">All</option>
+                            <option value="1">Pending Shipping Charge</option>
+                            <option value="2">Pending Order Payment</option>
+                            <option value="3">Cash On Delivery</option>
+                            <option value="4">Second Cart Orders</option>
+                        </select>
+                        <br />
+                    }
+
+                    <table class="table cart-table table-responsive-xs">
+                        <thead>
+                            <tr class="table-head">
+                                <th scope="col">Order No.</th>
+                                <th scope="col">Order Date</th>
+                                <th scope="col">Order Amount</th>
+                                <th scope="col">Order Status</th>
+                                <th scope="col">Payment Type</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.Count > 0)
+                            {
+                                foreach (KrupaBuildGallery.ViewModel.OrderVM objorder in Model)
                                 {
-                                    foreach (KrupaBuildGallery.ViewModel.OrderVM objorder in Model)
+                                    string stauscolor = "badge-secondary";
+                                    decimal shippingchrge = 0;
+                                    double amtordr = CommonMethod.GetRoundValue(Convert.ToDouble(objorder.OrderAmount));
+                                    if (objorder.ShippingStatus == 2)
                                     {
-                                        string stauscolor = "badge-secondary";
-                                        decimal shippingchrge = 0;
-                                        double amtordr = CommonMethod.GetRoundValue(Convert.ToDouble(objorder.OrderAmount));
-                                        if (objorder.ShippingStatus == 2)
-                                        {
-                                            shippingchrge = objorder.ShipmentCharge;
-                                        }
-                                        //decimal OrdAmt = Math.Round(objorder.OrderAmount + shippingchrge, 2);
-                                        if (objorder.OrderStatusId == 1)
-                                        {
-                                            stauscolor = "badge-danger";
-                                        }
-                                        else if (objorder.OrderStatusId == 2)
-                                        {
-                                            stauscolor = "badge-success";
-                                        }
-                                        else if (objorder.OrderStatusId == 3)
-                                        {
-                                            stauscolor = "badge-warning";
-                                        }
-                                        <tr>
-                                            <td># @objorder.OrderId</td>
-                                            <td>@objorder.OrderDate.ToString("MMM dd,yyyy")</td>
-                                            <td>₹ @Convert.ToDecimal(amtordr).ToString("0.##")</td>
-                                            <td><span class="badge @stauscolor">@objorder.OrderStatus</span></td>
-                                            <td>@objorder.PaymentType</td>
-                                            <td> <a href="/orders/orderdetails/@objorder.OrderId"><i class="fa fa-eye font-success"></i></a></td>
-                                        </tr>
+                                        shippingchrge = objorder.ShipmentCharge;
                                     }
-
-                                }
-                                else
-                                {
+                                    //decimal OrdAmt = Math.Round(objorder.OrderAmount + shippingchrge, 2);
+                                    if (objorder.OrderStatusId == 1)
+                                    {
+                                        stauscolor = "badge-danger";
+                                    }
+                                    else if (objorder.OrderStatusId == 2)
+                                    {
+                                        stauscolor = "badge-success";
+                                    }
+                                    else if (objorder.OrderStatusId == 3)
+                                    {
+                                        stauscolor = "badge-warning";
+                                    }
                                     <tr>
-                                        <td colspan="5" style="text-align:center;">
-                                            No Orders found....
-                                        </td>
+                                        <td># @objorder.OrderId</td>
+                                        <td>@objorder.OrderDate.ToString("MMM dd,yyyy")</td>
+                                        <td>₹ @Convert.ToDecimal(amtordr).ToString("0.##")</td>
+                                        <td><span class="badge @stauscolor">@objorder.OrderStatus</span></td>
+                                        <td>@objorder.PaymentType</td>
+                                        <td> <a href="/orders/orderdetails/@objorder.OrderId"><i class="fa fa-eye font-success"></i></a> <a href="javascript:void(0);" onclick="invoiceprint('@objorder.OrderId');" title="Print Invoice"><i class="fa fa-file font-success"></i></a></td>
                                     </tr>
-
                                 }
-                            </tbody>
-                       </table>
-                    
+
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5" style="text-align:center;">
+                                        No Orders found....
+                                    </td>
+                                </tr>
+
+                            }
+                        </tbody>
+                    </table>
+
                 }
                 else
                 {
@@ -130,8 +130,20 @@
     </div>
 </section>
 <!--section end-->
-<script>
+<div style="display: none;" id="dvPrint">
 
+</div>
+<script>
+    function invoiceprint(orderid) {
+        $("#dvPrint").load('/client/Orders/PrintInvoice?OrderId=' + orderid, function () {
+            w = window.open();
+            w.document.write($("#dvPrint").html());
+            setTimeout(function () {
+                w.print();
+                w.close();
+            }, 100);
+        });
+    }
       $(document).ready(function () {
         $("#selectstatus").val("@ViewBag.Status");
     });

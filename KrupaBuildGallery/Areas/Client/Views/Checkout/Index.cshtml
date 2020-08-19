@@ -427,7 +427,7 @@
                                         </ul>
                                     </div>
                                     <input type="hidden" name="Orderamount" id="Orderamout" data-withship="@TotalOrderamtt" data-wihoutship="@ViewBag.TotalOrder" value="@ViewBag.TotalOrder" />
-                                    <input type="hidden" name="PayAmount" id="PayAmount" data-withship="@NetPayShip" data-wihoutship="@ViewBag.NetPay" value="@ViewBag.NetPay" />
+                                    <input type="hidden" name="PayAmount" id="PayAmount" data-withship="@NetPayShip" data-wihoutship="@NetPay" value="@NetPay" />
                                     <input type="hidden" name="Orderdesc" id="Orderdesc" value="Total @lstCartItmms.Count() items" />
                                     <input type="hidden" id="creditremaining" value="@ViewBag.CreditRemaining" />
                                     <input type="hidden" id="shipamount" name="shipamount" value="@ViewBag.ShippingChargeTotal" />
@@ -581,6 +581,7 @@
         //jQuery(".dvrazorpayscript").load('/checkout/CreateRazorPaymentOrder?Amount=' + amt + '&description=' + $("#Orderdesc").val(), function () {
 
         //});
+        $('.dropdown-toggle').dropdown();
     });
 
     function ViewDetails() {

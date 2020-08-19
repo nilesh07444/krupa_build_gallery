@@ -28,7 +28,7 @@
     };
 
     if ($("#rzp-placeorder").length > 0) {
-        $(document).off('click').on('click', '#rzp-placeorder', function (e) {       
+        $(document).off('click').on('click', '#rzp-placeorder', function (e) {
             if (lstpincodesstr != null && lstpincodesstr.length > 0) {
                 var pincodd = $("input[name=shippincode]").val();
                 if ($("input[name=shippincode]").val() != "" && lstpincodesstr.indexOf(pincodd.trim()) < 0) {
@@ -71,6 +71,22 @@
                 $("input[name=shipphone]").siblings('.errorcls').html("Phone number is Required");
                 flg = false;
             }
+            else {
+                   var a = /^\d{10}$/;
+                if (!a.test(($("input[name=shipphone]").val()))) {
+                    $("input[name=shipphone]").siblings('.errorcls').html("Invalid Phone number");
+                    flg = false;
+                }
+            }
+            if ($("input[name=shipemailaddress]").val() != "") {
+                var a =/^([a-zA-Z0-9_\.\-\+])+\@@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+                if (!a.test(($("input[name=shipemailaddress]").val()))) {
+                    $("input[name=shipemailaddress]").siblings('.errorcls').html("Invalid Email");
+                    flg = false;
+                }
+            }
+
+
             if ($("input[name=shipaddress]").val() == "") {
                 $("input[name=shipaddress]").siblings('.errorcls').html("Address is Required");
                 flg = false;
@@ -87,6 +103,9 @@
                 $("input[name=shippincode]").siblings('.errorcls').html("Postal Code is Required");
                 flg = false;
             }
+
+
+
             if ($("input[name=payment-group]:checked").length == 0) {
                 alert("Please select payment method");
                 flg = false;
@@ -100,9 +119,9 @@
                 if ($("#payment-2").is(":checked") && parseFloat($("#onlineamtinorder").val()) > 0) {
                       var isitemexists = CheckItemExists("ByOther",options,e);
                 }
-                else {                    
+                else {
                      var isitemexists = CheckItemExists("ByCredit");
-                }             
+                }
             }
         });
     }

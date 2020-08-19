@@ -403,7 +403,7 @@
                                         <td>₹ @Totl</td>
                                         <td><span class="badge @stauscolor">@objorderItem.ItemStatustxt</span></td>
                                         <td>
-                                            @if (((objorderItem.ItemStatus == 1) && Model.OrderTypeId == 1) || objorderItem.ItemStatus == 4)
+                                            @if (((objorderItem.ItemStatus == 1 || objorderItem.ItemStatus == 2) && Model.OrderTypeId == 1) || objorderItem.ItemStatus == 4)
                                             {
                                                 <a href="javascript:void(0)" onclick="itemaction('@objorderItem.OrderItemId','@Model.OrderTypeId','@objorderItem.ItemStatus','@objorderItem.IsReturnable.ToString()','false');"><i class="fa fa-wrench font-success"></i></a>
                                             }

@@ -184,7 +184,7 @@
         var ProductId = jQuery("#ProductId option:selected").val();
         var SubProductId = jQuery("#SubProductId option:selected").val();
          var itmtypid = parseInt($(".chkitemtype:checked").val());
-        if ((ProductId != "" && ProductId != null) || (SubProductId != "" && SubProductId != null)) {
+        if ((ProductId != "" && ProductId != null)) {
             var URL = '@Url.Action("GetItemList", "Stock")';
             $.ajax({
                 type: 'GET',
