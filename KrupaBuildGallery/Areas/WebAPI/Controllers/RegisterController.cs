@@ -51,6 +51,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     objClientUsr.ProfilePicture = "";
                     objClientUsr.UserName = firstnm + lastnm;
                     objClientUsr.Password = EncyptedPassword;
+                    objClientUsr.Prefix = objRegisterVM.Prefix;
+                    objclientuser.Refrence = objRegisterVM.Reference;
                     _db.tbl_ClientUsers.Add(objClientUsr);
                     _db.SaveChanges();
 
@@ -145,5 +147,31 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             return response;
 
         }
+
+
+        [Route("GetReferences"), HttpPost]
+        public ResponseDataModel<List<string>> GetReferences()
+        {
+            ResponseDataModel<List<string>> response = new ResponseDataModel<List<string>>();
+            List<string> lstRefer = new List<string>();
+            try
+            {
+                List<tbl_ReferenceMaster> lstref = _db.tbl_ReferenceMaster.Where(o => o.IsDeleted == false).OrderBy(x => x.Reference).ToList();
+                if(lstref != null && lstref.Count() > 0)
+                {
+                    lstRefer = lstref.Select(x => x.Reference).ToList();
+                }
+                response.Data = lstRefer;
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+       
     }
 }
