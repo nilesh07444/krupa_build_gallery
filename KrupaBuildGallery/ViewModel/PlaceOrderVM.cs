@@ -30,5 +30,7 @@ namespace KrupaBuildGallery
         public string MobileNumber {get;set;}
         public string GSTNo { get; set; }
         public string Remarks { get; set; }
+        public string FreeOfferId { get; set; }
+        public string HasFreeItems { get; set; }
     }
 }

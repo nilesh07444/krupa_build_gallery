@@ -26,5 +26,7 @@ namespace KrupaBuildGallery
         public string extraamount { get; set; }
         public string GSTNo { get; set; }
         public string remarks { get; set; }
+        public string IncludeFreeItems { get; set; }
+        public string FreeOfferId { get; set; }
     }
 }

@@ -1,6 +1,6 @@
-﻿@model  FreeOfferVM
+﻿@model FreeOfferVM
 @{
-    ViewBag.Title = "Add Free Offer";
+    ViewBag.Title = "Add Combo Offer";
 }
 
 <div class="page-body">
@@ -12,7 +12,7 @@
                 <div class="col">
                     <div class="page-header-left">
                         <h3>
-                            Add Free Offer
+                            Edit Free Offer
                         </h3>
                     </div>
                 </div>
@@ -20,7 +20,7 @@
                     <ol class="breadcrumb pull-right">
                         <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
                         <li class="breadcrumb-item"><a href="/admin/freeoffer">Free Offer</a></li>
-                        <li class="breadcrumb-item active">Add Free Offer</li>
+                        <li class="breadcrumb-item active">Edit Free Offer</li>
                     </ol>
                 </div>
             </div>
@@ -33,14 +33,14 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5>Add Free Offer</h5>
+                        <h5>Edit Combo Offer</h5>
                     </div>
                     <div class="card-body">
-                        @using (Html.BeginForm("Add", "FreeOffer", FormMethod.Post, new { @id = "FreeOfferFormId", @class = "needs-validation", enctype = "multipart/form-data", role = "form" }))
+                        @using (Html.BeginForm("Edit", "FreeOffer", FormMethod.Post, new { @id = "FreeOfferFormId", @class = "needs-validation", enctype = "multipart/form-data", role = "form" }))
                         {
+
                             @Html.AntiForgeryToken()
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
                             <div class="form-group row">
                                 @Html.LabelFor(model => model.OrderAmountFrom, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.EditorFor(model => model.OrderAmountFrom, new { htmlAttributes = new { @class = "form-control col-md-4", @placeholder = "Enter Order Start Price", maxlength = "150" } })
@@ -70,9 +70,8 @@
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.OfferEndDateStr, "", new { @class = "text-danger" })
                             </div>
-
                             <div id="SubItems">
-
+                                @Html.Action("GetSubItemsOfFreeEdit", "FreeOffer", new { FreeOfferId = Model.FreeOfferId })
                             </div>
                             <div class="row" style="margin-top:20px;">
                                 <div class="col-sm-8"></div>
@@ -81,6 +80,7 @@
 
 
                             <div class="form-group row">
+                                @Html.HiddenFor(x => x.FreeOfferId)
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 <button type="button" class="btn btn-primary" style="margin-right:10px;" onclick="validateandsubmit();">Submit</button>
                                 <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
@@ -103,7 +103,7 @@
 <script>
     var jid = 0;
     $(document).on("click", "#btnCancel", function () {
-        window.location.href = "/admin/combooffer";
+        window.location.href = "/admin/freeoffer";
     });
 
     function AddSubItem() {
@@ -119,10 +119,6 @@
 
     function validateandsubmit() {
         var flgisvalid = true;
-        if ($("select[name=SubItemProductItem]").length == 0) {
-            alert("Please add atleast 1 Item");
-            flgisvalid = false;
-        }
         $("select[name=SubItemProductItem]").each(function () {
             var idss = $(this).attr("data-id");
             if ($(this).val() == "" || $(this).val() == "0") {
@@ -147,7 +143,7 @@
                 $("#Qty_" + idss).siblings(".field-validation-valid").html("");
             }
         });
-       
+
         if (flgisvalid == true) {
             $("#FreeOfferFormId").submit();
         }

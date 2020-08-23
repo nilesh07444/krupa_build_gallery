@@ -200,8 +200,11 @@ $('.product-box a .ti-heart1 , .product-box a .fa-heart1').on('click', function 
             '</div>'
     });
 });
-
+var opts;
+var bypy;
 function CheckItemExists(bypymnt, optionss, e) {
+    opts = optionss;
+    bypy = bypymnt;
     var iscsh = "false";
     if($("#isCashondelivery").length > 0 && $("#isCashondelivery").val() == "True") {
         iscsh = "true";
@@ -220,15 +223,21 @@ function CheckItemExists(bypymnt, optionss, e) {
                 }, 500);                 
             }
             else {       
-                if (bypymnt == "ByOther") {
-                    var rzp1 = new Razorpay(optionss);
-                    rzp1.open();
-                    e.preventDefault();
+                if ($("#hasFreeItemsinOrder").val() == "true") {
+                    $("#freeitems").modal("show");
                 }
-                else if (bypymnt == "ByCredit") {
-                    StartLoading();
-                    PlaceOrder("ByCredit", "", "");
+                else {
+                    if (bypymnt == "ByOther") {
+                        var rzp1 = new Razorpay(optionss);
+                        rzp1.open();
+                        e.preventDefault();
+                    }
+                    else if (bypymnt == "ByCredit") {
+                        StartLoading();
+                        PlaceOrder("ByCredit", "", "");
+                    }
                 }
+               
             }
         },
         error: function (resultData) {
@@ -386,5 +395,20 @@ function addtoCartCashOndeliveryCombo(iscash) {
     else {
         $("#cashondeliverymodalcombo").modal("hide");
         addtoCartCombo(comboid, qty, "false");
+    }
+}
+
+function GetFreeItems(istru) {
+    if (istru == "true") {
+        $("#IncludeFreeItems").val("true");
+    }
+    if (bypy == "ByOther") {
+        var rzp1 = new Razorpay(opts);
+        rzp1.open();
+        e.preventDefault();
+    }
+    else if (bypy == "ByCredit") {
+        StartLoading();
+        PlaceOrder("ByCredit", "", "");
     }
 }

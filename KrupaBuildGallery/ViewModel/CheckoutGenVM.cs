@@ -24,5 +24,8 @@ namespace KrupaBuildGallery
         public decimal CashOrderAmtYerly { get; set; }
         public decimal AdvancePaymentAmt { get; set; }
         public List<string> AvailablePincodes { get; set; }
+        public List<FreeOfferSubItems> FreeItems { get; set; }
+        public bool HasFreeItems { get; set; }
+        public string FreeOfferId { get; set; }
     }
 }

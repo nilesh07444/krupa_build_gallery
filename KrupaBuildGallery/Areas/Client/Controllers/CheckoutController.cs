@@ -24,13 +24,14 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         {
             List<CartVM> lstCartItems = new List<CartVM>();
             List<CartVM> lstComboCrt = new List<CartVM>();
+            decimal TotalOrder = 0;
             try
             {
 
                 decimal ShippingChargeTotal = 0;
                 decimal Ordetotlyearly = 0;
                 decimal TotalDiscount = 0;
-                decimal TotalOrder = 0;
+               
                 ViewBag.WebsiteOrderId = "1";
                 bool IsCashOrd = false;
                 if (type == "Cash")
@@ -300,6 +301,32 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             {
                 string ErrorMessage = ex.Message.ToString();
             }
+            DateTime dtCurrentDateTime = DateTime.UtcNow;
+            tbl_FreeOffers objfreeoffer = _db.tbl_FreeOffers.Where(o => o.OfferStartDate <= dtCurrentDateTime && o.OfferEndDate >= dtCurrentDateTime && o.OrderAmountFrom <= TotalOrder && o.OrderAmountTo >= TotalOrder && o.IsDeleted == false).FirstOrDefault();
+            List<FreeOfferSubItems> lstFreeItemss = new List<FreeOfferSubItems>();
+            ViewBag.HasFreeItems = "false";
+            ViewBag.FreeOfferId = 0;
+            if (objfreeoffer != null)
+            {
+                lstFreeItemss = (from c in _db.tbl_FreeOfferItems
+                                join i in _db.tbl_ProductItems on c.ProductItemId equals i.ProductItemId
+                                join v in _db.tbl_ItemVariant on c.VariantItemId equals v.VariantItemId
+                                where c.FreeOfferId == objfreeoffer.FreeOfferId
+                                select new FreeOfferSubItems
+                                {
+                                    ProductItemId = i.ProductItemId,
+                                    CategoryId = i.CategoryId,
+                                    ProductId = i.ProductId,
+                                    Sub_ProductItemName = i.ItemName,                                
+                                    VarintId = c.VariantItemId.Value,
+                                    Qty = c.Qty,
+                                    VarintNm = v.UnitQty
+                                }).ToList();
+                ViewBag.HasFreeItems = "true";
+                ViewBag.FreeOfferId = objfreeoffer.FreeOfferId;
+            }
+            
+            ViewData["lstFreeItemss"] = lstFreeItemss;
             ViewData["lstCartItems"] = lstCartItems;
             var objGenralsetting = _db.tbl_GeneralSetting.FirstOrDefault();
             ViewBag.ShippingMsg = objGenralsetting.ShippingMessage;
@@ -397,6 +424,11 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 decimal amtwallet = Convert.ToDecimal(objCheckout.walletamtinorder);
                 decimal amtcredit = Convert.ToDecimal(objCheckout.creditamtinorder);
                 decimal amtonline = Convert.ToDecimal(objCheckout.onlineamtinorder);
+                bool HasFreeItems = false;
+                if (objCheckout.IncludeFreeItems == "true")
+                {
+                    HasFreeItems = true;
+                }
                 if (razorpay_payment_id == "ByCredit")
                 {
                     string paymentmethod = "ByCredit";
@@ -575,7 +607,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     objOrder.CreatedDate = DateTime.UtcNow;
                     objOrder.UpdatedBy = clientusrid;
                     objOrder.UpdatedDate = DateTime.UtcNow;
-                    if(Convert.ToDecimal(amtorderdue) < 1)
+                    objOrder.HasFreeItems = HasFreeItems;
+                    if (Convert.ToDecimal(amtorderdue) < 1)
                     {
                         amtorderdue = 0;
                     }
@@ -877,6 +910,72 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         _db.SaveChanges();
                     }
 
+                    if(objCheckout.IncludeFreeItems == "true")
+                    {
+                        long freeoffrid = Convert.ToInt64(objCheckout.FreeOfferId);
+                      List<FreeOfferSubItems> lstFreeItemss = (from c in _db.tbl_FreeOfferItems
+                                         join i in _db.tbl_ProductItems on c.ProductItemId equals i.ProductItemId
+                                         join v in _db.tbl_ItemVariant on c.VariantItemId equals v.VariantItemId
+                                         where c.FreeOfferId == freeoffrid
+                                         select new FreeOfferSubItems
+                                         {
+                                             ProductItemId = i.ProductItemId,
+                                             CategoryId = i.CategoryId,
+                                             ProductId = i.ProductId,
+                                             Sub_ProductItemName = i.ItemName,
+                                             VarintId = c.VariantItemId.Value,
+                                             Qty = c.Qty,
+                                             VarintNm = v.UnitQty
+                                         }).ToList();                     
+                        if(lstFreeItemss != null && lstFreeItemss.Count() > 0)
+                        {
+
+                            foreach(var objfree in lstFreeItemss)
+                            {
+                                tbl_OrderItemDetails objOrderItem = new tbl_OrderItemDetails();
+                                objOrderItem.OrderId = objOrder.OrderId;
+                                objOrderItem.ProductItemId = objfree.ProductItemId;
+                                objOrderItem.VariantItemId = objfree.VarintId;
+                                objOrderItem.ItemName = objfree.Sub_ProductItemName;
+                                objOrderItem.IGSTAmt = 0;
+                                objOrderItem.Qty = objfree.Qty;
+                                objOrderItem.Price = 0;
+                                objOrderItem.Sku = "";
+                                objOrderItem.IsActive = true;
+                                objOrderItem.IsDelete = false;
+                                objOrderItem.CreatedBy = clientusrid;
+                                objOrderItem.CreatedDate = DateTime.UtcNow;
+                                objOrderItem.MRPPrice = 0;
+                                objOrderItem.UpdatedBy = clientusrid;
+                                objOrderItem.UpdatedDate = DateTime.UtcNow;
+                                decimal qtty = GetVarintQtyy(objfree.VarintNm);
+                                objOrderItem.QtyUsed = qtty * objfree.Qty;
+                                objOrderItem.GSTPer = 0;
+                                objOrderItem.GSTAmt = 0;
+                                objOrderItem.Price = 0;
+                                objOrderItem.Discount = 0;
+                                objOrderItem.ItemStatus = Convert.ToInt32(OrderStatus.NewOrder);
+                                objOrderItem.FinalItemPrice = 0;
+                                objOrderItem.IsCombo = false;
+                                objOrderItem.IsFree = true;
+                                _db.tbl_OrderItemDetails.Add(objOrderItem);
+                                _db.SaveChanges();
+                                tbl_StockReport objstkreport = new tbl_StockReport();
+                                objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
+                                objstkreport.StockDate = DateTime.UtcNow;
+                                objstkreport.Qty = Convert.ToInt64(objOrderItem.QtyUsed);
+                                objstkreport.IsCredit = false;
+                                objstkreport.IsAdmin = false;
+                                objstkreport.CreatedBy = clientusrid;
+                                objstkreport.ItemId = objOrderItem.ProductItemId;
+                                objstkreport.Remarks = "Ordered Item for Order:" + objOrderItem.OrderId;
+                                _db.tbl_StockReport.Add(objstkreport);
+                                _db.SaveChanges();
+                                objcmn.SaveTransaction(objfree.ProductItemId, objOrderItem.OrderDetailId, objOrderItem.OrderId.Value, "Order Placed for Item", objOrderItem.FinalItemPrice.Value, clsClientSession.UserID, 0, DateTime.UtcNow, "New Order Item");                               
+                            }
+                        }
+                    }
+
                     if (TotalDiscount > 0 && clsClientSession.RoleID == 1)
                     {
                         if (lstpoints != null && lstpoints.Count() > 0)
@@ -1155,6 +1254,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             objOrder.AmountByRazorPay = amtonline;
                             objOrder.ExtraAmount = extraamount;
                             objOrder.Remarks = objCheckout.remarks;
+                            objOrder.HasFreeItems = HasFreeItems;
                             if (objCheckout.shippincode == "389001")
                             {
                                 objOrder.ShippingCharge = shippingcharge;
@@ -1442,6 +1542,71 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 _db.SaveChanges();
                             }
 
+                            if (objCheckout.IncludeFreeItems == "true")
+                            {
+                                long freeoffrid = Convert.ToInt64(objCheckout.FreeOfferId);
+                                List<FreeOfferSubItems> lstFreeItemss = (from c in _db.tbl_FreeOfferItems
+                                                                         join i in _db.tbl_ProductItems on c.ProductItemId equals i.ProductItemId
+                                                                         join v in _db.tbl_ItemVariant on c.VariantItemId equals v.VariantItemId
+                                                                         where c.FreeOfferId == freeoffrid
+                                                                         select new FreeOfferSubItems
+                                                                         {
+                                                                             ProductItemId = i.ProductItemId,
+                                                                             CategoryId = i.CategoryId,
+                                                                             ProductId = i.ProductId,
+                                                                             Sub_ProductItemName = i.ItemName,
+                                                                             VarintId = c.VariantItemId.Value,
+                                                                             Qty = c.Qty,
+                                                                             VarintNm = v.UnitQty
+                                                                         }).ToList();
+                                if (lstFreeItemss != null && lstFreeItemss.Count() > 0)
+                                {
+
+                                    foreach (var objfree in lstFreeItemss)
+                                    {
+                                        tbl_OrderItemDetails objOrderItem = new tbl_OrderItemDetails();
+                                        objOrderItem.OrderId = objOrder.OrderId;
+                                        objOrderItem.ProductItemId = objfree.ProductItemId;
+                                        objOrderItem.VariantItemId = objfree.VarintId;
+                                        objOrderItem.ItemName = objfree.Sub_ProductItemName;
+                                        objOrderItem.IGSTAmt = 0;
+                                        objOrderItem.Qty = objfree.Qty;
+                                        objOrderItem.Price = 0;
+                                        objOrderItem.Sku = "";
+                                        objOrderItem.IsActive = true;
+                                        objOrderItem.IsDelete = false;
+                                        objOrderItem.CreatedBy = clientusrid;
+                                        objOrderItem.CreatedDate = DateTime.UtcNow;
+                                        objOrderItem.MRPPrice = 0;
+                                        objOrderItem.UpdatedBy = clientusrid;
+                                        objOrderItem.UpdatedDate = DateTime.UtcNow;
+                                        decimal qtty = GetVarintQtyy(objfree.VarintNm);
+                                        objOrderItem.QtyUsed = qtty * objfree.Qty;
+                                        objOrderItem.GSTPer = 0;
+                                        objOrderItem.GSTAmt = 0;
+                                        objOrderItem.Price = 0;
+                                        objOrderItem.Discount = 0;
+                                        objOrderItem.ItemStatus = Convert.ToInt32(OrderStatus.NewOrder);
+                                        objOrderItem.FinalItemPrice = 0;
+                                        objOrderItem.IsCombo = false;
+                                        objOrderItem.IsFree = true;
+                                        _db.tbl_OrderItemDetails.Add(objOrderItem);
+                                        _db.SaveChanges();
+                                        tbl_StockReport objstkreport = new tbl_StockReport();
+                                        objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
+                                        objstkreport.StockDate = DateTime.UtcNow;
+                                        objstkreport.Qty = Convert.ToInt64(objOrderItem.QtyUsed);
+                                        objstkreport.IsCredit = false;
+                                        objstkreport.IsAdmin = false;
+                                        objstkreport.CreatedBy = clientusrid;
+                                        objstkreport.ItemId = objOrderItem.ProductItemId;
+                                        objstkreport.Remarks = "Ordered Item for Order:" + objOrderItem.OrderId;
+                                        _db.tbl_StockReport.Add(objstkreport);
+                                        _db.SaveChanges();
+                                        objcmn.SaveTransaction(objfree.ProductItemId, objOrderItem.OrderDetailId, objOrderItem.OrderId.Value, "Order Placed for Item", objOrderItem.FinalItemPrice.Value, clsClientSession.UserID, 0, DateTime.UtcNow, "New Order Item");
+                                    }
+                                }
+                            }
                             if (TotalDiscount > 0 && clsClientSession.RoleID == 1)
                             {
                                 if (lstpoints != null && lstpoints.Count() > 0)
@@ -1660,12 +1825,13 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         public ActionResult secondcartcheckout()
         {
             List<CartVM> lstCartItems = new List<CartVM>();
+            decimal TotalOrder = 0;
             try
             {
 
                 decimal ShippingChargeTotal = 0;
                 decimal TotalDiscount = 0;
-                decimal TotalOrder = 0;
+               
                 ViewBag.WebsiteOrderId = "1";
                 decimal AdvancePaymentAmt = 0;
                 bool IsCashOrd = false;
@@ -1871,7 +2037,32 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             ViewData["lstCartItems"] = lstCartItems;
             var objGenralsetting = _db.tbl_GeneralSetting.FirstOrDefault();
             ViewBag.ShippingMsg = objGenralsetting.ShippingMessage;
+            DateTime dtCurrentDateTime = DateTime.UtcNow;
+            tbl_FreeOffers objfreeoffer = _db.tbl_FreeOffers.Where(o => o.OfferStartDate <= dtCurrentDateTime && o.OfferEndDate >= dtCurrentDateTime && o.OrderAmountFrom <= TotalOrder && o.OrderAmountTo >= TotalOrder && o.IsDeleted == false).FirstOrDefault();
+            List<FreeOfferSubItems> lstFreeItemss = new List<FreeOfferSubItems>();
+            ViewBag.HasFreeItems = "false";
+            ViewBag.FreeOfferId = 0;
+            if (objfreeoffer != null)
+            {
+                lstFreeItemss = (from c in _db.tbl_FreeOfferItems
+                                 join i in _db.tbl_ProductItems on c.ProductItemId equals i.ProductItemId
+                                 join v in _db.tbl_ItemVariant on c.VariantItemId equals v.VariantItemId
+                                 where c.FreeOfferId == objfreeoffer.FreeOfferId
+                                 select new FreeOfferSubItems
+                                 {
+                                     ProductItemId = i.ProductItemId,
+                                     CategoryId = i.CategoryId,
+                                     ProductId = i.ProductId,
+                                     Sub_ProductItemName = i.ItemName,
+                                     VarintId = c.VariantItemId.Value,
+                                     Qty = c.Qty,
+                                     VarintNm = v.UnitQty
+                                 }).ToList();
+                ViewBag.HasFreeItems = "true";
+                ViewBag.FreeOfferId = objfreeoffer.FreeOfferId;
+            }
 
+            ViewData["lstFreeItemss"] = lstFreeItemss;
             return View();
         }
 

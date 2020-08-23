@@ -3,23 +3,24 @@
     ViewBag.Title = "Checkout";
 }
 @{
-                List<CartVM> lstCartItmms = ViewData["lstCartItems"] as List<CartVM>;
-                decimal CartTotal = 0;
-                tbl_ClientOtherDetails objClientOther = ViewData["objotherdetails"] as tbl_ClientOtherDetails;
-                List<InvoiceItemVM> lstInvoiceItemVM = ViewData["lstInvItem"] as List<InvoiceItemVM>;
-                decimal TotalOrderamtt = Convert.ToDecimal(ViewBag.ShippingChargeTotal) + Convert.ToDecimal(ViewBag.TotalOrder);
-                decimal WalletAmt = Convert.ToDecimal(ViewBag.WalletAmt);
-                string iscashondelivery = Convert.ToString(ViewBag.IsCashOnDelivery);
-                decimal AdvancePaymentWithoutShip = Math.Round(Convert.ToDecimal(ViewBag.AdvancePaymentAmt));
-                decimal AdvancePaymentWithShip = Math.Round(Convert.ToDecimal(ViewBag.AdvancePaymentAmt) + Convert.ToDecimal(ViewBag.ShippingChargeTotal));
-                decimal extramt = Convert.ToDecimal(ViewBag.ExtraAmt);
-                TotalOrderamtt = TotalOrderamtt + extramt;
-                List<String> lstPincodes = ViewData["availablepincode"] as List<String>;
-                double roundoffship = 0;
-                double roundoff = 0;
-                double NetPayShip = 0;
-                double NetPay = 0;
-            }
+    List<CartVM> lstCartItmms = ViewData["lstCartItems"] as List<CartVM>;
+    decimal CartTotal = 0;
+    tbl_ClientOtherDetails objClientOther = ViewData["objotherdetails"] as tbl_ClientOtherDetails;
+    List<InvoiceItemVM> lstInvoiceItemVM = ViewData["lstInvItem"] as List<InvoiceItemVM>;
+    decimal TotalOrderamtt = Convert.ToDecimal(ViewBag.ShippingChargeTotal) + Convert.ToDecimal(ViewBag.TotalOrder);
+    decimal WalletAmt = Convert.ToDecimal(ViewBag.WalletAmt);
+    string iscashondelivery = Convert.ToString(ViewBag.IsCashOnDelivery);
+    decimal AdvancePaymentWithoutShip = Math.Round(Convert.ToDecimal(ViewBag.AdvancePaymentAmt));
+    decimal AdvancePaymentWithShip = Math.Round(Convert.ToDecimal(ViewBag.AdvancePaymentAmt) + Convert.ToDecimal(ViewBag.ShippingChargeTotal));
+    decimal extramt = Convert.ToDecimal(ViewBag.ExtraAmt);
+    TotalOrderamtt = TotalOrderamtt + extramt;
+    List<String> lstPincodes = ViewData["availablepincode"] as List<String>;
+    double roundoffship = 0;
+    double roundoff = 0;
+    double NetPayShip = 0;
+    List<FreeOfferSubItems> lstFreeItems = ViewData["lstFreeItemss"] as List<FreeOfferSubItems>;
+    double NetPay = 0;
+  }
 <style>
     .errorcls {
         color: red;
@@ -304,7 +305,7 @@
                                     </div>
                                     <div class="form-group col-md-6 col-sm-6 col-xs-12">
                                         <div class="field-label">Phone *</div>
-                                        <input type="text" name="shipphone" required value="@objClientOther.ShipPhoneNumber" placeholder="">
+                                        <input type="number" name="shipphone" required value="@objClientOther.ShipPhoneNumber" placeholder="">
                                         <span class="errorcls"></span>
                                     </div>
                                     <div class="form-group col-md-6 col-sm-6 col-xs-12">
@@ -390,11 +391,11 @@
                                         </div>
                                         <ul class="qty">
                                             @if (lstCartItmms != null && lstCartItmms.Count() > 0)
-    {
-        foreach (var objcart in lstCartItmms)
-        {
-            decimal Itemttl = objcart.Qty * objcart.Price;
-            CartTotal = CartTotal + Itemttl;
+                                            {
+                                                foreach (var objcart in lstCartItmms)
+                                                {
+                                                    decimal Itemttl = objcart.Qty * objcart.Price;
+                                                    CartTotal = CartTotal + Itemttl;
                                                     @*<li>@objcart.ItemName × @objcart.Qty <span>&#8377; @Itemttl</span></li>*@
                                                     <li>@objcart.ItemName (@objcart.VariantQtytxt) <span> @objcart.Qty</span></li>
                                                 }
@@ -402,12 +403,12 @@
                                         </ul>
                                         <ul class="sub-total">
                                             @*<li>Subtotal <span class="count">&#8377; @CartTotal</span></li>
-                                            <li>Discount <span class="count">&#8377; @ViewBag.TotalDiscount</span></li>*@
+                <li>Discount <span class="count">&#8377; @ViewBag.TotalDiscount</span></li>*@
                                             <li>
                                                 Shipping
                                                 <div class="shipping" style="color:#ff4c3b">
                                                     <span id="spnshipmsg">@ViewBag.ShippingMsg</span>
-                                                    @*<span id="spnshipamt" style="display:none;">&#8377; @ViewBag.ShippingChargeTotal</span>*@ 
+                                                    @*<span id="spnshipamt" style="display:none;">&#8377; @ViewBag.ShippingChargeTotal</span>*@
                                                 </div>
                                             </li>
                                         </ul>
@@ -438,6 +439,9 @@
                                     <input type="hidden" id="extraamount" name="extraamount" value="@extramt" />
                                     <input type="hidden" id="isCashondelivery" name="isCashondelivery" value="@iscashondelivery" />
                                     <input type="hidden" name="advanceamtpay" id="advanceamtpay" data-withship="@AdvancePaymentWithShip" data-wihoutship="@AdvancePaymentWithoutShip" value="@AdvancePaymentWithoutShip" />
+                                    <input type="hidden" id="hasFreeItemsinOrder" value="@ViewBag.HasFreeItems" />
+                                    <input type="hidden" id="IncludeFreeItems" name="IncludeFreeItems" value="false" />
+                                    <input type="hidden" id="FreeOfferId" name="FreeOfferId" value="@ViewBag.FreeOfferId" />
                                     <div class="payment-box">
                                         <div class="upper-box">
                                             <div class="payment-options">
@@ -545,7 +549,32 @@
         </div>
     </div>
 </section>
-
+<div class="modal fade open" id="freeitems" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" style="max-width: 80%;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Free Items</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h3>Congratulations! You are getting following Items Free with this order</h3>
+                @if (lstFreeItems != null && lstFreeItems.Count() > 0)
+                {
+                    foreach (var objjfree in lstFreeItems)
+                    {
+                        <div><b>@objjfree.Sub_ProductItemName - @objjfree.VarintNm</b>  =>  <b>Qty</b>: @objjfree.Qty</div>
+                    }
+                }
+                <br />
+                <h5>Are you want to take this benefits ? If you take this benefites then you can not cancel/return/exchange Items of this Order.</h5>
+            </div>
+            <div class="modal-footer">
+                <button data-dismiss="modal" class="btn btn-success" type="button" onclick="GetFreeItems('true');">Yes</button>
+                <button data-dismiss="modal" class="btn btn-danger" type="button" onclick="GetFreeItems('false');">No</button>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- section end -->
 <div class="dvrazorpayscript">
 

@@ -455,6 +455,7 @@
     <Compile Include="ViewModel\DashboardCountVM.cs" />
     <Compile Include="ViewModel\DistributorRequestVM.cs" />
     <Compile Include="ViewModel\EmailMessageVM.cs" />
+    <Compile Include="ViewModel\FreeOfferSubItems.cs" />
     <Compile Include="ViewModel\FreeOfferVM.cs" />
     <Compile Include="ViewModel\GeneralVM.cs" />
     <Compile Include="ViewModel\HomePageVM.cs" />
@@ -4076,6 +4077,9 @@
     <Content Include="Areas\Admin\Views\Reference\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\FreeOffer\Index.cshtml" />
     <Content Include="Areas\Admin\Views\FreeOffer\Add.cshtml" />
+    <Content Include="Areas\Admin\Views\FreeOffer\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\FreeOffer\_SubItems.cshtml" />
+    <Content Include="Areas\Admin\Views\FreeOffer\_SubItemsEdit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />

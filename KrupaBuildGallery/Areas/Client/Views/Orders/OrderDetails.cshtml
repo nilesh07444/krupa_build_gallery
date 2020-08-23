@@ -283,6 +283,7 @@
                             </div>
                         </div>
                     </div>
+                    <input type="hidden" id="hdnHasFreeItems" value="@Model.HasFreeItems" />
                     <div class="card-header">
                         <h5>Order Items</h5>
                     </div>
@@ -358,7 +359,7 @@
                                                     <td>₹ @objorderItem.FinalAmt</td>
                                                     <td><span class="badge @stauscolor">@objorderItem.ItemStatustxt</span></td>
                                                     <td>
-                                                        @if (((objorderItem.ItemStatus == 1 || objorderItem.ItemStatus == 2) && Model.OrderTypeId == 1) || objorderItem.ItemStatus == 4)
+                                                        @if (((objorderItem.ItemStatus == 1 || objorderItem.ItemStatus == 2) && Model.OrderTypeId == 1 && Model.HasFreeItems == false) || objorderItem.ItemStatus == 4)
                                                         {
                                                             <a href="javascript:void(0)" onclick="itemaction('@objorderItem.OrderItemId','@Model.OrderTypeId','@objorderItem.ItemStatus','@objorderItem.IsReturnable.ToString()','true');"><i class="fa fa-wrench font-success"></i></a>
                                                         }
@@ -403,7 +404,7 @@
                                         <td>₹ @Totl</td>
                                         <td><span class="badge @stauscolor">@objorderItem.ItemStatustxt</span></td>
                                         <td>
-                                            @if (((objorderItem.ItemStatus == 1 || objorderItem.ItemStatus == 2) && Model.OrderTypeId == 1) || objorderItem.ItemStatus == 4)
+                                            @if (((objorderItem.ItemStatus == 1 || objorderItem.ItemStatus == 2) && Model.OrderTypeId == 1 && Model.HasFreeItems == false) || objorderItem.ItemStatus == 4)
                                             {
                                                 <a href="javascript:void(0)" onclick="itemaction('@objorderItem.OrderItemId','@Model.OrderTypeId','@objorderItem.ItemStatus','@objorderItem.IsReturnable.ToString()','false');"><i class="fa fa-wrench font-success"></i></a>
                                             }
@@ -807,8 +808,9 @@
      });
    }
 
-    function itemaction(ordritmid,ordertypeid,itmstatusid,isreturnable,iscombo) {
-        if (isreturnable != "True" || itmstatusid != "4" || ordertypeid == "2" || iscombo == 'true') {
+    function itemaction(ordritmid, ordertypeid, itmstatusid, isreturnable, iscombo) {
+        var hsFree = $("#hdnHasFreeItems").val().toLowerCase();
+        if (isreturnable != "True" || itmstatusid != "4" || ordertypeid == "2" || iscombo == 'true' || hsFree == 'true') {
             $("#itmstatusselect option[value=6]").hide();
         }
         else {
@@ -824,7 +826,7 @@
 
         if (itmstatusid == "4" && ordertypeid == "1") {
             $("#itmstatusselect option[value=7]").show();
-            if (iscombo == 'true') {
+            if (iscombo == 'true' || hsFree == 'true') {
                 $("#itmstatusselect option[value=8]").hide();
             }
             else {

@@ -1,0 +1,204 @@
+﻿@{
+    List<SelectListItem> lstCategoriess = ViewData["catrgories"] as List<SelectListItem>;
+}
+
+<div class="row" style="margin-top:15px;">
+    <div class="col-sm-2">
+        <label>Item:</label>
+    </div>
+    <div class="col-sm-3">
+        <label class="" for="Category_@ViewBag.Id">Category</label>
+        <select class="form-control" id="Category_@ViewBag.Id" name="SubItemCategory" data-id="@ViewBag.Id" style="">
+            <option value="">- Select -</option>
+            @if (lstCategoriess != null && lstCategoriess.Count() > 0)
+            {
+                foreach (var objj in lstCategoriess)
+                {
+                    <option value="@objj.Value">@objj.Text</option>
+                }
+            }
+        </select>
+        <lable class=""></lable>
+        <span class="field-validation-valid text-danger"></span>
+    </div>
+    <div class="col-sm-3">
+        <label class="" for="Product_@ViewBag.Id">Product</label>
+        <select class="form-control" id="Product_@ViewBag.Id" name="SubItemProduct" data-id="@ViewBag.Id" style="">
+            <option value="">- Select -</option>
+        </select>
+
+        <lable class=""></lable>
+        <span class="field-validation-valid text-danger"></span>
+    </div>
+    <div class="col-sm-3">
+        <label class="" for="SubProduct_@ViewBag.Id">Sub Product</label>
+        <select class="form-control" id="SubProduct_@ViewBag.Id" name="SubItemSubProduct" data-id="@ViewBag.Id" style="">
+            <option value="">- Select -</option>
+        </select>
+        <lable class=""></lable>
+        <span class="field-validation-valid text-danger"></span>
+    </div>
+</div>
+<div class="row" style="margin-top:30px;">
+    <div class="col-sm-2">
+
+    </div>
+    <div class="col-sm-4">
+        <label class="" for="ProductItem_@ViewBag.Id">Product Item</label>
+        <select class="form-control" id="ProductItem_@ViewBag.Id" data-id="@ViewBag.Id" name="SubItemProductItem" style="">
+            <option value="">- Select -</option>
+        </select>
+
+        <lable class=""></lable>
+        <span class="field-validation-valid text-danger"></span>
+    </div>
+    <div class="col-sm-2">
+        <label class="" for="VarintItem_@ViewBag.Id">Variant Item</label>
+        <select class="form-control" id="VarintItem_@ViewBag.Id" data-id="@ViewBag.Id" name="SubItemVarints" style="">
+            <option value="">- Select -</option>
+        </select>
+        <lable class=""></lable>
+        <span class="field-validation-valid text-danger"></span>
+    </div>
+    <div class="col-sm-2">
+        <label class="" for="Qty_@ViewBag.Id">Qty</label>
+        <input class="form-control text-box single-line" id="Qty_@ViewBag.Id" data-id="@ViewBag.Id" maxlength="100" name="SubItemQty" placeholder="Qty" type="text" value="0.00">
+
+        <lable class=""></lable>
+        <span class="field-validation-valid text-danger"></span>
+    </div>
+    <div class="col-sm-2">
+        <label id="lbltotl_@ViewBag.Id" style="font-weight:bold;">Total:</label>
+        <br />
+        <input type="hidden" id="hdntotl_@ViewBag.Id" name="hdntotl" value="0" />
+        <a href="javascipt:void(0)" style="color:red" title="Remove" onclick="removesubitem('@ViewBag.Id');"><i class="fa fa-trash font-danger"></i></a>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+          jQuery(document).on("change", "#Category_@ViewBag.Id", function () {
+
+        var CategoryId = jQuery("#Category_@ViewBag.Id option:selected").val();
+
+        if (CategoryId != "" && CategoryId != null) {
+
+            var URL = '@Url.Action("GetProductListByCategoryId", "SubProduct")';
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: URL + "/" + CategoryId,
+                success: function (result) {
+                    var htmlData = "<option value='0'>-Select Product-</option>";
+                    if (result && result.length > 0) {
+                        result.forEach(element => {
+                            htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
+                        });
+                    }
+                    $("#Product_@ViewBag.Id").html(htmlData);
+                },
+                error: function (error) {
+                }
+            });
+        }
+       else {
+             var htmlSubData = "<option value='0'>- Select Product -</option>";
+            $("#Product_@ViewBag.Id").html(htmlSubData);
+        }
+    });
+
+    jQuery(document).on("change", "#Product_@ViewBag.Id", function () {
+
+        var ProductId = jQuery("#Product_@ViewBag.Id option:selected").val();
+
+        if (ProductId != "" && ProductId != null) {
+
+            var URL = '@Url.Action("GetSubProductListByProductId", "SubProduct")';
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: URL + "/" + ProductId,
+                success: function (result) {
+                    var htmlData = "<option value='0'>-Select SubProduct-</option>";
+                    if (result && result.length > 0) {
+                        result.forEach(element => {
+                            htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
+                        });
+                    }
+                    $("#SubProduct_@ViewBag.Id").html(htmlData);
+                },
+                error: function (error) {
+                }
+            });
+        }
+        else {
+             var htmlSubData = "<option value='0'>- Select SubProduct -</option>";
+            $("#SubProduct_@ViewBag.Id").html(htmlSubData);
+        }
+    });
+
+    jQuery(document).on("change", "#Product_@ViewBag.Id,#SubProduct_@ViewBag.Id", function () {
+
+        var ProductId = jQuery("#Product_@ViewBag.Id option:selected").val();
+        var SubProductId = jQuery("#SubProduct_@ViewBag.Id option:selected").val();
+        var htmlSubDatavrnt = "<option value='0'>- Select Variant Item -</option>";
+        $("#VarintItem_@ViewBag.Id").html(htmlSubDatavrnt);
+
+        if ((ProductId != "" && ProductId != null)) {
+            var URL = '@Url.Action("GetItemList", "Stock")';
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: URL + "?ProductId=" + ProductId + "&SubProductId=" + SubProductId,
+                success: function (result) {
+                    var htmlData = "<option value='0'>-Select Product Item-</option>";
+                    if (result && result.length > 0) {
+                        result.forEach(element => {
+                            htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
+                        });
+                    }
+                    $("#ProductItem_@ViewBag.Id").html(htmlData);
+                },
+                error: function (error) {
+                }
+            });
+        }
+       else {
+            var htmlSubData = "<option value='0'>- Select Product Item -</option>";
+            $("#ProductItem_@ViewBag.Id").html(htmlSubData);
+        }
+    });
+
+    jQuery(document).on("change", "#ProductItem_@ViewBag.Id", function () {
+
+        var ItemIdd = jQuery("#ProductItem_@ViewBag.Id option:selected").val();
+
+        if (ItemIdd != "" && ItemIdd != null) {
+
+            var URL = '@Url.Action("GetVariantListByItemId", "FreeOffer")';
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: URL + "/" + ItemIdd,
+                success: function (result) {
+                    var htmlData = "<option value='0'>-Select Variants-</option>";
+                    if (result && result.length > 0) {
+                        result.forEach(element => {
+                            htmlData += "<option value='" + element.VariantItemId + "' data-custprc='" + element.CustomerPrice+"'> " + element.UnitQty + " </option>";
+                        });
+                    }
+                    $("#VarintItem_@ViewBag.Id").html(htmlData);
+                },
+                error: function (error) {
+                }
+            });
+        }
+        else {
+            var htmlSubData = "<option value='0'>- Select Variants -</option>";
+            $("#VarintItem_@ViewBag.Id").html(htmlSubData);
+        }
+    });
+
+    });
+
+</script>

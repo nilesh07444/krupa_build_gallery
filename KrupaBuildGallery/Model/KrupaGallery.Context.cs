@@ -74,7 +74,7 @@ namespace KrupaBuildGallery.Model
         public DbSet<tbl_ComboOfferSubItems> tbl_ComboOfferSubItems { get; set; }
         public DbSet<tbl_ItemReplace> tbl_ItemReplace { get; set; }
         public DbSet<tbl_ReferenceMaster> tbl_ReferenceMaster { get; set; }
-        public DbSet<tbl_FreeOfferItems> tbl_FreeOfferItems { get; set; }
         public DbSet<tbl_FreeOffers> tbl_FreeOffers { get; set; }
+        public DbSet<tbl_FreeOfferItems> tbl_FreeOfferItems { get; set; }
     }
 }

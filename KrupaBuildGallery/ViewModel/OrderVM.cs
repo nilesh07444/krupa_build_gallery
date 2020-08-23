@@ -45,5 +45,6 @@ namespace KrupaBuildGallery.ViewModel
         public string GSTNo { get; set; }
         public string strOrderDate { get; set; }
         public string Remarks { get; set; }
+        public bool HasFreeItems { get; set; }
     }
 }

@@ -351,27 +351,27 @@
           <Key>
             <PropertyRef Name="FreeofferItemId" />
           </Key>
-          <Property Name="FreeofferItemId" Type="bigint" Nullable="false" />
+          <Property Name="FreeofferItemId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="FreeOfferId" Type="bigint" />
           <Property Name="CategoryId" Type="bigint" />
           <Property Name="ProductId" Type="bigint" />
           <Property Name="SubProductId" Type="bigint" />
           <Property Name="ProductItemId" Type="bigint" />
           <Property Name="VariantItemId" Type="bigint" />
-          <Property Name="Qty" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Qty" Type="bigint" Nullable="false" />
         </EntityType>
         <EntityType Name="tbl_FreeOffers">
           <Key>
             <PropertyRef Name="FreeOfferId" />
           </Key>
-          <Property Name="FreeOfferId" Type="bigint" Nullable="false" />
+          <Property Name="FreeOfferId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="OrderAmountFrom" Type="decimal" Precision="18" Scale="2" />
           <Property Name="OrderAmountTo" Type="decimal" Precision="18" Scale="2" />
           <Property Name="OfferStartDate" Type="datetime" />
           <Property Name="OfferEndDate" Type="datetime" />
           <Property Name="IsDeleted" Type="bit" />
           <Property Name="CreatedDate" Type="datetime" />
-          <Property Name="CreatedBy" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CreatedBy" Type="bigint" StoreGeneratedPattern="Identity" />
         </EntityType>
         <EntityType Name="tbl_GeneralSetting">
           <Key>
@@ -1431,8 +1431,8 @@
           <EntitySet Name="tbl_ComboOfferSubItems" EntityType="krupagalleryModel.tbl_ComboOfferSubItems" />
           <EntitySet Name="tbl_ItemReplace" EntityType="krupagalleryModel.tbl_ItemReplace" />
           <EntitySet Name="tbl_ReferenceMaster" EntityType="krupagalleryModel.tbl_ReferenceMaster" />
-          <EntitySet Name="tbl_FreeOfferItems" EntityType="krupagalleryModel.tbl_FreeOfferItems" />
           <EntitySet Name="tbl_FreeOffers" EntityType="krupagalleryModel.tbl_FreeOffers" />
+          <EntitySet Name="tbl_FreeOfferItems" EntityType="krupagalleryModel.tbl_FreeOfferItems" />
         </EntityContainer>
         <EntityType Name="tbl_AdminRoles">
           <Key>
@@ -1901,19 +1901,6 @@
           <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
           <Property Name="UpdatedBy" Type="Int64" />
         </EntityType>
-        <EntityType Name="tbl_FreeOfferItems">
-          <Key>
-            <PropertyRef Name="FreeofferItemId" />
-          </Key>
-          <Property Name="FreeofferItemId" Type="Int64" Nullable="false" />
-          <Property Name="FreeOfferId" Type="Int64" />
-          <Property Name="CategoryId" Type="Int64" />
-          <Property Name="ProductId" Type="Int64" />
-          <Property Name="SubProductId" Type="Int64" />
-          <Property Name="ProductItemId" Type="Int64" />
-          <Property Name="VariantItemId" Type="Int64" />
-          <Property Name="Qty" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-        </EntityType>
         <EntityType Name="tbl_FreeOffers">
           <Key>
             <PropertyRef Name="FreeOfferId" />
@@ -1925,7 +1912,20 @@
           <Property Name="OfferEndDate" Type="DateTime" Precision="3" />
           <Property Name="IsDeleted" Type="Boolean" />
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
-          <Property Name="CreatedBy" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CreatedBy" Type="Int64" annotation:StoreGeneratedPattern="Identity" />
+        </EntityType>
+        <EntityType Name="tbl_FreeOfferItems">
+          <Key>
+            <PropertyRef Name="FreeofferItemId" />
+          </Key>
+          <Property Name="FreeofferItemId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FreeOfferId" Type="Int64" />
+          <Property Name="CategoryId" Type="Int64" />
+          <Property Name="ProductId" Type="Int64" />
+          <Property Name="SubProductId" Type="Int64" />
+          <Property Name="ProductItemId" Type="Int64" />
+          <Property Name="VariantItemId" Type="Int64" />
+          <Property Name="Qty" Type="Int64" Nullable="false" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -2836,20 +2836,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="tbl_FreeOfferItems">
-            <EntityTypeMapping TypeName="krupagalleryModel.tbl_FreeOfferItems">
-              <MappingFragment StoreEntitySet="tbl_FreeOfferItems">
-                <ScalarProperty Name="Qty" ColumnName="Qty" />
-                <ScalarProperty Name="VariantItemId" ColumnName="VariantItemId" />
-                <ScalarProperty Name="ProductItemId" ColumnName="ProductItemId" />
-                <ScalarProperty Name="SubProductId" ColumnName="SubProductId" />
-                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
-                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
-                <ScalarProperty Name="FreeOfferId" ColumnName="FreeOfferId" />
-                <ScalarProperty Name="FreeofferItemId" ColumnName="FreeofferItemId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="tbl_FreeOffers">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_FreeOffers">
               <MappingFragment StoreEntitySet="tbl_FreeOffers">
@@ -2861,6 +2847,20 @@
                 <ScalarProperty Name="OrderAmountTo" ColumnName="OrderAmountTo" />
                 <ScalarProperty Name="OrderAmountFrom" ColumnName="OrderAmountFrom" />
                 <ScalarProperty Name="FreeOfferId" ColumnName="FreeOfferId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_FreeOfferItems">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_FreeOfferItems">
+              <MappingFragment StoreEntitySet="tbl_FreeOfferItems">
+                <ScalarProperty Name="Qty" ColumnName="Qty" />
+                <ScalarProperty Name="VariantItemId" ColumnName="VariantItemId" />
+                <ScalarProperty Name="ProductItemId" ColumnName="ProductItemId" />
+                <ScalarProperty Name="SubProductId" ColumnName="SubProductId" />
+                <ScalarProperty Name="ProductId" ColumnName="ProductId" />
+                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
+                <ScalarProperty Name="FreeOfferId" ColumnName="FreeOfferId" />
+                <ScalarProperty Name="FreeofferItemId" ColumnName="FreeofferItemId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
