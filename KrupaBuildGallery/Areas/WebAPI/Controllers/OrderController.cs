@@ -137,6 +137,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                 OrderTypeId = p.OrderType.HasValue ? p.OrderType.Value : 1,
                                 IsCashOnDelivery = p.IsCashOnDelivery.HasValue ? p.IsCashOnDelivery.Value : false,
                                 ExtraAmount = p.ExtraAmount.HasValue ? p.ExtraAmount.Value : 0,
+                                HasFreeItems = p.HasFreeItems.HasValue ? p.HasFreeItems.Value : false,
                                 Remarks = p.Remarks
                             }).OrderByDescending(x => x.OrderDate).FirstOrDefault();
                 if (objOrder != null)

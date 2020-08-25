@@ -396,6 +396,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                 objInvItm.Discount = disc;
                                 objInvItm.ItemAmount = AfterTax;
                                 objInvItm.beforetaxamount = beforetaxamount;
+                                objInvItm.VariantQtytxt = objcr.VariantQtytxt;
                                 TotalOrder = TotalOrder + AfterTax;
                                 lstInvItem.Add(objInvItm);
                             }
@@ -436,6 +437,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                 objInvItm.BasicAmount = originalbasicprice;
                                 objInvItm.Discount = disc;
                                 objInvItm.ItemAmount = AfterTax;
+                                objInvItm.VariantQtytxt = objcr.VariantQtytxt;
                                 objInvItm.beforetaxamount = beforetaxamount;
                                 TotalOrder = TotalOrder + AfterTax;
                                 lstInvItem.Add(objInvItm);
@@ -496,7 +498,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                          Qty = c.Qty,
                                          VarintNm = v.UnitQty
                                      }).ToList();
-                    objChkout.HasFreeItems = false;
+                    objChkout.HasFreeItems = true;
                     objChkout.FreeOfferId = objfreeoffer.FreeOfferId.ToString();                    
                 }
                 objChkout.FreeItems = lstFreeItemss;
@@ -2999,6 +3001,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                 objInvItm.Discount = disc;
                                 objInvItm.ItemAmount = AfterTax;
                                 objInvItm.beforetaxamount = beforetaxamount;
+                                objInvItm.VariantQtytxt = objcr.VariantQtytxt;
                                 TotalOrder = TotalOrder + AfterTax;
                                 objInvItm.AdvncePayAMt = Math.Round((AfterTax * objcr.AdvncePayPer) / 100, 2);
                                 AdvancePaymentAmt = objInvItm.AdvncePayAMt + AdvancePaymentAmt;
@@ -3034,6 +3037,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                 objInvItm.BasicAmount = originalbasicprice;
                                 objInvItm.Discount = disc;
                                 objInvItm.ItemAmount = AfterTax;
+                                objInvItm.VariantQtytxt = objcr.VariantQtytxt;
                                 objInvItm.beforetaxamount = beforetaxamount;
                                 TotalOrder = TotalOrder + AfterTax;
                                 objInvItm.AdvncePayAMt = Math.Round((AfterTax * objcr.AdvncePayPer) / 100, 2);
@@ -3074,6 +3078,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 objChkout.CashOrderAmtMax = objGenralsetting.CashLimitPerOrder.Value;
                 objChkout.CashOrderAmtYerly = objGenralsetting.CashLimitPerYear.Value;
                 objChkout.AdvancePaymentAmt = AdvancePaymentAmt;
+                objChkout.AvailablePincodes = _db.tbl_AvailablePincode.Select(o => o.AvailablePincode).ToList();
                 DateTime dtCurrentDateTime = DateTime.UtcNow;
                 tbl_FreeOffers objfreeoffer = _db.tbl_FreeOffers.Where(o => o.OfferStartDate <= dtCurrentDateTime && o.OfferEndDate >= dtCurrentDateTime && o.OrderAmountFrom <= TotalOrder && o.OrderAmountTo >= TotalOrder && o.IsDeleted == false).FirstOrDefault();
                 List<FreeOfferSubItems> lstFreeItemss = new List<FreeOfferSubItems>();

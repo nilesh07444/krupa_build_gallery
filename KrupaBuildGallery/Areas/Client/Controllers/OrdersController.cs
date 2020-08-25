@@ -887,6 +887,12 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 {
                     file = Server.MapPath("~/templates/InvoiceExchange.html");
                 }
+                string GSTTitle = "GST";
+                if (objOrder.OrderShipState != "Gujarat")
+                {
+                    GSTTitle = "IGST";
+                    // file = Server.MapPath("~/templates/InvoiceIGST.html");
+                }
                 //if (objOrder.OrderShipState != "Gujarat")
                 //{
                 //    file = Server.MapPath("~/templates/InvoiceIGST.html");
@@ -1045,7 +1051,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 }
                 double RoundAmt = CommonMethod.GetRoundValue(Convert.ToDouble(TotalFinal));
                 double RoundedAmt = CommonMethod.GetRoundedValue(Convert.ToDouble(TotalFinal));
-                newhtmldata = htmldata.Replace("--INVOICENO--", InvoiceNo).Replace("--GSTNo--", GSTNo).Replace("--CANCELEDDATE--", DateOfCancelReturnExchage).Replace("--RETURNDATE--", DateOfCancelReturnExchage).Replace("--INVOICEDATE--", DateOfInvoice).Replace("--ORDERNO--", orderNo).Replace("--CLIENTUSERNAME--", ClientUserName).Replace("--CLIENTUSERADDRESS--", objOrder.ClientAddress).Replace("--CLIENTUSEREMAIL--", objOrder.ClientEmail).Replace("--CLIENTUSERMOBILE--", objOrder.ClientMobileNo).Replace("--ITEMLIST--", ItemHtmls).Replace("--GSTCALCULATIONDATA--", GST_HTML_DATA).Replace("--SHIPPING--", Math.Round(shipcharge, 2).ToString()).Replace("--SUBTOTAL--", Math.Round(SubTotal, 2).ToString()).Replace("--TOTAL--", Math.Round(TotalFinal, 2).ToString()).Replace("--EXTRAAMOUNT--", Math.Round(objOrder.ExtraAmount, 2).ToString()).Replace("--ExchangeCHARGE--", Math.Round(amtcut, 2).ToString()).Replace("--RETURNCHARGE--", Math.Round(amtcut, 2).ToString()).Replace("--ROUNDOFF--", Math.Round(RoundedAmt, 2).ToString()).Replace("--ROUNDTOTAL--", Math.Round(RoundAmt, 2).ToString()); ;
+                string address = objOrder.OrderShipAddress + "<br/>" + objOrder.OrderShipCity + "-" + objOrder.OrderPincode + "<br/>" + objOrder.OrderShipState;
+                newhtmldata = htmldata.Replace("--INVOICENO--", InvoiceNo).Replace("--GSTTITLE--", GSTTitle).Replace("--GSTNo--", GSTNo).Replace("--CANCELEDDATE--", DateOfCancelReturnExchage).Replace("--RETURNDATE--", DateOfCancelReturnExchage).Replace("--INVOICEDATE--", DateOfInvoice).Replace("--ORDERNO--", orderNo).Replace("--CLIENTUSERNAME--", ClientUserName).Replace("--CLIENTUSERADDRESS--", address).Replace("--CLIENTUSEREMAIL--", objOrder.ClientEmail).Replace("--CLIENTUSERMOBILE--", objOrder.ClientMobileNo).Replace("--ITEMLIST--", ItemHtmls).Replace("--GSTCALCULATIONDATA--", GST_HTML_DATA).Replace("--SHIPPING--", Math.Round(shipcharge, 2).ToString()).Replace("--SUBTOTAL--", Math.Round(SubTotal, 2).ToString()).Replace("--TOTAL--", Math.Round(TotalFinal, 2).ToString()).Replace("--EXTRAAMOUNT--", Math.Round(objOrder.ExtraAmount, 2).ToString()).Replace("--ExchangeCHARGE--", Math.Round(amtcut, 2).ToString()).Replace("--RETURNCHARGE--", Math.Round(amtcut, 2).ToString()).Replace("--ROUNDOFF--", Math.Round(RoundedAmt, 2).ToString()).Replace("--ROUNDTOTAL--", Math.Round(RoundAmt, 2).ToString()); ;
 
             }
 
@@ -1193,9 +1200,11 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
 
                 objOrder.OrderItems = lstOrderItms;
                 string file = Server.MapPath("~/templates/Invoice.html");
+                string GSTTitle = "GST";
                 if (objOrder.OrderShipState != "Gujarat")
                 {
-                    file = Server.MapPath("~/templates/InvoiceIGST.html");
+                    GSTTitle = "IGST";
+                    // file = Server.MapPath("~/templates/InvoiceIGST.html");
                 }
                 string htmldata = "";
 
@@ -1325,7 +1334,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 }
                 double RoundAmt = CommonMethod.GetRoundValue(Convert.ToDouble(TotalFinal));
                 double RoundedAmt = CommonMethod.GetRoundedValue(Convert.ToDouble(TotalFinal));
-                newhtmldata = htmldata.Replace("--INVOICENO--", InvoiceNo).Replace("--GSTNo--", GSTNo).Replace("--INVOICEDATE--", DateOfInvoice).Replace("--ORDERNO--", orderNo).Replace("--CLIENTUSERNAME--", ClientUserName).Replace("--CLIENTUSERADDRESS--", objOrder.ClientAddress).Replace("--CLIENTUSEREMAIL--", objOrder.ClientEmail).Replace("--CLIENTUSERMOBILE--", objOrder.ClientMobileNo).Replace("--ITEMLIST--", ItemHtmls).Replace("--GSTCALCULATIONDATA--", GST_HTML_DATA).Replace("--SHIPPING--", Math.Round(objOrder.ShipmentCharge, 2).ToString()).Replace("--SUBTOTAL--", Math.Round(SubTotal, 2).ToString()).Replace("--TOTAL--", Math.Round(TotalFinal, 2).ToString()).Replace("--EXTRAAMOUNT--", Math.Round(objOrder.ExtraAmount, 2).ToString()).Replace("--ROUNDOFF--", Math.Round(RoundedAmt, 2).ToString()).Replace("--ROUNDTOTAL--", Math.Round(RoundAmt, 2).ToString());
+                string address = objOrder.OrderShipAddress + "<br/>" + objOrder.OrderShipCity + "-" + objOrder.OrderPincode + "<br/>" + objOrder.OrderShipState;
+                newhtmldata = htmldata.Replace("--INVOICENO--", InvoiceNo).Replace("--GSTTITLE--", GSTTitle).Replace("--GSTNo--", GSTNo).Replace("--INVOICEDATE--", DateOfInvoice).Replace("--ORDERNO--", orderNo).Replace("--CLIENTUSERNAME--", ClientUserName).Replace("--CLIENTUSERADDRESS--", address).Replace("--CLIENTUSEREMAIL--", objOrder.ClientEmail).Replace("--CLIENTUSERMOBILE--", objOrder.ClientMobileNo).Replace("--ITEMLIST--", ItemHtmls).Replace("--GSTCALCULATIONDATA--", GST_HTML_DATA).Replace("--SHIPPING--", Math.Round(objOrder.ShipmentCharge, 2).ToString()).Replace("--SUBTOTAL--", Math.Round(SubTotal, 2).ToString()).Replace("--TOTAL--", Math.Round(TotalFinal, 2).ToString()).Replace("--EXTRAAMOUNT--", Math.Round(objOrder.ExtraAmount, 2).ToString()).Replace("--ROUNDOFF--", Math.Round(RoundedAmt, 2).ToString()).Replace("--ROUNDTOTAL--", Math.Round(RoundAmt, 2).ToString());
 
             }
 

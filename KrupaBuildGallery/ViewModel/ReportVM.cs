@@ -14,5 +14,6 @@ namespace KrupaBuildGallery.ViewModel
         public string Closing { get; set; }
         public string Remarks { get; set; }
         public string PaymentMethod { get; set; }
+        public string InvoiceNo { get; set; }
     }
 }

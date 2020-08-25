@@ -40,6 +40,7 @@
         <th>Closing</th>
         <th>Payment Method</th>
         <th>Remarks</th>
+        <th>InvoiceNo.</th>
     </tr>
     @if (Model != null && Model.Count() > 0)
     {
@@ -53,6 +54,7 @@
     <td>@obj.Closing</td>
     <td>@obj.PaymentMethod</td>
     <td>@obj.Remarks</td>
+    <td>@obj.InvoiceNo</td>
 </tr>
         }
     }

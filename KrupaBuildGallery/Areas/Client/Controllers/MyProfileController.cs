@@ -201,8 +201,9 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             }
             DateTime dtStart = DateTime.ParseExact(StartDate, "dd/MM/yyyy", null);
             DateTime dtEnd = DateTime.ParseExact(EndDate, "dd/MM/yyyy", null);
+            dtEnd = new DateTime(dtEnd.Year, dtEnd.Month, dtEnd.Day, 23, 59, 59);
             List<tbl_ClientUsers> lstClients = new List<tbl_ClientUsers>();
-            string[] arrycolmns = new string[] { "Date", "Opening", "Credit", "Debit", "Closing", "PaymentMethod", "Remarks" };
+            string[] arrycolmns = new string[] { "Date", "Opening", "Credit", "Debit", "Closing", "PaymentMethod", "Remarks","InvoiceNo." };
          
             lstClients = _db.tbl_ClientUsers.Where(o => o.ClientUserId == clsClientSession.UserID).ToList();
             if (lstClients != null && lstClients.Count() > 0)
@@ -351,6 +352,25 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 workSheet.Cells[row1 + 2, 7].Style.Border.Right.Style = ExcelBorderStyle.Thin;
                                 workSheet.Cells[row1 + 2, 7].Style.WrapText = true;
                                 workSheet.Cells[row1 + 2, 7].AutoFitColumns(30, 70);
+
+                                var objj = lstordes.Where(o => o.OrderId == objTrn.OrderId).FirstOrDefault();
+                                string invno = "";
+                                if (objj != null)
+                                {
+                                    invno = "S&S/" + objj.InvoiceYear + "/" + objj.InvoiceNo;
+                                }
+                                workSheet.Cells[row1 + 2, 8].Style.Font.Bold = false;
+                                workSheet.Cells[row1 + 2, 8].Style.Font.Size = 12;
+                                workSheet.Cells[row1 + 2, 8].Value = invno;
+                                workSheet.Cells[row1 + 2, 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                                workSheet.Cells[row1 + 2, 8].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                                workSheet.Cells[row1 + 2, 8].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                workSheet.Cells[row1 + 2, 8].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                workSheet.Cells[row1 + 2, 8].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                workSheet.Cells[row1 + 2, 8].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                workSheet.Cells[row1 + 2, 8].Style.WrapText = true;
+                                workSheet.Cells[row1 + 2, 8].AutoFitColumns(30, 70);
+
                                 row1 = row1 + 1;
                             }
                         }
@@ -383,7 +403,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             DateTime dtStart = DateTime.ParseExact(StartDate, "dd/MM/yyyy", null);
             DateTime dtEnd = DateTime.ParseExact(EndDate, "dd/MM/yyyy", null);
             List<tbl_ClientUsers> lstClients = new List<tbl_ClientUsers>();
-            string[] arrycolmns = new string[] { "Date", "Opening", "Credit", "Debit", "Closing", "PaymentMethod", "Remarks" };
+            string[] arrycolmns = new string[] { "Date", "Opening", "Credit", "Debit", "Closing", "PaymentMethod", "Remarks","InvoiceNo" };
 
             lstClients = _db.tbl_ClientUsers.Where(o => o.ClientUserId == clsClientSession.UserID).ToList();
             if (lstClients != null && lstClients.Count() > 0)
@@ -441,6 +461,13 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 objrp.Closing = TotalOpening.ToString();
                                 objrp.PaymentMethod = objTrn.ModeOfPayment;
                                 objrp.Remarks = objTrn.Remarks;
+                                var objj = lstordes.Where(o => o.OrderId == objTrn.OrderId).FirstOrDefault();
+                                string invno = "";
+                                if (objj != null)
+                                {
+                                    invno = "S&S/" + objj.InvoiceYear + "/" + objj.InvoiceNo;
+                                }
+                                objrp.InvoiceNo = invno;
                                 lstReportVm.Add(objrp);
                                 row1 = row1 + 1;
                             }

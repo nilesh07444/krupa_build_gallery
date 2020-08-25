@@ -1074,7 +1074,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             DateTime dtEnd = DateTime.ParseExact(EndDate, "dd/MM/yyyy", null);
             dtEnd = new DateTime(dtEnd.Year, dtEnd.Month, dtEnd.Day, 23, 59, 59);
             List<tbl_ClientUsers> lstClients = new List<tbl_ClientUsers>();
-            string[] arrycolmns = new string[] { "Date", "Opening", "Credit", "Debit", "Closing", "PaymentMethod", "Remarks" };
+            string[] arrycolmns = new string[] { "Date", "Opening", "Credit", "Debit", "Closing", "PaymentMethod", "Remarks","InvoiceNo" };
             if (!string.IsNullOrEmpty(MobileNo))
             {
                 lstClients = _db.tbl_ClientUsers.Where(o => o.MobileNo == MobileNo).ToList();
@@ -1227,6 +1227,26 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                     workSheet.Cells[row1 + 2, 7].Style.Border.Right.Style = ExcelBorderStyle.Thin;
                                     workSheet.Cells[row1 + 2, 7].Style.WrapText = true;
                                     workSheet.Cells[row1 + 2, 7].AutoFitColumns(30, 70);
+
+                                    var objj = lstordes.Where(o => o.OrderId == objTrn.OrderId).FirstOrDefault();
+                                    string invno = "";
+                                    if(objj != null)
+                                    {
+                                        invno = "S&S/" + objj.InvoiceYear + "/" + objj.InvoiceNo;
+                                    }
+                                    workSheet.Cells[row1 + 2, 8].Style.Font.Bold = false;
+                                    workSheet.Cells[row1 + 2, 8].Style.Font.Size = 12;
+                                    workSheet.Cells[row1 + 2, 8].Value = invno;
+                                    workSheet.Cells[row1 + 2, 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                                    workSheet.Cells[row1 + 2, 8].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                                    workSheet.Cells[row1 + 2, 8].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 8].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 8].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 8].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 8].Style.WrapText = true;
+                                    workSheet.Cells[row1 + 2, 8].AutoFitColumns(30, 70);
+
+                                    
                                     row1 = row1 + 1;
                                 }
                             }
@@ -1237,6 +1257,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             }
             else
             {
+                var lstordr =  _db.tbl_Orders.ToList();
                 var workSheet = excel.Workbook.Worksheets.Add("Report");
                 workSheet.Cells[1, 1].Style.Font.Bold = true;
                 workSheet.Cells[1, 1].Style.Font.Size = 20;
@@ -1371,6 +1392,25 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         workSheet.Cells[row1 + 2, 7].Style.Border.Right.Style = ExcelBorderStyle.Thin;
                         workSheet.Cells[row1 + 2, 7].Style.WrapText = true;
                         workSheet.Cells[row1 + 2, 7].AutoFitColumns(30, 70);
+                        var objj = lstordr.Where(o => o.OrderId == objTrn.OrderId).FirstOrDefault();
+                        string invno = "";
+                        if (objj != null)
+                        {
+                            invno = "S&S/" + objj.InvoiceYear + "/" + objj.InvoiceNo;
+                        }
+                        workSheet.Cells[row1 + 2, 8].Style.Font.Bold = false;
+                        workSheet.Cells[row1 + 2, 8].Style.Font.Size = 12;
+                        workSheet.Cells[row1 + 2, 8].Value = invno;
+                        workSheet.Cells[row1 + 2, 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                        workSheet.Cells[row1 + 2, 8].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                        workSheet.Cells[row1 + 2, 8].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        workSheet.Cells[row1 + 2, 8].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        workSheet.Cells[row1 + 2, 8].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        workSheet.Cells[row1 + 2, 8].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        workSheet.Cells[row1 + 2, 8].Style.WrapText = true;
+                        workSheet.Cells[row1 + 2, 8].AutoFitColumns(30, 70);
+
+
                         row1 = row1 + 1;
                     }
                 }
@@ -1399,7 +1439,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             DateTime dtEnd = DateTime.ParseExact(EndDate, "dd/MM/yyyy", null);
             dtEnd = new DateTime(dtEnd.Year, dtEnd.Month, dtEnd.Day, 23, 59, 59);
             List<tbl_ClientUsers> lstClients = new List<tbl_ClientUsers>();
-            string[] arrycolmns = new string[] { "Date", "Opening", "Credit", "Debit", "Closing", "PaymentMethod", "Remarks" };
+            var lstordrss = _db.tbl_Orders.ToList();
+            string[] arrycolmns = new string[] { "Date", "Opening", "Credit", "Debit", "Closing", "PaymentMethod", "Remarks","InvoiceNo." };
             if (!string.IsNullOrEmpty(MobileNo))
             {
                 lstClients = _db.tbl_ClientUsers.Where(o => o.MobileNo == MobileNo).ToList();
@@ -1459,6 +1500,13 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                 objrp.Closing = TotalOpening.ToString();
                                 objrp.PaymentMethod = objTrn.ModeOfPayment;
                                 objrp.Remarks = objTrn.Remarks;
+                                var objj = lstordes.Where(o => o.OrderId == objTrn.OrderId).FirstOrDefault();
+                                string invno = "";
+                                if (objj != null)
+                                {
+                                    invno = "S&S/" + objj.InvoiceYear + "/" + objj.InvoiceNo;
+                                }
+                                objrp.InvoiceNo = invno;
                                 lstReportVm.Add(objrp);
                                 row1 = row1 + 1;
                             }
@@ -1511,6 +1559,13 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         objrp.Closing = TotalOpening.ToString();
                         objrp.PaymentMethod = objTrn.ModeOfPayment;
                         objrp.Remarks = objTrn.Remarks;
+                        var objj = lstordrss.Where(o => o.OrderId == objTrn.OrderId).FirstOrDefault();
+                        string invno = "";
+                        if (objj != null)
+                        {
+                            invno = "S&S/" + objj.InvoiceYear + "/" + objj.InvoiceNo;
+                        }
+                        objrp.InvoiceNo = invno;
                         lstReportVm.Add(objrp);
                         row1 = row1 + 1;
                     }
