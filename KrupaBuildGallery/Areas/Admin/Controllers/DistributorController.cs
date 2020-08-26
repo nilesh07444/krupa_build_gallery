@@ -769,7 +769,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             StringBuilder srBuild = new StringBuilder();
 
 
-            decimal[] lstGSTPer = new decimal[] { 5.00m, 12.00m, 18.00m, 28.00m };
+            decimal[] lstGSTPer = new decimal[] {0.00m,5.00m, 12.00m, 18.00m, 28.00m };
 
             decimal Grand_TotaltaxableAmount = 0;
             decimal Grand_IGST_Amt = 0;
