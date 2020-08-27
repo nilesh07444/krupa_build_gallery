@@ -46,5 +46,6 @@ namespace KrupaBuildGallery.ViewModel
         public string strOrderDate { get; set; }
         public string Remarks { get; set; }
         public bool HasFreeItems { get; set; }
+        public string orderstring { get; set; }
     }
 }

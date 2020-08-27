@@ -631,7 +631,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 sr = System.IO.File.OpenText(file);
                 htmldata += sr.ReadToEnd();
                 string InvoiceNo = "S&S/" + objOrder.InvoiceYear + "/" + objOrder.InvoiceNo;
-                string DateOfInvoice = objOrder.OrderDate.ToString("dd-MM-yyyy");
+                string DateOfInvoice = CommonMethod.ConvertFromUTCOnlyDate(objOrder.OrderDate);
                 string orderNo = objOrder.OrderId.ToString(); ;
                 string ClientUserName = objOrder.ClientUserName;
                 string ItemHtmls = "";
@@ -753,8 +753,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 }
                 double RoundAmt = CommonMethod.GetRoundValue(Convert.ToDouble(TotalFinal));
                 double RoundedAmt = CommonMethod.GetRoundedValue(Convert.ToDouble(TotalFinal));
+                string amtwrd = CommonMethod.ConvertToWords(RoundAmt.ToString());
                 string address = objOrder.OrderShipAddress + "<br/>" + objOrder.OrderShipCity + "-" + objOrder.OrderPincode + "<br/>" + objOrder.OrderShipState;
-                newhtmldata = htmldata.Replace("--INVOICENO--", InvoiceNo).Replace("--GSTTITLE--", GSTTitle).Replace("--GSTNo--", GSTNo).Replace("--INVOICEDATE--", DateOfInvoice).Replace("--ORDERNO--", orderNo).Replace("--CLIENTUSERNAME--", ClientUserName).Replace("--CLIENTUSERADDRESS--", address).Replace("--CLIENTUSEREMAIL--", objOrder.ClientEmail).Replace("--CLIENTUSERMOBILE--", objOrder.ClientMobileNo).Replace("--ITEMLIST--", ItemHtmls).Replace("--GSTCALCULATIONDATA--", GST_HTML_DATA).Replace("--SHIPPING--", Math.Round(objOrder.ShipmentCharge, 2).ToString()).Replace("--SUBTOTAL--", Math.Round(SubTotal, 2).ToString()).Replace("--TOTAL--", Math.Round(TotalFinal, 2).ToString()).Replace("--EXTRAAMOUNT--", Math.Round(objOrder.ExtraAmount, 2).ToString()).Replace("--ROUNDOFF--", Math.Round(RoundedAmt, 2).ToString()).Replace("--ROUNDTOTAL--", Math.Round(RoundAmt, 2).ToString());
+                newhtmldata = htmldata.Replace("--INVOICENO--", InvoiceNo).Replace("--GSTTITLE--", GSTTitle).Replace("--GSTNo--", GSTNo).Replace("--INVOICEDATE--", DateOfInvoice).Replace("--ORDERNO--", orderNo).Replace("--CLIENTUSERNAME--", ClientUserName).Replace("--CLIENTUSERADDRESS--", address).Replace("--CLIENTUSEREMAIL--", objOrder.ClientEmail).Replace("--CLIENTUSERMOBILE--", objOrder.ClientMobileNo).Replace("--ITEMLIST--", ItemHtmls).Replace("--GSTCALCULATIONDATA--", GST_HTML_DATA).Replace("--SHIPPING--", Math.Round(objOrder.ShipmentCharge, 2).ToString()).Replace("--SUBTOTAL--", Math.Round(SubTotal, 2).ToString()).Replace("--TOTAL--", Math.Round(TotalFinal, 2).ToString()).Replace("--EXTRAAMOUNT--", Math.Round(objOrder.ExtraAmount, 2).ToString()).Replace("--ROUNDOFF--", Math.Round(RoundedAmt, 2).ToString()).Replace("--ROUNDTOTAL--", Math.Round(RoundAmt, 2).ToString()).Replace("--AMTWORD--", amtwrd);
 
             }
 
@@ -1433,13 +1434,13 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 sr = System.IO.File.OpenText(file);
                 htmldata += sr.ReadToEnd();
                 string InvoiceNo = "S&S/" + objOrder.InvoiceYear + "/" + objOrder.InvoiceNo;
-                string DateOfInvoice = objOrder.OrderDate.ToString("dd-MM-yyyy");
+                string DateOfInvoice = CommonMethod.ConvertFromUTCOnlyDate(objOrder.OrderDate); 
                 string orderNo = objOrder.OrderId.ToString(); ;
                 string ClientUserName = objOrder.ClientUserName;
                 string ItemHtmls = "";
                 decimal TotalFinal = 0;
                 decimal SubTotal = 0;
-                string DateOfCancelReturnExchage = objItem.modifieddate.ToString("dd-MM-yyyy");
+                string DateOfCancelReturnExchage = CommonMethod.ConvertFromUTCOnlyDate(objItem.modifieddate); 
                 StringBuilder srBuild = new StringBuilder();
 
                 int cntsrNo = 1;

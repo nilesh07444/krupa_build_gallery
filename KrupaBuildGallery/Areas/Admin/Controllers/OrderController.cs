@@ -59,7 +59,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
                 if (lstOrders != null && lstOrders.Count() > 0)
                 {
-                    lstOrders.ForEach(x => x.OrderStatus = GetOrderStatus(x.OrderStatusId));
+                    lstOrders.ForEach(x => { x.OrderStatus = GetOrderStatus(x.OrderStatusId);x.OrderDateString = DateStringFromUtc(x.OrderDate); });
                 }
                 if (Status == 10)
                 {
@@ -2772,6 +2772,11 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 Response.Flush();
                 Response.End();
             }
+        }
+
+        public string DateStringFromUtc(DateTime dt)
+        {
+            return CommonMethod.ConvertFromUTCOnlyDate(dt);
         }
     }
 }
