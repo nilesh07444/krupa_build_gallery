@@ -8,6 +8,7 @@
     ViewBag.Title = "Order Detail";
     decimal SubTotl = 0;
     decimal NetTotal = 0;
+    bool IsFree = Model.HasFreeItems;
 }
 
 <style>
@@ -283,7 +284,7 @@
                             </div>
                         </div>
                     </div>
-                    <input type="hidden" id="hdnHasFreeItems" value="@Model.HasFreeItems" />
+                    <input type="hidden" id="hdnHasFreeItems" value='@IsFree.ToString()' />
                     <div class="card-header">
                         <h5>Order Items</h5>
                     </div>

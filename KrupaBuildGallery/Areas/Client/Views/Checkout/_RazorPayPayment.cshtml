@@ -86,6 +86,12 @@
                 }
             }
 
+            if ($("input[name=GSTNo]").val() != "" && $("input[name=GSTNo]").val().length != 15) {
+                $("input[name=GSTNo]").siblings('.errorcls').html("Invalid GST Number");
+                flg = false;
+            }
+            
+
 
             if ($("input[name=shipaddress]").val() == "") {
                 $("input[name=shipaddress]").siblings('.errorcls').html("Address is Required");

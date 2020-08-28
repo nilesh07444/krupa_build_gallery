@@ -302,7 +302,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 string ErrorMessage = ex.Message.ToString();
             }
             DateTime dtCurrentDateTime = DateTime.UtcNow;
-            tbl_FreeOffers objfreeoffer = _db.tbl_FreeOffers.Where(o => o.OfferStartDate <= dtCurrentDateTime && o.OfferEndDate >= dtCurrentDateTime && o.OrderAmountFrom <= TotalOrder && o.OrderAmountTo >= TotalOrder && o.IsDeleted == false).FirstOrDefault();
+            tbl_FreeOffers objfreeoffer = _db.tbl_FreeOffers.Where(o => o.OfferStartDate <= dtCurrentDateTime && o.OfferEndDate >= dtCurrentDateTime && o.OrderAmountFrom <= TotalOrder && o.OrderAmountTo >= TotalOrder && o.IsDeleted == false && (o.IsActive == null || o.IsActive == true)).FirstOrDefault();
             List<FreeOfferSubItems> lstFreeItemss = new List<FreeOfferSubItems>();
             ViewBag.HasFreeItems = "false";
             ViewBag.FreeOfferId = 0;
@@ -2038,7 +2038,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             var objGenralsetting = _db.tbl_GeneralSetting.FirstOrDefault();
             ViewBag.ShippingMsg = objGenralsetting.ShippingMessage;
             DateTime dtCurrentDateTime = DateTime.UtcNow;
-            tbl_FreeOffers objfreeoffer = _db.tbl_FreeOffers.Where(o => o.OfferStartDate <= dtCurrentDateTime && o.OfferEndDate >= dtCurrentDateTime && o.OrderAmountFrom <= TotalOrder && o.OrderAmountTo >= TotalOrder && o.IsDeleted == false).FirstOrDefault();
+            tbl_FreeOffers objfreeoffer = _db.tbl_FreeOffers.Where(o => o.OfferStartDate <= dtCurrentDateTime && o.OfferEndDate >= dtCurrentDateTime && o.OrderAmountFrom <= TotalOrder && o.OrderAmountTo >= TotalOrder && o.IsDeleted == false && (o.IsActive == null || o.IsActive == true)).FirstOrDefault();
             List<FreeOfferSubItems> lstFreeItemss = new List<FreeOfferSubItems>();
             ViewBag.HasFreeItems = "false";
             ViewBag.FreeOfferId = 0;

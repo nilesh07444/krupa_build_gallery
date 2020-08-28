@@ -372,6 +372,7 @@
           <Property Name="IsDeleted" Type="bit" />
           <Property Name="CreatedDate" Type="datetime" />
           <Property Name="CreatedBy" Type="bigint" StoreGeneratedPattern="Identity" />
+          <Property Name="IsActive" Type="bit" />
         </EntityType>
         <EntityType Name="tbl_GeneralSetting">
           <Key>
@@ -1913,6 +1914,7 @@
           <Property Name="IsDeleted" Type="Boolean" />
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="CreatedBy" Type="Int64" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IsActive" Type="Boolean" />
         </EntityType>
         <EntityType Name="tbl_FreeOfferItems">
           <Key>
@@ -2839,6 +2841,7 @@
           <EntitySetMapping Name="tbl_FreeOffers">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_FreeOffers">
               <MappingFragment StoreEntitySet="tbl_FreeOffers">
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
                 <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />

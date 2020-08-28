@@ -65,6 +65,7 @@
                             <th>Order Amount To</th>
                             <th>Start Date</th>
                             <th>End Date</th>
+                            <th width="15%;">Active</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -89,7 +90,15 @@
                                     </td>
                                     <td>
                                         @Convert.ToDateTime(item.OfferEndDate).ToString("dd/MM/yyyy")
-                                    </td>                                
+                                    </td> 
+                                     @if (item.IsActive == true)
+                                    {
+                                        <td><span class="badge badge-success" style="cursor:pointer;" title="Click to Inactive" onclick="fnChangeStatus('@item.FreeOfferId','InActive');">Active</span></td>
+                                    }
+                                    else
+                                    {
+                                        <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@item.FreeOfferId','Active');">InActive</span></td>
+                                    }
                                     <td style="width:10% !important;">
                                         @if (IsSA || objPermission.Offer >= (int)ModulePermission.Edit)
                                         {
@@ -220,7 +229,7 @@
 
             StartLoading();
 
-            var URL = '@Url.Action("ChangeStatus", "ComboOffer")';
+            var URL = '@Url.Action("ChangeStatus", "FreeOffer")';
             $.ajax({
                 type: 'POST',
                 async: true,

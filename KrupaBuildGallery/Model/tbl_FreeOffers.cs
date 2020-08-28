@@ -22,5 +22,6 @@ namespace KrupaBuildGallery.Model
         public Nullable<bool> IsDeleted { get; set; }
         public Nullable<System.DateTime> CreatedDate { get; set; }
         public Nullable<long> CreatedBy { get; set; }
+        public Nullable<bool> IsActive { get; set; }
     }
 }

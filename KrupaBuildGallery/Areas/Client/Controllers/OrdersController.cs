@@ -1069,7 +1069,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             StringBuilder srBuild = new StringBuilder();
 
 
-            decimal[] lstGSTPer = new decimal[] { 0.00m,5.00m, 12.00m, 18.00m, 28.00m };
+            decimal[] lstGSTPer = new decimal[] { 0.00m, 5.00m, 12.00m, 18.00m, 28.00m };
 
             decimal Grand_TotaltaxableAmount = 0;
             decimal Grand_IGST_Amt = 0;
@@ -1079,8 +1079,9 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
 
             lstGSTPer.ToList().ForEach(per =>
             {
-                decimal TotaltaxableAmount = lstOrderItms.Where(x => x.GST_Per == per).Select(x => x.Price * x.Qty - x.Discount).Sum();
-
+                decimal TotaltaxableAmount = lstOrderItms.Where(x => x.GST_Per == per && x.IsCombo == false).Select(x => x.Price * x.Qty - x.Discount).Sum();
+                decimal TotaltaxableAmount1 = lstOrderItms.Where(x => x.GST_Per == per && x.IsCombo == true).Select(x => x.Price * x.ComboQty - x.Discount).Sum();
+                TotaltaxableAmount = TotaltaxableAmount + TotaltaxableAmount1;
                 decimal IGST_Amt = 0;
                 decimal CGST_Amt = 0;
                 decimal SGST_Amt = 0;

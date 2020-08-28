@@ -28,5 +28,6 @@ namespace KrupaBuildGallery
         [Required, Display(Name = "Offer End Date")]
         public string OfferEndDateStr { get; set; }        
     
+        public bool IsActive { get; set; }
     }
 }
