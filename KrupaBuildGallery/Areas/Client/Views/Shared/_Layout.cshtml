@@ -91,6 +91,8 @@
         .divHideScroll {
             -ms-overflow-style: none;
         }
+         
+
     </style>
 
 </head>
@@ -112,7 +114,7 @@
                             <li>&nbsp;&nbsp;    <input class="clsSearchText" type="text" name="" placeholder="Search Any Product.." size="34" style="padding: 5px;"></li>
                         </ul>
                     </div>
-                    <div class="col-md-* mt-2 pull-right">
+                    <div class="col-md-* mt-2 pull-right" style="margin-left:10px;">
                         @if (clsClientSession.UserID == 0)
                         {
                             <a class="text-white" href="javascript:void(0);" title="WishList" onclick="alert('Please login to see wishlist items');"><i class="fa fa-heart" aria-hidden="true"></i>&nbsp; Wishlist</a>
@@ -227,7 +229,7 @@
                                 </div>
                             </div>
                             <div class="brand-logo">
-                                <a href="/"><img src="~/Content/assets/images/kbg/logo.png" class="img-fluid blur-up lazyload" alt=""></a>
+                                <a href="/"><img src="~/Content/assets/images/kbg/logo.png" class="img-fluid blur-up lazyload imgClass" alt=""></a>
                             </div>
                         </div>
                         <div class="menu-right pull-right">

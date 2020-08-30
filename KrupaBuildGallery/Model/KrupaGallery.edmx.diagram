@@ -58,6 +58,7 @@
         <EntityTypeShape EntityType="krupagalleryModel.tbl_ReferenceMaster" Width="1.5" PointX="5.375" PointY="22.75" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_FreeOffers" Width="1.5" PointX="23.375" PointY="7.75" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_FreeOfferItems" Width="1.5" PointX="23.375" PointY="3.75" />
+        <EntityTypeShape EntityType="krupagalleryModel.tbl_DynamicContent" Width="1.5" PointX="23.375" PointY="11.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

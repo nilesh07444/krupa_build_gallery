@@ -20,7 +20,7 @@ namespace KrupaBuildGallery.Model
         public Nullable<System.DateTime> OfferStartDate { get; set; }
         public Nullable<System.DateTime> OfferEndDate { get; set; }
         public Nullable<bool> IsDeleted { get; set; }
-        public Nullable<System.DateTime> CreatedDate { get; set; }
+        public System.DateTime CreatedDate { get; set; }
         public Nullable<long> CreatedBy { get; set; }
         public Nullable<bool> IsActive { get; set; }
     }

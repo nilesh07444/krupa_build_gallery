@@ -76,5 +76,6 @@ namespace KrupaBuildGallery.Model
         public DbSet<tbl_ReferenceMaster> tbl_ReferenceMaster { get; set; }
         public DbSet<tbl_FreeOffers> tbl_FreeOffers { get; set; }
         public DbSet<tbl_FreeOfferItems> tbl_FreeOfferItems { get; set; }
+        public DbSet<tbl_DynamicContent> tbl_DynamicContent { get; set; }
     }
 }

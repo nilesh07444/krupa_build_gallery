@@ -1,6 +1,13 @@
-﻿
+﻿@using KrupaBuildGallery.Helper
+@using KrupaBuildGallery.Model
+
 @{
     ViewBag.Title = "FAQ";
+}
+
+@{
+    krupagallarydbEntities _db = new krupagallarydbEntities();
+    List<tbl_DynamicContent> lstContent = _db.tbl_DynamicContent.Where(x => x.DynamicContentType == (int)DynamicContents.FAQ).OrderBy(x => x.SeqNo).ToList();
 }
 
 <!-- breadcrumb start -->
@@ -30,75 +37,27 @@
         <div class="row">
             <div class="col-sm-12">
                 <div class="accordion theme-accordion" id="accordionExample">
-                    <div class="card">
-                        <div class="card-header" id="headingOne">
-                            <h5 class="mb-0"><button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">What are the various mode of payment accepted here ?</button></h5>
-                        </div>
-                        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
-                            <div class="card-body">
-                                <p>You can make payment Via Cash, Cheques, Credit Card, Debit Cards, NEFT, RTGS, IMPS.</p>
+                    @{ int counter = 1; }
+                    @if (lstContent != null && lstContent.Count > 0)
+                    {
+                        foreach (tbl_DynamicContent obj in lstContent)
+                        {
+                            <div class="card">
+                                <div class="card-header" id="headingOne_@counter">
+                                    <h5 class="mb-0"><button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapseOne_@counter" aria-expanded="true" aria-controls="collapseOne_@counter">@obj.ContentTitle</button></h5>
+                                </div>
+                                <div id="collapseOne_@counter" class="collapse" aria-labelledby="headingOne_@counter" data-parent="#accordionExample">
+                                    <div class="card-body">
+                                        @{ string desc = obj.ContentDescription.Replace("\n", "<br />\n"); }
+
+                                        @Html.Raw(desc)
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header" id="headingTwo">
-                            <h5 class="mb-0"><button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">Which is the nearest landmark ?</button></h5>
-                        </div>
-                        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
-                            <div class="card-body">
-                                <p>You can easily locate the establishment as it is in close proxomity to Near Vasupujya Society</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header" id="headingThree">
-                            <h5 class="mb-0"><button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">What are its hours of operation ?</button></h5>
-                        </div>
-                        <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
-                            <div class="card-body">
-                                <p>
-                                    The establishment is functional on: <br />
-                                    Monday:- 9:30 AM - 8:00 PM <br />
-                                    Tuesday:- 9:30 AM - 8:00 PM <br />
-                                    Wednesday:- 9:30 AM - 8:00 PM <br />
-                                    Thursday:- 9:30 AM - 8:00 PM <br />
-                                    Friday:- 9:30 AM - 8:00 PM  <br />
-                                    Saturday:- 9:30 AM - 8:00 PM  <br />
-                                    Sunday:- Closed
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    @*<div class="card">
-                        <div class="card-header" id="headingFour">
-                            <h5 class="mb-0"><button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">What is the Regular Labs Library?</button></h5>
-                        </div>
-                        <div id="collapseFour" class="collapse" aria-labelledby="headingFour" data-parent="#accordionExample">
-                            <div class="card-body">
-                                <p>it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years,All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header" id="headingFive">
-                            <h5 class="mb-0"><button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">Can I turn on/off some blocks on the page?</button></h5>
-                        </div>
-                        <div id="collapseFive" class="collapse" aria-labelledby="headingFive" data-parent="#accordionExample">
-                            <div class="card-body">
-                                <p>it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years,All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures</p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <div class="card-header" id="headingSix">
-                            <h5 class="mb-0"><button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">What is included in the theme package?</button></h5>
-                        </div>
-                        <div id="collapseSix" class="collapse" aria-labelledby="headingSix" data-parent="#accordionExample">
-                            <div class="card-body">
-                                <p>it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years,All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of over 200 Latin words, combined with a handful of model sentence structures</p>
-                            </div>
-                        </div>
-                    </div>*@
+                            counter++;
+                        }
+                    }
+
                 </div>
             </div>
         </div>

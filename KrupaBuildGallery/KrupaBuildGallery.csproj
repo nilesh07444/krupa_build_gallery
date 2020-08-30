@@ -53,16 +53,14 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\EPPlus.dll</HintPath>
     </Reference>
-    <Reference Include="HiQPdf.Free">
-      <HintPath>..\New folder\HiQPdf.Free.dll</HintPath>
+    <Reference Include="HiQPdf.Free, Version=11.4.0.0, Culture=neutral, PublicKeyToken=acd8b62594985b24, processorArchitecture=MSIL">
+      <HintPath>..\packages\hiqpdf.free.11.4.0\lib\net40\HiQPdf.Free.dll</HintPath>
     </Reference>
     <Reference Include="itextsharp, Version=5.5.13.1, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\itextsharp.dll</HintPath>
+      <HintPath>..\packages\iTextSharp.5.5.13.1\lib\itextsharp.dll</HintPath>
     </Reference>
     <Reference Include="itextsharp.xmlworker, Version=5.5.13.1, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\itextsharp.xmlworker.dll</HintPath>
+      <HintPath>..\packages\itextsharp.xmlworker.5.5.13.1\lib\itextsharp.xmlworker.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -199,6 +197,7 @@
     <Compile Include="Areas\Admin\Controllers\CustomerController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Admin\Controllers\DistributorController.cs" />
+    <Compile Include="Areas\Admin\Controllers\DynamicContentController.cs" />
     <Compile Include="Areas\Admin\Controllers\FreeOfferController.cs" />
     <Compile Include="Areas\Admin\Controllers\GeneralSettingController.cs" />
     <Compile Include="Areas\Admin\Controllers\GodownController.cs" />
@@ -329,6 +328,9 @@
     <Compile Include="Model\tbl_DistributorRequestDetails.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\tbl_DynamicContent.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\tbl_ExtraAmount.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
@@ -436,6 +438,7 @@
     <Compile Include="ViewModel\Admin\AvailablePincodeVM.cs" />
     <Compile Include="ViewModel\Admin\ComboOfferVM.cs" />
     <Compile Include="ViewModel\Admin\ComboSubItemVM.cs" />
+    <Compile Include="ViewModel\Admin\DynamicContentVM.cs" />
     <Compile Include="ViewModel\Admin\GeneralSettingVM.cs" />
     <Compile Include="ViewModel\Admin\GodownVM.cs" />
     <Compile Include="ViewModel\Admin\HappyCustomerVM.cs" />
@@ -4083,6 +4086,9 @@
     <Content Include="Areas\Admin\Views\FreeOffer\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\FreeOffer\_SubItems.cshtml" />
     <Content Include="Areas\Admin\Views\FreeOffer\_SubItemsEdit.cshtml" />
+    <Content Include="Areas\Admin\Views\DynamicContent\Add.cshtml" />
+    <Content Include="Areas\Admin\Views\DynamicContent\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\DynamicContent\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />

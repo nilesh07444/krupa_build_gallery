@@ -78,4 +78,12 @@ namespace KrupaBuildGallery.Helper
         MobileApp = 2
     }
 
+    public enum DynamicContents
+    {
+        FAQ = 1,
+        PrivacyPolicy = 2,
+        TermsCondition = 3,
+        ReturnPolicy = 4
+    }
+
 }
