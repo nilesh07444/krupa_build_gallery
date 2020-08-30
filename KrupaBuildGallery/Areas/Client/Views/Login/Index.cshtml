@@ -35,7 +35,7 @@
                     {
                         <div class="form-group">
                             <label for="email">Mobile Number</label>
-                            <input type="text" class="form-control" id="mobilenumber" name="mobilenumber" placeholder="Mobile Number" required="">
+                            <input type="number" class="form-control" id="mobilenumber" name="mobilenumber" placeholder="Mobile Number" required="" onKeyPress="if(this.value.length==10) return false;" onblur="mobilechange();">                           
                         </div>
                         <div class="form-group">
                             <label for="review">Password</label>
@@ -87,6 +87,12 @@
 </section>
 <!--Section ends-->
 <script>
+      function mobilechange() {
+        if ($("input[name=mobilenumber]").val() != '' && $("input[name=mobilenumber]").val().length != 10) {
+            alert("Please Enter Valid Mobilenumber");
+            return;
+        }
+    }
     function Login() {
         if ($("#mobilenumber").val().trim() == "" || $("#password").val().trim() == "") {
             $(".errorcls").html("Mobilenumber and Password must be required!!");

@@ -121,7 +121,7 @@
                         </div>
                         <div class="col-md-4">
                             <label for="alternatemobile">Alternate Mobile Number</label>
-                            <input type="text" class="form-control" id="alternatemobile" name="alternatemobile" value="@objclient.AlternateMobileNo" placeholder="Enter your alternate mobile number" required>
+                            <input type="number" class="form-control" id="alternatemobile" name="alternatemobile" value="@objclient.AlternateMobileNo"  placeholder="Enter your alternate mobile number" required>
                         </div>
                         <div class="col-md-4">
                             <label for="email">Email</label>
@@ -139,7 +139,7 @@
                             </div>
                             <div class="col-md-4">
                                 <label for="gstno">GST No.</label>
-                                <input type="text" class="form-control" id="gstno" name="gstno" value="@objclientother.GSTno" placeholder="GST No." required>
+                                <input type="text" class="form-control" id="gstno" name="gstno" value="@objclientother.GSTno" placeholder="GST No." required maxlength="15" onblur="gstchange();">
                             </div>
                             <div class="col-md-4">
                                 <label for="panno">Pan Card No.</label>
@@ -167,7 +167,7 @@
                         </div>
                         <div class="col-md-4">
                             <label for="shipmobilenumber">Mobile No.</label>
-                            <input type="number" class="form-control" id="shipmobilenumber" name="shipmobilenumber" value="@objclientother.ShipPhoneNumber" placeholder="Mobile Number" required>
+                            <input type="number" class="form-control" id="shipmobilenumber" name="shipmobilenumber" value="@objclientother.ShipPhoneNumber" placeholder="Mobile Number" required onKeyPress="if(this.value.length==10) return false;" onblur="shipmobilechange();">
                             <span class="errorcls"></span>
                         </div>
                         <div class="col-md-4">
@@ -180,7 +180,7 @@
                         </div>
                         <div class="col-md-4">
                             <label for="shippincode">Pin Code</label>
-                            <input type="text" class="form-control" id="shippincode" name="shippincode" value="@objclientother.ShipPostalcode" placeholder="Pin Code" required onblur="pincodechange();" />
+                            <input type="number" class="form-control" id="shippincode" name="shippincode" value="@objclientother.ShipPostalcode" placeholder="Pin Code" required  onKeyPress="if(this.value.length==6) return false;" onblur="pincodechange();" />
                         </div>
                         <div class="col-md-4">
                             <label for="shipstate">State</label>
@@ -238,6 +238,12 @@
     var prefx = '@objclient.Prefix';
     $("#shipstate").val(statenm);
     $("#prefix").val(prefx);
+    function gstchange() {
+        if ($("input[name=gstno]").val() != '' && $("input[name=gstno]").val().length != 15) {
+            alert("Please Enter Valid GST No");
+            return;
+        }
+    }
     function pincodechange() {
           if ($("input[name=shippincode]").val() != '' && $("input[name=shippincode]").val().length != 6) {
             alert("Please Enter Valid Pincode");
@@ -289,5 +295,12 @@
                 }
 
             });
+    }
+
+    function shipmobilechange() {
+        if ($("input[name=shipmobilenumber]").val() != '' && $("input[name=shipmobilenumber]").val().length != 10) {
+            alert("Please Enter Valid Shipping Mobile No");
+            return;
+        }
     }
 </script>

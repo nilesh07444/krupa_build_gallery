@@ -52,7 +52,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     objClientUsr.UserName = firstnm + lastnm;
                     objClientUsr.Password = EncyptedPassword;
                     objClientUsr.Prefix = objRegisterVM.Prefix;
-                    objclientuser.Refrence = objRegisterVM.Reference;
+                    objClientUsr.Reference = objRegisterVM.Reference;
                     _db.tbl_ClientUsers.Add(objClientUsr);
                     _db.SaveChanges();
 

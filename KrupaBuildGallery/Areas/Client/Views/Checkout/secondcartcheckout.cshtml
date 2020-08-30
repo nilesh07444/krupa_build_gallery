@@ -305,7 +305,7 @@
                                     </div>
                                     <div class="form-group col-md-6 col-sm-6 col-xs-12">
                                         <div class="field-label">Phone *</div>
-                                        <input type="number" name="shipphone" required value="@objClientOther.ShipPhoneNumber" placeholder="">
+                                        <input type="number" name="shipphone" required value="@objClientOther.ShipPhoneNumber" placeholder="" onKeyPress="if(this.value.length==10) return false;" onblur="mobilechange();">
                                         <span class="errorcls"></span>
                                     </div>
                                     <div class="form-group col-md-6 col-sm-6 col-xs-12">
@@ -315,7 +315,7 @@
                                     </div>
                                     <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                         <div class="field-label">GST No.</div>
-                                        <input type="text" name="GSTNo" required value="@objClientOther.ShipGSTNo" placeholder="GST No.">
+                                        <input type="text" name="GSTNo" required value="@objClientOther.ShipGSTNo" placeholder="GST No." maxlength="15" onblur="gstchange();">
                                         <span class="errorcls"></span>
                                     </div>
                                     <div class="form-group col-md-12 col-sm-12 col-xs-12">
@@ -373,7 +373,7 @@
                                     </div>
                                     <div class="form-group col-md-12 col-sm-6 col-xs-12">
                                         <div class="field-label">Postal Code *</div>
-                                        <input type="number" name="shippincode" id="shippincode" required value="@objClientOther.ShipPostalcode" placeholder="" onblur="pincodechange();">
+                                        <input type="number" name="shippincode" id="shippincode" required value="@objClientOther.ShipPostalcode" placeholder="" onKeyPress="if(this.value.length==6) return false;" onblur="pincodechange();">
                                         <span class="errorcls"></span>
                                     </div>
                                     <div class="form-group col-md-12 col-sm-6 col-xs-12">
@@ -619,6 +619,19 @@
             $(".shipexist").show();
         }
         $("#checkoutdetails").modal("show");
+    }
+
+    function gstchange() {
+        if ($("input[name=GSTNo]").val() != '' && $("input[name=GSTNo]").val().length != 15) {
+            alert("Please Enter Valid GST No");
+            return;
+        }
+    }
+    function mobilechange() {
+        if ($("input[name=shipphone]").val() != '' && $("input[name=shipphone]").val().length != 10) {
+            alert("Please Enter Valid Mobile No");
+            return;
+        }
     }
 
     function pincodechange() {

@@ -34,7 +34,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 string lastnm = frm["lname"].ToString();
                 string mobileno = frm["mobileno"].ToString();
                 string password = frm["password"].ToString();
-
+                string Prefix = frm["prefix"].ToString();
                 tbl_ClientUsers objClientUsr = _db.tbl_ClientUsers.Where(o => (o.MobileNo == mobileno || (email != "" && o.Email.ToLower() == email.ToLower())) && o.ClientRoleId == 1).FirstOrDefault();
                 if (objClientUsr != null)
                 {
@@ -42,7 +42,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     TempData["email"] = email;
                     TempData["firstnm"] = firstnm;
                     TempData["lastnm"] = lastnm;
-                    TempData["mobileno"] = mobileno;
+                    TempData["mobileno"] = mobileno;                
                     if (string.IsNullOrEmpty(referer))
                     {
                         return RedirectToAction("Index", "Register", new { area = "Client", });
@@ -76,6 +76,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     objClientUsr.UserName = firstnm + lastnm;
                     objClientUsr.Password = EncyptedPassword;
                     objClientUsr.Reference = refrc;
+                    objClientUsr.Prefix = Prefix;
                     _db.tbl_ClientUsers.Add(objClientUsr);
                     _db.SaveChanges();
 
