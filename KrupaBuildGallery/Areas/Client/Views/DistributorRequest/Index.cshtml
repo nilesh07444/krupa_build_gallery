@@ -182,6 +182,7 @@
                             <div class="col-md-6">
                                 <input type="hidden" id="hdnotptxt" value="" />
                                 <input type="hidden" id="hdnotpemailtxt" value="" />
+                                <input type="hidden" id="hdnotptxtvalid" value="false" />
                                 <input type="submit" value="Submit" class="btn btn-solid" />
                             </div>
                         </div>
@@ -261,7 +262,7 @@
                 return false;
             }
            
-            if ($('#hdnotptxt').val() == "") {
+            if ($('#hdnotptxt').val() == "" || $("#hdnotptxtvalid").val() == "false") {
                  var URL = '@Url.Action("SendOTP", "DistributorRequest")';
                $.ajax({
                 type: 'POST',
@@ -325,6 +326,7 @@
              alert("Invalid Email OTP");
             return false;
         }
+        $("#hdnotptxtvalid").val("true");
         $("#otpmodal").modal('hide');
         $("#theFormId").submit();
     }

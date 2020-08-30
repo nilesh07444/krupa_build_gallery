@@ -463,7 +463,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                             GSTPer = i.GST_Per,
                                             IGSTPer = i.IGST_Per
                                         }).OrderByDescending(x => x.CartId).ToList();
-                        lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price, x.VariantId); x.MRPPrice = GetVarintPrc(x.VariantId, x.MRPPrice); });
+                        lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price, x.VariantId); x.MRPPrice = GetVarintPrc(x.VariantId, x.MRPPrice,true); });
                         List<tbl_Cart> lst = _db.tbl_Cart.Where(o => o.ClientUserId == clientusrid && o.IsCombo == true && o.ComboId > 0 && o.IsCashonDelivery == Iscashondelivery).ToList();
 
                         if (lst != null && lst.Count() > 0)
@@ -517,7 +517,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                             GSTPer = i.GST_Per,
                                             IGSTPer = i.IGST_Per
                                         }).OrderByDescending(x => x.CartId).ToList();
-                        lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price, x.VariantId); x.MRPPrice = GetVarintPrc(x.VariantId, x.MRPPrice); });
+                        lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price, x.VariantId); x.MRPPrice = GetVarintPrc(x.VariantId, x.MRPPrice,true); });
                     }
 
 
@@ -1082,7 +1082,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                                     IGSTPer = i.IGST_Per
                                                 }).OrderByDescending(x => x.CartId).ToList();
 
-                                lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price, x.VariantId); x.MRPPrice = GetVarintPrc(x.VariantId, x.MRPPrice); });
+                                lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price, x.VariantId); x.MRPPrice = GetVarintPrc(x.VariantId, x.MRPPrice,true); });
 
                                 List<tbl_Cart> lst = _db.tbl_Cart.Where(o => o.ClientUserId == clientusrid && o.IsCombo == true && o.ComboId > 0 && o.IsCashonDelivery == Iscashondelivery).ToList();
 
@@ -1136,7 +1136,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                                     GSTPer = i.GST_Per,
                                                     IGSTPer = i.IGST_Per
                                                 }).OrderByDescending(x => x.CartId).ToList();
-                                lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price, x.VariantId); x.MRPPrice = GetVarintPrc(x.VariantId, x.MRPPrice); });
+                                lstCartItems.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price, x.VariantId); x.MRPPrice = GetVarintPrc(x.VariantId, x.MRPPrice,true); });
                             }
                             
 
@@ -2066,7 +2066,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             return View();
         }
 
-        public decimal GetVarintPrc(long VariantId, decimal Price)
+        public decimal GetVarintPrc(long VariantId, decimal Price,bool IsMRP = false)
         {
             string[] kgs = { "50 Grams", "100 Grams", "250 Grams", "500 Grams", "1 Kg", "2 Kg", "5 Kg" };
             string[] kgsQty = { "0.05", "0.10", "0.25", "0.50", "1", "2", "5" };
@@ -2108,7 +2108,18 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 {
                     int idxxx = Array.IndexOf(sheets, objVarints.UnitQty);
                     decimal sqft = Convert.ToDecimal(sheetsqty[idxxx]);
-                    return Math.Round((Price * sqft) / 100, 2);
+                    return Math.Round(Price * sqft, 2);
+                }
+                else if(IsMRP == true)
+                {
+                    if(objVarints.MRPPrice != null && objVarints.MRPPrice > 0)
+                    {
+                        return objVarints.MRPPrice.Value;
+                    }
+                    else
+                    {
+                        return Price;
+                    }
                 }
                 else
                 {

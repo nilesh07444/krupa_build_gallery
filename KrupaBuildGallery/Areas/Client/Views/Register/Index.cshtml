@@ -8,6 +8,9 @@
     .register-page .theme-card .theme-form input {
         margin-bottom: 13px;
     }
+    select.form-control:not([size]):not([multiple]){
+        height: auto !important;
+    }
 </style>
 <!-- breadcrumb start -->
 <div class="breadcrumb-section">
@@ -39,20 +42,29 @@
                 <div class="theme-card">
                     @using (Html.BeginForm("CreateAccount", "Register", FormMethod.Post, new { ID = "theFormId", @class = "theme-form", onsubmit = "return checkregister();" }))
                     {
-                        <div class="form-row">
-                            <div class="col-md-6">
-                                <label for="fname">First Name *</label>
-                                <input type="text" class="form-control" id="fname" value="@TempData["firstnm"]" name="fname" placeholder="First Name" required />
-                            </div>
-                            <div class="col-md-6">
-                                <label for="lname">Last Name *</label>
-                                <input type="text" class="form-control" id="lname" name="lname" value="@TempData["lastnm"]" placeholder="Last Name" required />
-                            </div>
+                    <div class="form-row">
+                        <div class="col-md-2 select_input">
+                            <label for="prefix">Prefix *</label>
+                            <select class="form-control" name="prefix" id="prefix" required="">                                
+                                <option value="Mr">Mr</option>
+                                <option value="Mrs">Mrs</option>
+                                <option value="Miss">Miss</option>
+                            </select>
                         </div>
+
+                        <div class="col-md-5">
+                            <label for="fname">First Name *</label>
+                            <input type="text" class="form-control" id="fname" value="@TempData["firstnm"]" name="fname" placeholder="First Name" required />
+                        </div>
+                        <div class="col-md-5">
+                            <label for="lname">Last Name *</label>
+                            <input type="text" class="form-control" id="lname" name="lname" value="@TempData["lastnm"]" placeholder="Last Name" required />
+                        </div>
+                    </div>
                         <div class="form-row">
                             <div class="col-md-6">
                                 <label for="mobileno">Mobile No. *</label>
-                                <input type="number" class="form-control" id="mobileno" name="mobileno" value="@TempData["mobileno"]" placeholder="Mobile No." required />
+                                <input type="number" class="form-control" id="mobileno" name="mobileno" value="@TempData["mobileno"]" placeholder="Mobile No." required onKeyPress="if(this.value.length==10) return false;" onblur="mobilechange();" />
                             </div>
                             <div class="col-md-6">
                                 <label for="email">Email</label>
@@ -143,6 +155,12 @@
 }
 
 <script>
+    function mobilechange() {
+        if ($("input[name=mobileno]").val() != '' && $("input[name=mobileno]").val().length != 10) {
+            alert("Please Enter Valid Mobile No");
+            return;
+        }
+    }
     function checkregister() {
         if (!ValidateEmail($("#email").val())) {
             alert("You have entered an invalid email address!")
@@ -150,6 +168,11 @@
         }
         else if ($("#password").val() != $("#confirmpassword").val()) {
             alert("Password and Confirm Pasword not match!")
+            return false;
+        }
+        else if ($("input[name=mobileno]").val().length != 10)
+        {
+            alert("Mobile Number is not Valid")
             return false;
         }
         else {

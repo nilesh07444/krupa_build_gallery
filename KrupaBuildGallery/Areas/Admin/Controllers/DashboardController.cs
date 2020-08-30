@@ -31,7 +31,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             obj.TotalNewOrder = _db.tbl_Orders.Where(x => x.IsActive && !x.IsDelete && x.OrderStatusId == 1).ToList().Count;
             obj.TotalConfirmOrder = _db.tbl_Orders.Where(x => x.IsActive && !x.IsDelete && x.OrderStatusId == 2).ToList().Count;
             obj.TotalDispatchedOrder = _db.tbl_Orders.Where(x => x.IsActive && !x.IsDelete && x.OrderStatusId == 3).ToList().Count;
-            obj.TotalPendingDistributorRequest = _db.tbl_DistributorRequestDetails.Where(x => x.Status == 1).ToList().Count;
+            obj.TotalPendingDistributorRequest = _db.tbl_DistributorRequestDetails.Where(x => x.Status == 0).ToList().Count;
             return View(obj);
         }
     }
