@@ -49,6 +49,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                  OrderShipClientName = p.OrderShipClientName,
                                  OrderShipClientPhone = p.OrderShipClientPhone,
                                  OrderStatusId = p.OrderStatusId,
+                                 ClientMobileNo = c.MobileNo,
                                  PaymentType = p.PaymentType,
                                  OrderDate = p.CreatedDate,
                                  IsCashOnDelivery = p.IsCashOnDelivery.HasValue ? p.IsCashOnDelivery.Value : false,
@@ -241,8 +242,6 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             return "";
         }
-
-
 
         [HttpPost]
         public string SendMessageForDueAmount(long OrderId)

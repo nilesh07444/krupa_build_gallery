@@ -107,6 +107,7 @@
                             </div>
                             <input type="hidden" name="hdnReferer" value="@ViewBag.Referer" />
                             <input type="hidden" id="hdnotptxt" value="" />
+                            <input type="hidden" id="hdnotptxtvalid" value="false" />
                             <input type="submit" value="Create Account" class="btn btn-solid" />
                             @if (Convert.ToString(ViewBag.Referer) != "")
                             {
@@ -176,7 +177,7 @@
             return false;
         }
         else {
-           if ($('#hdnotptxt').val() == "") {
+            if ($('#hdnotptxt').val() == "" || $("#hdnotptxtvalid").val() == "false") {
                  var URL = '@Url.Action("SendOTP", "Register")';
                $.ajax({
                 type: 'POST',
@@ -233,7 +234,9 @@
              alert("Invalid Mobile OTP");
             return false;
         }
-
+        else {
+            $("#hdnotptxtvalid").val("true");
+        }
         $("#theFormId").submit();
     }
 </script>

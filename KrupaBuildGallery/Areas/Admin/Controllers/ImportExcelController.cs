@@ -724,39 +724,25 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                     string MinimumStock = dr["MinimumStock"].ToString();
                                     string UnitType = dr["UnitType"].ToString();
                                     string IntialStock = dr["IntialStock"].ToString();
-                                    string G50ML50S8x4Pecentage = dr["G50ML50S8x4Pecentage"].ToString();
-                                    string G100ML100S7x4Pecentage = dr["G100ML100S7x4Pecentage"].ToString();
-                                    string G250ML250S7x3Pecentage = dr["G250ML250S7x3Pecentage"].ToString();
-                                    string G500ML500S6x4Pecentage = dr["G500ML500S6x4Pecentage"].ToString();
-                                    string KG1L1S6x3Pecentage = dr["KG1L1S6x3Pecentage"].ToString();
-                                    string KG2L2Pecentage = dr["KG2L2Pecentage"].ToString();
-                                    string KG5L5Pecentage = dr["KG5L5Pecentage"].ToString();
                                     string ItemTag = dr["ItemTag"].ToString();
+                                    string Assured = dr["Assured"].ToString();
 
-                                    if (string.IsNullOrEmpty(CategoryNm) || string.IsNullOrEmpty(ProductNm) || string.IsNullOrEmpty(ItemName))
+                                    if(ds.Tables[0].Columns.Contains("KG1L1S6x3Pecentage"))
                                     {
-                                        ImportExcelDataVM objimport = new ImportExcelDataVM();
-                                        objimport.SrNo = srno;
-                                        objimport.ErrorMsg = "Category Name Or Product Name Or Item Name is Blank";
-                                        lstImportExcl.Add(objimport);
-                                        tbl_ImportExcel objtblex = new tbl_ImportExcel();
-                                        objtblex.SrNo = srno.ToString();
-                                        objtblex.ErroMsg = objimport.ErrorMsg;
-                                        objtblex.ImportedDate = DateTime.UtcNow;
-                                        objtblex.ImportedBy = clsAdminSession.UserID;
-                                        objtblex.ImportType = 4;
-                                        _db.tbl_ImportExcel.Add(objtblex);
-                                        _db.SaveChanges();
-                                        continue;
-                                    }
-                                    else
-                                    {
-                                        var objCatExist = lstCats.Where(o => o.CategoryName.ToLower() == CategoryNm.ToLower()).FirstOrDefault();
-                                        if (objCatExist == null)
+                                        string G50ML50S8x4Pecentage = dr["G50ML50S8x4Pecentage"].ToString();
+                                        string G100ML100S7x4Pecentage = dr["G100ML100S7x4Pecentage"].ToString();
+                                        string G250ML250S7x3Pecentage = dr["G250ML250S7x3Pecentage"].ToString();
+                                        string G500ML500S6x4Pecentage = dr["G500ML500S6x4Pecentage"].ToString();
+                                        string KG1L1S6x3Pecentage = dr["KG1L1S6x3Pecentage"].ToString();
+                                        string KG2L2Pecentage = dr["KG2L2Pecentage"].ToString();
+                                        string KG5L5Pecentage = dr["KG5L5Pecentage"].ToString();
+
+
+                                        if (string.IsNullOrEmpty(CategoryNm) || string.IsNullOrEmpty(ProductNm) || string.IsNullOrEmpty(ItemName))
                                         {
                                             ImportExcelDataVM objimport = new ImportExcelDataVM();
                                             objimport.SrNo = srno;
-                                            objimport.ErrorMsg = "Category Name Not exist";
+                                            objimport.ErrorMsg = "Category Name Or Product Name Or Item Name is Blank";
                                             lstImportExcl.Add(objimport);
                                             tbl_ImportExcel objtblex = new tbl_ImportExcel();
                                             objtblex.SrNo = srno.ToString();
@@ -764,402 +750,855 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                             objtblex.ImportedDate = DateTime.UtcNow;
                                             objtblex.ImportedBy = clsAdminSession.UserID;
                                             objtblex.ImportType = 4;
-                                            _db.tbl_ImportExcel.Add(objtblex);
-                                            _db.SaveChanges();
-                                            continue;
-                                        }
-                                        long CatId = objCatExist.CategoryId;
-                                        var objProduExist = lstProd.Where(o => o.ProductName.ToLower() == ProductNm.ToLower() && o.CategoryId == CatId).FirstOrDefault();
-                                        if (objProduExist == null)
-                                        {
-                                            ImportExcelDataVM objimport = new ImportExcelDataVM();
-                                            objimport.SrNo = srno;
-                                            objimport.ErrorMsg = "Product Name Not exist with this Category";
-                                            lstImportExcl.Add(objimport);
-                                            tbl_ImportExcel objtblex = new tbl_ImportExcel();
-                                            objtblex.SrNo = srno.ToString();
-                                            objtblex.ErroMsg = objimport.ErrorMsg;
-                                            objtblex.ImportedDate = DateTime.UtcNow;
-                                            objtblex.ImportedBy = clsAdminSession.UserID;
-                                            objtblex.ImportType = 4;
-                                            _db.tbl_ImportExcel.Add(objtblex);
-                                            _db.SaveChanges();
-                                            continue;
-                                        }
-                                        long ProdId = objProduExist.Product_Id;
-
-                                        long SubProductId = 0;
-                                        if (!string.IsNullOrEmpty(SubProductName))
-                                        {
-                                            var existSubProduct = _db.tbl_SubProducts.Where(x => x.SubProductName.ToLower() == SubProductName.ToLower()
-               && x.CategoryId == CatId && x.ProductId == ProdId
-               && !x.IsDelete).FirstOrDefault();
-
-                                            if (existSubProduct == null)
-                                            {
-                                                ImportExcelDataVM objimport = new ImportExcelDataVM();
-                                                objimport.SrNo = srno;
-                                                objimport.ErrorMsg = "Sub Product Name Not exist with this Category and Product";
-                                                lstImportExcl.Add(objimport);
-                                                tbl_ImportExcel objtblex = new tbl_ImportExcel();
-                                                objtblex.SrNo = srno.ToString();
-                                                objtblex.ErroMsg = objimport.ErrorMsg;
-                                                objtblex.ImportedDate = DateTime.UtcNow;
-                                                objtblex.ImportType = 4;
-                                                objtblex.ImportedBy = clsAdminSession.UserID;
-                                                _db.tbl_ImportExcel.Add(objtblex);
-                                                _db.SaveChanges();
-                                                continue;
-                                            }
-                                            SubProductId = existSubProduct.SubProductId;
-                                        }
-
-                                        var objItmTyp = lstUnitss.Where(o => o.UnitName.ToLower() == UnitType.ToLower()).FirstOrDefault();
-                                        if (objItmTyp == null)
-                                        {
-                                            tbl_ImportExcel objtblex = new tbl_ImportExcel();
-                                            objtblex.SrNo = srno.ToString();
-                                            objtblex.ErroMsg = "Unit Type Not Exists";
-                                            objtblex.ImportedDate = DateTime.UtcNow;
-                                            objtblex.ImportType = 4;
-                                            objtblex.ImportedBy = clsAdminSession.UserID;
-                                            _db.tbl_ImportExcel.Add(objtblex);
-                                            _db.SaveChanges();
-                                            continue;
-                                        }
-
-                                        
-
-                                        var existProductItem = _db.tbl_ProductItems.Where(x => x.ItemName.ToLower() == ItemName.ToLower()
-                        && x.CategoryId == CatId && x.ProductId == ProdId && x.SubProductId == SubProductId
-                        && !x.IsDelete).FirstOrDefault();
-
-                                        if (existProductItem != null)
-                                        {
-                                            ImportExcelDataVM objimport = new ImportExcelDataVM();
-                                            objimport.SrNo = srno;
-                                            objimport.ErrorMsg = "Item already exist";
-                                            lstImportExcl.Add(objimport);
-                                            tbl_ImportExcel objtblex = new tbl_ImportExcel();
-                                            objtblex.SrNo = srno.ToString();
-                                            objtblex.ErroMsg = objimport.ErrorMsg;
-                                            objtblex.ImportedDate = DateTime.UtcNow;
-                                            objtblex.ImportedBy = clsAdminSession.UserID;
-                                            objtblex.ImportType = 4;
-                                            _db.tbl_ImportExcel.Add(objtblex);
-                                            _db.SaveChanges();
-                                            continue;
-                                        }
-
-
-                                        var objGown = _db.tbl_Godown.Where(o => o.GodownName.ToLower() == GodownName && o.IsDeleted == false).FirstOrDefault();
-                                        if (objGown == null)
-                                        {
-                                            tbl_ImportExcel objtblex = new tbl_ImportExcel();
-                                            objtblex.SrNo = srno.ToString();
-                                            objtblex.ErroMsg = "Godown is Not Exist";
-                                            objtblex.ImportedDate = DateTime.UtcNow;
-                                            objtblex.ImportType = 4;
-                                            objtblex.ImportedBy = clsAdminSession.UserID;
-                                            _db.tbl_ImportExcel.Add(objtblex);
-                                            _db.SaveChanges();
-                                            continue;
-                                        }
-                                        long GodownId = objGown.GodownId;
-                                        string fileName = string.Empty;
-
-                                        tbl_ProductItems objProductItem = new tbl_ProductItems();
-                                        objProductItem.CategoryId = CatId;
-                                        objProductItem.ProductId = ProdId;
-                                        objProductItem.SubProductId = SubProductId;
-                                        objProductItem.ItemName = ItemName;
-                                        objProductItem.ItemDescription = Description;
-                                        objProductItem.Sku = Sku;
-                                        if (string.IsNullOrEmpty(MRPPrice) || string.IsNullOrEmpty(CustomerPrice) || string.IsNullOrEmpty(DistributorPrice))
-                                        {
-                                            ImportExcelDataVM objimport = new ImportExcelDataVM();
-                                            objimport.SrNo = srno;
-                                            objimport.ErrorMsg = "MRP Price or Customer Price or Distributor Value is Blank";
-                                            lstImportExcl.Add(objimport);
-                                            tbl_ImportExcel objtblex = new tbl_ImportExcel();
-                                            objtblex.SrNo = srno.ToString();
-                                            objtblex.ErroMsg = objimport.ErrorMsg;
-                                            objtblex.ImportType = 4;
-                                            objtblex.ImportedDate = DateTime.UtcNow;
-                                            objtblex.ImportedBy = clsAdminSession.UserID;
                                             _db.tbl_ImportExcel.Add(objtblex);
                                             _db.SaveChanges();
                                             continue;
                                         }
                                         else
                                         {
-                                            if (!IsValidPriceFormat(MRPPrice))
+                                            var objCatExist = lstCats.Where(o => o.CategoryName.ToLower() == CategoryNm.ToLower()).FirstOrDefault();
+                                            if (objCatExist == null)
                                             {
+                                                ImportExcelDataVM objimport = new ImportExcelDataVM();
+                                                objimport.SrNo = srno;
+                                                objimport.ErrorMsg = "Category Name Not exist";
+                                                lstImportExcl.Add(objimport);
                                                 tbl_ImportExcel objtblex = new tbl_ImportExcel();
                                                 objtblex.SrNo = srno.ToString();
-                                                objtblex.ErroMsg = "MRP price is not in correct format";
+                                                objtblex.ErroMsg = objimport.ErrorMsg;
                                                 objtblex.ImportedDate = DateTime.UtcNow;
-                                                objtblex.ImportType = 4;
                                                 objtblex.ImportedBy = clsAdminSession.UserID;
+                                                objtblex.ImportType = 4;
                                                 _db.tbl_ImportExcel.Add(objtblex);
                                                 _db.SaveChanges();
                                                 continue;
                                             }
-
-                                            if (!IsValidPriceFormat(DistributorPrice))
+                                            long CatId = objCatExist.CategoryId;
+                                            var objProduExist = lstProd.Where(o => o.ProductName.ToLower() == ProductNm.ToLower() && o.CategoryId == CatId).FirstOrDefault();
+                                            if (objProduExist == null)
                                             {
+                                                ImportExcelDataVM objimport = new ImportExcelDataVM();
+                                                objimport.SrNo = srno;
+                                                objimport.ErrorMsg = "Product Name Not exist with this Category";
+                                                lstImportExcl.Add(objimport);
                                                 tbl_ImportExcel objtblex = new tbl_ImportExcel();
                                                 objtblex.SrNo = srno.ToString();
-                                                objtblex.ErroMsg = "DistributorPrice is not in correct format";
+                                                objtblex.ErroMsg = objimport.ErrorMsg;
                                                 objtblex.ImportedDate = DateTime.UtcNow;
-                                                objtblex.ImportType = 4;
                                                 objtblex.ImportedBy = clsAdminSession.UserID;
+                                                objtblex.ImportType = 4;
                                                 _db.tbl_ImportExcel.Add(objtblex);
                                                 _db.SaveChanges();
                                                 continue;
                                             }
+                                            long ProdId = objProduExist.Product_Id;
 
-                                            if (!IsValidPriceFormat(CustomerPrice))
+                                            long SubProductId = 0;
+                                            if (!string.IsNullOrEmpty(SubProductName))
                                             {
-                                                tbl_ImportExcel objtblex = new tbl_ImportExcel();
-                                                objtblex.SrNo = srno.ToString();
-                                                objtblex.ErroMsg = "CustomerPrice is not in correct format";
-                                                objtblex.ImportedDate = DateTime.UtcNow;
-                                                objtblex.ImportType = 4;
-                                                objtblex.ImportedBy = clsAdminSession.UserID;
-                                                _db.tbl_ImportExcel.Add(objtblex);
-                                                _db.SaveChanges();
-                                                continue;
-                                            }
-                                        }
-                                        //bool result = int.TryParse(s, out i); //i now = 108  
-                                        objProductItem.MRPPrice = Convert.ToDecimal(MRPPrice);
-                                        objProductItem.CustomerPrice = Convert.ToDecimal(CustomerPrice);
-                                        objProductItem.DistributorPrice = Convert.ToDecimal(DistributorPrice);
-                                        decimal GSTPer = 0;
-                                        if (!string.IsNullOrEmpty(GSTPercentage))
-                                        {
-                                            if (GSTPercentage == "0" || GSTPercentage == "5" || GSTPercentage == "12" || GSTPercentage == "18" || GSTPercentage == "28")
-                                            {
-                                                GSTPer = Convert.ToDecimal(GSTPercentage);
-                                            }
-                                            else
-                                            {
-                                                tbl_ImportExcel objtblex = new tbl_ImportExcel();
-                                                objtblex.SrNo = srno.ToString();
-                                                objtblex.ErroMsg = "GST Percentage Not Valid";
-                                                objtblex.ImportedDate = DateTime.UtcNow;
-                                                objtblex.ImportType = 4;
-                                                objtblex.ImportedBy = clsAdminSession.UserID;
-                                                _db.tbl_ImportExcel.Add(objtblex);
-                                                _db.SaveChanges();
-                                                continue;
-                                            }
-                                        }
-                                        objProductItem.GST_Per = GSTPer;
-                                        objProductItem.IGST_Per = Convert.ToDecimal(GSTPercentage);
-                                        objProductItem.Notification = NotificationText;
-                                        objProductItem.MainImage = MainImageName;
-                                        bool IsPopulrItm = false;
-                                        if (!string.IsNullOrEmpty(IsPopularItem))
-                                        {
-                                            if (IsPopularItem.ToLower().Trim() == "yes")
-                                            {
-                                                IsPopulrItm = true;
-                                            }
-                                        }
-                                        bool IsRetunble = false;
-                                        if (!string.IsNullOrEmpty(IsReturnable))
-                                        {
-                                            if (IsReturnable.ToLower().Trim() == "yes")
-                                            {
-                                                IsRetunble = true;
-                                            }
-                                        }
-                                        bool IsCashonDelv = false;
-                                        if (!string.IsNullOrEmpty(CashOnDelivery))
-                                        {
-                                            if (CashOnDelivery.ToLower().Trim() == "yes")
-                                            {
-                                                IsCashonDelv = true;
-                                            }
-                                        }
-                                        decimal advncepay = 0;
-                                        if (!string.IsNullOrEmpty(AdvancePaymentPercentage))
-                                        {
-                                            advncepay = Convert.ToDecimal(AdvancePaymentPercentage);
-                                        }
-                                        objProductItem.IsPopularProduct = IsPopulrItm;
-                                        decimal ShipingChrg = 0;
-                                        if (!string.IsNullOrEmpty(ShippingCharge))
-                                        {
-                                            ShipingChrg = Convert.ToDecimal(ShippingCharge);
-                                        }
+                                                var existSubProduct = _db.tbl_SubProducts.Where(x => x.SubProductName.ToLower() == SubProductName.ToLower()
+                   && x.CategoryId == CatId && x.ProductId == ProdId
+                   && !x.IsDelete).FirstOrDefault();
 
-                                        int itmtyp = 1;
-                                        if (!string.IsNullOrEmpty(PackedUnPacked))
-                                        {
-                                            if (PackedUnPacked.ToLower().Trim() == "packed")
-                                            {
-                                                itmtyp = 1;
-                                            }
-                                            else
-                                            {
-                                                itmtyp = 2;
-                                            }
-                                        }
-                                        int MiniStk = 0;
-                                        if (!string.IsNullOrEmpty(MinimumStock))
-                                        {
-                                            MiniStk = Convert.ToInt32(MinimumStock);
-                                        }
-
-                                        objProductItem.ShippingCharge = ShipingChrg;
-                                        objProductItem.IsActive = true;
-                                        objProductItem.IsDelete = false;
-                                        objProductItem.CreatedBy = clsAdminSession.UserID;
-                                        objProductItem.CreatedDate = DateTime.UtcNow;
-                                        objProductItem.UpdatedBy = clsAdminSession.UserID;
-                                        objProductItem.HSNCode = HSNCode;
-                                        objProductItem.UpdatedDate = DateTime.UtcNow;
-                                        objProductItem.GodownId = GodownId;
-                                        objProductItem.IsReturnable = IsRetunble;
-                                        objProductItem.PayAdvancePer = advncepay;
-                                        objProductItem.ItemType = itmtyp;
-                                        objProductItem.IsCashonDeliveryUse = IsCashonDelv;
-                                        objProductItem.MinimumStock = MiniStk;
-                                        objProductItem.Tags = ItemTag;
-                                        objProductItem.UnitType = Convert.ToInt32(objItmTyp.UnitId);
-                                        objProductItem.IsImported = true;
-                                        _db.tbl_ProductItems.Add(objProductItem);
-                                        _db.SaveChanges();
-
-                                        string[] kgs = { "50 Grams", "100 Grams", "250 Grams", "500 Grams", "1 Kg", "2 Kg", "5 Kg" };
-                                        string[] kgsQty = { "0.05", "0.10", "0.25", "0.50", "1", "2", "5" };
-                                        string[] ltrs = { "50 ml", "100 ml", "250 ml", "500 ml", "1 Ltr", "2 Ltr", "5 Ltr" };
-                                        string[] ltrsQty = { "0.05", "0.10", "0.25", "0.50", "1", "2", "5" };
-
-                                        string[] sheets = { "8x4", "7x4", "7x3", "6x4", "6x3" };
-                                        string[] sheetsqty = { "32", "28", "21", "24", "18" };
-                                        var objUnt = _db.tbl_Units.Where(o => o.UnitId == objProductItem.UnitType).FirstOrDefault();
-                                        List<string> lstPerVarint = new List<string>();
-                                        lstPerVarint.Add(G50ML50S8x4Pecentage);
-                                        lstPerVarint.Add(G100ML100S7x4Pecentage);
-                                        lstPerVarint.Add(G250ML250S7x3Pecentage);
-                                        lstPerVarint.Add(G500ML500S6x4Pecentage);
-                                        lstPerVarint.Add(KG1L1S6x3Pecentage);
-                                        lstPerVarint.Add(KG2L2Pecentage);
-                                        lstPerVarint.Add(KG5L5Pecentage);
-                                        if (objUnt != null)
-                                        {
-                                            if (objUnt.UnitName.ToLower().Contains("killo") || objUnt.UnitName.ToLower().Contains("litr"))
-                                            {
-                                                for (int kk = 1; kk <= kgs.Length; kk++)
+                                                if (existSubProduct == null)
                                                 {
-                                                    tbl_ItemVariant objtbl_ItemVariant = new tbl_ItemVariant();
-                                                    objtbl_ItemVariant.ProductItemId = objProductItem.ProductItemId;
-                                                    objtbl_ItemVariant.IsActive = true;
-
-                                                    if (lstPerVarint[kk - 1] != null)
-                                                    {
-                                                        decimal perc = 0;
-                                                        if (!string.IsNullOrEmpty(lstPerVarint[kk - 1]))
-                                                        {
-                                                            perc = Convert.ToDecimal(lstPerVarint[kk - 1].ToString());
-                                                        }
-                                                        objtbl_ItemVariant.IsActive = false;
-                                                        if (perc > 0)
-                                                        {
-                                                            objtbl_ItemVariant.IsActive = true;
-                                                        }
-                                                        int k = kk - 1;
-                                                        objtbl_ItemVariant.PricePecentage = perc;
-                                                        if (objUnt.UnitName.ToLower().Contains("killo"))
-                                                        {
-                                                            objtbl_ItemVariant.UnitQty = kgs[k];
-                                                            decimal qtt = Convert.ToDecimal(kgsQty[k].ToString());
-                                                            if (qtt >= 1)
-                                                            {
-                                                                objtbl_ItemVariant.CustomerPrice = Math.Round((objProductItem.CustomerPrice * qtt * perc) / 100, 2);
-                                                                objtbl_ItemVariant.DistributorPrice = Math.Round((objProductItem.DistributorPrice * qtt * perc) / 100, 2);
-                                                            }
-                                                            else
-                                                            {
-                                                                objtbl_ItemVariant.CustomerPrice = Math.Round((objProductItem.CustomerPrice * perc) / 100, 2);
-                                                                objtbl_ItemVariant.DistributorPrice = Math.Round((objProductItem.DistributorPrice * perc) / 100, 2);
-                                                            }
-                                                        }
-                                                        else
-                                                        {
-                                                            objtbl_ItemVariant.UnitQty = ltrs[k];
-                                                            decimal qtt = Convert.ToDecimal(ltrsQty[k].ToString());
-                                                            if (qtt >= 1)
-                                                            {
-                                                                objtbl_ItemVariant.CustomerPrice = Math.Round((objProductItem.CustomerPrice * qtt * perc) / 100, 2);
-                                                                objtbl_ItemVariant.DistributorPrice = Math.Round((objProductItem.DistributorPrice * qtt * perc) / 100, 2);
-                                                            }
-                                                            else
-                                                            {
-                                                                objtbl_ItemVariant.CustomerPrice = Math.Round((objProductItem.CustomerPrice * perc) / 100, 2);
-                                                                objtbl_ItemVariant.DistributorPrice = Math.Round((objProductItem.DistributorPrice * perc) / 100, 2);
-                                                            }
-                                                        }
-                                                    }
-                                                    objtbl_ItemVariant.CreatedDate = DateTime.UtcNow;
-                                                    _db.tbl_ItemVariant.Add(objtbl_ItemVariant);
+                                                    ImportExcelDataVM objimport = new ImportExcelDataVM();
+                                                    objimport.SrNo = srno;
+                                                    objimport.ErrorMsg = "Sub Product Name Not exist with this Category and Product";
+                                                    lstImportExcl.Add(objimport);
+                                                    tbl_ImportExcel objtblex = new tbl_ImportExcel();
+                                                    objtblex.SrNo = srno.ToString();
+                                                    objtblex.ErroMsg = objimport.ErrorMsg;
+                                                    objtblex.ImportedDate = DateTime.UtcNow;
+                                                    objtblex.ImportType = 4;
+                                                    objtblex.ImportedBy = clsAdminSession.UserID;
+                                                    _db.tbl_ImportExcel.Add(objtblex);
+                                                    _db.SaveChanges();
+                                                    continue;
                                                 }
-                                                _db.SaveChanges();
+                                                SubProductId = existSubProduct.SubProductId;
                                             }
-                                            else if (objUnt.UnitName.ToLower().Contains("sheet"))
+
+                                            var objItmTyp = lstUnitss.Where(o => o.UnitName.ToLower() == UnitType.ToLower()).FirstOrDefault();
+                                            if (objItmTyp == null)
                                             {
-                                                for (int kk = 1; kk <= sheets.Length; kk++)
+                                                tbl_ImportExcel objtblex = new tbl_ImportExcel();
+                                                objtblex.SrNo = srno.ToString();
+                                                objtblex.ErroMsg = "Unit Type Not Exists";
+                                                objtblex.ImportedDate = DateTime.UtcNow;
+                                                objtblex.ImportType = 4;
+                                                objtblex.ImportedBy = clsAdminSession.UserID;
+                                                _db.tbl_ImportExcel.Add(objtblex);
+                                                _db.SaveChanges();
+                                                continue;
+                                            }
+
+
+
+                                            var existProductItem = _db.tbl_ProductItems.Where(x => x.ItemName.ToLower() == ItemName.ToLower()
+                            && x.CategoryId == CatId && x.ProductId == ProdId && x.SubProductId == SubProductId
+                            && !x.IsDelete).FirstOrDefault();
+
+                                            if (existProductItem != null)
+                                            {
+                                                ImportExcelDataVM objimport = new ImportExcelDataVM();
+                                                objimport.SrNo = srno;
+                                                objimport.ErrorMsg = "Item already exist";
+                                                lstImportExcl.Add(objimport);
+                                                tbl_ImportExcel objtblex = new tbl_ImportExcel();
+                                                objtblex.SrNo = srno.ToString();
+                                                objtblex.ErroMsg = objimport.ErrorMsg;
+                                                objtblex.ImportedDate = DateTime.UtcNow;
+                                                objtblex.ImportedBy = clsAdminSession.UserID;
+                                                objtblex.ImportType = 4;
+                                                _db.tbl_ImportExcel.Add(objtblex);
+                                                _db.SaveChanges();
+                                                continue;
+                                            }
+
+
+                                            var objGown = _db.tbl_Godown.Where(o => o.GodownName.ToLower() == GodownName && o.IsDeleted == false).FirstOrDefault();
+                                            if (objGown == null)
+                                            {
+                                                tbl_ImportExcel objtblex = new tbl_ImportExcel();
+                                                objtblex.SrNo = srno.ToString();
+                                                objtblex.ErroMsg = "Godown is Not Exist";
+                                                objtblex.ImportedDate = DateTime.UtcNow;
+                                                objtblex.ImportType = 4;
+                                                objtblex.ImportedBy = clsAdminSession.UserID;
+                                                _db.tbl_ImportExcel.Add(objtblex);
+                                                _db.SaveChanges();
+                                                continue;
+                                            }
+                                            long GodownId = objGown.GodownId;
+                                            string fileName = string.Empty;
+
+                                            tbl_ProductItems objProductItem = new tbl_ProductItems();
+                                            objProductItem.CategoryId = CatId;
+                                            objProductItem.ProductId = ProdId;
+                                            objProductItem.SubProductId = SubProductId;
+                                            objProductItem.ItemName = ItemName;
+                                            objProductItem.ItemDescription = Description;
+                                            objProductItem.Sku = Sku;
+                                            if (string.IsNullOrEmpty(MRPPrice) || string.IsNullOrEmpty(CustomerPrice) || string.IsNullOrEmpty(DistributorPrice))
+                                            {
+                                                ImportExcelDataVM objimport = new ImportExcelDataVM();
+                                                objimport.SrNo = srno;
+                                                objimport.ErrorMsg = "MRP Price or Customer Price or Distributor Value is Blank";
+                                                lstImportExcl.Add(objimport);
+                                                tbl_ImportExcel objtblex = new tbl_ImportExcel();
+                                                objtblex.SrNo = srno.ToString();
+                                                objtblex.ErroMsg = objimport.ErrorMsg;
+                                                objtblex.ImportType = 4;
+                                                objtblex.ImportedDate = DateTime.UtcNow;
+                                                objtblex.ImportedBy = clsAdminSession.UserID;
+                                                _db.tbl_ImportExcel.Add(objtblex);
+                                                _db.SaveChanges();
+                                                continue;
+                                            }
+                                            else
+                                            {
+                                                if (!IsValidPriceFormat(MRPPrice))
                                                 {
-                                                    int k = kk - 1;
+                                                    tbl_ImportExcel objtblex = new tbl_ImportExcel();
+                                                    objtblex.SrNo = srno.ToString();
+                                                    objtblex.ErroMsg = "MRP price is not in correct format";
+                                                    objtblex.ImportedDate = DateTime.UtcNow;
+                                                    objtblex.ImportType = 4;
+                                                    objtblex.ImportedBy = clsAdminSession.UserID;
+                                                    _db.tbl_ImportExcel.Add(objtblex);
+                                                    _db.SaveChanges();
+                                                    continue;
+                                                }
+
+                                                if (!IsValidPriceFormat(DistributorPrice))
+                                                {
+                                                    tbl_ImportExcel objtblex = new tbl_ImportExcel();
+                                                    objtblex.SrNo = srno.ToString();
+                                                    objtblex.ErroMsg = "DistributorPrice is not in correct format";
+                                                    objtblex.ImportedDate = DateTime.UtcNow;
+                                                    objtblex.ImportType = 4;
+                                                    objtblex.ImportedBy = clsAdminSession.UserID;
+                                                    _db.tbl_ImportExcel.Add(objtblex);
+                                                    _db.SaveChanges();
+                                                    continue;
+                                                }
+
+                                                if (!IsValidPriceFormat(CustomerPrice))
+                                                {
+                                                    tbl_ImportExcel objtblex = new tbl_ImportExcel();
+                                                    objtblex.SrNo = srno.ToString();
+                                                    objtblex.ErroMsg = "CustomerPrice is not in correct format";
+                                                    objtblex.ImportedDate = DateTime.UtcNow;
+                                                    objtblex.ImportType = 4;
+                                                    objtblex.ImportedBy = clsAdminSession.UserID;
+                                                    _db.tbl_ImportExcel.Add(objtblex);
+                                                    _db.SaveChanges();
+                                                    continue;
+                                                }
+                                            }
+                                            //bool result = int.TryParse(s, out i); //i now = 108  
+                                            objProductItem.MRPPrice = Convert.ToDecimal(MRPPrice);
+                                            objProductItem.CustomerPrice = Convert.ToDecimal(CustomerPrice);
+                                            objProductItem.DistributorPrice = Convert.ToDecimal(DistributorPrice);
+                                            decimal GSTPer = 0;
+                                            if (!string.IsNullOrEmpty(GSTPercentage))
+                                            {
+                                                if (GSTPercentage == "0" || GSTPercentage == "5" || GSTPercentage == "12" || GSTPercentage == "18" || GSTPercentage == "28")
+                                                {
+                                                    GSTPer = Convert.ToDecimal(GSTPercentage);
+                                                }
+                                                else
+                                                {
+                                                    tbl_ImportExcel objtblex = new tbl_ImportExcel();
+                                                    objtblex.SrNo = srno.ToString();
+                                                    objtblex.ErroMsg = "GST Percentage Not Valid";
+                                                    objtblex.ImportedDate = DateTime.UtcNow;
+                                                    objtblex.ImportType = 4;
+                                                    objtblex.ImportedBy = clsAdminSession.UserID;
+                                                    _db.tbl_ImportExcel.Add(objtblex);
+                                                    _db.SaveChanges();
+                                                    continue;
+                                                }
+                                            }
+                                            objProductItem.GST_Per = GSTPer;
+                                            objProductItem.IGST_Per = Convert.ToDecimal(GSTPercentage);
+                                            objProductItem.Notification = NotificationText;
+                                            objProductItem.MainImage = MainImageName;
+                                            bool IsPopulrItm = false;
+                                            if (!string.IsNullOrEmpty(IsPopularItem))
+                                            {
+                                                if (IsPopularItem.ToLower().Trim() == "yes")
+                                                {
+                                                    IsPopulrItm = true;
+                                                }
+                                            }
+                                            bool IsRetunble = false;
+                                            if (!string.IsNullOrEmpty(IsReturnable))
+                                            {
+                                                if (IsReturnable.ToLower().Trim() == "yes")
+                                                {
+                                                    IsRetunble = true;
+                                                }
+                                            }
+                                            bool IsCashonDelv = false;
+                                            if (!string.IsNullOrEmpty(CashOnDelivery))
+                                            {
+                                                if (CashOnDelivery.ToLower().Trim() == "yes")
+                                                {
+                                                    IsCashonDelv = true;
+                                                }
+                                            }
+                                            decimal advncepay = 0;
+                                            if (!string.IsNullOrEmpty(AdvancePaymentPercentage))
+                                            {
+                                                advncepay = Convert.ToDecimal(AdvancePaymentPercentage);
+                                            }
+                                            objProductItem.IsPopularProduct = IsPopulrItm;
+                                            decimal ShipingChrg = 0;
+                                            if (!string.IsNullOrEmpty(ShippingCharge))
+                                            {
+                                                ShipingChrg = Convert.ToDecimal(ShippingCharge);
+                                            }
+
+                                            int itmtyp = 1;
+                                            if (!string.IsNullOrEmpty(PackedUnPacked))
+                                            {
+                                                if (PackedUnPacked.ToLower().Trim() == "packed")
+                                                {
+                                                    itmtyp = 1;
+                                                }
+                                                else
+                                                {
+                                                    itmtyp = 2;
+                                                }
+                                            }
+                                            int MiniStk = 0;
+                                            if (!string.IsNullOrEmpty(MinimumStock))
+                                            {
+                                                MiniStk = Convert.ToInt32(MinimumStock);
+                                            }
+
+                                            bool IsAssured = false;
+                                            if (!string.IsNullOrEmpty(Assured))
+                                            {
+                                                if (Assured.ToLower() == "yes")
+                                                {
+                                                    IsAssured = true;
+                                                }
+                                            }
+
+                                            objProductItem.ShippingCharge = ShipingChrg;
+                                            objProductItem.IsActive = true;
+                                            objProductItem.IsDelete = false;
+                                            objProductItem.CreatedBy = clsAdminSession.UserID;
+                                            objProductItem.CreatedDate = DateTime.UtcNow;
+                                            objProductItem.UpdatedBy = clsAdminSession.UserID;
+                                            objProductItem.HSNCode = HSNCode;
+                                            objProductItem.UpdatedDate = DateTime.UtcNow;
+                                            objProductItem.GodownId = GodownId;
+                                            objProductItem.IsReturnable = IsRetunble;
+                                            objProductItem.PayAdvancePer = advncepay;
+                                            objProductItem.ItemType = itmtyp;
+                                            objProductItem.IsCashonDeliveryUse = IsCashonDelv;
+                                            objProductItem.MinimumStock = MiniStk;
+                                            objProductItem.Tags = ItemTag;
+                                            objProductItem.UnitType = Convert.ToInt32(objItmTyp.UnitId);
+                                            objProductItem.IsImported = true;
+                                            objProductItem.IsAssured = IsAssured;
+                                            _db.tbl_ProductItems.Add(objProductItem);
+                                            _db.SaveChanges();
+
+                                            string[] kgs = { "50 Grams", "100 Grams", "250 Grams", "500 Grams", "1 Kg", "2 Kg", "5 Kg" };
+                                            string[] kgsQty = { "0.05", "0.10", "0.25", "0.50", "1", "2", "5" };
+                                            string[] ltrs = { "50 ml", "100 ml", "250 ml", "500 ml", "1 Ltr", "2 Ltr", "5 Ltr" };
+                                            string[] ltrsQty = { "0.05", "0.10", "0.25", "0.50", "1", "2", "5" };
+
+                                            string[] sheets = { "8x4", "7x4", "7x3", "6x4", "6x3" };
+                                            string[] sheetsqty = { "32", "28", "21", "24", "18" };
+                                            var objUnt = _db.tbl_Units.Where(o => o.UnitId == objProductItem.UnitType).FirstOrDefault();
+                                            List<string> lstPerVarint = new List<string>();
+                                            lstPerVarint.Add(G50ML50S8x4Pecentage);
+                                            lstPerVarint.Add(G100ML100S7x4Pecentage);
+                                            lstPerVarint.Add(G250ML250S7x3Pecentage);
+                                            lstPerVarint.Add(G500ML500S6x4Pecentage);
+                                            lstPerVarint.Add(KG1L1S6x3Pecentage);
+                                            lstPerVarint.Add(KG2L2Pecentage);
+                                            lstPerVarint.Add(KG5L5Pecentage);
+                                            if (objUnt != null)
+                                            {
+                                                if (objUnt.UnitName.ToLower().Contains("killo") || objUnt.UnitName.ToLower().Contains("litr"))
+                                                {
+                                                    for (int kk = 1; kk <= kgs.Length; kk++)
+                                                    {
+                                                        tbl_ItemVariant objtbl_ItemVariant = new tbl_ItemVariant();
+                                                        objtbl_ItemVariant.ProductItemId = objProductItem.ProductItemId;
+                                                        objtbl_ItemVariant.IsActive = true;
+
+                                                        if (lstPerVarint[kk - 1] != null)
+                                                        {
+                                                            decimal perc = 0;
+                                                            if (!string.IsNullOrEmpty(lstPerVarint[kk - 1]))
+                                                            {
+                                                                perc = Convert.ToDecimal(lstPerVarint[kk - 1].ToString());
+                                                            }
+                                                            objtbl_ItemVariant.IsActive = false;
+                                                            if (perc > 0)
+                                                            {
+                                                                objtbl_ItemVariant.IsActive = true;
+                                                            }
+                                                            int k = kk - 1;
+                                                            objtbl_ItemVariant.PricePecentage = perc;
+                                                            if (objUnt.UnitName.ToLower().Contains("killo"))
+                                                            {
+                                                                objtbl_ItemVariant.UnitQty = kgs[k];
+                                                                decimal qtt = Convert.ToDecimal(kgsQty[k].ToString());
+                                                                if (qtt >= 1)
+                                                                {
+                                                                    objtbl_ItemVariant.CustomerPrice = Math.Round((objProductItem.CustomerPrice * qtt * perc) / 100, 2);
+                                                                    objtbl_ItemVariant.DistributorPrice = Math.Round((objProductItem.DistributorPrice * qtt * perc) / 100, 2);
+                                                                }
+                                                                else
+                                                                {
+                                                                    objtbl_ItemVariant.CustomerPrice = Math.Round((objProductItem.CustomerPrice * perc) / 100, 2);
+                                                                    objtbl_ItemVariant.DistributorPrice = Math.Round((objProductItem.DistributorPrice * perc) / 100, 2);
+                                                                }
+                                                            }
+                                                            else
+                                                            {
+                                                                objtbl_ItemVariant.UnitQty = ltrs[k];
+                                                                decimal qtt = Convert.ToDecimal(ltrsQty[k].ToString());
+                                                                if (qtt >= 1)
+                                                                {
+                                                                    objtbl_ItemVariant.CustomerPrice = Math.Round((objProductItem.CustomerPrice * qtt * perc) / 100, 2);
+                                                                    objtbl_ItemVariant.DistributorPrice = Math.Round((objProductItem.DistributorPrice * qtt * perc) / 100, 2);
+                                                                }
+                                                                else
+                                                                {
+                                                                    objtbl_ItemVariant.CustomerPrice = Math.Round((objProductItem.CustomerPrice * perc) / 100, 2);
+                                                                    objtbl_ItemVariant.DistributorPrice = Math.Round((objProductItem.DistributorPrice * perc) / 100, 2);
+                                                                }
+                                                            }
+                                                        }
+                                                        objtbl_ItemVariant.CreatedDate = DateTime.UtcNow;
+                                                        _db.tbl_ItemVariant.Add(objtbl_ItemVariant);
+                                                    }
+                                                    _db.SaveChanges();
+                                                }
+                                                else if (objUnt.UnitName.ToLower().Contains("sheet"))
+                                                {
+                                                    for (int kk = 1; kk <= sheets.Length; kk++)
+                                                    {
+                                                        int k = kk - 1;
+                                                        tbl_ItemVariant objtbl_ItemVariant = new tbl_ItemVariant();
+                                                        objtbl_ItemVariant.ProductItemId = objProductItem.ProductItemId;
+                                                        objtbl_ItemVariant.IsActive = true;
+
+                                                        decimal sqft = Convert.ToDecimal(sheetsqty[k]);
+                                                        objtbl_ItemVariant.UnitQty = sheets[k];
+                                                        objtbl_ItemVariant.CustomerPrice = Math.Round(sqft * objProductItem.CustomerPrice, 2);
+                                                        objtbl_ItemVariant.DistributorPrice = Math.Round(sqft * objProductItem.DistributorPrice, 2);
+                                                        objtbl_ItemVariant.PricePecentage = 100;
+                                                        objtbl_ItemVariant.CreatedDate = DateTime.UtcNow;
+                                                        _db.tbl_ItemVariant.Add(objtbl_ItemVariant);
+                                                    }
+                                                    _db.SaveChanges();
+                                                }
+                                                else
+                                                {
                                                     tbl_ItemVariant objtbl_ItemVariant = new tbl_ItemVariant();
                                                     objtbl_ItemVariant.ProductItemId = objProductItem.ProductItemId;
                                                     objtbl_ItemVariant.IsActive = true;
-
-                                                    decimal sqft = Convert.ToDecimal(sheetsqty[k]);
-                                                    objtbl_ItemVariant.UnitQty = sheets[k];
-                                                    objtbl_ItemVariant.CustomerPrice = Math.Round(sqft * objProductItem.CustomerPrice, 2);
-                                                    objtbl_ItemVariant.DistributorPrice = Math.Round(sqft * objProductItem.DistributorPrice, 2);
+                                                    objtbl_ItemVariant.UnitQty = objUnt.UnitName;
+                                                    objtbl_ItemVariant.CustomerPrice = Math.Round(objProductItem.CustomerPrice, 2);
+                                                    objtbl_ItemVariant.DistributorPrice = Math.Round(objProductItem.DistributorPrice, 2);
                                                     objtbl_ItemVariant.PricePecentage = 100;
                                                     objtbl_ItemVariant.CreatedDate = DateTime.UtcNow;
                                                     _db.tbl_ItemVariant.Add(objtbl_ItemVariant);
+                                                    _db.SaveChanges();
                                                 }
+                                            }
+
+                                            tbl_ItemStocks objItemStock = new tbl_ItemStocks();
+                                            objItemStock.CategoryId = objProductItem.CategoryId;
+                                            objItemStock.ProductId = objProductItem.ProductId;
+                                            objItemStock.SubProductId = objProductItem.SubProductId;
+                                            objItemStock.ProductItemId = objProductItem.ProductItemId;
+                                            objItemStock.Qty = Convert.ToInt64(IntialStock);
+
+                                            objItemStock.IsActive = true;
+                                            objItemStock.IsDelete = false;
+                                            objItemStock.CreatedBy = clsAdminSession.UserID;
+                                            objItemStock.CreatedDate = DateTime.UtcNow;
+                                            objItemStock.UpdatedBy = clsAdminSession.UserID;
+                                            objItemStock.UpdatedDate = DateTime.UtcNow;
+                                            _db.tbl_ItemStocks.Add(objItemStock);
+                                            _db.SaveChanges();
+                                            tbl_StockReport objstkreport = new tbl_StockReport();
+                                            objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
+                                            objstkreport.StockDate = DateTime.UtcNow;
+                                            objstkreport.Qty = Convert.ToInt64(IntialStock);
+                                            objstkreport.IsCredit = true;
+                                            objstkreport.IsAdmin = true;
+                                            objstkreport.CreatedBy = clsAdminSession.UserID;
+                                            objstkreport.ItemId = objProductItem.ProductItemId;
+                                            objstkreport.Remarks = "Opening Stock";
+                                            _db.tbl_StockReport.Add(objstkreport);
+                                            _db.SaveChanges();
+
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (string.IsNullOrEmpty(CategoryNm) || string.IsNullOrEmpty(ProductNm) || string.IsNullOrEmpty(ItemName))
+                                        {
+                                            ImportExcelDataVM objimport = new ImportExcelDataVM();
+                                            objimport.SrNo = srno;
+                                            objimport.ErrorMsg = "Category Name Or Product Name Or Item Name is Blank";
+                                            lstImportExcl.Add(objimport);
+                                            tbl_ImportExcel objtblex = new tbl_ImportExcel();
+                                            objtblex.SrNo = srno.ToString();
+                                            objtblex.ErroMsg = objimport.ErrorMsg;
+                                            objtblex.ImportedDate = DateTime.UtcNow;
+                                            objtblex.ImportedBy = clsAdminSession.UserID;
+                                            objtblex.ImportType = 4;
+                                            _db.tbl_ImportExcel.Add(objtblex);
+                                            _db.SaveChanges();
+                                            continue;
+                                        }
+                                        else
+                                        {
+                                            var objCatExist = lstCats.Where(o => o.CategoryName.ToLower() == CategoryNm.ToLower()).FirstOrDefault();
+                                            if (objCatExist == null)
+                                            {
+                                                ImportExcelDataVM objimport = new ImportExcelDataVM();
+                                                objimport.SrNo = srno;
+                                                objimport.ErrorMsg = "Category Name Not exist";
+                                                lstImportExcl.Add(objimport);
+                                                tbl_ImportExcel objtblex = new tbl_ImportExcel();
+                                                objtblex.SrNo = srno.ToString();
+                                                objtblex.ErroMsg = objimport.ErrorMsg;
+                                                objtblex.ImportedDate = DateTime.UtcNow;
+                                                objtblex.ImportedBy = clsAdminSession.UserID;
+                                                objtblex.ImportType = 4;
+                                                _db.tbl_ImportExcel.Add(objtblex);
                                                 _db.SaveChanges();
+                                                continue;
+                                            }
+                                            long CatId = objCatExist.CategoryId;
+                                            var objProduExist = lstProd.Where(o => o.ProductName.ToLower() == ProductNm.ToLower() && o.CategoryId == CatId).FirstOrDefault();
+                                            if (objProduExist == null)
+                                            {
+                                                ImportExcelDataVM objimport = new ImportExcelDataVM();
+                                                objimport.SrNo = srno;
+                                                objimport.ErrorMsg = "Product Name Not exist with this Category";
+                                                lstImportExcl.Add(objimport);
+                                                tbl_ImportExcel objtblex = new tbl_ImportExcel();
+                                                objtblex.SrNo = srno.ToString();
+                                                objtblex.ErroMsg = objimport.ErrorMsg;
+                                                objtblex.ImportedDate = DateTime.UtcNow;
+                                                objtblex.ImportedBy = clsAdminSession.UserID;
+                                                objtblex.ImportType = 4;
+                                                _db.tbl_ImportExcel.Add(objtblex);
+                                                _db.SaveChanges();
+                                                continue;
+                                            }
+                                            long ProdId = objProduExist.Product_Id;
+
+                                            long SubProductId = 0;
+                                            if (!string.IsNullOrEmpty(SubProductName))
+                                            {
+                                                var existSubProduct = _db.tbl_SubProducts.Where(x => x.SubProductName.ToLower() == SubProductName.ToLower()
+                   && x.CategoryId == CatId && x.ProductId == ProdId
+                   && !x.IsDelete).FirstOrDefault();
+
+                                                if (existSubProduct == null)
+                                                {
+                                                    ImportExcelDataVM objimport = new ImportExcelDataVM();
+                                                    objimport.SrNo = srno;
+                                                    objimport.ErrorMsg = "Sub Product Name Not exist with this Category and Product";
+                                                    lstImportExcl.Add(objimport);
+                                                    tbl_ImportExcel objtblex = new tbl_ImportExcel();
+                                                    objtblex.SrNo = srno.ToString();
+                                                    objtblex.ErroMsg = objimport.ErrorMsg;
+                                                    objtblex.ImportedDate = DateTime.UtcNow;
+                                                    objtblex.ImportType = 4;
+                                                    objtblex.ImportedBy = clsAdminSession.UserID;
+                                                    _db.tbl_ImportExcel.Add(objtblex);
+                                                    _db.SaveChanges();
+                                                    continue;
+                                                }
+                                                SubProductId = existSubProduct.SubProductId;
+                                            }
+
+                                            var objItmTyp = lstUnitss.Where(o => o.UnitName.ToLower() == UnitType.ToLower()).FirstOrDefault();
+                                            if (objItmTyp == null)
+                                            {
+                                                tbl_ImportExcel objtblex = new tbl_ImportExcel();
+                                                objtblex.SrNo = srno.ToString();
+                                                objtblex.ErroMsg = "Unit Type Not Exists";
+                                                objtblex.ImportedDate = DateTime.UtcNow;
+                                                objtblex.ImportType = 4;
+                                                objtblex.ImportedBy = clsAdminSession.UserID;
+                                                _db.tbl_ImportExcel.Add(objtblex);
+                                                _db.SaveChanges();
+                                                continue;
+                                            }
+
+
+
+                                            var existProductItem = _db.tbl_ProductItems.Where(x => x.ItemName.ToLower() == ItemName.ToLower()
+                            && x.CategoryId == CatId && x.ProductId == ProdId && x.SubProductId == SubProductId
+                            && !x.IsDelete).FirstOrDefault();
+
+                                            if (existProductItem != null)
+                                            {
+                                                ImportExcelDataVM objimport = new ImportExcelDataVM();
+                                                objimport.SrNo = srno;
+                                                objimport.ErrorMsg = "Item already exist";
+                                                lstImportExcl.Add(objimport);
+                                                tbl_ImportExcel objtblex = new tbl_ImportExcel();
+                                                objtblex.SrNo = srno.ToString();
+                                                objtblex.ErroMsg = objimport.ErrorMsg;
+                                                objtblex.ImportedDate = DateTime.UtcNow;
+                                                objtblex.ImportedBy = clsAdminSession.UserID;
+                                                objtblex.ImportType = 4;
+                                                _db.tbl_ImportExcel.Add(objtblex);
+                                                _db.SaveChanges();
+                                                continue;
+                                            }
+
+
+                                            var objGown = _db.tbl_Godown.Where(o => o.GodownName.ToLower() == GodownName && o.IsDeleted == false).FirstOrDefault();
+                                            if (objGown == null)
+                                            {
+                                                tbl_ImportExcel objtblex = new tbl_ImportExcel();
+                                                objtblex.SrNo = srno.ToString();
+                                                objtblex.ErroMsg = "Godown is Not Exist";
+                                                objtblex.ImportedDate = DateTime.UtcNow;
+                                                objtblex.ImportType = 4;
+                                                objtblex.ImportedBy = clsAdminSession.UserID;
+                                                _db.tbl_ImportExcel.Add(objtblex);
+                                                _db.SaveChanges();
+                                                continue;
+                                            }
+                                            long GodownId = objGown.GodownId;
+                                            string fileName = string.Empty;
+
+                                            tbl_ProductItems objProductItem = new tbl_ProductItems();
+                                            objProductItem.CategoryId = CatId;
+                                            objProductItem.ProductId = ProdId;
+                                            objProductItem.SubProductId = SubProductId;
+                                            objProductItem.ItemName = ItemName;
+                                            objProductItem.ItemDescription = Description;
+                                            objProductItem.Sku = Sku;
+                                            if (string.IsNullOrEmpty(MRPPrice) || string.IsNullOrEmpty(CustomerPrice) || string.IsNullOrEmpty(DistributorPrice))
+                                            {
+                                                ImportExcelDataVM objimport = new ImportExcelDataVM();
+                                                objimport.SrNo = srno;
+                                                objimport.ErrorMsg = "MRP Price or Customer Price or Distributor Value is Blank";
+                                                lstImportExcl.Add(objimport);
+                                                tbl_ImportExcel objtblex = new tbl_ImportExcel();
+                                                objtblex.SrNo = srno.ToString();
+                                                objtblex.ErroMsg = objimport.ErrorMsg;
+                                                objtblex.ImportType = 4;
+                                                objtblex.ImportedDate = DateTime.UtcNow;
+                                                objtblex.ImportedBy = clsAdminSession.UserID;
+                                                _db.tbl_ImportExcel.Add(objtblex);
+                                                _db.SaveChanges();
+                                                continue;
                                             }
                                             else
                                             {
-                                                tbl_ItemVariant objtbl_ItemVariant = new tbl_ItemVariant();
-                                                objtbl_ItemVariant.ProductItemId = objProductItem.ProductItemId;
-                                                objtbl_ItemVariant.IsActive = true;
-                                                objtbl_ItemVariant.UnitQty = objUnt.UnitName;
-                                                objtbl_ItemVariant.CustomerPrice = Math.Round(objProductItem.CustomerPrice, 2);
-                                                objtbl_ItemVariant.DistributorPrice = Math.Round(objProductItem.DistributorPrice, 2);
-                                                objtbl_ItemVariant.PricePecentage = 100;
-                                                objtbl_ItemVariant.CreatedDate = DateTime.UtcNow;
-                                                _db.tbl_ItemVariant.Add(objtbl_ItemVariant);
-                                                _db.SaveChanges();
+                                                if (!IsValidPriceFormat(MRPPrice))
+                                                {
+                                                    tbl_ImportExcel objtblex = new tbl_ImportExcel();
+                                                    objtblex.SrNo = srno.ToString();
+                                                    objtblex.ErroMsg = "MRP price is not in correct format";
+                                                    objtblex.ImportedDate = DateTime.UtcNow;
+                                                    objtblex.ImportType = 4;
+                                                    objtblex.ImportedBy = clsAdminSession.UserID;
+                                                    _db.tbl_ImportExcel.Add(objtblex);
+                                                    _db.SaveChanges();
+                                                    continue;
+                                                }
+
+                                                if (!IsValidPriceFormat(DistributorPrice))
+                                                {
+                                                    tbl_ImportExcel objtblex = new tbl_ImportExcel();
+                                                    objtblex.SrNo = srno.ToString();
+                                                    objtblex.ErroMsg = "DistributorPrice is not in correct format";
+                                                    objtblex.ImportedDate = DateTime.UtcNow;
+                                                    objtblex.ImportType = 4;
+                                                    objtblex.ImportedBy = clsAdminSession.UserID;
+                                                    _db.tbl_ImportExcel.Add(objtblex);
+                                                    _db.SaveChanges();
+                                                    continue;
+                                                }
+
+                                                if (!IsValidPriceFormat(CustomerPrice))
+                                                {
+                                                    tbl_ImportExcel objtblex = new tbl_ImportExcel();
+                                                    objtblex.SrNo = srno.ToString();
+                                                    objtblex.ErroMsg = "CustomerPrice is not in correct format";
+                                                    objtblex.ImportedDate = DateTime.UtcNow;
+                                                    objtblex.ImportType = 4;
+                                                    objtblex.ImportedBy = clsAdminSession.UserID;
+                                                    _db.tbl_ImportExcel.Add(objtblex);
+                                                    _db.SaveChanges();
+                                                    continue;
+                                                }
                                             }
+                                            //bool result = int.TryParse(s, out i); //i now = 108  
+                                            objProductItem.MRPPrice = Convert.ToDecimal(MRPPrice);
+                                            objProductItem.CustomerPrice = Convert.ToDecimal(CustomerPrice);
+                                            objProductItem.DistributorPrice = Convert.ToDecimal(DistributorPrice);
+                                            decimal GSTPer = 0;
+                                            if (!string.IsNullOrEmpty(GSTPercentage))
+                                            {
+                                                if (GSTPercentage == "0" || GSTPercentage == "5" || GSTPercentage == "12" || GSTPercentage == "18" || GSTPercentage == "28")
+                                                {
+                                                    GSTPer = Convert.ToDecimal(GSTPercentage);
+                                                }
+                                                else
+                                                {
+                                                    tbl_ImportExcel objtblex = new tbl_ImportExcel();
+                                                    objtblex.SrNo = srno.ToString();
+                                                    objtblex.ErroMsg = "GST Percentage Not Valid";
+                                                    objtblex.ImportedDate = DateTime.UtcNow;
+                                                    objtblex.ImportType = 4;
+                                                    objtblex.ImportedBy = clsAdminSession.UserID;
+                                                    _db.tbl_ImportExcel.Add(objtblex);
+                                                    _db.SaveChanges();
+                                                    continue;
+                                                }
+                                            }
+                                            objProductItem.GST_Per = GSTPer;
+                                            objProductItem.IGST_Per = Convert.ToDecimal(GSTPercentage);
+                                            objProductItem.Notification = NotificationText;
+                                            objProductItem.MainImage = MainImageName;
+                                            bool IsPopulrItm = false;
+                                            if (!string.IsNullOrEmpty(IsPopularItem))
+                                            {
+                                                if (IsPopularItem.ToLower().Trim() == "yes")
+                                                {
+                                                    IsPopulrItm = true;
+                                                }
+                                            }
+                                            bool IsRetunble = false;
+                                            if (!string.IsNullOrEmpty(IsReturnable))
+                                            {
+                                                if (IsReturnable.ToLower().Trim() == "yes")
+                                                {
+                                                    IsRetunble = true;
+                                                }
+                                            }
+                                            bool IsCashonDelv = false;
+                                            if (!string.IsNullOrEmpty(CashOnDelivery))
+                                            {
+                                                if (CashOnDelivery.ToLower().Trim() == "yes")
+                                                {
+                                                    IsCashonDelv = true;
+                                                }
+                                            }
+                                            decimal advncepay = 0;
+                                            if (!string.IsNullOrEmpty(AdvancePaymentPercentage))
+                                            {
+                                                advncepay = Convert.ToDecimal(AdvancePaymentPercentage);
+                                            }
+                                            objProductItem.IsPopularProduct = IsPopulrItm;
+                                            decimal ShipingChrg = 0;
+                                            if (!string.IsNullOrEmpty(ShippingCharge))
+                                            {
+                                                ShipingChrg = Convert.ToDecimal(ShippingCharge);
+                                            }
+
+                                            int itmtyp = 1;
+                                            if (!string.IsNullOrEmpty(PackedUnPacked))
+                                            {
+                                                if (PackedUnPacked.ToLower().Trim() == "packed")
+                                                {
+                                                    itmtyp = 1;
+                                                }
+                                                else
+                                                {
+                                                    itmtyp = 2;
+                                                }
+                                            }
+                                            int MiniStk = 0;
+                                            if (!string.IsNullOrEmpty(MinimumStock))
+                                            {
+                                                MiniStk = Convert.ToInt32(MinimumStock);
+                                            }
+
+                                            bool IsAssured = false;
+                                            if (!string.IsNullOrEmpty(Assured))
+                                            {
+                                                if (Assured.ToLower() == "yes")
+                                                {
+                                                    IsAssured = true;
+                                                }
+                                            }
+
+                                            objProductItem.ShippingCharge = ShipingChrg;
+                                            objProductItem.IsActive = true;
+                                            objProductItem.IsDelete = false;
+                                            objProductItem.CreatedBy = clsAdminSession.UserID;
+                                            objProductItem.CreatedDate = DateTime.UtcNow;
+                                            objProductItem.UpdatedBy = clsAdminSession.UserID;
+                                            objProductItem.HSNCode = HSNCode;
+                                            objProductItem.UpdatedDate = DateTime.UtcNow;
+                                            objProductItem.GodownId = GodownId;
+                                            objProductItem.IsReturnable = IsRetunble;
+                                            objProductItem.PayAdvancePer = advncepay;
+                                            objProductItem.ItemType = itmtyp;
+                                            objProductItem.IsCashonDeliveryUse = IsCashonDelv;
+                                            objProductItem.MinimumStock = MiniStk;
+                                            objProductItem.Tags = ItemTag;
+                                            objProductItem.UnitType = Convert.ToInt32(objItmTyp.UnitId);
+                                            objProductItem.IsImported = true;
+                                            objProductItem.IsAssured = IsAssured;
+                                            _db.tbl_ProductItems.Add(objProductItem);
+                                            _db.SaveChanges();
+
+                                            var objUnt = _db.tbl_Units.Where(o => o.UnitId == objProductItem.UnitType).FirstOrDefault();                                          
+                                            if (objUnt != null)
+                                            {
+                                                if (objUnt.UnitName.ToLower().Contains("piece"))
+                                                {
+                                                    for(int Jc=1;Jc<=50;Jc++)
+                                                    {
+                                                        if(ds.Tables[0].Columns.Contains("Name"+Jc))
+                                                        {
+                                                            string vrtname = dr["Name" + Jc].ToString();
+                                                            string MRP1 = dr["MRP" + Jc].ToString();
+                                                            string DistributerPrice1 = dr["DistributerPrice" + Jc].ToString();
+                                                            string CustomerPrice1 = dr["CustomerPrice" + Jc].ToString();
+                                                            if(!string.IsNullOrEmpty(vrtname) && !string.IsNullOrEmpty(MRP1) && !string.IsNullOrEmpty(DistributerPrice1) && !string.IsNullOrEmpty(CustomerPrice1))
+                                                            {
+                                                                tbl_ItemVariant objtbl_ItemVariant = new tbl_ItemVariant();
+                                                                objtbl_ItemVariant.ProductItemId = objProductItem.ProductItemId;
+                                                                objtbl_ItemVariant.IsActive = true;
+                                                                objtbl_ItemVariant.UnitQty = vrtname;
+                                                                if (!IsValidPriceFormat(MRP1))
+                                                                {
+                                                                    tbl_ImportExcel objtblex = new tbl_ImportExcel();
+                                                                    objtblex.SrNo = srno.ToString();
+                                                                    objtblex.ErroMsg = "MRP is not in correct format for Variant";
+                                                                    objtblex.ImportedDate = DateTime.UtcNow;
+                                                                    objtblex.ImportType = 4;
+                                                                    objtblex.ImportedBy = clsAdminSession.UserID;
+                                                                    _db.tbl_ImportExcel.Add(objtblex);
+                                                                    _db.SaveChanges();
+                                                                    continue;
+                                                                }
+                                                                if (!IsValidPriceFormat(DistributerPrice1))
+                                                                {
+                                                                    tbl_ImportExcel objtblex = new tbl_ImportExcel();
+                                                                    objtblex.SrNo = srno.ToString();
+                                                                    objtblex.ErroMsg = "Distributor Price is not in correct format for Variant";
+                                                                    objtblex.ImportedDate = DateTime.UtcNow;
+                                                                    objtblex.ImportType = 4;
+                                                                    objtblex.ImportedBy = clsAdminSession.UserID;
+                                                                    _db.tbl_ImportExcel.Add(objtblex);
+                                                                    _db.SaveChanges();
+                                                                    continue;
+                                                                }
+                                                                if (!IsValidPriceFormat(CustomerPrice1))
+                                                                {
+                                                                    tbl_ImportExcel objtblex = new tbl_ImportExcel();
+                                                                    objtblex.SrNo = srno.ToString();
+                                                                    objtblex.ErroMsg = "Customer Price is not in correct format for Variant";
+                                                                    objtblex.ImportedDate = DateTime.UtcNow;
+                                                                    objtblex.ImportType = 4;
+                                                                    objtblex.ImportedBy = clsAdminSession.UserID;
+                                                                    _db.tbl_ImportExcel.Add(objtblex);
+                                                                    _db.SaveChanges();
+                                                                    continue;
+                                                                }
+                                                                objtbl_ItemVariant.CustomerPrice = Math.Round(Convert.ToDecimal(CustomerPrice1), 2);
+                                                                objtbl_ItemVariant.DistributorPrice = Math.Round(Convert.ToDecimal(DistributerPrice1), 2);
+                                                                objtbl_ItemVariant.PricePecentage = 100;
+                                                                objtbl_ItemVariant.MRPPrice = Math.Round(Convert.ToDecimal(MRP1), 2);
+                                                                objtbl_ItemVariant.CreatedDate = DateTime.UtcNow;
+                                                                _db.tbl_ItemVariant.Add(objtbl_ItemVariant);
+                                                                _db.SaveChanges();
+                                                            }                                                            
+                                                        }
+                                                    }                                                  
+                                                }                                               
+                                            }
+
+                                            tbl_ItemStocks objItemStock = new tbl_ItemStocks();
+                                            objItemStock.CategoryId = objProductItem.CategoryId;
+                                            objItemStock.ProductId = objProductItem.ProductId;
+                                            objItemStock.SubProductId = objProductItem.SubProductId;
+                                            objItemStock.ProductItemId = objProductItem.ProductItemId;
+                                            objItemStock.Qty = Convert.ToInt64(IntialStock);
+
+                                            objItemStock.IsActive = true;
+                                            objItemStock.IsDelete = false;
+                                            objItemStock.CreatedBy = clsAdminSession.UserID;
+                                            objItemStock.CreatedDate = DateTime.UtcNow;
+                                            objItemStock.UpdatedBy = clsAdminSession.UserID;
+                                            objItemStock.UpdatedDate = DateTime.UtcNow;
+                                            _db.tbl_ItemStocks.Add(objItemStock);
+                                            _db.SaveChanges();
+                                            tbl_StockReport objstkreport = new tbl_StockReport();
+                                            objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
+                                            objstkreport.StockDate = DateTime.UtcNow;
+                                            objstkreport.Qty = Convert.ToInt64(IntialStock);
+                                            objstkreport.IsCredit = true;
+                                            objstkreport.IsAdmin = true;
+                                            objstkreport.CreatedBy = clsAdminSession.UserID;
+                                            objstkreport.ItemId = objProductItem.ProductItemId;
+                                            objstkreport.Remarks = "Opening Stock";
+                                            _db.tbl_StockReport.Add(objstkreport);
+                                            _db.SaveChanges();
+
                                         }
-
-                                        tbl_ItemStocks objItemStock = new tbl_ItemStocks();
-                                        objItemStock.CategoryId = objProductItem.CategoryId;
-                                        objItemStock.ProductId = objProductItem.ProductId;
-                                        objItemStock.SubProductId = objProductItem.SubProductId;
-                                        objItemStock.ProductItemId = objProductItem.ProductItemId;
-                                        objItemStock.Qty = Convert.ToInt64(IntialStock);
-
-                                        objItemStock.IsActive = true;
-                                        objItemStock.IsDelete = false;
-                                        objItemStock.CreatedBy = clsAdminSession.UserID;
-                                        objItemStock.CreatedDate = DateTime.UtcNow;
-                                        objItemStock.UpdatedBy = clsAdminSession.UserID;
-                                        objItemStock.UpdatedDate = DateTime.UtcNow;
-                                        _db.tbl_ItemStocks.Add(objItemStock);
-                                        _db.SaveChanges();
                                     }
+                                    
                                 }
                                 catch (Exception ex)
                                 {

@@ -382,7 +382,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
 
             using (var memoryStream = new MemoryStream())
             {
-                //excel.Workbook.Worksheets.MoveToStart("Summary");  //move sheet from last to first : Code by Gunjan
+                //excel.Workbook.Worksheets.MoveToStart("Summary");  
                 Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
                 Response.AddHeader("content-disposition", "attachment;  filename=PaymentReport.xlsx");
                 excel.SaveAs(memoryStream);

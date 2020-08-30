@@ -1,6 +1,8 @@
 ﻿using HiQPdf;
 using KrupaBuildGallery.Model;
 using KrupaBuildGallery.ViewModel;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using Razorpay.Api;
 using System;
 using System.Collections.Generic;
@@ -1986,6 +1988,217 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 htmlToPdfConverter.ConvertHtmlToFile(newhtmldata, "", HttpContext.Current.Server.MapPath("~/Documents/") + invfile);
 
                 response.Data = invfile;
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+
+        [Route("DownloadPaymentReport"), HttpPost]
+        public ResponseDataModel<string> DownloadPaymentReport(GeneralVM objGen)
+        {
+            ResponseDataModel<string> response = new ResponseDataModel<string>();
+            try
+            {
+                long clientuserid = Convert.ToInt64(objGen.ClientUserId);
+                string PaymentMode = objGen.paymentmode;
+                string StartDate = objGen.startdate;
+                string EndDate = objGen.enddate;
+
+                ExcelPackage excel = new ExcelPackage();
+                if (PaymentMode == "OnlinePayment")
+                {
+                    PaymentMode = "Online Payment";
+                }
+                DateTime dtStart = DateTime.ParseExact(StartDate, "dd/MM/yyyy", null);
+                DateTime dtEnd = DateTime.ParseExact(EndDate, "dd/MM/yyyy", null);
+                dtEnd = new DateTime(dtEnd.Year, dtEnd.Month, dtEnd.Day, 23, 59, 59);
+                List<tbl_ClientUsers> lstClients = new List<tbl_ClientUsers>();
+                string[] arrycolmns = new string[] { "Date", "Opening", "Credit", "Debit", "Closing", "PaymentMethod", "Remarks", "InvoiceNo." };
+
+                lstClients = _db.tbl_ClientUsers.Where(o => o.ClientUserId == clientuserid).ToList();
+                if (lstClients != null && lstClients.Count() > 0)
+                {
+                    foreach (var client in lstClients)
+                    {
+                        string strRol = "Distributor";
+                        if (client.ClientRoleId == 1)
+                        {
+                            strRol = "Customer";
+                        }
+                        var workSheet = excel.Workbook.Worksheets.Add(strRol + " - Report");
+                        workSheet.Cells[1, 1].Style.Font.Bold = true;
+                        workSheet.Cells[1, 1].Style.Font.Size = 20;
+                        workSheet.Cells[1, 1].Style.VerticalAlignment = ExcelVerticalAlignment.Top;
+                        workSheet.Cells[1, 1].Value = "Payment Report: " + client.FirstName + " " + client.LastName + " - " + StartDate + " to " + EndDate;
+                        for (var col = 1; col < arrycolmns.Length + 1; col++)
+                        {
+                            workSheet.Cells[2, col].Style.Font.Bold = true;
+                            workSheet.Cells[2, col].Style.Font.Size = 12;
+                            workSheet.Cells[2, col].Value = arrycolmns[col - 1];
+                            workSheet.Cells[2, col].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                            workSheet.Cells[2, col].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                            workSheet.Cells[2, col].AutoFitColumns(30, 70);
+                            workSheet.Cells[2, col].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                            workSheet.Cells[2, col].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                            workSheet.Cells[2, col].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                            workSheet.Cells[2, col].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                            workSheet.Cells[2, col].Style.WrapText = true;
+                        }
+
+                        var lstordes = _db.tbl_Orders.Where(o => o.ClientUserId == client.ClientUserId).ToList();
+                        List<long> orderIds = new List<long>();
+                        if (lstordes != null && lstordes.Count() > 0)
+                        {
+                            orderIds = lstordes.Select(o => o.OrderId).ToList();
+                            List<tbl_PaymentTransaction> lstCrdt = _db.tbl_PaymentTransaction.Where(o => orderIds.Contains(o.OrderId) && o.TransactionDate < dtStart && o.IsCredit == true && (PaymentMode == "All" || o.ModeOfPayment == PaymentMode)).ToList();
+                            List<tbl_PaymentTransaction> lstDebt = _db.tbl_PaymentTransaction.Where(o => orderIds.Contains(o.OrderId) && o.TransactionDate < dtStart && o.IsCredit == false && (PaymentMode == "All" || o.ModeOfPayment == PaymentMode)).ToList();
+                            decimal TotalCredit = 0;
+                            decimal TotalDebit = 0;
+                            TotalCredit = lstCrdt.Sum(x => x.Amount.HasValue ? x.Amount.Value : 0);
+                            TotalDebit = lstDebt.Sum(x => x.Amount.HasValue ? x.Amount.Value : 0);
+                            decimal TotalOpening = TotalCredit - TotalDebit;
+                            List<tbl_PaymentTransaction> lstAllTransaction = _db.tbl_PaymentTransaction.Where(o => orderIds.Contains(o.OrderId) && o.TransactionDate >= dtStart && o.TransactionDate <= dtEnd && (PaymentMode == "All" || o.ModeOfPayment == PaymentMode)).ToList();
+                            int row1 = 1;
+                            if (lstAllTransaction != null && lstAllTransaction.Count() > 0)
+                            {
+                                foreach (var objTrn in lstAllTransaction)
+                                {
+                                    workSheet.Cells[row1 + 2, 1].Style.Font.Bold = false;
+                                    workSheet.Cells[row1 + 2, 1].Style.Font.Size = 12;
+                                    workSheet.Cells[row1 + 2, 1].Value = objTrn.TransactionDate.Value.ToString("dd-MM-yyyy");
+                                    workSheet.Cells[row1 + 2, 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                                    workSheet.Cells[row1 + 2, 1].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                                    workSheet.Cells[row1 + 2, 1].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 1].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 1].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 1].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 1].Style.WrapText = true;
+                                    workSheet.Cells[row1 + 2, 1].AutoFitColumns(30, 70);
+
+                                    workSheet.Cells[row1 + 2, 2].Style.Font.Bold = false;
+                                    workSheet.Cells[row1 + 2, 2].Style.Font.Size = 12;
+                                    workSheet.Cells[row1 + 2, 2].Value = TotalOpening;
+                                    workSheet.Cells[row1 + 2, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                                    workSheet.Cells[row1 + 2, 2].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                                    workSheet.Cells[row1 + 2, 2].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 2].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 2].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 2].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 2].Style.WrapText = true;
+                                    workSheet.Cells[row1 + 2, 2].AutoFitColumns(30, 70);
+
+                                    workSheet.Cells[row1 + 2, 3].Style.Font.Bold = false;
+                                    workSheet.Cells[row1 + 2, 3].Style.Font.Size = 12;
+                                    if (objTrn.IsCredit == false)
+                                    {
+                                        workSheet.Cells[row1 + 2, 3].Value = objTrn.Amount.Value;
+                                        TotalOpening = TotalOpening + objTrn.Amount.Value;
+                                    }
+                                    else
+                                    {
+                                        workSheet.Cells[row1 + 2, 3].Value = "";
+                                    }
+                                    workSheet.Cells[row1 + 2, 3].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                                    workSheet.Cells[row1 + 2, 3].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                                    workSheet.Cells[row1 + 2, 3].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 3].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 3].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 3].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 3].Style.WrapText = true;
+                                    workSheet.Cells[row1 + 2, 3].AutoFitColumns(30, 70);
+
+                                    workSheet.Cells[row1 + 2, 4].Style.Font.Bold = false;
+                                    workSheet.Cells[row1 + 2, 4].Style.Font.Size = 12;
+                                    if (objTrn.IsCredit == true)
+                                    {
+                                        workSheet.Cells[row1 + 2, 4].Value = objTrn.Amount.Value;
+                                        TotalOpening = TotalOpening - objTrn.Amount.Value;
+                                    }
+                                    else
+                                    {
+                                        workSheet.Cells[row1 + 2, 4].Value = "";
+                                    }
+                                    workSheet.Cells[row1 + 2, 4].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                                    workSheet.Cells[row1 + 2, 4].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                                    workSheet.Cells[row1 + 2, 4].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 4].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 4].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 4].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 4].Style.WrapText = true;
+                                    workSheet.Cells[row1 + 2, 4].AutoFitColumns(30, 70);
+
+                                    workSheet.Cells[row1 + 2, 5].Style.Font.Bold = false;
+                                    workSheet.Cells[row1 + 2, 5].Style.Font.Size = 12;
+                                    workSheet.Cells[row1 + 2, 5].Value = TotalOpening;
+                                    workSheet.Cells[row1 + 2, 5].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                                    workSheet.Cells[row1 + 2, 5].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                                    workSheet.Cells[row1 + 2, 5].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 5].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 5].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 5].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 5].Style.WrapText = true;
+                                    workSheet.Cells[row1 + 2, 5].AutoFitColumns(30, 70);
+
+                                    workSheet.Cells[row1 + 2, 6].Style.Font.Bold = false;
+                                    workSheet.Cells[row1 + 2, 6].Style.Font.Size = 12;
+                                    workSheet.Cells[row1 + 2, 6].Value = objTrn.ModeOfPayment;
+                                    workSheet.Cells[row1 + 2, 6].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                                    workSheet.Cells[row1 + 2, 6].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                                    workSheet.Cells[row1 + 2, 6].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 6].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 6].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 6].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 6].Style.WrapText = true;
+                                    workSheet.Cells[row1 + 2, 6].AutoFitColumns(30, 70);
+
+                                    workSheet.Cells[row1 + 2, 7].Style.Font.Bold = false;
+                                    workSheet.Cells[row1 + 2, 7].Style.Font.Size = 12;
+                                    workSheet.Cells[row1 + 2, 7].Value = objTrn.Remarks;
+                                    workSheet.Cells[row1 + 2, 7].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                                    workSheet.Cells[row1 + 2, 7].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                                    workSheet.Cells[row1 + 2, 7].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 7].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 7].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 7].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 7].Style.WrapText = true;
+                                    workSheet.Cells[row1 + 2, 7].AutoFitColumns(30, 70);
+
+                                    var objj = lstordes.Where(o => o.OrderId == objTrn.OrderId).FirstOrDefault();
+                                    string invno = "";
+                                    if (objj != null)
+                                    {
+                                        invno = "S&S/" + objj.InvoiceYear + "/" + objj.InvoiceNo;
+                                    }
+                                    workSheet.Cells[row1 + 2, 8].Style.Font.Bold = false;
+                                    workSheet.Cells[row1 + 2, 8].Style.Font.Size = 12;
+                                    workSheet.Cells[row1 + 2, 8].Value = invno;
+                                    workSheet.Cells[row1 + 2, 8].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                                    workSheet.Cells[row1 + 2, 8].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                                    workSheet.Cells[row1 + 2, 8].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 8].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 8].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 8].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 8].Style.WrapText = true;
+                                    workSheet.Cells[row1 + 2, 8].AutoFitColumns(30, 70);
+
+                                    row1 = row1 + 1;
+                                }
+                            }
+                        }
+
+                    }
+                }
+
+                string flname = "PaymentReport_" + clientuserid + "_" + Guid.NewGuid().ToString()+".xlsx";
+                excel.SaveAs(new FileInfo(HttpContext.Current.Server.MapPath("~/Documents/") + flname));
+                
+                response.Data = flname;
             }
             catch (Exception ex)
             {

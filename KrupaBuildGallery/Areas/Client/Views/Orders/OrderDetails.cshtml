@@ -656,6 +656,7 @@
 <!--section end-->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
+    var rlid = '@Model.ClientRoleId';
     var options = {
         "key": "@ViewBag.key", // Enter the Key ID generated from the Dashboard
         "amount": "@ViewBag.Amount", // Amount is in currency subunits. Default currency is INR. Hence, 50000 means 50000 paise or ₹500.
@@ -811,7 +812,7 @@
 
     function itemaction(ordritmid, ordertypeid, itmstatusid, isreturnable, iscombo) {
         var hsFree = $("#hdnHasFreeItems").val().toLowerCase();
-        if (isreturnable != "True" || itmstatusid != "4" || ordertypeid == "2" || iscombo == 'true' || hsFree == 'true') {
+        if (isreturnable != "True" || itmstatusid != "4" || ordertypeid == "2" || iscombo == 'true' || hsFree == 'true' || rlid == '2') {
             $("#itmstatusselect option[value=6]").hide();
         }
         else {
@@ -827,13 +828,13 @@
 
         if (itmstatusid == "4" && ordertypeid == "1") {
             $("#itmstatusselect option[value=7]").show();
-            if (iscombo == 'true' || hsFree == 'true') {
+            if (iscombo == 'true' || hsFree == 'true' || rlid == '2') {
                 $("#itmstatusselect option[value=8]").hide();
             }
             else {
                 $("#itmstatusselect option[value=8]").show();
             }
-            
+
         }
         else {
             $("#itmstatusselect option[value=7]").hide();

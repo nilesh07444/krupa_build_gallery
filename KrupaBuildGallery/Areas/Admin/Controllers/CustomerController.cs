@@ -60,8 +60,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                  State = co.State,
                                  AddharCardNo = co.Addharcardno,
                                  PanCardNo = co.Pancardno,
+                                 CreatedDate = co.CreatedDate,
                                  GSTNo = co.GSTno
-                             }).OrderBy(x => x.FirstName).ToList();
+                             }).OrderByDescending(x => x.CreatedDate).ToList();
                 if (Status == 1)
                 {
                     List<long> clientuserids = lstClientUser.Select(o => o.ClientUserId).ToList();

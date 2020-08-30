@@ -41,6 +41,8 @@ namespace KrupaBuildGallery
         public string MobileNumber { get; set; }
         public string searchq { get; set; }
         public string ComboId { get; set; }
-
+        public string startdate { get; set; }
+        public string enddate { get; set; }
+        public string paymentmode { get; set; }
     }
 }

@@ -67,8 +67,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                      AddharCardNo = co.Addharcardno,
                                      PanCardNo = co.Pancardno,
                                      GSTNo = co.GSTno,
-                                     AmountDue = co.AmountDue.HasValue ? co.AmountDue.Value : 0
-                                 }).OrderBy(x => x.FirstName).ToList();
+                                     AmountDue = co.AmountDue.HasValue ? co.AmountDue.Value : 0,
+                                     CreatedDate = co.CreatedDate
+                                 }).OrderByDescending(x => x.CreatedDate).ToList();
 
                 if (Status == 2)
                 {
