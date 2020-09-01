@@ -1,0 +1,52 @@
+﻿@using KrupaBuildGallery.Helper
+@using KrupaBuildGallery.Model
+
+@{
+    ViewBag.Title = "Privacy Policy For Mobile";
+    Layout = null;
+}
+
+@{
+    krupagallarydbEntities _db = new krupagallarydbEntities();
+    List<tbl_DynamicContent> lstContent = _db.tbl_DynamicContent.Where(x => x.DynamicContentType == (int)DynamicContents.PrivacyPolicy).OrderBy(x => x.SeqNo).ToList();
+}
+
+
+
+<style>
+    .clsUl {
+        padding-left: 50px;
+    }
+
+        .clsUl li {
+            display: list-item;
+            line-height: 2;
+            letter-spacing: 0.03em;
+            font-size: 16px;
+        }
+</style>
+ 
+<!--section start-->
+<section class="about-page section-b-space">
+    <div class="container">
+        <div class="row">
+
+            @if (lstContent != null && lstContent.Count > 0)
+            {
+                foreach (tbl_DynamicContent obj in lstContent)
+                {
+                    <div class="col-sm-12">
+                        <h4>@obj.ContentTitle</h4>
+
+                        @{ string desc = obj.ContentDescription.Replace("\n", "<br />\n"); }
+
+                        @Html.Raw(desc)
+
+                    </div>
+                }
+            }
+
+        </div>
+    </div>
+</section>
+<!--Section ends-->

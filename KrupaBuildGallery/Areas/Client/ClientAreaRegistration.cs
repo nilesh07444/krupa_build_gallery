@@ -107,9 +107,21 @@ namespace KrupaBuildGallery.Areas.Client
             );
 
             context.MapRoute(
+                "Client_Privacy_WebView",
+                "privacy/webview",
+                new { controller = "PrivacyPolicy", action = "WebView", id = UrlParameter.Optional }
+            );
+
+            context.MapRoute(
                 "Client_CancelAndRefundPolicy",
                 "cancelandrefundpolicy",
                 new { controller = "CancelAndRefundPolicy", action = "Index", id = UrlParameter.Optional }
+            );
+
+            context.MapRoute(
+                "Client_CancelAndRefundPolicy_WebView",
+                "cancelandrefundpolicy/webview",
+                new { controller = "CancelAndRefundPolicy", action = "WebView", id = UrlParameter.Optional }
             );
 
             context.MapRoute(
@@ -117,6 +129,13 @@ namespace KrupaBuildGallery.Areas.Client
                 "termscondition",
                 new { controller = "TermsCondition", action = "Index", id = UrlParameter.Optional }
             );
+
+            context.MapRoute(
+                "Client_TermsCondition_WebView",
+                "termscondition/webview",
+                new { controller = "TermsCondition", action = "WebView", id = UrlParameter.Optional }
+            );
+
             context.MapRoute(
                 "ClientDistributorLogin",
                 "distributorlogin",
