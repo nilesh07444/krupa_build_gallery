@@ -13,5 +13,9 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         {
             return View();
         }
+        public ActionResult WebView()
+        {
+            return View();
+        }
     }
 }

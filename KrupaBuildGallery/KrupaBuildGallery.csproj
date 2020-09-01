@@ -4089,6 +4089,9 @@
     <Content Include="Areas\Admin\Views\DynamicContent\Add.cshtml" />
     <Content Include="Areas\Admin\Views\DynamicContent\Index.cshtml" />
     <Content Include="Areas\Admin\Views\DynamicContent\Edit.cshtml" />
+    <Content Include="Areas\Client\Views\PrivacyPolicy\WebView.cshtml" />
+    <Content Include="Areas\Client\Views\TermsCondition\WebView.cshtml" />
+    <Content Include="Areas\Client\Views\CancelAndRefundPolicy\WebView.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />
