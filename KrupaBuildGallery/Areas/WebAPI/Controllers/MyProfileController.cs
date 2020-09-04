@@ -269,5 +269,53 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
 
         }
 
+        [Route("SaveProfile"), HttpPost]
+        public ResponseDataModel<string> SaveProfile(GeneralVM objGeneralVM)
+        {
+            ResponseDataModel<string> response = new ResponseDataModel<string>();
+            response.Data = "";
+            try
+            {
+                long userid = Convert.ToInt64(objGeneralVM.ClientUserId);
+                long roleid = Convert.ToInt64(objGeneralVM.RoleId);
+                if(!string.IsNullOrEmpty(objGeneralVM.Email))
+                {
+                   var objclnt = _db.tbl_ClientUsers.Where(o => o.Email.ToLower() == objGeneralVM.Email.ToLower() && o.ClientRoleId == roleid && o.ClientUserId != userid && o.IsDelete == false).FirstOrDefault();
+                   if(objclnt != null)
+                    {
+                        response.AddError("Email Already Exist");
+                        response.Data = "Email Already Exist";
+                    }
+                    else
+                    {
+                        tbl_ClientUsers objclint = _db.tbl_ClientUsers.Where(o => o.ClientRoleId == userid).FirstOrDefault();
+                        objclint.FirstName = objGeneralVM.FirstName;
+                        objclint.LastName = objGeneralVM.LastName;
+                        objclint.Email = objGeneralVM.Email;
+                        objclint.Prefix = objGeneralVM.Prefix;
+                        _db.SaveChanges();
+                    }
+                }
+                else
+                {
+                    tbl_ClientUsers objclint = _db.tbl_ClientUsers.Where(o => o.ClientRoleId == userid).FirstOrDefault();
+                    objclint.FirstName = objGeneralVM.FirstName;
+                    objclint.LastName = objGeneralVM.LastName;
+                    objclint.Email = objGeneralVM.Email;
+                    objclint.Prefix = objGeneralVM.Prefix;
+                    _db.SaveChanges();
+                }
+                response.Data = "Success";
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+
     }
 }

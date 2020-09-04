@@ -156,6 +156,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 tbl_ClientOtherDetails objotherdetails = _db.tbl_ClientOtherDetails.Where(x => x.ClientUserId == LoggedInUserId).FirstOrDefault();
                 objUser.FirstName = fname;
                 objUser.LastName = lname;
+                objUser.Email = email;
                 objUser.AlternateMobileNo = altmobile;
                 objUser.Prefix = prefix;
                 objotherdetails.ShipFirstName = shipfnam;
@@ -178,6 +179,10 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 }
 
                 _db.SaveChanges();
+                clsClientSession.Prefix = prefix;
+                clsClientSession.FirstName = fname;
+                clsClientSession.LastName = lname;
+                clsClientSession.Email = email;
             }
             catch (Exception ex)
             {
@@ -479,5 +484,35 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         
             return PartialView("~/Areas/Admin/Views/Order/_PaymentReport.cshtml", lstReportVm);
         }
+
+        [HttpPost]
+        public string CheckEmail(string Email)
+        {
+            string ReturnMessage = "";
+            try
+            {
+                long ClientUsrId = clsClientSession.UserID;
+                long RoleIds = clsClientSession.RoleID;
+                tbl_ClientUsers objclien = _db.tbl_ClientUsers.Where(o => o.Email.ToLower() == Email.ToLower() && o.ClientUserId != ClientUsrId && o.ClientRoleId == RoleIds && o.IsDelete == false).FirstOrDefault();
+                if(objclien != null)
+                {
+                    return "Email is Already Exist";
+                }
+                else
+                {
+                    return "Success";
+                }
+               
+            }
+            catch (Exception ex)
+            {
+                string msg = ex.Message.ToString();
+                ReturnMessage = "exception";
+            }
+
+            return ReturnMessage;
+        }
+
+
     }
 }

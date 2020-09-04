@@ -48,6 +48,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         objclientuser.Email = data.Email;
                         objclientuser.ClientUserId = data.ClientUserId;
                         objclientuser.CartCount = 0;
+                        objclientuser.Prefix = data.Prefix;
                         long ClientUsrId = data.ClientUserId;                        
                         UpdatCarts(objLogin.SessionUniqueId, objclientuser.ClientUserId);
                         var cartlist = _db.tbl_Cart.Where(o => o.ClientUserId == ClientUsrId).ToList();
@@ -122,6 +123,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         objclientuser.Email = data.Email;
                         objclientuser.ClientUserId = data.ClientUserId;
                         objclientuser.CartCount = 0;
+                        objclientuser.Prefix = data.Prefix;
                         long ClientUsrId = data.ClientUserId;                     
                         UpdatCarts(objLogin.SessionUniqueId, objclientuser.ClientUserId);
                         var cartlist = _db.tbl_Cart.Where(o => o.ClientUserId == ClientUsrId).ToList();

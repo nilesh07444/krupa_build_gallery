@@ -39,7 +39,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                              select new OrderVM
                              {
                                  OrderId = p.OrderId,
-                                 ClientUserName = c.FirstName + " " + c.LastName,
+                                 ClientUserName = c.Prefix+" "+ c.FirstName + " " + c.LastName,
                                  ClientUserId = p.ClientUserId,
                                  OrderAmount = p.OrderAmount + (p.ExtraAmount.HasValue ? p.ExtraAmount.Value : 0) + (p.ShippingCharge.HasValue ? p.ShippingCharge.Value : 0),
                                  OrderShipCity = p.OrderShipCity,
@@ -89,7 +89,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         select new OrderVM
                         {
                             OrderId = p.OrderId,
-                            ClientUserName = c.FirstName + " " + c.LastName,
+                            ClientUserName = c.Prefix+" "+ c.FirstName + " " + c.LastName,
                             ClientUserId = p.ClientUserId,
                             OrderAmount = p.OrderAmount + (p.ExtraAmount.HasValue ? p.ExtraAmount.Value : 0) + (p.ShippingCharge.HasValue ? p.ShippingCharge.Value : 0),
                             OrderShipCity = p.OrderShipCity,

@@ -121,11 +121,11 @@
                         </div>
                         <div class="col-md-4">
                             <label for="alternatemobile">Alternate Mobile Number</label>
-                            <input type="number" class="form-control" id="alternatemobile" name="alternatemobile" value="@objclient.AlternateMobileNo"  placeholder="Enter your alternate mobile number" required>
+                            <input type="number" class="form-control" id="alternatemobile" name="alternatemobile" value="@objclient.AlternateMobileNo" onKeyPress="if(this.value.length==10) return false;"  placeholder="Enter your alternate mobile number">
                         </div>
                         <div class="col-md-4">
                             <label for="email">Email</label>
-                            <input type="text" class="form-control" id="email" name="email" readonly value="@objclient.Email" placeholder="Email">
+                            <input type="text" class="form-control" id="email" name="email" value="@objclient.Email" placeholder="Email">
                         </div>
                         @if (clsClientSession.RoleID == 2)
                         {
@@ -225,7 +225,7 @@
                             </select>
                         </div>
                         <div class="col-md-12" style="margin-top:15px;">
-                            <button class="btn btn-sm btn-solid" type="submit">Save</button>
+                            <button class="btn btn-sm btn-solid" type="button" onclick="CheckEmailExist();">Save</button>
                         </div>
                     </div>
                 </div>
@@ -255,7 +255,7 @@
     function checkvalidate() {
         var flg = true;
         if ($("input[name=shipmobilenumber]").val() == "") {
-            $("input[name=shipmobilenumber]").siblings('.errorcls').html("Phone number is Required");
+            $("input[name=shipmobilenumber]").siblings('.errorcls').html("Mobile number is Required");
             flg = false;
         }
         else {
@@ -264,7 +264,7 @@
                 $("input[name=shipmobilenumber]").siblings('.errorcls').html("Invalid Shipping Phone number");
                 flg = false;
             }
-        }   
+        }
 
         if (flg == true) {
             return true;
@@ -284,8 +284,8 @@
                 success: function (data) {
                     $.unblockUI();
                     if (data == "SUCCESS") {
-                    
-                    }               
+                
+                    }
                     else {
                         alert("Error: Something went wrong. Please try again.");
                     }
@@ -303,4 +303,29 @@
             return;
         }
     }
+
+     function CheckEmailExist() {
+         var email = $("#email").val();
+         if (email != "") {
+             var URL = '@Url.Action("CheckEmail", "MyProfile")';
+             $.ajax({
+                 type: 'POST',
+                 async: true,
+                 url: URL + "?Email=" + email,
+                 success: function (result) {
+                     if (result == "Success") {
+                         $("#frmmyprfile").submit();
+                     }
+                     else {
+                         alert(result);
+                     }
+                 },
+                 error: function (resultData) {
+                 }
+             });
+         }
+         else {
+             $("#frmmyprfile").submit();
+         }
+     }
 </script>

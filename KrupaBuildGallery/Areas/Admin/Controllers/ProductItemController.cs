@@ -471,6 +471,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                   MinimumQty = i.MinimumStock.HasValue ? i.MinimumStock.Value : 0,
                                   IsCashonDelieveryuse = i.IsCashonDeliveryUse.HasValue ? i.IsCashonDeliveryUse.Value : false,
                                   GodownId = i.GodownId.HasValue ? i.GodownId.Value : 0,
+                                  Tags = i.Tags,
                                   IsAssured = i.IsAssured.HasValue ? i.IsAssured.Value : false
                               }).FirstOrDefault();
 

@@ -135,6 +135,18 @@ namespace KrupaBuildGallery.Model
                 HttpContext.Current.Session["ClientLastName"] = value;
             }
         }
+
+        public static string Prefix
+        {
+            get
+            {
+                return HttpContext.Current.Session["Prefix"] != null ? Convert.ToString(HttpContext.Current.Session["Prefix"]) : string.Empty;
+            }
+            set
+            {
+                HttpContext.Current.Session["Prefix"] = value;
+            }
+        }
     }
  
 }

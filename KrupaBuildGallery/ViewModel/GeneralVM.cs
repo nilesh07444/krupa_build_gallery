@@ -27,22 +27,23 @@ namespace KrupaBuildGallery
         public string Reason { get; set; }
         public long AgentId { get; set; }
         public long DelieveryPersonId { get; set; }
-
         public string TotalPendingDeliveryItems { get; set; }
         public string TotalDeliveredItem { get; set; }
         public decimal AmountDecmal { get; set; }
         public string Id { get; set; }
         public string Ratings { get; set; }
         public string Reviews { get; set; }
-
         public string TotalWalletAmt { get; set; }
         public string TotalPoints { get; set; }
-
         public string MobileNumber { get; set; }
         public string searchq { get; set; }
         public string ComboId { get; set; }
         public string startdate { get; set; }
         public string enddate { get; set; }
         public string paymentmode { get; set; }
+        public string Email { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Prefix { get; set; }
     }
 }

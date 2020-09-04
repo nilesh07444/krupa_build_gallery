@@ -59,6 +59,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     clsClientSession.ImagePath = data.ProfilePicture;
                     clsClientSession.Email = data.Email;
                     clsClientSession.MobileNumber = data.MobileNo;
+                    clsClientSession.Prefix = data.Prefix;
                     UpdatCarts();
                     if(!string.IsNullOrEmpty(referer))
                     {
