@@ -85,6 +85,8 @@
                                     {
                                         <a title="Delete" href="javascript:void(0);" onclick="fnDeleteAdminUser('@obj.AdminUserId')"><i class="fa fa-trash font-danger"></i></a>
                                     }
+                                    <a title="I-Card" href="javascript:void(0);" onclick="printicard('@obj.AdminUserId');"><i class="fa fa-id-card mr-2 font-success"></i></a>
+                                    
                                 </td>
                                 </tr>
                                 counter++;
@@ -142,9 +144,20 @@
 </div>
 
 @*<script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>*@
+<div style="display: none;" id="dvPrint">
 
+</div>
 <script>
-
+    function printicard(orderid) {
+        $("#dvPrint").load('/admin/adminuser/PrintICard?AdminUserId=' + orderid, function () {
+            w = window.open();
+            w.document.write($("#dvPrint").html());
+            setTimeout(function () {
+                w.print();
+                w.close();
+            }, 100);
+        });
+    }
     //jQuery(document).ready(function () {
     //    StartLoading()
     //    jQuery('html, body').animate({ scrollTop: 0 }, 1000);

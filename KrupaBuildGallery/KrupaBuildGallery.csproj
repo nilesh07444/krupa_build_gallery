@@ -3617,6 +3617,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="Images\default_image.png" />
     <Content Include="Images\default_user_image.png" />
+    <Content Include="Images\icard.png" />
     <Content Include="Images\ssassured.png" />
     <Content Include="Model\KrupaGallery.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
@@ -4110,6 +4111,7 @@
     <Content Include="Scripts\lightbox.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Scripts\prism.min.js" />
+    <Content Include="templates\icard.html" />
     <Content Include="templates\Invoice.html" />
     <Content Include="templates\InvoiceCancel.html" />
     <Content Include="templates\InvoiceExchange.html" />

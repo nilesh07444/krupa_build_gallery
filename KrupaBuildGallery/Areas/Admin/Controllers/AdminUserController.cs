@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using KrupaBuildGallery.Helper;
 using System.IO;
 using System.Net;
+using System.Text;
 
 namespace KrupaBuildGallery.Areas.Admin.Controllers
 {
@@ -49,7 +50,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                      Email = a.Email,
                                      MobileNo = a.MobileNo,
                                      ProfilePicture = a.ProfilePicture,
-                                     IsActive = a.IsActive 
+                                     IsActive = a.IsActive
                                  }).ToList();
 
                 if (lstAdminUsers.Count > 0)
@@ -659,6 +660,72 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             remainingCashAmt = (TotalAmout + receiveamt) - paidamt;
 
             return remainingCashAmt;
+        }
+
+        public string PrintICard(long AdminUserId)
+        {
+            StreamReader sr;
+            string newhtmldata = "";
+            string file = Server.MapPath("~/templates/icard.html");
+
+            string htmldata = "";
+
+            FileInfo fi = new FileInfo(file);
+            sr = System.IO.File.OpenText(file);
+            htmldata += sr.ReadToEnd();
+            tbl_AdminUsers objUser = _db.tbl_AdminUsers.Where(o => o.AdminUserId == AdminUserId).FirstOrDefault();
+            string Name = objUser.FirstName + " " + objUser.LastName;
+            string DOJ = "-";
+            if(objUser.DateOfJoin != null && objUser.DateOfJoin != DateTime.MinValue)
+            {
+                DOJ = objUser.DateOfJoin.Value.ToString("dd-MMM-yyyy");
+            }
+            string DOB = "-";
+            if (objUser.Dob != null && objUser.Dob != DateTime.MinValue)
+            {
+                DOB = objUser.Dob.Value.ToString("dd-MMM-yyyy");
+            }
+            string BG = "-";
+            if (!string.IsNullOrEmpty(objUser.BloodGroup))
+            {
+                BG = objUser.BloodGroup;
+            }
+
+            string AdhrCrd = "-";
+            if (!string.IsNullOrEmpty(objUser.AdharCardNo))
+            {
+                AdhrCrd = objUser.AdharCardNo;
+            }
+
+            string ExpiryDt = "-";
+            if (objUser.DateOfIdCardExpiry != null && objUser.DateOfIdCardExpiry != DateTime.MinValue)
+            {
+                ExpiryDt = objUser.DateOfIdCardExpiry.Value.ToString("dd-MMM-yyyy");
+            }
+
+            string mobilno = "-";
+            if (!string.IsNullOrEmpty(objUser.MobileNo))
+            {
+                mobilno = objUser.MobileNo;
+            }
+
+            string desgination = "-";
+            if (!string.IsNullOrEmpty(objUser.Designation))
+            {
+                desgination = objUser.Designation;
+            }
+
+            string AdminUserDirectoryPath = ErrorMessage.AdminUserDirectoryPath;
+            string path = Server.MapPath(AdminUserDirectoryPath);
+            string Imgpic = ErrorMessage.DefaultImagePath;
+            if (!string.IsNullOrEmpty(objUser.ProfilePicture) && System.IO.File.Exists(Server.MapPath("~/Images/AdminUserMedia/" + objUser.ProfilePicture)))
+            {
+                Imgpic = "~/Images/AdminUserMedia/" + objUser.ProfilePicture;
+            }         
+        
+            StringBuilder srBuild = new StringBuilder();
+            newhtmldata = htmldata.Replace("--NAME--", Name).Replace("--DESIGNATION--", desgination).Replace("--CONTACTNO--", mobilno).Replace("--DOJ--", DOJ).Replace("--DOB--", DOB).Replace("--BG--", BG).Replace("--ADHARNO--", AdhrCrd).Replace("--EXPIRYDATE--",ExpiryDt).Replace("--IMGPIC--",Imgpic);
+            return newhtmldata;
         }
 
     }
