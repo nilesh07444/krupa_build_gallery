@@ -4093,6 +4093,7 @@
     <Content Include="Areas\Client\Views\PrivacyPolicy\WebView.cshtml" />
     <Content Include="Areas\Client\Views\TermsCondition\WebView.cshtml" />
     <Content Include="Areas\Client\Views\CancelAndRefundPolicy\WebView.cshtml" />
+    <Content Include="Areas\Admin\Views\Agent\CashOnDeliveryAmounts.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />

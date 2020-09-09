@@ -590,7 +590,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             lstRelatedItems = (from i in _db.tbl_ProductItems                           
                               join p in _db.tbl_Products on i.ProductId equals p.Product_Id                                                            
                                   //where !i.IsDelete && !c.IsDelete && !p.IsDelete
-                              where !i.IsDelete && i.IsActive == true && !p.IsDelete && i.ProductItemId != objProductItem.ProductItemId
+                              where !i.IsDelete && i.IsActive == true && !p.IsDelete && i.ProductItemId != objProductItem.ProductItemId && i.ProductId == objProductItem.ProductId
                                select new ProductItemVM
                               {
                                   ProductItemId = i.ProductItemId,

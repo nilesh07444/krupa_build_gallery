@@ -11,8 +11,10 @@ namespace KrupaBuildGallery.ViewModel
         public long ReceivedBy { get; set; }
         public long SentBy { get; set; }
         public DateTime dtReceived { get; set;}
-        public bool IsAccept { get; set; }
+        public int IsAccept { get; set; }
         public decimal Amount { get; set; }
         public string SenderName { get; set; }
+        public string RecieverName { get; set; }
+        public string CashSentDate { get; set; }
     }
 }

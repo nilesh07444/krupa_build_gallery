@@ -295,9 +295,9 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
         }
 
         [Route("GetCashAmountAvailable"), HttpPost]
-        public ResponseDataModel<string> CashAmountAvailable(GeneralVM objGeneral)
+        public ResponseDataModel<List<string>> CashAmountAvailable(GeneralVM objGeneral)
         {
-            ResponseDataModel<string> response = new ResponseDataModel<string>();
+            ResponseDataModel<List<string>> response = new ResponseDataModel<List<string>>();
             string stringcashavailable = "0";
             try
             {
@@ -313,17 +313,27 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     decimal receiveamt = 0;
                 if (lstdl != null && lstdl.Count() > 0)
                 {
-                    receiveamt = _db.tbl_CashDeliveryAmount.Where(o => o.ReceivedBy == AgntUserId && o.IsAccept == true).ToList().Sum(o => o.Amount.HasValue ? o.Amount.Value : 0);
+                    receiveamt = _db.tbl_CashDeliveryAmount.Where(o => o.ReceivedBy == AgntUserId && o.IsAccept == 1).ToList().Sum(o => o.Amount.HasValue ? o.Amount.Value : 0);
                 }
                 decimal paidamt = 0;
-                var paidamts = _db.tbl_CashDeliveryAmount.Where(o => o.SentBy == AgntUserId).ToList();
+                var paidamts = _db.tbl_CashDeliveryAmount.Where(o => o.SentBy == AgntUserId && (o.IsAccept == 1 || o.IsAccept == 0)).ToList();
                 if(paidamts != null && paidamts.Count() > 0)
                 {
                     paidamt = paidamts.Sum(o => o.Amount.HasValue ? o.Amount.Value : 0);
                 }
-                
+
+                decimal paidamtpendings = 0;
+                var paidamtpending = _db.tbl_CashDeliveryAmount.Where(o => o.SentBy == AgntUserId && (o.IsAccept == 0)).ToList();
+                if (paidamtpending != null && paidamtpending.Count() > 0)
+                {
+                    paidamtpendings = paidamtpending.Sum(o => o.Amount.HasValue ? o.Amount.Value : 0);
+                }
+
                 decimal remaining = (TotalAmout + receiveamt) - paidamt;
-                response.Data = remaining.ToString();
+                List<string> strlist = new List<string>();
+                strlist.Add(remaining.ToString());
+                strlist.Add(paidamtpendings.ToString());
+                response.Data = strlist;
 
             }
             catch (Exception ex)
@@ -365,7 +375,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 objcashdel.CreatedDate = DateTime.UtcNow;
                 objcashdel.SentBy = AgntUserId;
                 objcashdel.ReceivedBy = recevierid;
-                objcashdel.IsAccept = false;
+                objcashdel.IsAccept = 0;
                 _db.tbl_CashDeliveryAmount.Add(objcashdel);
                 _db.SaveChanges();
 
@@ -390,9 +400,43 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             try
             {
                 long Id = Convert.ToInt64(objGeneral.Id);
+                int StatusIdd = Convert.ToInt32(objGeneral.StatusId);
+                string Reason = Convert.ToString(objGeneral.Reason);
                 tbl_CashDeliveryAmount objcashdel = _db.tbl_CashDeliveryAmount.Where(o => o.tbl_CashOrderAmount_Id == Id).FirstOrDefault();
-                objcashdel.IsAccept = true;                
-                _db.SaveChanges();
+                objcashdel.IsAccept = StatusIdd;
+                objcashdel.Reason = Reason;
+                objcashdel.ModifiedDate = DateTime.Now;
+                _db.SaveChanges();              
+                if(StatusIdd == 2)
+                {
+                    var objAdm = _db.tbl_AdminUsers.Where(o => o.AdminUserId == objcashdel.SentBy).FirstOrDefault();
+                    try
+                    {
+                        using (WebClient webClient = new WebClient())
+                        {
+                            WebClient client = new WebClient();
+                            string msg = "You have sent Cash Amount Rs " + objcashdel.Amount + " Rejected \n";
+                            msg += "Shopping & Saving";
+
+                            string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objAdm.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+
+                            var json = webClient.DownloadString(url);
+                            if (json.Contains("invalidnumber"))
+                            {
+                               
+                            }
+                            else
+                            {
+                                
+                            }
+
+                        }
+                    }
+                    catch (WebException ex)
+                    {
+                    
+                    }
+                }
 
                 response.Data = "Success";
 
@@ -417,7 +461,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 long AgntUserId = Convert.ToInt64(objGeneral.ClientUserId);
                 List<CashOrderAmountVM> lstcsh = (from p in _db.tbl_CashDeliveryAmount
                                                   join c in _db.tbl_AdminUsers on p.SentBy equals c.AdminUserId
-                                                  where p.ReceivedBy == AgntUserId
+                                                  join re in _db.tbl_AdminUsers on p.ReceivedBy equals re.AdminUserId
+                                                  where p.ReceivedBy == AgntUserId || p.SentBy == AgntUserId
                                                   select new CashOrderAmountVM
                                                   {
                                                       CashOrderAmountId = p.tbl_CashOrderAmount_Id,
@@ -426,9 +471,14 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                                       dtReceived = p.CreatedDate.Value,
                                                       IsAccept = p.IsAccept.Value,
                                                       Amount = p.Amount.Value,
-                                                      SenderName = c.FirstName + " " + c.LastName
+                                                      SenderName = c.FirstName + " " + c.LastName,
+                                                      RecieverName = re.FirstName+" "+re.LastName
                                                   }).ToList().OrderByDescending(x => x.dtReceived).ToList();
-               
+                if (lstcsh != null && lstcsh.Count() > 0)
+                {
+                    lstcsh.ForEach(x => x.CashSentDate = CommonMethod.ConvertFromUTC(x.dtReceived));
+                }
+                
 
                 response.Data = lstcsh;
 

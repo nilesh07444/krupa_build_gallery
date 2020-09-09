@@ -1,0 +1,204 @@
+﻿@using KrupaBuildGallery.Helper;
+@using Newtonsoft.Json;
+@using KrupaBuildGallery.ViewModel;
+@using KrupaBuildGallery.Model;
+@{
+    ViewBag.Title = "Cash On Delivery Amounts";
+
+    int counter = 1;
+}
+
+@{
+    UserPermissionVM objPermission = new UserPermissionVM();
+
+    int RoleId = Int32.Parse(clsAdminSession.RoleID.ToString());
+
+    if (RoleId != 1)
+    {
+        string strPermission = clsAdminSession.UserPermission;
+        objPermission = JsonConvert.DeserializeObject<UserPermissionVM>(strPermission, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+    }
+    bool IsSA = (RoleId == 1 ? true : false);
+    List<AdminUserVM> lstAdminUser = ViewData["lstAdminUsers"] as List<AdminUserVM>;
+    List<CashOrderAmountVM> lstCash = ViewData["lstcsh"] as List<CashOrderAmountVM>;
+}
+<style>
+</style>
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="page-header-left">
+                        <h3>
+                            Cash On Delivery Amounts
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item active">Cash On Delivery Amounts</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h5>Cash On Delivery Amounts</h5>
+            </div>
+            <div class="card-body vendor-table">
+                <h3>Filter:</h3>
+                <div class="row" style="margin-top:25px;border-bottom: 2px solid #f8f8f9;padding-bottom: 25px;margin-bottom: 10px;">
+
+                    <div class="col-sm-4">
+                        <label>User</label>
+                        <select id="selectemp" class="form-control">
+                            @if (lstAdminUser != null && lstAdminUser.Count() > 0)
+                            {
+                                foreach (var objc in lstAdminUser)
+                                {
+                                    <option value="@objc.AdminUserId">@objc.FirstName @objc.LastName - @objc.MobileNo</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>Type Of Record</label>
+                        <select id="selecttype" class="form-control">
+                            <option value="All">All</option>
+                            <option value="Sent">Sent</option>
+                            <option value="Received">Received</option>                            
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <label>Status</label>
+                        <select id="selectstus" class="form-control">
+                            <option value="-1">All</option>
+                            <option value="0">Pending</option>
+                            <option value="1">Accept</option>
+                            <option value="2">Reject</option>
+                        </select>
+                    </div>                                      
+                    <div class="col-sm-2">
+                        <input type="button" value="Filter" class="btn btn-info" onclick="filteritems();" style="position: absolute; bottom: 0;" />
+                    </div>
+                </div>
+                <br />
+                <table class="display" id="basic-19">
+                    <thead>
+                        <tr>                        
+                            <th>#</th>
+                            <th>Sender</th>
+                            <th>Receiver</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Status</th>                            
+                            <th width="10%;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @if (lstCash != null && lstCash.Count > 0)
+                        {
+                            foreach (CashOrderAmountVM item in lstCash)
+                            {
+                                string stus = "Pending";
+                                if(item.IsAccept == 1)
+                                {
+                                    stus = "Accepted";
+                                }
+                                else if(item.IsAccept == 2)
+                                {
+                                    stus = "Rejected";
+                                }
+                        <tr class="gradeX">
+                            <td>@counter.</td>
+                            <td>@item.SenderName</td>
+                            <td>@item.RecieverName</td>
+                            <td>@item.CashSentDate</td>
+                            <td>@item.Amount</td>
+                            <td>@stus</td>
+                            <td>
+                                @if (clsAdminSession.UserID == Convert.ToInt64(ViewBag.UserId) && clsAdminSession.UserID == item.ReceivedBy && item.IsAccept == 0)
+                                {
+
+                                    <span class="badge badge-success" style="cursor:pointer;" title="Click to Accept" onclick="fnChangeAcceptReject('@item.CashOrderAmountId',1);">Accept</span>
+                                    <span class="badge badge-danger" style="cursor:pointer;" title="Click to Reject" onclick="fnChangeAcceptReject('@item.CashOrderAmountId',2);">Reject</span>
+
+                                }
+                            </td>
+                            </tr>
+                                counter++;
+                            }
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+</div>
+
+@*<script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>*@
+<script>
+    $(document).ready(function () {
+        $('#basic-19').DataTable({
+            "pageLength": 100,
+            "columnDefs": [{
+                "targets": [0,1],
+                "orderable": false
+            }]
+        });
+    });
+
+    function fnChangeAcceptReject(ids, status) {
+        StartLoading();
+           var URL = '@Url.Action("AcceptRejectCash", "Agent")';
+            $.ajax({
+                type: 'POST',
+                async: true,
+                url: URL + "?Id=" + ids + "&StatusId=" + status,
+                success: function (result) {
+                    if (result == "success") {
+                        alert("Successfully Done..");
+                        window.location.reload();
+                    }
+                    else {
+                        alert("Something went wrong. Please try again");
+                    }
+
+                   StopLoading();
+                },
+                error: function (resultData) {
+                    StopLoading();
+                }
+            });
+    }
+
+
+
+     $(document).ready(function () {
+         $("#selectemp").val("@ViewBag.UserId");
+         $("#selecttype").val("@ViewBag.type");
+         $("#selectstus").val("@ViewBag.status");        
+    });
+
+
+    function filteritems() {
+        var usrid = $("#selectemp").val();
+        var typidd = $("#selecttype").val();
+        var sttusid = $("#selectstus").val();        
+        location.href = "/admin/agent/CashOnDeliveryAmounts?userid=" + usrid + "&type=" + typidd + "&status=" + sttusid;
+    }
+
+
+</script>

@@ -18,7 +18,9 @@ namespace KrupaBuildGallery.Model
         public Nullable<long> ReceivedBy { get; set; }
         public Nullable<long> SentBy { get; set; }
         public Nullable<System.DateTime> CreatedDate { get; set; }
-        public Nullable<bool> IsAccept { get; set; }
+        public Nullable<int> IsAccept { get; set; }
         public Nullable<decimal> Amount { get; set; }
+        public string Reason { get; set; }
+        public Nullable<System.DateTime> ModifiedDate { get; set; }
     }
 }

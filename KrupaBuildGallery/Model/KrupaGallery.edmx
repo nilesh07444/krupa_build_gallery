@@ -121,8 +121,10 @@
           <Property Name="ReceivedBy" Type="bigint" />
           <Property Name="SentBy" Type="bigint" />
           <Property Name="CreatedDate" Type="datetime" />
-          <Property Name="IsAccept" Type="bit" />
+          <Property Name="IsAccept" Type="int" />
           <Property Name="Amount" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="Reason" Type="nvarchar" MaxLength="250" />
+          <Property Name="ModifiedDate" Type="datetime" />
         </EntityType>
         <EntityType Name="tbl_Categories">
           <Key>
@@ -1438,7 +1440,6 @@
           <EntitySet Name="tbl_ComboOffer" EntityType="krupagalleryModel.tbl_ComboOffer" />
           <EntitySet Name="tbl_ImportExcel" EntityType="krupagalleryModel.tbl_ImportExcel" />
           <EntitySet Name="tbl_AvailablePincode" EntityType="krupagalleryModel.tbl_AvailablePincode" />
-          <EntitySet Name="tbl_CashDeliveryAmount" EntityType="krupagalleryModel.tbl_CashDeliveryAmount" />
           <EntitySet Name="tbl_PaymentTransaction" EntityType="krupagalleryModel.tbl_PaymentTransaction" />
           <EntitySet Name="tbl_StockReport" EntityType="krupagalleryModel.tbl_StockReport" />
           <EntitySet Name="tbl_ComboOfferMaster" EntityType="krupagalleryModel.tbl_ComboOfferMaster" />
@@ -1448,6 +1449,7 @@
           <EntitySet Name="tbl_FreeOffers" EntityType="krupagalleryModel.tbl_FreeOffers" />
           <EntitySet Name="tbl_FreeOfferItems" EntityType="krupagalleryModel.tbl_FreeOfferItems" />
           <EntitySet Name="tbl_DynamicContent" EntityType="krupagalleryModel.tbl_DynamicContent" />
+          <EntitySet Name="tbl_CashDeliveryAmount" EntityType="krupagalleryModel.tbl_CashDeliveryAmount" />
         </EntityContainer>
         <EntityType Name="tbl_AdminRoles">
           <Key>
@@ -1806,17 +1808,6 @@
           <Property Name="UpdatedBy" Type="Int32" Nullable="false" />
           <Property Name="UpdatedDate" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
-        <EntityType Name="tbl_CashDeliveryAmount">
-          <Key>
-            <PropertyRef Name="tbl_CashOrderAmount_Id" />
-          </Key>
-          <Property Name="tbl_CashOrderAmount_Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="ReceivedBy" Type="Int64" />
-          <Property Name="SentBy" Type="Int64" />
-          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
-          <Property Name="IsAccept" Type="Boolean" />
-          <Property Name="Amount" Type="Decimal" Precision="18" Scale="2" />
-        </EntityType>
         <EntityType Name="tbl_PaymentTransaction">
           <Key>
             <PropertyRef Name="PK_PaymentTransactionId" />
@@ -1953,6 +1944,19 @@
           <Property Name="ContentDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="SeqNo" Type="Int32" Nullable="false" />
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="tbl_CashDeliveryAmount">
+          <Key>
+            <PropertyRef Name="tbl_CashOrderAmount_Id" />
+          </Key>
+          <Property Name="tbl_CashOrderAmount_Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ReceivedBy" Type="Int64" />
+          <Property Name="SentBy" Type="Int64" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="IsAccept" Type="Int32" />
+          <Property Name="Amount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="Reason" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
         </EntityType>
       </Schema>
@@ -2747,18 +2751,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="tbl_CashDeliveryAmount">
-            <EntityTypeMapping TypeName="krupagalleryModel.tbl_CashDeliveryAmount">
-              <MappingFragment StoreEntitySet="tbl_CashDeliveryAmount">
-                <ScalarProperty Name="Amount" ColumnName="Amount" />
-                <ScalarProperty Name="IsAccept" ColumnName="IsAccept" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="SentBy" ColumnName="SentBy" />
-                <ScalarProperty Name="ReceivedBy" ColumnName="ReceivedBy" />
-                <ScalarProperty Name="tbl_CashOrderAmount_Id" ColumnName="tbl_CashOrderAmount_Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="tbl_PaymentTransaction">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_PaymentTransaction">
               <MappingFragment StoreEntitySet="tbl_PaymentTransaction">
@@ -2903,6 +2895,20 @@
                 <ScalarProperty Name="ContentTitle" ColumnName="ContentTitle" />
                 <ScalarProperty Name="DynamicContentType" ColumnName="DynamicContentType" />
                 <ScalarProperty Name="DynamicContentId" ColumnName="DynamicContentId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_CashDeliveryAmount">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_CashDeliveryAmount">
+              <MappingFragment StoreEntitySet="tbl_CashDeliveryAmount">
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="Reason" ColumnName="Reason" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="IsAccept" ColumnName="IsAccept" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="SentBy" ColumnName="SentBy" />
+                <ScalarProperty Name="ReceivedBy" ColumnName="ReceivedBy" />
+                <ScalarProperty Name="tbl_CashOrderAmount_Id" ColumnName="tbl_CashOrderAmount_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

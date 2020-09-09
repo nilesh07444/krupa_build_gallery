@@ -9,6 +9,7 @@ using System.Web.Mvc;
 using KrupaBuildGallery.Helper;
 using System.IO;
 using System.Net;
+using KrupaBuildGallery.ViewModel;
 
 namespace KrupaBuildGallery.Areas.Admin.Controllers
 {
@@ -503,11 +504,11 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             decimal receiveamt = 0;
             if (lstdl != null && lstdl.Count() > 0)
             {
-                receiveamt = _db.tbl_CashDeliveryAmount.Where(o => o.ReceivedBy == AgntUserId && o.IsAccept == true).ToList().Sum(o => o.Amount.HasValue ? o.Amount.Value : 0);
+                receiveamt = _db.tbl_CashDeliveryAmount.Where(o => o.ReceivedBy == AgntUserId && o.IsAccept == 1).ToList().Sum(o => o.Amount.HasValue ? o.Amount.Value : 0);
             }
 
             decimal paidamt = 0;
-            var paidamts = _db.tbl_CashDeliveryAmount.Where(o => o.SentBy == AgntUserId && o.IsAccept == true).ToList();
+            var paidamts = _db.tbl_CashDeliveryAmount.Where(o => o.SentBy == AgntUserId && o.IsAccept == 1).ToList();
             if (paidamts != null && paidamts.Count() > 0)
             {
                 paidamt = paidamts.Sum(o => o.Amount.HasValue ? o.Amount.Value : 0);
@@ -516,6 +517,116 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             remainingCashAmt = (TotalAmout + receiveamt) - paidamt;
 
             return remainingCashAmt;
+        }
+
+        public ActionResult CashOnDeliveryAmounts(int userid = 0,string type = "All",int status = -1)
+        {
+            if(userid == 0)
+            {
+                userid = Convert.ToInt32(clsAdminSession.UserID);
+            }
+            List<CashOrderAmountVM> lstcsh = (from p in _db.tbl_CashDeliveryAmount
+                                              join c in _db.tbl_AdminUsers on p.SentBy equals c.AdminUserId
+                                              join re in _db.tbl_AdminUsers on p.ReceivedBy equals re.AdminUserId
+                                              where (p.ReceivedBy == userid || p.SentBy == userid) && ((status == -1) || (p.IsAccept.Value == status))
+                                              select new CashOrderAmountVM
+                                              {
+                                                  CashOrderAmountId = p.tbl_CashOrderAmount_Id,
+                                                  ReceivedBy = p.ReceivedBy.Value,
+                                                  SentBy = p.SentBy.Value,
+                                                  dtReceived = p.CreatedDate.Value,
+                                                  IsAccept = p.IsAccept.Value,
+                                                  Amount = p.Amount.Value,
+                                                  SenderName = c.FirstName + " " + c.LastName,
+                                                  RecieverName = re.FirstName + " " + re.LastName
+                                              }).ToList().OrderByDescending(x => x.dtReceived).ToList();
+            if (lstcsh != null && lstcsh.Count() > 0)
+            {
+                lstcsh.ForEach(x => x.CashSentDate = CommonMethod.ConvertFromUTC(x.dtReceived));
+            }
+            if(type == "Sent")
+            {
+                lstcsh = lstcsh.Where(x => x.SentBy == userid).ToList();
+            }
+            else if(type == "Received")
+            {
+                lstcsh = lstcsh.Where(x => x.ReceivedBy == userid).ToList();
+            }
+            List<AdminUserVM> lstAdminUsers = (from a in _db.tbl_AdminUsers
+                                               join r in _db.tbl_AdminRoles on a.AdminRoleId equals r.AdminRoleId
+                                               where !a.IsDeleted
+                                               select new AdminUserVM
+                                               {
+                                                   AdminUserId = a.AdminUserId,
+                                                   AdminRoleId = a.AdminRoleId,
+                                                   RoleName = r.AdminRoleName,
+                                                   FirstName = a.FirstName,
+                                                   LastName = a.LastName,
+                                                   Email = a.Email,
+                                                   MobileNo = a.MobileNo,
+                                                   ProfilePicture = a.ProfilePicture,
+                                                   IsActive = a.IsActive
+                                               }).ToList();
+            ViewData["lstAdminUsers"] = lstAdminUsers;
+            ViewData["lstcsh"] = lstcsh;
+            ViewBag.UserId = userid;
+            ViewBag.type = type;
+            ViewBag.status = status;            
+
+            return View();
+        }
+
+        [HttpPost]
+        public string AcceptRejectCash(long Id, int StatusId)
+        {
+            string ReturnMessage = "";
+            try
+            {               
+                int StatusIdd = StatusId;              
+                tbl_CashDeliveryAmount objcashdel = _db.tbl_CashDeliveryAmount.Where(o => o.tbl_CashOrderAmount_Id == Id).FirstOrDefault();
+                objcashdel.IsAccept = StatusIdd;             
+                objcashdel.ModifiedDate = DateTime.Now;
+                _db.SaveChanges();
+                if (StatusIdd == 2)
+                {
+                    var objAdm = _db.tbl_AdminUsers.Where(o => o.AdminUserId == objcashdel.SentBy).FirstOrDefault();
+                    try
+                    {
+                        using (WebClient webClient = new WebClient())
+                        {
+                            WebClient client = new WebClient();
+                            string msg = "You have sent Cash Amount Rs " + objcashdel.Amount + " Rejected \n";
+                            msg += "Shopping & Saving";
+
+                            string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objAdm.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+
+                            var json = webClient.DownloadString(url);
+                            if (json.Contains("invalidnumber"))
+                            {
+
+                            }
+                            else
+                            {
+
+                            }
+
+                        }
+                    }
+                    catch (WebException ex)
+                    {
+
+                    }
+                }
+
+                ReturnMessage = "success";
+            }
+            catch (Exception ex)
+            {
+                string msg = ex.Message.ToString();
+                ReturnMessage = "exception";
+            }
+
+            return ReturnMessage;
         }
 
     }
