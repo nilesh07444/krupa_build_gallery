@@ -74,7 +74,7 @@
                         <select id="selecttype" class="form-control">
                             <option value="All">All</option>
                             <option value="Sent">Sent</option>
-                            <option value="Received">Received</option>                            
+                            <option value="Received">Received</option>
                         </select>
                     </div>
                     <div class="col-sm-2">
@@ -85,7 +85,17 @@
                             <option value="1">Accept</option>
                             <option value="2">Reject</option>
                         </select>
-                    </div>                                      
+                    </div>
+                </div>
+                <div class="row" style="margin-top:25px;border-bottom: 2px solid #f8f8f9;padding-bottom: 25px;margin-bottom: 10px;">
+                    <div class="col-sm-3">
+                        <label>Start Date *</label>
+                        <input class="form-control col-md-8 clsDatePicker text-box single-line valid" id="StartDate" name="StartDate" placeholder="DD/MM/YYY" readonly="readonly" type="text" value="@ViewBag.StartDate">
+                    </div>
+                    <div class="col-sm-3">
+                        <label>End Date *</label>
+                        <input class="form-control col-md-8 clsDatePicker text-box single-line valid" id="EndDate" name="EndDate" placeholder="DD/MM/YYY" readonly="readonly" type="text" value="@ViewBag.EndDate">
+                    </div>
                     <div class="col-sm-2">
                         <input type="button" value="Filter" class="btn btn-info" onclick="filteritems();" style="position: absolute; bottom: 0;" />
                     </div>
@@ -93,13 +103,13 @@
                 <br />
                 <table class="display" id="basic-19">
                     <thead>
-                        <tr>                        
+                        <tr>
                             <th>#</th>
                             <th>Sender</th>
                             <th>Receiver</th>
                             <th>Date</th>
                             <th>Amount</th>
-                            <th>Status</th>                            
+                            <th>Status</th>
                             <th width="10%;">Action</th>
                         </tr>
                     </thead>
@@ -110,31 +120,31 @@
                             foreach (CashOrderAmountVM item in lstCash)
                             {
                                 string stus = "Pending";
-                                if(item.IsAccept == 1)
+                                if (item.IsAccept == 1)
                                 {
                                     stus = "Accepted";
                                 }
-                                else if(item.IsAccept == 2)
+                                else if (item.IsAccept == 2)
                                 {
                                     stus = "Rejected";
                                 }
-                        <tr class="gradeX">
-                            <td>@counter.</td>
-                            <td>@item.SenderName</td>
-                            <td>@item.RecieverName</td>
-                            <td>@item.CashSentDate</td>
-                            <td>@item.Amount</td>
-                            <td>@stus</td>
-                            <td>
-                                @if (clsAdminSession.UserID == Convert.ToInt64(ViewBag.UserId) && clsAdminSession.UserID == item.ReceivedBy && item.IsAccept == 0)
-                                {
+                                <tr class="gradeX">
+                                    <td>@counter.</td>
+                                    <td>@item.SenderName</td>
+                                    <td>@item.RecieverName</td>
+                                    <td>@item.CashSentDate</td>
+                                    <td>@item.Amount</td>
+                                    <td>@stus</td>
+                                    <td>
+                                        @if (clsAdminSession.UserID == Convert.ToInt64(ViewBag.UserId) && clsAdminSession.UserID == item.ReceivedBy && item.IsAccept == 0)
+                                        {
 
-                                    <span class="badge badge-success" style="cursor:pointer;" title="Click to Accept" onclick="fnChangeAcceptReject('@item.CashOrderAmountId',1);">Accept</span>
-                                    <span class="badge badge-danger" style="cursor:pointer;" title="Click to Reject" onclick="fnChangeAcceptReject('@item.CashOrderAmountId',2);">Reject</span>
+                                            <span class="badge badge-success" style="cursor:pointer;" title="Click to Accept" onclick="fnChangeAcceptReject('@item.CashOrderAmountId',1);">Accept</span>
+                                            <span class="badge badge-danger" style="cursor:pointer;" title="Click to Reject" onclick="fnChangeAcceptReject('@item.CashOrderAmountId',2);">Reject</span>
 
-                                }
-                            </td>
-                            </tr>
+                                        }
+                                    </td>
+                                </tr>
                                 counter++;
                             }
                         }
@@ -147,7 +157,9 @@
     <!-- Container-fluid Ends-->
 
 </div>
-
+<script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
 @*<script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>*@
 <script>
     $(document).ready(function () {
@@ -189,15 +201,17 @@
      $(document).ready(function () {
          $("#selectemp").val("@ViewBag.UserId");
          $("#selecttype").val("@ViewBag.type");
-         $("#selectstus").val("@ViewBag.status");        
+         $("#selectstus").val("@ViewBag.status");
     });
 
 
     function filteritems() {
         var usrid = $("#selectemp").val();
         var typidd = $("#selecttype").val();
-        var sttusid = $("#selectstus").val();        
-        location.href = "/admin/agent/CashOnDeliveryAmounts?userid=" + usrid + "&type=" + typidd + "&status=" + sttusid;
+        var sttusid = $("#selectstus").val();
+        var StartDate = $("#StartDate").val();
+        var EndDate = $("#EndDate").val();
+        location.href = "/admin/agent/CashOnDeliveryAmounts?userid=" + usrid + "&type=" + typidd + "&status=" + sttusid +"&StartDate="+StartDate+"&EndDate="+EndDate;
     }
 
 

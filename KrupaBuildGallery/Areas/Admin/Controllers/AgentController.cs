@@ -519,16 +519,30 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return remainingCashAmt;
         }
 
-        public ActionResult CashOnDeliveryAmounts(int userid = 0,string type = "All",int status = -1)
+        public ActionResult CashOnDeliveryAmounts(int userid = 0,string type = "All",int status = 0,string StartDate = "",string EndDate = "")
         {
             if(userid == 0)
             {
                 userid = Convert.ToInt32(clsAdminSession.UserID);
             }
+            ViewBag.StartDate = StartDate;
+            ViewBag.EndDate = EndDate;
+            DateTime dtStart = DateTime.MinValue;
+            DateTime dtEnd = DateTime.MaxValue;
+            if (!string.IsNullOrEmpty(StartDate))
+            {
+                dtStart = DateTime.ParseExact(StartDate, "dd/MM/yyyy", null);
+            }
+
+            if (!string.IsNullOrEmpty(EndDate))
+            {
+                dtEnd = DateTime.ParseExact(EndDate, "dd/MM/yyyy", null);
+            }           
+            dtEnd = new DateTime(dtEnd.Year, dtEnd.Month, dtEnd.Day, 23, 59, 59);
             List<CashOrderAmountVM> lstcsh = (from p in _db.tbl_CashDeliveryAmount
                                               join c in _db.tbl_AdminUsers on p.SentBy equals c.AdminUserId
                                               join re in _db.tbl_AdminUsers on p.ReceivedBy equals re.AdminUserId
-                                              where (p.ReceivedBy == userid || p.SentBy == userid) && ((status == -1) || (p.IsAccept.Value == status))
+                                              where (p.ReceivedBy == userid || p.SentBy == userid) && ((status == -1) || (p.IsAccept.Value == status)) && p.CreatedDate >= dtStart && p.CreatedDate <= dtEnd
                                               select new CashOrderAmountVM
                                               {
                                                   CashOrderAmountId = p.tbl_CashOrderAmount_Id,
@@ -572,7 +586,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             ViewBag.UserId = userid;
             ViewBag.type = type;
             ViewBag.status = status;            
-
+            
             return View();
         }
 
