@@ -582,11 +582,18 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             InvoiceYear = p.InvoiceYear,
                             ShipmentCharge = p.ShippingCharge.HasValue ? p.ShippingCharge.Value : 0,
                             ShippingStatus = p.ShippingStatus.HasValue ? p.ShippingStatus.Value : 2,
-                            ExtraAmount = p.ExtraAmount.HasValue ? p.ExtraAmount.Value : 0
+                            ExtraAmount = p.ExtraAmount.HasValue ? p.ExtraAmount.Value : 0,
+                            IsCashOnDelivery = p.IsCashOnDelivery.HasValue ? p.IsCashOnDelivery.Value : false
                         }).OrderByDescending(x => x.OrderDate).FirstOrDefault();
 
+           
             if (objOrder != null)
             {
+                string PaymentMode = "Cash On Delivery";
+                if (objOrder.IsCashOnDelivery == false)
+                {
+                    PaymentMode = "Online Payment";
+                }
                 objOrder.OrderStatus = GetOrderStatus(objOrder.OrderStatusId);
                 List<OrderItemsVM> lstOrderItms = (from p in _db.tbl_OrderItemDetails
                                                    join c in _db.tbl_ProductItems on p.ProductItemId equals c.ProductItemId
@@ -756,7 +763,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 double RoundedAmt = CommonMethod.GetRoundedValue(Convert.ToDouble(TotalFinal));
                 string amtwrd = CommonMethod.ConvertToWords(RoundAmt.ToString());
                 string address = objOrder.OrderShipAddress + "<br/>" + objOrder.OrderShipCity + "-" + objOrder.OrderPincode + "<br/>" + objOrder.OrderShipState;
-                newhtmldata = htmldata.Replace("--INVOICENO--", InvoiceNo).Replace("--GSTTITLE--", GSTTitle).Replace("--GSTNo--", GSTNo).Replace("--INVOICEDATE--", DateOfInvoice).Replace("--ORDERNO--", orderNo).Replace("--CLIENTUSERNAME--", ClientUserName).Replace("--CLIENTUSERADDRESS--", address).Replace("--CLIENTUSEREMAIL--", objOrder.ClientEmail).Replace("--CLIENTUSERMOBILE--", objOrder.ClientMobileNo).Replace("--ITEMLIST--", ItemHtmls).Replace("--GSTCALCULATIONDATA--", GST_HTML_DATA).Replace("--SHIPPING--", Math.Round(objOrder.ShipmentCharge, 2).ToString()).Replace("--SUBTOTAL--", Math.Round(SubTotal, 2).ToString()).Replace("--TOTAL--", Math.Round(TotalFinal, 2).ToString()).Replace("--EXTRAAMOUNT--", Math.Round(objOrder.ExtraAmount, 2).ToString()).Replace("--ROUNDOFF--", Math.Round(RoundedAmt, 2).ToString()).Replace("--ROUNDTOTAL--", Math.Round(RoundAmt, 2).ToString()).Replace("--AMTWORD--", amtwrd);
+                newhtmldata = htmldata.Replace("--INVOICENO--", InvoiceNo).Replace("--GSTTITLE--", GSTTitle).Replace("--GSTNo--", GSTNo).Replace("--INVOICEDATE--", DateOfInvoice).Replace("--ORDERNO--", orderNo).Replace("--CLIENTUSERNAME--", ClientUserName).Replace("--CLIENTUSERADDRESS--", address).Replace("--CLIENTUSEREMAIL--", objOrder.ClientEmail).Replace("--CLIENTUSERMOBILE--", objOrder.ClientMobileNo).Replace("--ITEMLIST--", ItemHtmls).Replace("--GSTCALCULATIONDATA--", GST_HTML_DATA).Replace("--SHIPPING--", Math.Round(objOrder.ShipmentCharge, 2).ToString()).Replace("--SUBTOTAL--", Math.Round(SubTotal, 2).ToString()).Replace("--TOTAL--", Math.Round(TotalFinal, 2).ToString()).Replace("--EXTRAAMOUNT--", Math.Round(objOrder.ExtraAmount, 2).ToString()).Replace("--ROUNDOFF--", Math.Round(RoundedAmt, 2).ToString()).Replace("--ROUNDTOTAL--", Math.Round(RoundAmt, 2).ToString()).Replace("--AMTWORD--", amtwrd).Replace("--PAYMENTMODE--","Payment: "+ PaymentMode);
 
             }
 
@@ -1625,11 +1632,17 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             InvoiceYear = p.InvoiceYear,
                             ShipmentCharge = p.ShippingCharge.HasValue ? p.ShippingCharge.Value : 0,
                             ShippingStatus = p.ShippingStatus.HasValue ? p.ShippingStatus.Value : 2,
-                            ExtraAmount = p.ExtraAmount.HasValue ? p.ExtraAmount.Value : 0
+                            ExtraAmount = p.ExtraAmount.HasValue ? p.ExtraAmount.Value : 0,
+                            IsCashOnDelivery = p.IsCashOnDelivery.HasValue ? p.IsCashOnDelivery.Value : false
                         }).OrderByDescending(x => x.OrderDate).FirstOrDefault();
 
             if (objOrder != null)
             {
+                string PaymentMode = "Cash On Delivery";
+                if (objOrder.IsCashOnDelivery == false)
+                {
+                    PaymentMode = "Online Payment";
+                }
                 objOrder.OrderStatus = GetOrderStatus(objOrder.OrderStatusId);
                 List<OrderItemsVM> lstOrderItms = (from p in _db.tbl_OrderItemDetails
                                                    join c in _db.tbl_ProductItems on p.ProductItemId equals c.ProductItemId
@@ -1798,7 +1811,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 double RoundAmt = CommonMethod.GetRoundValue(Convert.ToDouble(TotalFinal));
                 double RoundedAmt = CommonMethod.GetRoundedValue(Convert.ToDouble(TotalFinal));
                 string address = objOrder.OrderShipAddress + "<br/>" + objOrder.OrderShipCity + "-" + objOrder.OrderPincode + "<br/>" + objOrder.OrderShipState;
-                newhtmldata = htmldata.Replace("--INVOICENO--", InvoiceNo).Replace("--GSTTITLE--", GSTTitle).Replace("--GSTNo--", GSTNo).Replace("--INVOICEDATE--", DateOfInvoice).Replace("--ORDERNO--", orderNo).Replace("--CLIENTUSERNAME--", ClientUserName).Replace("--CLIENTUSERADDRESS--", address).Replace("--CLIENTUSEREMAIL--", objOrder.ClientEmail).Replace("--CLIENTUSERMOBILE--", objOrder.ClientMobileNo).Replace("--ITEMLIST--", ItemHtmls).Replace("--GSTCALCULATIONDATA--", GST_HTML_DATA).Replace("--SHIPPING--", Math.Round(objOrder.ShipmentCharge, 2).ToString()).Replace("--SUBTOTAL--", Math.Round(SubTotal, 2).ToString()).Replace("--TOTAL--", Math.Round(TotalFinal, 2).ToString()).Replace("--EXTRAAMOUNT--", Math.Round(objOrder.ExtraAmount, 2).ToString()).Replace("--ROUNDOFF--", Math.Round(RoundedAmt, 2).ToString()).Replace("--ROUNDTOTAL--", Math.Round(RoundAmt, 2).ToString());
+                newhtmldata = htmldata.Replace("--INVOICENO--", InvoiceNo).Replace("--GSTTITLE--", GSTTitle).Replace("--GSTNo--", GSTNo).Replace("--INVOICEDATE--", DateOfInvoice).Replace("--ORDERNO--", orderNo).Replace("--CLIENTUSERNAME--", ClientUserName).Replace("--CLIENTUSERADDRESS--", address).Replace("--CLIENTUSEREMAIL--", objOrder.ClientEmail).Replace("--CLIENTUSERMOBILE--", objOrder.ClientMobileNo).Replace("--ITEMLIST--", ItemHtmls).Replace("--GSTCALCULATIONDATA--", GST_HTML_DATA).Replace("--SHIPPING--", Math.Round(objOrder.ShipmentCharge, 2).ToString()).Replace("--SUBTOTAL--", Math.Round(SubTotal, 2).ToString()).Replace("--TOTAL--", Math.Round(TotalFinal, 2).ToString()).Replace("--EXTRAAMOUNT--", Math.Round(objOrder.ExtraAmount, 2).ToString()).Replace("--ROUNDOFF--", Math.Round(RoundedAmt, 2).ToString()).Replace("--ROUNDTOTAL--", Math.Round(RoundAmt, 2).ToString()).Replace("--PAYMENTMODE--", "Payment: " + PaymentMode); ;
 
             }
 
