@@ -23,18 +23,18 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             //EmailMessageVM emailModel = clsCommon.GetSampleEmailTemplate();
             //clsCommon.SendEmail2(emailModel);
             //clsCommon.SendEmail("prajapati.nileshbhai@gmail.com", "admin@shopping-saving.com", "Test Email", emailModel.Body);
-            if(clsClientSession.UserID == 0)
+            if (clsClientSession.UserID == 0)
             {
                 if (Request.Cookies["sessionkeyval"] != null)
                 {
-                   string strcokki = Request.Cookies["sessionkeyval"].Value;
-                    if(strcokki.Contains("cust"))
+                    string strcokki = Request.Cookies["sessionkeyval"].Value;
+                    if (strcokki.Contains("cust"))
                     {
                         Response.Cookies["sessionkeyval"].Value = Guid.NewGuid().ToString();
                         Response.Cookies["sessionkeyval"].Expires = DateTime.Now.AddDays(30);
                     }
                 }
-            }      
+            }
 
             List<AdvertiseImageVM> lstAdvertiseImages = new List<AdvertiseImageVM>();
             WebsiteStatisticsVM objStatistics = new WebsiteStatisticsVM();
@@ -170,20 +170,21 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                   select new AdvertiseImageVM
                                   {
                                       AdvertiseImageId = c.AdvertiseImageId,
-                                      ImageUrl = c.AdvertiseImage 
+                                      SliderType = c.SliderType,
+                                      ImageUrl = c.AdvertiseImage
                                   }).OrderByDescending(x => x.AdvertiseImageId).ToList();
 
             lstComboOffers = (from i in _db.tbl_ComboOfferMaster
-                             where i.IsActive == true && DateTime.UtcNow >= i.OfferStartDate && DateTime.UtcNow <= i.OfferEndDate && i.IsDeleted == false
+                              where i.IsActive == true && DateTime.UtcNow >= i.OfferStartDate && DateTime.UtcNow <= i.OfferEndDate && i.IsDeleted == false
                               select new ComboOfferVM
-                             {
-                                 OfferTitle = i.OfferTitle,
-                                 ComboOfferId = i.ComboOfferId,
-                                 ComboOfferPrice = i.OfferPrice,
-                                 OfferImage = i.OfferImage,
-                                 TotlOriginalOfferPrice = i.TotalActualPrice.Value                              
-                             }).OrderBy(x => x.OfferTitle).ToList().Take(8).ToList();
-            
+                              {
+                                  OfferTitle = i.OfferTitle,
+                                  ComboOfferId = i.ComboOfferId,
+                                  ComboOfferPrice = i.OfferPrice,
+                                  OfferImage = i.OfferImage,
+                                  TotlOriginalOfferPrice = i.TotalActualPrice.Value
+                              }).OrderBy(x => x.OfferTitle).ToList().Take(8).ToList();
+
 
             ViewData["lstPopularProductItem"] = lstPopularProductItem;
             ViewData["lstOfferItems"] = lstOfferItems;
@@ -192,7 +193,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             ViewData["lstUnpackProductItem"] = lstUnpackProductItem;
             ViewData["lstHappyCustomers"] = lstHappyCustomers;
             ViewData["objStatistics"] = objStatistics;
-            ViewData["lstAdvertiseImages"] = lstAdvertiseImages;
+            ViewData["lstAdvertiseImages2"] = lstAdvertiseImages.Where(x => x.SliderType == 2).ToList();
+            ViewData["lstAdvertiseImages3"] = lstAdvertiseImages.Where(x => x.SliderType == 3).ToList();
             ViewData["lstComboOffers"] = lstComboOffers;
 
             return View();
@@ -266,11 +268,11 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             return price;
         }
 
-        public decimal GetRatingOfItem(long ItemId,List<tbl_ReviewRating> lstreviewratings)
+        public decimal GetRatingOfItem(long ItemId, List<tbl_ReviewRating> lstreviewratings)
         {
             decimal rating = 0;
             var lstt = lstreviewratings.Where(o => o.ProductItemId == ItemId).ToList();
-            if(lstt != null && lstt.Count() > 0)
+            if (lstt != null && lstt.Count() > 0)
             {
                 rating = lstt.Select(o => o.Rating.Value).Average();
             }

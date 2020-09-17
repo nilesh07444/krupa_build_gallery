@@ -35,6 +35,9 @@ namespace KrupaBuildGallery
 
         public bool IsActive { get; set; }
         // Additional fields
-        public string ImageUrl { get; set; } 
+        public string ImageUrl { get; set; }
+        [Display(Name = "Slider Type")]
+        public int SliderType { get; set; }
+        public List<SelectListItem> SliderTypeList { get; set; }
     }
 }

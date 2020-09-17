@@ -9,7 +9,8 @@
     List<CategoryVM> lstCategory = ViewData["lstCategory"] as List<CategoryVM>;
     List<HappyCustomerVM> lstHappyCustomers = ViewData["lstHappyCustomers"] as List<HappyCustomerVM>;
     WebsiteStatisticsVM objStatistics = ViewData["objStatistics"] as WebsiteStatisticsVM;
-    List<AdvertiseImageVM> lstAdvertiseImages = ViewData["lstAdvertiseImages"] as List<AdvertiseImageVM>;
+    List<AdvertiseImageVM> lstAdvertiseImages2 = ViewData["lstAdvertiseImages2"] as List<AdvertiseImageVM>;
+    List<AdvertiseImageVM> lstAdvertiseImages3 = ViewData["lstAdvertiseImages3"] as List<AdvertiseImageVM>;
     var lstComboOffers = ViewData["lstComboOffers"] as List<ComboOfferVM>;
 
 }
@@ -140,6 +141,40 @@
     </section>
 }
 <!-- Category list Section end -->
+<!-- Advertisement Images - Start -->
+@if (lstAdvertiseImages3 != null && lstAdvertiseImages3.Count > 0)
+{
+    <section class="p-0 layout-7">
+        <div class="slide-1 home-slider section-t-space">
+            @foreach (var obj in lstAdvertiseImages3)
+            {
+                <div>
+                    <div class="home">
+
+                        @if (!string.IsNullOrEmpty(obj.ImageUrl))
+                        {
+                            if (File.Exists(Server.MapPath(ErrorMessage.AdvertiseDirectoryPath + obj.ImageUrl)))
+                            {
+                                <img src="@ErrorMessage.AdvertiseDirectoryPath/@obj.ImageUrl" alt="" class="bg-img blur-up lazyload" />
+                            }
+                            else
+                            {
+                                <img src="@ErrorMessage.DefaultImagePath" alt="" class="bg-img blur-up lazyload" />
+                            }
+                        }
+                        else
+                        {
+                            <img src="@ErrorMessage.DefaultImagePath" alt="" class="bg-img blur-up lazyload" />
+                        }
+
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+}
+<!-- Advertisement Images - end -->
+
 <!-- Combo Offer List -->
 @if (lstComboOffers != null && lstComboOffers.Count() > 0)
 {
@@ -443,11 +478,11 @@
 }
 <!-- Popular Products List end -->
 <!-- Advertisement Images - Start -->
-@if (lstAdvertiseImages != null && lstAdvertiseImages.Count > 0)
+@if (lstAdvertiseImages2 != null && lstAdvertiseImages2.Count > 0)
 {
     <section class="p-0 layout-7">
         <div class="slide-1 home-slider">
-            @foreach (var obj in lstAdvertiseImages)
+            @foreach (var obj in lstAdvertiseImages2)
             {
                 <div>
                     <div class="home">

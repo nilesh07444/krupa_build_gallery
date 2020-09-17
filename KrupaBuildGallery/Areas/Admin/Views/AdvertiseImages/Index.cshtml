@@ -63,7 +63,8 @@
                     <thead>
                         <tr>
                             <th width="10%;">#</th>
-                            <th width="15%;">Advertise Image</th> 
+                            <th width="15%;">Advertise Image</th>
+                            <th width="15%;">Slider Type</th>
                             <th width="15%;">Active</th>
                             <th width="15%;">Action</th>
                         </tr>
@@ -93,7 +94,8 @@
                                             <img src="@ErrorMessage.DefaultImagePath" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
                                         }
 
-                                    </td> 
+                                    </td>
+                                    <td>@(obj.SliderType == 3 ? "Slider 3" : "Slider 2")</td>
                                     @if (obj.IsActive == true)
                                     {
                                         <td><span class="badge badge-success" style="cursor:pointer;" title="Click to Inactive" onclick="fnChangeStatus('@obj.AdvertiseImageId','InActive');">Active</span></td>

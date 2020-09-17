@@ -33,7 +33,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                  {
                                      AdvertiseImageId = c.AdvertiseImageId,
                                      ImageUrl = c.AdvertiseImage, 
-                                     IsActive = c.IsActive
+                                     IsActive = c.IsActive,
+                                     SliderType = c.SliderType
                                  }).OrderByDescending(x => x.AdvertiseImageId).ToList();
 
             }
@@ -47,8 +48,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
         public ActionResult Add()
         {
-            AdvertiseImageVM AdvertiseImageVM = new AdvertiseImageVM(); 
-
+            AdvertiseImageVM AdvertiseImageVM = new AdvertiseImageVM();
+            AdvertiseImageVM.SliderTypeList = GetSliderTypeList();
             return View(AdvertiseImageVM);
         }
 
@@ -75,6 +76,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         string ext = Path.GetExtension(AdvertiseImageFile.FileName);
                         if (ext.ToUpper().Trim() != ".JPG" && ext.ToUpper() != ".PNG" && ext.ToUpper() != ".GIF" && ext.ToUpper() != ".JPEG" && ext.ToUpper() != ".BMP")
                         {
+                            AdvertiseImageVM.SliderTypeList = GetSliderTypeList();
+
                             ModelState.AddModelError("AdvertiseImageFile", ErrorMessage.SelectOnlyImage);
                             return View(AdvertiseImageVM);
                         }
@@ -85,6 +88,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     }
                     else
                     {
+                        AdvertiseImageVM.SliderTypeList = GetSliderTypeList();
+
                         ModelState.AddModelError("AdvertiseImageFile", ErrorMessage.ImageRequired);
                         return View(AdvertiseImageVM);
                     }
@@ -92,6 +97,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     tbl_AdvertiseImages objAdvertise = new tbl_AdvertiseImages(); 
                     objAdvertise.AdvertiseImage = fileName;
                     objAdvertise.IsActive = true;
+                    objAdvertise.SliderType = AdvertiseImageVM.SliderType;
                     objAdvertise.CreatedBy = LoggedInUserId;
                     objAdvertise.CreatedDate = DateTime.UtcNow;
                     objAdvertise.UpdatedBy = LoggedInUserId;
@@ -118,15 +124,19 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             try
             {
+                 
                 objAdvertise = (from c in _db.tbl_AdvertiseImages
                            where c.AdvertiseImageId == Id
                            select new AdvertiseImageVM
                            {
                                AdvertiseImageId = c.AdvertiseImageId,
                                ImageUrl = c.AdvertiseImage,
-                               IsActive = c.IsActive 
+                               IsActive = c.IsActive ,
+                               SliderType = c.SliderType
                            }).FirstOrDefault();
-                  
+
+                objAdvertise.SliderTypeList = GetSliderTypeList();
+
             }
             catch (Exception ex)
             {
@@ -156,6 +166,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         string ext = Path.GetExtension(AdvertiseImageFile.FileName);
                         if (ext.ToUpper().Trim() != ".JPG" && ext.ToUpper() != ".PNG" && ext.ToUpper() != ".GIF" && ext.ToUpper() != ".JPEG" && ext.ToUpper() != ".BMP")
                         {
+                            AdvertiseImageVM.SliderTypeList = GetSliderTypeList();
+
                             ModelState.AddModelError("AdvertiseImageFile", ErrorMessage.SelectOnlyImage);
                             return View(AdvertiseImageVM);
                         }
@@ -170,6 +182,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     }
 
                     objAdvertise.AdvertiseImage = fileName;
+                    objAdvertise.SliderType = AdvertiseImageVM.SliderType;
                     objAdvertise.UpdatedBy = LoggedInUserId;
                     objAdvertise.UpdatedDate = DateTime.UtcNow;
                     _db.SaveChanges();
@@ -250,6 +263,16 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             }
 
             return ReturnMessage;
+        }
+
+        private List<SelectListItem> GetSliderTypeList()
+        {
+            List<SelectListItem> lst = new List<SelectListItem>();
+
+            lst.Add(new SelectListItem { Value = "2", Text = "Slider 2" });
+            lst.Add(new SelectListItem { Value = "3", Text = "Slider 3" });
+
+            return lst;
         }
 
     }
