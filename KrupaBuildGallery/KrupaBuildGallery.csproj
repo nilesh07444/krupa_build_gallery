@@ -210,8 +210,10 @@
     <Compile Include="Areas\Admin\Controllers\MyProfileController.cs" />
     <Compile Include="Areas\Admin\Controllers\OfferController.cs" />
     <Compile Include="Areas\Admin\Controllers\OrderController.cs" />
+    <Compile Include="Areas\Admin\Controllers\PincodeCityStateController.cs" />
     <Compile Include="Areas\Admin\Controllers\ProductController.cs" />
     <Compile Include="Areas\Admin\Controllers\ProductItemController.cs" />
+    <Compile Include="Areas\Admin\Controllers\PromoCodeController.cs" />
     <Compile Include="Areas\Admin\Controllers\ReferenceController.cs" />
     <Compile Include="Areas\Admin\Controllers\RoleController.cs" />
     <Compile Include="Areas\Admin\Controllers\StockController.cs" />
@@ -394,6 +396,9 @@
     <Compile Include="Model\tbl_PaymentTransaction.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\tbl_PincodeCityState.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\tbl_PointDetails.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
@@ -404,6 +409,9 @@
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\tbl_Products.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_PromoCode.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\tbl_ReferenceMaster.cs">
@@ -445,6 +453,7 @@
     <Compile Include="ViewModel\Admin\HomeImageVM.cs" />
     <Compile Include="ViewModel\Admin\ImportExcelDataVM.cs" />
     <Compile Include="ViewModel\Admin\LoginHistoryVM.cs" />
+    <Compile Include="ViewModel\Admin\PromoCodeVM.cs" />
     <Compile Include="ViewModel\Admin\RatingReviewVM.cs" />
     <Compile Include="ViewModel\Admin\ReferenceVM.cs" />
     <Compile Include="ViewModel\Admin\RoleModuleVM.cs" />
@@ -4094,6 +4103,11 @@
     <Content Include="Areas\Client\Views\TermsCondition\WebView.cshtml" />
     <Content Include="Areas\Client\Views\CancelAndRefundPolicy\WebView.cshtml" />
     <Content Include="Areas\Admin\Views\Agent\CashOnDeliveryAmounts.cshtml" />
+    <Content Include="Areas\Admin\Views\PincodeCityState\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\PincodeCityState\Add.cshtml" />
+    <Content Include="Areas\Admin\Views\PromoCode\Add.cshtml" />
+    <Content Include="Areas\Admin\Views\PromoCode\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\PromoCode\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />

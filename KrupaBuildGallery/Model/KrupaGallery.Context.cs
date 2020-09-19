@@ -77,5 +77,7 @@ namespace KrupaBuildGallery.Model
         public DbSet<tbl_FreeOfferItems> tbl_FreeOfferItems { get; set; }
         public DbSet<tbl_DynamicContent> tbl_DynamicContent { get; set; }
         public DbSet<tbl_CashDeliveryAmount> tbl_CashDeliveryAmount { get; set; }
+        public DbSet<tbl_PincodeCityState> tbl_PincodeCityState { get; set; }
+        public DbSet<tbl_PromoCode> tbl_PromoCode { get; set; }
     }
 }

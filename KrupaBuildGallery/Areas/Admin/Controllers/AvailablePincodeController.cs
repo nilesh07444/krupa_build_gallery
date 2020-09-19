@@ -1,4 +1,5 @@
-﻿using KrupaBuildGallery.Helper;
+﻿using ConstructionDiary.Models;
+using KrupaBuildGallery.Helper;
 using KrupaBuildGallery.Model;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.Web.Mvc;
 
 namespace KrupaBuildGallery.Areas.Admin.Controllers
 {
+    [CustomAuthorize]
     public class AvailablePincodeController : Controller
     {
         private readonly krupagallarydbEntities _db;
