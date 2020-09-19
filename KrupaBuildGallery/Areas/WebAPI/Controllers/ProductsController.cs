@@ -571,6 +571,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                       where !c.IsDeleted && c.IsActive
                                       select new AdvertiseImageVM
                                       {
+                                          SliderType = c.SliderType,
                                           AdvertiseImageId = c.AdvertiseImageId,
                                           ImageUrl = c.AdvertiseImage
                                       }).OrderByDescending(x => x.AdvertiseImageId).ToList();
@@ -591,7 +592,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 objHome.UnPackedItems = lstUnpackProductItem;
                 objHome.OfferProducts = lstOfferItems;
                 objHome.Categories = lstCategory;
-                objHome.lstAds = lstAdvertiseImages;
+                objHome.lstAds = lstAdvertiseImages.Where(o => o.SliderType == 3).ToList();
+                objHome.lstAds2 = lstAdvertiseImages.Where(o => o.SliderType == 2).ToList();
                 objHome.lstComboOffers = lstComboOffers;
                 objHome.HomePageSlider = GetHomeImages();
 
