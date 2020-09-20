@@ -121,11 +121,15 @@
                         </div>
                         <div class="col-md-4">
                             <label for="alternatemobile">Alternate Mobile Number</label>
-                            <input type="number" class="form-control" id="alternatemobile" name="alternatemobile" value="@objclient.AlternateMobileNo" onKeyPress="if(this.value.length==10) return false;"  placeholder="Enter your alternate mobile number">
+                            <input type="number" class="form-control" id="alternatemobile" name="alternatemobile" value="@objclient.AlternateMobileNo" onKeyPress="if(this.value.length==10) return false;" placeholder="Enter your alternate mobile number">
                         </div>
                         <div class="col-md-4">
                             <label for="email">Email</label>
                             <input type="text" class="form-control" id="email" name="email" value="@objclient.Email" placeholder="Email">
+                        </div>
+                        <div class="col-md-4">
+                            <label for="referralcode">Referral Code</label>
+                            <input type="text" class="form-control" id="referralcode" name="referralcode" readonly value="@objclient.OwnReferralCode" placeholder="Enter Referral Code">
                         </div>
                         @if (clsClientSession.RoleID == 2)
                         {

@@ -34,5 +34,9 @@ namespace KrupaBuildGallery.Model
         public string Prefix { get; set; }
         public Nullable<decimal> WalletAmt { get; set; }
         public string Reference { get; set; }
+        public string OwnReferralCode { get; set; }
+        public string ReferenceReferralCode { get; set; }
+        public Nullable<long> ReferenceReferralClientUserId { get; set; }
+        public Nullable<int> ReferencePointReceived { get; set; }
     }
 }

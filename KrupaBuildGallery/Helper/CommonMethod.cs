@@ -42,12 +42,6 @@ namespace KrupaBuildGallery
 
             krupagallarydbEntities _db = new krupagallarydbEntities();
 
-            //List<CategoryVM> lstCategory = new List<CategoryVM>();            
-            //for (int i = 1; i <= 10; i++)
-            //{
-            //    lstCategory.Add(new CategoryVM { CategoryId = i, CategoryName = "Category " + i });
-            //}
-
             List<CategoryVM> lstCategory = (from c in _db.tbl_Categories
                                             where !c.IsDelete && c.IsActive
                                             select new CategoryVM
@@ -323,5 +317,24 @@ namespace KrupaBuildGallery
             }
             return cd;
         }
+
+        public static string GetRandomReferralCode(int length)
+        { 
+            Random random = new Random();
+            var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            string randomReferralCode = new string(chars.Select(c => chars[random.Next(chars.Length)]).Take(length).ToArray());
+
+            krupagallarydbEntities _db = new krupagallarydbEntities();
+            bool existCode = _db.tbl_ClientUsers.Where(x => x.OwnReferralCode == randomReferralCode).Any();
+
+            if (existCode)
+            {
+                GetRandomReferralCode(length);
+            }
+             
+            return randomReferralCode;
+        }
+
+
     }
 }

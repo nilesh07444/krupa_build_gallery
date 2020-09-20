@@ -216,6 +216,10 @@
           <Property Name="Prefix" Type="nvarchar" MaxLength="10" />
           <Property Name="WalletAmt" Type="decimal" Precision="18" Scale="2" />
           <Property Name="Reference" Type="nvarchar" MaxLength="690" />
+          <Property Name="OwnReferralCode" Type="nvarchar" MaxLength="20" />
+          <Property Name="ReferenceReferralCode" Type="nvarchar" MaxLength="20" />
+          <Property Name="ReferenceReferralClientUserId" Type="bigint" />
+          <Property Name="ReferencePointReceived" Type="int" />
         </EntityType>
         <EntityType Name="tbl_ComboOffer">
           <Key>
@@ -413,6 +417,7 @@
           <Property Name="CashLimitPerYear" Type="decimal" Precision="18" Scale="2" />
           <Property Name="RazorPayKey" Type="nvarchar" MaxLength="500" />
           <Property Name="RazorPaySecret" Type="nvarchar" MaxLength="500" />
+          <Property Name="ReferenceReferralDiscountPoints" Type="int" />
         </EntityType>
         <EntityType Name="tbl_Godown">
           <Key>
@@ -726,6 +731,7 @@
           <Property Name="CreatedDate" Type="datetime" />
           <Property Name="CreatedBy" Type="bigint" />
           <Property Name="UsedPoints" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="IsReferralPoints" Type="bit" />
         </EntityType>
         <EntityType Name="tbl_ProductItemImages">
           <Key>
@@ -1118,6 +1124,10 @@
           <Property Name="Prefix" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
           <Property Name="WalletAmt" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="Reference" Type="String" MaxLength="690" FixedLength="false" Unicode="true" />
+          <Property Name="OwnReferralCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ReferenceReferralCode" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ReferenceReferralClientUserId" Type="Int64" />
+          <Property Name="ReferencePointReceived" Type="Int32" />
         </EntityType>
         <EntityType Name="tbl_ContactFormData">
           <Key>
@@ -1577,6 +1587,7 @@
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="CreatedBy" Type="Int64" />
           <Property Name="UsedPoints" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="IsReferralPoints" Type="Boolean" />
         </EntityType>
         <EntityType Name="tbl_GeneralSetting">
           <Key>
@@ -1602,6 +1613,7 @@
           <Property Name="CashLimitPerYear" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="RazorPayKey" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="RazorPaySecret" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="ReferenceReferralDiscountPoints" Type="Int32" />
         </EntityType>
         <EntityType Name="tbl_Wallet">
           <Key>
@@ -2119,6 +2131,10 @@
           <EntitySetMapping Name="tbl_ClientUsers">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_ClientUsers">
               <MappingFragment StoreEntitySet="tbl_ClientUsers">
+                <ScalarProperty Name="ReferencePointReceived" ColumnName="ReferencePointReceived" />
+                <ScalarProperty Name="ReferenceReferralClientUserId" ColumnName="ReferenceReferralClientUserId" />
+                <ScalarProperty Name="ReferenceReferralCode" ColumnName="ReferenceReferralCode" />
+                <ScalarProperty Name="OwnReferralCode" ColumnName="OwnReferralCode" />
                 <ScalarProperty Name="Reference" ColumnName="Reference" />
                 <ScalarProperty Name="WalletAmt" ColumnName="WalletAmt" />
                 <ScalarProperty Name="ClientUserId" ColumnName="ClientUserId" />
@@ -2521,6 +2537,7 @@
           <EntitySetMapping Name="tbl_PointDetails">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_PointDetails">
               <MappingFragment StoreEntitySet="tbl_PointDetails">
+                <ScalarProperty Name="IsReferralPoints" ColumnName="IsReferralPoints" />
                 <ScalarProperty Name="UsedPoints" ColumnName="UsedPoints" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
@@ -2534,6 +2551,7 @@
           <EntitySetMapping Name="tbl_GeneralSetting">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_GeneralSetting">
               <MappingFragment StoreEntitySet="tbl_GeneralSetting">
+                <ScalarProperty Name="ReferenceReferralDiscountPoints" ColumnName="ReferenceReferralDiscountPoints" />
                 <ScalarProperty Name="RazorPaySecret" ColumnName="RazorPaySecret" />
                 <ScalarProperty Name="RazorPayKey" ColumnName="RazorPayKey" />
                 <ScalarProperty Name="CashLimitPerYear" ColumnName="CashLimitPerYear" />

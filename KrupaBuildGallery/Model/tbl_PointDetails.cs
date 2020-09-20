@@ -21,5 +21,6 @@ namespace KrupaBuildGallery.Model
         public Nullable<System.DateTime> CreatedDate { get; set; }
         public Nullable<long> CreatedBy { get; set; }
         public Nullable<decimal> UsedPoints { get; set; }
+        public Nullable<bool> IsReferralPoints { get; set; }
     }
 }

@@ -35,6 +35,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 string mobileno = frm["mobileno"].ToString();
                 string password = frm["password"].ToString();
                 string Prefix = frm["prefix"].ToString();
+                string ReferralCode = frm["referralcode"].ToString();
+
                 tbl_ClientUsers objClientUsr = _db.tbl_ClientUsers.Where(o => (o.MobileNo == mobileno || (email != "" && o.Email.ToLower() == email.ToLower())) && o.ClientRoleId == 1).FirstOrDefault();
                 if (objClientUsr != null)
                 {
@@ -42,10 +44,10 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     TempData["email"] = email;
                     TempData["firstnm"] = firstnm;
                     TempData["lastnm"] = lastnm;
-                    TempData["mobileno"] = mobileno;                
+                    TempData["mobileno"] = mobileno;
                     if (string.IsNullOrEmpty(referer))
                     {
-                        return RedirectToAction("Index", "Register", new { area = "Client", });
+                        return RedirectToAction("Index", "Register", new { area = "Client" });
                     }
                     else
                     {
@@ -54,6 +56,28 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 }
                 else
                 {
+                    var objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
+
+                    string ReferenceReferralCode = "";
+                    long ReferenceReferralClientUserId = 0;
+                    long ReferenceReferralDiscountPoints = 0;
+                    if (!string.IsNullOrWhiteSpace(ReferralCode))
+                    {
+                        tbl_ClientUsers referralCodeUser = _db.tbl_ClientUsers.Where(x => x.OwnReferralCode.ToLower() == ReferralCode.ToLower()).FirstOrDefault();
+                        if (referralCodeUser == null)
+                        {
+                            TempData["RegisterError"] = "Referral Code not found..";
+                            return View();
+                        }
+                        else
+                        {                             
+                            ReferenceReferralClientUserId = referralCodeUser.ClientUserId;
+                            ReferenceReferralCode = referralCodeUser.OwnReferralCode;
+                            ReferenceReferralDiscountPoints = objGensetting.ReferenceReferralDiscountPoints != null ? objGensetting.ReferenceReferralDiscountPoints.Value : 0;
+                        }
+
+                    }
+                     
                     int refrnceid = Convert.ToInt32(frm["reference"]);
                     string refrc = "";
                     tbl_ReferenceMaster objref = _db.tbl_ReferenceMaster.Where(o => o.ReferenceId == refrnceid).FirstOrDefault();
@@ -77,6 +101,13 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     objClientUsr.Password = EncyptedPassword;
                     objClientUsr.Reference = refrc;
                     objClientUsr.Prefix = Prefix;
+
+                    string randomReferralCode = CommonMethod.GetRandomReferralCode(8);
+                    objClientUsr.OwnReferralCode = randomReferralCode;
+                    objClientUsr.ReferenceReferralClientUserId = ReferenceReferralClientUserId;
+                    objClientUsr.ReferenceReferralCode = ReferenceReferralCode;
+                    objClientUsr.ReferencePointReceived = (int)ReferenceReferralDiscountPoints;
+                    
                     _db.tbl_ClientUsers.Add(objClientUsr);
                     _db.SaveChanges();
 
@@ -88,6 +119,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     objtbl_ClientOtherDetails.CreatedBy = objClientUsr.ClientUserId;
                     _db.tbl_ClientOtherDetails.Add(objtbl_ClientOtherDetails);
                     _db.SaveChanges();
+
                     clsClientSession.SessionID = Session.SessionID;
                     clsClientSession.UserID = objClientUsr.ClientUserId;
                     clsClientSession.RoleID = Convert.ToInt32(objClientUsr.ClientRoleId);
@@ -95,8 +127,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     clsClientSession.LastName = objClientUsr.LastName;
                     clsClientSession.ImagePath = objClientUsr.ProfilePicture;
                     clsClientSession.Email = objClientUsr.Email;
-
-                    var objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
+                     
                     if (objGensetting != null)
                     {
                         tbl_PointDetails objPoint = new tbl_PointDetails();
@@ -108,6 +139,24 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         objPoint.Points = objGensetting.InitialPointCustomer;
                         _db.tbl_PointDetails.Add(objPoint);
                         _db.SaveChanges();
+                    }
+
+                    // Give referral discount points to referral code user
+                    if (!string.IsNullOrWhiteSpace(ReferralCode))
+                    {
+                        if (objGensetting.ReferenceReferralDiscountPoints != null && objGensetting.ReferenceReferralDiscountPoints.Value > 0)
+                        {
+                            tbl_PointDetails objPoint = new tbl_PointDetails();
+                            objPoint.ClientUserId = ReferenceReferralClientUserId;
+                            objPoint.ExpiryDate = DateTime.UtcNow.AddMonths(6);
+                            objPoint.CreatedBy = clsClientSession.UserID;
+                            objPoint.CreatedDate = DateTime.UtcNow;
+                            objPoint.UsedPoints = 0;
+                            objPoint.IsReferralPoints = true;
+                            objPoint.Points = objGensetting.ReferenceReferralDiscountPoints;
+                            _db.tbl_PointDetails.Add(objPoint);
+                            _db.SaveChanges();
+                        }
                     }
 
                     UpdatCarts();
@@ -149,7 +198,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
 
         }
 
-        public string SendOTP(string MobileNumber)
+        public string SendOTP(string MobileNumber, string ReferralCode)
         {
             try
             {
@@ -158,6 +207,14 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 if (objClientUsr != null)
                 {
                     return "AlreadyExist";
+                }
+
+                // validate referralcode
+                if (!string.IsNullOrWhiteSpace(ReferralCode))
+                {
+                    bool IsReferalCodeFound = _db.tbl_ClientUsers.Where(x => x.OwnReferralCode.ToLower() == ReferralCode.ToLower()).Any();
+                    if (!IsReferalCodeFound)
+                        return "ReferralCodeNotFound";
                 }
 
                 using (WebClient webClient = new WebClient())

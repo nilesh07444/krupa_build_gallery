@@ -8,7 +8,8 @@
     .register-page .theme-card .theme-form input {
         margin-bottom: 13px;
     }
-    select.form-control:not([size]):not([multiple]){
+
+    select.form-control:not([size]):not([multiple]) {
         height: auto !important;
     }
 </style>
@@ -42,25 +43,25 @@
                 <div class="theme-card">
                     @using (Html.BeginForm("CreateAccount", "Register", FormMethod.Post, new { ID = "theFormId", @class = "theme-form", onsubmit = "return checkregister();" }))
                     {
-                    <div class="form-row">
-                        <div class="col-md-2 select_input">
-                            <label for="prefix">Prefix *</label>
-                            <select class="form-control" name="prefix" id="prefix" required="">                                
-                                <option value="Mr">Mr</option>
-                                <option value="Mrs">Mrs</option>
-                                <option value="Miss">Miss</option>
-                            </select>
-                        </div>
+                        <div class="form-row">
+                            <div class="col-md-2 select_input">
+                                <label for="prefix">Prefix *</label>
+                                <select class="form-control" name="prefix" id="prefix" required="">
+                                    <option value="Mr">Mr</option>
+                                    <option value="Mrs">Mrs</option>
+                                    <option value="Miss">Miss</option>
+                                </select>
+                            </div>
 
-                        <div class="col-md-5">
-                            <label for="fname">First Name *</label>
-                            <input type="text" class="form-control" id="fname" value="@TempData["firstnm"]" name="fname" placeholder="First Name" required />
+                            <div class="col-md-5">
+                                <label for="fname">First Name *</label>
+                                <input type="text" class="form-control" id="fname" value="@TempData["firstnm"]" name="fname" placeholder="First Name" required />
+                            </div>
+                            <div class="col-md-5">
+                                <label for="lname">Last Name *</label>
+                                <input type="text" class="form-control" id="lname" name="lname" value="@TempData["lastnm"]" placeholder="Last Name" required />
+                            </div>
                         </div>
-                        <div class="col-md-5">
-                            <label for="lname">Last Name *</label>
-                            <input type="text" class="form-control" id="lname" name="lname" value="@TempData["lastnm"]" placeholder="Last Name" required />
-                        </div>
-                    </div>
                         <div class="form-row">
                             <div class="col-md-6">
                                 <label for="mobileno">Mobile No. *</label>
@@ -82,12 +83,12 @@
                             </div>
                         </div>
                         <div class="form-row">
-                            <div class="col-md-6">
+                            <div class="col-md-6 select_input">
                                 <label for="password">Reference from:</label>
                                 <select class="form-control" id="reference" name="reference">
-                                    @if(lstreff != null && lstreff.Count() > 0)
+                                    @if (lstreff != null && lstreff.Count() > 0)
                                     {
-                                        foreach(var objrf in lstreff)
+                                        foreach (var objrf in lstreff)
                                         {
                                             <option value="@objrf.ReferenceId">@objrf.Reference</option>
                                         }
@@ -95,7 +96,8 @@
                                 </select>
                             </div>
                             <div class="col-md-6">
-                               
+                                <label for="lname">Referral Code (if applicable)</label>
+                                <input type="text" class="form-control" id="referralcode" name="referralcode" value="" placeholder="Referral Code" />
                             </div>
                         </div>
                         <div class="form-row" style="margin-top:15px;margin-bottom:30px;">
@@ -178,14 +180,22 @@
         }
         else {
             if ($('#hdnotptxt').val() == "" || $("#hdnotptxtvalid").val() == "false") {
-                 var URL = '@Url.Action("SendOTP", "Register")';
+
+               var referralCode = $("#referralcode").val();
+
+               var URL = '@Url.Action("SendOTP", "Register")';
                $.ajax({
                 type: 'POST',
                 async: true,
-                url: URL + "?MobileNumber=" + $("#mobileno").val(),
+                url: URL + "?MobileNumber=" + $("#mobileno").val() + "&ReferralCode=" + referralCode,
                 success: function (result) {
                     if (result == "InvalidNumber") {
                         alert("Mobile Number is invalid");
+                        return false;
+                    }
+                    else if (result == "ReferralCodeNotFound")
+                    {
+                        alert("Referral Code is Invalid. Please enter valid referral code");
                         return false;
                     }
                    else if (result == "AlreadyExist") {

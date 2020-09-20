@@ -20,6 +20,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         }
         public ActionResult Index()
         {
+            //string randomReferralCode = CommonMethod.GetRandomReferralCode(8);
+             
             //EmailMessageVM emailModel = clsCommon.GetSampleEmailTemplate();
             //clsCommon.SendEmail2(emailModel);
             //clsCommon.SendEmail("prajapati.nileshbhai@gmail.com", "admin@shopping-saving.com", "Test Email", emailModel.Body);
