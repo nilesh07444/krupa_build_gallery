@@ -26,29 +26,30 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             ViewData["extramtlst"] = extramtlst;
 
             GeneralSettingVM objGenSetting = (from s in _db.tbl_GeneralSetting
-                                    select new GeneralSettingVM
-                                    {
-                                        GeneralSettingId = s.GeneralSettingId,
-                                        InitialPointCustomer = s.InitialPointCustomer,
-                                        ShippingMessage = s.ShippingMessage,
-                                        SMTPHost = s.SMTPHost,
-                                        SMTPPort = s.SMTPPort,
-                                        EnableSSL = s.EnableSSL,
-                                        SMTPEmail = s.SMTPEmail,
-                                        SMTPPwd = s.SMTPPwd,
-                                        AdminSMSNumber = s.AdminSMSNumber,
-                                        AdminEmail = s.AdminEmail,
-                                        FromEmail = s.FromEmail,
-                                        AdvertiseBannerImage = s.AdvertiseBannerImage,
-                                        ReturnPerInGodhra = s.ReturnPerInGodhra,
-                                        ReturnPerOutGodhra = s.ReturnPerOutGodhra,
-                                        ExchangePer = s.ExchangePer,
-                                        CashLimitPerOrder = s.CashLimitPerOrder,
-                                        CashLimitPerYear = s.CashLimitPerYear,
-                                        RazorPayKey = s.RazorPayKey,
-                                        RazorPaySecret = s.RazorPaySecret
-                                    }).FirstOrDefault();
-             
+                                              select new GeneralSettingVM
+                                              {
+                                                  GeneralSettingId = s.GeneralSettingId,
+                                                  InitialPointCustomer = s.InitialPointCustomer,
+                                                  ShippingMessage = s.ShippingMessage,
+                                                  SMTPHost = s.SMTPHost,
+                                                  SMTPPort = s.SMTPPort,
+                                                  EnableSSL = s.EnableSSL,
+                                                  SMTPEmail = s.SMTPEmail,
+                                                  SMTPPwd = s.SMTPPwd,
+                                                  AdminSMSNumber = s.AdminSMSNumber,
+                                                  AdminEmail = s.AdminEmail,
+                                                  FromEmail = s.FromEmail,
+                                                  AdvertiseBannerImage = s.AdvertiseBannerImage,
+                                                  ReturnPerInGodhra = s.ReturnPerInGodhra,
+                                                  ReturnPerOutGodhra = s.ReturnPerOutGodhra,
+                                                  ExchangePer = s.ExchangePer,
+                                                  CashLimitPerOrder = s.CashLimitPerOrder,
+                                                  CashLimitPerYear = s.CashLimitPerYear,
+                                                  RazorPayKey = s.RazorPayKey,
+                                                  RazorPaySecret = s.RazorPaySecret,
+                                                  ReferenceReferralDiscountPoints = s.ReferenceReferralDiscountPoints
+                                              }).FirstOrDefault();
+
             return View(objGenSetting);
         }
 
@@ -79,8 +80,10 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 decimal txtCashLimitPerOrder = string.IsNullOrEmpty(frm["txtCashLimitPerOrder"]) ? 0 : Convert.ToDecimal(frm["txtCashLimitPerOrder"]);
                 decimal txtCashLimitPerYear = string.IsNullOrEmpty(frm["txtCashLimitPerYear"]) ? 0 : Convert.ToDecimal(frm["txtCashLimitPerYear"]);
 
-                string RazorPaykey = frm["txtRazorPayKey"]; 
+                string RazorPaykey = frm["txtRazorPayKey"];
                 string RazorPayScrete = frm["txtRazorPaySecret"];
+                int txtReferralDiscountPoint = string.IsNullOrEmpty(frm["txtReferralDiscountPoint"]) ? 0 : Convert.ToInt32(frm["txtReferralDiscountPoint"]);
+
                 tbl_GeneralSetting objGenSetting = _db.tbl_GeneralSetting.FirstOrDefault();
                 objGenSetting.InitialPointCustomer = Convert.ToDecimal(intialpoints);
                 objGenSetting.ShippingMessage = shippingmsg;
@@ -99,7 +102,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 objGenSetting.ExchangePer = txtExchangePer;
                 objGenSetting.CashLimitPerOrder = txtCashLimitPerOrder;
                 objGenSetting.CashLimitPerYear = txtCashLimitPerYear;
-
+                objGenSetting.ReferenceReferralDiscountPoints = txtReferralDiscountPoint;
 
                 _db.SaveChanges();
                 return "Success";
@@ -164,7 +167,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 if (ModelState.IsValid)
                 {
                     long LoggedInUserId = Int64.Parse(clsAdminSession.UserID.ToString());
-                      
+
                     string fileName = string.Empty;
                     string path = Server.MapPath(ErrorMessage.AdvertiseDirectoryPath);
                     if (AdvertiseBannerImageFile != null)
@@ -176,12 +179,12 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     {
                         fileName = settingVM.AdvertiseBannerImage;
                     }
-                     
+
                     tbl_GeneralSetting objSetting = _db.tbl_GeneralSetting.FirstOrDefault();
                     objSetting.AdvertiseBannerImage = fileName;
-                      
+
                     _db.SaveChanges();
-                        
+
                     return RedirectToAction("Index");
 
                 }
