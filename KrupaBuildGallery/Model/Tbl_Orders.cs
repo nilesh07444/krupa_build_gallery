@@ -54,5 +54,9 @@ namespace KrupaBuildGallery.Model
         public string GSTNo { get; set; }
         public string Remarks { get; set; }
         public Nullable<bool> HasFreeItems { get; set; }
+        public Nullable<bool> HasPromo { get; set; }
+        public Nullable<long> PromoCodeId { get; set; }
+        public Nullable<decimal> PromoDiscount { get; set; }
+        public Nullable<decimal> PromoPercentage { get; set; }
     }
 }

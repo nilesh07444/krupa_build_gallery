@@ -678,6 +678,10 @@
           <Property Name="GSTNo" Type="nvarchar" MaxLength="100" />
           <Property Name="Remarks" Type="nvarchar(max)" />
           <Property Name="HasFreeItems" Type="bit" />
+          <Property Name="HasPromo" Type="bit" />
+          <Property Name="PromoCodeId" Type="bigint" />
+          <Property Name="PromoDiscount" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="PromoPercentage" Type="decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="tbl_PaymentHistory">
           <Key>
@@ -1312,6 +1316,10 @@
           <Property Name="GSTNo" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Remarks" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="HasFreeItems" Type="Boolean" />
+          <Property Name="HasPromo" Type="Boolean" />
+          <Property Name="PromoCodeId" Type="Int64" />
+          <Property Name="PromoDiscount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="PromoPercentage" Type="Decimal" Precision="18" Scale="2" />
         </EntityType>
         <EntityType Name="tbl_PaymentHistory">
           <Key>
@@ -2309,6 +2317,10 @@
           <EntitySetMapping Name="tbl_Orders">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_Orders">
               <MappingFragment StoreEntitySet="tbl_Orders">
+                <ScalarProperty Name="PromoPercentage" ColumnName="PromoPercentage" />
+                <ScalarProperty Name="PromoDiscount" ColumnName="PromoDiscount" />
+                <ScalarProperty Name="PromoCodeId" ColumnName="PromoCodeId" />
+                <ScalarProperty Name="HasPromo" ColumnName="HasPromo" />
                 <ScalarProperty Name="HasFreeItems" ColumnName="HasFreeItems" />
                 <ScalarProperty Name="Remarks" ColumnName="Remarks" />
                 <ScalarProperty Name="GSTNo" ColumnName="GSTNo" />

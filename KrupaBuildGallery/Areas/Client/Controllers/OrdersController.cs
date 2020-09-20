@@ -1352,5 +1352,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             return newhtmldata;
             //return "Receipt_" + objPymt.PaymentHistory_Id+".pdf";
         }
+
+
     }
 }
