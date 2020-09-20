@@ -551,32 +551,36 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 }
 
                 string PromoCheck = "";
-                DateTime dtnow = DateTime.UtcNow;
-                var objCop = _db.tbl_PromoCode.Where(o => o.PromoCode == objGen.PromoCode && o.IsActive == true && o.IsDeleted == false).FirstOrDefault();
-                if (objCop == null)
+                if(!string.IsNullOrEmpty(objGen.PromoCode))
                 {
-                    PromoCheck = "Invalid Promo Code";
-                }
-                else
-                {
-                    if (objCop.ExpiryDate >= dtnow)
+                    DateTime dtnow = DateTime.UtcNow;
+                    var objCop = _db.tbl_PromoCode.Where(o => o.PromoCode == objGen.PromoCode && o.IsActive == true && o.IsDeleted == false).FirstOrDefault();
+                    if (objCop == null)
                     {
-                        int TotalUsed = _db.tbl_Orders.Where(o => o.PromoCodeId == objCop.PromoCodeId).ToList().Count();
-                        if (TotalUsed >= objCop.TotalMaxUsage)
-                        {
-                            PromoCheck = "Promo Code Usage Over";
-                        }
-                        else
-                        {
-                            PromoCheck = "SuccessPromo";
-                        }
-
+                        PromoCheck = "Invalid Promo Code";
                     }
                     else
                     {
-                        PromoCheck = "Promo Code Expired";                     
+                        if (objCop.ExpiryDate >= dtnow)
+                        {
+                            int TotalUsed = _db.tbl_Orders.Where(o => o.PromoCodeId == objCop.PromoCodeId).ToList().Count();
+                            if (TotalUsed >= objCop.TotalMaxUsage)
+                            {
+                                PromoCheck = "Promo Code Usage Over";
+                            }
+                            else
+                            {
+                                PromoCheck = "SuccessPromo";
+                            }
+
+                        }
+                        else
+                        {
+                            PromoCheck = "Promo Code Expired";
+                        }
                     }
                 }
+              
                 if (isOutofStock == true)
                 {
                     response.AddError("OutofStock");
