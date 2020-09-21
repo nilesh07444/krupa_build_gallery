@@ -6,6 +6,8 @@
 @{
     ViewBag.Title = "Pincode List";
 
+    List<string> lstStates = ViewData["lstStates"] as List<string>;
+
     int counter = 1;
 }
 
@@ -38,7 +40,7 @@
                 <div class="col-lg-6">
                     <ol class="breadcrumb pull-right">
                         <li class="breadcrumb-item"><a href="/"><i data-feather="home"></i></a></li>
-                        <li class="breadcrumb-item active">Pincode/City/State List</li>
+                        <li class="breadcrumb-item active">Pincode-City-State List</li>
                     </ol>
                 </div>
             </div>
@@ -52,6 +54,25 @@
                 <h5>Pincode/City/State List</h5>
             </div>
             <div class="card-body vendor-table">
+
+                <h3>Filter:</h3>
+                <div class="row" style="margin-top:25px;border-bottom: 2px solid #f8f8f9;padding-bottom: 25px;margin-bottom: 10px;">
+
+                    <div class="col-sm-2">
+                        <label>States:</label>
+                        <select id="selectstate" class="form-control">
+                            @if (lstStates != null && lstStates.Count() > 0)
+                            {
+                                foreach (var stt in lstStates)
+                                {
+                                    <option value="@stt" @(ViewBag.SelectedState == stt ? "selected" : "")>@stt</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                     
+                </div>
+
                 @if (IsSA || objPermission.ManagePageContent >= (int)ModulePermission.Add)
                 {
                     <div class="btn-popup pull-right">
@@ -83,7 +104,7 @@
                                     <td>
                                         @if (IsSA || objPermission.ManagePageContent >= (int)ModulePermission.Edit)
                                         {
-                                            <a title="Edit" href="/admin/availablepincode/edit/@item.Id"><i class="fa fa-edit mr-2 font-success"></i></a>
+                                            <a title="Edit" href="/admin/pincodecitystate/edit/@item.Id"><i class="fa fa-edit mr-2 font-success"></i></a>
                                         }
                                         @if (IsSA || objPermission.ManagePageContent == (int)ModulePermission.Full)
                                         {
@@ -178,6 +199,13 @@
                 }
             });
         }
+    });
+
+    $(document).on("change", "#selectstate", function () {
+
+        var optionValue = $("#selectstate option:selected").val();
+        window.location.href = "/admin/pincodecitystate?state=" + optionValue;
+
     });
 
 </script>

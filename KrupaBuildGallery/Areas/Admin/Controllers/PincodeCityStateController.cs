@@ -20,11 +20,15 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         {
             _db = new krupagallarydbEntities();
         }
-        public ActionResult Index()
+        public ActionResult Index(string state)
         {
             List<PincodeCityStateVM> lstPincode = new List<PincodeCityStateVM>();
             try
             {
+                if (state == null)
+                {
+                    state = "Gujarat";
+                }
 
                 lstPincode = (from c in _db.tbl_PincodeCityState
                               select new PincodeCityStateVM
@@ -33,7 +37,12 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                   Pincode = c.Pincode,
                                   City = c.City,
                                   State = c.State
-                              }).OrderByDescending(x => x.Id).ToList();
+                              }).Where(x => x.State.ToLower() == state.ToLower()).OrderByDescending(x => x.Id).ToList();
+
+                List<string> lstStates = _db.tbl_PincodeCityState.Select(x => x.State).Distinct().OrderBy(x => x).ToList();
+                ViewData["lstStates"]  = lstStates;
+
+                ViewBag.SelectedState = state;
 
             }
             catch (Exception ex)
@@ -43,7 +52,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             return View(lstPincode);
         }
-         
+
         public ActionResult Add()
         {
             return View();
@@ -68,9 +77,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     }
 
                     tbl_PincodeCityState objPincode = new tbl_PincodeCityState();
-                    objPincode.Pincode = pincodeVM.Pincode; 
+                    objPincode.Pincode = pincodeVM.Pincode;
                     objPincode.City = pincodeVM.City;
-                    objPincode.State = pincodeVM.State; 
+                    objPincode.State = pincodeVM.State;
                     _db.tbl_PincodeCityState.Add(objPincode);
 
                     _db.SaveChanges();
@@ -86,7 +95,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             return View(pincodeVM);
         }
-         
+
         [HttpPost]
         public string DeletePincode(int Id)
         {
@@ -115,6 +124,6 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             return ReturnMessage;
         }
-         
+
     }
 }

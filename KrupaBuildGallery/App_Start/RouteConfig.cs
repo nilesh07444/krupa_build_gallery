@@ -27,9 +27,9 @@ namespace KrupaBuildGallery
             //}).DataTokens = new RouteValueDictionary(new { area = "Admin" }); // Client
             new
             {
-                controller = "HomePage", // HomePage
+                controller = "PincodeCityState", // HomePage
                 action = "Index"
-            }).DataTokens = new RouteValueDictionary(new { area = "Client" }); // Client
+            }).DataTokens = new RouteValueDictionary(new { area = "Admin" }); // Client
 
         }
     }

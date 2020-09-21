@@ -20,7 +20,7 @@
         objPermission = JsonConvert.DeserializeObject<UserPermissionVM>(strPermission, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
     }
     bool IsSA = (RoleId == 1 ? true : false);
-      List<SelectListItem> lstCats = ViewData["CategoryList"] as List<SelectListItem>;
+    List<SelectListItem> lstCats = ViewData["CategoryList"] as List<SelectListItem>;
 }
 
 <div class="page-body">
@@ -68,7 +68,7 @@
                                 }
                             }
                         </select>
-                    </div>                               
+                    </div>
                     <div class="col-sm-2">
                         <label>Status</label>
                         <select id="selectstatus" class="form-control">
@@ -84,10 +84,10 @@
                 </div>
                 @if (IsSA || objPermission.Product >= (int)ModulePermission.Add)
                 {
-            <div class="btn-popup pull-right">
-                <button type="button" class="btn btn-primary" id="btnAdd">Add Product</button>
-                <button type="button" class="btn btn-primary" id="btnImport">Import Product</button>
-            </div>
+                    <div class="btn-popup pull-right">
+                        <button type="button" class="btn btn-primary" id="btnAdd">Add Product</button>
+                        <button type="button" class="btn btn-primary" id="btnImport">Import Product</button>
+                    </div>
                 }
                 <table class="display" id="basic-1">
                     <thead>
@@ -212,7 +212,7 @@
         window.location.href = "/admin/product/add";
     });
       $(document).ready(function () {
-         $("#selectcat").val("@ViewBag.CatId");       
+         $("#selectcat").val("@ViewBag.CatId");
          $("#selectstatus").val('@ViewBag.Active');
     });
     //jQuery(document).ready(function () {
@@ -305,16 +305,16 @@
         }
        });
 
-    
+
     function filteritems() {
            var statusid = $("#selectstatus").val();
         var catid = $("#selectcat").val();
-        
+
         location.href = "/admin/product?CategoryId="+catid+"&Active="+statusid;
     }
 
        $(document).on("click", "#btnImport", function () {
-               // $("#importmodal").modal("show"); 
+               // $("#importmodal").modal("show");
          window.location.href = "/admin/ImportExcel/Product";
       });
 </script>
