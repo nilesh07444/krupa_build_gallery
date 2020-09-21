@@ -45,5 +45,9 @@ namespace KrupaBuildGallery
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Prefix { get; set; }
+        public string PromoCode { get; set; }
+        public string DiscountPerc { get; set; }
+        public string TotalOrderAmt { get; set; }
+        public string TotalExtraAmt { get; set; }
     }
 }

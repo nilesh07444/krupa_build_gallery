@@ -29,11 +29,41 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 string lastnm = objRegisterVM.LastName;
                 string mobileno = objRegisterVM.MobileNo;
                 string password = objRegisterVM.Password;
+                string ReferralCode = objRegisterVM.ReferallCode;
+                bool ReferlValid = true;
+                string ReferenceReferralCode = "";
+                long ReferenceReferralClientUserId = 0;
+                long ReferenceReferralDiscountPoints = 0;
+                if (!string.IsNullOrEmpty(ReferralCode))
+                {
+                    var objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
+
+               
+                    if (!string.IsNullOrWhiteSpace(ReferralCode))
+                    {
+                        tbl_ClientUsers referralCodeUser = _db.tbl_ClientUsers.Where(x => x.OwnReferralCode.ToLower() == ReferralCode.ToLower()).FirstOrDefault();
+                        if (referralCodeUser == null)
+                        {
+                            ReferlValid = false;
+                        }
+                        else
+                        {
+                            ReferenceReferralClientUserId = referralCodeUser.ClientUserId;
+                            ReferenceReferralCode = referralCodeUser.OwnReferralCode;
+                            ReferenceReferralDiscountPoints = objGensetting.ReferenceReferralDiscountPoints != null ? objGensetting.ReferenceReferralDiscountPoints.Value : 0;
+                        }
+                    }
+                }
                 tbl_ClientUsers objClientUsr = _db.tbl_ClientUsers.Where(o => o.Email.ToLower() == email.ToLower() && o.ClientRoleId == 1).FirstOrDefault();
                 if (objClientUsr != null)
                 {
                     response.IsError = true;
                     response.AddError("Your Account is already exist.Please go to Login or Contact to support");                  
+                }
+                else if(ReferlValid == false)
+                {
+                    response.IsError = true;
+                    response.AddError("Referral Code not found..");
                 }
                 else
                 {
@@ -53,6 +83,11 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     objClientUsr.Password = EncyptedPassword;
                     objClientUsr.Prefix = objRegisterVM.Prefix;
                     objClientUsr.Reference = objRegisterVM.Reference;
+                    string randomReferralCode = CommonMethod.GetRandomReferralCode(8);
+                    objClientUsr.OwnReferralCode = randomReferralCode;
+                    objClientUsr.ReferenceReferralClientUserId = ReferenceReferralClientUserId;
+                    objClientUsr.ReferenceReferralCode = ReferenceReferralCode;
+                    objClientUsr.ReferencePointReceived = (int)ReferenceReferralDiscountPoints;
                     _db.tbl_ClientUsers.Add(objClientUsr);
                     _db.SaveChanges();
 
@@ -85,7 +120,25 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         _db.tbl_PointDetails.Add(objPoint);
                         _db.SaveChanges();
                     }
-           
+
+                    // Give referral discount points to referral code user
+                    if (!string.IsNullOrWhiteSpace(ReferralCode))
+                    {
+                        if (ReferenceReferralDiscountPoints > 0)
+                        {
+                            tbl_PointDetails objPoint = new tbl_PointDetails();
+                            objPoint.ClientUserId = ReferenceReferralClientUserId;
+                            objPoint.ExpiryDate = DateTime.UtcNow.AddMonths(6);
+                            objPoint.CreatedBy = objclientuser.ClientUserId;
+                            objPoint.CreatedDate = DateTime.UtcNow;
+                            objPoint.UsedPoints = 0;
+                            objPoint.IsReferralPoints = true;
+                            objPoint.Points = objGensetting.ReferenceReferralDiscountPoints;
+                            _db.tbl_PointDetails.Add(objPoint);
+                            _db.SaveChanges();
+                        }
+                    }
+
                 }              
 
             }
@@ -108,11 +161,24 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             {
                 string MobileNum = objOtpVM.MobileNo;
                 tbl_ClientUsers objClientUsr = _db.tbl_ClientUsers.Where(o => o.MobileNo.ToLower() == MobileNum.ToLower() && o.ClientRoleId == 1).FirstOrDefault();
-
+                bool IsValidReferl = true;
+                if (!string.IsNullOrWhiteSpace(objOtpVM.ReferalCode))
+                {
+                    bool IsReferalCodeFound = _db.tbl_ClientUsers.Where(x => x.OwnReferralCode.ToLower() == objOtpVM.ReferalCode.ToLower()).Any();
+                    if (!IsReferalCodeFound)
+                    {
+                        IsValidReferl = false;
+                    }
+                }
                 if (objClientUsr != null)
                 {
                     response.IsError = true;
                     response.AddError("Your Account is already exist with this mobile number.Please go to Login or Contact to support");
+                }
+                else if(IsValidReferl == false)
+                {
+                    response.IsError = true;
+                    response.AddError("Referral Code is Invalid. Please enter valid referral code");
                 }
                 else
                 {

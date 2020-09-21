@@ -549,9 +549,45 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     }
 
                 }
+
+                string PromoCheck = "";
+                if(!string.IsNullOrEmpty(objGen.PromoCode))
+                {
+                    DateTime dtnow = DateTime.UtcNow;
+                    var objCop = _db.tbl_PromoCode.Where(o => o.PromoCode == objGen.PromoCode && o.IsActive == true && o.IsDeleted == false).FirstOrDefault();
+                    if (objCop == null)
+                    {
+                        PromoCheck = "Invalid Promo Code";
+                    }
+                    else
+                    {
+                        if (objCop.ExpiryDate >= dtnow)
+                        {
+                            int TotalUsed = _db.tbl_Orders.Where(o => o.PromoCodeId == objCop.PromoCodeId).ToList().Count();
+                            if (TotalUsed >= objCop.TotalMaxUsage)
+                            {
+                                PromoCheck = "Promo Code Usage Over";
+                            }
+                            else
+                            {
+                                PromoCheck = "SuccessPromo";
+                            }
+
+                        }
+                        else
+                        {
+                            PromoCheck = "Promo Code Expired";
+                        }
+                    }
+                }
+              
                 if (isOutofStock == true)
                 {
                     response.AddError("OutofStock");
+                }
+                else if(!string.IsNullOrEmpty(PromoCheck) && PromoCheck != "SuccessPromo")
+                {
+                    response.AddError(PromoCheck);
                 }
                 else
                 {
@@ -1436,10 +1472,17 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 long RoleId = Convert.ToInt64(objPlaceOrderVM.RoleId);
                 bool Iscashondelivery = false;
                 bool HasFreeItems = false;
+                bool HasPromoCode = false;
                 if (objPlaceOrderVM.HasFreeItems.ToLower() == "true")
                 {
                     HasFreeItems = true;
                 }
+
+                if(objPlaceOrderVM.HasPromoCode.ToLower() == "true")
+                {
+                    HasPromoCode = true;
+                }
+
                 decimal amtwallet = Convert.ToDecimal(objPlaceOrderVM.walletamtinorder);
                 decimal amtcredit = Convert.ToDecimal(objPlaceOrderVM.creditamtinorder);
                 decimal amtonline = Convert.ToDecimal(objPlaceOrderVM.onlineamtinorder);
@@ -1560,6 +1603,18 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
 
 
                     tbl_Orders objOrder = new tbl_Orders();
+                    objOrder.HasPromo = false;
+                    if (HasPromoCode == true)
+                    {
+                        var objPromo =  _db.tbl_PromoCode.Where(o => o.PromoCode == objPlaceOrderVM.PromoCode && o.IsActive == true && o.IsDeleted == false).FirstOrDefault();
+                        if(objPromo != null)
+                        {
+                            objOrder.PromoCodeId = objPromo.PromoCodeId;
+                            objOrder.HasPromo = true;
+                            objOrder.PromoDiscount = Convert.ToDecimal(objPlaceOrderVM.PromoDiscount);
+                            objOrder.PromoPercentage = objPromo.DiscountPercentage;
+                        }                       
+                    }
                     objOrder.ClientUserId = clientusrid;
                     decimal ordramt = Convert.ToDecimal(objPlaceOrderVM.Orderamount);
                     decimal shippingcharge = 0;
@@ -2232,6 +2287,18 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                             }
                             paymentmethod = string.Join(",", lstpymenymthod);
                             tbl_Orders objOrder = new tbl_Orders();
+                            objOrder.HasPromo = false;
+                            if (HasPromoCode == true)
+                            {
+                                var objPromo = _db.tbl_PromoCode.Where(o => o.PromoCode == objPlaceOrderVM.PromoCode && o.IsActive == true && o.IsDeleted == false).FirstOrDefault();
+                                if (objPromo != null)
+                                {
+                                    objOrder.PromoCodeId = objPromo.PromoCodeId;
+                                    objOrder.HasPromo = true;
+                                    objOrder.PromoDiscount = Convert.ToDecimal(objPlaceOrderVM.PromoDiscount);
+                                    objOrder.PromoPercentage = objPromo.DiscountPercentage;
+                                }
+                            }
                             objOrder.ClientUserId = clientusrid;
                             objOrder.AdvancePaymentRecieved = advncpay;
                             objOrder.OrderAmount = ordramt;
@@ -3145,7 +3212,61 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             return response;
         }
 
-  
+        [Route("CheckPromoCode"), HttpPost]
+        public ResponseDataModel<GeneralVM> CheckPromoCode(GeneralVM objGen)
+        {
+            ResponseDataModel<GeneralVM> response = new ResponseDataModel<GeneralVM>();
+            GeneralVM objGenn = new GeneralVM();
+            try
+            {
+                string PromoCode = objGen.PromoCode;
+                decimal TotlOrder = Convert.ToDecimal(objGen.TotalOrderAmt);
+                objGenn.DiscountPerc = "0";
+                objGenn.TotalExtraAmt = "0";
+                DateTime dtNow = DateTime.UtcNow;
+                var objCop = _db.tbl_PromoCode.Where(o => o.PromoCode == PromoCode && o.IsActive == true && o.IsDeleted == false).FirstOrDefault();
+                if (objCop == null)
+                {
+                    response.AddError("Invalid Promo Code"); 
+                }
+                else
+                {
+                    if (objCop.ExpiryDate >= dtNow)
+                    {
+                        int TotalUsed = _db.tbl_Orders.Where(o => o.PromoCodeId == objCop.PromoCodeId).ToList().Count();
+                        if (TotalUsed >= objCop.TotalMaxUsage)
+                        {
+                            response.AddError("Promo Code Usage Over"); 
+                        }
+                        else
+                        {
+                            objGenn.DiscountPerc = Convert.ToString(objCop.DiscountPercentage);
+                            decimal disc = (TotlOrder * Convert.ToDecimal(objCop.DiscountPercentage)) / 100;
+                            decimal aftrdisc = TotlOrder - disc;
+                            var objtbl_ExtraAmount = _db.tbl_ExtraAmount.Where(o => o.AmountFrom <= aftrdisc && o.AmountTo >= aftrdisc).FirstOrDefault();
+                            if (objtbl_ExtraAmount != null)
+                            {
+                                objGenn.TotalExtraAmt = objtbl_ExtraAmount.ExtraAmount.Value.ToString();
+                            }
+                        }
+
+                    }
+                    else
+                    {
+                        response.AddError("Promo Code Expired"); 
+                    }
+                }
+
+                response.Data = objGenn;
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+        }
 
     }
 }
