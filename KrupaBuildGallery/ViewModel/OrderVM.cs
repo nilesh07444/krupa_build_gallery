@@ -47,5 +47,7 @@ namespace KrupaBuildGallery.ViewModel
         public string Remarks { get; set; }
         public bool HasFreeItems { get; set; }
         public string orderstring { get; set; }
+        public decimal PromoDiscount { get; set; }
+        public bool HasPromo { get; set; } 
     }
 }

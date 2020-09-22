@@ -583,7 +583,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             ShipmentCharge = p.ShippingCharge.HasValue ? p.ShippingCharge.Value : 0,
                             ShippingStatus = p.ShippingStatus.HasValue ? p.ShippingStatus.Value : 2,
                             ExtraAmount = p.ExtraAmount.HasValue ? p.ExtraAmount.Value : 0,
-                            IsCashOnDelivery = p.IsCashOnDelivery.HasValue ? p.IsCashOnDelivery.Value : false
+                            IsCashOnDelivery = p.IsCashOnDelivery.HasValue ? p.IsCashOnDelivery.Value : false,
+                            HasPromo = p.HasPromo.HasValue ? p.HasPromo.Value : false,
+                            PromoDiscount = p.PromoDiscount.HasValue ? p.PromoDiscount.Value : 0
                         }).OrderByDescending(x => x.OrderDate).FirstOrDefault();
 
            
@@ -751,6 +753,10 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 }
                 SubTotal = TotalFinal;
                 TotalFinal = TotalFinal + objOrder.ShipmentCharge + objOrder.ExtraAmount;
+                if (objOrder.HasPromo)
+                {
+                    TotalFinal = TotalFinal - objOrder.PromoDiscount;
+                }
                 ItemHtmls = srBuild.ToString();
 
                 string GST_HTML_DATA = getGSTCalculationHtmlDataByOrder(lstOrderItms, objOrder.OrderShipState != "Gujarat");
@@ -759,11 +765,16 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 {
                     GSTNo = "GST No." + objOrder.GSTNo;
                 }
+                string shwpromo = "";
+                if (!objOrder.HasPromo)
+                {
+                    shwpromo = "hidepromo";
+                }
                 double RoundAmt = CommonMethod.GetRoundValue(Convert.ToDouble(TotalFinal));
                 double RoundedAmt = CommonMethod.GetRoundedValue(Convert.ToDouble(TotalFinal));
                 string amtwrd = CommonMethod.ConvertToWords(RoundAmt.ToString());
                 string address = objOrder.OrderShipAddress + "<br/>" + objOrder.OrderShipCity + "-" + objOrder.OrderPincode + "<br/>" + objOrder.OrderShipState;
-                newhtmldata = htmldata.Replace("--INVOICENO--", InvoiceNo).Replace("--GSTTITLE--", GSTTitle).Replace("--GSTNo--", GSTNo).Replace("--INVOICEDATE--", DateOfInvoice).Replace("--ORDERNO--", orderNo).Replace("--CLIENTUSERNAME--", ClientUserName).Replace("--CLIENTUSERADDRESS--", address).Replace("--CLIENTUSEREMAIL--", objOrder.ClientEmail).Replace("--CLIENTUSERMOBILE--", objOrder.ClientMobileNo).Replace("--ITEMLIST--", ItemHtmls).Replace("--GSTCALCULATIONDATA--", GST_HTML_DATA).Replace("--SHIPPING--", Math.Round(objOrder.ShipmentCharge, 2).ToString()).Replace("--SUBTOTAL--", Math.Round(SubTotal, 2).ToString()).Replace("--TOTAL--", Math.Round(TotalFinal, 2).ToString()).Replace("--EXTRAAMOUNT--", Math.Round(objOrder.ExtraAmount, 2).ToString()).Replace("--ROUNDOFF--", Math.Round(RoundedAmt, 2).ToString()).Replace("--ROUNDTOTAL--", Math.Round(RoundAmt, 2).ToString()).Replace("--AMTWORD--", amtwrd).Replace("--PAYMENTMODE--","Payment: "+ PaymentMode);
+                newhtmldata = htmldata.Replace("--INVOICENO--", InvoiceNo).Replace("--GSTTITLE--", GSTTitle).Replace("--GSTNo--", GSTNo).Replace("--INVOICEDATE--", DateOfInvoice).Replace("--ORDERNO--", orderNo).Replace("--CLIENTUSERNAME--", ClientUserName).Replace("--CLIENTUSERADDRESS--", address).Replace("--CLIENTUSEREMAIL--", objOrder.ClientEmail).Replace("--CLIENTUSERMOBILE--", objOrder.ClientMobileNo).Replace("--ITEMLIST--", ItemHtmls).Replace("--GSTCALCULATIONDATA--", GST_HTML_DATA).Replace("--SHIPPING--", Math.Round(objOrder.ShipmentCharge, 2).ToString()).Replace("--SUBTOTAL--", Math.Round(SubTotal, 2).ToString()).Replace("--TOTAL--", Math.Round(TotalFinal, 2).ToString()).Replace("--EXTRAAMOUNT--", Math.Round(objOrder.ExtraAmount, 2).ToString()).Replace("--ROUNDOFF--", Math.Round(RoundedAmt, 2).ToString()).Replace("--ROUNDTOTAL--", Math.Round(RoundAmt, 2).ToString()).Replace("--AMTWORD--", amtwrd).Replace("--PAYMENTMODE--","Payment: "+ PaymentMode).Replace("--PROMODISC--", Math.Round(objOrder.PromoDiscount, 2).ToString()).Replace("--DISPPROMO--", shwpromo);
 
             }
 
@@ -1633,7 +1644,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             ShipmentCharge = p.ShippingCharge.HasValue ? p.ShippingCharge.Value : 0,
                             ShippingStatus = p.ShippingStatus.HasValue ? p.ShippingStatus.Value : 2,
                             ExtraAmount = p.ExtraAmount.HasValue ? p.ExtraAmount.Value : 0,
-                            IsCashOnDelivery = p.IsCashOnDelivery.HasValue ? p.IsCashOnDelivery.Value : false
+                            IsCashOnDelivery = p.IsCashOnDelivery.HasValue ? p.IsCashOnDelivery.Value : false,
+                            HasPromo = p.HasPromo.HasValue ? p.HasPromo.Value : false,
+                            PromoDiscount = p.PromoDiscount.HasValue ? p.PromoDiscount.Value : 0
                         }).OrderByDescending(x => x.OrderDate).FirstOrDefault();
 
             if (objOrder != null)
@@ -1800,6 +1813,10 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 }
                 SubTotal = TotalFinal;
                 TotalFinal = TotalFinal + objOrder.ShipmentCharge + objOrder.ExtraAmount;
+                if (objOrder.HasPromo)
+                {
+                    TotalFinal = TotalFinal - objOrder.PromoDiscount;
+                }
                 ItemHtmls = srBuild.ToString();
 
                 string GST_HTML_DATA = getGSTCalculationHtmlDataByOrder(lstOrderItms, objOrder.OrderShipState != "Gujarat");
@@ -1808,10 +1825,15 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 {
                     GSTNo = "GST No." + objOrder.GSTNo;
                 }
+                string shwpromo = "";
+                if (!objOrder.HasPromo)
+                {
+                    shwpromo = "hidepromo";
+                }
                 double RoundAmt = CommonMethod.GetRoundValue(Convert.ToDouble(TotalFinal));
                 double RoundedAmt = CommonMethod.GetRoundedValue(Convert.ToDouble(TotalFinal));
                 string address = objOrder.OrderShipAddress + "<br/>" + objOrder.OrderShipCity + "-" + objOrder.OrderPincode + "<br/>" + objOrder.OrderShipState;
-                newhtmldata = htmldata.Replace("--INVOICENO--", InvoiceNo).Replace("--GSTTITLE--", GSTTitle).Replace("--GSTNo--", GSTNo).Replace("--INVOICEDATE--", DateOfInvoice).Replace("--ORDERNO--", orderNo).Replace("--CLIENTUSERNAME--", ClientUserName).Replace("--CLIENTUSERADDRESS--", address).Replace("--CLIENTUSEREMAIL--", objOrder.ClientEmail).Replace("--CLIENTUSERMOBILE--", objOrder.ClientMobileNo).Replace("--ITEMLIST--", ItemHtmls).Replace("--GSTCALCULATIONDATA--", GST_HTML_DATA).Replace("--SHIPPING--", Math.Round(objOrder.ShipmentCharge, 2).ToString()).Replace("--SUBTOTAL--", Math.Round(SubTotal, 2).ToString()).Replace("--TOTAL--", Math.Round(TotalFinal, 2).ToString()).Replace("--EXTRAAMOUNT--", Math.Round(objOrder.ExtraAmount, 2).ToString()).Replace("--ROUNDOFF--", Math.Round(RoundedAmt, 2).ToString()).Replace("--ROUNDTOTAL--", Math.Round(RoundAmt, 2).ToString()).Replace("--PAYMENTMODE--", "Payment: " + PaymentMode); ;
+                newhtmldata = htmldata.Replace("--INVOICENO--", InvoiceNo).Replace("--GSTTITLE--", GSTTitle).Replace("--GSTNo--", GSTNo).Replace("--INVOICEDATE--", DateOfInvoice).Replace("--ORDERNO--", orderNo).Replace("--CLIENTUSERNAME--", ClientUserName).Replace("--CLIENTUSERADDRESS--", address).Replace("--CLIENTUSEREMAIL--", objOrder.ClientEmail).Replace("--CLIENTUSERMOBILE--", objOrder.ClientMobileNo).Replace("--ITEMLIST--", ItemHtmls).Replace("--GSTCALCULATIONDATA--", GST_HTML_DATA).Replace("--SHIPPING--", Math.Round(objOrder.ShipmentCharge, 2).ToString()).Replace("--SUBTOTAL--", Math.Round(SubTotal, 2).ToString()).Replace("--TOTAL--", Math.Round(TotalFinal, 2).ToString()).Replace("--EXTRAAMOUNT--", Math.Round(objOrder.ExtraAmount, 2).ToString()).Replace("--ROUNDOFF--", Math.Round(RoundedAmt, 2).ToString()).Replace("--ROUNDTOTAL--", Math.Round(RoundAmt, 2).ToString()).Replace("--PAYMENTMODE--", "Payment: " + PaymentMode).Replace("--PROMODISC--", Math.Round(objOrder.PromoDiscount, 2).ToString()).Replace("--DISPPROMO--", shwpromo);
 
             }
 

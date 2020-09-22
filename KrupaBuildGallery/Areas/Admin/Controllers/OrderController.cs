@@ -110,7 +110,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             OrderTypeId = p.OrderType.HasValue ? p.OrderType.Value : 1,
                             ExtraAmount = p.ExtraAmount.HasValue ? p.ExtraAmount.Value : 0,
                             AdvancePay = p.AdvancePaymentRecieved.HasValue ? p.AdvancePaymentRecieved.Value : 0,
-                            Remarks = p.Remarks
+                            Remarks = p.Remarks,
+                            HasPromo = p.HasPromo.HasValue ? p.HasPromo.Value : false,
+                            PromoDiscount = p.PromoDiscount.HasValue ? p.PromoDiscount.Value : 0
                         }).OrderByDescending(x => x.OrderDate).FirstOrDefault();
             if (objOrder != null)
             {

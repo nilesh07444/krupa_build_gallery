@@ -9,6 +9,7 @@
     decimal SubTotl = 0;
     decimal NetTotal = 0;
     bool IsFree = Model.HasFreeItems;
+    bool HasPrmo = Model.HasPromo;
 }
 
 <style>
@@ -285,6 +286,7 @@
                         </div>
                     </div>
                     <input type="hidden" id="hdnHasFreeItems" value='@IsFree.ToString()' />
+                    <input type="hidden" id="hdnHasPromo" value='@HasPrmo.ToString()' />
                     <div class="card-header">
                         <h5>Order Items</h5>
                     </div>
@@ -360,7 +362,7 @@
                                                     <td>₹ @objorderItem.FinalAmt</td>
                                                     <td><span class="badge @stauscolor">@objorderItem.ItemStatustxt</span></td>
                                                     <td>
-                                                        @if (((objorderItem.ItemStatus == 1 || objorderItem.ItemStatus == 2) && Model.OrderTypeId == 1 && Model.HasFreeItems == false) || objorderItem.ItemStatus == 4)
+                                                        @if (((objorderItem.ItemStatus == 1 || objorderItem.ItemStatus == 2) && Model.OrderTypeId == 1 && Model.HasFreeItems == false && Model.HasPromo == false) || objorderItem.ItemStatus == 4)
                                                         {
                                                             <a href="javascript:void(0)" onclick="itemaction('@objorderItem.OrderItemId','@Model.OrderTypeId','@objorderItem.ItemStatus','@objorderItem.IsReturnable.ToString()','true');"><i class="fa fa-wrench font-success"></i></a>
                                                         }
@@ -375,61 +377,60 @@
                                                         }
                                                     </td>
                                                 </tr>
-                                            }                                            
-                                <tr>
-                                    <td>
-                                        @if (!string.IsNullOrEmpty(objorderItem.ItemImg))
-                                        {
-                                            if (File.Exists(Server.MapPath("~/Images/ProductItemMedia/" + objorderItem.ItemImg)))
-                                            {
-                                                <img src="~/Images/ProductItemMedia/@objorderItem.ItemImg" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
                                             }
-                                            else
-                                            {
-                                                <img src="@ErrorMessage.DefaultImagePath" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
-                                            }
-                                        }
-                                        else
-                                        {
-                                            <img src="@ErrorMessage.DefaultImagePath" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
-                                        }
-                                    </td>
-                                    <td>@objorderItem.ItemName - @objorderItem.VariantQtytxt</td>
-                                    <td>@objorderItem.Sku</td>
-                                    <td>₹ @Math.Round(objorderItem.Price, 2)</td>
-                                    <td>@objorderItem.Qty</td>
-                                    <td>₹ @objorderItem.Discount</td>
-                                    <td>₹ @objorderItem.GSTAmt</td>
-                                    @if (objorderItem.IsCombo == false)
-                                    {
-                                        <td>₹ @Totl</td>
-                                        <td><span class="badge @stauscolor">@objorderItem.ItemStatustxt</span></td>
-                                        <td>
-                                            @if (((objorderItem.ItemStatus == 1 || objorderItem.ItemStatus == 2) && Model.OrderTypeId == 1 && Model.HasFreeItems == false) || objorderItem.ItemStatus == 4)
-                                            {
-                                                <a href="javascript:void(0)" onclick="itemaction('@objorderItem.OrderItemId','@Model.OrderTypeId','@objorderItem.ItemStatus','@objorderItem.IsReturnable.ToString()','false');"><i class="fa fa-wrench font-success"></i></a>
-                                            }
+                                            <tr>
+                                                <td>
+                                                    @if (!string.IsNullOrEmpty(objorderItem.ItemImg))
+                                                    {
+                                                        if (File.Exists(Server.MapPath("~/Images/ProductItemMedia/" + objorderItem.ItemImg)))
+                                                        {
+                                                            <img src="~/Images/ProductItemMedia/@objorderItem.ItemImg" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                                        }
+                                                        else
+                                                        {
+                                                            <img src="@ErrorMessage.DefaultImagePath" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <img src="@ErrorMessage.DefaultImagePath" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                                    }
+                                                </td>
+                                                <td>@objorderItem.ItemName - @objorderItem.VariantQtytxt</td>
+                                                <td>@objorderItem.Sku</td>
+                                                <td>₹ @Math.Round(objorderItem.Price, 2)</td>
+                                                <td>@objorderItem.Qty</td>
+                                                <td>₹ @objorderItem.Discount</td>
+                                                <td>₹ @objorderItem.GSTAmt</td>
+                                                @if (objorderItem.IsCombo == false)
+                                                {
+                                                    <td>₹ @Totl</td>
+                                                    <td><span class="badge @stauscolor">@objorderItem.ItemStatustxt</span></td>
+                                                    <td>
+                                                        @if (((objorderItem.ItemStatus == 1 || objorderItem.ItemStatus == 2) && Model.OrderTypeId == 1 && Model.HasFreeItems == false && Model.HasPromo == false) || objorderItem.ItemStatus == 4)
+                                                        {
+                                                            <a href="javascript:void(0)" onclick="itemaction('@objorderItem.OrderItemId','@Model.OrderTypeId','@objorderItem.ItemStatus','@objorderItem.IsReturnable.ToString()','false');"><i class="fa fa-wrench font-success"></i></a>
+                                                        }
 
-                                            @if (objorderItem.ItemStatus != 1 && objorderItem.ItemStatus != 2 && objorderItem.ItemStatus != 3 && objorderItem.ItemStatus != 5)
-                                            {
-                                                <a href="javascript:void(0)" onclick="ratingreview('@objorderItem.OrderItemId');" style="margin-left:15px;">Rate it</a>
-                                            }
-                                            @if (objorderItem.IsDeleted == true && (objorderItem.ItemStatus == 5 || objorderItem.ItemStatus == 6 || objorderItem.ItemStatus == 8))
-                                            {
-                                                <a href="javascript:void(0);" onclick="invoiceprintItem('@objorderItem.OrderItemId','@objorderItem.OrderId');" title="Print Invoice"><i class="fa fa-file font-success"></i></a>
-                                            }
-                                        </td>
-                                    }
-                                    else
-                                    {
-                                        <td colspan="3">
-
-                                        </td>
-                                    }
-
+                                                        @if (objorderItem.ItemStatus != 1 && objorderItem.ItemStatus != 2 && objorderItem.ItemStatus != 3 && objorderItem.ItemStatus != 5)
+                                                        {
+                                                            <a href="javascript:void(0)" onclick="ratingreview('@objorderItem.OrderItemId');" style="margin-left:15px;">Rate it</a>
+                                                        }
+                                                        @if (objorderItem.IsDeleted == true && (objorderItem.ItemStatus == 5 || objorderItem.ItemStatus == 6 || objorderItem.ItemStatus == 8))
+                                                        {
+                                                            <a href="javascript:void(0);" onclick="invoiceprintItem('@objorderItem.OrderItemId','@objorderItem.OrderId');" title="Print Invoice"><i class="fa fa-file font-success"></i></a>
+                                                        }
+                                                    </td>
+                                                }
+                                                else
+                                                {
+                                                    <td colspan="3">
+                                                    </td>
+                                                }
 
 
-                                </tr>
+
+                                            </tr>
                                         }
 
                                     }
@@ -437,6 +438,11 @@
                                         decimal NetTotals = Math.Round(Model.OrderAmount + Model.ShipmentCharge + Model.ExtraAmount, 2);
                                         double RoundAmtTotl = CommonMethod.GetRoundValue(Convert.ToDouble(NetTotals));
                                         double RoundedAmtTotl = CommonMethod.GetRoundedValue(Convert.ToDouble(NetTotals));
+                                        decimal subtotl = Model.OrderAmount;
+                                        if (Model.HasPromo)
+                                        {
+                                            subtotl = subtotl + Model.PromoDiscount;
+                                        }
                                     }
                                     <tr>
                                         <td></td>
@@ -447,10 +453,25 @@
                                         <td></td>
                                         <td>Sub Total</td>
 
-                                        <td>₹ @Model.OrderAmount</td>
+                                        <td>₹ @subtotl</td>
                                         <td></td>
                                         <td></td>
                                     </tr>
+                                    @if (Model.HasPromo)
+                                    {
+                                        <tr>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                            <td>Promo Discount</td>
+                                            <td>₹ @Model.PromoDiscount</td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    }
                                     <tr>
                                         <td></td>
                                         <td></td>
@@ -812,7 +833,9 @@
 
     function itemaction(ordritmid, ordertypeid, itmstatusid, isreturnable, iscombo) {
         var hsFree = $("#hdnHasFreeItems").val().toLowerCase();
-        if (isreturnable != "True" || itmstatusid != "4" || ordertypeid == "2" || iscombo == 'true' || hsFree == 'true' || rlid == '2') {
+        var hspromo = $("#hdnHasPromo").val().toLowerCase();
+        
+        if (isreturnable != "True" || itmstatusid != "4" || ordertypeid == "2" || iscombo == 'true' || hsFree == 'true' || hspromo == 'true' || rlid == '2') {
             $("#itmstatusselect option[value=6]").hide();
         }
         else {
@@ -828,7 +851,7 @@
 
         if (itmstatusid == "4" && ordertypeid == "1") {
             $("#itmstatusselect option[value=7]").show();
-            if (iscombo == 'true' || hsFree == 'true' || rlid == '2') {
+            if (iscombo == 'true' || hsFree == 'true' || hspromo == 'true' ||  rlid == '2') {
                 $("#itmstatusselect option[value=8]").hide();
             }
             else {
