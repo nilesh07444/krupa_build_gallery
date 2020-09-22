@@ -173,6 +173,21 @@
                                 <div class="form-text-row">₹ @RoundAmt</div>
                             </div>
                         </div>
+                        @if (Model.HasPromo)
+                        {
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <div class="label-wrapper"><label class="control-label">Promo Discount:</label></div>
+                                </div>
+                                <div class="col-md-9">
+                                    @{
+                                        double promoamt = CommonMethod.GetRoundValue(Convert.ToDouble(Model.PromoDiscount));
+                                    }
+                                    <div class="form-text-row">₹ @promoamt</div>
+                                </div>
+                            </div>
+                        }
+
                         @if (Model.WalletAmtUsed > 0)
                         {
                             <div class="form-group">
@@ -309,7 +324,7 @@
 
                             </div>
                         </div>
-                        
+
                         <div class="form-group">
                             <div class="col-md-3">
                                 <div class="label-wrapper"><label class="control-label">Remarks</label></div>

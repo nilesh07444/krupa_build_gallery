@@ -49,5 +49,9 @@ namespace KrupaBuildGallery
         public string DiscountPerc { get; set; }
         public string TotalOrderAmt { get; set; }
         public string TotalExtraAmt { get; set; }
+
+        public List<FreeOfferSubItems> FreeItems { get; set; }
+        public bool HasFreeItems { get; set; }
+        public string FreeOfferId { get; set; }
     }
 }

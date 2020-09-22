@@ -3248,6 +3248,31 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                             {
                                 objGenn.TotalExtraAmt = objtbl_ExtraAmount.ExtraAmount.Value.ToString();
                             }
+                            DateTime dtCurrentDateTime = DateTime.UtcNow;
+                            tbl_FreeOffers objfreeoffer = _db.tbl_FreeOffers.Where(o => o.OfferStartDate <= dtCurrentDateTime && o.OfferEndDate >= dtCurrentDateTime && o.OrderAmountFrom <= aftrdisc && o.OrderAmountTo >= aftrdisc && o.IsDeleted == false).FirstOrDefault();
+                            List<FreeOfferSubItems> lstFreeItemss = new List<FreeOfferSubItems>();
+                            objGenn.HasFreeItems = false;
+                            objGenn.FreeOfferId = "0";
+                            if (objfreeoffer != null)
+                            {
+                                lstFreeItemss = (from c in _db.tbl_FreeOfferItems
+                                                 join i in _db.tbl_ProductItems on c.ProductItemId equals i.ProductItemId
+                                                 join v in _db.tbl_ItemVariant on c.VariantItemId equals v.VariantItemId
+                                                 where c.FreeOfferId == objfreeoffer.FreeOfferId
+                                                 select new FreeOfferSubItems
+                                                 {
+                                                     ProductItemId = i.ProductItemId,
+                                                     CategoryId = i.CategoryId,
+                                                     ProductId = i.ProductId,
+                                                     Sub_ProductItemName = i.ItemName,
+                                                     VarintId = c.VariantItemId.Value,
+                                                     Qty = c.Qty,
+                                                     VarintNm = v.UnitQty
+                                                 }).ToList();
+                                objGenn.HasFreeItems = true;
+                                objGenn.FreeOfferId = objfreeoffer.FreeOfferId.ToString();
+                            }
+                            objGenn.FreeItems = lstFreeItemss;
                         }
 
                     }
