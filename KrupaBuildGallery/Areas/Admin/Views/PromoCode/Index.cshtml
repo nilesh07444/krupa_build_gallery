@@ -51,7 +51,7 @@
                             <th>Total Max Usage</th>
                             <th>Discount Perc (%)</th>
                             <th>Expiry Date</th>
-
+                            <th>Promo Used Count</th>
                             <th width="10%;">Active</th>
                             <th width="10%;">Action</th>
                         </tr>
@@ -62,27 +62,27 @@
                         {
                             foreach (PromoCodeVM obj in Model)
                             {
-                                <tr class="grade">
-                                    <td>@counter.</td>
-                                    <td>@obj.PromoCode</td>
-                                    <td>@obj.TotalMaxUsage</td>
-                                    <td>@obj.DiscountPercentage %</td>
-                                    <td>@Convert.ToDateTime(obj.dtExpiryDate).ToString("dd/MM/yyyy")</td>
+                        <tr class="grade">
+                            <td>@counter.</td>
+                            <td>@obj.PromoCode</td>
+                            <td>@obj.TotalMaxUsage</td>
+                            <td>@obj.DiscountPercentage %</td>
+                            <td>@Convert.ToDateTime(obj.dtExpiryDate).ToString("dd/MM/yyyy")</td>
+                            <td><a href="/admin/promocode/used/@obj.PromoCodeId"> @obj.TotalUsedByUsers </a></td>
+                            @if (obj.IsActive == true)
+                            {
+                                <td><span class="badge badge-success" style="cursor:pointer;" title="Click to Inactive" onclick="fnChangeStatus('@obj.PromoCodeId','InActive');">Active</span></td>
+                            }
+                            else
+                            {
+                                <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@obj.PromoCodeId','Active');">InActive</span></td>
+                            }
 
-                                    @if (obj.IsActive == true)
-                                    {
-                                        <td><span class="badge badge-success" style="cursor:pointer;" title="Click to Inactive" onclick="fnChangeStatus('@obj.PromoCodeId','InActive');">Active</span></td>
-                                    }
-                                    else
-                                    {
-                                        <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@obj.PromoCodeId','Active');">InActive</span></td>
-                                    }
-
-                                    <td>
-                                        <a title="Edit" href="/admin/Promocode/edit/@obj.PromoCodeId"><i class="fa fa-edit mr-2 font-success"></i></a>
-                                        <a title="Delete" href="javascript:void(0);" onclick="fnDeletePromoCode('@obj.PromoCodeId')"><i class="fa fa-trash font-danger"></i></a>
-                                    </td>
-                                </tr>
+                            <td>
+                                <a title="Edit" href="/admin/Promocode/edit/@obj.PromoCodeId"><i class="fa fa-edit mr-2 font-success"></i></a>
+                                <a title="Delete" href="javascript:void(0);" onclick="fnDeletePromoCode('@obj.PromoCodeId')"><i class="fa fa-trash font-danger"></i></a>
+                            </td>
+                        </tr>
                                 counter++;
                             }
                         }

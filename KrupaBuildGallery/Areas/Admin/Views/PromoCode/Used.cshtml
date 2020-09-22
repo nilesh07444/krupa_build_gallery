@@ -1,0 +1,130 @@
+﻿@model PromoCodeVM
+@{
+    ViewBag.Title = "PromoCode";
+
+    int counter = 1;
+}
+
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="page-header-left">
+                        <h3>
+                            @Model.PromoCode - Promo Used List
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item active">@Model.PromoCode - Promo Used List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h5>@Model.PromoCode - Promo Used List</h5>
+            </div>
+            <div class="card-body vendor-table">
+
+                <div class="row">
+                    
+                    <div class="col-xl-12">
+                        <div class="card tab2-card">
+                            <div class="card-body">
+                                <ul class="nav nav-tabs nav-material" id="top-tab" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active show" id="top-profile-tab" data-toggle="tab" href="#top-profile" role="tab" aria-controls="top-profile" aria-selected="true"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user mr-2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>Promo Code Details</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content" id="top-tabContent">
+                                    <div class="tab-pane fade active show" id="top-profile" role="tabpanel" aria-labelledby="top-profile-tab">
+                                        
+                                        <div class="table-responsive profile-table">
+                                            <table class="table table-responsive">
+                                                <tbody>
+                                                    <tr>
+                                                        <td>Promo Code:</td>
+                                                        <td>@Model.PromoCode</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Discount Percentage:</td>
+                                                        <td>@Model.DiscountPercentage</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Expiry Date:</td>
+                                                        <td>@Model.ExpiryDate</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Total Max Usage:</td>
+                                                        <td>@Model.TotalMaxUsage</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td>Total Promo Used:</td>
+                                                        <td>@Model.TotalUsedByUsers</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <table class="display" id="basic-1">
+                    <thead>
+                        <tr>
+                            <th width="5%;">#</th>
+                            <th>User</th>
+                            <th>Mobile No</th>
+                            <th>Client/Distributer</th>
+                            <th>Order No</th>
+                            <th>Promo Discount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @if (Model != null && Model.lstPromoUsedDetail.Count > 0)
+                        {
+                            foreach (PromoUsedDetailVM obj in Model.lstPromoUsedDetail)
+                            {
+                        <tr class="grade">
+                            <td>@counter.</td>
+                            <td>@obj.UserName</td>
+                            <td>@obj.MobileNo</td>
+                            <td>@(obj.RoleId == 1 ? "Customer" : "Distributer")</td>
+                            <td>@obj.OrderNo</td>
+                            <td>@obj.PromoDiscount</td>
+                        </tr>
+                                counter++;
+                            }
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+</div>
+
+<script>
+
+    jQuery(document).ready(function () {
+        jQuery('html, body').animate({ scrollTop: 0 }, 1000);
+    });
+
+</script>

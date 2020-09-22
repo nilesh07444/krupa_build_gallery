@@ -9,7 +9,6 @@ using KrupaBuildGallery.Helper;
 using KrupaBuildGallery.Model;
 using KrupaBuildGallery.ViewModel;
 
-
 namespace KrupaBuildGallery.Areas.Admin.Controllers
 {
     [CustomAuthorize]

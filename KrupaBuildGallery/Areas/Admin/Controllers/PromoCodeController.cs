@@ -31,8 +31,13 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                      DiscountPercentage = m.DiscountPercentage,
                                      TotalMaxUsage = m.TotalMaxUsage,
                                      dtExpiryDate = m.ExpiryDate,
-                                     IsActive = m.IsActive
+                                     IsActive = m.IsActive,
                                  }).ToList();
+
+                lstPromoCode.ForEach(code => {
+                    code.TotalUsedByUsers = _db.tbl_Orders.Where(x => x.PromoCodeId == code.PromoCodeId).ToList().Count();
+                });
+
             }
             catch (Exception ex)
             {
@@ -229,6 +234,53 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return ReturnMessage;
         }
 
+
+        public ActionResult Used(long Id)
+        {
+            PromoCodeVM objPromoCode = new PromoCodeVM();
+
+            try
+            {
+                objPromoCode = (from m in _db.tbl_PromoCode
+                                where m.PromoCodeId == Id
+                                select new PromoCodeVM
+                                {
+                                    PromoCodeId = m.PromoCodeId,
+                                    PromoCode = m.PromoCode,
+                                    DiscountPercentage = m.DiscountPercentage,
+                                    TotalMaxUsage = m.TotalMaxUsage,
+                                    dtExpiryDate = m.ExpiryDate,
+                                    IsActive = m.IsActive
+                                }).FirstOrDefault();
+
+                if (objPromoCode.dtExpiryDate != null)
+                {
+                    objPromoCode.ExpiryDate = Convert.ToDateTime(objPromoCode.dtExpiryDate).ToString("dd/MM/yyyy");
+                }
+
+                objPromoCode.lstPromoUsedDetail = (from p in _db.tbl_PromoCode
+                                                   join o in _db.tbl_Orders on p.PromoCodeId equals o.PromoCodeId
+                                                   join u in _db.tbl_ClientUsers on o.ClientUserId equals u.ClientUserId
+                                                   select new PromoUsedDetailVM
+                                                   {
+                                                       PromoCodeId = p.PromoCodeId,
+                                                       ClientUserId = o.ClientUserId,
+                                                       OrderNo = o.OrderId,
+                                                       UserName = u.FirstName + " " + u.LastName,
+                                                       MobileNo = u.MobileNo,
+                                                       RoleId = u.ClientRoleId,
+                                                       PromoDiscount = o.PromoDiscount
+                                                   }).ToList();
+
+                objPromoCode.TotalUsedByUsers = _db.tbl_Orders.Where(x => x.PromoCodeId == objPromoCode.PromoCodeId).ToList().Count();
+
+            }
+            catch (Exception ex)
+            {
+            }
+
+            return View(objPromoCode);
+        }
 
 
 

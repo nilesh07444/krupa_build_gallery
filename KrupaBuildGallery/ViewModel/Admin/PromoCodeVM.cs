@@ -32,5 +32,21 @@ namespace KrupaBuildGallery
         public DateTime? dtExpiryDate { get; set; }
 
         public int TotalUsedByUsers { get; set; }
+
+        public List<PromoUsedDetailVM> lstPromoUsedDetail { get; set; }
+
     }
+
+    public class PromoUsedDetailVM
+    {
+        public long PromoCodeId { get; set; }
+        public long ClientUserId { get; set; }
+        public long RoleId { get; set; }
+        public string UserName { get; set; }
+        public string MobileNo { get; set; }
+        public long OrderNo { get; set; }
+        public decimal? PromoDiscount { get; set; }
+    }
+
+
 }
