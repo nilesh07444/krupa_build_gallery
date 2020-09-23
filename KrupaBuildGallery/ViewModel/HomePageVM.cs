@@ -25,5 +25,7 @@ namespace KrupaBuildGallery
 
         public List<ComboOfferVM> lstComboOffers { get; set; }
 
+        public bool IsDisplayFeedback { get; set; }
+
     }
 }

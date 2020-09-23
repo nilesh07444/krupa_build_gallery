@@ -366,6 +366,21 @@
           <Property Name="ModifiedBy" Type="bigint" />
           <Property Name="ModifiedDate" Type="datetime" />
         </EntityType>
+        <EntityType Name="tbl_Feedbacks">
+          <Key>
+            <PropertyRef Name="FeedbackId" />
+          </Key>
+          <Property Name="FeedbackId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AboutService" Type="nvarchar" MaxLength="100" />
+          <Property Name="AboutDeliveryBoyService" Type="nvarchar" MaxLength="100" />
+          <Property Name="AboutDeliveryBoyBehaviour" Type="nvarchar" MaxLength="100" />
+          <Property Name="OurQuality" Type="nvarchar" MaxLength="100" />
+          <Property Name="Suggestion" Type="nvarchar" MaxLength="600" />
+          <Property Name="FeedbackDate" Type="date" />
+          <Property Name="ClientUserId" Type="bigint" />
+          <Property Name="IsDeleted" Type="bit" />
+          <Property Name="FeedbackOfMonth" Type="date" />
+        </EntityType>
         <EntityType Name="tbl_FreeOfferItems">
           <Key>
             <PropertyRef Name="FreeofferItemId" />
@@ -968,6 +983,7 @@
           <EntitySet Name="tbl_DistributorRequestDetails" EntityType="Self.tbl_DistributorRequestDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_DynamicContent" EntityType="Self.tbl_DynamicContent" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ExtraAmount" EntityType="Self.tbl_ExtraAmount" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Feedbacks" EntityType="Self.tbl_Feedbacks" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_FreeOfferItems" EntityType="Self.tbl_FreeOfferItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_FreeOffers" EntityType="Self.tbl_FreeOffers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_GeneralSetting" EntityType="Self.tbl_GeneralSetting" Schema="dbo" store:Type="Tables" />
@@ -1498,6 +1514,7 @@
           <EntitySet Name="tbl_CashDeliveryAmount" EntityType="krupagalleryModel.tbl_CashDeliveryAmount" />
           <EntitySet Name="tbl_PincodeCityState" EntityType="krupagalleryModel.tbl_PincodeCityState" />
           <EntitySet Name="tbl_PromoCode" EntityType="krupagalleryModel.tbl_PromoCode" />
+          <EntitySet Name="tbl_Feedbacks" EntityType="krupagalleryModel.tbl_Feedbacks" />
         </EntityContainer>
         <EntityType Name="tbl_AdminRoles">
           <Key>
@@ -2034,6 +2051,21 @@
           <Property Name="CreatedBy" Type="Int64" />
           <Property Name="UpdatedBy" Type="Int64" />
           <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="tbl_Feedbacks">
+          <Key>
+            <PropertyRef Name="FeedbackId" />
+          </Key>
+          <Property Name="FeedbackId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AboutService" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="AboutDeliveryBoyService" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="AboutDeliveryBoyBehaviour" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="OurQuality" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Suggestion" Type="String" MaxLength="600" FixedLength="false" Unicode="true" />
+          <Property Name="FeedbackDate" Type="DateTime" Precision="0" />
+          <Property Name="ClientUserId" Type="Int64" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <Property Name="FeedbackOfMonth" Type="DateTime" Precision="0" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -3023,6 +3055,22 @@
                 <ScalarProperty Name="DiscountPercentage" ColumnName="DiscountPercentage" />
                 <ScalarProperty Name="PromoCode" ColumnName="PromoCode" />
                 <ScalarProperty Name="PromoCodeId" ColumnName="PromoCodeId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Feedbacks">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_Feedbacks">
+              <MappingFragment StoreEntitySet="tbl_Feedbacks">
+                <ScalarProperty Name="FeedbackOfMonth" ColumnName="FeedbackOfMonth" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="ClientUserId" ColumnName="ClientUserId" />
+                <ScalarProperty Name="FeedbackDate" ColumnName="FeedbackDate" />
+                <ScalarProperty Name="Suggestion" ColumnName="Suggestion" />
+                <ScalarProperty Name="OurQuality" ColumnName="OurQuality" />
+                <ScalarProperty Name="AboutDeliveryBoyBehaviour" ColumnName="AboutDeliveryBoyBehaviour" />
+                <ScalarProperty Name="AboutDeliveryBoyService" ColumnName="AboutDeliveryBoyService" />
+                <ScalarProperty Name="AboutService" ColumnName="AboutService" />
+                <ScalarProperty Name="FeedbackId" ColumnName="FeedbackId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

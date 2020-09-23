@@ -2229,5 +2229,49 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
 
         }
 
+
+        [Route("SaveFeedback"), HttpPost]
+        public ResponseDataModel<string> SaveFeedback(FeedbackVM objFeedback)
+        {
+            ResponseDataModel<string> response = new ResponseDataModel<string>();
+            try
+            { 
+                long UserId = Convert.ToInt64(objFeedback.ClientUserId);
+                tbl_Feedbacks objFeedbk = new tbl_Feedbacks();
+                objFeedbk.AboutDeliveryBoyBehaviour = objFeedback.AboutDeliveryBoyBehaviour;
+                objFeedbk.AboutService = objFeedback.AboutService;
+                objFeedbk.AboutDeliveryBoyService = objFeedback.AboutDeliveryBoyService;
+                objFeedbk.OurQuality = objFeedback.OurQuality;
+                objFeedbk.Suggestion = objFeedback.Suggestion;
+                objFeedbk.FeedbackDate = DateTime.UtcNow;
+                objFeedbk.ClientUserId = objFeedback.ClientUserId;
+                objFeedbk.IsDeleted = false;
+
+                DateTime curredt = DateTime.UtcNow;
+                var objOrder = _db.tbl_Orders.Where(o => o.ClientUserId == UserId && o.CreatedDate.Month != curredt.Month && o.CreatedDate.Year != curredt.Year).OrderByDescending(o => o.CreatedDate).FirstOrDefault();
+                if(objOrder != null)
+                {
+                    objFeedbk.FeedbackOfMonth = objOrder.CreatedDate;
+                } 
+                else
+                {
+                    objFeedbk.FeedbackOfMonth = DateTime.UtcNow;
+                }
+
+                _db.SaveChanges();
+
+                response.Data = "Success";
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+
+
     }
 }

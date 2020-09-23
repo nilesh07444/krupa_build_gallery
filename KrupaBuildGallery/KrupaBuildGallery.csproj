@@ -336,6 +336,9 @@
     <Compile Include="Model\tbl_ExtraAmount.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\tbl_Feedbacks.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\tbl_FreeOfferItems.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
@@ -470,6 +473,7 @@
     <Compile Include="ViewModel\DashboardCountVM.cs" />
     <Compile Include="ViewModel\DistributorRequestVM.cs" />
     <Compile Include="ViewModel\EmailMessageVM.cs" />
+    <Compile Include="ViewModel\FeedbackVM.cs" />
     <Compile Include="ViewModel\FreeOfferSubItems.cs" />
     <Compile Include="ViewModel\FreeOfferVM.cs" />
     <Compile Include="ViewModel\GeneralVM.cs" />
