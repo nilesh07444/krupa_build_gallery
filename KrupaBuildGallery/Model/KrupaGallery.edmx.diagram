@@ -61,6 +61,7 @@
         <EntityTypeShape EntityType="krupagalleryModel.tbl_CashDeliveryAmount" Width="1.5" PointX="23.375" PointY="15.75" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_PincodeCityState" Width="1.5" PointX="17.375" PointY="23.75" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_PromoCode" Width="1.5" PointX="23.375" PointY="19.75" />
+        <EntityTypeShape EntityType="krupagalleryModel.tbl_Feedbacks" Width="1.5" PointX="23.375" PointY="23.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

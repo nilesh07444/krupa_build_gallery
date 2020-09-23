@@ -464,6 +464,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             List<ProductItemVM> lstOfferItems = new List<ProductItemVM>();
             List<ComboOfferVM> lstComboOffers = new List<ComboOfferVM>();
             List<long> wishlistitemsId = new List<long>();
+            bool IsDisplayFeedbackForm = false;
             try
             {
                 long UserId = Convert.ToInt64(objGen.ClientUserId);
@@ -472,6 +473,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 if(UserId != 0)
                 {
                     wishlistitemsId = _db.tbl_WishList.Where(o => o.ClientUserId == UserId).Select(o => o.ItemId.Value).ToList();
+                    IsDisplayFeedbackForm = IsTimeToDisplayFeedbackForm(UserId);
                 }
                 lstUnpackProductItem = (from i in _db.tbl_ProductItems
                                         where !i.IsDelete && i.IsActive == true && i.ItemType == (int)ItemTypes.UnPackedItem
@@ -605,6 +607,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 objWebStats.TotalHappyCustomers = _db.tbl_HappyCustomers.Where(x => !x.IsDelete && x.IsActive).ToList().Count;
                 objWebStats.TotalItems = _db.tbl_ProductItems.Where(o => o.IsActive == true && o.IsDelete == false).ToList().Count;
                 objHome.webstats = objWebStats;
+                objHome.IsDisplayFeedback = IsDisplayFeedbackForm;
                 response.Data = objHome;
 
             }
@@ -1187,6 +1190,31 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
 
         }
 
-
+        public bool IsTimeToDisplayFeedbackForm(long UserId)
+        {
+            bool IsTimeToDisplay = false;
+            var objFeefbck = _db.tbl_Feedbacks.Where(o => o.ClientUserId == UserId).OrderByDescending(o => o.FeedbackDate).FirstOrDefault();
+            var objOrder = _db.tbl_Orders.Where(o => o.ClientUserId == UserId).OrderByDescending(o => o.CreatedDate).FirstOrDefault();
+            if(objOrder != null)
+            {
+                DateTime dtCurrent = DateTime.UtcNow;
+                if (objFeefbck != null)
+                {
+                    if(objOrder.CreatedDate.Month != dtCurrent.Month && objOrder.CreatedDate.Year != dtCurrent.Year)
+                    {
+                        if(objFeefbck.FeedbackOfMonth.Value.Month != objOrder.CreatedDate.Month && objFeefbck.FeedbackOfMonth.Value.Year != objOrder.CreatedDate.Year)
+                        {
+                            IsTimeToDisplay = true;
+                        }
+                    }
+                }
+                else
+                {
+                    IsTimeToDisplay = true;
+                }
+            }
+           
+            return IsTimeToDisplay;
+        }
     }
 }
