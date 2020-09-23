@@ -233,8 +233,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             return ReturnMessage;
         }
-
-
+         
         public ActionResult Used(long Id)
         {
             PromoCodeVM objPromoCode = new PromoCodeVM();
@@ -281,8 +280,6 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             return View(objPromoCode);
         }
-
-
-
+         
     }
 }
