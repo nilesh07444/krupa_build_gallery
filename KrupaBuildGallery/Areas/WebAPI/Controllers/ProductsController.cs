@@ -1193,19 +1193,24 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
         public bool IsTimeToDisplayFeedbackForm(long UserId)
         {
             bool IsTimeToDisplay = false;
+            DateTime dtCurrent = DateTime.UtcNow;
+            DateTime dtCurrMonth = new DateTime(dtCurrent.Year, dtCurrent.Month, 1);
             var objFeefbck = _db.tbl_Feedbacks.Where(o => o.ClientUserId == UserId).OrderByDescending(o => o.FeedbackDate).FirstOrDefault();
-            var objOrder = _db.tbl_Orders.Where(o => o.ClientUserId == UserId).OrderByDescending(o => o.CreatedDate).FirstOrDefault();
+            var objOrder = _db.tbl_Orders.Where(o => o.ClientUserId == UserId && o.CreatedDate < dtCurrMonth).OrderByDescending(o => o.CreatedDate).FirstOrDefault();
             if(objOrder != null)
             {
-                DateTime dtCurrent = DateTime.UtcNow;
+              
                 if (objFeefbck != null)
                 {
-                    if(objOrder.CreatedDate.Month != dtCurrent.Month && objOrder.CreatedDate.Year != dtCurrent.Year)
+                    DateTime dtLastOrdrMonth = new DateTime(objOrder.CreatedDate.Year, objOrder.CreatedDate.Month, 1);
+                    //if(objFeefbck.FeedbackOfMonth.Value.Month == objOrder.CreatedDate.Month && objFeefbck.FeedbackOfMonth.Value.Year == objOrder.CreatedDate.Year)
+                    if (objFeefbck.FeedbackOfMonth  < dtLastOrdrMonth)
                     {
-                        if(objFeefbck.FeedbackOfMonth.Value.Month != objOrder.CreatedDate.Month && objFeefbck.FeedbackOfMonth.Value.Year != objOrder.CreatedDate.Year)
-                        {
-                            IsTimeToDisplay = true;
-                        }
+                        IsTimeToDisplay = true;
+                    }                    
+                    else
+                    {
+                        IsTimeToDisplay = false;
                     }
                 }
                 else

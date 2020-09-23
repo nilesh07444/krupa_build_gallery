@@ -2246,8 +2246,9 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 objFeedbk.ClientUserId = objFeedback.ClientUserId;
                 objFeedbk.IsDeleted = false;
 
-                DateTime curredt = DateTime.UtcNow;
-                var objOrder = _db.tbl_Orders.Where(o => o.ClientUserId == UserId && o.CreatedDate.Month != curredt.Month && o.CreatedDate.Year != curredt.Year).OrderByDescending(o => o.CreatedDate).FirstOrDefault();
+                DateTime dtCurrent = DateTime.UtcNow;
+                DateTime dtCurrMonth = new DateTime(dtCurrent.Year, dtCurrent.Month, 1);
+                var objOrder = _db.tbl_Orders.Where(o => o.ClientUserId == UserId && o.CreatedDate < dtCurrMonth).OrderByDescending(o => o.CreatedDate).FirstOrDefault();
                 if(objOrder != null)
                 {
                     objFeedbk.FeedbackOfMonth = objOrder.CreatedDate;
