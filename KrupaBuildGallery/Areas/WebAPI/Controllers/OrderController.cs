@@ -2229,7 +2229,6 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
 
         }
 
-
         [Route("SaveFeedback"), HttpPost]
         public ResponseDataModel<string> SaveFeedback(FeedbackVM objFeedback)
         {
@@ -2257,7 +2256,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 {
                     objFeedbk.FeedbackOfMonth = DateTime.UtcNow;
                 }
-
+                _db.tbl_Feedbacks.Add(objFeedbk);
                 _db.SaveChanges();
 
                 response.Data = "Success";
