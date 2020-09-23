@@ -1,6 +1,7 @@
 ﻿using KrupaBuildGallery.Filters;
 using KrupaBuildGallery.Model;
 using KrupaBuildGallery.ViewModel;
+using Newtonsoft.Json;
 using Razorpay.Api;
 using System;
 using System.Collections.Generic;
@@ -20,8 +21,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         public OrdersController()
         {
             _db = new krupagallarydbEntities();
-        }
-        // GET: Client/Orders
+        } 
         public ActionResult Index(int Status = -1)
         {
             
@@ -1062,8 +1062,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             return newhtmldata;
             //return "Receipt_" + objPymt.PaymentHistory_Id+".pdf";
         }
-
-
+        
         private string getGSTCalculationHtmlDataByOrder(List<OrderItemsVM> lstOrderItms, bool IsIGST)
         {
             string htmlData = string.Empty;
@@ -1367,6 +1366,81 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             //return "Receipt_" + objPymt.PaymentHistory_Id+".pdf";
         }
 
+        [HttpPost]
+        public bool IsTimeToDisplayFeedbackForm()
+        {
+            long UserId = clsClientSession.UserID;
+
+            bool IsTimeToDisplay = false;
+            var objFeefbck = _db.tbl_Feedbacks.Where(o => o.ClientUserId == UserId).OrderByDescending(o => o.FeedbackDate).FirstOrDefault();
+            var objOrder = _db.tbl_Orders.Where(o => o.ClientUserId == UserId).OrderByDescending(o => o.CreatedDate).FirstOrDefault();
+            if (objOrder != null)
+            {
+                DateTime dtCurrent = DateTime.UtcNow;
+                if (objFeefbck != null)
+                {
+                    if (objOrder.CreatedDate.Month != dtCurrent.Month && objOrder.CreatedDate.Year != dtCurrent.Year)
+                    {
+                        if (objFeefbck.FeedbackOfMonth.Value.Month != objOrder.CreatedDate.Month && objFeefbck.FeedbackOfMonth.Value.Year != objOrder.CreatedDate.Year)
+                        {
+                            IsTimeToDisplay = true;
+                        }
+                    }
+                }
+                else
+                {
+                    IsTimeToDisplay = true;
+                }
+            }
+
+            return IsTimeToDisplay;
+        }
+
+        [HttpPost]
+        public string SaveFeedback(string FeedbackDetail)
+        {
+            string response = string.Empty;
+            try
+            {
+                FeedbackVM objFeedback = JsonConvert.DeserializeObject<FeedbackVM>(FeedbackDetail);
+
+                long UserId = clsClientSession.UserID;
+                tbl_Feedbacks objFeedbk = new tbl_Feedbacks();
+                objFeedbk.AboutDeliveryBoyBehaviour = objFeedback.AboutDeliveryBoyBehaviour;
+                objFeedbk.AboutService = objFeedback.AboutService;
+                objFeedbk.AboutDeliveryBoyService = objFeedback.AboutDeliveryBoyService;
+                objFeedbk.OurQuality = objFeedback.OurQuality;
+                objFeedbk.Suggestion = objFeedback.Suggestion;
+                objFeedbk.FeedbackDate = DateTime.UtcNow;
+                objFeedbk.ClientUserId = UserId;
+                objFeedbk.IsDeleted = false;
+
+                DateTime curredt = DateTime.UtcNow;
+                var objOrder = _db.tbl_Orders.Where(o => o.ClientUserId == UserId && o.CreatedDate.Month != curredt.Month && o.CreatedDate.Year != curredt.Year).OrderByDescending(o => o.CreatedDate).FirstOrDefault();
+                if (objOrder != null)
+                {
+                    objFeedbk.FeedbackOfMonth = objOrder.CreatedDate;
+                }
+                else
+                {
+                    objFeedbk.FeedbackOfMonth = DateTime.UtcNow;
+                }
+
+                _db.tbl_Feedbacks.Add(objFeedbk);
+
+                _db.SaveChanges();
+
+                response = "success";
+            }
+            catch (Exception ex)
+            {
+                response = "error";
+                return response;
+            }
+
+            return response;
+
+        }
 
     }
 }

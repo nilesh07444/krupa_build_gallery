@@ -91,8 +91,11 @@
         .divHideScroll {
             -ms-overflow-style: none;
         }
-         
 
+        .clserror {
+            display: none;
+            color: red;
+        }
     </style>
 
 </head>
@@ -131,7 +134,7 @@
                                     string strnm = "";
                                     if (clsClientSession.UserID > 0)
                                     {
-                                        strnm = clsClientSession.Prefix+" "+clsClientSession.FirstName + " " + clsClientSession.LastName;
+                                        strnm = clsClientSession.Prefix + " " + clsClientSession.FirstName + " " + clsClientSession.LastName;
                                     }
                                     else
                                     {
@@ -636,7 +639,7 @@
                 <div class="modal-body">
                     This Combo is Cash on Delivery. Select Payment Option:"Cash On Delivery / Onine Payment"
                     <input type="hidden" id="hdnCartComboId" value="" />
-                    <input type="hidden" id="hdnComboQty" value="" />                    
+                    <input type="hidden" id="hdnComboQty" value="" />
                 </div>
                 <div class="modal-footer">
                     <button data-dismiss="modal" class="btn btn-danger" type="button" onclick="addtoCartCashOndeliveryCombo('no');">Online Payment</button>
@@ -676,6 +679,115 @@
         <!--modal popup end-->
     }
 
+
+    <!-- feedback modal start -->
+
+    <div class="modal fade bd-example-modal-lg theme-modal" id="feedbackModal" tabindex="-1" role="dialog" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body modal1">
+                    <div class="container-fluid p-0">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="modal-bg">
+                                    @*<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>*@
+                                    <div class="offer-content">
+                                        <h2>Feedback</h2>
+                                        <form id="theFormId" action="" class="theme-form" method="post">
+                                            <div class="form-row mb-4">
+                                                <div class="col-md-6">
+                                                    <label for="mobileno">About Service *</label>
+                                                    <select class="custom-select  form-control" id="ddlAboutService" name="ddlAboutService">
+                                                        <option value="">-Select-</option>
+                                                        <option value="1">1</option>
+                                                        <option value="2">2</option>
+                                                        <option value="3">3</option>
+                                                        <option value="4">4</option>
+                                                        <option value="5">5</option>
+                                                        <option value="6">6</option>
+                                                        <option value="7">7</option>
+                                                        <option value="8">8</option>
+                                                        <option value="9">9</option>
+                                                        <option value="10">10</option>
+                                                    </select>
+                                                    <span id="spn_AboutService" class="clserror">This field is required</span>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="email">About Delivery Boy Service *</label>
+                                                    <select class="custom-select  form-control" id="ddlAboutDeliveryBoyService" name="ddlAboutDeliveryBoyService">
+                                                        <option value="">-Select-</option>
+                                                        <option value="1">1</option>
+                                                        <option value="2">2</option>
+                                                        <option value="3">3</option>
+                                                        <option value="4">4</option>
+                                                        <option value="5">5</option>
+                                                        <option value="6">6</option>
+                                                        <option value="7">7</option>
+                                                        <option value="8">8</option>
+                                                        <option value="9">9</option>
+                                                        <option value="10">10</option>
+                                                    </select>
+                                                    <span id="spn_AboutDeliveryBoyService" class="clserror">This field is required</span>
+                                                </div>
+                                            </div>
+                                            <div class="form-row mb-4">
+                                                <div class="col-md-6">
+                                                    <label for="password">About Delivery Boy Behaviour *</label>
+                                                    <select class="custom-select form-control" id="ddlAboutDeliveryBoyBehaviour" name="ddlAboutDeliveryBoyBehaviour">
+                                                        <option value="">-Select-</option>
+                                                        <option value="1">1</option>
+                                                        <option value="2">2</option>
+                                                        <option value="3">3</option>
+                                                        <option value="4">4</option>
+                                                        <option value="5">5</option>
+                                                        <option value="6">6</option>
+                                                        <option value="7">7</option>
+                                                        <option value="8">8</option>
+                                                        <option value="9">9</option>
+                                                        <option value="10">10</option>
+                                                    </select>
+                                                    <span id="spn_AboutDeliveryBoyBehaviour" class="clserror">This field is required</span>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="confirmpassword">Our Quality *</label>
+                                                    <select class="custom-select  form-control" id="ddlOurQuality" name="ddlOurQuality">
+                                                        <option value="">-Select-</option>
+                                                        <option value="1">1</option>
+                                                        <option value="2">2</option>
+                                                        <option value="3">3</option>
+                                                        <option value="4">4</option>
+                                                        <option value="5">5</option>
+                                                        <option value="6">6</option>
+                                                        <option value="7">7</option>
+                                                        <option value="8">8</option>
+                                                        <option value="9">9</option>
+                                                        <option value="10">10</option>
+                                                    </select>
+                                                    <span id="spn_OurQuality" class="clserror">This field is required</span>
+                                                </div>
+                                            </div>
+                                            <div class="form-row mb-4">
+
+                                                <div class="col-md-12">
+                                                    <label for="lname">Suggestion / Remarks:</label>
+                                                    <textarea id="txtRemarks" name="txtRemarks" class="form-control" placeholder="Suggestion / Remarks:"></textarea>
+                                                </div>
+                                            </div>
+                                            <div class="form-row" style="margin-top:15px;margin-bottom:30px;">
+                                                <input id="btnSubmitFeedback" type="button" value="Submit" class="btn btn-solid">
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- feedback modal end -->
     <!-- fly cart ui jquery-->
     <script src="~/Content/assets/js/jquery-ui.min.js"></script>
 
@@ -847,6 +959,111 @@
             }
           }
         }
+
+    // $('#feedbackModal').modal('show');
+
+    $(document).on("click", "#btnSubmitFeedback", function () {
+
+        $(".clserror").hide();
+
+
+        var ddlAboutService = $("#ddlAboutService").val();
+        var ddlAboutDeliveryBoyService = $("#ddlAboutDeliveryBoyService").val();
+        var ddlAboutDeliveryBoyBehaviour = $("#ddlAboutDeliveryBoyBehaviour").val();
+        var ddlOurQuality = $("#ddlOurQuality").val();
+        var txtRemarks = $("#txtRemarks").val();
+        var iserror = false;
+
+
+        if (ddlAboutService == "")
+        {
+            $("#spn_AboutService").show();
+            iserror = true;
+        }
+
+        if (ddlAboutDeliveryBoyService == "")
+        {
+            $("#spn_AboutDeliveryBoyService").show();
+            iserror = true;
+        }
+
+        if (ddlAboutDeliveryBoyBehaviour == "")
+        {
+            $("#spn_AboutDeliveryBoyBehaviour").show();
+            iserror = true;
+        }
+
+        if (ddlOurQuality == "")
+        {
+            $("#spn_OurQuality").show();
+            iserror = true;
+        }
+
+        if (iserror == false) {
+
+            StartLoading();
+
+            var FeedbackVM = {
+                "AboutService": ddlAboutService,
+                "AboutDeliveryBoyService": ddlAboutDeliveryBoyService,
+                "AboutDeliveryBoyBehaviour": ddlAboutDeliveryBoyBehaviour,
+                "OurQuality": ddlOurQuality,
+                "Suggestion": txtRemarks,
+            };
+
+            var URL = '@Url.Action("SaveFeedback", "Orders")';
+            $.ajax({
+                type: 'POST',
+                async: true,
+                url: URL,
+                data: {
+                    FeedbackDetail : JSON.stringify(FeedbackVM)
+                },
+                success: function (response) {
+                    StopLoading();
+                    $('#feedbackModal').modal('hide');
+                    if (response == "success") {
+                        alert("Thanks for sharing your valuable feedback with us.");
+                    }
+                    else {
+                        alert("Something went wrong..");
+                    }
+
+                },
+                error: function (resultData) {
+                    alert("error");
+                    StopLoading();
+                }
+            });
+
+        }
+
+    });
+
+    CheckFeedbackTimeNow();
+    function CheckFeedbackTimeNow() {
+
+        var UserID = '@clsClientSession.UserID';
+
+        if (UserID > 0) {
+            var URL = '@Url.Action("IsTimeToDisplayFeedbackForm", "Orders")';
+            $.ajax({
+                type: 'POST',
+                async: true,
+                url: URL,
+                success: function (response) {
+                 
+                    if (response == "True") {
+                        $('#feedbackModal').modal('show');
+                    }
+                },
+                error: function (resultData) {
+                    console.log("error: IsTimeToDisplayFeedbackForm");
+
+                }
+            });
+        }
+    }
 
     </script>
 </body>
