@@ -3351,5 +3351,36 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             return response;
         }
 
+
+        [Route("GetCityStateFromPincode"), HttpPost]
+        public ResponseDataModel<GeneralVM> GetCityStateFromPincode(GeneralVM objGen)
+        {
+            ResponseDataModel<GeneralVM> response = new ResponseDataModel<GeneralVM>();
+            GeneralVM objGenn = new GeneralVM();
+            try
+            {
+                int Pincode = Convert.ToInt32(objGen.Pincode);
+                var objP = _db.tbl_PincodeCityState.Where(o => o.Pincode == Pincode).FirstOrDefault();
+                if(objP != null)
+                {
+                    objGenn.City = objP.City;
+                    objGenn.State = objP.State;
+                }
+                else
+                {
+                    objGenn.City = "";
+                    objGenn.State = "";
+                }
+                response.Data = objGenn;
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+        }
+
     }
 }

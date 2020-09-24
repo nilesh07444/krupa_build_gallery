@@ -54,5 +54,8 @@ namespace KrupaBuildGallery
         public bool HasFreeItems { get; set; }
         public string FreeOfferId { get; set; }
         public string AddressTitle { get; set; }
+        public string City { get; set; }
+        public string State { get; set; }
+        public string Pincode { get; set; }
     }
 }
