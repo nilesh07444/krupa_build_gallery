@@ -524,6 +524,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 long UserId = Convert.ToInt64(objGen.ClientUserId);
                 decimal amt = Convert.ToDecimal(objGen.Amount);
                 string IsCash = objGen.CheckoutType;
+                bool IsValidAddress = true;
                 if (UserId > 0)
                 {
                     bool IsCashOrdr = false;
@@ -549,65 +550,82 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     }
 
                 }
-
-                string PromoCheck = "";
-                if(!string.IsNullOrEmpty(objGen.PromoCode))
+                string addresstitle = objGen.AddressTitle;
+                if(!string.IsNullOrEmpty(addresstitle))
                 {
-                    DateTime dtnow = DateTime.UtcNow;
-                    var objCop = _db.tbl_PromoCode.Where(o => o.PromoCode == objGen.PromoCode && o.IsActive == true && o.IsDeleted == false).FirstOrDefault();
-                    if (objCop == null)
+                   var objAddrss = _db.tbl_ShippingAddresses.Where(o => o.ClientUserId == UserId && o.AddressTitle.ToLower() == addresstitle.ToLower() && o.IsDeleted == false).FirstOrDefault();
+                   if(objAddrss != null)
                     {
-                        PromoCheck = "Invalid Promo Code";
+                        IsValidAddress = false;
                     }
-                    else
-                    {
-                        if (objCop.ExpiryDate >= dtnow)
-                        {
-                            int TotalUsed = _db.tbl_Orders.Where(o => o.PromoCodeId == objCop.PromoCodeId).ToList().Count();
-                            if (TotalUsed >= objCop.TotalMaxUsage)
-                            {
-                                PromoCheck = "Promo Code Usage Over";
-                            }
-                            else
-                            {
-                                PromoCheck = "SuccessPromo";
-                            }
+                }                
 
+                if(IsValidAddress == true)
+                {
+                    string PromoCheck = "";
+                    if (!string.IsNullOrEmpty(objGen.PromoCode))
+                    {
+                        DateTime dtnow = DateTime.UtcNow;
+                        var objCop = _db.tbl_PromoCode.Where(o => o.PromoCode == objGen.PromoCode && o.IsActive == true && o.IsDeleted == false).FirstOrDefault();
+                        if (objCop == null)
+                        {
+                            PromoCheck = "Invalid Promo Code";
                         }
                         else
                         {
-                            PromoCheck = "Promo Code Expired";
+                            if (objCop.ExpiryDate >= dtnow)
+                            {
+                                int TotalUsed = _db.tbl_Orders.Where(o => o.PromoCodeId == objCop.PromoCodeId).ToList().Count();
+                                if (TotalUsed >= objCop.TotalMaxUsage)
+                                {
+                                    PromoCheck = "Promo Code Usage Over";
+                                }
+                                else
+                                {
+                                    PromoCheck = "SuccessPromo";
+                                }
+
+                            }
+                            else
+                            {
+                                PromoCheck = "Promo Code Expired";
+                            }
                         }
                     }
-                }
-              
-                if (isOutofStock == true)
-                {
-                    response.AddError("OutofStock");
-                }
-                else if(!string.IsNullOrEmpty(PromoCheck) && PromoCheck != "SuccessPromo")
-                {
-                    response.AddError(PromoCheck);
+
+                    if (isOutofStock == true)
+                    {
+                        response.AddError("OutofStock");
+                    }
+                    else if (!string.IsNullOrEmpty(PromoCheck) && PromoCheck != "SuccessPromo")
+                    {
+                        response.AddError(PromoCheck);
+                    }
+                    else
+                    {
+                        Dictionary<string, object> input = new Dictionary<string, object>();
+                        input.Add("amount", amt * 100); // this amount should be same as transaction amount
+                        input.Add("currency", "INR");
+                        input.Add("receipt", "rec_" + UserId + "_" + DateTime.Now.ToString("ddmmyyyy"));
+                        input.Add("payment_capture", 1);
+
+                        var objGsetting = _db.tbl_GeneralSetting.FirstOrDefault();
+                        string key = objGsetting.RazorPayKey;  //"rzp_test_DMsPlGIBp3SSnI";
+                        string secret = objGsetting.RazorPaySecret; // "YMkpd9LbnaXViePncLLXhqms";
+
+                        RazorpayClient client = new RazorpayClient(key, secret);
+                        Razorpay.Api.Order order = client.Order.Create(input);
+                        strlst.Add("Success");
+                        strlst.Add(Convert.ToString(order["id"]));
+                        response.Data = strlst;
+
+                    }
                 }
                 else
                 {
-                    Dictionary<string, object> input = new Dictionary<string, object>();
-                    input.Add("amount", amt * 100); // this amount should be same as transaction amount
-                    input.Add("currency", "INR");
-                    input.Add("receipt", "rec_"+ UserId+"_"+ DateTime.Now.ToString("ddmmyyyy"));
-                    input.Add("payment_capture", 1);
-
-                    var objGsetting = _db.tbl_GeneralSetting.FirstOrDefault();
-                    string key = objGsetting.RazorPayKey;  //"rzp_test_DMsPlGIBp3SSnI";
-                    string secret = objGsetting.RazorPaySecret; // "YMkpd9LbnaXViePncLLXhqms";
-
-                    RazorpayClient client = new RazorpayClient(key, secret);
-                    Razorpay.Api.Order order = client.Order.Create(input);
-                    strlst.Add("Success");
-                    strlst.Add(Convert.ToString(order["id"]));
-                    response.Data = strlst;
-                        
+                    response.AddError("Address Title Already Exist");
                 }
+              
             }
             catch (Exception ex)
             {
@@ -1473,6 +1491,11 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 bool Iscashondelivery = false;
                 bool HasFreeItems = false;
                 bool HasPromoCode = false;
+                bool IsSaveAddress = false;
+                if(objPlaceOrderVM.IsSaveShippingAddress == "true")
+                {
+                    IsSaveAddress = true;
+                }
                 if (objPlaceOrderVM.HasFreeItems.ToLower() == "true")
                 {
                     HasFreeItems = true;
@@ -1765,6 +1788,23 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         objotherdetails.ShipEmail = objPlaceOrderVM.shipemailaddress;
                     }
                     _db.SaveChanges();
+                    if(IsSaveAddress)
+                    {
+                        tbl_ShippingAddresses objShipAdd = new tbl_ShippingAddresses();
+                        objShipAdd.ShipAddress = objPlaceOrderVM.shipaddress;
+                        objShipAdd.ShipCity = objPlaceOrderVM.shipcity;
+                        objShipAdd.ShipPostalCode = objPlaceOrderVM.shippincode;
+                        objShipAdd.ShipFirstName = objPlaceOrderVM.shipfirstname;
+                        objShipAdd.ShipLastName = objPlaceOrderVM.shiplastname;
+                        objShipAdd.ShipState = objPlaceOrderVM.shipstate;
+                        objShipAdd.ShipEmail = objPlaceOrderVM.shipemailaddress;
+                        objShipAdd.ShipPhoneNumber = objPlaceOrderVM.shipphone;
+                        objShipAdd.IsDeleted = false;
+                        objShipAdd.AddressTitle = objPlaceOrderVM.AddressTitle;
+                        objShipAdd.CreatedDate = DateTime.UtcNow;
+                        _db.tbl_ShippingAddresses.Add(objShipAdd);
+                        _db.SaveChanges();
+                    }
                     decimal pointreamining = 0;
                     decimal totalremining = 0;
                     decimal TotalDiscount = 0;
@@ -2738,6 +2778,24 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                     objcmn.SavePaymentTransaction(0, objOrder.OrderId, true, amtcredit, "Payment By Credit", clientusrid, false, DateTime.UtcNow, "Credit");
                                     objcmn.SaveTransaction(0, 0, objOrder.OrderId, "Payment By Credit Used : Rs" + amtcredit, amtcredit, clientusrid, 0, DateTime.UtcNow, "Credit Used Payment");
                                 }
+                            }
+
+                            if (IsSaveAddress)
+                            {
+                                tbl_ShippingAddresses objShipAdd = new tbl_ShippingAddresses();
+                                objShipAdd.ShipAddress = objPlaceOrderVM.shipaddress;
+                                objShipAdd.ShipCity = objPlaceOrderVM.shipcity;
+                                objShipAdd.ShipPostalCode = objPlaceOrderVM.shippincode;
+                                objShipAdd.ShipFirstName = objPlaceOrderVM.shipfirstname;
+                                objShipAdd.ShipLastName = objPlaceOrderVM.shiplastname;
+                                objShipAdd.ShipState = objPlaceOrderVM.shipstate;
+                                objShipAdd.ShipEmail = objPlaceOrderVM.shipemailaddress;
+                                objShipAdd.ShipPhoneNumber = objPlaceOrderVM.shipphone;
+                                objShipAdd.IsDeleted = false;
+                                objShipAdd.AddressTitle = objPlaceOrderVM.AddressTitle;
+                                objShipAdd.CreatedDate = DateTime.UtcNow;
+                                _db.tbl_ShippingAddresses.Add(objShipAdd);
+                                _db.SaveChanges();
                             }
                             string orderid = clsCommon.EncryptString(objOrder.OrderId.ToString());
                             response.Data = "Success^" + orderid;
