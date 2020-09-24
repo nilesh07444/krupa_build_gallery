@@ -426,6 +426,9 @@
     <Compile Include="Model\tbl_SecondCart.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\tbl_ShippingAddresses.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\tbl_StockReport.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>

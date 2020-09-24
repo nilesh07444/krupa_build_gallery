@@ -875,6 +875,24 @@
           <Property Name="CreatedDate" Type="datetime" />
           <Property Name="VariantItemId" Type="bigint" />
         </EntityType>
+        <EntityType Name="tbl_ShippingAddresses">
+          <Key>
+            <PropertyRef Name="ShippingAddressId" />
+          </Key>
+          <Property Name="ShippingAddressId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ClientUserId" Type="bigint" />
+          <Property Name="AddressTitle" Type="nvarchar" MaxLength="200" />
+          <Property Name="ShipFirstName" Type="nvarchar" MaxLength="300" />
+          <Property Name="ShipLastName" Type="nvarchar" MaxLength="300" />
+          <Property Name="ShipPhoneNumber" Type="nvarchar" MaxLength="20" />
+          <Property Name="ShipEmail" Type="nvarchar" MaxLength="150" />
+          <Property Name="ShipAddress" Type="nvarchar" MaxLength="250" />
+          <Property Name="ShipCity" Type="nvarchar" MaxLength="150" />
+          <Property Name="ShipState" Type="nvarchar" MaxLength="100" />
+          <Property Name="ShipPostalCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="IsDeleted" Type="bit" />
+          <Property Name="CreatedDate" Type="datetime" />
+        </EntityType>
         <EntityType Name="tbl_StockReport">
           <Key>
             <PropertyRef Name="Pk_StockReport_Id" />
@@ -1013,6 +1031,7 @@
           <EntitySet Name="tbl_ReferenceMaster" EntityType="Self.tbl_ReferenceMaster" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ReviewRating" EntityType="Self.tbl_ReviewRating" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_SecondCart" EntityType="Self.tbl_SecondCart" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_ShippingAddresses" EntityType="Self.tbl_ShippingAddresses" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_StockReport" EntityType="Self.tbl_StockReport" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_SubProducts" EntityType="Self.tbl_SubProducts" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Transactions" EntityType="Self.tbl_Transactions" Schema="dbo" store:Type="Tables" />
@@ -1515,6 +1534,7 @@
           <EntitySet Name="tbl_PincodeCityState" EntityType="krupagalleryModel.tbl_PincodeCityState" />
           <EntitySet Name="tbl_PromoCode" EntityType="krupagalleryModel.tbl_PromoCode" />
           <EntitySet Name="tbl_Feedbacks" EntityType="krupagalleryModel.tbl_Feedbacks" />
+          <EntitySet Name="tbl_ShippingAddresses" EntityType="krupagalleryModel.tbl_ShippingAddresses" />
         </EntityContainer>
         <EntityType Name="tbl_AdminRoles">
           <Key>
@@ -2066,6 +2086,24 @@
           <Property Name="ClientUserId" Type="Int64" />
           <Property Name="IsDeleted" Type="Boolean" />
           <Property Name="FeedbackOfMonth" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityType Name="tbl_ShippingAddresses">
+          <Key>
+            <PropertyRef Name="ShippingAddressId" />
+          </Key>
+          <Property Name="ShippingAddressId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ClientUserId" Type="Int64" />
+          <Property Name="AddressTitle" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="ShipFirstName" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="ShipLastName" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="ShipPhoneNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ShipEmail" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="ShipAddress" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="ShipCity" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="ShipState" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ShipPostalCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -3071,6 +3109,25 @@
                 <ScalarProperty Name="AboutDeliveryBoyService" ColumnName="AboutDeliveryBoyService" />
                 <ScalarProperty Name="AboutService" ColumnName="AboutService" />
                 <ScalarProperty Name="FeedbackId" ColumnName="FeedbackId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_ShippingAddresses">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_ShippingAddresses">
+              <MappingFragment StoreEntitySet="tbl_ShippingAddresses">
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="ShipPostalCode" ColumnName="ShipPostalCode" />
+                <ScalarProperty Name="ShipState" ColumnName="ShipState" />
+                <ScalarProperty Name="ShipCity" ColumnName="ShipCity" />
+                <ScalarProperty Name="ShipAddress" ColumnName="ShipAddress" />
+                <ScalarProperty Name="ShipEmail" ColumnName="ShipEmail" />
+                <ScalarProperty Name="ShipPhoneNumber" ColumnName="ShipPhoneNumber" />
+                <ScalarProperty Name="ShipLastName" ColumnName="ShipLastName" />
+                <ScalarProperty Name="ShipFirstName" ColumnName="ShipFirstName" />
+                <ScalarProperty Name="AddressTitle" ColumnName="AddressTitle" />
+                <ScalarProperty Name="ClientUserId" ColumnName="ClientUserId" />
+                <ScalarProperty Name="ShippingAddressId" ColumnName="ShippingAddressId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
