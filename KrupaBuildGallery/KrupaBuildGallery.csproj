@@ -229,6 +229,7 @@
     <Compile Include="Areas\Client\Controllers\ForgotPasswordController.cs" />
     <Compile Include="Areas\Client\Controllers\HappyCustomerController.cs" />
     <Compile Include="Areas\Client\Controllers\LoginController.cs" />
+    <Compile Include="Areas\Client\Controllers\MyAddressController.cs" />
     <Compile Include="Areas\Client\Controllers\MyProfileController.cs" />
     <Compile Include="Areas\Client\Controllers\OrdersController.cs" />
     <Compile Include="Areas\Client\Controllers\PrivacyPolicyController.cs" />
@@ -4116,6 +4117,7 @@
     <Content Include="Areas\Admin\Views\PromoCode\Index.cshtml" />
     <Content Include="Areas\Admin\Views\PromoCode\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\PromoCode\Used.cshtml" />
+    <Content Include="Areas\Client\Views\MyAddress\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />

@@ -207,6 +207,12 @@ namespace KrupaBuildGallery.Areas.Client
                 new { controller = "Category", action = "Index", id = UrlParameter.Optional }
             );
 
+            context.MapRoute(
+              "Client_MyAddress",
+              "myaddress",
+              new { controller = "MyAddress", action = "Index", id = UrlParameter.Optional }
+          );
+
         }
     }
 }
