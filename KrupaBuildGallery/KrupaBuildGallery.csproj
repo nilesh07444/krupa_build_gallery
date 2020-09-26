@@ -367,6 +367,9 @@
     <Compile Include="Model\tbl_ImportExcel.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\tbl_ItemAvailablePincode.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\tbl_ItemReplace.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>

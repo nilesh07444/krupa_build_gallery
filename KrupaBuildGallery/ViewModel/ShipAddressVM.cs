@@ -18,5 +18,6 @@ namespace KrupaBuildGallery.ViewModel
         public string ShipCity { get; set; }
         public string ShipState { get; set; }
         public string ShipPostalCode { get; set; }
+        public string GSTNo { get; set; }
     }
 }

@@ -496,6 +496,14 @@
           <Property Name="ImportedBy" Type="bigint" />
           <Property Name="ImportType" Type="int" />
         </EntityType>
+        <EntityType Name="tbl_ItemAvailablePincode">
+          <Key>
+            <PropertyRef Name="ItemAvailablePincodeId" />
+          </Key>
+          <Property Name="ItemAvailablePincodeId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Pincode" Type="int" />
+          <Property Name="ProductItemId" Type="bigint" />
+        </EntityType>
         <EntityType Name="tbl_ItemReplace">
           <Key>
             <PropertyRef Name="ItemReplaceId" />
@@ -1035,6 +1043,7 @@
           <EntitySet Name="tbl_HappyCustomers" EntityType="Self.tbl_HappyCustomers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_HomeImages" EntityType="Self.tbl_HomeImages" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ImportExcel" EntityType="Self.tbl_ImportExcel" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_ItemAvailablePincode" EntityType="Self.tbl_ItemAvailablePincode" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ItemReplace" EntityType="Self.tbl_ItemReplace" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ItemReturnCancelReplace" EntityType="Self.tbl_ItemReturnCancelReplace" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ItemStocks" EntityType="Self.tbl_ItemStocks" Schema="dbo" store:Type="Tables" />
@@ -1564,6 +1573,7 @@
           <EntitySet Name="tbl_ShippingAddresses" EntityType="krupagalleryModel.tbl_ShippingAddresses" />
           <EntitySet Name="tbl_Notification" EntityType="krupagalleryModel.tbl_Notification" />
           <EntitySet Name="tbl_NotificationUserRead" EntityType="krupagalleryModel.tbl_NotificationUserRead" />
+          <EntitySet Name="tbl_ItemAvailablePincode" EntityType="krupagalleryModel.tbl_ItemAvailablePincode" />
         </EntityContainer>
         <EntityType Name="tbl_AdminRoles">
           <Key>
@@ -2158,6 +2168,14 @@
           <Property Name="NotificationId" Type="Int64" Nullable="false" />
           <Property Name="ClientUserId" Type="Int64" Nullable="false" />
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="tbl_ItemAvailablePincode">
+          <Key>
+            <PropertyRef Name="ItemAvailablePincodeId" />
+          </Key>
+          <Property Name="ItemAvailablePincodeId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Pincode" Type="Int32" />
+          <Property Name="ProductItemId" Type="Int64" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -3209,6 +3227,15 @@
                 <ScalarProperty Name="ClientUserId" ColumnName="ClientUserId" />
                 <ScalarProperty Name="NotificationId" ColumnName="NotificationId" />
                 <ScalarProperty Name="NotificationUserReadId" ColumnName="NotificationUserReadId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_ItemAvailablePincode">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_ItemAvailablePincode">
+              <MappingFragment StoreEntitySet="tbl_ItemAvailablePincode">
+                <ScalarProperty Name="ProductItemId" ColumnName="ProductItemId" />
+                <ScalarProperty Name="Pincode" ColumnName="Pincode" />
+                <ScalarProperty Name="ItemAvailablePincodeId" ColumnName="ItemAvailablePincodeId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

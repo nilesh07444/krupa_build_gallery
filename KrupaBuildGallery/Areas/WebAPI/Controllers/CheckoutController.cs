@@ -502,6 +502,9 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     objChkout.FreeOfferId = objfreeoffer.FreeOfferId.ToString();                    
                 }
                 objChkout.FreeItems = lstFreeItemss;
+                List<tbl_ShippingAddresses> lstShippingAddress = _db.tbl_ShippingAddresses.Where(o => o.ClientUserId == UserId && o.IsDeleted == false).ToList();
+                objChkout.lstShipAddresses = lstShippingAddress;
+                
                 response.Data = objChkout;
             }
             catch (Exception ex)
@@ -522,7 +525,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             try
             {
                 long UserId = Convert.ToInt64(objGen.ClientUserId);
-                decimal amt = Convert.ToDecimal(objGen.Amount);
+                decimal amt = Convert.ToDecimal(objGen.Amount);                
                 string IsCash = objGen.CheckoutType;
                 bool IsValidAddress = true;
                 if (UserId > 0)
@@ -3240,6 +3243,10 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     objChkout.FreeOfferId = objfreeoffer.FreeOfferId.ToString();
                 }
                 objChkout.FreeItems = lstFreeItemss;
+
+                List<tbl_ShippingAddresses> lstShippingAddress = _db.tbl_ShippingAddresses.Where(o => o.ClientUserId == UserId && o.IsDeleted == false).ToList();
+                objChkout.lstShipAddresses = lstShippingAddress;
+
                 response.Data = objChkout;
             }
             catch (Exception ex)
@@ -3382,5 +3389,52 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             return response;
         }
 
+
+        [Route("CheckItemAvailablePincode"), HttpPost]
+        public ResponseDataModel<string> CheckItemAvailablePincode(GeneralVM objGen)
+        {
+            ResponseDataModel<string> response = new ResponseDataModel<string>();
+            GeneralVM objGenn = new GeneralVM();
+            try
+            {
+                long ItemId = Convert.ToInt64(objGen.ItemId);
+                int Pincd = Convert.ToInt32(objGen.Pincode);
+                var objPinc = _db.tbl_AvailablePincode.Where(o => o.AvailablePincode == objGen.Pincode).FirstOrDefault();
+                if(objPinc != null)
+                {
+                   List<tbl_ItemAvailablePincode> lstAvil = _db.tbl_ItemAvailablePincode.Where(o => o.ProductItemId == ItemId).ToList();
+                    if(lstAvil != null && lstAvil.Count() > 0)
+                    {
+                        var objPnAvail = lstAvil.Where(o => o.Pincode == Pincd).FirstOrDefault();
+                        if(objPnAvail == null)
+                        {
+                            response.AddError("Item not available for this pincode");
+                        }
+                        else
+                        {
+                            response.Data = "Item available for this pincode";
+                        }
+
+                    }
+                    else
+                    {
+                        response.Data = "Item available for this pincode";
+                    }
+                }
+                else
+                {
+                    response.AddError("Item not available for this pincode");
+                }
+             
+               
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+        }
     }
 }

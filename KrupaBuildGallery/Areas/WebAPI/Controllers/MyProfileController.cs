@@ -386,6 +386,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     objShip.AddressTitle = objShipAddress.AddressTitle;
                     objShip.ClientUserId = objShipAddress.ClientUserId;
                     objShip.IsDeleted = false;
+                    objShip.GSTNo = objShipAddress.GSTNo;
                     if (objShipAddress.ShippingAddressId == 0)
                     {
                         _db.tbl_ShippingAddresses.Add(objShip);

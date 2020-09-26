@@ -83,5 +83,6 @@ namespace KrupaBuildGallery.Model
         public DbSet<tbl_ShippingAddresses> tbl_ShippingAddresses { get; set; }
         public DbSet<tbl_Notification> tbl_Notification { get; set; }
         public DbSet<tbl_NotificationUserRead> tbl_NotificationUserRead { get; set; }
+        public DbSet<tbl_ItemAvailablePincode> tbl_ItemAvailablePincode { get; set; }
     }
 }
