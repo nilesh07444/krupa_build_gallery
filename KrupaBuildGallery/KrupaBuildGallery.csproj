@@ -198,6 +198,7 @@
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Admin\Controllers\DistributorController.cs" />
     <Compile Include="Areas\Admin\Controllers\DynamicContentController.cs" />
+    <Compile Include="Areas\Admin\Controllers\FeedbackController.cs" />
     <Compile Include="Areas\Admin\Controllers\FreeOfferController.cs" />
     <Compile Include="Areas\Admin\Controllers\GeneralSettingController.cs" />
     <Compile Include="Areas\Admin\Controllers\GodownController.cs" />
@@ -4129,6 +4130,7 @@
     <Content Include="Areas\Admin\Views\Notification\Add.cshtml" />
     <Content Include="Areas\Admin\Views\Notification\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Notification\View.cshtml" />
+    <Content Include="Areas\Admin\Views\Feedback\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />
