@@ -1,0 +1,154 @@
+﻿@model List<FeedbackVM>
+@{
+    ViewBag.Title = "Feedback";
+
+    int counter = 1;
+}
+
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="page-header-left">
+                        <h3>
+                            Feedback List
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item active">Feedback List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h5>Feedback List</h5>
+            </div>
+            <div class="card-body vendor-table">
+
+                <table class="display" id="basic-1">
+                    <thead>
+                        <tr>
+                            <th width="5%;">#</th>
+                            <th>Date</th>
+                            <th>User</th>
+                            <th>Mobile No</th>
+                            <th>Client/Distributer</th>
+                            <th>Service</th>
+                            <th>Deli.Boy Service</th>
+                            <th>Deli.Boy Behaviour</th>
+                            <th>Our Quality</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            foreach (FeedbackVM obj in Model)
+                            {
+                                <tr class="grade">
+                                    <td>@counter.</td>
+                                    <td>@Convert.ToDateTime(obj.FeedbackDate).ToString("dd/MM/yyyy")</td>
+                                    <td>@obj.UserName</td>
+                                    <td>@obj.MobileNo</td>
+                                    <td>@(obj.ClientRoleId == 1 ? "Customer" : "Distributer")</td>
+                                    <td>@obj.AboutService</td>
+                                    <td>@obj.AboutDeliveryBoyService</td>
+                                    <td>@obj.AboutDeliveryBoyBehaviour</td>
+                                    <td>@obj.OurQuality</td>
+                                    <td>
+                                        <a title="Delete" href="javascript:void(0);" onclick="fnDeleteFeedback('@obj.FeedbackId')"><i class="fa fa-trash font-danger"></i></a>
+                                    </td>
+                                </tr>
+                                counter++;
+                            }
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+</div>
+
+
+<!-- Delete Modal -->
+<div class="modal fade open" id="deleteFeedbackModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete Confirm</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete ?
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="hdnDeleteFeedback" />
+                <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
+                <button id="btnDeleteFeedback" class="btn btn-primary" type="button">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Delete modal -->
+
+<script>
+
+    jQuery(document).ready(function () {
+        jQuery('html, body').animate({ scrollTop: 0 }, 1000);
+    });
+    
+    function fnDeleteFeedback(Feedback_Id) {
+        jQuery("#hdnDeleteFeedback").val(Feedback_Id);
+        $('#deleteFeedbackModal').modal('show');
+    }
+
+    jQuery(document).on("click", "#btnDeleteFeedback", function () {
+
+        var Feedback_Id = jQuery("#hdnDeleteFeedback").val();
+        if (Feedback_Id != "" && Feedback_Id != null) {
+            $('#deleteFeedbackModal').modal('hide');
+
+            StartLoading();
+
+            var URL = '@Url.Action("DeleteFeedback", "Feedback")';
+            $.ajax({
+                type: 'POST',
+                async: true,
+                url: URL + "?FeedbackId=" + Feedback_Id,
+                success: function (result) {
+                    if (result == "success") {
+                        alert("Feedback deleted successfully");
+                        window.location.reload();
+                    }
+                    else if (result == "notfound") {
+                        alert("Feedback Not Found");
+                    }
+                    else {
+                        alert("Something went wrong. Please try again");
+                    }
+
+                   StopLoading();
+                },
+                error: function (resultData) {
+                    StopLoading();
+                }
+            });
+        }
+    });
+
+</script>
