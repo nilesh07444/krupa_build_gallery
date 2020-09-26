@@ -317,5 +317,102 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
 
         }
 
+
+        [Route("GetShippingAddresses"), HttpPost]
+        public ResponseDataModel<List<tbl_ShippingAddresses>> GetShippingAddresses(GeneralVM objGeneralVM)
+        {
+            ResponseDataModel<List<tbl_ShippingAddresses>> response = new ResponseDataModel<List<tbl_ShippingAddresses>>();
+            GeneralVM objGenVm = new GeneralVM();
+            try
+            {
+                long userid = Convert.ToInt64(objGeneralVM.ClientUserId);
+                objGenVm.ClientUserId = Convert.ToString(userid);
+                List<tbl_ShippingAddresses> lstShippingAddress = _db.tbl_ShippingAddresses.Where(o => o.ClientUserId == userid && o.IsDeleted == false).ToList();
+                response.Data = lstShippingAddress;
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+
+
+        [Route("SaveShippingAddress"), HttpPost]
+        public ResponseDataModel<string> SaveShippingAddress(ShipAddressVM objShipAddress)
+        {
+            ResponseDataModel<string> response = new ResponseDataModel<string>();
+            GeneralVM objGenVm = new GeneralVM();
+            bool IsValid = true;
+            try
+            {
+                long userid = Convert.ToInt64(objShipAddress.ClientUserId);
+                tbl_ShippingAddresses objShip = new tbl_ShippingAddresses();
+                if (objShipAddress.ShippingAddressId == 0)
+                {
+                    var objshipexist = _db.tbl_ShippingAddresses.Where(o => o.AddressTitle.ToLower() == objShipAddress.AddressTitle.ToLower() && o.ClientUserId == objShipAddress.ClientUserId && o.IsDeleted == false).FirstOrDefault();
+                    if(objshipexist != null)
+                    {
+                        response.AddError("Shipping Title Already Exist");
+                        IsValid = false;
+                    }
+                    objShip.CreatedDate = DateTime.UtcNow;
+                }
+                else
+                {
+                    long shipadreid = Convert.ToInt64(objShipAddress.ShippingAddressId);
+                    var objshipexist = _db.tbl_ShippingAddresses.Where(o => o.AddressTitle.ToLower() == objShipAddress.AddressTitle.ToLower() && o.ShippingAddressId != shipadreid && o.ClientUserId == objShipAddress.ClientUserId && o.IsDeleted == false).FirstOrDefault();
+                    if (objshipexist != null)
+                    {
+                        response.AddError("Shipping Title Already Exist");
+                        IsValid = false;
+                    }
+
+                    objShip = _db.tbl_ShippingAddresses.Where(o => o.ShippingAddressId == shipadreid).FirstOrDefault();
+                }
+                if(IsValid)
+                {
+                    objShip.ShipAddress = objShipAddress.ShipAddress;
+                    objShip.ShipCity = objShipAddress.ShipCity;
+                    objShip.ShipEmail = objShipAddress.ShipEmail;
+                    objShip.ShipPhoneNumber = objShipAddress.ShipPhoneNumber;
+                    objShip.ShipFirstName = objShipAddress.ShipFirstName;
+                    objShip.ShipLastName = objShipAddress.ShipLastName;
+                    objShip.ShipState = objShipAddress.ShipState;
+                    objShip.ShipPostalCode = objShipAddress.ShipPostalCode;
+                    objShip.AddressTitle = objShipAddress.AddressTitle;
+                    objShip.ClientUserId = objShipAddress.ClientUserId;
+                    objShip.IsDeleted = false;
+                    if (objShipAddress.ShippingAddressId == 0)
+                    {
+                        _db.tbl_ShippingAddresses.Add(objShip);
+                    }
+                    _db.SaveChanges();                  
+                }
+                if (IsValid)
+                {
+                    response.Data = "Success";
+                }
+                else
+                {
+                    response.Data = "Already Exist";
+                }
+                    
+
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+
+
     }
 }

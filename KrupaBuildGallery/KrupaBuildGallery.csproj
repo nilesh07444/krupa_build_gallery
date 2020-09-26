@@ -500,6 +500,7 @@
     <Compile Include="ViewModel\PwdVM.cs" />
     <Compile Include="ViewModel\RegisterVM.cs" />
     <Compile Include="ViewModel\ReportVM.cs" />
+    <Compile Include="ViewModel\ShipAddressVM.cs" />
     <Compile Include="ViewModel\SubProductVM.cs" />
     <Compile Include="ViewModel\VariantItemVM.cs" />
     <Compile Include="ViewModel\WebsiteStatisticsVM.cs" />

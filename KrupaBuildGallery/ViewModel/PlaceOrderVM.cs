@@ -35,5 +35,7 @@ namespace KrupaBuildGallery
         public string HasPromoCode { get; set; }
         public string PromoCode { get; set; }
         public string PromoDiscount { get; set; }
+        public string AddressTitle { get; set; }
+        public string IsSaveShippingAddress { get; set; }
     }
 }
