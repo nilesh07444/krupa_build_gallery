@@ -1374,7 +1374,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             bool IsTimeToDisplay = false;
             DateTime dtCurrent = DateTime.UtcNow;
             DateTime dtCurrMonth = new DateTime(dtCurrent.Year, dtCurrent.Month, 1);
-            var objFeefbck = _db.tbl_Feedbacks.Where(o => o.ClientUserId == UserId).OrderByDescending(o => o.FeedbackDate).FirstOrDefault();
+            var objFeefbck = _db.tbl_Feedbacks.Where(o => o.ClientUserId == UserId).OrderByDescending(o => o.FeedbackOfMonth).FirstOrDefault();
             var objOrder = _db.tbl_Orders.Where(o => o.ClientUserId == UserId && o.CreatedDate < dtCurrMonth).OrderByDescending(o => o.CreatedDate).FirstOrDefault();
             if (objOrder != null)
             {

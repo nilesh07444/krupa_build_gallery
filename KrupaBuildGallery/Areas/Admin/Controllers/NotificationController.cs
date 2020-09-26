@@ -1,10 +1,13 @@
 ﻿using ConstructionDiary.Models;
 using KrupaBuildGallery.Helper;
 using KrupaBuildGallery.Model;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 
@@ -72,7 +75,53 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     objNotification.CreatedDate = DateTime.UtcNow;
                     _db.tbl_Notification.Add(objNotification);
                     _db.SaveChanges();
+                    //string imgurl = "http://krupatest-001-site1.ftempurl.com/Images/NotificationMedia/" + fileName;
+                    string imgurl = "http://krupatest-001-site1.ftempurl.com/Content/assets/images/kbg/logo.png";
+                    WebRequest tRequest = WebRequest.Create("https://fcm.googleapis.com/fcm/send");
+                    tRequest.Method = "post";
+                    //serverKey - Key from Firebase cloud messaging server  
+                    tRequest.Headers.Add(string.Format("Authorization: key={0}", "AAAAav-0MMY:APA91bHt6Bann_b6RoXLP3XxTI-eE5d2Uimxc231h756R8mwxjrJyqnaE959-EYhOsEtRLus1C2mZG_NyY5VACFZAKRkn0S6PSB-1QDBg3EaITICkDutSJRYaoG1Wd23JUmEwwlJcY94"));
+                    //Sender Id - From firebase project setting  
+                    tRequest.Headers.Add(string.Format("Sender: id={0}", "459556532422"));
+                    tRequest.ContentType = "application/json";
+                    var payload = new
+                    {
+                        to = "/topics/ShoppingSaving",
+                        priority = "high",
+                        content_available = true,
+                        notification = new
+                        {
+                            body = notificationVM.NotificationDescription,
+                            title = notificationVM.NotificationTitle,
+                            image= imgurl,
+                            badge = 1,
+                            sound = "default"
+                        },
+                        data = new
+                        {
+                            notificationdetailid = objNotification.NotificationId
+                        }
 
+                    };
+
+                    string postbody = JsonConvert.SerializeObject(payload).ToString();
+                    Byte[] byteArray = Encoding.UTF8.GetBytes(postbody);
+                    tRequest.ContentLength = byteArray.Length;
+                    using (Stream dataStream = tRequest.GetRequestStream())
+                    {
+                        dataStream.Write(byteArray, 0, byteArray.Length);
+                        using (WebResponse tResponse = tRequest.GetResponse())
+                        {
+                            using (Stream dataStreamResponse = tResponse.GetResponseStream())
+                            {
+                                if (dataStreamResponse != null) using (StreamReader tReader = new StreamReader(dataStreamResponse))
+                                    {
+                                        String sResponseFromServer = tReader.ReadToEnd();
+                                        //result.Response = sResponseFromServer;
+                                    }
+                            }
+                        }
+                    }
                     return RedirectToAction("Index");
 
                 }

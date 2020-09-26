@@ -246,6 +246,7 @@
     <Compile Include="Areas\WebAPI\Controllers\ForgotPasswordController.cs" />
     <Compile Include="Areas\WebAPI\Controllers\LoginController.cs" />
     <Compile Include="Areas\WebAPI\Controllers\MyProfileController.cs" />
+    <Compile Include="Areas\WebAPI\Controllers\NotificationController.cs" />
     <Compile Include="Areas\WebAPI\Controllers\OrderController.cs" />
     <Compile Include="Areas\WebAPI\Controllers\ProductsController.cs" />
     <Compile Include="Areas\WebAPI\Controllers\RegisterController.cs" />
@@ -384,6 +385,9 @@
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\tbl_Notification.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_NotificationUserRead.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\tbl_Offers.cs">
@@ -4183,6 +4187,7 @@
     <Folder Include="Areas\WebAPI\Views\ForgotPassword\" />
     <Folder Include="Areas\WebAPI\Views\Login\" />
     <Folder Include="Areas\WebAPI\Views\MyProfile\" />
+    <Folder Include="Areas\WebAPI\Views\Notification\" />
     <Folder Include="Areas\WebAPI\Views\Order\" />
     <Folder Include="Areas\WebAPI\Views\Products\" />
     <Folder Include="Areas\WebAPI\Views\Register\" />

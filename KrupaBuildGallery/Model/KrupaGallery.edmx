@@ -593,6 +593,15 @@
           <Property Name="ModifiedDate" Type="datetime" />
           <Property Name="ModifiedBy" Type="bigint" />
         </EntityType>
+        <EntityType Name="tbl_NotificationUserRead">
+          <Key>
+            <PropertyRef Name="NotificationUserReadId" />
+          </Key>
+          <Property Name="NotificationUserReadId" Type="bigint" Nullable="false" />
+          <Property Name="NotificationId" Type="bigint" Nullable="false" />
+          <Property Name="ClientUserId" Type="bigint" Nullable="false" />
+          <Property Name="CreatedDate" Type="datetime" Nullable="false" />
+        </EntityType>
         <EntityType Name="tbl_Offers">
           <Key>
             <PropertyRef Name="OfferId" />
@@ -1033,6 +1042,7 @@
           <EntitySet Name="tbl_ItemVariant" EntityType="Self.tbl_ItemVariant" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_LoginHistory" EntityType="Self.tbl_LoginHistory" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Notification" EntityType="Self.tbl_Notification" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_NotificationUserRead" EntityType="Self.tbl_NotificationUserRead" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Offers" EntityType="Self.tbl_Offers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_OrderItemDelivery" EntityType="Self.tbl_OrderItemDelivery" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_OrderItemDetails" EntityType="Self.tbl_OrderItemDetails" Schema="dbo" store:Type="Tables" />
@@ -1553,6 +1563,7 @@
           <EntitySet Name="tbl_Feedbacks" EntityType="krupagalleryModel.tbl_Feedbacks" />
           <EntitySet Name="tbl_ShippingAddresses" EntityType="krupagalleryModel.tbl_ShippingAddresses" />
           <EntitySet Name="tbl_Notification" EntityType="krupagalleryModel.tbl_Notification" />
+          <EntitySet Name="tbl_NotificationUserRead" EntityType="krupagalleryModel.tbl_NotificationUserRead" />
         </EntityContainer>
         <EntityType Name="tbl_AdminRoles">
           <Key>
@@ -2138,6 +2149,15 @@
           <Property Name="ModifiedBy" Type="Int64" />
           <Property Name="IsActive" Type="Boolean" Nullable="false" />
           <Property Name="IsDelete" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_NotificationUserRead">
+          <Key>
+            <PropertyRef Name="NotificationUserReadId" />
+          </Key>
+          <Property Name="NotificationUserReadId" Type="Int64" Nullable="false" />
+          <Property Name="NotificationId" Type="Int64" Nullable="false" />
+          <Property Name="ClientUserId" Type="Int64" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -3179,6 +3199,16 @@
                 <ScalarProperty Name="NotificationDescription" ColumnName="NotificationDescription" />
                 <ScalarProperty Name="NotificationTitle" ColumnName="NotificationTitle" />
                 <ScalarProperty Name="NotificationId" ColumnName="NotificationId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_NotificationUserRead">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_NotificationUserRead">
+              <MappingFragment StoreEntitySet="tbl_NotificationUserRead">
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="ClientUserId" ColumnName="ClientUserId" />
+                <ScalarProperty Name="NotificationId" ColumnName="NotificationId" />
+                <ScalarProperty Name="NotificationUserReadId" ColumnName="NotificationUserReadId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

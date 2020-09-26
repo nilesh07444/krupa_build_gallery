@@ -74,7 +74,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
 
         }
 
-        [Route("RemoveWishlistitem"), HttpPost]
+        [Route("GetWishlist"), HttpPost]
         public ResponseDataModel<List<WishListVM>> GetWishlist(GeneralVM objGen)
         {
             ResponseDataModel<List<WishListVM>> response = new ResponseDataModel<List<WishListVM>>();

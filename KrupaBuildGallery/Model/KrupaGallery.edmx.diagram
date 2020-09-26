@@ -64,6 +64,7 @@
         <EntityTypeShape EntityType="krupagalleryModel.tbl_Feedbacks" Width="1.5" PointX="23.375" PointY="23.75" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_ShippingAddresses" Width="1.5" PointX="11.375" PointY="24.75" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_Notification" Width="1.5" PointX="25.375" PointY="0.75" />
+        <EntityTypeShape EntityType="krupagalleryModel.tbl_NotificationUserRead" Width="1.5" PointX="0.75" PointY="25.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

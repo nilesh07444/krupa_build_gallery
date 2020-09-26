@@ -25,5 +25,7 @@ namespace KrupaBuildGallery
         public string strModifiedBy { get; set; }
         public DateTime? ModifiedDate { get; set; }
         public string NotificationImageUrl { get; set; }
+
+        public bool IsRead { get; set; }
     }
 }
