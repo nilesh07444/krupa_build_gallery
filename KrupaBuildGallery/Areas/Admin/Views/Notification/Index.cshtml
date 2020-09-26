@@ -1,0 +1,311 @@
+﻿@using KrupaBuildGallery.Helper;
+@using Newtonsoft.Json;
+@using KrupaBuildGallery.Model;
+
+@model List<NotificationVM>
+@{
+    ViewBag.Title = "Notification List";
+
+    int counter = 1;
+}
+
+@{
+    UserPermissionVM objPermission = new UserPermissionVM();
+
+    int RoleId = Int32.Parse(clsAdminSession.RoleID.ToString());
+
+    if (RoleId != 1)
+    {
+        string strPermission = clsAdminSession.UserPermission;
+        objPermission = JsonConvert.DeserializeObject<UserPermissionVM>(strPermission, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+    }
+    bool IsSA = (RoleId == 1 ? true : false);
+}
+
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="page-header-left">
+                        <h3>
+                            Notification List
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Notification</li>
+                        <li class="breadcrumb-item active">Notification List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h5>Notification List</h5>
+            </div>
+            <div class="card-body vendor-table">
+                @if (IsSA || objPermission.ManagePageContent >= (int)ModulePermission.Add)
+                {
+                    <div class="btn-popup pull-right">
+                        <button type="button" class="btn btn-primary" id="btnAdd">Add Notification</button>
+                    </div>
+                }
+                <table class="display" id="basic-1">
+                    <thead>
+                        <tr>
+                            <th width="10%;">#</th>
+                            <th width="15%;">Notification Image</th>
+                            <th>Notification Title</th>
+                            <th>Notification Date</th>
+                            <th width="15%;">Active</th>
+                            <th width="15%;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            foreach (NotificationVM Notification in Model)
+                            {
+                                <tr class="gradeX">
+                                    <td>@counter.</td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(Notification.NotificationImage))
+                                        {
+                                            if (File.Exists(Server.MapPath("~/Images/NotificationMedia/" + Notification.NotificationImage)))
+                                            {
+                                                <img src="~/Images/NotificationMedia/@Notification.NotificationImage" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                            }
+                                            else
+                                            {
+                                                <img src="@ErrorMessage.DefaultImagePath" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <img src="@ErrorMessage.DefaultImagePath" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                        }
+
+                                    </td>
+                                    <td>@Notification.NotificationTitle</td>
+                                    <td>@Notification.CreatedDate.ToString("dd/MM/yyyy")</td>
+
+                                    @if (Notification.IsActive == true)
+                                    {
+                                        <td><span class="badge badge-success" style="cursor:pointer;" title="Click to Inactive" onclick="fnChangeStatus('@Notification.NotificationId','InActive');">Active</span></td>
+                                    }
+                                    else
+                                    {
+                                        <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@Notification.NotificationId','Active');">InActive</span></td>
+                                    }
+
+                                    <td>
+                                        @if (IsSA || objPermission.ManagePageContent >= (int)ModulePermission.View)
+                                        {
+                                            <a title="View" href="/admin/Notification/view/@Notification.NotificationId"><i class="fa fa-eye mr-2 font-success"></i></a>
+                                        }
+                                        @if (IsSA || objPermission.ManagePageContent >= (int)ModulePermission.Edit)
+                                        {
+                                            <a title="Edit" href="/admin/Notification/edit/@Notification.NotificationId"><i class="fa fa-edit mr-2 font-success"></i></a>
+                                        }
+                                        @if (IsSA || objPermission.ManagePageContent == (int)ModulePermission.Full)
+                                        {
+                                            <a title="Delete" href="javascript:void(0);" onclick="fnDeleteNotification('@Notification.NotificationId')"><i class="fa fa-trash font-danger"></i></a>
+                                        }
+                                    </td>
+                                </tr>
+                                counter++;
+                            }
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade open" id="deleteNotificationModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete Confirm</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete ?
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="hdnDeleteNotification" />
+                <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
+                <button id="btnDeleteNotification" class="btn btn-primary" type="button">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Delete modal -->
+
+
+<div class="modal fade open" id="activeinactiveModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to active ?
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="hdndataId" />
+                <input type="hidden" id="hdnstatus" />
+                <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
+                <button id="btnChangeStatus" class="btn btn-primary" type="button">Submit</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Import Modal -->
+<div class="modal fade open" id="importmodal" tabindex="-1" role="dialog" aria-labelledby="importmodal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Notification Import</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("ImportExcel", "Inquiry", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                {
+                    <div>
+                        Select Excel file <input type="file" name="importfile" />
+                    </div>
+                }
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="hdnDeleteNotification" />
+                <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
+                <button id="btnSaveImport" class="btn btn-primary" type="button">Import</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Delete modal -->
+@*<script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>*@
+
+<script>
+
+    jQuery(document).ready(function () {
+        jQuery('html, body').animate({ scrollTop: 0 }, 1000);
+    });
+
+    $(document).on("click", "#btnAdd", function () {
+            window.location.href = "/admin/notification/add";
+        });
+
+    function fnDeleteNotification(cat_id)
+    {
+        jQuery("#hdnDeleteNotification").val(cat_id);
+        $('#deleteNotificationModal').modal('show');
+    }
+     
+    jQuery(document).on("click", "#btnDeleteNotification", function () {
+
+        var Notification_id = jQuery("#hdnDeleteNotification").val();
+        if (Notification_id != "" && Notification_id != null)
+        {
+        $('#deleteNotificationModal').modal('hide');
+
+            StartLoading();
+
+            var URL = '@Url.Action("DeleteNotification", "Notification")';
+        $.ajax({
+            type: 'POST',
+            async: true,
+            url: URL + "?NotificationId=" + Notification_id,
+            success: function(result) {
+                    if (result == "success")
+                    {
+                        alert("Notification deleted successfully");
+                        window.location.reload();
+                    }
+                    else if (result == "notfound")
+                    {
+                        alert("Notification Not Found");
+                    }
+                    else
+                    {
+                        alert("Something went wrong. Please try again");
+                    }
+
+                    StopLoading();
+                },
+            error: function(resultData) {
+                    StopLoading();
+                }
+            });
+        }
+    });
+     
+    function fnChangeStatus(cat_id, status)
+    {
+        jQuery("#hdndataId").val(cat_id);
+        jQuery("#hdnstatus").val(status);
+        if (status == "Active")
+        {
+            $('#activeinactiveModal .modal-body').html(" Are you sure you want to make active ?");
+        }
+        else
+        {
+            $('#activeinactiveModal .modal-body').html(" Are you sure you want to make inactive ?");
+        }
+    $('#activeinactiveModal').modal('show');
+    }
+
+    jQuery(document).on("click", "#btnChangeStatus", function () {
+
+        var Id = jQuery("#hdndataId").val();
+        if (Id != "" && Id != null)
+        {
+        $('#activeinactiveModal').modal('hide');
+
+            StartLoading();
+
+            var URL = '@Url.Action("ChangeStatus", "Notification")';
+            $.ajax({
+            type: 'POST',
+            async: true,
+            url: URL + "?Id=" + Id + "&Status=" + jQuery("#hdnstatus").val(),
+            success: function(result) {
+                    if (result == "success")
+                    {
+                        alert("Status change Successfully...");
+                        window.location.reload();
+                    }
+                    else
+                    {
+                        alert("Something went wrong. Please try again");
+                    }
+
+                    StopLoading();
+                },
+            error: function(resultData) {
+                    StopLoading();
+                }
+            });
+        }
+    });
+     
+</script>

@@ -1,17 +1,23 @@
-﻿<!-- breadcrumb start -->
+﻿@model List<ShippingAddressVM>
+
+@{
+    ViewBag.Title = "Shipping Address";
+}
+
+<!-- breadcrumb start -->
 <div class="breadcrumb-section">
     <div class="container">
         <div class="row">
             <div class="col-sm-6">
                 <div class="page-title">
-                    <h2>review</h2>
+                    <h2>My Shipping Addresses</h2>
                 </div>
             </div>
             <div class="col-sm-6">
                 <nav aria-label="breadcrumb" class="theme-breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">review</li>
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Shipping Addresses</li>
                     </ol>
                 </nav>
             </div>
@@ -25,137 +31,144 @@
     <div class="container">
         <div class="row">
             <div class="col-sm-12">
-                <ul class="comment-section">
 
-                    <li>
-                        <div class="media">
-                            <div class="media-body">
-                                <h6>Home Address <span></span></h6>
-                                <p>
-                                    Nilesh Prajapati <br />
-                                    B/7, Gandev Nagar, 100 foot road, Nani Khodiyar, <br />
-                                    Anand - 388001, Gujarat <br />
-                                    <i class="fa fa-phone"></i> 9824936252 <br />
-                                    <i class="fa fa-envelope-o"></i> prajapati.nileshbhai@gmail.com
-                                </p>
-                                <ul class="comnt-sec">
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-thumbs-o-up"
-                                               aria-hidden="true"></i><span>(14)</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <div class="unlike">
-                                                <i class="fa fa-thumbs-o-down"
-                                                   aria-hidden="true"></i>(2)
-                                            </div>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="media">
-                            <div class="media-body">
-                                <h6>Mark Jecno <span>( 12 Jannuary 2018 at 1:30AM )</span></h6>
-                                <p>
-                                    Donec rhoncus massa quis nibh imperdiet dictum. Vestibulum id est sit amet felis
-                                    fringilla bibendum at at leo. Proin molestie ac nisi eu laoreet. Integer
-                                    faucibus enim nec ullamcorper tempor. Aenean nec felis dui. Integer tristique
-                                    odio mi, in volutpat metus posuere eu. Aenean suscipit ipsum nunc, id volutpat
-                                    lorem hendrerit ac. Sed id elit quam. In ac mauris arcu. Praesent eget lectus
-                                    sit amet diam vestibulum varius. Suspendisse dignissim mattis leo, nec facilisis
-                                    erat tempor quis. Vestibulum eu vestibulum ex.
-                                </p>
-                                <ul class="comnt-sec">
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-thumbs-o-up"
-                                               aria-hidden="true"></i><span>(14)</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <div class="unlike">
-                                                <i class="fa fa-thumbs-o-down"
-                                                   aria-hidden="true"></i>(2)
-                                            </div>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="media">
-                            <div class="media-body">
-                                <h6>Mark Jecno <span>( 12 Jannuary 2018 at 1:30AM )</span></h6>
-                                <p>
-                                    Donec rhoncus massa quis nibh imperdiet dictum. Vestibulum id est sit amet felis
-                                    fringilla bibendum at at leo. Proin molestie ac nisi eu laoreet. Integer
-                                    faucibus enim nec ullamcorper tempor. Aenean nec felis dui. Integer tristique
-                                    odio mi, in volutpat metus posuere eu. Aenean suscipit ipsum nunc, id volutpat
-                                    lorem hendrerit ac. Sed id elit quam. In ac mauris arcu. Praesent eget lectus
-                                    sit amet diam vestibulum varius. Suspendisse dignissim mattis leo, nec facilisis
-                                    erat tempor quis. Vestibulum eu vestibulum ex.
-                                </p>
-                                <ul class="comnt-sec">
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-thumbs-o-up"
-                                               aria-hidden="true"></i><span>(14)</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <div class="unlike">
-                                                <i class="fa fa-thumbs-o-down"
-                                                   aria-hidden="true"></i>(2)
-                                            </div>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="media">
-                            <div class="media-body">
-                                <h6>Mark Jecno <span>( 12 Jannuary 2018 at 1:30AM )</span></h6>
-                                <p>
-                                    Donec rhoncus massa quis nibh imperdiet dictum. Vestibulum id est sit amet felis
-                                    fringilla bibendum at at leo. Proin molestie ac nisi eu laoreet. Integer
-                                    faucibus enim nec ullamcorper tempor. Aenean nec felis dui. Integer tristique
-                                    odio mi, in volutpat metus posuere eu. Aenean suscipit ipsum nunc, id volutpat
-                                    lorem hendrerit ac. Sed id elit quam. In ac mauris arcu. Praesent eget lectus
-                                    sit amet diam vestibulum varius. Suspendisse dignissim mattis leo, nec facilisis
-                                    erat tempor quis. Vestibulum eu vestibulum ex.
-                                </p>
-                                <ul class="comnt-sec">
-                                    <li>
-                                        <a href="#">
-                                            <i class="fa fa-thumbs-o-up"
-                                               aria-hidden="true"></i><span>(14)</span>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="#">
-                                            <div class="unlike">
-                                                <i class="fa fa-thumbs-o-down"
-                                                   aria-hidden="true"></i>(2)
-                                            </div>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
+                @if (Model != null && Model.Count > 0)
+                {
+                    <ul class="comment-section">
+
+                        @foreach (ShippingAddressVM obj in Model)
+                        {
+                            <li>
+                                <div class="media">
+                                    <div class="media-body">
+                                        <h6>@obj.AddressTitle <span></span></h6>
+                                        <p>
+                                            @obj.ShipFirstName @obj.ShipLastName <br />
+                                            @obj.ShipAddress <br />
+                                            @obj.ShipCity - @obj.ShipPostalCode, @obj.ShipState <br />
+                                            <i class="fa fa-phone"></i> @obj.ShipPhoneNumber <br />
+                                            <i class="fa fa-envelope-o"></i> @obj.ShipEmail
+                                        </p>
+
+                                        <p>
+                                            <button class="btn btn-primary" style="line-height: 10px;font-size: 10px;">Edit</button>
+                                            <button class="btn btn-danger" style="line-height: 10px;font-size: 10px;">Delete</button>
+                                        </p>
+
+                                    </div>
+                                </div>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <div style="text-align:center;">
+                        <p style="text-align:center;">No any shipping address found !!!</p>
+                        <a id="btnAddEditAaddress" href="javascript:void(0);" class="btn btn-solid">Add New Address</a>
+                    </div>
+                }
             </div>
         </div>
     </div>
 </section>
 <!-- Section ends -->
+
+<!-- feedback modal start --> 
+<div class="modal fade bd-example-modal-lg theme-modal" id="addressModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body modal1" style="background: white;">
+                <div class="container-fluid p-0">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="modal-bg" style="padding: 25px;">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                <div class="offer-content">
+                                    <h2>My Shipping Address</h2>
+                                    <form id="theFormId" action="" class="theme-form" method="post">
+                                         
+                                        <div class="form-row mb-4">
+                                            <div class="col-md-6">
+                                                <label for="password">Address Title *</label>
+                                                <input type="text" id="txtShipAddressTitle" name="txtShipAddressTitle" placeholder="Enter Address Title" class="form-control" />
+                                                <span id="spn_AboutDeliveryBoyBehaviour" class="clserror">This field is required</span>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="password">GST No</label>
+                                                <input type="text" id="txtShipGSTNo" name="txtShipGSTNo" placeholder="Enter GST No" class="form-control" />
+                                                <span id="spn_AboutDeliveryBoyBehaviour" class="clserror">This field is required</span>
+                                            </div>
+                                        </div>
+                                        <div class="form-row mb-4">
+                                            <div class="col-md-6">
+                                                <label for="mobileno">First Name *</label>
+                                                <input type="text" id="txtShipFirstName" name="txtShipFirstName" placeholder="Enter Firstname" class="form-control" />
+                                                <span id="spn_AboutService" class="clserror">This field is required</span>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="email">Last Name *</label>
+                                                <input type="text" id="txtShipLastName" name="txtShipLastName" placeholder="Enter Lastname" class="form-control" />
+                                                <span id="spn_AboutDeliveryBoyService" class="clserror">This field is required</span>
+                                            </div>
+                                        </div>
+                                        <div class="form-row mb-4">
+                                            <div class="col-md-6">
+                                                <label for="password">Email Id</label>
+                                                <input type="text" id="txtShipEmailId" name="txtShipEmailId" placeholder="Enter Email Id" class="form-control" />
+                                                <span id="spn_AboutDeliveryBoyBehaviour" class="clserror">This field is required</span>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="confirmpassword">Mobile No *</label>
+                                                <input type="text" id="txtShipMobileNo" name="txtShipMobileNo" placeholder="Enter Mobile No" class="form-control" />
+                                                <span id="spn_OurQuality" class="clserror">This field is required</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-row mb-4">
+                                            <div class="col-md-12">
+                                                <label for="password">Address *</label>
+                                                <input type="text" id="txtShipAddress" name="txtShipAddress" placeholder="Enter Address" class="form-control" />
+                                                <span id="spn_AboutDeliveryBoyBehaviour" class="clserror">This field is required</span>
+                                            </div>
+                                        </div>
+                                        <div class="form-row mb-4">
+                                            <div class="col-md-4">
+                                                <label for="password">Pincode *</label>
+                                                <input type="text" id="txtShipPincode" name="txtShipPincode" placeholder="Enter Pincode" class="form-control" />
+                                                <span id="spn_AboutDeliveryBoyBehaviour" class="clserror">This field is required</span>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label for="confirmpassword">City *</label>
+                                                <input type="text" id="txtShipCity" name="txtShipCity" placeholder="Enter City" class="form-control" />
+                                                <span id="spn_OurQuality" class="clserror">This field is required</span>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label for="confirmpassword">State *</label>
+                                                <input type="text" id="txtShipState" name="txtShipState" placeholder="Enter State" class="form-control" />
+                                                <span id="spn_OurQuality" class="clserror">This field is required</span>
+                                            </div>
+                                        </div>
+                                        <div class="form-row" style="margin-top:15px;margin-bottom:30px;">
+                                            <input id="btnSaveAddress" type="button" value="Submit" class="btn btn-solid">
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
+<!-- feedback modal end -->
+ 
+<!-- Bootstrap js-->
+<script src="~/Content/assets/js/bootstrap.js"></script>
+
+<script> 
+    $(document).on("click", "#btnAddEditAaddress", function () { 
+        $('#addressModal').modal('show'); 
+    })
+</script>

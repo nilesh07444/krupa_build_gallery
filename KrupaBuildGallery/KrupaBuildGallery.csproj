@@ -208,6 +208,7 @@
     <Compile Include="Areas\Admin\Controllers\LoginController.cs" />
     <Compile Include="Areas\Admin\Controllers\LoginHistoryController.cs" />
     <Compile Include="Areas\Admin\Controllers\MyProfileController.cs" />
+    <Compile Include="Areas\Admin\Controllers\NotificationController.cs" />
     <Compile Include="Areas\Admin\Controllers\OfferController.cs" />
     <Compile Include="Areas\Admin\Controllers\OrderController.cs" />
     <Compile Include="Areas\Admin\Controllers\PincodeCityStateController.cs" />
@@ -382,6 +383,9 @@
     <Compile Include="Model\tbl_LoginHistory.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\tbl_Notification.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\tbl_Offers.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
@@ -460,6 +464,7 @@
     <Compile Include="ViewModel\Admin\HomeImageVM.cs" />
     <Compile Include="ViewModel\Admin\ImportExcelDataVM.cs" />
     <Compile Include="ViewModel\Admin\LoginHistoryVM.cs" />
+    <Compile Include="ViewModel\Admin\NotificationVM.cs" />
     <Compile Include="ViewModel\Admin\PromoCodeVM.cs" />
     <Compile Include="ViewModel\Admin\RatingReviewVM.cs" />
     <Compile Include="ViewModel\Admin\ReferenceVM.cs" />
@@ -501,6 +506,7 @@
     <Compile Include="ViewModel\RegisterVM.cs" />
     <Compile Include="ViewModel\ReportVM.cs" />
     <Compile Include="ViewModel\ShipAddressVM.cs" />
+    <Compile Include="ViewModel\ShippingAddressVM.cs" />
     <Compile Include="ViewModel\SubProductVM.cs" />
     <Compile Include="ViewModel\VariantItemVM.cs" />
     <Compile Include="ViewModel\WebsiteStatisticsVM.cs" />
@@ -4119,6 +4125,10 @@
     <Content Include="Areas\Admin\Views\PromoCode\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\PromoCode\Used.cshtml" />
     <Content Include="Areas\Client\Views\MyAddress\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Notification\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Notification\Add.cshtml" />
+    <Content Include="Areas\Admin\Views\Notification\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Notification\View.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />

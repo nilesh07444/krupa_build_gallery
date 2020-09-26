@@ -92,14 +92,14 @@
         </div>
     </section>
 
-    <section class="contact-page register-page">
+    <section class="contact-page register-page section-b-space">
         <div class="container">
             <div class="row theme-form">
                 <div class="col-sm-12">
                     <h3>PERSONAL DETAIL</h3>
                     <div class="form-row">
                         <div class="col-md-4">
-                            <label for="prefix">Prefix</label>
+                            <label for="prefix">Prefix *</label>
                             <select class="form-control" id="prefix" name="prefix" required>
                                 <option value="">Select</option>
                                 <option value="Mr">Mr</option>
@@ -108,15 +108,15 @@
                             </select>
                         </div>
                         <div class="col-md-4">
-                            <label for="firstname">First Name</label>
+                            <label for="firstname">First Name *</label>
                             <input type="text" class="form-control" id="firstname" name="firstname" value="@objclient.FirstName" placeholder="Enter First name" required>
                         </div>
                         <div class="col-md-4">
-                            <label for="lastname">Last Name</label>
+                            <label for="lastname">Last Name *</label>
                             <input type="text" class="form-control" id="lastname" name="lastname" value="@objclient.LastName" placeholder="Enter Last Name" required>
                         </div>
                         <div class="col-md-4">
-                            <label for="mobilenumber">Mobile Number</label>
+                            <label for="mobilenumber">Mobile Number *</label>
                             <input type="number" class="form-control" id="mobilenumber" name="mobilenumber" readonly value="@objclient.MobileNo" placeholder="Enter your mobile number" required>
                         </div>
                         <div class="col-md-4">
@@ -134,28 +134,33 @@
                         @if (clsClientSession.RoleID == 2)
                         {
                             <div class="col-md-4">
-                                <label for="companyname">Company Name</label>
+                                <label for="companyname">Company Name *</label>
                                 <input type="text" class="form-control" id="companyname" name="companyname" value="@objclient.CompanyName" placeholder="Company Name" required>
                             </div>
                             <div class="col-md-4">
-                                <label for="addharcardno">Aadhar Card No.</label>
+                                <label for="addharcardno">Aadhar Card No. *</label>
                                 <input type="text" class="form-control" id="addharcardno" name="addharcardno" value="@objclientother.Addharcardno" placeholder="Addhar Card No." required>
                             </div>
                             <div class="col-md-4">
-                                <label for="gstno">GST No.</label>
+                                <label for="gstno">GST No. *</label>
                                 <input type="text" class="form-control" id="gstno" name="gstno" value="@objclientother.GSTno" placeholder="GST No." required maxlength="15" onblur="gstchange();">
                             </div>
                             <div class="col-md-4">
-                                <label for="panno">Pan Card No.</label>
+                                <label for="panno">Pan Card No. *</label>
                                 <input type="text" class="form-control" id="panno" name="panno" value="@objclientother.Pancardno" placeholder="Pan Card No." required>
                             </div>
                         }
+
+                        <div class="col-md-12" style="margin-top:15px;">
+                            <button class="btn btn-sm btn-solid" type="button" onclick="CheckEmailExist();">Save</button>
+                        </div>
+
                     </div>
                 </div>
             </div>
         </div>
     </section>
-    <section class="contact-page register-page section-b-space">
+    @*<section class="contact-page register-page section-b-space">
         <div class="container">
             <div class="row theme-form">
                 <div class="col-sm-12">
@@ -242,7 +247,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section>*@
 </form>
 <script>
     var statenm = '@objclientother.ShipState';
@@ -265,17 +270,17 @@
 
     function checkvalidate() {
         var flg = true;
-        if ($("input[name=shipmobilenumber]").val() == "") {
-            $("input[name=shipmobilenumber]").siblings('.errorcls').html("Mobile number is Required");
-            flg = false;
-        }
-        else {
-            var a = /^\d{10}$/;
-            if (!a.test(($("input[name=shipmobilenumber]").val()))) {
-                $("input[name=shipmobilenumber]").siblings('.errorcls').html("Invalid Shipping Phone number");
-                flg = false;
-            }
-        }
+        //if ($("input[name=shipmobilenumber]").val() == "") {
+        //    $("input[name=shipmobilenumber]").siblings('.errorcls').html("Mobile number is Required");
+        //    flg = false;
+        //}
+        //else {
+        //    var a = /^\d{10}$/;
+        //    if (!a.test(($("input[name=shipmobilenumber]").val()))) {
+        //        $("input[name=shipmobilenumber]").siblings('.errorcls').html("Invalid Shipping Phone number");
+        //        flg = false;
+        //    }
+        //}
 
         if (flg == true) {
             return true;
@@ -308,12 +313,12 @@
             });
     }
 
-    function shipmobilechange() {
-        if ($("input[name=shipmobilenumber]").val() != '' && $("input[name=shipmobilenumber]").val().length != 10) {
-            alert("Please Enter Valid Shipping Mobile No");
-            return;
-        }
-    }
+    //function shipmobilechange() {
+    //    if ($("input[name=shipmobilenumber]").val() != '' && $("input[name=shipmobilenumber]").val().length != 10) {
+    //        alert("Please Enter Valid Shipping Mobile No");
+    //        return;
+    //    }
+    //}
 
      function CheckEmailExist() {
          var email = $("#email").val();

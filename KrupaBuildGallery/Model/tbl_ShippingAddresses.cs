@@ -27,5 +27,6 @@ namespace KrupaBuildGallery.Model
         public string ShipPostalCode { get; set; }
         public Nullable<bool> IsDeleted { get; set; }
         public Nullable<System.DateTime> CreatedDate { get; set; }
+        public string GSTNo { get; set; }
     }
 }

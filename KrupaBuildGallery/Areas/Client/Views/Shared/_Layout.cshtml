@@ -154,6 +154,7 @@
                                         <a href="/myprofile/changepassword" class="dropdown-item">Change Password</a>
                                         <a href="/orders" class="dropdown-item">My Orders</a>
                                         <a href="/myprofile/paymentreport" class="dropdown-item">Payment Report</a>
+                                        <a href="/myaddress" class="dropdown-item">My Addresses</a>
                                         <div class="dropdown-divider"></div>
                                         <a href="/login/signout" class="dropdown-item">Logout</a>
                                     }
@@ -685,7 +686,7 @@
     <div class="modal fade bd-example-modal-lg theme-modal" id="feedbackModal" tabindex="-1" role="dialog" aria-hidden="true" data-keyboard="false" data-backdrop="static">
         <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
             <div class="modal-content">
-                <div class="modal-body modal1">
+                <div class="modal-body modal1" style="background: white;">
                     <div class="container-fluid p-0">
                         <div class="row">
                             <div class="col-12">
@@ -960,8 +961,6 @@
           }
         }
 
-    // $('#feedbackModal').modal('show');
-
     $(document).on("click", "#btnSubmitFeedback", function () {
 
         $(".clserror").hide();
@@ -1052,7 +1051,7 @@
                 async: true,
                 url: URL,
                 success: function (response) {
-                 
+
                     if (response == "True") {
                         $('#feedbackModal').modal('show');
                     }
