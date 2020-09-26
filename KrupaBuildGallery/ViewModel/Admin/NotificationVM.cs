@@ -9,9 +9,9 @@ namespace KrupaBuildGallery
     public class NotificationVM
     {
         public long NotificationId { get; set; }
-        [Required, Display(Name = "Notification Title")]
+        [Required, Display(Name = "Notification Title *")]
         public string NotificationTitle { get; set; }
-        [Required, Display(Name = "Notification Description")]
+        [Required, Display(Name = "Notification Description *")]
         public string NotificationDescription { get; set; }
         [Display(Name = "Notification Image")]
         public HttpPostedFileBase NotificationImageFile { get; set; }
