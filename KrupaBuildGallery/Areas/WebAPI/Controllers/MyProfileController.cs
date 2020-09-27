@@ -255,7 +255,14 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         pointreamining = lstpoints.Sum(x => (x.Points - x.UsedPoints).Value);
                     }
                     objGenVm.TotalWalletAmt = Convert.ToString(waltamt);
-                    objGenVm.TotalPoints = Convert.ToString(pointreamining);                    
+                    objGenVm.TotalPoints = Convert.ToString(pointreamining);
+                    string refrelcod = "";
+                    if(!string.IsNullOrEmpty(objClientUser.OwnReferralCode))
+                    {
+                        refrelcod = objClientUser.OwnReferralCode;
+                    }
+                    objGenVm.ReferalCode = refrelcod;
+
                 }
                 response.Data = objGenVm;
             }

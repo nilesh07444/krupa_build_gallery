@@ -283,6 +283,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>KrupaGallery.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Model\sp_GetNotificationList_Result.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\tbl_AdminRoleModules.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
