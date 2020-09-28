@@ -94,6 +94,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             body = notificationVM.NotificationDescription,
                             title = notificationVM.NotificationTitle,
                             image= imgurl,
+                            click_action = "OPEN_ACTIVITY_1",
                             badge = 1,
                             sound = "default"
                         },

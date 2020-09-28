@@ -281,8 +281,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     msg += "Regards," + "\n";
                     msg += "Shopping & Saving";
 
-                    string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + userVM.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
-
+                    //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + userVM.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", userVM.MobileNo).Replace("--MSG--", msg);
                     var json = webClient.DownloadString(url);
                     if (json.Contains("invalidnumber"))
                     {
@@ -468,7 +468,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     Random random = new Random();
                     int num = random.Next(310450, 789899);
                     string msg = "Your change password OTP code is " + num;
-                    string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + MobileNumber + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + MobileNumber + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--",MobileNumber).Replace("--MSG--", msg);
                     var json = webClient.DownloadString(url);
                     if (json.Contains("invalidnumber"))
                     {
@@ -612,8 +613,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             string msg = "You have sent Cash Amount Rs " + objcashdel.Amount + " Rejected \n";
                             msg += "Shopping & Saving";
 
-                            string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objAdm.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
-
+                            //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objAdm.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                            string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", objAdm.MobileNo).Replace("--MSG--", msg);
                             var json = webClient.DownloadString(url);
                             if (json.Contains("invalidnumber"))
                             {

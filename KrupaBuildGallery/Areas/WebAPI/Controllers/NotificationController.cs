@@ -71,9 +71,12 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             try
             {
                 int ClientUserId = Convert.ToInt32(objGen.ClientUserId);
-                lstnotifications = (from n in _db.sp_GetNotificationList(ClientUserId)                            
-                            select new NotificationVM
-                            {
+                var objClientUser = _db.tbl_ClientUsers.Where(o => o.ClientUserId == ClientUserId).FirstOrDefault();
+                DateTime dtCretdt = objClientUser.CreatedDate;
+                lstnotifications = (from n in _db.sp_GetNotificationList(ClientUserId)    
+                                    where n.CreatedDate >= dtCretdt
+                                 select new NotificationVM
+                               {
                                 NotificationId = n.NotificationId,
                                 NotificationTitle = n.NotificationTitle,
                                 NotificationDescription = n.NotificationDescription,
