@@ -261,72 +261,120 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 decimal WalletUsed = Convert.ToDecimal(objGen.AmountPayByWallet);
                 decimal Onlinpymt = Convert.ToDecimal(objGen.AmountPayOnline);
                 response.Data = "Fail";
-                Razorpay.Api.Payment objpymn = new Razorpay.Api.Payment().Fetch(razrpaymentid);
-                if (objpymn != null)
+                if(WalletUsed > 0 && Onlinpymt == 0)
                 {
-                    if (objpymn["status"] != null && Convert.ToString(objpymn["status"]) == "captured")
+                    tbl_Orders objordr = _db.tbl_Orders.Where(o => o.OrderId == OrderId).FirstOrDefault();
+                    if (objordr != null)
                     {
-                        tbl_Orders objordr = _db.tbl_Orders.Where(o => o.OrderId == OrderId).FirstOrDefault();
-                        if (objordr != null)
+                        objordr.ShippingStatus = 2;
+                    }
+                    _db.SaveChanges();
+
+                    if (WalletUsed > 0)
+                    {
+                        tbl_PaymentHistory objPyment1 = new tbl_PaymentHistory();
+                        objPyment1.OrderId = objordr.OrderId;
+                        objPyment1.PaymentBy = "wallet";
+                        objPyment1.AmountDue = Convert.ToDecimal(objordr.ShippingCharge);
+                        objPyment1.AmountPaid = Convert.ToDecimal(WalletUsed);
+                        objPyment1.DateOfPayment = DateTime.UtcNow;
+                        objPyment1.CreatedBy = UserId;
+                        objPyment1.CreatedDate = DateTime.UtcNow;
+                        objPyment1.RazorpayOrderId = "";
+                        objPyment1.RazorpayPaymentId = "";
+                        objPyment1.RazorSignature = "";
+                        objPyment1.PaymentFor = "Shipping Charge";
+                        _db.tbl_PaymentHistory.Add(objPyment1);
+
+                        tbl_Wallet objwlt = new tbl_Wallet();
+                        objwlt.Amount = WalletUsed;
+                        objwlt.CreditDebit = "Debit";
+                        objwlt.OrderId = objordr.OrderId;
+                        objwlt.ClientUserId = UserId;
+                        objwlt.WalletDate = DateTime.UtcNow;
+                        objwlt.Description = "Paid Shipping Charge Amount for order no." + objordr.OrderId;
+                        _db.tbl_Wallet.Add(objwlt);
+                        var objclientuss = _db.tbl_ClientUsers.Where(o => o.ClientUserId == UserId).FirstOrDefault();
+                        if (objclientuss != null)
                         {
-                            objordr.ShippingStatus = 2;
+                            objclientuss.WalletAmt = objclientuss.WalletAmt - WalletUsed;
                         }
                         _db.SaveChanges();
-
-                        if(WalletUsed > 0)
+                        objCom.SavePaymentTransaction(0, objordr.OrderId, true, WalletUsed, "Payment By Wallet", UserId, false, DateTime.UtcNow, "Wallet");
+                        objCom.SaveTransaction(0, 0, objordr.OrderId, "Shipping Charge Payment By Wallet : Rs" + WalletUsed, WalletUsed, UserId, 0, DateTime.UtcNow, "Wallet Payment");
+                    }
+                    response.Data = "Success";
+                }
+                else
+                {
+                    Razorpay.Api.Payment objpymn = new Razorpay.Api.Payment().Fetch(razrpaymentid);
+                    if (objpymn != null)
+                    {
+                        if (objpymn["status"] != null && Convert.ToString(objpymn["status"]) == "captured")
                         {
-                            tbl_PaymentHistory objPyment1 = new tbl_PaymentHistory();
-                            objPyment1.OrderId = objordr.OrderId;
-                            objPyment1.PaymentBy = "wallet";
-                            objPyment1.AmountDue = Convert.ToDecimal(objordr.ShippingCharge);
-                            objPyment1.AmountPaid = Convert.ToDecimal(WalletUsed);
-                            objPyment1.DateOfPayment = DateTime.UtcNow;
-                            objPyment1.CreatedBy = UserId;
-                            objPyment1.CreatedDate = DateTime.UtcNow;
-                            objPyment1.RazorpayOrderId = "";
-                            objPyment1.RazorpayPaymentId = "";
-                            objPyment1.RazorSignature = "";
-                            objPyment1.PaymentFor = "Shipping Charge";
-                            _db.tbl_PaymentHistory.Add(objPyment1);
-
-                            tbl_Wallet objwlt = new tbl_Wallet();
-                            objwlt.Amount = WalletUsed;
-                            objwlt.CreditDebit = "Debit";
-                            objwlt.OrderId = objordr.OrderId;
-                            objwlt.ClientUserId = UserId;
-                            objwlt.WalletDate = DateTime.UtcNow;
-                            objwlt.Description = "Paid Shipping Charge Amount for order no." + objordr.OrderId;
-                            _db.tbl_Wallet.Add(objwlt);
-                            var objclientuss = _db.tbl_ClientUsers.Where(o => o.ClientUserId == UserId).FirstOrDefault();
-                            if (objclientuss != null)
+                            tbl_Orders objordr = _db.tbl_Orders.Where(o => o.OrderId == OrderId).FirstOrDefault();
+                            if (objordr != null)
                             {
-                                objclientuss.WalletAmt = objclientuss.WalletAmt - WalletUsed;
+                                objordr.ShippingStatus = 2;
                             }
                             _db.SaveChanges();
-                            objCom.SavePaymentTransaction(0, objordr.OrderId, true, WalletUsed, "Payment By Wallet", UserId, false, DateTime.UtcNow, "Wallet");
-                            objCom.SaveTransaction(0, 0, objordr.OrderId, "Shipping Charge Payment By Wallet : Rs" + WalletUsed, WalletUsed, UserId, 0, DateTime.UtcNow, "Wallet Payment");
-                        }
 
-                        string paymentmethod = objpymn["method"];
-                        tbl_PaymentHistory objPayment = new tbl_PaymentHistory();
-                        objPayment.AmountPaid = Onlinpymt;
-                        objPayment.AmountDue = Onlinpymt;
-                        objPayment.DateOfPayment = DateTime.UtcNow;
-                        objPayment.OrderId = objordr.OrderId;
-                        objPayment.PaymentBy = paymentmethod;
-                        objPayment.CreatedBy = UserId;
-                        objPayment.CreatedDate = DateTime.UtcNow;
-                        objPayment.RazorpayOrderId = razorderid;
-                        objPayment.RazorpayPaymentId = razrpaymentid;
-                        objPayment.RazorSignature = "";
-                        objPayment.PaymentFor = "ShippingCharge";
-                        _db.tbl_PaymentHistory.Add(objPayment);
-                        _db.SaveChanges();
-                        objCom.SaveTransaction(0, 0, objordr.OrderId, "Shipping Price Paid Online Amount: Rs" + objordr.ShippingCharge.Value, objordr.ShippingCharge.Value, UserId, 0, DateTime.UtcNow, "Online Payment");
-                        objCom.SavePaymentTransaction(0, objordr.OrderId, true, objordr.ShippingCharge.Value, "Payment By Online for Shipping Charge", UserId, false, DateTime.UtcNow, "Online Payment");
-                        response.Data = "Success";
+                            if (WalletUsed > 0)
+                            {
+                                tbl_PaymentHistory objPyment1 = new tbl_PaymentHistory();
+                                objPyment1.OrderId = objordr.OrderId;
+                                objPyment1.PaymentBy = "wallet";
+                                objPyment1.AmountDue = Convert.ToDecimal(objordr.ShippingCharge);
+                                objPyment1.AmountPaid = Convert.ToDecimal(WalletUsed);
+                                objPyment1.DateOfPayment = DateTime.UtcNow;
+                                objPyment1.CreatedBy = UserId;
+                                objPyment1.CreatedDate = DateTime.UtcNow;
+                                objPyment1.RazorpayOrderId = "";
+                                objPyment1.RazorpayPaymentId = "";
+                                objPyment1.RazorSignature = "";
+                                objPyment1.PaymentFor = "Shipping Charge";
+                                _db.tbl_PaymentHistory.Add(objPyment1);
+
+                                tbl_Wallet objwlt = new tbl_Wallet();
+                                objwlt.Amount = WalletUsed;
+                                objwlt.CreditDebit = "Debit";
+                                objwlt.OrderId = objordr.OrderId;
+                                objwlt.ClientUserId = UserId;
+                                objwlt.WalletDate = DateTime.UtcNow;
+                                objwlt.Description = "Paid Shipping Charge Amount for order no." + objordr.OrderId;
+                                _db.tbl_Wallet.Add(objwlt);
+                                var objclientuss = _db.tbl_ClientUsers.Where(o => o.ClientUserId == UserId).FirstOrDefault();
+                                if (objclientuss != null)
+                                {
+                                    objclientuss.WalletAmt = objclientuss.WalletAmt - WalletUsed;
+                                }
+                                _db.SaveChanges();
+                                objCom.SavePaymentTransaction(0, objordr.OrderId, true, WalletUsed, "Payment By Wallet", UserId, false, DateTime.UtcNow, "Wallet");
+                                objCom.SaveTransaction(0, 0, objordr.OrderId, "Shipping Charge Payment By Wallet : Rs" + WalletUsed, WalletUsed, UserId, 0, DateTime.UtcNow, "Wallet Payment");
+                            }
+
+                            string paymentmethod = objpymn["method"];
+                            tbl_PaymentHistory objPayment = new tbl_PaymentHistory();
+                            objPayment.AmountPaid = Onlinpymt;
+                            objPayment.AmountDue = Onlinpymt;
+                            objPayment.DateOfPayment = DateTime.UtcNow;
+                            objPayment.OrderId = objordr.OrderId;
+                            objPayment.PaymentBy = paymentmethod;
+                            objPayment.CreatedBy = UserId;
+                            objPayment.CreatedDate = DateTime.UtcNow;
+                            objPayment.RazorpayOrderId = razorderid;
+                            objPayment.RazorpayPaymentId = razrpaymentid;
+                            objPayment.RazorSignature = "";
+                            objPayment.PaymentFor = "ShippingCharge";
+                            _db.tbl_PaymentHistory.Add(objPayment);
+                            _db.SaveChanges();
+                            objCom.SaveTransaction(0, 0, objordr.OrderId, "Shipping Price Paid Online Amount: Rs" + objordr.ShippingCharge.Value, objordr.ShippingCharge.Value, UserId, 0, DateTime.UtcNow, "Online Payment");
+                            objCom.SavePaymentTransaction(0, objordr.OrderId, true, objordr.ShippingCharge.Value, "Payment By Online for Shipping Charge", UserId, false, DateTime.UtcNow, "Online Payment");
+                            response.Data = "Success";
+                        }
                     }
-                }               
+                }
+                  
 
             }
             catch (Exception ex)
@@ -915,9 +963,11 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                 OrderTypeId = p.OrderType.HasValue ? p.OrderType.Value : 1,
                                 IsCashOnDelivery = p.IsCashOnDelivery.HasValue ? p.IsCashOnDelivery.Value : false,
                                 ExtraAmount = p.ExtraAmount.HasValue ? p.ExtraAmount.Value : 0,
-                                IsExtraAmountReceived = p.IsExtraAmountReceived.HasValue ? p.IsExtraAmountReceived.Value : false
-                                
-                            }).OrderByDescending(x => x.OrderDate).FirstOrDefault();
+                                IsExtraAmountReceived = p.IsExtraAmountReceived.HasValue ? p.IsExtraAmountReceived.Value : false,
+                                HasPromo = p.HasPromo.HasValue ? p.HasPromo.Value : false,
+                                PromoDiscount = p.PromoDiscount.HasValue ? p.PromoDiscount.Value : 0,
+                                PromoDiscPerc = p.PromoPercentage.HasValue ? p.PromoPercentage.Value : 0
+                           }).OrderByDescending(x => x.OrderDate).FirstOrDefault();
 
                 if (objOrdr != null)
                 {
@@ -1199,11 +1249,23 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                             bool IsExtramtrec = objrd.IsExtraAmountReceived.HasValue ? objrd.IsExtraAmountReceived.Value : false;
                                             if (IsExtrapaid == false && IsExtramtrec == false)
                                             {
-                                                objj.AmountToReceived = shipcharge + objOrderItm.FinalItemPrice + extramtt;
+                                                decimal finlamt = objOrderItm.FinalItemPrice.Value;
+                                                if(objrd.HasPromo != null && objrd.HasPromo.Value == true)
+                                                {
+                                                    decimal discprc = ((finlamt * objrd.PromoPercentage.Value) / 100);
+                                                    finlamt = finlamt - discprc;
+                                                }
+                                                objj.AmountToReceived = shipcharge + finlamt + extramtt;
                                             }
                                             else
                                             {
-                                                objj.AmountToReceived = shipcharge + objOrderItm.FinalItemPrice;
+                                                decimal finlamt = objOrderItm.FinalItemPrice.Value;
+                                                if (objrd.HasPromo != null && objrd.HasPromo.Value == true)
+                                                {
+                                                    decimal discprc = ((finlamt * objrd.PromoPercentage.Value) / 100);
+                                                    finlamt = finlamt - discprc;
+                                                }
+                                                objj.AmountToReceived = shipcharge + finlamt;
                                             }
                                             objCommon.SavePaymentTransaction(0, objrd.OrderId, true, objj.AmountToReceived.Value, "Payment By Cash", ClientUserId, false, DateTime.UtcNow, "Cash");
                                             objrd.AmountDue = objrd.AmountDue - objj.AmountToReceived;
@@ -1231,13 +1293,19 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                         {
                                             decimal extramtt = objrd.ExtraAmount.HasValue ? objrd.ExtraAmount.Value : 0;
                                             bool IsExtramtrec = objrd.IsExtraAmountReceived.HasValue ? objrd.IsExtraAmountReceived.Value : false;
+                                            decimal finlamt = objOrderItm.FinalItemPrice.Value;
+                                            if (objrd.HasPromo != null && objrd.HasPromo.Value == true)
+                                            {
+                                                decimal discprc = ((finlamt * objrd.PromoDiscount.Value) / 100);
+                                                finlamt = finlamt - discprc;
+                                            }
                                             if (IsExtrapaid == false && IsExtramtrec == false)
                                             {
-                                                objj.AmountToReceived = objOrderItm.FinalItemPrice + extramtt;
+                                                objj.AmountToReceived = finlamt + extramtt;
                                             }
                                             else
                                             {
-                                                objj.AmountToReceived = objOrderItm.FinalItemPrice;
+                                                objj.AmountToReceived = finlamt;
                                             }
                                             objrd.AmountDue = objrd.AmountDue - objj.AmountToReceived;
                                             objCommon.SavePaymentTransaction(0, objrd.OrderId, true, objj.AmountToReceived.Value, "Payment By Cash", ClientUserId, false, DateTime.UtcNow, "Cash");
@@ -1249,6 +1317,17 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                     }
                                    
                                 }
+
+                                if(objrd.IsCashOnDelivery == false)
+                                {
+                                    if (objj.ReplaceId != null && objj.ReplaceId > 0)
+                                    {                                        
+                                        objj.AmountToReceived = 0;
+                                        var objItmrplc = _db.tbl_ItemReplace.Where(o => o.ItemReplaceId == objj.ReplaceId).FirstOrDefault();
+                                        objItmrplc.ItemStatus = 4;
+                                    }
+                                }
+
                                 if(objj.DelieveryPersonId != DelieveryPrsnId)
                                 {
                                     objj.AmountToReceived = 0;

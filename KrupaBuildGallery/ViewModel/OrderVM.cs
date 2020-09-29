@@ -50,5 +50,6 @@ namespace KrupaBuildGallery.ViewModel
         public decimal PromoDiscount { get; set; }
         public bool HasPromo { get; set; } 
         public decimal CurrentWalltAmt { get; set; }
+        public decimal PromoDiscPerc { get; set; }
     }
 }
