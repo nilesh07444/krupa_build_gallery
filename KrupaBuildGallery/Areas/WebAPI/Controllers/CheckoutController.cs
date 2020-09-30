@@ -525,7 +525,9 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             try
             {
                 long UserId = Convert.ToInt64(objGen.ClientUserId);
-                decimal amt = Convert.ToDecimal(objGen.Amount);                
+                decimal amt = Convert.ToDecimal(objGen.Amount);
+                int Pincod = Convert.ToInt32(objGen.Pincode);
+
                 string IsCash = objGen.CheckoutType;
                 bool IsValidAddress = true;
                 if (UserId > 0)
@@ -1794,13 +1796,30 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     if(IsSaveAddress)
                     {
                         tbl_ShippingAddresses objShipAdd = new tbl_ShippingAddresses();
+                        objShipAdd.ClientUserId = clientusrid;
                         objShipAdd.ShipAddress = objPlaceOrderVM.shipaddress;
                         objShipAdd.ShipCity = objPlaceOrderVM.shipcity;
                         objShipAdd.ShipPostalCode = objPlaceOrderVM.shippincode;
                         objShipAdd.ShipFirstName = objPlaceOrderVM.shipfirstname;
                         objShipAdd.ShipLastName = objPlaceOrderVM.shiplastname;
                         objShipAdd.ShipState = objPlaceOrderVM.shipstate;
-                        objShipAdd.ShipEmail = objPlaceOrderVM.shipemailaddress;
+                        if (!string.IsNullOrEmpty(objPlaceOrderVM.GSTNo))
+                        {
+                            objShipAdd.GSTNo = objPlaceOrderVM.GSTNo;
+                        }
+                        else
+                        {
+                            objShipAdd.GSTNo = "";
+                        }
+                       
+                        if(!string.IsNullOrEmpty(objPlaceOrderVM.shipemailaddress))
+                        {
+                            objShipAdd.ShipEmail = objPlaceOrderVM.shipemailaddress;
+                        }
+                        else
+                        {
+                            objShipAdd.ShipEmail = "";
+                        }
                         objShipAdd.ShipPhoneNumber = objPlaceOrderVM.shipphone;
                         objShipAdd.IsDeleted = false;
                         objShipAdd.AddressTitle = objPlaceOrderVM.AddressTitle;
@@ -2255,13 +2274,15 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                        
                             // List<tbl_Cart> lstCarts = _db.tbl_Cart.Where(o => o.ClientUserId == clientusrid).ToList();
                             string paymentmethod = objpymn["method"];
-                            string paymentdetails = "";
+                            string paymentdetails = "Online Payment";
                             if (paymentmethod == "upi")
                             {
                                 paymentdetails = objpymn["vpa"];
+                                paymentmethod = "Online Payment";
                             }
                             else if (paymentmethod == "card")
                             {
+                                paymentmethod = "Online Payment";
                                 string cardid = objpymn["card_id"];
                                 Razorpay.Api.Card objcard = new Razorpay.Api.Card().Fetch(cardid);
                                 if (objcard != null)
@@ -2786,13 +2807,30 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                             if (IsSaveAddress)
                             {
                                 tbl_ShippingAddresses objShipAdd = new tbl_ShippingAddresses();
+                                objShipAdd.ClientUserId = clientusrid;
                                 objShipAdd.ShipAddress = objPlaceOrderVM.shipaddress;
                                 objShipAdd.ShipCity = objPlaceOrderVM.shipcity;
                                 objShipAdd.ShipPostalCode = objPlaceOrderVM.shippincode;
                                 objShipAdd.ShipFirstName = objPlaceOrderVM.shipfirstname;
                                 objShipAdd.ShipLastName = objPlaceOrderVM.shiplastname;
                                 objShipAdd.ShipState = objPlaceOrderVM.shipstate;
-                                objShipAdd.ShipEmail = objPlaceOrderVM.shipemailaddress;
+                                if (!string.IsNullOrEmpty(objPlaceOrderVM.GSTNo))
+                                {
+                                    objShipAdd.GSTNo = objPlaceOrderVM.GSTNo;
+                                }
+                                else
+                                {
+                                    objShipAdd.GSTNo = "";
+                                }
+
+                                if (!string.IsNullOrEmpty(objPlaceOrderVM.shipemailaddress))
+                                {
+                                    objShipAdd.ShipEmail = objPlaceOrderVM.shipemailaddress;
+                                }
+                                else
+                                {
+                                    objShipAdd.ShipEmail = "";
+                                }
                                 objShipAdd.ShipPhoneNumber = objPlaceOrderVM.shipphone;
                                 objShipAdd.IsDeleted = false;
                                 objShipAdd.AddressTitle = objPlaceOrderVM.AddressTitle;
@@ -2895,7 +2933,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             {
                 using (WebClient webClient = new WebClient())
                 {
-                    string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + Msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + MobileNumber + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + Msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + MobileNumber + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", MobileNumber).Replace("--MSG--", Msg);
                     var json = webClient.DownloadString(url);
                     if (json.Contains("invalidnumber"))
                     {
@@ -3427,6 +3466,66 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 }
              
                
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+        }
+
+        [Route("CheckCartItemAvailablePincode"), HttpPost]
+        public ResponseDataModel<GeneralVM> CheckCartItemAvailablePincode(GeneralVM objGen)
+        {
+            ResponseDataModel<GeneralVM> response = new ResponseDataModel<GeneralVM>();
+            GeneralVM objGenn = new GeneralVM();
+            try
+            {
+                List<string> cartitmnotavailble = new List<string>();
+                List<string> lstCartItemIds = new List<string>();
+                if (!string.IsNullOrEmpty(objGen.StrCartItems))
+                {
+                    objGen.StrCartItems = objGen.StrCartItems.Trim('^');
+                    lstCartItemIds = objGen.StrCartItems.Split('^').ToList();
+                }
+              
+                //long ItemId = Convert.ToInt64(objGen.ItemId);
+                int Pincd = Convert.ToInt32(objGen.Pincode);
+                foreach (string strids in lstCartItemIds)
+                {
+                    long ItemId = Convert.ToInt64(strids);
+                    var objPinc = _db.tbl_AvailablePincode.Where(o => o.AvailablePincode == objGen.Pincode).FirstOrDefault();
+                    if (objPinc != null)
+                    {
+                        List<tbl_ItemAvailablePincode> lstAvil = _db.tbl_ItemAvailablePincode.Where(o => o.ProductItemId == ItemId).ToList();
+                        if (lstAvil != null && lstAvil.Count() > 0)
+                        {
+                            var objPnAvail = lstAvil.Where(o => o.Pincode == Pincd).FirstOrDefault();
+                            if (objPnAvail == null)
+                            {
+                                cartitmnotavailble.Add(strids);
+                            }
+                            else
+                            {
+                               
+                            }
+
+                        }
+                        else
+                        {
+                            
+                        }
+                    }
+                    else
+                    {
+                        cartitmnotavailble.Add(strids);
+                    }
+                }
+
+                objGenn.CartItemIds = cartitmnotavailble;
+                response.Data = objGenn;
             }
             catch (Exception ex)
             {

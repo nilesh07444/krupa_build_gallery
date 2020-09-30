@@ -1806,7 +1806,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             {
                 using (WebClient webClient = new WebClient())
                 {
-                    string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + Msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + MobileNumber + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + Msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + MobileNumber + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", MobileNumber).Replace("--MSG--", Msg);
                     var json = webClient.DownloadString(url);
                     if (json.Contains("invalidnumber"))
                     {

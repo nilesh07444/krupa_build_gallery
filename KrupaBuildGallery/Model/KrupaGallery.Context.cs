@@ -12,6 +12,9 @@ namespace KrupaBuildGallery.Model
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
+    using System.Data.Objects;
+    using System.Data.Objects.DataClasses;
+    using System.Linq;
     
     public partial class krupagallarydbEntities : DbContext
     {
@@ -84,5 +87,14 @@ namespace KrupaBuildGallery.Model
         public DbSet<tbl_Notification> tbl_Notification { get; set; }
         public DbSet<tbl_NotificationUserRead> tbl_NotificationUserRead { get; set; }
         public DbSet<tbl_ItemAvailablePincode> tbl_ItemAvailablePincode { get; set; }
+    
+        public virtual ObjectResult<sp_GetNotificationList_Result> sp_GetNotificationList(Nullable<int> clientUserId)
+        {
+            var clientUserIdParameter = clientUserId.HasValue ?
+                new ObjectParameter("ClientUserId", clientUserId) :
+                new ObjectParameter("ClientUserId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_GetNotificationList_Result>("sp_GetNotificationList", clientUserIdParameter);
+        }
     }
 }

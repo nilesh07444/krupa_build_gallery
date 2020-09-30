@@ -90,10 +90,11 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         priority = "high",
                         content_available = true,
                         notification = new
-                        {
+                        {                           
                             body = notificationVM.NotificationDescription,
                             title = notificationVM.NotificationTitle,
                             image= imgurl,
+                            click_action = "OPEN_ACTIVITY_1",
                             badge = 1,
                             sound = "default"
                         },

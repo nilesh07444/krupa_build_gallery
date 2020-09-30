@@ -27,5 +27,6 @@ namespace KrupaBuildGallery
         public string NotificationImageUrl { get; set; }
 
         public bool IsRead { get; set; }
+        public string NotificationDate { get; set; }
     }
 }

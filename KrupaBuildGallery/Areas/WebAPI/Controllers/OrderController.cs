@@ -147,6 +147,15 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                 PromoDiscount = p.PromoDiscount.HasValue ? p.PromoDiscount.Value : 0,
                                 Remarks = p.Remarks
                             }).OrderByDescending(x => x.OrderDate).FirstOrDefault();
+
+                decimal WalletAmt = 0;
+                var objuserclient = _db.tbl_ClientUsers.Where(o => o.ClientUserId == objOrder.ClientUserId).FirstOrDefault();
+                if (objuserclient != null)
+                {
+                    WalletAmt = objuserclient.WalletAmt.HasValue ? objuserclient.WalletAmt.Value : 0;
+                }
+                objOrder.CurrentWalltAmt = WalletAmt;
+
                 if (objOrder != null)
                 {
                     objOrder.OrderStatus = GetOrderStatus(objOrder.OrderStatusId);
@@ -249,6 +258,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 long OrderId = Convert.ToInt64(objGen.OrderId);
                 string razrpaymentid = objGen.RazorPaymentId;
                 string razorderid = objGen.RazorOrderid;
+                decimal WalletUsed = Convert.ToDecimal(objGen.AmountPayByWallet);
+                decimal Onlinpymt = Convert.ToDecimal(objGen.AmountPayOnline);
                 response.Data = "Fail";
                 Razorpay.Api.Payment objpymn = new Razorpay.Api.Payment().Fetch(razrpaymentid);
                 if (objpymn != null)
@@ -261,10 +272,45 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                             objordr.ShippingStatus = 2;
                         }
                         _db.SaveChanges();
+
+                        if(WalletUsed > 0)
+                        {
+                            tbl_PaymentHistory objPyment1 = new tbl_PaymentHistory();
+                            objPyment1.OrderId = objordr.OrderId;
+                            objPyment1.PaymentBy = "wallet";
+                            objPyment1.AmountDue = Convert.ToDecimal(objordr.ShippingCharge);
+                            objPyment1.AmountPaid = Convert.ToDecimal(WalletUsed);
+                            objPyment1.DateOfPayment = DateTime.UtcNow;
+                            objPyment1.CreatedBy = UserId;
+                            objPyment1.CreatedDate = DateTime.UtcNow;
+                            objPyment1.RazorpayOrderId = "";
+                            objPyment1.RazorpayPaymentId = "";
+                            objPyment1.RazorSignature = "";
+                            objPyment1.PaymentFor = "Shipping Charge";
+                            _db.tbl_PaymentHistory.Add(objPyment1);
+
+                            tbl_Wallet objwlt = new tbl_Wallet();
+                            objwlt.Amount = WalletUsed;
+                            objwlt.CreditDebit = "Debit";
+                            objwlt.OrderId = objordr.OrderId;
+                            objwlt.ClientUserId = UserId;
+                            objwlt.WalletDate = DateTime.UtcNow;
+                            objwlt.Description = "Paid Shipping Charge Amount for order no." + objordr.OrderId;
+                            _db.tbl_Wallet.Add(objwlt);
+                            var objclientuss = _db.tbl_ClientUsers.Where(o => o.ClientUserId == UserId).FirstOrDefault();
+                            if (objclientuss != null)
+                            {
+                                objclientuss.WalletAmt = objclientuss.WalletAmt - WalletUsed;
+                            }
+                            _db.SaveChanges();
+                            objCom.SavePaymentTransaction(0, objordr.OrderId, true, WalletUsed, "Payment By Wallet", UserId, false, DateTime.UtcNow, "Wallet");
+                            objCom.SaveTransaction(0, 0, objordr.OrderId, "Shipping Charge Payment By Wallet : Rs" + WalletUsed, WalletUsed, UserId, 0, DateTime.UtcNow, "Wallet Payment");
+                        }
+
                         string paymentmethod = objpymn["method"];
                         tbl_PaymentHistory objPayment = new tbl_PaymentHistory();
-                        objPayment.AmountPaid = objordr.ShippingCharge.Value;
-                        objPayment.AmountDue = objordr.ShippingCharge.Value;
+                        objPayment.AmountPaid = Onlinpymt;
+                        objPayment.AmountDue = Onlinpymt;
                         objPayment.DateOfPayment = DateTime.UtcNow;
                         objPayment.OrderId = objordr.OrderId;
                         objPayment.PaymentBy = paymentmethod;
@@ -276,7 +322,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         objPayment.PaymentFor = "ShippingCharge";
                         _db.tbl_PaymentHistory.Add(objPayment);
                         _db.SaveChanges();
-                        objCom.SaveTransaction(0, 0, objordr.OrderId, "Shipping Price Paid Online Amount: Rs" + objordr.ShippingCharge.Value, objordr.ShippingCharge.Value, UserId, 0, DateTime.UtcNow, "Shipping Charge Payment");
+                        objCom.SaveTransaction(0, 0, objordr.OrderId, "Shipping Price Paid Online Amount: Rs" + objordr.ShippingCharge.Value, objordr.ShippingCharge.Value, UserId, 0, DateTime.UtcNow, "Online Payment");
                         objCom.SavePaymentTransaction(0, objordr.OrderId, true, objordr.ShippingCharge.Value, "Payment By Online for Shipping Charge", UserId, false, DateTime.UtcNow, "Online Payment");
                         response.Data = "Success";
                     }
@@ -381,6 +427,67 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
 
                 Razorpay.Api.Order order = client.Order.Create(input);
                 response.Data = Convert.ToString(order["id"]);            
+
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+
+        [Route("CreateRazorPayOrderForShippingCharge"), HttpPost]
+        public ResponseDataModel<string> CreateRazorPayOrderForShippingCharge(GeneralVM objGen)
+        {
+            ResponseDataModel<string> response = new ResponseDataModel<string>();
+
+            try
+            {
+                string amt = objGen.Amount;
+                decimal wltamt = Convert.ToDecimal(objGen.AmountPayByWallet);
+                int clientusrid = Convert.ToInt32(objGen.ClientUserId);
+                decimal Amount = Convert.ToDecimal(amt);
+                bool IsValidWallet = true;
+                if (wltamt > 0)
+                {
+                    var objclientuss = _db.tbl_ClientUsers.Where(o => o.ClientUserId == clientusrid).FirstOrDefault();
+                    if (objclientuss != null)
+                    {
+                        if (objclientuss.WalletAmt != null && objclientuss.WalletAmt >= wltamt)
+                        {
+                            IsValidWallet = true;
+                        }
+                        else
+                        {
+                            IsValidWallet = false;
+                        }
+                    }
+                }
+               
+                if(IsValidWallet == false)
+                {
+                    response.AddError("Wallet amount balance is low");
+                }
+                else
+                {
+                    Dictionary<string, object> input = new Dictionary<string, object>();
+                    input.Add("amount", Amount * 100); // this amount should be same as transaction amount
+                    input.Add("currency", "INR");
+                    input.Add("receipt", "12000");
+                    input.Add("payment_capture", 1);
+
+                    var objGsetting = _db.tbl_GeneralSetting.FirstOrDefault();
+                    string key = objGsetting.RazorPayKey;  //"rzp_test_DMsPlGIBp3SSnI";
+                    string secret = objGsetting.RazorPaySecret; // "YMkpd9LbnaXViePncLLXhqms";
+
+                    RazorpayClient client = new RazorpayClient(key, secret);
+
+                    Razorpay.Api.Order order = client.Order.Create(input);
+                    response.Data = Convert.ToString(order["id"]);
+                }           
 
             }
             catch (Exception ex)
@@ -652,7 +759,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             {
                 using (WebClient webClient = new WebClient())
                 {
-                    string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + mobile + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + mobile + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", mobile).Replace("--MSG--", msg);
                     var json = webClient.DownloadString(url);
                     if (json.Contains("invalidnumber"))
                     {
@@ -684,7 +792,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     Random random = new Random();
                     int num = random.Next(555555, 999999);
                     string msg = "Your OTP code for Item action is " + num;
-                    string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + MobileNum + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + MobileNum + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", MobileNum).Replace("--MSG--", msg);
                     var json = webClient.DownloadString(url);
                     if (json.Contains("invalidnumber"))
                     {
@@ -970,7 +1079,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 using (WebClient webClient = new WebClient())
                 {
                     string msg = "Order no." + OrdrId + " \nItem: " + ItmsText + " \nhas been assigned to you for delivery";
-                    string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objAdminUsr.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objAdminUsr.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", objAdminUsr.MobileNo).Replace("--MSG--", msg);
                     var json = webClient.DownloadString(url);
                     if (json.Contains("invalidnumber"))
                     {
@@ -1171,7 +1281,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 using (WebClient webClient = new WebClient())
                 {
                     string msg = "Order no." + OrdrId + " \nItem: " + ItmsText + " \nhas been delivered";
-                    string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + mobileclient + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + mobileclient + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", mobileclient).Replace("--MSG--", msg);
                     var json = webClient.DownloadString(url);
                     if (json.Contains("invalidnumber"))
                     {
@@ -1221,7 +1332,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         GetCashMessage = "Please Give Cash" + GetCashMessage + " And ";
                     }
                     string msg = GetCashMessage+"Your OTP code for Item Delivery is " + num;
-                    string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + mobilnumber + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + mobilnumber + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", mobilnumber).Replace("--MSG--", msg);
                     var json = webClient.DownloadString(url);
                     if (json.Contains("invalidnumber"))
                     {

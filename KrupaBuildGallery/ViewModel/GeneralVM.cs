@@ -57,5 +57,10 @@ namespace KrupaBuildGallery
         public string City { get; set; }
         public string State { get; set; }
         public string Pincode { get; set; }
+        public int NotificationId { get; set; }
+        public decimal AmountPayByWallet { get; set; }
+        public decimal AmountPayOnline { get; set; }       
+        public List<string> CartItemIds { get; set; }
+        public string ReferalCode { get; set; }
     }
 }

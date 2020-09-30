@@ -40,7 +40,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         Random random = new Random();
                         int num = random.Next(310450, 789899);
                         string msg = "Your change password OTP code is " + num;
-                        string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + MobileNum + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                        //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + MobileNum + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                        string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", MobileNum).Replace("--MSG--", msg);
                         var json = webClient.DownloadString(url);
                         if (json.Contains("invalidnumber"))
                         {
@@ -172,7 +173,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         Random random = new Random();
                         int num = random.Next(310450, 789899);
                         string msg = "Your change password OTP code is " + num;
-                        string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + MobileNum + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                        //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + MobileNum + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                        string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", MobileNum).Replace("--MSG--", msg);
                         var json = webClient.DownloadString(url);
                         if (json.Contains("invalidnumber"))
                         {
@@ -255,7 +257,14 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         pointreamining = lstpoints.Sum(x => (x.Points - x.UsedPoints).Value);
                     }
                     objGenVm.TotalWalletAmt = Convert.ToString(waltamt);
-                    objGenVm.TotalPoints = Convert.ToString(pointreamining);                    
+                    objGenVm.TotalPoints = Convert.ToString(pointreamining);
+                    string refrelcod = "";
+                    if(!string.IsNullOrEmpty(objClientUser.OwnReferralCode))
+                    {
+                        refrelcod = objClientUser.OwnReferralCode;
+                    }
+                    objGenVm.ReferalCode = refrelcod;
+
                 }
                 response.Data = objGenVm;
             }

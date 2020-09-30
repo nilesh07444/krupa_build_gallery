@@ -605,7 +605,7 @@
           <Key>
             <PropertyRef Name="NotificationUserReadId" />
           </Key>
-          <Property Name="NotificationUserReadId" Type="bigint" Nullable="false" />
+          <Property Name="NotificationUserReadId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="NotificationId" Type="bigint" Nullable="false" />
           <Property Name="ClientUserId" Type="bigint" Nullable="false" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
@@ -1014,6 +1014,9 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Function Name="sp_GetNotificationList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ClientUserId" Type="int" Mode="In" />
+        </Function>
         <EntityContainer Name="krupagalleryModelStoreContainer">
           <EntitySet Name="tbl_AdminRoleModules" EntityType="Self.tbl_AdminRoleModules" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_AdminRolePermissions" EntityType="Self.tbl_AdminRolePermissions" Schema="dbo" store:Type="Tables" />
@@ -1574,6 +1577,9 @@
           <EntitySet Name="tbl_Notification" EntityType="krupagalleryModel.tbl_Notification" />
           <EntitySet Name="tbl_NotificationUserRead" EntityType="krupagalleryModel.tbl_NotificationUserRead" />
           <EntitySet Name="tbl_ItemAvailablePincode" EntityType="krupagalleryModel.tbl_ItemAvailablePincode" />
+          <FunctionImport Name="sp_GetNotificationList" ReturnType="Collection(krupagalleryModel.sp_GetNotificationList_Result)">
+          <Parameter Name="ClientUserId" Mode="In" Type="Int32" />
+          </FunctionImport>
         </EntityContainer>
         <EntityType Name="tbl_AdminRoles">
           <Key>
@@ -2177,6 +2183,14 @@
           <Property Name="Pincode" Type="Int32" />
           <Property Name="ProductItemId" Type="Int64" />
         </EntityType>
+        <ComplexType Name="sp_GetNotificationList_Result">
+          <Property Type="Int64" Name="NotificationId" Nullable="false" />
+          <Property Type="String" Name="NotificationDescription" Nullable="false" MaxLength="1000" />
+          <Property Type="String" Name="NotificationImage" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="NotificationTitle" Nullable="false" MaxLength="100" />
+          <Property Type="DateTime" Name="CreatedDate" Nullable="false" Precision="23" />
+          <Property Type="Int64" Name="IsRead" Nullable="false" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -3239,6 +3253,18 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="sp_GetNotificationList" FunctionName="krupagalleryModel.Store.sp_GetNotificationList">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="krupagalleryModel.sp_GetNotificationList_Result">
+                <ScalarProperty Name="NotificationId" ColumnName="NotificationId" />
+                <ScalarProperty Name="NotificationDescription" ColumnName="NotificationDescription" />
+                <ScalarProperty Name="NotificationImage" ColumnName="NotificationImage" />
+                <ScalarProperty Name="NotificationTitle" ColumnName="NotificationTitle" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

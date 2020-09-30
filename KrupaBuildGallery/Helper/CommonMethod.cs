@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Configuration;
 
 namespace KrupaBuildGallery
 {
@@ -334,7 +335,12 @@ namespace KrupaBuildGallery
              
             return randomReferralCode;
         }
-
+        
+        public static string GetSMSUrl()
+        {
+           string smsurl = WebConfigurationManager.AppSettings["SMSUrl"];
+            return smsurl;
+        }
 
     }
 }

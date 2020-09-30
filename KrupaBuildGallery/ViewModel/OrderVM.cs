@@ -49,5 +49,6 @@ namespace KrupaBuildGallery.ViewModel
         public string orderstring { get; set; }
         public decimal PromoDiscount { get; set; }
         public bool HasPromo { get; set; } 
+        public decimal CurrentWalltAmt { get; set; }
     }
 }

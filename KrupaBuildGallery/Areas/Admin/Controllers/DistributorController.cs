@@ -932,7 +932,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             string msg = "Your Registration As A Distributor Rejected - Shopping & Saving\n";
                             msg += "Following Is The Reason:\n";
                             msg += Reason;
-                            string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objReq.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                            //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objReq.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                            string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", objReq.MobileNo).Replace("--MSG--", msg);
                             var json = webClient.DownloadString(url);
                             if (json.Contains("invalidnumber"))
                             {
@@ -1019,7 +1020,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             msg += "Login Details:\n";
                             msg += "Email:" + objReq.Email + "\n";
                             msg += "Password:" + Password + "\n";
-                            string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objReq.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                            //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objReq.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";                            
+                            string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", objReq.MobileNo).Replace("--MSG--", msg);
                             var json = webClient.DownloadString(url);
                             if (json.Contains("invalidnumber"))
                             {
@@ -1148,7 +1150,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             {
                 using (WebClient webClient = new WebClient())
                 {
-                    string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + MobileNumber + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + MobileNumber + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                    
+                    string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", MobileNumber).Replace("--MSG--", msg);
                     var json = webClient.DownloadString(url);
                     if (json.Contains("invalidnumber"))
                     {
