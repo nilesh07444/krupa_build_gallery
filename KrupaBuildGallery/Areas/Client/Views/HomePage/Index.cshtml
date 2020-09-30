@@ -141,12 +141,12 @@
     </section>
 }
 <!-- Category list Section end -->
-<!-- Advertisement Images - Start -->
-@if (lstAdvertiseImages3 != null && lstAdvertiseImages3.Count > 0)
+<!-- Advertisement Images 2 - Start -->
+@if (lstAdvertiseImages2 != null && lstAdvertiseImages2.Count > 0)
 {
-    <section class="p-0 layout-7">
+    <section class="p-0 layout-7 section-t-space">
         <div class="slide-1 home-slider section-t-space">
-            @foreach (var obj in lstAdvertiseImages3)
+            @foreach (var obj in lstAdvertiseImages2)
             {
                 <div>
                     <div class="home">
@@ -173,8 +173,7 @@
         </div>
     </section>
 }
-<!-- Advertisement Images - end -->
-
+<!-- Advertisement Images 2 - end -->
 <!-- Combo Offer List -->
 @if (lstComboOffers != null && lstComboOffers.Count() > 0)
 {
@@ -477,12 +476,13 @@
     <!-- Product slider end -->
 }
 <!-- Popular Products List end -->
-<!-- Advertisement Images - Start -->
-@if (lstAdvertiseImages2 != null && lstAdvertiseImages2.Count > 0)
+
+<!-- Advertisement Images 3 - Start -->
+@if (lstAdvertiseImages3 != null && lstAdvertiseImages3.Count > 0)
 {
     <section class="p-0 layout-7">
-        <div class="slide-1 home-slider">
-            @foreach (var obj in lstAdvertiseImages2)
+        <div class="slide-1 home-slider section-t-space">
+            @foreach (var obj in lstAdvertiseImages3)
             {
                 <div>
                     <div class="home">
@@ -509,7 +509,8 @@
         </div>
     </section>
 }
-<!-- Advertisement Images - end -->
+<!-- Advertisement Images 3 - end -->
+ 
 <!-- UpPack Products List -->
 @if (lstUnPackItems != null && lstUnPackItems.Count() > 0)
 {

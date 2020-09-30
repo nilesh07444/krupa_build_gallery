@@ -2,6 +2,8 @@
 
 @{
     ViewBag.Title = "Shipping Address";
+
+    List<string> lstStates = ViewData["lstStates"] as List<string>;
 }
 
 <!-- breadcrumb start -->
@@ -34,11 +36,14 @@
 
                 @if (Model != null && Model.Count > 0)
                 {
+                    <div style="float: right;">
+                        <a id="btnAddEditAaddress" href="javascript:void(0);" class="btn btn-solid">Add New Address</a>
+                    </div>
                     <ul class="comment-section">
 
                         @foreach (ShippingAddressVM obj in Model)
                         {
-                            <li>
+                            <li style="width: 100%;">
                                 <div class="media">
                                     <div class="media-body">
                                         <h6>@obj.AddressTitle <span></span></h6>
@@ -47,14 +52,15 @@
                                             @obj.ShipAddress <br />
                                             @obj.ShipCity - @obj.ShipPostalCode, @obj.ShipState <br />
                                             <i class="fa fa-phone"></i> @obj.ShipPhoneNumber <br />
-                                            <i class="fa fa-envelope-o"></i> @obj.ShipEmail
+                                            @if (!string.IsNullOrEmpty(obj.ShipEmail))
+                                            {
+                                                <i class="fa fa-envelope-o"></i> @obj.ShipEmail
+                                            }
                                         </p>
-
                                         <p>
-                                            <button class="btn btn-primary" style="line-height: 10px;font-size: 10px;">Edit</button>
-                                            <button class="btn btn-danger" style="line-height: 10px;font-size: 10px;">Delete</button>
+                                            <button class="btn btn-primary" onclick="editAddressPopup(@obj.ShippingAddressId);" style="line-height: 10px;font-size: 10px;">Edit</button>
+                                            <button class="btn btn-danger" onclick="openDeletePopup(@obj.ShippingAddressId);" style="line-height: 10px;font-size: 10px;">Delete</button>
                                         </p>
-
                                     </div>
                                 </div>
                             </li>
@@ -73,8 +79,7 @@
     </div>
 </section>
 <!-- Section ends -->
-
-<!-- feedback modal start --> 
+<!-- feedback modal start -->
 <div class="modal fade bd-example-modal-lg theme-modal" id="addressModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
         <div class="modal-content">
@@ -87,41 +92,41 @@
                                 <div class="offer-content">
                                     <h2>My Shipping Address</h2>
                                     <form id="theFormId" action="" class="theme-form" method="post">
-                                         
+
                                         <div class="form-row mb-4">
                                             <div class="col-md-6">
                                                 <label for="password">Address Title *</label>
                                                 <input type="text" id="txtShipAddressTitle" name="txtShipAddressTitle" placeholder="Enter Address Title" class="form-control" />
-                                                <span id="spn_AboutDeliveryBoyBehaviour" class="clserror">This field is required</span>
+                                                <span id="spn_ShipAddressTitle" class="clserror">This field is required</span>
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="password">GST No</label>
-                                                <input type="text" id="txtShipGSTNo" name="txtShipGSTNo" placeholder="Enter GST No" class="form-control" />
-                                                <span id="spn_AboutDeliveryBoyBehaviour" class="clserror">This field is required</span>
+                                                <input type="text" id="txtShipGSTNo" name="txtShipGSTNo" placeholder="Enter GST No" class="form-control" maxlength="15" />
+                                                <span id="spn_ShipGSTNo" class="clserror">This field is required</span>
                                             </div>
                                         </div>
                                         <div class="form-row mb-4">
                                             <div class="col-md-6">
                                                 <label for="mobileno">First Name *</label>
                                                 <input type="text" id="txtShipFirstName" name="txtShipFirstName" placeholder="Enter Firstname" class="form-control" />
-                                                <span id="spn_AboutService" class="clserror">This field is required</span>
+                                                <span id="spn_ShipFirstName" class="clserror">This field is required</span>
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="email">Last Name *</label>
                                                 <input type="text" id="txtShipLastName" name="txtShipLastName" placeholder="Enter Lastname" class="form-control" />
-                                                <span id="spn_AboutDeliveryBoyService" class="clserror">This field is required</span>
+                                                <span id="spn_ShipLastName" class="clserror">This field is required</span>
                                             </div>
                                         </div>
                                         <div class="form-row mb-4">
                                             <div class="col-md-6">
                                                 <label for="password">Email Id</label>
                                                 <input type="text" id="txtShipEmailId" name="txtShipEmailId" placeholder="Enter Email Id" class="form-control" />
-                                                <span id="spn_AboutDeliveryBoyBehaviour" class="clserror">This field is required</span>
+                                                <span id="spn_ShipEmailId" class="clserror">This field is required</span>
                                             </div>
                                             <div class="col-md-6">
                                                 <label for="confirmpassword">Mobile No *</label>
-                                                <input type="text" id="txtShipMobileNo" name="txtShipMobileNo" placeholder="Enter Mobile No" class="form-control" />
-                                                <span id="spn_OurQuality" class="clserror">This field is required</span>
+                                                <input type="text" id="txtShipMobileNo" name="txtShipMobileNo" placeholder="Enter Mobile No" class="form-control" maxlength="10" />
+                                                <span id="spn_ShipMobileNo" class="clserror">This field is required</span>
                                             </div>
                                         </div>
 
@@ -129,27 +134,37 @@
                                             <div class="col-md-12">
                                                 <label for="password">Address *</label>
                                                 <input type="text" id="txtShipAddress" name="txtShipAddress" placeholder="Enter Address" class="form-control" />
-                                                <span id="spn_AboutDeliveryBoyBehaviour" class="clserror">This field is required</span>
+                                                <span id="spn_ShipAddress" class="clserror">This field is required</span>
                                             </div>
                                         </div>
                                         <div class="form-row mb-4">
                                             <div class="col-md-4">
                                                 <label for="password">Pincode *</label>
-                                                <input type="text" id="txtShipPincode" name="txtShipPincode" placeholder="Enter Pincode" class="form-control" />
-                                                <span id="spn_AboutDeliveryBoyBehaviour" class="clserror">This field is required</span>
+                                                <input type="number" id="txtShipPincode" name="txtShipPincode" placeholder="Enter Pincode" class="form-control" maxlength="6" onblur="pincodechange();" />
+                                                <span id="spn_ShipPincode" class="clserror">This field is required</span>
                                             </div>
                                             <div class="col-md-4">
                                                 <label for="confirmpassword">City *</label>
                                                 <input type="text" id="txtShipCity" name="txtShipCity" placeholder="Enter City" class="form-control" />
-                                                <span id="spn_OurQuality" class="clserror">This field is required</span>
+                                                <span id="spn_ShipCity" class="clserror">This field is required</span>
                                             </div>
                                             <div class="col-md-4">
                                                 <label for="confirmpassword">State *</label>
-                                                <input type="text" id="txtShipState" name="txtShipState" placeholder="Enter State" class="form-control" />
-                                                <span id="spn_OurQuality" class="clserror">This field is required</span>
+                                                <select class="form-control" id="txtShipState" name="txtShipState" disabled>
+                                                    <option value="">-Select-</option>
+                                                    @if (lstStates != null && lstStates.Count() > 0)
+                                                    {
+                                                        foreach (var stt in lstStates)
+                                                        {
+                                                            <option value="@stt">@stt</option>
+                                                        }
+                                                    }
+                                                </select>
+                                                <span id="spn_ShipState" class="clserror">This field is required</span>
                                             </div>
                                         </div>
                                         <div class="form-row" style="margin-top:15px;margin-bottom:30px;">
+                                            <input type="hidden" id="hdnShippingAddressId" name="hdnShippingAddressId" value="0" />
                                             <input id="btnSaveAddress" type="button" value="Submit" class="btn btn-solid">
                                         </div>
                                     </form>
@@ -161,14 +176,251 @@
             </div>
         </div>
     </div>
-</div> 
+</div>
 <!-- feedback modal end -->
- 
+
+
+<div class="modal fade open" id="deleteAddressModal" tabindex="-1" role="dialog" aria-labelledby="deleteAddressModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Confirmation</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <span>Are you sure you want to delete ?</span>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="hdnAddressIdToDelete" />
+                <button data-dismiss="modal" class="btn btn-primary" type="button">Close</button>
+                <button class="btn btn-danger" type="button" id="btnDeleteAddress">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Bootstrap js-->
 <script src="~/Content/assets/js/bootstrap.js"></script>
 
-<script> 
-    $(document).on("click", "#btnAddEditAaddress", function () { 
-        $('#addressModal').modal('show'); 
-    })
+<script>
+
+    $(document).on("click", "#btnAddEditAaddress", function () {
+        $('#addressModal').modal('show');
+    });
+
+    $(document).on("click", "#btnSaveAddress", function () {
+
+        $(".clserror").hide();
+
+        var txtShipAddressTitle = $("#txtShipAddressTitle").val();
+        var txtShipFirstName = $("#txtShipFirstName").val();
+        var txtShipLastName = $("#txtShipLastName").val();
+        var txtShipMobileNo = $("#txtShipMobileNo").val();
+        var txtShipAddress = $("#txtShipAddress").val();
+
+        var txtShipPincode = $("#txtShipPincode").val();
+        var txtShipCity = $("#txtShipCity").val();
+        var txtShipState = $("#txtShipState").val();
+
+        var txtShipEmailId = $("#txtShipEmailId").val();
+        var txtShipGSTNo = $("#txtShipGSTNo").val();
+        var hdnShippingAddressId = $("#hdnShippingAddressId").val();
+
+        var iserror = false;
+
+        if (txtShipAddressTitle == "")
+        {
+            $("#spn_ShipAddressTitle").show();
+            iserror = true;
+        }
+
+        if (txtShipFirstName == "")
+        {
+            $("#spn_ShipFirstName").show();
+            iserror = true;
+        }
+
+        if (txtShipLastName == "")
+        {
+            $("#spn_ShipLastName").show();
+            iserror = true;
+        }
+
+        if (txtShipMobileNo == "")
+        {
+            $("#spn_ShipMobileNo").show();
+            iserror = true;
+        }
+
+        if (txtShipAddress == "")
+        {
+            $("#spn_ShipAddress").show();
+            iserror = true;
+        }
+
+        if (txtShipPincode == "")
+        {
+            $("#spn_ShipPincode").show();
+            iserror = true;
+        }
+
+        if (txtShipCity == "")
+        {
+            $("#spn_ShipCity").show();
+            iserror = true;
+        }
+
+        if (txtShipState == "")
+        {
+            $("#spn_ShipState").show();
+            iserror = true;
+        }
+
+        if (iserror == false) {
+
+            StartLoading();
+
+            var ShippingVM = {
+                "ShippingAddressId": hdnShippingAddressId,
+                "AddressTitle": txtShipAddressTitle,
+                "ShipFirstName": txtShipFirstName,
+                "ShipLastName": txtShipLastName,
+                "ShipPhoneNumber": txtShipMobileNo,
+                "ShipAddress": txtShipAddress,
+                "ShipPostalCode": txtShipPincode,
+                "ShipCity": txtShipCity,
+                "ShipState": txtShipState,
+                "ShipEmail": txtShipEmailId,
+                "GSTNo": txtShipGSTNo
+            };
+
+            var URL = '@Url.Action("SaveShippingAddress", "MyAddress")';
+            $.ajax({
+                type: 'POST',
+                async: true,
+                url: URL,
+                data: {
+                    ShippingDetail : JSON.stringify(ShippingVM)
+                },
+                success: function (response) {
+                    StopLoading();
+                    if (response == "success") {
+                        $('#addressModal').modal('hide');
+                        alert("Shipping Address saved successfully.");
+                        window.location.reload();
+                    }
+                    else if(response == "Title_Exists") {
+                        alert("Address Title already exist. please enter different.");
+                    }
+                    else {
+                        alert("Something went wrong..");
+                    }
+                },
+                error: function (resultData) {
+                    alert("error");
+                    StopLoading();
+                }
+            });
+
+        }
+
+    });
+
+    function pincodechange() {
+
+        var txtShipPincode = $("#txtShipPincode").val();
+
+        if (txtShipPincode != '' && txtShipPincode.length != 6) {
+            alert("Please Enter Valid Pincode");
+            return;
+        }
+
+        var URL = '@Url.Action("GetCityStateFromPincode", "MyAddress")';
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: URL + "?pincode=" + txtShipPincode,
+                success: function (response) {
+                    if (response != null) {
+                        $("#txtShipCity").val(response.City);
+                        $("#txtShipState").val(response.State);
+                    }
+
+                },
+                error: function (resultData) {
+                    $("#txtShipCity").val("");
+                    $("#txtShipState").val("");
+                    console.log("error: GetCityStateFromPincode");
+                }
+            });
+
+    }
+
+    $(document).on("click", "#btnDeleteAddress", function () {
+        var hdnAddressIdToDelete = $("#hdnAddressIdToDelete").val();
+
+        $('#deleteAddressModal').modal('hide');
+        StartLoading();
+        var URL = '@Url.Action("DeleteShippingAddress", "MyAddress")';
+            $.ajax({
+                type: 'POST',
+                async: true,
+                url: URL + "?ShippingAddressId=" + hdnAddressIdToDelete,
+                success: function (response) {
+                    StopLoading();
+                    if (response == "success") {
+                        alert("Shipping address deleted successfully");
+                        window.location.reload();
+                    }
+                    else if (response == "notfound") {
+                        alert("Address not found");
+                    }
+                    else if (response == "exception") {
+                        alert("Something went wrong.");
+                    }
+
+
+                },
+                error: function (resultData) {
+                    StopLoading();
+                    alert("ERROR: Something went wrong.");
+                }
+            });
+
+    });
+
+    function openDeletePopup(addressId) {
+        $("#hdnAddressIdToDelete").val(addressId);
+        $('#deleteAddressModal').modal('show');
+    }
+
+    function editAddressPopup(addressId) {
+        
+        var URL = '@Url.Action("GetShippingAddressById", "MyAddress")';
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: URL + "?Id=" + addressId,
+                success: function (response) { 
+                    if (response != null) {
+                        $("#txtShipAddressTitle").val(response.AddressTitle); 
+                        $("#txtShipGSTNo").val(response.GSTNo);
+                        $("#txtShipAddress").val(response.ShipAddress);
+                        $("#txtShipCity").val(response.ShipCity);
+                        $("#txtShipEmailId").val(response.ShipEmail);
+                        $("#txtShipFirstName").val(response.ShipFirstName);
+                        $("#txtShipLastName").val(response.ShipLastName);
+                        $("#txtShipMobileNo").val(response.ShipPhoneNumber);
+                        $("#txtShipPincode").val(response.ShipPostalCode);
+                        $("#txtShipState").val(response.ShipState);
+                        $("#hdnShippingAddressId").val(response.ShippingAddressId); 
+                        $('#addressModal').modal('show');
+                    } 
+                },
+                error: function (resultData) { 
+                    console.log("error: GetShippingAddressById");
+                }
+            });
+    }
+
 </script>
