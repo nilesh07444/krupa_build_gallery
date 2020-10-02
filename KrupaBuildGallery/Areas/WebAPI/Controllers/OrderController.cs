@@ -261,49 +261,66 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 decimal WalletUsed = Convert.ToDecimal(objGen.AmountPayByWallet);
                 decimal Onlinpymt = Convert.ToDecimal(objGen.AmountPayOnline);
                 response.Data = "Fail";
-                if(WalletUsed > 0 && Onlinpymt == 0)
+                bool IsValidWallet = true;
+                if (WalletUsed > 0 && Onlinpymt == 0)
                 {
-                    tbl_Orders objordr = _db.tbl_Orders.Where(o => o.OrderId == OrderId).FirstOrDefault();
-                    if (objordr != null)
+                    var objclientuss = _db.tbl_ClientUsers.Where(o => o.ClientUserId == UserId).FirstOrDefault();
+                    if(objclientuss != null)
                     {
-                        objordr.ShippingStatus = 2;
-                    }
-                    _db.SaveChanges();
-
-                    if (WalletUsed > 0)
-                    {
-                        tbl_PaymentHistory objPyment1 = new tbl_PaymentHistory();
-                        objPyment1.OrderId = objordr.OrderId;
-                        objPyment1.PaymentBy = "wallet";
-                        objPyment1.AmountDue = Convert.ToDecimal(objordr.ShippingCharge);
-                        objPyment1.AmountPaid = Convert.ToDecimal(WalletUsed);
-                        objPyment1.DateOfPayment = DateTime.UtcNow;
-                        objPyment1.CreatedBy = UserId;
-                        objPyment1.CreatedDate = DateTime.UtcNow;
-                        objPyment1.RazorpayOrderId = "";
-                        objPyment1.RazorpayPaymentId = "";
-                        objPyment1.RazorSignature = "";
-                        objPyment1.PaymentFor = "Shipping Charge";
-                        _db.tbl_PaymentHistory.Add(objPyment1);
-
-                        tbl_Wallet objwlt = new tbl_Wallet();
-                        objwlt.Amount = WalletUsed;
-                        objwlt.CreditDebit = "Debit";
-                        objwlt.OrderId = objordr.OrderId;
-                        objwlt.ClientUserId = UserId;
-                        objwlt.WalletDate = DateTime.UtcNow;
-                        objwlt.Description = "Paid Shipping Charge Amount for order no." + objordr.OrderId;
-                        _db.tbl_Wallet.Add(objwlt);
-                        var objclientuss = _db.tbl_ClientUsers.Where(o => o.ClientUserId == UserId).FirstOrDefault();
-                        if (objclientuss != null)
+                        if (objclientuss.WalletAmt != null && objclientuss.WalletAmt >= WalletUsed)
                         {
-                            objclientuss.WalletAmt = objclientuss.WalletAmt - WalletUsed;
+                            IsValidWallet = true;
+                        }
+                        else
+                        {
+                            IsValidWallet = false;
+                        }
+                    }
+                    if(IsValidWallet == true)
+                    {
+                        tbl_Orders objordr = _db.tbl_Orders.Where(o => o.OrderId == OrderId).FirstOrDefault();
+                        if (objordr != null)
+                        {
+                            objordr.ShippingStatus = 2;
                         }
                         _db.SaveChanges();
-                        objCom.SavePaymentTransaction(0, objordr.OrderId, true, WalletUsed, "Payment By Wallet", UserId, false, DateTime.UtcNow, "Wallet");
-                        objCom.SaveTransaction(0, 0, objordr.OrderId, "Shipping Charge Payment By Wallet : Rs" + WalletUsed, WalletUsed, UserId, 0, DateTime.UtcNow, "Wallet Payment");
+
+                        if (WalletUsed > 0)
+                        {
+                            tbl_PaymentHistory objPyment1 = new tbl_PaymentHistory();
+                            objPyment1.OrderId = objordr.OrderId;
+                            objPyment1.PaymentBy = "wallet";
+                            objPyment1.AmountDue = Convert.ToDecimal(objordr.ShippingCharge);
+                            objPyment1.AmountPaid = Convert.ToDecimal(WalletUsed);
+                            objPyment1.DateOfPayment = DateTime.UtcNow;
+                            objPyment1.CreatedBy = UserId;
+                            objPyment1.CreatedDate = DateTime.UtcNow;
+                            objPyment1.RazorpayOrderId = "";
+                            objPyment1.RazorpayPaymentId = "";
+                            objPyment1.RazorSignature = "";
+                            objPyment1.PaymentFor = "Shipping Charge";
+                            _db.tbl_PaymentHistory.Add(objPyment1);
+
+                            tbl_Wallet objwlt = new tbl_Wallet();
+                            objwlt.Amount = WalletUsed;
+                            objwlt.CreditDebit = "Debit";
+                            objwlt.OrderId = objordr.OrderId;
+                            objwlt.ClientUserId = UserId;
+                            objwlt.WalletDate = DateTime.UtcNow;
+                            objwlt.Description = "Paid Shipping Charge Amount for order no." + objordr.OrderId;
+                            _db.tbl_Wallet.Add(objwlt);                            
+                             objclientuss.WalletAmt = objclientuss.WalletAmt - WalletUsed;
+                            _db.SaveChanges();
+                            objCom.SavePaymentTransaction(0, objordr.OrderId, true, WalletUsed, "Payment By Wallet", UserId, false, DateTime.UtcNow, "Wallet");
+                            objCom.SaveTransaction(0, 0, objordr.OrderId, "Shipping Charge Payment By Wallet : Rs" + WalletUsed, WalletUsed, UserId, 0, DateTime.UtcNow, "Wallet Payment");
+                        }
+                        response.Data = "Success";
                     }
-                    response.Data = "Success";
+                    else
+                    {
+                        response.AddError("Wallet balance not sufficient");
+                    }
+                  
                 }
                 else
                 {
@@ -400,7 +417,10 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 string razrpaymentid = objGen.RazorPaymentId;
                 string amt = objGen.Amount;
                 string razorderid = objGen.RazorOrderid;
+                decimal WalletUsed = Convert.ToDecimal(objGen.AmountPayByWallet);
+                decimal Onlinpymt = Convert.ToDecimal(objGen.AmountPayOnline);
                 response.Data = "Fail";
+                bool IsValidWallet = true;
                 long orderid64 = Convert.ToInt64(OrderId);
                 var objOrder = _db.tbl_Orders.Where(o => o.OrderId == orderid64).FirstOrDefault();
                 decimal amountdue = 0;
@@ -412,34 +432,130 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     long ClientUserId = objOrder.ClientUserId;
                     tbl_ClientOtherDetails objtbl_ClientOtherDetails = _db.tbl_ClientOtherDetails.Where(o => o.ClientUserId == ClientUserId).FirstOrDefault();
                     objtbl_ClientOtherDetails.AmountDue = objtbl_ClientOtherDetails.AmountDue - amountpaid;
-                    _db.SaveChanges();
+               
                 }
-
-                Razorpay.Api.Payment objpymn = new Razorpay.Api.Payment().Fetch(razrpaymentid);
-                if (objpymn != null)
+                
+                if (WalletUsed > 0 && Onlinpymt == 0)
                 {
-                    if (objpymn["status"] != null && Convert.ToString(objpymn["status"]) == "captured")
+                    var objclientuss = _db.tbl_ClientUsers.Where(o => o.ClientUserId == UserId).FirstOrDefault();
+                    if (objclientuss != null)
                     {
-                        string paymentmethod = objpymn["method"];
-                        tbl_PaymentHistory objPayment = new tbl_PaymentHistory();
-                        objPayment.AmountPaid = amountpaid;
-                        objPayment.AmountDue = amountdue;
-                        objPayment.DateOfPayment = DateTime.UtcNow;
-                        objPayment.OrderId = orderid64;
-                        objPayment.PaymentBy = paymentmethod;
-                        objPayment.CreatedBy = UserId;
-                        objPayment.CreatedDate = DateTime.UtcNow;
-                        objPayment.RazorpayOrderId = razorderid;
-                        objPayment.RazorpayPaymentId = razrpaymentid;
-                        objPayment.RazorSignature = "";
-                        objPayment.PaymentFor = "Order Amount";
-                        _db.tbl_PaymentHistory.Add(objPayment);
+                        if (objclientuss.WalletAmt != null && objclientuss.WalletAmt >= WalletUsed)
+                        {
+                            IsValidWallet = true;
+                        }
+                        else
+                        {
+                            IsValidWallet = false;
+                        }
+                    }
+                    if (IsValidWallet == true)
+                    {
                         _db.SaveChanges();
-                        objCom.SaveTransaction(0, 0, orderid64, "Due Order Amount Paid Online: Rs" + amountpaid, amountpaid, UserId, 0, DateTime.UtcNow, "Amount Due Paid");
-                        objCom.SavePaymentTransaction(0, orderid64, true, amountpaid, "Payment By Online for Due Amount", UserId, false, DateTime.UtcNow, "Online Payment");
+
+                        if (WalletUsed > 0)
+                        {
+                            tbl_PaymentHistory objPyment1 = new tbl_PaymentHistory();
+                            objPyment1.OrderId = objOrder.OrderId;
+                            objPyment1.PaymentBy = "wallet";
+                            objPyment1.AmountDue = Convert.ToDecimal(amountdue);
+                            objPyment1.AmountPaid = Convert.ToDecimal(WalletUsed);
+                            objPyment1.DateOfPayment = DateTime.UtcNow;
+                            objPyment1.CreatedBy = UserId;
+                            objPyment1.CreatedDate = DateTime.UtcNow;
+                            objPyment1.RazorpayOrderId = "";
+                            objPyment1.RazorpayPaymentId = "";
+                            objPyment1.RazorSignature = "";
+                            objPyment1.PaymentFor = "Order Amount";
+                            _db.tbl_PaymentHistory.Add(objPyment1);
+
+                            tbl_Wallet objwlt = new tbl_Wallet();
+                            objwlt.Amount = WalletUsed;
+                            objwlt.CreditDebit = "Debit";
+                            objwlt.OrderId = objOrder.OrderId;
+                            objwlt.ClientUserId = UserId;
+                            objwlt.WalletDate = DateTime.UtcNow;
+                            objwlt.Description = "Paid Order Amount for order no." + objOrder.OrderId;
+                            _db.tbl_Wallet.Add(objwlt);
+                            objclientuss.WalletAmt = objclientuss.WalletAmt - WalletUsed;
+                            _db.SaveChanges();
+                            objCom.SavePaymentTransaction(0, objOrder.OrderId, true, WalletUsed, "Payment By Wallet", UserId, false, DateTime.UtcNow, "Wallet");
+                            objCom.SaveTransaction(0, 0, objOrder.OrderId, "Order Amount Payment By Wallet : Rs" + WalletUsed, WalletUsed, UserId, 0, DateTime.UtcNow, "Wallet Payment");
+                        }
                         response.Data = "Success";
                     }
+                    else
+                    {
+                        response.AddError("Wallet balance not sufficient");
+                    }
+
                 }
+                else
+                {
+                    Razorpay.Api.Payment objpymn = new Razorpay.Api.Payment().Fetch(razrpaymentid);
+                    if (objpymn != null)
+                    {
+                        if (objpymn["status"] != null && Convert.ToString(objpymn["status"]) == "captured")
+                        {
+                            _db.SaveChanges();
+
+                            if (WalletUsed > 0)
+                            {
+                                tbl_PaymentHistory objPyment1 = new tbl_PaymentHistory();
+                                objPyment1.OrderId = objOrder.OrderId;
+                                objPyment1.PaymentBy = "wallet";
+                                objPyment1.AmountDue = Convert.ToDecimal(amountdue);
+                                objPyment1.AmountPaid = Convert.ToDecimal(WalletUsed);
+                                objPyment1.DateOfPayment = DateTime.UtcNow;
+                                objPyment1.CreatedBy = UserId;
+                                objPyment1.CreatedDate = DateTime.UtcNow;
+                                objPyment1.RazorpayOrderId = "";
+                                objPyment1.RazorpayPaymentId = "";
+                                objPyment1.RazorSignature = "";
+                                objPyment1.PaymentFor = "Order Amount";
+                                _db.tbl_PaymentHistory.Add(objPyment1);
+
+                                tbl_Wallet objwlt = new tbl_Wallet();
+                                objwlt.Amount = WalletUsed;
+                                objwlt.CreditDebit = "Debit";
+                                objwlt.OrderId = objOrder.OrderId;
+                                objwlt.ClientUserId = UserId;
+                                objwlt.WalletDate = DateTime.UtcNow;
+                                objwlt.Description = "Paid Order Amount for order no." + objOrder.OrderId;
+                                _db.tbl_Wallet.Add(objwlt);
+                                var objclientuss = _db.tbl_ClientUsers.Where(o => o.ClientUserId == UserId).FirstOrDefault();
+                                if (objclientuss != null)
+                                {
+                                    objclientuss.WalletAmt = objclientuss.WalletAmt - WalletUsed;
+                                }
+                                _db.SaveChanges();
+                                objCom.SavePaymentTransaction(0, objOrder.OrderId, true, WalletUsed, "Payment By Wallet", UserId, false, DateTime.UtcNow, "Wallet");
+                                objCom.SaveTransaction(0, 0, objOrder.OrderId, "Order Amount Payment By Wallet : Rs" + WalletUsed, WalletUsed, UserId, 0, DateTime.UtcNow, "Wallet Payment");
+                                amountdue = amountdue - WalletUsed;
+                            }
+
+                            string paymentmethod = objpymn["method"];
+                            tbl_PaymentHistory objPayment = new tbl_PaymentHistory();
+                            objPayment.AmountPaid = Onlinpymt;
+                            objPayment.AmountDue = amountdue;
+                            objPayment.DateOfPayment = DateTime.UtcNow;
+                            objPayment.OrderId = orderid64;
+                            objPayment.PaymentBy = paymentmethod;
+                            objPayment.CreatedBy = UserId;
+                            objPayment.CreatedDate = DateTime.UtcNow;
+                            objPayment.RazorpayOrderId = razorderid;
+                            objPayment.RazorpayPaymentId = razrpaymentid;
+                            objPayment.RazorSignature = "";
+                            objPayment.PaymentFor = "Order Amount";
+                            _db.tbl_PaymentHistory.Add(objPayment);
+                            _db.SaveChanges();
+                            objCom.SaveTransaction(0, 0, orderid64, "Due Order Amount Paid Online: Rs" + Onlinpymt, Onlinpymt, UserId, 0, DateTime.UtcNow, "Amount Due Paid");
+                            objCom.SavePaymentTransaction(0, orderid64, true, Onlinpymt, "Payment By Online for Due Amount", UserId, false, DateTime.UtcNow, "Online Payment");
+                            response.Data = "Success";
+                        }
+                    }
+                }
+              
 
             }
             catch (Exception ex)
@@ -461,20 +577,50 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             {
                 string amt = objGen.Amount;
                 decimal Amount = Convert.ToDecimal(amt);
-                Dictionary<string, object> input = new Dictionary<string, object>();
-                input.Add("amount", Amount * 100); // this amount should be same as transaction amount
-                input.Add("currency", "INR");
-                input.Add("receipt", "12000");
-                input.Add("payment_capture", 1);
+                int clientusrid = Convert.ToInt32(objGen.ClientUserId);
+                decimal wltamt = 0;
+                wltamt = Convert.ToDecimal(objGen.AmountPayByWallet);
+               
+               
+                bool IsValidWallet = true;
+                if (wltamt > 0)
+                {
+                    var objclientuss = _db.tbl_ClientUsers.Where(o => o.ClientUserId == clientusrid).FirstOrDefault();
+                    if (objclientuss != null)
+                    {
+                        if (objclientuss.WalletAmt != null && objclientuss.WalletAmt >= wltamt)
+                        {
+                            IsValidWallet = true;
+                        }
+                        else
+                        {
+                            IsValidWallet = false;
+                        }
+                    }
+                }
 
-                var objGsetting = _db.tbl_GeneralSetting.FirstOrDefault();
-                string key = objGsetting.RazorPayKey;  //"rzp_test_DMsPlGIBp3SSnI";
-                string secret = objGsetting.RazorPaySecret; // "YMkpd9LbnaXViePncLLXhqms";
+                if (IsValidWallet == false)
+                {
+                    response.AddError("Wallet amount balance is low");
+                }
+                else
+                {
+                    Dictionary<string, object> input = new Dictionary<string, object>();
+                    input.Add("amount", Amount * 100); // this amount should be same as transaction amount
+                    input.Add("currency", "INR");
+                    input.Add("receipt", "1300");
+                    input.Add("payment_capture", 1);
 
-                RazorpayClient client = new RazorpayClient(key, secret);
+                    var objGsetting = _db.tbl_GeneralSetting.FirstOrDefault();
+                    string key = objGsetting.RazorPayKey;  //"rzp_test_DMsPlGIBp3SSnI";
+                    string secret = objGsetting.RazorPaySecret; // "YMkpd9LbnaXViePncLLXhqms";
 
-                Razorpay.Api.Order order = client.Order.Create(input);
-                response.Data = Convert.ToString(order["id"]);            
+                    RazorpayClient client = new RazorpayClient(key, secret);
+
+                    Razorpay.Api.Order order = client.Order.Create(input);
+                    response.Data = Convert.ToString(order["id"]);
+                }
+                
 
             }
             catch (Exception ex)
@@ -2463,6 +2609,36 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
 
         }
 
+        [Route("GetWalletAmt"), HttpPost]
+        public ResponseDataModel<GeneralVM> GetWalletAmt(GeneralVM objGen)
+        {
+            ResponseDataModel<GeneralVM> response = new ResponseDataModel<GeneralVM>();
+            try
+            {
+                long UserId = Convert.ToInt64(objGen.ClientUserId);
+                var objclientuss = _db.tbl_ClientUsers.Where(o => o.ClientUserId == UserId).FirstOrDefault();
+                decimal CurrWltAmt = 0;
+                if(objclientuss != null)
+                {
+                    if(objclientuss.WalletAmt != null)
+                    {
+                        CurrWltAmt = objclientuss.WalletAmt.Value;
+                    }                    
+                }
+                GeneralVM objG = new GeneralVM();
+                objG.TotalWalletAmt = Convert.ToString(CurrWltAmt);
+                response.Data = objG;
+
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
 
     }
 }

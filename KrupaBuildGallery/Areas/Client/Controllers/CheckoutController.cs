@@ -1665,8 +1665,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             ReturnMessage = "Success^" + orderid;
                             tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
                             string AdminMobileNumber = objGensetting.AdminSMSNumber;
-                            string msgsms = "New Order Received - Order No " + objOrder.OrderId + " - Krupa Build Gallery";
-                            string msgsmscustomer = "Thank you for the Order. You order number is " + objOrder.OrderId + " - Krupa Build Gallery";
+                            string msgsms = "New Order Received - Order No " + objOrder.OrderId + " - Shopping & Saving";
+                            string msgsmscustomer = "Thank you for the Order. You order number is " + objOrder.OrderId + " - Shopping & Saving";
                             SendSMSForNewOrder(AdminMobileNumber, msgsms);
                             SendSMSForNewOrder(clsClientSession.MobileNumber, msgsmscustomer);
                         }
