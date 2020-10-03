@@ -1,0 +1,96 @@
+﻿@using KrupaBuildGallery.Helper;
+@using Newtonsoft.Json;
+@using KrupaBuildGallery.Model;
+
+@model List<SMSContentVM>
+@{
+    ViewBag.Title = "SMSContent"; 
+}
+
+@{
+    UserPermissionVM objPermission = new UserPermissionVM();
+
+    int RoleId = Int32.Parse(clsAdminSession.RoleID.ToString());
+
+    if (RoleId != 1)
+    {
+        string strPermission = clsAdminSession.UserPermission;
+        objPermission = JsonConvert.DeserializeObject<UserPermissionVM>(strPermission, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+    }
+    bool IsSA = (RoleId == 1 ? true : false);
+}
+
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="page-header-left">
+                        <h3>
+                            SMS Content List
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item active">SMS Content List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h5>SMS Content List</h5>
+            </div>
+            <div class="card-body vendor-table">
+                <table class="display" id="basic-1">
+                    <thead>
+                        <tr>
+                            <th width="5%;">Id</th>
+                            <th width="15%;">SMS Title</th>
+                            <th width="15%;">Seq No</th>
+                            <th width="10%;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            foreach (SMSContentVM obj in Model)
+                            {
+                                <tr class="gradeX">
+                                    <td>@obj.SMSContentId</td>
+                                    <td>@obj.SMSTitle</td>
+                                    <td>@obj.SeqNo</td>
+                                    <td>
+                                        @if (IsSA || objPermission.ManagePageContent >= (int)ModulePermission.Edit)
+                                        {
+                                            <a href="/admin/sms/edit/@obj.SMSContentId"><i class="fa fa-edit mr-2 font-success"></i></a>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+</div>
+ 
+<script>
+
+    jQuery(document).ready(function () {
+        jQuery('html, body').animate({ scrollTop: 0 }, 1000);
+    });
+       
+</script>

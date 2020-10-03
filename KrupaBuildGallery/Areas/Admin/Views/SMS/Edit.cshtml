@@ -1,7 +1,7 @@
-﻿@model DynamicContentVM
+﻿@model SMSContentVM
 
 @{
-    ViewBag.Title = "DynamicContent";
+    ViewBag.Title = "SMSContent";
 }
 
 <div class="page-body">
@@ -13,15 +13,15 @@
                 <div class="col">
                     <div class="page-header-left">
                         <h3>
-                            Edit Content
+                            Edit SMS
                         </h3>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <ol class="breadcrumb pull-right">
                         <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
-                        <li class="breadcrumb-item"><a href="/admin/dynamiccontent">Contents</a></li>
-                        <li class="breadcrumb-item active">Edit Content</li>
+                        <li class="breadcrumb-item"><a href="/admin/sms">SMS</a></li>
+                        <li class="breadcrumb-item active">Edit SMS</li>
                     </ol>
                 </div>
             </div>
@@ -35,41 +35,31 @@
                 <div class="card">
 
                     <div class="card-header">
-                        <h5>Edit Content</h5>
+                        <h5>Edit SMS</h5>
                     </div>
 
                     <div class="card-body">
-                        @using (Html.BeginForm("Edit", "DynamicContent", FormMethod.Post, new { @id = "DynamicContentFormId", @class = "needs-validation", enctype = "multipart/form-data", role = "form" }))
+                        @using (Html.BeginForm("Edit", "SMS", FormMethod.Post, new { @id = "SMSContentFormId", @class = "needs-validation", enctype = "multipart/form-data", role = "form" }))
                         {
 
                             @Html.AntiForgeryToken()
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
+                              
                             <div class="form-group row">
-                                @Html.LabelFor(model => model.DynamicContentType, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
-                                @Html.DropDownListFor(model => model.DynamicContentType, new SelectList(Model.DynamicContentTypeList, "Value", "Text"), "- Select -", new { @class = "form-control col-md-8", style = "" })
+                                @Html.LabelFor(model => model.SMSTitle, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.EditorFor(model => model.SMSTitle, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter SMS Title", maxlength = "100" } })
 
                                 <lable class="col-xl-3 col-md-4"></lable>
-                                @Html.ValidationMessageFor(model => model.DynamicContentType, "", new { @class = "text-danger" })
+                                @Html.ValidationMessageFor(model => model.SMSTitle, "", new { @class = "text-danger" })
                             </div>
 
                             <div class="form-group row">
-                                @Html.LabelFor(model => model.ContentTitle, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
-                                @Html.EditorFor(model => model.ContentTitle, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Content Title", maxlength = "100" } })
-
-                                <lable class="col-xl-3 col-md-4"></lable>
-                                @Html.ValidationMessageFor(model => model.ContentTitle, "", new { @class = "text-danger" })
-                            </div>
-
-                            <div class="form-group row">
-                                @Html.LabelFor(model => model.ContentDescription, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
-                                @*@Html.TextAreaFor(model => model.ContentDescription, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Content Description", maxlength = "1000" } })*@
-
-                                @Html.TextAreaFor(model => model.ContentDescription, 10, 0, htmlAttributes: new { @class = "form-control col-md-8" })
+                                @Html.LabelFor(model => model.SMSDescription, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.TextAreaFor(model => model.SMSDescription, 10, 0, htmlAttributes: new { @class = "form-control col-md-8" })
 
 
                                 <lable class="col-xl-3 col-md-4"></lable>
-                                @Html.ValidationMessageFor(model => model.ContentDescription, "", new { @class = "text-danger" })
+                                @Html.ValidationMessageFor(model => model.SMSDescription, "", new { @class = "text-danger" })
                             </div>
 
                             <div class="form-group row">
@@ -81,7 +71,7 @@
                             </div>
 
                             <div class="form-group row">
-                                @Html.HiddenFor(x => x.DynamicContentId)
+                                @Html.HiddenFor(x => x.SMSContentId)
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 <button type="submit" class="btn btn-primary" style="margin-right:10px;">Submit</button>
                                 <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
@@ -103,6 +93,6 @@
 
 <script>
     $(document).on("click", "#btnCancel", function () {
-        window.location.href = "/admin/dynamiccontent";
+        window.location.href = "/admin/sms";
     });
 </script>

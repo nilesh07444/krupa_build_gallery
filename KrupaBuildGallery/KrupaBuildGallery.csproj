@@ -218,6 +218,7 @@
     <Compile Include="Areas\Admin\Controllers\PromoCodeController.cs" />
     <Compile Include="Areas\Admin\Controllers\ReferenceController.cs" />
     <Compile Include="Areas\Admin\Controllers\RoleController.cs" />
+    <Compile Include="Areas\Admin\Controllers\SMSController.cs" />
     <Compile Include="Areas\Admin\Controllers\StockController.cs" />
     <Compile Include="Areas\Admin\Controllers\SubProductController.cs" />
     <Compile Include="Areas\Client\Controllers\AboutUsController.cs" />
@@ -445,6 +446,9 @@
     <Compile Include="Model\tbl_ShippingAddresses.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\tbl_SMSContent.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\tbl_StockReport.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
@@ -481,6 +485,7 @@
     <Compile Include="ViewModel\Admin\ReferenceVM.cs" />
     <Compile Include="ViewModel\Admin\RoleModuleVM.cs" />
     <Compile Include="ViewModel\Admin\RoleVM.cs" />
+    <Compile Include="ViewModel\Admin\SMSContentVM.cs" />
     <Compile Include="ViewModel\Admin\UserPermissionVM.cs" />
     <Compile Include="ViewModel\CartVM.cs" />
     <Compile Include="ViewModel\CashOrderAmountVM.cs" />
@@ -4141,6 +4146,8 @@
     <Content Include="Areas\Admin\Views\Notification\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Notification\View.cshtml" />
     <Content Include="Areas\Admin\Views\Feedback\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\SMS\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\SMS\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />

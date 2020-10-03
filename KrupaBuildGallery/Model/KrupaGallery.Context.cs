@@ -87,6 +87,7 @@ namespace KrupaBuildGallery.Model
         public DbSet<tbl_Notification> tbl_Notification { get; set; }
         public DbSet<tbl_NotificationUserRead> tbl_NotificationUserRead { get; set; }
         public DbSet<tbl_ItemAvailablePincode> tbl_ItemAvailablePincode { get; set; }
+        public DbSet<tbl_SMSContent> tbl_SMSContent { get; set; }
     
         public virtual ObjectResult<sp_GetNotificationList_Result> sp_GetNotificationList(Nullable<int> clientUserId)
         {
