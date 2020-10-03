@@ -18,6 +18,8 @@
     double roundoff = 0;
     double NetPayShip = 0;
     double NetPay = 0;
+    decimal totlnetamount = 0;
+    decimal totalamts = 0;
     List<FreeOfferSubItems> lstFreeItems = ViewData["lstFreeItemss"] as List<FreeOfferSubItems>;
 }
 <style>
@@ -27,6 +29,9 @@
 
     body {
         overflow: auto !important;
+    }
+    .promo:hover {
+        color: #000000;
     }
 </style>
 <div class="modal fade open" id="checkoutdetails" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -40,7 +45,8 @@
                 @if (lstInvoiceItemVM != null && lstInvoiceItemVM.Count() > 0)
                 {
                     int countr = 1;
-                    decimal totalamts = 0;
+                    totalamts = 0;
+                    string clsextr ="clsextra";
                     <table class="table table-bordered table-border-radius" style="width:100%;">
                         <thead>
                             <tr>
@@ -115,7 +121,7 @@
                                 countr++;
                             }
                             @{
-                                decimal totlnetamount = Convert.ToDecimal(ViewBag.ShippingChargeTotal) + totalamts;
+                                totlnetamount = Convert.ToDecimal(ViewBag.ShippingChargeTotal) + totalamts;
                                 totlnetamount = totlnetamount + extramt;
                                 roundoffship = CommonMethod.GetRoundedValue(Convert.ToDouble(totlnetamount));
                                 roundoff = CommonMethod.GetRoundedValue(Convert.ToDouble(totalamts));
@@ -133,6 +139,18 @@
                                 <td></td>
                                 <th>Grand Total</th>
                                 <td>₹ @totalamts</td>
+                            </tr>
+                            <tr class="discexist" style="display:none;">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <th>Promo Discount</th>
+                                <td class="clspromodisc"></td>
                             </tr>
                             <tr class="shipexist">
                                 <td></td>
@@ -158,22 +176,18 @@
                                 <th>Shipping Charge</th>
                                 <td>@ViewBag.ShippingMsg</td>
                             </tr>
-                            @if (extramt > 0)
-                            {
-                                <tr class="shipexist">
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <th>Minimum Purchase Charge</th>
-                                    <td>₹ @extramt</td>
-                                </tr>
-                            }
-
+                            <tr class="shipexist @clsextr">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <th>Minimum Purchase Charge</th>
+                                <td class="clsextramt">₹ @extramt</td>
+                            </tr>
                             <tr class="shipexist">
                                 <td></td>
                                 <td></td>
@@ -184,7 +198,7 @@
                                 <td></td>
                                 <td></td>
                                 <th>Net Amount</th>
-                                <td>₹ @totlnetamount</td>
+                                <td class="shipnetamt">₹ @totlnetamount</td>
                             </tr>
                             <tr class="shipnotexist">
                                 <td></td>
@@ -196,7 +210,7 @@
                                 <td></td>
                                 <td></td>
                                 <th>Net Amount</th>
-                                <td>₹ @totalamts</td>
+                                <td class="shipnotnetamt">₹ @totalamts</td>
                             </tr>
                             <tr class="shipexist">
                                 <td></td>
@@ -208,7 +222,7 @@
                                 <td></td>
                                 <td></td>
                                 <th>Round Off</th>
-                                <td>₹ @roundoffship</td>
+                                <td class="shiproundoff">₹ @roundoffship</td>
                             </tr>
                             <tr class="shipnotexist">
                                 <td></td>
@@ -232,7 +246,7 @@
                                 <td></td>
                                 <td></td>
                                 <th>Net Pay</th>
-                                <td>₹ @NetPayShip</td>
+                                <td class="shipnetpay">₹ @NetPayShip</td>
                             </tr>
                             <tr class="shipnotexist">
                                 <td></td>
@@ -244,7 +258,7 @@
                                 <td></td>
                                 <td></td>
                                 <th>Net Pay</th>
-                                <td>₹ @NetPay</td>
+                                <td class="shipnotnetpay">₹ @NetPay</td>
                             </tr>
                         </tbody>
                     </table>
@@ -398,7 +412,7 @@
                                                     decimal Itemttl = objcart.Qty * objcart.Price;
                                                     CartTotal = CartTotal + Itemttl;
                                                     @*<li>@objcart.ItemName (@objcart.VariantQtytxt) × @objcart.Qty <span>&#8377; @Itemttl</span></li>*@
-                                            <li>@objcart.ItemName (@objcart.VariantQtytxt) <span> @objcart.Qty</span></li>
+                                                    <li>@objcart.ItemName (@objcart.VariantQtytxt) <span> @objcart.Qty</span></li>
                                                 }
                                             }
                                         </ul>
@@ -415,15 +429,16 @@
                                         </ul>
                                         <ul class="total">
                                             @*@if (extramt > 0)
-                {
-                    <li class="shippingexist">Minimum Purchase Charge<span class="count">&#8377; @extramt</span></li>
-                }*@
-                                            <li class="shippingnotexist">Total <span class="count">&#8377; @ViewBag.TotalOrder</span></li>
-                                            <li class="shippingexist" style="display:none;">Total <span class="count">&#8377; @TotalOrderamtt</span></li>
+        {
+            <li class="shippingexist">Minimum Purchase Charge<span class="count">&#8377; @extramt</span></li>
+        }*@
+                                            <li class="discli" style="display:none;">Discount <span class="count discamt"></span></li>
+                                            <li class="shippingnotexist">Total <span class="count clsTotalAmtNotShip">&#8377; @ViewBag.TotalOrder</span></li>
+                                            <li class="shippingexist" style="display:none;">Total <span class="count clsTotlAmtShip">&#8377; @TotalOrderamtt</span></li>
                                             <li class="shippingexist">Round Off <span class="count">&#8377; @roundoffship</span></li>
                                             <li class="shippingnotexist" style="display:none;">Round Off<span class="count">&#8377; @roundoff</span></li>
-                                            <li class="shippingexist">Net Pay<span class="count">&#8377; @NetPayShip</span></li>
-                                            <li class="shippingnotexist" style="display:none;">Net Pay<span class="count">&#8377; @NetPay</span></li>
+                                            <li class="shippingexist">Net Pay<span class="count clsNetPayShip">&#8377; @NetPayShip</span></li>
+                                            <li class="shippingnotexist" style="display:none;">Net Pay<span class="count clsNetPaySNotship">&#8377; @NetPay</span></li>
                                             <li><a href="javascript:void(0);" style="font-size:12px;" onclick="ViewDetails();">View Details</a></li>
                                         </ul>
                                     </div>
@@ -444,6 +459,28 @@
                                     <input type="hidden" id="hasFreeItemsinOrder" value="@ViewBag.HasFreeItems" />
                                     <input type="hidden" id="IncludeFreeItems" name="IncludeFreeItems" value="false" />
                                     <input type="hidden" id="FreeOfferId" name="FreeOfferId" value="@ViewBag.FreeOfferId" />
+
+                                    <input type="hidden" id="hasFreeItemsinOrderLatest" value="@ViewBag.HasFreeItems" />
+                                    <input type="hidden" id="FreeOfferIdLatest" name="FreeOfferIdLatest" value="@ViewBag.FreeOfferId" />
+                                    <input type="hidden" id="extraamountLatest" name="extraamountLatest" value="@extramt" />
+
+                                    <input type="hidden" id="HasPromoCode" name="HasPromoCode" value="false" />
+                                    <input type="hidden" id="PromoCode" name="PromoCode" value="" />
+                                    <input type="hidden" id="PromoDiscount" name="PromoDiscount" value="" />
+                                    <input type="hidden" id="IsSaveShippingAddress " name="IsSaveShippingAddress " value="" />
+                                    <input type="hidden" id="AddressTitle " name="AddressTitle " value="" />
+
+                                    @if (clsClientSession.RoleID == 1)
+                                    {
+                                <div style="text-align: center;">
+                                    <input type="button" value="Do you have a promo code" class="btn-solid btn promo" style="border-radius: 22px;height: 35px;padding: 0px 10px;" onclick="ShowPromoModal();">
+                                    <div class="dispappliedpromo" style="display:none;">
+                                        <label id="lblPromo" style="display: none;color: rgb(102, 36, 90);font-size: 16px;font-weight: bold;"></label>
+                                        <a href="javascript:void(0);" onclick="deletepromo();" style="color: red;"><i class="fa fa-trash font-danger"></i></a>
+                                    </div>
+                                </div>
+                                    }
+
                                     <div class="payment-box">
                                         <div class="upper-box">
                                             <div class="payment-options">
@@ -561,13 +598,18 @@
             </div>
             <div class="modal-body">
                 <h3>Congratulations! You are getting following Items Free with this order</h3>
-                @if (lstFreeItems != null && lstFreeItems.Count() > 0)
-                {
-                    foreach(var objjfree in lstFreeItems)
+                <div id="dvFreeOrgnl">
+                    @if (lstFreeItems != null && lstFreeItems.Count() > 0)
                     {
-                        <div><b>@objjfree.Sub_ProductItemName - @objjfree.VarintNm</b>  =>  <b>Qty</b>: @objjfree.Qty</div>
+                        foreach (var objjfree in lstFreeItems)
+                        {
+                            <div><b>@objjfree.Sub_ProductItemName - @objjfree.VarintNm</b>  =>  <b>Qty</b>: @objjfree.Qty</div>
+                        }
                     }
-                }
+                </div>
+                <div id="dvFreeNew" style="display:none;">
+
+                </div>
                 <br/>
                 <h5>Are you want to take this benefits ? If you take this benefites then you can not cancel/return/exchange Items of this Order.</h5>
             </div>
@@ -578,15 +620,51 @@
         </div>
     </div>
 </div>
-
+<div class="modal fade open" id="promomodal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Promo Code</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <label style="margin-right:5px;">Enter Promo Code</label>
+                <input type="text" class="form-control" id="txtpromo" />
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-success" type="button" onclick="ApplyPromo();">Apply</button>
+                <button data-dismiss="modal" class="btn btn-danger" type="button">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- section end -->
 <div class="dvrazorpayscript">
 
 </div>
 <script>
+    var MainOrderTotl = '@ViewBag.TotalOrder';
+    var shipchargettl = '@ViewBag.ShippingChargeTotal';
+    var totlnetamount = '@totlnetamount';
+    var totlAmts = '@totalamts';
+    var roundoffship = '@roundoffship';
+    var roundoff = '@roundoff';
+    var NetPayShip = '@NetPayShip';
+    var NetPay = '@NetPay';
+    var extramt = '@extramt';
+
+     var shipchargettl1 = '@ViewBag.ShippingChargeTotal';
+    var totlnetamount1 = '@totlnetamount';
+    var totlAmts1 = '@totalamts';
+    var roundoffship1 = '@roundoffship';
+    var roundoff1 = '@roundoff';
+    var NetPayShip1 = '@NetPayShip';
+    var NetPay1 = '@NetPay';
+    var extramt1 = '@extramt';
+
     var strstate = '@objClientOther.ShipState';
     var lstpincodesstr = @Html.Raw(Json.Encode(lstPincodes));
-    
+
     $("#shipstate").val(strstate);
     $(document).ready(function () {
         var amt = $("#Orderamout").val();
@@ -649,20 +727,26 @@
             $("#spnshipamt").show();
             $(".shippingexist").show();
             $(".shippingnotexist").hide();
+            if ($("#extraamount").val() != "" && $("#extraamount").val() != "0") {
+                $(".clsextra").show();
+            }
+            else {
+                $(".clsextra").hide();
+            }
             var ammt = $("#Orderamout").attr("data-withship");
             $("#Orderamout").val(ammt);
             $("#PayAmount").val($("#PayAmount").attr("data-withship"))
              if ($(".creditremainingcls").length > 0) {
-                 var crdtremaining = $("#creditremaining").val();
-                 var ordamtt = $("#Orderamout").val();
-                 if (parseFloat(crdtremaining) > 0 && parseFloat(crdtremaining) >= parseFloat(ordamtt)) {
-                     $(".creditremainingcls").show();
-                 }
-                 else {
-                     $("#payment-2").click();
-                     $("#payment-2").att("checked", "checked");
-                     $(".creditremainingcls").hide();
-                 }
+                 //var crdtremaining = $("#creditremaining").val();
+                 //var ordamtt = $("#Orderamout").val();
+                 //if (parseFloat(crdtremaining) > 0 && parseFloat(crdtremaining) >= parseFloat(ordamtt)) {
+                 //    $(".creditremainingcls").show();
+                 //}
+                 //else {
+                 //    $("#payment-2").click();
+                 //    $("#payment-2").att("checked", "checked");
+                 //    $(".creditremainingcls").hide();
+                 //}
             }
         }
         else {
@@ -673,18 +757,18 @@
             var ammt = $("#Orderamout").attr("data-wihoutship");
             $("#Orderamout").val(ammt);
             $("#PayAmount").val($("#PayAmount").attr("data-wihoutship"))
-             if ($(".creditremainingcls").length > 0) {
-                 var crdtremaining = $("#creditremaining").val();
-                 var ordamtt = $("#Orderamout").val();
-                 if (parseFloat(crdtremaining) > 0 && parseFloat(crdtremaining) >= parseFloat(ordamtt)) {
-                     $(".creditremainingcls").show();
-                 }
-                 else {
-                     $("#payment-2").click();
-                     $("#payment-2").attr("checked", "checked");
-                     $(".creditremainingcls").hide();
-                 }
-            }
+            // if ($(".creditremainingcls").length > 0) {
+            //     var crdtremaining = $("#creditremaining").val();
+            //     var ordamtt = $("#Orderamout").val();
+            //     if (parseFloat(crdtremaining) > 0 && parseFloat(crdtremaining) >= parseFloat(ordamtt)) {
+            //         $(".creditremainingcls").show();
+            //     }
+            //     else {
+            //         $("#payment-2").click();
+            //         $("#payment-2").attr("checked", "checked");
+            //         $(".creditremainingcls").hide();
+            //     }
+            //}
         }
 
         var amt = $("#PayAmount").val();
@@ -814,6 +898,174 @@
         $("#wltamtused").html("₹" + wltused.toFixed(2));
 
         return onlinpy.toFixed(2);
+    }
+
+    function ShowPromoModal() {
+        $("#promomodal").modal("show");
+        $("#txtpromo").val("");
+    }
+
+    function ApplyPromo() {
+        if ($("#txtpromo").val() == "") {
+            alert("Please Enter Promo Code");
+            return;
+        }
+        var promtxt = $("#txtpromo").val();
+        var ordramt = $("#Orderamout").attr("data-wihoutship");
+        $.ajax({
+            url: '/client/checkout/CheckPromoCode/',
+            data: "{ 'PromoCode': '" + promtxt + "','TotalOrderAmt':'" + ordramt+"'}",
+            dataType: "json",
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                $("#promomodal").modal("hide");
+                if (data.HasErr == true) {
+                    alert(data.ErrMsg);
+     //               $(".promo").show();
+     //               $("#lblPromo").hide();
+     //                totlnetamount1 = totlnetamount;
+     //totlAmts1 = totlAmts;
+     //roundoffship1 = roundoffship;
+     //roundoff1 = roundoff;
+     //NetPayShip1 = NetPayShip;
+     //NetPay1 = NetPay;
+     //               extramt1 = extramt;
+     //               $("#dvFreeOrgnl").show();
+     //               $("#dvFreeNew").hide();
+     //               $("#hasFreeItemsinOrder").val($("#hasFreeItemsinOrderLatest").val());
+     //               $("#FreeOfferId").val($("#FreeOfferIdLatest").val());
+     //               $(".shipnetamt").html("₹" + totlnetamount1);
+     //               $(".shipnetpay").html("₹" + NetPayShip1);
+     //               $(".clsTotlAmtShip").html("₹" + totlnetamount1);
+     //               $(".clsNetPayShip").html("₹" + NetPayShip1);
+     //               $("#Orderamout").attr("data-withship", totlnetamount1);
+     //               $("#PayAmount").attr("data-withship", NetPayShip1);
+     //               $("#HasPromoCode").val("false");
+     //               $("#PromoCode").val("");
+     //               $("#PromoDiscount").val("0");
+     //               $(".shipnotnetamt").html("₹" + totlAmts1);
+     //               $(".shipnetpay").html("₹" + NetPay1);
+     //               $(".clsTotalAmtNotShip").html("₹" + totlAmts1);
+     //               $(".clsNetPaySNotship").html("₹" + NetPay1);
+     //               $("#Orderamout").attr("data-wihoutship", totlAmts1);
+     //               $("#PayAmount").attr("data-wihoutship", NetPay1);
+     //               $(".discexist").hide();
+     //               $(".discli").hide();
+     //               $(".discamt").html("");
+     //               $(".dispappliedpromo").hide();
+     //               $("#extraamount").val(extramt1);
+     //               pincodechange();
+                    deletepromo();
+                   
+                }
+                else {
+                    $(".promo").hide();
+                    $("#lblPromo").show();
+                    $("#lblPromo").text("Promo Code: " + $("#txtpromo").val() + " Applied!");
+                    $(".dispappliedpromo").show();
+                    if(data.HasFreeItems == true && data.FreeItems != null) {
+                        var freeit = "";
+                        for (var p = 0; p < data.FreeItems.length; p++) {
+                            var obj = data.FreeItems[p];
+                            freeit = freeit + "<div><b>" + obj.Sub_ProductItemName + " - " + obj.VarintNm + "</b>  =>  <b>Qty</b>: " +obj.Qty+"</div>";
+                        }                      
+                        $("#dvFreeOrgnl").hide();
+                        $("#dvFreeNew").html(freeit);
+                        $("#dvFreeNew").show();
+                    }
+                    $(".discexist").show();
+                    $("#hasFreeItemsinOrder").val(data.HasFreeItems);
+                    $("#FreeOfferId").val(data.FreeOfferId);
+                    var discc = parseFloat(data.DiscountPerc);
+                    var discamt = Math.round((parseFloat(MainOrderTotl) * discc)/ 100);
+                    $("#HasPromoCode").val("true");
+                    $("#PromoCode").val(promtxt);
+                    $("#PromoDiscount").val(discamt);
+                    
+                    var totlextr = parseFloat(data.TotalExtraAmt);
+                    var extr = parseFloat(extramt);
+                    var totlnetamountflt = parseFloat(totlnetamount);
+                    var newnetamt = totlnetamountflt - extr + totlextr - discamt;
+                    totlnetamount1 = newnetamt;                    
+                    NetPayShip1 = parseFloat(NetPayShip) - extr + totlextr - discamt;
+                    extramt1 = totlextr;                 
+                    $(".shipnetamt").html("₹" + totlnetamount1);
+                    $(".shipnetpay").html("₹" + NetPayShip1);
+                    $(".clsTotlAmtShip").html("₹" + totlnetamount1);
+                    $(".clsNetPayShip").html("₹" + NetPayShip1);
+                    $("#Orderamout").attr("data-withship", totlnetamount1);
+                    $("#PayAmount").attr("data-withship", NetPayShip1);
+
+                    totlAmts1 = parseFloat(totlAmts) - discamt;
+                    NetPay1 = parseFloat(NetPay) - discamt;
+                    $("#Orderamout").attr("data-wihoutship", totlAmts1);
+                    $("#PayAmount").attr("data-wihoutship", NetPay1);
+                    $(".shipnotnetamt").html("₹" + totlAmts1);
+                    $(".shipnotnetpay").html("₹" + NetPay1);
+                    $(".clsTotalAmtNotShip").html("₹" + totlAmts1);
+                    $(".clsNetPaySNotship").html("₹" + NetPay1);
+                    $(".clspromodisc").html("₹" + discamt);
+                    $("#extraamount").val(extramt1);
+                    $(".discli").show();
+                    $(".clsextramt").html("₹" + extramt1);
+                    $(".discamt").html("₹" + discamt);
+                    pincodechange();
+                    //data.TotalExtraAmt
+                    //data.HasFreeItems
+                    //data.FreeOfferId
+                    //data.DiscountPerc
+                    //data.FreeItems
+                }
+            },
+            error: function (response) {
+                console.log(response.responseText);
+                // alert(response.responseText);
+            },
+            failure: function (response) {
+                console.log(response.responseText);
+                // alert(response.responseText);
+            }
+        });
+    }
+
+    function deletepromo() {
+        $(".promo").show();
+        $("#lblPromo").hide();
+        totlnetamount1 = totlnetamount;
+        totlAmts1 = totlAmts;
+        roundoffship1 = roundoffship;
+        roundoff1 = roundoff;
+        NetPayShip1 = NetPayShip;
+        NetPay1 = NetPay;
+        extramt1 = extramt;
+        $(".clsextramt").html("₹" + extramt1);
+        $("#dvFreeOrgnl").show();
+        $("#dvFreeNew").hide();
+        $("#hasFreeItemsinOrder").val($("#hasFreeItemsinOrderLatest").val());
+        $("#FreeOfferId").val($("#FreeOfferIdLatest").val());
+        $(".shipnetamt").html("₹" + totlnetamount1);
+        $(".shipnetpay").html("₹" + NetPayShip1);
+        $(".clsTotlAmtShip").html("₹" + totlnetamount1);
+        $(".clsNetPayShip").html("₹" + NetPayShip1);
+        $("#Orderamout").attr("data-withship", totlnetamount1);
+        $("#PayAmount").attr("data-withship", NetPayShip1);
+        $("#HasPromoCode").val("false");
+        $("#PromoCode").val("");
+        $("#PromoDiscount").val("0");
+        $(".shipnotnetamt").html("₹" + totlAmts1);
+        $(".shipnotnetpay").html("₹" + NetPay1);
+        $(".clsTotalAmtNotShip").html("₹" + totlAmts1);
+        $(".clsNetPaySNotship").html("₹" + NetPay1);
+        $("#Orderamout").attr("data-wihoutship", totlAmts1);
+        $("#PayAmount").attr("data-wihoutship", NetPay1);
+        $(".discexist").hide();
+        $(".discli").hide();
+        $(".discamt").html("");
+        $(".dispappliedpromo").hide();
+        $("#extraamount").val(extramt1);
+        pincodechange();
+
     }
 </script>
 <script src="~/Scripts/cart.js?aa"></script>

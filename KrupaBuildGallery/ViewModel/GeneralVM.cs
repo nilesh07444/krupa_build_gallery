@@ -62,5 +62,7 @@ namespace KrupaBuildGallery
         public decimal AmountPayOnline { get; set; }       
         public List<string> CartItemIds { get; set; }
         public string ReferalCode { get; set; }
+        public bool HasErr { get; set; }
+        public string ErrMsg { get; set; }
     }
 }
