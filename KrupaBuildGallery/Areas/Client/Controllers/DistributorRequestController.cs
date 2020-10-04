@@ -214,7 +214,11 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 {                  
                     Random random = new Random();
                     int num = random.Next(555555,999999);
-                    string msg = "Your distributor request OTP code is " + num;
+                    //string msg = "Your distributor request OTP code is " + num;
+                    int SmsId = (int)SMSType.DistributorReqOtp;
+                    clsCommon objcm = new clsCommon();
+                    string msg = objcm.GetSmsContent(SmsId);
+                    msg = msg.Replace("{{OTP}}", num + "");
                     //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + MobileNumber + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
                     string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", MobileNumber).Replace("--MSG--", msg);
                     var json = webClient.DownloadString(url);                   

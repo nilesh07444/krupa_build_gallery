@@ -333,6 +333,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             ViewBag.CashOrderAmtMax = objGenralsetting.CashLimitPerOrder;
             ViewBag.CashOrderAmtYerly = objGenralsetting.CashLimitPerYear;
             ViewData["availablepincode"] = _db.tbl_AvailablePincode.Select(o => o.AvailablePincode).ToList();
+            List<tbl_ShippingAddresses> lstShippingAddress = _db.tbl_ShippingAddresses.Where(o => o.ClientUserId == clsClientSession.UserID && o.IsDeleted == false).ToList();
+            ViewData["lstShipAddresses"] = lstShippingAddress;
             return View();
         }
 
@@ -424,7 +426,18 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 decimal amtwallet = Convert.ToDecimal(objCheckout.walletamtinorder);
                 decimal amtcredit = Convert.ToDecimal(objCheckout.creditamtinorder);
                 decimal amtonline = Convert.ToDecimal(objCheckout.onlineamtinorder);
+                bool HasPromoCode = false;
+                bool IsSaveAddress = false;
                 bool HasFreeItems = false;
+                if (objCheckout.IsSaveShippingAddress == "true")
+                {
+                    IsSaveAddress = true;
+                }
+
+                if (objCheckout.HasPromoCode.ToLower() == "true")
+                {
+                    HasPromoCode = true;
+                }
                 if (objCheckout.IncludeFreeItems == "true")
                 {
                     HasFreeItems = true;
@@ -545,6 +558,17 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
 
 
                     tbl_Orders objOrder = new tbl_Orders();
+                    if (HasPromoCode == true)
+                    {
+                        var objPromo = _db.tbl_PromoCode.Where(o => o.PromoCode == objCheckout.PromoCode && o.IsActive == true && o.IsDeleted == false).FirstOrDefault();
+                        if (objPromo != null)
+                        {
+                            objOrder.PromoCodeId = objPromo.PromoCodeId;
+                            objOrder.HasPromo = true;
+                            objOrder.PromoDiscount = Convert.ToDecimal(objCheckout.PromoDiscount);
+                            objOrder.PromoPercentage = objPromo.DiscountPercentage;
+                        }
+                    }
                     objOrder.ClientUserId = clientusrid;
                     objOrder.AdvancePaymentRecieved = 0;
                     decimal ordramt = Convert.ToDecimal(objCheckout.Orderamount);
@@ -696,7 +720,43 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         objotherdetails.ShipGSTNo = objCheckout.GSTNo;
                         objotherdetails.ShipEmail = objCheckout.shipemailaddress;
                     }
+
                     _db.SaveChanges();
+                    if (IsSaveAddress)
+                    {
+                        tbl_ShippingAddresses objShipAdd = new tbl_ShippingAddresses();
+                        objShipAdd.ClientUserId = clientusrid;
+                        objShipAdd.ShipAddress = objCheckout.shipaddress;
+                        objShipAdd.ShipCity = objCheckout.shipcity;
+                        objShipAdd.ShipPostalCode = objCheckout.shippincode;
+                        objShipAdd.ShipFirstName = objCheckout.shipfirstname;
+                        objShipAdd.ShipLastName = objCheckout.shiplastname;
+                        objShipAdd.ShipState = objCheckout.shipstate;
+                        if (!string.IsNullOrEmpty(objCheckout.GSTNo))
+                        {
+                            objShipAdd.GSTNo = objCheckout.GSTNo;
+                        }
+                        else
+                        {
+                            objShipAdd.GSTNo = "";
+                        }
+
+                        if (!string.IsNullOrEmpty(objCheckout.shipemailaddress))
+                        {
+                            objShipAdd.ShipEmail = objCheckout.shipemailaddress;
+                        }
+                        else
+                        {
+                            objShipAdd.ShipEmail = "";
+                        }
+                        objShipAdd.ShipPhoneNumber = objCheckout.shipphone;
+                        objShipAdd.IsDeleted = false;
+                        objShipAdd.AddressTitle = objCheckout.AddressTitle;
+                        objShipAdd.CreatedDate = DateTime.UtcNow;
+                        _db.tbl_ShippingAddresses.Add(objShipAdd);
+                        _db.SaveChanges();
+                    }
+                  
                     decimal pointreamining = 0;
                     decimal totalremining = 0;
                     decimal TotalDiscount = 0;
@@ -1043,8 +1103,16 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     string orderid = clsCommon.EncryptString(objOrder.OrderId.ToString());
                     tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
                     string AdminMobileNumber = objGensetting.AdminSMSNumber;
-                    string msgsms = "New Order Received - Order No " + objOrder.OrderId + " - Shopping & Saving";
-                    string msgsmscustomer = "Thank You For The Order. You Order Number is " + objOrder.OrderId + " - Shopping & Saving";
+                   // string msgsms = "New Order Received - Order No " + objOrder.OrderId + " - Shopping & Saving";
+                    int SmsId = (int)SMSType.NewOrderAdmin;
+                    clsCommon objcm = new clsCommon();
+                    string msgsms = objcm.GetSmsContent(SmsId);
+                    msgsms = msgsms.Replace("{{OrdeNo}}", objOrder.OrderId + "");
+
+                    //string msgsmscustomer = "Thank You For The Order. You Order Number is " + objOrder.OrderId + " - Shopping & Saving";
+                    int SmsId1 = (int)SMSType.NewOrderClient;
+                    string msgsmscustomer = objcm.GetSmsContent(SmsId1);
+                    msgsmscustomer = msgsmscustomer.Replace("{{OrdeNo}}", objOrder.OrderId + "");
                     SendSMSForNewOrder(AdminMobileNumber, msgsms);
                     SendSMSForNewOrder(clsClientSession.MobileNumber, msgsmscustomer);
                     ReturnMessage = "Success^" + orderid;
@@ -1219,6 +1287,17 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             }
                             paymentmethod = string.Join(",", lstpymenymthod);
                             tbl_Orders objOrder = new tbl_Orders();
+                            if (HasPromoCode == true)
+                            {
+                                var objPromo = _db.tbl_PromoCode.Where(o => o.PromoCode == objCheckout.PromoCode && o.IsActive == true && o.IsDeleted == false).FirstOrDefault();
+                                if (objPromo != null)
+                                {
+                                    objOrder.PromoCodeId = objPromo.PromoCodeId;
+                                    objOrder.HasPromo = true;
+                                    objOrder.PromoDiscount = Convert.ToDecimal(objCheckout.PromoDiscount);
+                                    objOrder.PromoPercentage = objPromo.DiscountPercentage;
+                                }
+                            }
                             objOrder.ClientUserId = clientusrid;
                             objOrder.AdvancePaymentRecieved = advncpay;
                             objOrder.OrderAmount = ordramt;
@@ -1661,12 +1740,56 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                     objcmn.SavePaymentTransaction(0, objOrder.OrderId, true, amtcredit, "Payment By Credit", clsClientSession.UserID, false, DateTime.UtcNow, "Credit");
                                 }
                             }
+
+                            if (IsSaveAddress)
+                            {
+                                tbl_ShippingAddresses objShipAdd = new tbl_ShippingAddresses();
+                                objShipAdd.ClientUserId = clientusrid;
+                                objShipAdd.ShipAddress = objCheckout.shipaddress;
+                                objShipAdd.ShipCity = objCheckout.shipcity;
+                                objShipAdd.ShipPostalCode = objCheckout.shippincode;
+                                objShipAdd.ShipFirstName = objCheckout.shipfirstname;
+                                objShipAdd.ShipLastName = objCheckout.shiplastname;
+                                objShipAdd.ShipState = objCheckout.shipstate;
+                                if (!string.IsNullOrEmpty(objCheckout.GSTNo))
+                                {
+                                    objShipAdd.GSTNo = objCheckout.GSTNo;
+                                }
+                                else
+                                {
+                                    objShipAdd.GSTNo = "";
+                                }
+
+                                if (!string.IsNullOrEmpty(objCheckout.shipemailaddress))
+                                {
+                                    objShipAdd.ShipEmail = objCheckout.shipemailaddress;
+                                }
+                                else
+                                {
+                                    objShipAdd.ShipEmail = "";
+                                }
+                                objShipAdd.ShipPhoneNumber = objCheckout.shipphone;
+                                objShipAdd.IsDeleted = false;
+                                objShipAdd.AddressTitle = objCheckout.AddressTitle;
+                                objShipAdd.CreatedDate = DateTime.UtcNow;
+                                _db.tbl_ShippingAddresses.Add(objShipAdd);
+                                _db.SaveChanges();
+                            }
                             string orderid = clsCommon.EncryptString(objOrder.OrderId.ToString());
                             ReturnMessage = "Success^" + orderid;
                             tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
                             string AdminMobileNumber = objGensetting.AdminSMSNumber;
-                            string msgsms = "New Order Received - Order No " + objOrder.OrderId + " - Shopping & Saving";
-                            string msgsmscustomer = "Thank you for the Order. You order number is " + objOrder.OrderId + " - Shopping & Saving";
+                       
+                            // string msgsms = "New Order Received - Order No " + objOrder.OrderId + " - Shopping & Saving";
+                            int SmsId = (int)SMSType.NewOrderAdmin;
+                            clsCommon objcm = new clsCommon();
+                            string msgsms = objcm.GetSmsContent(SmsId);
+                            msgsms = msgsms.Replace("{{OrdeNo}}", objOrder.OrderId + "");
+
+                            //string msgsmscustomer = "Thank You For The Order. You Order Number is " + objOrder.OrderId + " - Shopping & Saving";
+                            int SmsId1 = (int)SMSType.NewOrderClient;
+                            string msgsmscustomer = objcm.GetSmsContent(SmsId1);
+                            msgsmscustomer = msgsmscustomer.Replace("{{OrdeNo}}", objOrder.OrderId + "");
                             SendSMSForNewOrder(AdminMobileNumber, msgsms);
                             SendSMSForNewOrder(clsClientSession.MobileNumber, msgsmscustomer);
                         }
@@ -1735,14 +1858,16 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             return price;
         }
         [HttpPost]
-        public string CheckItemsinStock(string IsCash = "false")
+        public string CheckItemsinStock(string IsCash = "false",string PromoCode = "",string AddressTitle = "")
         {
             string ReturnMessage = "";
             bool isOutofStock = false;
+            bool IsValidAddress = true;
             try
             {
                 if (clsClientSession.UserID > 0)
                 {
+                  
                     bool IsCashOrdr = false;
                     if (IsCash == "true")
                     {
@@ -1765,15 +1890,67 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         }
                     }
 
+                    if (!string.IsNullOrEmpty(AddressTitle))
+                    {
+                        var objAddrss = _db.tbl_ShippingAddresses.Where(o => o.ClientUserId == clsClientSession.UserID && o.AddressTitle.ToLower() == AddressTitle.ToLower() && o.IsDeleted == false).FirstOrDefault();
+                        if (objAddrss != null)
+                        {
+                            IsValidAddress = false;
+                        }
+                    }
+
                 }
-                if (isOutofStock == true)
+
+                if (IsValidAddress == true)
                 {
-                    ReturnMessage = "OutofStock";
+                    string PromoCheck = "";
+                    if (!string.IsNullOrEmpty(PromoCode))
+                    {
+                        DateTime dtnow = DateTime.UtcNow;
+                        var objCop = _db.tbl_PromoCode.Where(o => o.PromoCode == PromoCode && o.IsActive == true && o.IsDeleted == false).FirstOrDefault();
+                        if (objCop == null)
+                        {
+                            PromoCheck = "Invalid Promo Code";
+                        }
+                        else
+                        {
+                            if (objCop.ExpiryDate >= dtnow)
+                            {
+                                int TotalUsed = _db.tbl_Orders.Where(o => o.PromoCodeId == objCop.PromoCodeId).ToList().Count();
+                                if (TotalUsed >= objCop.TotalMaxUsage)
+                                {
+                                    PromoCheck = "Promo Code Usage Over";
+                                }
+                                else
+                                {
+                                    PromoCheck = "SuccessPromo";
+                                }
+
+                            }
+                            else
+                            {
+                                PromoCheck = "Promo Code Expired";
+                            }
+                        }
+                    }
+
+                    if (isOutofStock == true)
+                    {
+                        ReturnMessage = "OutofStock";
+                    }
+                    else if (!string.IsNullOrEmpty(PromoCheck) && PromoCheck != "SuccessPromo")
+                    {
+                        ReturnMessage = PromoCheck;
+                    }
+                    else
+                    {
+                        ReturnMessage = "Success";
+                    }
                 }
                 else
                 {
-                    ReturnMessage = "Success";
-                }
+                    ReturnMessage = "Address Title Already Exist";
+                }              
             }
             catch (Exception ex)
             {
@@ -2189,6 +2366,162 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             }
 
             return 1;
+        }
+
+
+        [HttpPost]
+        public JsonResult CheckPromoCode(string PromoCode, string TotalOrderAmt)
+        {
+            decimal TotlOrder = Convert.ToDecimal(TotalOrderAmt);
+            GeneralVM objGenn = new GeneralVM();
+            objGenn.DiscountPerc = "0";
+            objGenn.TotalExtraAmt = "0";
+            DateTime dtNow = DateTime.UtcNow;
+            var objCop = _db.tbl_PromoCode.Where(o => o.PromoCode == PromoCode && o.IsActive == true && o.IsDeleted == false).FirstOrDefault();
+            if (objCop == null)
+            {
+                objGenn.HasErr = true;
+                objGenn.ErrMsg = "Invalid Promo Code";                
+            }
+            else
+            {
+                if (objCop.ExpiryDate >= dtNow)
+                {
+                    int TotalUsed = _db.tbl_Orders.Where(o => o.PromoCodeId == objCop.PromoCodeId).ToList().Count();
+                    if (TotalUsed >= objCop.TotalMaxUsage)
+                    {
+                        objGenn.HasErr = true;
+                        objGenn.ErrMsg = "Promo Code Usage Over";                  
+                    }
+                    else
+                    {
+                        objGenn.DiscountPerc = Convert.ToString(objCop.DiscountPercentage);
+                        decimal disc = (TotlOrder * Convert.ToDecimal(objCop.DiscountPercentage)) / 100;
+                        decimal aftrdisc = TotlOrder - disc;
+                        var objtbl_ExtraAmount = _db.tbl_ExtraAmount.Where(o => o.AmountFrom <= aftrdisc && o.AmountTo >= aftrdisc).FirstOrDefault();
+                        if (objtbl_ExtraAmount != null)
+                        {
+                            objGenn.TotalExtraAmt = objtbl_ExtraAmount.ExtraAmount.Value.ToString();
+                        }
+                        DateTime dtCurrentDateTime = DateTime.UtcNow;
+                        tbl_FreeOffers objfreeoffer = _db.tbl_FreeOffers.Where(o => o.OfferStartDate <= dtCurrentDateTime && o.OfferEndDate >= dtCurrentDateTime && o.OrderAmountFrom <= aftrdisc && o.OrderAmountTo >= aftrdisc && o.IsDeleted == false).FirstOrDefault();
+                        List<FreeOfferSubItems> lstFreeItemss = new List<FreeOfferSubItems>();
+                        objGenn.HasFreeItems = false;
+                        objGenn.FreeOfferId = "0";
+                        if (objfreeoffer != null)
+                        {
+                            lstFreeItemss = (from c in _db.tbl_FreeOfferItems
+                                             join i in _db.tbl_ProductItems on c.ProductItemId equals i.ProductItemId
+                                             join v in _db.tbl_ItemVariant on c.VariantItemId equals v.VariantItemId
+                                             where c.FreeOfferId == objfreeoffer.FreeOfferId
+                                             select new FreeOfferSubItems
+                                             {
+                                                 ProductItemId = i.ProductItemId,
+                                                 CategoryId = i.CategoryId,
+                                                 ProductId = i.ProductId,
+                                                 Sub_ProductItemName = i.ItemName,
+                                                 VarintId = c.VariantItemId.Value,
+                                                 Qty = c.Qty,
+                                                 VarintNm = v.UnitQty
+                                             }).ToList();
+                            objGenn.HasFreeItems = true;
+                            objGenn.FreeOfferId = objfreeoffer.FreeOfferId.ToString();
+                        }
+                        objGenn.FreeItems = lstFreeItemss;
+                    }
+
+                }
+                else
+                {
+                    objGenn.HasErr = true;
+                    objGenn.ErrMsg = "Promo Code Expired";                    
+                }
+            }
+            return Json(objGenn);
+        }
+
+        [HttpPost]
+        public JsonResult GetCityStateFromPincode(string Pincode)
+        {
+            ResponseDataModel<GeneralVM> response = new ResponseDataModel<GeneralVM>();
+            GeneralVM objGenn = new GeneralVM();
+            try
+            {
+                int Pincod = Convert.ToInt32(Pincode);
+                var objP = _db.tbl_PincodeCityState.Where(o => o.Pincode == Pincod).FirstOrDefault();
+                if (objP != null)
+                {
+                    objGenn.City = objP.City;
+                    objGenn.State = objP.State;
+                }
+                else
+                {
+                    objGenn.City = "";
+                    objGenn.State = "";
+                }
+                return Json(objGenn);
+            }
+            catch (Exception ex)
+            {
+                return Json("");
+            }
+
+        }
+
+        [HttpPost]
+        public JsonResult CheckCartItemAvailablePincode(string StrCartItems,string Pincode)
+        {
+            GeneralVM objGenn = new GeneralVM();
+            try
+            {
+                List<string> cartitmnotavailble = new List<string>();
+                List<string> lstCartItemIds = new List<string>();
+                if (!string.IsNullOrEmpty(StrCartItems))
+                {
+                    StrCartItems = StrCartItems.Trim('^');
+                    lstCartItemIds = StrCartItems.Split('^').ToList();
+                }
+
+                //long ItemId = Convert.ToInt64(objGen.ItemId);
+                int Pincd = Convert.ToInt32(Pincode);
+                foreach (string strids in lstCartItemIds)
+                {
+                    long ItemId = Convert.ToInt64(strids);
+                    var objPinc = _db.tbl_AvailablePincode.Where(o => o.AvailablePincode == Pincode).FirstOrDefault();
+                    if (objPinc != null)
+                    {
+                        List<tbl_ItemAvailablePincode> lstAvil = _db.tbl_ItemAvailablePincode.Where(o => o.ProductItemId == ItemId).ToList();
+                        if (lstAvil != null && lstAvil.Count() > 0)
+                        {
+                            var objPnAvail = lstAvil.Where(o => o.Pincode == Pincd).FirstOrDefault();
+                            if (objPnAvail == null)
+                            {
+                                cartitmnotavailble.Add(strids);
+                            }
+                            else
+                            {
+
+                            }
+
+                        }
+                        else
+                        {
+
+                        }
+                    }
+                    else
+                    {
+                        cartitmnotavailble.Add(strids);
+                    }
+                }
+
+                objGenn.CartItemIds = cartitmnotavailble;
+                return Json(objGenn);
+            }
+            catch (Exception ex)
+            {
+                return Json("");
+            }
         }
     }
 }

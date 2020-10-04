@@ -1060,8 +1060,15 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     response.Data = "Success^" + orderid;
                     tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
                     string AdminMobileNumber = objGensetting.AdminSMSNumber;
-                    string msgsms = "New Order Received - Order No " + objOrder.OrderId + " - Shopping & Saving";
-                    string msgsmscustomer = "Thank you for the Order. You Order Number Is " + objOrder.OrderId + " - Shopping & Saving";
+                    //string msgsms = "New Order Received - Order No " + objOrder.OrderId + " - Shopping & Saving";
+                    int SmsId = (int)SMSType.NewOrderAdmin;
+                    clsCommon objcm = new clsCommon();
+                    string msgsms = objcm.GetSmsContent(SmsId);
+                    msgsms = msgsms.Replace("{{OrdeNo}}", objOrder.OrderId + "");
+                    //string msgsmscustomer = "Thank you for the Order. You Order Number Is " + objOrder.OrderId + " - Shopping & Saving";
+                    SmsId = (int)SMSType.NewOrderClient;
+                    string msgsmscustomer = objcm.GetSmsContent(SmsId);
+                    msgsmscustomer = msgsmscustomer.Replace("{{OrdeNo}}", objOrder.OrderId + "");
                     SendSMSForNewOrder(AdminMobileNumber, msgsms);
                     SendSMSForNewOrder(objPlaceOrderVM.MobileNumber, msgsmscustomer);
                 }
@@ -1453,8 +1460,15 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                             response.Data = "Success^" + orderid;
                             tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
                             string AdminMobileNumber = objGensetting.AdminSMSNumber;
-                            string msgsms = "New Order Received - Order No " + objOrder.OrderId + " - Shopping & Saving";
-                            string msgsmscustomer = "Thank You For The Order. Your Order Number Is " + objOrder.OrderId + " - Shopping & Saving";
+                            //string msgsms = "New Order Received - Order No " + objOrder.OrderId + " - Shopping & Saving";
+                            int SmsId = (int)SMSType.NewOrderAdmin;
+                            clsCommon objcm = new clsCommon();
+                            string msgsms = objcm.GetSmsContent(SmsId);
+                            msgsms = msgsms.Replace("{{OrdeNo}}", objOrder.OrderId + "");
+                            //string msgsmscustomer = "Thank you for the Order. You Order Number Is " + objOrder.OrderId + " - Shopping & Saving";
+                            SmsId = (int)SMSType.NewOrderClient;
+                            string msgsmscustomer = objcm.GetSmsContent(SmsId);
+                            msgsmscustomer = msgsmscustomer.Replace("{{OrdeNo}}", objOrder.OrderId + "");
                             SendSMSForNewOrder(AdminMobileNumber, msgsms);
                             SendSMSForNewOrder(objPlaceOrderVM.MobileNumber, msgsmscustomer);
                         }

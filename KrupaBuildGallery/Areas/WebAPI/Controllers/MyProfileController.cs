@@ -39,7 +39,11 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         WebClient client = new WebClient();
                         Random random = new Random();
                         int num = random.Next(310450, 789899);
-                        string msg = "Your change password OTP code is " + num;
+                        // string msg = "Your change password OTP code is " + num;
+                        int SmsId = (int)SMSType.ChangePwdOtp;
+                        clsCommon objcm = new clsCommon();
+                        string msg = objcm.GetSmsContent(SmsId);
+                        msg = msg.Replace("{{OTP}}", num + "");
                         //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + MobileNum + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
                         string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", MobileNum).Replace("--MSG--", msg);
                         var json = webClient.DownloadString(url);
@@ -172,7 +176,11 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         WebClient client = new WebClient();
                         Random random = new Random();
                         int num = random.Next(310450, 789899);
-                        string msg = "Your change password OTP code is " + num;
+                        //string msg = "Your change password OTP code is " + num;
+                        int SmsId = (int)SMSType.ChangePwdOtp;
+                        clsCommon objcm = new clsCommon();
+                        string msg = objcm.GetSmsContent(SmsId);
+                        msg = msg.Replace("{{OTP}}", num + "");
                         //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + MobileNum + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
                         string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", MobileNum).Replace("--MSG--", msg);
                         var json = webClient.DownloadString(url);

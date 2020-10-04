@@ -28,5 +28,10 @@ namespace KrupaBuildGallery
         public string remarks { get; set; }
         public string IncludeFreeItems { get; set; }
         public string FreeOfferId { get; set; }
+        public string HasPromoCode { get; set; }
+        public string PromoCode { get; set; }
+        public string PromoDiscount { get; set; }
+        public string IsSaveShippingAddress { get; set; }
+        public string AddressTitle { get; set; }
     }
 }
