@@ -879,5 +879,49 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             }
             return rating;
         }
+
+        public string CheckItemAvailablePincode(string ItmId, string Pincode)
+        {   
+            string msg = "";
+            try
+            {
+                long ItemId = Convert.ToInt64(ItmId);
+                int Pincd = Convert.ToInt32(Pincode);
+                var objPinc = _db.tbl_AvailablePincode.Where(o => o.AvailablePincode == Pincode).FirstOrDefault();
+                if (objPinc != null)
+                {
+                    List<tbl_ItemAvailablePincode> lstAvil = _db.tbl_ItemAvailablePincode.Where(o => o.ProductItemId == ItemId).ToList();
+                    if (lstAvil != null && lstAvil.Count() > 0)
+                    {
+                        var objPnAvail = lstAvil.Where(o => o.Pincode == Pincd).FirstOrDefault();
+                        if (objPnAvail == null)
+                        {
+                            msg = "Item not available for this pincode";
+                        }
+                        else
+                        {
+                            msg = "Item available for this pincode";
+                        }
+
+                    }
+                    else
+                    {
+                        msg = "Item available for this pincode";
+                    }
+                }
+                else
+                {
+                    msg = "Item not available for this pincode";
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                return ex.Message.ToString();
+            }
+
+            return msg;
+        }
     }
 }

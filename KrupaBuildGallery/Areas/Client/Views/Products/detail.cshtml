@@ -139,6 +139,7 @@
                         }
                     </div>
                     <input type="hidden" id="mainimgsrc" value="@imgpath" />
+                    <input type="hidden" id="itmid" value="@Model.ProductItemId" />
                     <div class="row">
                         <div class="col-12 p-0">
                             <div class="slider-nav">
@@ -219,7 +220,7 @@
                                                     }
                                                 }
                                                 <input type="radio" id="radio-@objj.VariantItemId" name="variants" data-attrmrpprc="@objj.MRPPrice" data-attrprc="@prc" data-attrvarinimg="@objj.VariantImg" value="@objj.VariantItemId" @selected1 />
-                                                <label for="radio-@objj.VariantItemId">@objj.UnitQtys</label>                                                
+                                                <label for="radio-@objj.VariantItemId">@objj.UnitQtys</label>
                                             }
                                             <input type="hidden" value="" id="hdnvarintIds" />
                                         }
@@ -232,7 +233,12 @@
                             var objVrnt = lstVarintss.FirstOrDefault();
                             <input type="hidden" value="@objVrnt.VariantItemId" id="hdnvarintIds" />
                         }
-
+                        <div class="product-description border-product">
+                            <h6 class="product-title">Check Availability At</h6>
+                            <div class="qty-box">
+                                <input type="number" id="txtpincode" class="form-control" placeholder="Enter Pincode" maxlength="6" onKeyPress="if(this.value.length==6) return false;" style="width: 200px;"> <a href="javascript:void(0);" class="btn btn-solid" onclick="checkavailable();" style="padding: 2px 10px;border-radius: 12px;margin-left: 10px;">Check</a>
+                            </div>
+                        </div>
                         <div class="product-description border-product">
                             <h6 class="product-title">quantity</h6>
                             <div class="qty-box">
@@ -406,6 +412,35 @@
             },250);
         }       
     });
+
+    function checkavailable() {
+        var pincd = $("#txtpincode").val();
+        if (pincd == "") {
+            alert("Enter Pincode");
+            return false;
+        }
+        var itmidd = $("#itmid").val();
+        var URL = '/Client/Products/CheckItemAvailablePincode';
+        jQuery.ajax({
+            type: 'GET',
+            async: true,
+            url: URL + "?ItmId=" + itmidd + "&Pincode=" + pincd,
+            success: function (result) {
+                if (result == "Item not available for this pincode") {
+                    msgdisplayFail(result);
+                }
+                else {
+                    msgsuccess(result);
+                }
+            },
+            error: function (resultData) {
+                console.log("error");
+
+            }
+        });
+        
+    }
+
     function addtocrt(itmid) {
         var qtyy = $("#txtqty").val();
         var provariant = $("#hdnvarintIds").val();
