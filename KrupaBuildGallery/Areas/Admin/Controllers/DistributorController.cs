@@ -929,9 +929,14 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             WebClient client = new WebClient();
                             Random random = new Random();
                             int num = random.Next(111566, 999999);
-                            string msg = "Your Registration As A Distributor Rejected - Shopping & Saving\n";
-                            msg += "Following Is The Reason:\n";
-                            msg += Reason;
+                            //string msg = "Your Registration As A Distributor Rejected - Shopping & Saving\n";
+                            //msg += "Following Is The Reason:\n";
+                            //msg += Reason;
+                            int SmsId = (int)SMSType.DistributorReqRejected;
+                            clsCommon objcm = new clsCommon();
+                            string msg = objcm.GetSmsContent(SmsId);
+                            msg = msg.Replace("{{Reason}}", Reason);
+                            
                             //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objReq.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
                             string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", objReq.MobileNo).Replace("--MSG--", msg);
                             var json = webClient.DownloadString(url);
@@ -1016,10 +1021,14 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             WebClient client = new WebClient();
                             Random random = new Random();
                             int num = random.Next(111566, 999999);
-                            string msg = "Thank You For Become A Valuable Distributor Of Shopping & Saving\n";
-                            msg += "Login Details:\n";
-                            msg += "Email:" + objReq.Email + "\n";
-                            msg += "Password:" + Password + "\n";
+                            //string msg = "Thank You For Become A Valuable Distributor Of Shopping & Saving\n";
+                            //msg += "Login Details:\n";
+                            //msg += "Email:" + objReq.Email + "\n";
+                            //msg += "Password:" + Password + "\n";
+                            int SmsId = (int)SMSType.DistributorReqAccepted;
+                            clsCommon objcm = new clsCommon();
+                            string msg = objcm.GetSmsContent(SmsId);
+                            msg = msg.Replace("{{MobileNo}}", objReq.MobileNo + "").Replace("{{Password}}", Password);
                             //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objReq.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";                            
                             string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", objReq.MobileNo).Replace("--MSG--", msg);
                             var json = webClient.DownloadString(url);
@@ -1132,7 +1141,11 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     decimal Credit = Convert.ToDecimal(CreditLimit);
                     objclientother.CreditLimitAmt = Credit;
                     _db.SaveChanges();
-                    string msg = "Your Credit Limit Has Changed To Rs" + CreditLimit + " - Shopping & Saving";
+                    //string msg = "Your Credit Limit Has Changed To Rs" + CreditLimit + " - Shopping & Saving";
+                    int SmsId = (int)SMSType.CreditLimitChange;
+                    clsCommon objcm = new clsCommon();
+                    string msg = objcm.GetSmsContent(SmsId);
+                    msg = msg.Replace("{{CreditLimit}}", CreditLimit + "");
                     SendSMSmsg(Mobilenum, msg);
                 }
                 return "Success";

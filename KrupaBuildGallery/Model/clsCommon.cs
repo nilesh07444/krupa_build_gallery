@@ -233,8 +233,22 @@ namespace KrupaBuildGallery.Model
                 FinYear = PreYear + "-" + CurYear;
             return FinYear.Trim();
         }
-
+    
+        public string GetSmsContent(int Id)
+        {
+            krupagallarydbEntities _db = new krupagallarydbEntities();
+            var objSms = _db.tbl_SMSContent.Where(o => o.SMSContentId == Id).FirstOrDefault();
+            if(objSms != null)
+            {
+                return objSms.SMSDescription.ToString();
+            }
+            else
+            {
+                return "";
+            }
+        }
     }
+
 
     enum OrderStatus
     {
@@ -258,5 +272,47 @@ namespace KrupaBuildGallery.Model
         Return = 6,
         Replace = 7,
         Exchange = 8
+    }
+
+    enum SMSType
+    {
+        LoginOtp = 1,
+        RegistrationOtp = 2,
+        ForgotPwdOtp = 3,
+        ChangePwdOtp = 4,
+        NewUser = 5,
+        NewOrderClient = 6,
+        NewOrderAdmin = 7,
+        ContactForm = 8,
+        DistributorReqOtp = 9,
+        ItemActionOtp = 10,
+        ItemCancelClient = 11,
+        ItemCancelAdmin = 12,
+        ReturnReqAdmin = 13,
+        ReplaceReqAdmin = 14,
+        ExchangeReqAdmin = 15,
+        RejectCashToSender = 16,
+        WhenDelivered = 17,
+        OtpDuringDelivery = 18,
+        OtpDuringDeliveryWithCash = 19,
+        AgentAssignDelieveryToStaff = 20,
+        AdminLoginChangePwdOtp = 21,
+        DistributorReqRejected = 22,
+        DistributorReqAccepted = 23,
+        CreditLimitChange = 24,
+        LoginOtpForAdmin = 25,
+        OrderConfirmed = 26,
+        OrderDispatched = 27,
+        DueAmtRemind = 28,
+        ExchangeReqRejected = 29,
+        ReplaceReqRejected = 30,
+        ReturnReqRejected = 31,
+        ReturnReqAccepted = 32,
+        ReplaceReqAccepted = 33,
+        ExchangeReqAccepted = 34,
+        AssignItemtoStaff = 35,
+        ShippingChargeSet = 36,
+        AssignItemtoStaffMsgToClient = 37
+
     }
 }

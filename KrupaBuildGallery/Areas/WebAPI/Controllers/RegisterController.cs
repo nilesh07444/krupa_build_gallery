@@ -187,7 +187,11 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         WebClient client = new WebClient();
                         Random random = new Random();
                         int num = random.Next(555555, 999999);
-                        string msg = "Registration's OTP Code Is " + num + "\n Thanks \n Shopping & Saving";
+                        //string msg = "Registration's OTP Code Is " + num + "\n Thanks \n Shopping & Saving";
+                        int SmsId = (int)SMSType.RegistrationOtp;
+                        clsCommon objcm = new clsCommon();
+                        string msg = objcm.GetSmsContent(SmsId);
+                        msg = msg.Replace("{{OTP}}", num + "");
                         //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + MobileNum + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
                         string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", MobileNum).Replace("--MSG--", msg);
                         var json = webClient.DownloadString(url);
