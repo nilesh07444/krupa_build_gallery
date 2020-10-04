@@ -124,5 +124,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return ReturnMessage;
         }
 
+        
+
     }
 }

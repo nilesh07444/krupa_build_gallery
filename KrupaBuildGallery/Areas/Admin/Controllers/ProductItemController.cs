@@ -125,9 +125,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             return View(objProductItem);
         }
-         
+
         [HttpPost]
-        public ActionResult Add(ProductItemVM productItemVM, HttpPostedFileBase ItemMainImageFile, HttpPostedFileBase[] ItemGalleryImageFile,FormCollection frm)
+        public ActionResult Add(ProductItemVM productItemVM, HttpPostedFileBase ItemMainImageFile, HttpPostedFileBase[] ItemGalleryImageFile, FormCollection frm)
         {
             try
             {
@@ -201,12 +201,12 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
                         string[] sheets = { "8x4", "7x4", "7x3", "6x4", "6x3" };
                         string[] sheetsqty = { "32", "28", "21", "24", "18" };
-                        var objUnt =_db.tbl_Units.Where(o => o.UnitId == objProductItem.UnitType).FirstOrDefault();
-                        if(objUnt != null)
+                        var objUnt = _db.tbl_Units.Where(o => o.UnitId == objProductItem.UnitType).FirstOrDefault();
+                        if (objUnt != null)
                         {
-                            if(objUnt.UnitName.ToLower().Contains("killo") || objUnt.UnitName.ToLower().Contains("litr"))
+                            if (objUnt.UnitName.ToLower().Contains("killo") || objUnt.UnitName.ToLower().Contains("litr"))
                             {
-                                for(int kk = 1; kk <= kgs.Length; kk++)
+                                for (int kk = 1; kk <= kgs.Length; kk++)
                                 {
                                     HttpPostedFileBase fileUpload = Request.Files.Get("variantimg_" + kk);
                                     if (fileUpload != null && fileUpload.ContentLength > 0)
@@ -217,35 +217,35 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                     tbl_ItemVariant objtbl_ItemVariant = new tbl_ItemVariant();
                                     objtbl_ItemVariant.ProductItemId = objProductItem.ProductItemId;
                                     objtbl_ItemVariant.IsActive = false;
-                                    if (Request.Form["chkvariant_"+kk] != null)
+                                    if (Request.Form["chkvariant_" + kk] != null)
                                     {
                                         objtbl_ItemVariant.IsActive = true;
                                     }
 
-                                    if(Request.Form["variantper_" + kk] != null)
+                                    if (Request.Form["variantper_" + kk] != null)
                                     {
-                                       decimal perc = Convert.ToDecimal(frm["variantper_" + kk].ToString());
+                                        decimal perc = Convert.ToDecimal(frm["variantper_" + kk].ToString());
                                         int k = kk - 1;
                                         objtbl_ItemVariant.PricePecentage = perc;
                                         if (objUnt.UnitName.ToLower().Contains("killo"))
-                                        {                                            
+                                        {
                                             objtbl_ItemVariant.UnitQty = kgs[k];
                                             decimal qtt = Convert.ToDecimal(kgsQty[k].ToString());
-                                            if ( qtt >= 1)
+                                            if (qtt >= 1)
                                             {
-                                                objtbl_ItemVariant.CustomerPrice = Math.Round((objProductItem.CustomerPrice * qtt * perc)/100,2);
+                                                objtbl_ItemVariant.CustomerPrice = Math.Round((objProductItem.CustomerPrice * qtt * perc) / 100, 2);
                                                 objtbl_ItemVariant.DistributorPrice = Math.Round((objProductItem.DistributorPrice * qtt * perc) / 100, 2);
                                             }
                                             else
                                             {
-                                                objtbl_ItemVariant.CustomerPrice = Math.Round((objProductItem.CustomerPrice * perc)/100,2);
+                                                objtbl_ItemVariant.CustomerPrice = Math.Round((objProductItem.CustomerPrice * perc) / 100, 2);
                                                 objtbl_ItemVariant.DistributorPrice = Math.Round((objProductItem.DistributorPrice * perc) / 100, 2);
                                             }
                                         }
                                         else
                                         {
                                             objtbl_ItemVariant.UnitQty = ltrs[k];
-                                            decimal qtt = Convert.ToDecimal(ltrsQty[k].ToString());                                           
+                                            decimal qtt = Convert.ToDecimal(ltrsQty[k].ToString());
                                             if (qtt >= 1)
                                             {
                                                 objtbl_ItemVariant.CustomerPrice = Math.Round((objProductItem.CustomerPrice * qtt * perc) / 100, 2);
@@ -297,7 +297,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             {
                                 string[] arryvrntid = Convert.ToString(frm["hdnvrtn"]).Split(',');
                                 for (int kk = 0; kk < arryvrntid.Length; kk++)
-                                {                                 
+                                {
                                     tbl_ItemVariant objtbl_ItemVariant = new tbl_ItemVariant();
                                     HttpPostedFileBase fileUpload = Request.Files.Get("variantimg_" + arryvrntid[kk]);
                                     string strvaritnimg1 = "";
@@ -311,9 +311,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                     if (Request.Form["chkvariant_" + arryvrntid[kk]] != null)
                                     {
                                         objtbl_ItemVariant.IsActive = true;
-                                    }                                    
-                                    objtbl_ItemVariant.UnitQty = frm["variantnm_"+ arryvrntid[kk]].ToString();
-                                    objtbl_ItemVariant.CustomerPrice = Math.Round(Convert.ToDecimal(frm["variantcustprice_" + arryvrntid[kk]].ToString()),2);
+                                    }
+                                    objtbl_ItemVariant.UnitQty = frm["variantnm_" + arryvrntid[kk]].ToString();
+                                    objtbl_ItemVariant.CustomerPrice = Math.Round(Convert.ToDecimal(frm["variantcustprice_" + arryvrntid[kk]].ToString()), 2);
                                     objtbl_ItemVariant.DistributorPrice = Math.Round(Convert.ToDecimal(frm["variantdistriprice_" + arryvrntid[kk]].ToString()), 2);
                                     objtbl_ItemVariant.MRPPrice = Math.Round(Convert.ToDecimal(frm["variantmrpprice_" + arryvrntid[kk]].ToString()), 2);
                                     objtbl_ItemVariant.PricePecentage = 100;
@@ -330,7 +330,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             {
                                 tbl_ItemVariant objtbl_ItemVariant = new tbl_ItemVariant();
                                 objtbl_ItemVariant.ProductItemId = objProductItem.ProductItemId;
-                                objtbl_ItemVariant.IsActive = true;                                                             
+                                objtbl_ItemVariant.IsActive = true;
                                 objtbl_ItemVariant.UnitQty = objUnt.UnitName;
                                 objtbl_ItemVariant.CustomerPrice = Math.Round(objProductItem.CustomerPrice, 2);
                                 objtbl_ItemVariant.DistributorPrice = Math.Round(objProductItem.DistributorPrice, 2);
@@ -437,7 +437,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         }
 
         public ActionResult Edit(int Id)
-        
+
         {
             ProductItemVM objProductItem = new ProductItemVM();
 
@@ -485,7 +485,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit(ProductItemVM productItemVM, HttpPostedFileBase ItemMainImageFile, HttpPostedFileBase[] ItemGalleryImageFile,FormCollection frm)
+        public ActionResult Edit(ProductItemVM productItemVM, HttpPostedFileBase ItemMainImageFile, HttpPostedFileBase[] ItemGalleryImageFile, FormCollection frm)
         {
             try
             {
@@ -568,7 +568,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                         if (fileUpload != null && fileUpload.ContentLength > 0)
                                         {
                                             strvaritnimg = Guid.NewGuid() + "-" + Path.GetFileName(fileUpload.FileName);
-                                            fileUpload.SaveAs(variantpathImg + strvaritnimg);                                          
+                                            fileUpload.SaveAs(variantpathImg + strvaritnimg);
                                         }
                                         tbl_ItemVariant objtbl_ItemVariant = new tbl_ItemVariant();
                                         objtbl_ItemVariant.ProductItemId = objProductItem.ProductItemId;
@@ -616,13 +616,13 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                         }
                                         objtbl_ItemVariant.CreatedDate = DateTime.UtcNow;
                                         tbl_ItemVariant objtbl_ItemVariant1 = lstItmvrnt.Where(o => o.UnitQty == objtbl_ItemVariant.UnitQty).FirstOrDefault();
-                                        if(objtbl_ItemVariant1 != null)
+                                        if (objtbl_ItemVariant1 != null)
                                         {
                                             objtbl_ItemVariant1.PricePecentage = objtbl_ItemVariant.PricePecentage;
                                             objtbl_ItemVariant1.CustomerPrice = objtbl_ItemVariant.CustomerPrice;
                                             objtbl_ItemVariant1.DistributorPrice = objtbl_ItemVariant.DistributorPrice;
                                             objtbl_ItemVariant1.IsActive = objtbl_ItemVariant.IsActive;
-                                            if(!string.IsNullOrEmpty(strvaritnimg))
+                                            if (!string.IsNullOrEmpty(strvaritnimg))
                                             {
                                                 objtbl_ItemVariant1.VariantImage = strvaritnimg;
                                             }
@@ -632,10 +632,10 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                         {
                                             _db.tbl_ItemVariant.Add(objtbl_ItemVariant);
                                             _db.SaveChanges();
-                                        }                                       
-                                       
+                                        }
+
                                     }
-                                  
+
                                 }
                                 _db.SaveChanges();
                             }
@@ -644,7 +644,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                 List<tbl_ItemVariant> lstItmvrnt = _db.tbl_ItemVariant.Where(o => o.ProductItemId == objProductItem.ProductItemId).ToList();
                                 for (int kk = 1; kk <= sheets.Length; kk++)
                                 {
-                                    if(lstItmvrnt != null && lstItmvrnt.Count() > 0)
+                                    if (lstItmvrnt != null && lstItmvrnt.Count() > 0)
                                     {
                                         string strvaritnimg = "";
                                         HttpPostedFileBase fileUpload = Request.Files.Get("variantimg_" + kk);
@@ -655,8 +655,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                         }
                                         int k = kk - 1;
                                         tbl_ItemVariant objtbl_ItemVariant = lstItmvrnt.Where(o => o.UnitQty == sheets[k]).FirstOrDefault();
-                                        if(objtbl_ItemVariant != null)
-                                        {                                           
+                                        if (objtbl_ItemVariant != null)
+                                        {
                                             objtbl_ItemVariant.ProductItemId = objProductItem.ProductItemId;
                                             objtbl_ItemVariant.IsActive = false;
                                             if (Request.Form["chkvariant_" + kk] != null)
@@ -668,13 +668,13 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                             objtbl_ItemVariant.CustomerPrice = Math.Round(sqft * objProductItem.CustomerPrice, 2);
                                             objtbl_ItemVariant.DistributorPrice = Math.Round(sqft * objProductItem.DistributorPrice, 2);
                                             objtbl_ItemVariant.PricePecentage = 100;
-                                            objtbl_ItemVariant.CreatedDate = DateTime.UtcNow;             
-                                            if(!string.IsNullOrEmpty(strvaritnimg))
+                                            objtbl_ItemVariant.CreatedDate = DateTime.UtcNow;
+                                            if (!string.IsNullOrEmpty(strvaritnimg))
                                             {
                                                 objtbl_ItemVariant.VariantImage = strvaritnimg;
-                                            }                                            
+                                            }
                                         }
-                                    }                                    
+                                    }
                                 }
                                 _db.SaveChanges();
                             }
@@ -686,7 +686,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                 {
                                     long varitItmid = Convert.ToInt64(arryvrntid[kk]);
                                     tbl_ItemVariant objtbl_ItemVariant = lstItmvrnt.Where(o => o.VariantItemId == varitItmid).FirstOrDefault();
-                                    if(objtbl_ItemVariant != null)
+                                    if (objtbl_ItemVariant != null)
                                     {
                                         HttpPostedFileBase fileUpload = Request.Files.Get("variantimg_" + arryvrntid[kk]);
                                         string strvaritnimg1 = "";
@@ -705,30 +705,30 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                         objtbl_ItemVariant.CustomerPrice = Math.Round(Convert.ToDecimal(frm["variantcustprice_" + arryvrntid[kk]].ToString()), 2);
                                         objtbl_ItemVariant.DistributorPrice = Math.Round(Convert.ToDecimal(frm["variantdistriprice_" + arryvrntid[kk]].ToString()), 2);
                                         objtbl_ItemVariant.MRPPrice = Math.Round(Convert.ToDecimal(frm["variantmrpprice_" + arryvrntid[kk]].ToString()), 2);
-                                        objtbl_ItemVariant.PricePecentage = 100;                                        
+                                        objtbl_ItemVariant.PricePecentage = 100;
                                         if (!string.IsNullOrEmpty(strvaritnimg1))
                                         {
                                             objtbl_ItemVariant.VariantImage = strvaritnimg1;
-                                        }                                       
-                                    }                                   
+                                        }
+                                    }
                                 }
                                 _db.SaveChanges();
                             }
                             else
                             {
-                               var objtbl_ItemVariant = _db.tbl_ItemVariant.Where(o => o.ProductItemId == objProductItem.ProductItemId).FirstOrDefault();
-                               if(objtbl_ItemVariant != null)
-                               {
+                                var objtbl_ItemVariant = _db.tbl_ItemVariant.Where(o => o.ProductItemId == objProductItem.ProductItemId).FirstOrDefault();
+                                if (objtbl_ItemVariant != null)
+                                {
                                     objtbl_ItemVariant.ProductItemId = objProductItem.ProductItemId;
                                     objtbl_ItemVariant.IsActive = true;
                                     objtbl_ItemVariant.UnitQty = objUnt.UnitName;
                                     objtbl_ItemVariant.CustomerPrice = Math.Round(objProductItem.CustomerPrice, 2);
                                     objtbl_ItemVariant.DistributorPrice = Math.Round(objProductItem.DistributorPrice, 2);
                                     objtbl_ItemVariant.PricePecentage = 100;
-                                    objtbl_ItemVariant.CreatedDate = DateTime.UtcNow;                                  
+                                    objtbl_ItemVariant.CreatedDate = DateTime.UtcNow;
                                     _db.SaveChanges();
-                               }
-                               else
+                                }
+                                else
                                 {
                                     objtbl_ItemVariant = new tbl_ItemVariant();
                                     objtbl_ItemVariant.ProductItemId = objProductItem.ProductItemId;
@@ -1039,7 +1039,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(objProductItem);
         }
 
-        public ActionResult GetUnitsData(int UnitTypeId,int ProductItemId = 0)
+        public ActionResult GetUnitsData(int UnitTypeId, int ProductItemId = 0)
         {
             string[] kgs = { "50 Grams", "100 Grams", "250 Grams", "500 Grams", "1 Kg", "2 Kg", "5 Kg" };
             string[] kgsQty = { "0.05", "0.10", "0.25", "0.50", "1", "2", "5" };
@@ -1051,7 +1051,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             var obj = _db.tbl_Units.Where(x => x.UnitId == UnitTypeId).FirstOrDefault();
             ViewBag.UntTyp = obj.UnitName;
             if (ProductItemId == 0)
-            {                
+            {
                 List<VariantItemVM> lstVarintss = new List<VariantItemVM>();
                 if (obj != null)
                 {
@@ -1104,10 +1104,10 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 if (lstItmVarints != null && lstItmVarints.Count() > 0 && (obj.UnitName.ToLower().Contains("killo") || obj.UnitName.ToLower().Contains("litr") || obj.UnitName.ToLower().Contains("sheet") || obj.UnitName.ToLower().Contains("piece")))
                 {
                     int cnt = 1;
-                    foreach(var objvarint in lstItmVarints)
+                    foreach (var objvarint in lstItmVarints)
                     {
                         VariantItemVM objVariant = new VariantItemVM();
-                        objVariant.UnitQtyText = objvarint.UnitQty;                        
+                        objVariant.UnitQtyText = objvarint.UnitQty;
                         objVariant.PricePercentage = objvarint.PricePecentage.Value;
                         if (obj.UnitName.ToLower().Contains("piece"))
                         {
@@ -1117,7 +1117,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         {
                             objVariant.VariantItemId = cnt;
                         }
-                        
+
                         objVariant.IsActive = objvarint.IsActive.Value;
                         objVariant.VariantImg = objvarint.VariantImage;
                         objVariant.MRPPrice = objvarint.MRPPrice.HasValue ? objvarint.MRPPrice.Value : 0;
@@ -1142,13 +1142,13 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                 objVariant.UnitQtys = "1";
                             }
                         }
-                      
+
                         lstVarintss.Add(objVariant);
                         cnt = cnt + 1;
                     }
-                 
+
                     ViewData["lstVarintss"] = lstVarintss;
-                }               
+                }
             }
             ViewBag.ProductItemId = ProductItemId;
             return PartialView("~/Areas/Admin/Views/ProductItem/_UnitPriceSet.cshtml");
@@ -1158,21 +1158,21 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         {
             List<RatingReviewVM> lstRatings = new List<RatingReviewVM>();
             lstRatings = (from p in _db.tbl_ReviewRating
-                        join c in _db.tbl_ClientUsers on p.ClientUserId equals c.ClientUserId
-                        join pr in _db.tbl_ProductItems on p.ProductItemId equals pr.ProductItemId  
-                        join orddet in _db.tbl_OrderItemDetails on p.OrderDetailId equals orddet.OrderDetailId
-                        where Rating == -1 || p.Rating == Rating
-                        select new RatingReviewVM
-                        {
-                            OrderId = orddet.OrderId.Value,
-                            ClientName = c.FirstName + " " + c.LastName,
-                            MobileNo = c.MobileNo,
-                            Ratings = p.Rating.Value,
-                            Review = p.Review,
-                            ItemName = pr.ItemName,
-                            RatingReviewId = p.ReviewRatingId,
-                            RatingDate = p.CreatedDate.Value                            
-                        }).OrderByDescending(x => x.RatingDate).ToList();
+                          join c in _db.tbl_ClientUsers on p.ClientUserId equals c.ClientUserId
+                          join pr in _db.tbl_ProductItems on p.ProductItemId equals pr.ProductItemId
+                          join orddet in _db.tbl_OrderItemDetails on p.OrderDetailId equals orddet.OrderDetailId
+                          where Rating == -1 || p.Rating == Rating
+                          select new RatingReviewVM
+                          {
+                              OrderId = orddet.OrderId.Value,
+                              ClientName = c.FirstName + " " + c.LastName,
+                              MobileNo = c.MobileNo,
+                              Ratings = p.Rating.Value,
+                              Review = p.Review,
+                              ItemName = pr.ItemName,
+                              RatingReviewId = p.ReviewRatingId,
+                              RatingDate = p.CreatedDate.Value
+                          }).OrderByDescending(x => x.RatingDate).ToList();
             ViewBag.Ratings = Rating;
             return View(lstRatings);
         }
@@ -1184,12 +1184,12 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             try
             {
-                if(!string.IsNullOrEmpty(ProductItemIds))
+                if (!string.IsNullOrEmpty(ProductItemIds))
                 {
-                  string[] arryitmsid = ProductItemIds.Split(',');
-                  if(arryitmsid != null && arryitmsid.Count() > 0)
+                    string[] arryitmsid = ProductItemIds.Split(',');
+                    if (arryitmsid != null && arryitmsid.Count() > 0)
                     {
-                        foreach(string sid in arryitmsid)
+                        foreach (string sid in arryitmsid)
                         {
                             long ItmId = Convert.ToInt32(sid);
                             tbl_ProductItems objProductItem = _db.tbl_ProductItems.Where(x => x.ProductItemId == ItmId && x.IsActive && !x.IsDelete).FirstOrDefault();
@@ -1212,7 +1212,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         }
                     }
                 }
-              
+
             }
             catch (Exception ex)
             {
@@ -1222,5 +1222,168 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             return "success";
         }
+
+        public ActionResult ItemPincode(int Id)
+        {
+            ProductItemVM objProductItem = new ProductItemVM();
+
+            try
+            {
+
+                objProductItem = (from i in _db.tbl_ProductItems
+                                  join c in _db.tbl_Categories on i.CategoryId equals c.CategoryId
+                                  join p in _db.tbl_Products on i.ProductId equals p.Product_Id
+
+                                  join sub in _db.tbl_SubProducts on i.SubProductId equals sub.SubProductId into outerSub
+                                  from sub in outerSub.DefaultIfEmpty()
+
+                                  join uG in _db.tbl_Godown on i.GodownId equals uG.GodownId into outerGodown
+                                  from uG in outerGodown.DefaultIfEmpty()
+
+                                  join uC in _db.tbl_AdminUsers on i.CreatedBy equals uC.AdminUserId into outerCreated
+                                  from uC in outerCreated.DefaultIfEmpty()
+
+                                  join uM in _db.tbl_AdminUsers on i.UpdatedBy equals uM.AdminUserId into outerModified
+                                  from uM in outerModified.DefaultIfEmpty()
+
+                                  where i.ProductItemId == Id
+                                  select new ProductItemVM
+                                  {
+                                      ProductItemId = i.ProductItemId,
+                                      CategoryId = i.CategoryId,
+                                      CategoryName = c.CategoryName,
+                                      ProductId = i.ProductId,
+                                      ProductName = p.ProductName,
+                                      SubProductId = i.SubProductId,
+                                      SubProductName = (sub != null ? sub.SubProductName : ""),
+                                      ItemName = i.ItemName,
+                                      ItemDescription = i.ItemDescription,
+                                      MainImage = i.MainImage,
+                                      MRPPrice = i.MRPPrice,
+                                      CustomerPrice = i.CustomerPrice,
+                                      DistributorPrice = i.DistributorPrice,
+                                      GST_Per = i.GST_Per,
+                                      IGST_Per = i.IGST_Per,
+                                      Notification = i.Notification,
+                                      IsPopularProduct = i.IsPopularProduct,
+                                      Sku = i.Sku,
+                                      IsActive = i.IsActive,
+                                      InitialQty = 1,
+                                      HSNCode = i.HSNCode,
+                                      ShippingCharge = i.ShippingCharge.HasValue ? i.ShippingCharge.Value : 0,
+                                      GodownId = i.GodownId.HasValue ? i.GodownId.Value : 0,
+                                      IsReturnableItem = i.IsReturnable.HasValue ? i.IsReturnable.Value : false,
+                                      ItemType = i.ItemType.HasValue ? i.ItemType.Value : 1,
+                                      PayAdvancePer = i.PayAdvancePer.HasValue ? i.PayAdvancePer.Value : 0,
+                                      CreatedDate = i.CreatedDate,
+                                      UpdatedDate = i.UpdatedDate,
+                                      strCreatedBy = (uC != null ? uC.FirstName + " " + uC.LastName : ""),
+                                      strModifiedBy = (uM != null ? uM.FirstName + " " + uM.LastName : ""),
+                                      GodownName = (uG != null ? uG.GodownName : ""),
+
+                                      //GalleryImagesList = _db.tbl_ProductItemImages.Where(x => x.ProductItemId == i.ProductItemId)
+                                      //                          .Select(galry => new SelectListItem { Value = galry.ItemImage }).ToList()
+
+                                  }).FirstOrDefault();
+
+            }
+            catch (Exception ex)
+            {
+                string ErrorMessage = ex.Message.ToString();
+            }
+
+            return View(objProductItem);
+        }
+
+        [HttpPost]
+        public JsonResult GetAllCityStateFromPincode(int ItemId)
+        {
+
+            List<PincodeCityStateVM> lstPincode = new List<PincodeCityStateVM>();
+
+            lstPincode = (from c in _db.tbl_PincodeCityState
+                          join itm in _db.tbl_ItemAvailablePincode.Where(x => x.ProductItemId == ItemId) on c.Pincode equals itm.Pincode into outerItm
+                          from itm in outerItm.DefaultIfEmpty()
+                          select new PincodeCityStateVM
+                          {
+                              Id = c.Id,
+                              Pincode = c.Pincode,
+                              City = c.City,
+                              State = c.State,
+                              IsPinAvailable = itm != null ? true : false
+                          }).OrderByDescending(x => x.IsPinAvailable).ToList();
+
+            return new JsonResult()
+            {
+                Data = lstPincode,
+                MaxJsonLength = Int32.MaxValue // Use this value to set your maximum size for all of your Requests
+            };
+
+        }
+
+        [HttpPost]
+        public string SaveItemPinCodes(string pincodeList, int itemId)
+        {
+            string ReturnMessage = "";
+
+            try
+            {
+
+                if (pincodeList == "")
+                {
+                    List<tbl_ItemAvailablePincode> lstToDeleteAll = _db.tbl_ItemAvailablePincode.Where(x => x.ProductItemId == itemId).ToList();
+                    if (lstToDeleteAll != null && lstToDeleteAll.Count > 0)
+                    {
+                        lstToDeleteAll.ForEach(p => { _db.tbl_ItemAvailablePincode.Remove(p); });
+                        _db.SaveChanges();
+                    }
+
+                    return "success";
+                }
+
+                string[] strArryPincodes = pincodeList.Split(',');
+
+                List<int> intArrayPincodes = new List<int>(Array.ConvertAll(pincodeList.Split(','), int.Parse));
+
+                List<tbl_ItemAvailablePincode> lstToDelete = _db.tbl_ItemAvailablePincode.Where(x => x.ProductItemId == itemId
+                                                                && !intArrayPincodes.Contains(x.Pincode.Value)).ToList();
+                if (lstToDelete != null && lstToDelete.Count > 0)
+                {
+                    lstToDelete.ForEach(p => { _db.tbl_ItemAvailablePincode.Remove(p); });
+                    _db.SaveChanges();
+                }
+
+                List<int> lstPinExist = _db.tbl_ItemAvailablePincode.Where(x => x.ProductItemId == itemId
+                                                                && intArrayPincodes.Contains(x.Pincode.Value)).ToList()
+                                                                .Select(x => x.Pincode.Value).ToList();
+
+                List<int> intArrayPincodeRemainingToAdd = intArrayPincodes.Where(x => !lstPinExist.Contains(x)).ToList();
+
+                if (intArrayPincodeRemainingToAdd != null && intArrayPincodeRemainingToAdd.Count > 0)
+                {
+                    intArrayPincodeRemainingToAdd.ForEach(p =>
+                    {
+                        tbl_ItemAvailablePincode obj = new tbl_ItemAvailablePincode();
+                        obj.ProductItemId = itemId;
+                        obj.Pincode = p;
+
+                        _db.tbl_ItemAvailablePincode.Add(obj);
+                    });
+                    _db.SaveChanges();
+                }
+
+                ReturnMessage = "success";
+
+            }
+            catch (Exception ex)
+            {
+                string msg = ex.Message.ToString();
+                ReturnMessage = "exception";
+            }
+
+            return ReturnMessage;
+        }
+
+
     }
 }

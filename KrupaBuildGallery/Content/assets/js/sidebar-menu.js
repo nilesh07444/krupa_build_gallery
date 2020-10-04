@@ -79,7 +79,6 @@ $(".sidebar-menu>li a").filter(function() {
     if (current.indexOf(link) != -1) {
       $(this).parents('li').addClass('active');
       $(this).addClass('active');
-      console.log(link + " found");
     }
   }
 });
