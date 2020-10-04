@@ -209,7 +209,9 @@ function CheckItemExists(bypymnt, optionss, e) {
     if($("#isCashondelivery").length > 0 && $("#isCashondelivery").val() == "True") {
         iscsh = "true";
     }
-    var URL = '/Client/Checkout/CheckItemsinStock?IsCash=' + iscsh;
+    var promcd = $("#PromoCode").val();
+    var addretitle = $("#AddressTitle").val();
+    var URL = '/Client/Checkout/CheckItemsinStock?IsCash=' + iscsh + '&PromoCode=' + promcd + '&AddressTitle=' + addretitle;
     jQuery.ajax({
         type: 'POST',
         async: false,
@@ -221,6 +223,15 @@ function CheckItemExists(bypymnt, optionss, e) {
                 setTimeout(function () {
                     location.href = location.origin + "/cart";
                 }, 500);                 
+            }
+            else if (result == "Address Title Already Exist")
+            {
+                msgdisplayFail("Address Title Already Exist");
+                return false;
+            }
+            else if (result == "Invalid Promo Code" || result == "Promo Code Usage Over" || result == "Promo Code Expired") {
+                msgdisplayFail(result);
+                return false;
             }
             else {       
                 if ($("#hasFreeItemsinOrder").val() == "true") {

@@ -110,6 +110,12 @@
                 flg = false;
             }
 
+            if ($("#chksaveaddress").prop("checked") == true) {
+                if ($("#AddressTitle").val() == "") {
+                    $("#AddressTitle").siblings('.errorcls').html("Address Title Required");
+                    flg = false;
+                }
+            }
 
 
             if ($("input[name=payment-group]:checked").length == 0) {
@@ -122,13 +128,60 @@
             }
 
             if (flg == true) {
-                if ($("#payment-2").is(":checked") && parseFloat($("#onlineamtinorder").val()) > 0) {
-                      var isitemexists = CheckItemExists("ByOther",options,e);
-                }
-                else {
-                     var isitemexists = CheckItemExists("ByCredit");
-                }
+                var arryyitm = new Array();
+                $(".clsmsgpin").hide();
+                $(".itmid").each(function () {
+                    arryyitm.push($(this).attr("data-attritm"));
+                });
+                var itmmm = arryyitm.join('^');
+                var pinc1 = $("#shippincode").val();
+                $.ajax({
+                    url: '/client/checkout/CheckCartItemAvailablePincode/',
+                    data: "{'StrCartItems':'" + itmmm + "','Pincode': '" + pinc1 + "'}",
+                    dataType: "json",
+                    type: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (data) {
+                        if (data != "") {
+                            if (data.CartItemIds != null && data.CartItemIds.length > 0) {
+                                alert("Item Not available for pincode");
+                                for (var kk = 0; kk < data.CartItemIds.length; kk++) {
+                                    $("li[data-attritm='" + data.CartItemIds[kk] + "']").find('div').show();
+                                }
+                                return false;
+                            }
+                            else {
+                                if ($("#payment-2").is(":checked") && parseFloat($("#onlineamtinorder").val()) > 0) {
+                                    var isitemexists = CheckItemExists("ByOther", options, e);
+                                }
+                                else {
+                                    var isitemexists = CheckItemExists("ByCredit");
+                                }
+                            }
+                        }
+                        else {
+                            if (flg == true) {
+                                if ($("#payment-2").is(":checked") && parseFloat($("#onlineamtinorder").val()) > 0) {
+                                    var isitemexists = CheckItemExists("ByOther", options, e);
+                                }
+                                else {
+                                    var isitemexists = CheckItemExists("ByCredit");
+                                }
+                            }
+                        }
+                    },
+                    error: function (response) {
+                        console.log(response.responseText);
+                        // alert(response.responseText);
+                    },
+                    failure: function (response) {
+                        console.log(response.responseText);
+                        // alert(response.responseText);
+                    }
+                });
             }
+
+          
         });
     }
 

@@ -2239,7 +2239,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 ViewBag.HasFreeItems = "true";
                 ViewBag.FreeOfferId = objfreeoffer.FreeOfferId;
             }
-
+            List<tbl_ShippingAddresses> lstShippingAddress = _db.tbl_ShippingAddresses.Where(o => o.ClientUserId == clsClientSession.UserID && o.IsDeleted == false).ToList();
+            ViewData["lstShipAddresses"] = lstShippingAddress;
             ViewData["lstFreeItemss"] = lstFreeItemss;
             return View();
         }

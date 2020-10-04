@@ -21,6 +21,7 @@
     decimal totlnetamount = 0;
     decimal totalamts = 0;
     List<FreeOfferSubItems> lstFreeItems = ViewData["lstFreeItemss"] as List<FreeOfferSubItems>;
+    List<tbl_ShippingAddresses> lstShipadde = ViewData["lstShipAddresses"] as List<tbl_ShippingAddresses>;
 }
 <style>
     .errorcls {
@@ -307,6 +308,27 @@
                                     <h3>Shipping Details</h3>
                                 </div>
                                 <div class="row check-out">
+                                    <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                        <label class="radio-inline" style="font-size:18px;margin-right:15px;">
+                                            <input type="radio" name="shipaddressrdb" value="Existing" checked> Existing Address
+                                        </label>
+                                        <label class="radio-inline" style="font-size:18px;">
+                                            <input type="radio" name="shipaddressrdb" value="New"> New Address
+                                        </label>
+                                    </div>
+                                    <div class="form-group col-md-12 col-sm-12 col-xs-12" id="dvaddrsel">
+                                        <select class="form-control" id="selectadresses" onchange="addresschange();">
+                                            @if (lstShipadde != null && lstShipadde.Count() > 0)
+                                            {
+                                                <option value="0">Select Address</option>
+                                                foreach (var objj in lstShipadde)
+                                                {
+                                                    <option value="@objj.ShippingAddressId">@objj.AddressTitle</option>
+                                                }
+                                            }
+
+                                        </select>
+                                    </div>
                                     <div class="form-group col-md-6 col-sm-6 col-xs-12">
                                         <div class="field-label">First Name *</div>
                                         <input type="text" name="shipfirstname" required value="@objClientOther.ShipFirstName" placeholder="">
@@ -337,6 +359,11 @@
                                         <input type="text" name="shipaddress" required value="@objClientOther.ShipAddress" placeholder="Street address">
                                         <span class="errorcls"></span>
                                     </div>
+                                    <div class="form-group col-md-12 col-sm-6 col-xs-12">
+                                        <div class="field-label">Postal Code *</div>
+                                        <input type="number" name="shippincode" id="shippincode" required value="@objClientOther.ShipPostalcode" placeholder="" onKeyPress="if(this.value.length==6) return false;" onblur="pincodechange();">
+                                        <span class="errorcls"></span>
+                                    </div>
                                     <div class="form-group col-md-12 col-sm-12 col-xs-12">
                                         <div class="field-label">Town/City *</div>
                                         <input type="text" name="shipcity" required value="@objClientOther.ShipCity" placeholder="">
@@ -344,7 +371,7 @@
                                     </div>
                                     <div class="form-group col-md-12 col-sm-6 col-xs-12">
                                         <div class="field-label">State *</div>
-                                        <select class="form-control" name="shipstate" id="shipstate" required="">
+                                        <select class="form-control" name="shipstate" id="shipstate" style="pointer-events:none;" readonly required="">
                                             <option value="">Select State</option>
                                             <option value="Andhra Pradesh">Andhra Pradesh</option>
                                             <option value="Andaman and Nicobar Islands">Andaman and Nicobar Islands</option>
@@ -386,16 +413,18 @@
                                         <span class="errorcls"></span>
                                     </div>
                                     <div class="form-group col-md-12 col-sm-6 col-xs-12">
-                                        <div class="field-label">Postal Code *</div>
-                                        <input type="number" name="shippincode" id="shippincode" required value="@objClientOther.ShipPostalcode" placeholder="" onKeyPress="if(this.value.length==6) return false;" onblur="pincodechange();">
-                                        <span class="errorcls"></span>
-                                    </div>
-                                    <div class="form-group col-md-12 col-sm-6 col-xs-12">
                                         <div class="field-label">Remarks</div>
                                         <textarea class="form-control" style="height:100px;" id="remarks" name="remarks"></textarea>
                                         <span class="errorcls"></span>
                                     </div>
-                                    
+                                    <div class="form-group col-md-12 col-sm-6 col-xs-12" id="dvSaveaddress" style="display:none;" >
+                                        <label class="radio-inline" style="font-size:18px;margin-right:15px;">
+                                            <input type="checkbox" id="chksaveaddress" onclick="chkaddrs();" />  Save Address
+                                        </label><br /><br />
+                                        <input type="text" class="form-control" id="AddressTitle" placeholder="Enter Address Title*" name="AddressTitle" style="display:none;" />
+                                        <span class="errorcls"></span>
+                                    </div>
+
                                 </div>
                             </div>
                             <div class="col-lg-6 col-sm-12 col-xs-12">
@@ -412,7 +441,9 @@
                                                     decimal Itemttl = objcart.Qty * objcart.Price;
                                                     CartTotal = CartTotal + Itemttl;
                                                     @*<li>@objcart.ItemName (@objcart.VariantQtytxt) × @objcart.Qty <span>&#8377; @Itemttl</span></li>*@
-                                                    <li>@objcart.ItemName (@objcart.VariantQtytxt) <span> @objcart.Qty</span></li>
+                                                    <li data-attritm="@objcart.ItemId" class="itmid" >@objcart.ItemName (@objcart.VariantQtytxt) <span> @objcart.Qty</span><br />
+                                                        <div style="color:red;display:none;" class="clsmsgpin">Item not available for this pincode</div>
+                                                    </li>
                                                 }
                                             }
                                         </ul>
@@ -467,8 +498,7 @@
                                     <input type="hidden" id="HasPromoCode" name="HasPromoCode" value="false" />
                                     <input type="hidden" id="PromoCode" name="PromoCode" value="" />
                                     <input type="hidden" id="PromoDiscount" name="PromoDiscount" value="" />
-                                    <input type="hidden" id="IsSaveShippingAddress " name="IsSaveShippingAddress " value="" />
-                                    <input type="hidden" id="AddressTitle " name="AddressTitle " value="" />
+                                    <input type="hidden" id="IsSaveShippingAddress" name="IsSaveShippingAddress" value="" />                                    
 
                                     @if (clsClientSession.RoleID == 1)
                                     {
@@ -664,9 +694,11 @@
 
     var strstate = '@objClientOther.ShipState';
     var lstpincodesstr = @Html.Raw(Json.Encode(lstPincodes));
+    var lstExistingAdd = @Html.Raw(Json.Encode(lstShipadde));
 
     $("#shipstate").val(strstate);
     $(document).ready(function () {
+        clearaddress(); 
         var amt = $("#Orderamout").val();
         if ($("#Orderamout").length > 0 && amt != "" && amt != "0") {
              $.ajax({
@@ -722,6 +754,7 @@
             alert("Please Enter Valid Postalcode");
             return;
         }
+        getCityState();
         if ($("input[name=shippincode]").val() == "389001") {
             $("#spnshipmsg").hide();
             $("#spnshipamt").show();
@@ -857,6 +890,24 @@
                     alert("error");
                 }
             });
+        }
+    });
+
+    $(document).on("change", 'input[name=shipaddressrdb]', function () {
+        if ($(this).val() == "Existing") {
+            $("#dvaddrsel").show();
+            $("#dvSaveaddress").hide();
+            $("#AddressTitle").hide();
+            $("#AddressTitle").val("");
+            $("#IsSaveShippingAddress").val("false");
+            $("#chksaveaddress").prop("checked", false);
+            $("#AddressTitle").siblings('.errorcls').hide();
+        }
+        else {
+            clearaddress(); 
+            $("#dvaddrsel").hide();
+            $("#dvSaveaddress").show();
+            $("#AddressTitle").siblings('.errorcls').show();
         }
     });
 
@@ -1029,6 +1080,33 @@
         });
     }
 
+    function getCityState() {
+        var pinc = $("#shippincode").val();
+        $("input[name=shipcity]").val("");
+        $("#shipstate").val("");
+        $.ajax({
+            url: '/client/checkout/GetCityStateFromPincode/',
+            data: "{ 'Pincode': '" + pinc + "'}",
+            dataType: "json",
+            type: "POST",
+            contentType: "application/json; charset=utf-8",
+            success: function (data) {
+                if (data != "") {
+                    $("input[name=shipcity]").val(data.City);
+                    $("#shipstate").val(data.State);
+                }                       
+            },
+            error: function (response) {
+                console.log(response.responseText);
+                // alert(response.responseText);
+            },
+            failure: function (response) {
+                console.log(response.responseText);
+                // alert(response.responseText);
+            }
+        });
+    }
+
     function deletepromo() {
         $(".promo").show();
         $("#lblPromo").hide();
@@ -1067,5 +1145,58 @@
         pincodechange();
 
     }
+
+    function addresschange() {
+        var addvl = $("#selectadresses").val();
+        if (addvl == "0") {
+            clearaddress();
+        }
+        else {
+            if (lstExistingAdd != null && lstExistingAdd.length > 0) {
+                var filterObj = lstExistingAdd.filter(function (e) {
+                    return e.ShippingAddressId == parseInt(addvl);
+                });
+                if (filterObj != null && filterObj.length > 0) {
+                    $("input[name=shipfirstname]").val(filterObj[0].ShipFirstName);
+                    $("input[name=shiplastname]").val(filterObj[0].ShipLastName);
+                    $("input[name=shipphone]").val(filterObj[0].ShipPhoneNumber);
+                    $("input[name=shipemailaddress]").val(filterObj[0].ShipEmail);
+                    $("input[name=GSTNo]").val(filterObj[0].GSTNo);
+                    $("input[name=shipaddress]").val(filterObj[0].ShipAddress);
+                    $("input[name=shippincode]").val(filterObj[0].ShipPostalCode);
+                    $("input[name=shipcity]").val(filterObj[0].ShipCity);
+                    $("#shipstate").val(filterObj[0].ShipState);
+                }
+            }
+        }
+   
+
+    }
+
+    function chkaddrs() {
+        if ($("#chksaveaddress").prop("checked") == true) {
+            $("#AddressTitle").show();         
+            $("#IsSaveShippingAddress").val("true");
+            $("#AddressTitle").siblings('.errorcls').show();
+        }
+        else {
+            $("#AddressTitle").hide();
+            $("#AddressTitle").val("");
+            $("#IsSaveShippingAddress").val("false");
+            $("#AddressTitle").siblings('.errorcls').hide();
+        }
+    }
+
+    function clearaddress() {
+        $("input[name=shipfirstname]").val("");
+        $("input[name=shiplastname]").val("");
+        $("input[name=shipphone]").val("");
+        $("input[name=shipemailaddress]").val("");
+        $("input[name=GSTNo]").val("");
+        $("input[name=shipaddress]").val("");
+        $("input[name=shippincode]").val("");
+        $("input[name=shipcity]").val("");
+        $("#shipstate").val(""); 
+    }
 </script>
-<script src="~/Scripts/cart.js?aa"></script>
+<script src="~/Scripts/cart.js?version=1"></script>
