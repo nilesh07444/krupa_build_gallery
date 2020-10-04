@@ -26,5 +26,8 @@ namespace KrupaBuildGallery
         [Required]
         [Display(Name = "State *")]
         public string State { get; set; }
+
+        //
+        public bool IsPinAvailable { get; set; }
     }
 }

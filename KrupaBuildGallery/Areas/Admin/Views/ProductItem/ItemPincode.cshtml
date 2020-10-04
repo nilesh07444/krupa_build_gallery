@@ -1,0 +1,181 @@
+﻿@using KrupaBuildGallery.Helper;
+@using Newtonsoft.Json;
+@using KrupaBuildGallery.Model;
+@model ProductItemVM
+@{
+    ViewBag.Title = "Category List";
+
+    int counter = 1;
+}
+
+@{
+    UserPermissionVM objPermission = new UserPermissionVM();
+
+    int RoleId = Int32.Parse(clsAdminSession.RoleID.ToString());
+
+    if (RoleId != 1)
+    {
+        string strPermission = clsAdminSession.UserPermission;
+        objPermission = JsonConvert.DeserializeObject<UserPermissionVM>(strPermission, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+    }
+    bool IsSA = (RoleId == 1 ? true : false);
+}
+
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="page-header-left">
+                        <h3>
+                            Pincode List
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Product Item</li>
+                        <li class="breadcrumb-item active">Pincode List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h5>Pincode List</h5>
+            </div>
+            <div class="card-body vendor-table">
+
+                <table class="display" id="tbl_pincodes">
+                    <thead>
+                        <tr>
+                            <th width="10%;">
+                                <input type="checkbox" id="chkAll" name="chkAll" value="-1" />
+                            </th>
+                            <th>Pincode</th>
+                            <th>City</th>
+                            <th>State</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+
+                <div class="pull-right">
+                    <button id="btnSavePinCodes" class="btn btn-primary">Save Pincodes</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+</div>
+
+<script>
+
+    jQuery(document).ready(function () {
+        GetAllCityStateFromPincode();
+        jQuery.blockUI({ message: "<h4>Please Wait...</h4>" });
+        jQuery('html, body').animate({ scrollTop: 0 }, 1000);
+         
+    });
+
+    function GetAllCityStateFromPincode() {
+
+        var ItemId = '@Model.ProductItemId';
+
+        var URL = '@Url.Action("GetAllCityStateFromPincode", "ProductItem")';
+            $.ajax({
+                type: 'POST',
+                async: true,
+                url: URL + "?ItemId=" + ItemId,
+                success: function (response) {
+                    
+                    var htmlData = "";
+                    if (response != null) {
+                        $(response).each(function (i) {
+                            htmlData += "<tr>";
+                            htmlData += "<td> <input name='chkpincode' data-pin='"+ response[i].Pincode +"' value='"+ response[i].Pincode +"' type='checkbox' "+ (response[i].IsPinAvailable ? 'checked' : '') +"> </td>";
+                            htmlData += "<td>" + response[i].Pincode + "</td>";
+                            htmlData += "<td>" + response[i].City + "</td>";
+                            htmlData += "<td>" + response[i].State + "</td>";
+                            htmlData += "</tr>";
+                        });
+                        
+                        $("tbody").html(htmlData);
+
+                        $('#tbl_pincodes').DataTable({
+                            "scrollY":        "400px",
+                            "scrollCollapse": true,
+                            "paging":         false
+                        });
+
+                        $('#tbl_pincodes').show();
+
+                        jQuery.unblockUI();
+                    }
+                },
+                error: function (resultData) {
+                    jQuery.unblockUI();
+                    console.log("error: GetAllCityStateFromPincode");
+                }
+            });
+    }
+     
+    $(document).on("change", "#chkAll", function () {
+        jQuery.blockUI({ message: "<h4>Please Wait...</h4>" });
+        if ($(this).prop("checked")) {
+            $("tbody input[type='checkbox']").prop('checked', true);
+        }
+        else {
+            $("tbody input[type='checkbox']").prop('checked', false);
+        }
+        jQuery.unblockUI();
+    });
+
+    $(document).on("click", "#btnSavePinCodes", function () {
+        debugger;
+        var count = $("input[type='checkbox']:checked").length;
+      
+        var selectedPincodes = $("input[type='checkbox']:checked").map(function () { return this.value; }).get().join(',');
+
+        var ItemId = '@Model.ProductItemId';
+
+        console.log(selectedPincodes);
+
+        StartLoading();
+        var URL = '@Url.Action("SaveItemPinCodes", "ProductItem")';
+            $.ajax({
+                type: 'POST',
+                async: true,
+                url: URL,
+                data: {
+                    pincodeList: selectedPincodes,
+                    itemId : ItemId
+                },
+                success: function (response) {
+                    StopLoading();
+                    if (response == "success") {
+                        alert("Pincodes saved successfully.");
+                        window.location.reload();
+                    }
+                    else {
+                        alert("Something went wrong..");
+                    }
+                },
+                error: function (resultData) {
+                    alert("error");
+                    StopLoading();
+                }
+            });
+
+    });
+
+</script> 
