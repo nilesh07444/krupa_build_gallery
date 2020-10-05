@@ -936,7 +936,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             clsCommon objcm = new clsCommon();
                             string msg = objcm.GetSmsContent(SmsId);
                             msg = msg.Replace("{{Reason}}", Reason);
-                            
+                            msg = HttpUtility.UrlEncode(msg);
                             //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objReq.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
                             string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", objReq.MobileNo).Replace("--MSG--", msg);
                             var json = webClient.DownloadString(url);
@@ -1029,6 +1029,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             clsCommon objcm = new clsCommon();
                             string msg = objcm.GetSmsContent(SmsId);
                             msg = msg.Replace("{{MobileNo}}", objReq.MobileNo + "").Replace("{{Password}}", Password);
+                            msg = HttpUtility.UrlEncode(msg);
                             //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objReq.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";                            
                             string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", objReq.MobileNo).Replace("--MSG--", msg);
                             var json = webClient.DownloadString(url);
@@ -1146,6 +1147,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     clsCommon objcm = new clsCommon();
                     string msg = objcm.GetSmsContent(SmsId);
                     msg = msg.Replace("{{CreditLimit}}", CreditLimit + "");
+                    msg = HttpUtility.UrlEncode(msg);
                     SendSMSmsg(Mobilenum, msg);
                 }
                 return "Success";

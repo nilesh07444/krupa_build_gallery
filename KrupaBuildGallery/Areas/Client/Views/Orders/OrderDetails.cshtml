@@ -244,7 +244,7 @@
                             <div class="col-md-9">
                                 @if (Model.ShippingStatus == 1 && Model.ShipmentCharge != 0)
                                 {
-                                    <button type="button" name="" id="rzp-placeorder" class="btn bg-red" style="margin-right: 3px;background-color: #bbc5ff;border-radius: 20px;">
+                                    <button type="button" name="" id="payshipcharge" onclick="makepaymentship('@Model.OrderId');" class="btn bg-red" style="margin-right: 3px;background-color: #bbc5ff;border-radius: 20px;">
                                         Pay Shipping Charge - ₹ @Model.ShipmentCharge
                                     </button>
                                 }
@@ -287,6 +287,7 @@
                     </div>
                     <input type="hidden" id="hdnHasFreeItems" value='@IsFree.ToString()' />
                     <input type="hidden" id="hdnHasPromo" value='@HasPrmo.ToString()' />
+                    <input type="hidden" id="hdnorderid" value="@Model.OrderId" />
                     <div class="card-header">
                         <h5>Order Items</h5>
                     </div>
@@ -596,13 +597,32 @@
                 <h4 class="modal-title">Make Payment</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body  payment-box">
                 <label>Due Amount</label><input type="number" id="amountdue" readonly value="@Model.OrderAmountDue" class="form-control" />
-                <label>Enter Amount to Pay</label><input type="number" id="amountopay" value="" class="form-control" />
+                <label>Enter Amount to Pay</label><input type="number" id="amountopay" value="" class="form-control" onblur="changedpayamt();" />
                 <span class="field-validation-valid text-danger" id="errormsgamountpaid"></span>
+                <br/>
+                <span>Payment By</span>
+                <ul style="margin-top:15px;" class="payment-options">
+                    <li id="liwalt">
+                        <div class="radio-option">
+                            <input type="checkbox" name="payment-group" data-attrblns="0" style="padding-left: 5px;" value="Bywallet" id="payment-3">
+                            <label for="payment-3" style="padding-left: 5px;"><span id="cuuwalt" ></span><span id="wltamtused"></span></label>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="radio-option">
+                            <input type="checkbox" name="payment-group" data-attrblns="0" style="padding-left: 5px;" value="ByOther" id="payment-2">
+                            <label for="payment-2" style="padding-left: 5px;">Online Payments <span id="onlinepymt"></span><span class="small-text" style="display:none;">Select to pay by credit card, upi, net banking etc</span></label>
+                        </div>
+                    </li>
+                </ul>               
             </div>
             <div class="modal-footer">
                 <input type="hidden" id="hdnOrderidsforpaymemt" />
+                <input type="hidden" value="0" id="hdnwaltamtcurr" />
+                <input type="hidden" value="0" id="hdnWaltUsed" />
+                <input type="hidden" value="0" id="hdnOnlinUsed" />
                 <button data-dismiss="modal" class="btn btn-danger" type="button" onclick="$('#hdnotptxt').val('');$('#otptxt').val('');">Close</button>
                 <button class="btn btn-primary" type="button" onclick="makepaymentdue();">Make Payment</button>
             </div>
@@ -672,6 +692,44 @@
         </div>
     </div>
 </div>
+<div class="modal fade open" id="shipchargemodel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Shipping Charge Payment</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body  payment-box">
+                <label>Due Amount</label><input type="number" id="amountdue1" readonly value="@Model.ShipmentCharge" class="form-control" />               
+                <span class="field-validation-valid text-danger" id="errormsgamountpaid1"></span>
+                <br />
+                <span>Payment By</span>
+                <ul style="margin-top:15px;" class="payment-options">
+                    <li id="liwalt1">
+                        <div class="radio-option">
+                            <input type="checkbox" name="payment-group1" data-attrblns="0" style="padding-left: 5px;" value="Bywallet" id="payment-31">
+                            <label for="payment-31" style="padding-left: 5px;"><span id="cuuwalt1"></span><span id="wltamtused1"></span></label>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="radio-option">
+                            <input type="checkbox" name="payment-group1" data-attrblns="0" style="padding-left: 5px;" value="ByOther" id="payment-21">
+                            <label for="payment-21" style="padding-left: 5px;">Online Payments <span id="onlinepymt1"></span><span class="small-text" style="display:none;">Select to pay by credit card, upi, net banking etc</span></label>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="hdnOrderidsforshippaymemt" />
+                <input type="hidden" value="0" id="hdnwaltamtcurr1" />
+                <input type="hidden" value="0" id="hdnWaltUsed1" />
+                <input type="hidden" value="0" id="hdnOnlinUsed1" />
+                <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
+                <button class="btn btn-primary" type="button" onclick="makepaymentdueship();">Make Payment</button>
+            </div>
+        </div>
+    </div>
+</div>
 <div style="display: none;" id="dvPrint">
 </div>
 <!--section end-->
@@ -717,7 +775,7 @@
     jQuery.ajax({
         type: 'POST',
         async: true,
-        url: URL + "?razorpymentid=" + razorpymentid + "&razororderid=" + razororderid + "&razorsignature=" + razorsignature + "&orderid=" + orderid,
+        url: URL + "?razorpymentid=" + razorpymentid + "&razororderid=" + razororderid + "&razorsignature=" + razorsignature + "&orderid=" + orderid + "&paymentbywallet=" + $("#hdnWaltUsed1").val() + "&paymentbyonline=" + $("#hdnOnlinUsed1").val(),
         success: function (result) {
             if (result == "Success") {
                 msgdisplay("Shipping Charge Paid Successfully..");
@@ -771,10 +829,57 @@
         });
     }
 
-    function makepayment(dueamount,orderid) {
-        $("#paymentmodel").modal("show");
-        $("#amountopay").val(dueamount);
-        $("#hdnOrderidsforpaymemt").val(orderid);
+    function makepayment(dueamount, orderid) {
+          var URL = '@Url.Action("GetWallletAmt", "Orders")';
+        jQuery.ajax({
+            type: 'GET',
+            async: true,
+            url: URL,
+            success: function (result) {
+                $("#hdnwaltamtcurr").val(result);
+                $("#paymentmodel").modal("show");
+                $("#amountopay").val(dueamount);
+                if (parseFloat(result) <= 0) {
+                    $("#liwalt").hide();
+                }
+                $("#cuuwalt").html("By Wallet(Balance:₹" + result + ")");
+                $("#hdnOrderidsforpaymemt").val(orderid);
+                $("#payment-3").attr("data-attrblns", result);
+                $("#payment-2").prop("checked", true).trigger("change");
+            },
+            error: function (resultData) {
+                StopLoading();
+                console.log("error");
+
+            }
+        });
+
+    }
+
+    function makepaymentship(orderid) {
+          var URL = '@Url.Action("GetWallletAmt", "Orders")';
+        jQuery.ajax({
+            type: 'GET',
+            async: true,
+            url: URL,
+            success: function (result) {
+                $("#hdnwaltamtcurr1").val(result);
+                $("#shipchargemodel").modal("show");                
+                if (parseFloat(result) <= 0) {
+                    $("#liwalt1").hide();
+                }
+                $("#cuuwalt1").html("By Wallet(Balance:₹" + result + ")");
+                $("#hdnOrderidsforshippaymemt").val(orderid);
+                $("#payment-31").attr("data-attrblns", result);
+                $("#payment-21").prop("checked", true).trigger("change");
+            },
+            error: function (resultData) {
+                StopLoading();
+                console.log("error");
+
+            }
+        });
+
     }
 
     function makepaymentdue() {
@@ -790,12 +895,18 @@
             return;
         }
 
-          $.ajax({
+        if ($("#hdnOnlinUsed").val() != "0" && !$("#payment-2").is(":checked")) {
+            alert("Please select online payment");
+            return;
+        }
+
+        if ($("#payment-2").is(":checked") && $("#hdnOnlinUsed").val() != "0") {
+            $.ajax({
                 url: '@Url.Action("CreateRazorPaymentOrder", "Orders")',
                 type: "post",
                 dataType: "html",
                 contentType: 'application/json; charset=utf-8',
-                data: JSON.stringify({ Amount: $("#amountopay").val(),description:"Payments Order No. "+$("#hdnOrderidsforpaymemt").val()}), //add parameter
+                data: JSON.stringify({ Amount: $("#hdnOnlinUsed").val(), description: "Payments Order No. " + $("#hdnOrderidsforshippaymemt").val(), AmountPayByWallet: $("#hdnWaltUsed1").val() }), //add parameter
                 success: function (data) {
                     //success
                     $('.dvrazorpayscript').html(data); //populate the tab content.
@@ -805,6 +916,10 @@
                     alert("error");
                 }
             });
+        }
+        else {
+            SaveShippingCharge("","","");
+        }
     }
 
      function MakepaymentSave(razorpymentid, razororderid, razorsignature) {
@@ -812,7 +927,7 @@
     jQuery.ajax({
         type: 'POST',
         async: true,
-        url: URL + "?razorpymentid=" + razorpymentid + "&razororderid=" + razororderid + "&razorsignature=" + razorsignature + "&orderid=" + $("#hdnOrderidsforpaymemt").val() + "&amount="+$("#amountopay").val(),
+        url: URL + "?razorpymentid=" + razorpymentid + "&razororderid=" + razororderid + "&razorsignature=" + razorsignature + "&orderid=" + $("#hdnOrderidsforpaymemt").val() + "&amount=" + $("#amountopay").val() + "&paymentbywallet=" + $("#hdnWaltUsed").val() + "&paymentbyonline=" + $("#hdnOnlinUsed").val(),
         success: function (result) {
             if (result == "Success") {
                 msgdisplay("Payment Successfully..");
@@ -829,12 +944,42 @@
 
         }
      });
-   }
+    }
+
+    function makepaymentdueship() {
+        var amtdue = parseFloat($("#amountdue1 ").val());
+
+        if ($("#hdnOnlinUsed1").val() != "0" && !$("#payment-21").is(":checked")) {
+            alert("Please select online payment");
+            return;
+        }
+
+        if ($("#payment-21").is(":checked") && $("#hdnOnlinUsed1").val() != "0") {
+            $.ajax({
+                url: '@Url.Action("CreateRazorPaymentOrderForShipCharge", "Orders")',
+                type: "post",
+                dataType: "html",
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify({ Amount: $("#hdnOnlinUsed1").val(), description: "Payments Order No. " + $("#hdnOrderidsforpaymemt").val(), AmountPayByWallet: $("#hdnWaltUsed").val() }), //add parameter
+                success: function (data) {
+                    //success
+                    $('.dvrazorpayscriptship').html(data); //populate the tab content.
+
+                },
+                error: function () {
+                    alert("error");
+                }
+            });
+        }
+        else {
+            SaveShippingCharge("", "", "", $("#hdnOrderidsforshippaymemt").val());
+        }
+    }
 
     function itemaction(ordritmid, ordertypeid, itmstatusid, isreturnable, iscombo) {
         var hsFree = $("#hdnHasFreeItems").val().toLowerCase();
         var hspromo = $("#hdnHasPromo").val().toLowerCase();
-        
+
         if (isreturnable != "True" || itmstatusid != "4" || ordertypeid == "2" || iscombo == 'true' || hsFree == 'true' || hspromo == 'true' || rlid == '2') {
             $("#itmstatusselect option[value=6]").hide();
         }
@@ -1008,3 +1153,134 @@
 <div class="dvrazorpayscript">
 
 </div>
+<div class="dvrazorpayscriptship">
+
+</div>
+<script>
+
+    function changedpayamt() {
+        $("input[name=payment-group]").prop("checked", false).trigger("change");
+        $("#payment-2").prop("checked", true).trigger("change");
+    }
+     $(document).on("change", 'input[name=payment-group]', function () {
+         var ordeamt = parseFloat($("#amountopay").val());
+        var wallamt = 0;
+        var isfullothr = false;
+        if ($("#payment-3").length > 0) {
+            wallamt = parseFloat($("#payment-3").attr("data-attrblns"));
+        }
+       
+        if ($(this).val() == "Bywallet" && $(this).is(":checked")) {
+            if (parseFloat($(this).attr("data-attrblns")) >= ordeamt) {
+                $("input[name=payment-group]").not(this).prop("checked", false);
+                isfullothr = true;
+                $("#onlinepymt").html("₹ 0");
+            }
+        }
+        
+        if ($(this).val() == "ByOther" && $(this).is(":checked")) {
+            if (parseFloat($(this).attr("data-attrblns")) == 0) {
+                $("input[name=payment-group]").not(this).prop("checked", false);
+                $("#onlinepymt").html("₹ "+ordeamt);
+            }
+        }
+
+        var onlinepymnt = getOnlinePrice(wallamt,ordeamt);
+        if (onlinepymnt < 0) {
+            onlinepymnt = 0;
+            $("#payment-2").prop("checked", false);
+        }
+        $("#onlinepymt").html("₹" + onlinepymnt);
+        $("#payment-2").attr("data-attrblns", onlinepymnt);
+         $("#hdnOnlinUsed").val(onlinepymnt);
+        
+    });
+
+
+    function getOnlinePrice(wltamt,ordeamt) {
+        var amtttl = 0;
+        var wltused = 0;
+        var reminord = ordeamt;
+        $("#wltamtused").html("₹" + wltused);
+        if ($("#payment-3").length > 0 && $("#payment-3").is(":checked")) {
+            amtttl = wltamt + amtttl;
+            if (wltamt < reminord) {
+                reminord = reminord - wltamt;
+                wltused = wltamt;
+            }
+            else {
+                wltused = ordeamt;
+            }
+        }
+
+        var onlinpy = ordeamt - amtttl;
+        if (onlinpy < 0) {
+
+        }
+        $("#hdnWaltUsed").val(wltused.toFixed(2));
+        $("#wltamtused").html("₹" + wltused.toFixed(2));
+
+        return onlinpy.toFixed(2);
+    }
+
+    $(document).on("change", 'input[name=payment-group1]', function () {
+        var ordeamt = parseFloat($("#amountdue1 ").val());
+        var wallamt = 0;
+        var isfullothr = false;
+        if ($("#payment-31").length > 0) {
+            wallamt = parseFloat($("#payment-31").attr("data-attrblns"));
+        }
+
+        if ($(this).val() == "Bywallet" && $(this).is(":checked")) {
+            if (parseFloat($(this).attr("data-attrblns")) >= ordeamt) {
+                $("input[name=payment-group1]").not(this).prop("checked", false);
+                isfullothr = true;
+                $("#onlinepymt1").html("₹ 0");
+            }
+        }
+
+        if ($(this).val() == "ByOther" && $(this).is(":checked")) {
+            if (parseFloat($(this).attr("data-attrblns")) == 0) {
+                $("input[name=payment-group1]").not(this).prop("checked", false);
+                $("#onlinepymt1").html("₹ " + ordeamt);
+            }
+        }
+
+        var onlinepymnt = getOnlinePrice1(wallamt, ordeamt);
+        if (onlinepymnt < 0) {
+            onlinepymnt = 0;
+            $("#payment-2").prop("checked", false);
+        }
+        $("#onlinepymt1").html("₹" + onlinepymnt);
+        $("#payment-21").attr("data-attrblns", onlinepymnt);
+        $("#hdnOnlinUsed1").val(onlinepymnt);
+
+    });
+
+
+    function getOnlinePrice1(wltamt, ordeamt) {
+        var amtttl = 0;
+        var wltused = 0;
+        var reminord = ordeamt;
+        $("#wltamtused1").html("₹" + wltused);
+        if ($("#payment-31").length > 0 && $("#payment-31").is(":checked")) {
+            amtttl = wltamt + amtttl;
+            if (wltamt < reminord) {
+                reminord = reminord - wltamt;
+                wltused = wltamt;
+            }
+            else {
+                wltused = ordeamt;
+            }
+        }
+
+        var onlinpy = ordeamt - amtttl;
+        if (onlinpy < 0) {
+
+        }
+        $("#hdnWaltUsed1").val(wltused.toFixed(2));
+        $("#wltamtused1").html("₹" + wltused.toFixed(2));
+
+        return onlinpy.toFixed(2);
+    }
+</script>

@@ -1065,10 +1065,12 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     clsCommon objcm = new clsCommon();
                     string msgsms = objcm.GetSmsContent(SmsId);
                     msgsms = msgsms.Replace("{{OrdeNo}}", objOrder.OrderId + "");
+                    msgsms = HttpUtility.UrlEncode(msgsms);
                     //string msgsmscustomer = "Thank you for the Order. You Order Number Is " + objOrder.OrderId + " - Shopping & Saving";
                     SmsId = (int)SMSType.NewOrderClient;
                     string msgsmscustomer = objcm.GetSmsContent(SmsId);
                     msgsmscustomer = msgsmscustomer.Replace("{{OrdeNo}}", objOrder.OrderId + "");
+                    msgsmscustomer = HttpUtility.UrlEncode(msgsmscustomer);
                     SendSMSForNewOrder(AdminMobileNumber, msgsms);
                     SendSMSForNewOrder(objPlaceOrderVM.MobileNumber, msgsmscustomer);
                 }
@@ -1465,10 +1467,12 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                             clsCommon objcm = new clsCommon();
                             string msgsms = objcm.GetSmsContent(SmsId);
                             msgsms = msgsms.Replace("{{OrdeNo}}", objOrder.OrderId + "");
+                            msgsms = HttpUtility.UrlEncode(msgsms);
                             //string msgsmscustomer = "Thank you for the Order. You Order Number Is " + objOrder.OrderId + " - Shopping & Saving";
                             SmsId = (int)SMSType.NewOrderClient;
                             string msgsmscustomer = objcm.GetSmsContent(SmsId);
                             msgsmscustomer = msgsmscustomer.Replace("{{OrdeNo}}", objOrder.OrderId + "");
+                            msgsmscustomer = HttpUtility.UrlEncode(msgsmscustomer);
                             SendSMSForNewOrder(AdminMobileNumber, msgsms);
                             SendSMSForNewOrder(objPlaceOrderVM.MobileNumber, msgsmscustomer);
                         }

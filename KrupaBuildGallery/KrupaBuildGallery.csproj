@@ -4149,6 +4149,7 @@
     <Content Include="Areas\Admin\Views\SMS\Index.cshtml" />
     <Content Include="Areas\Admin\Views\SMS\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\ProductItem\ItemPincode.cshtml" />
+    <Content Include="Areas\Client\Views\Orders\_ShippingPayment.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />

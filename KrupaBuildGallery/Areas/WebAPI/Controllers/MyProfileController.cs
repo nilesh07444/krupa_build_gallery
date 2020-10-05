@@ -44,6 +44,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         clsCommon objcm = new clsCommon();
                         string msg = objcm.GetSmsContent(SmsId);
                         msg = msg.Replace("{{OTP}}", num + "");
+                        msg = HttpUtility.UrlEncode(msg);
                         //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + MobileNum + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
                         string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", MobileNum).Replace("--MSG--", msg);
                         var json = webClient.DownloadString(url);
@@ -181,6 +182,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         clsCommon objcm = new clsCommon();
                         string msg = objcm.GetSmsContent(SmsId);
                         msg = msg.Replace("{{OTP}}", num + "");
+                        msg = HttpUtility.UrlEncode(msg);
                         //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + MobileNum + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
                         string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", MobileNum).Replace("--MSG--", msg);
                         var json = webClient.DownloadString(url);

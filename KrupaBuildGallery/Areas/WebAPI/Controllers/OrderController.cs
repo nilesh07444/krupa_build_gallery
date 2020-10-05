@@ -841,13 +841,14 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                 clsCommon objcm = new clsCommon();
                                 msgsms = objcm.GetSmsContent(SmsId);
                                 msgsms = msgsms.Replace("{{OrdeNo}}", objordr.OrderId + "").Replace("{{AmountRefund}}", amtrefund + "");
-
+                                msgsms = HttpUtility.UrlEncode(msgsms);
                                 SendMessageSMS(objClient.MobileNo, msgsms);
                                 objCom.SaveTransaction(objproditm.ProductItemId, objitm.OrderDetailId, objitm.OrderId.Value, "Item Cancel Request", objitm.FinalItemPrice.Value, UserId, 0, DateTime.UtcNow, "Item Cancel Request");
                                 //msgsms = "Items has been Cancelled for Order No." + objitm.OrderId;
                                 SmsId = (int)SMSType.ItemCancelAdmin;
                                 msgsms = objcm.GetSmsContent(SmsId);
                                 msgsms = msgsms.Replace("{{OrdeNo}}", objordr.OrderId + "");
+                                msgsms = HttpUtility.UrlEncode(msgsms);
                                 SendMessageSMS(adminmobilenumber, msgsms);
                                 objCom.SaveTransaction(objproditm.ProductItemId, objitm.OrderDetailId, objitm.OrderId.Value, "Cancel Item amount Refund to Wallet Rs" + amtrefund, amtrefund, UserId, 0, DateTime.UtcNow, "Item Cancel Refund");
                                 objCom.SavePaymentTransaction(objitm.OrderDetailId, objitm.OrderId.Value, false, amtrefund, "Payment To Wallet Refund", UserId, false, DateTime.UtcNow, "Wallet");
@@ -900,6 +901,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         clsCommon objcm = new clsCommon();
                         msgsms = objcm.GetSmsContent(SmsId);
                         msgsms = msgsms.Replace("{{OrdeNo}}", objordr.OrderId + "");
+                        msgsms = HttpUtility.UrlEncode(msgsms);
                         amtrefund = objitm.FinalItemPrice.Value;
                         SendMessageSMS(adminmobilenumber, msgsms);
                         objCom.SaveTransaction(objproditm.ProductItemId, objitm.OrderDetailId, objitm.OrderId.Value, "Item Return Request Sent", objitm.FinalItemPrice.Value, UserId, 0, DateTime.UtcNow, "Item Return Request Sent");
@@ -913,6 +915,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         clsCommon objcm = new clsCommon();
                         msgsms = objcm.GetSmsContent(SmsId);
                         msgsms = msgsms.Replace("{{OrdeNo}}", objordr.OrderId + "");
+                        msgsms = HttpUtility.UrlEncode(msgsms);
                         amtrefund = objitm.FinalItemPrice.Value;
                         SendMessageSMS(adminmobilenumber, msgsms);
                         objCom.SaveTransaction(objproditm.ProductItemId, objitm.OrderDetailId, objitm.OrderId.Value, "Item Replace Request Sent", objitm.FinalItemPrice.Value,UserId, 0, DateTime.UtcNow, "Item Replace Request Sent");
@@ -926,6 +929,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         clsCommon objcm = new clsCommon();
                         msgsms = objcm.GetSmsContent(SmsId);
                         msgsms = msgsms.Replace("{{OrdeNo}}", objordr.OrderId + "");
+                        msgsms = HttpUtility.UrlEncode(msgsms);
                         amtrefund = objitm.FinalItemPrice.Value;
                         SendMessageSMS(adminmobilenumber, msgsms);
                         objCom.SaveTransaction(objproditm.ProductItemId, objitm.OrderDetailId, objitm.OrderId.Value, "Item Exchange Request Sent", objitm.FinalItemPrice.Value, UserId, 0, DateTime.UtcNow, "Item Exchange Request Sent");
@@ -1012,6 +1016,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     clsCommon objcm = new clsCommon();
                     string msg = objcm.GetSmsContent(SmsId);
                     msg = msg.Replace("{{OTP}}", num + "");
+                    msg = HttpUtility.UrlEncode(msg);
                     //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + MobileNum + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
                     string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", MobileNum).Replace("--MSG--", msg);
                     var json = webClient.DownloadString(url);
@@ -1305,7 +1310,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     clsCommon objcm = new clsCommon();
                     string msg = objcm.GetSmsContent(SmsId);
                     msg = msg.Replace("{{OrdeNo}}", OrdrId+"").Replace("{{ItemText}}", ItmsText);
-                    
+                    msg = HttpUtility.UrlEncode(msg);
                     //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objAdminUsr.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
                     string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", objAdminUsr.MobileNo).Replace("--MSG--", msg);
                     var json = webClient.DownloadString(url);
@@ -1542,7 +1547,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     clsCommon objcm = new clsCommon();
                     string msg = objcm.GetSmsContent(SmsId);
                     msg = msg.Replace("{{OrdeNo}}", OrdrId + "").Replace("{{ItemText}}", ItmsText);
-                    
+                    msg = HttpUtility.UrlEncode(msg);
                     //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + mobileclient + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
                     string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", mobileclient).Replace("--MSG--", msg);
                     var json = webClient.DownloadString(url);
@@ -1596,6 +1601,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         clsCommon objcm = new clsCommon();
                         msg = objcm.GetSmsContent(SmsId);
                         msg = msg.Replace("{{OTP}}", num + "").Replace("{{CashMsg}}", GetCashMessage + "");
+                        msg = HttpUtility.UrlEncode(msg);
                         // GetCashMessage = "Please Give Cash" + GetCashMessage + " And ";
                     }
                     else
@@ -1604,6 +1610,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         clsCommon objcm = new clsCommon();
                         msg = objcm.GetSmsContent(SmsId);
                         msg = msg.Replace("{{OTP}}", num + "");
+                        msg = HttpUtility.UrlEncode(msg);
                     }
 
                     //string msg = GetCashMessage+"Your OTP code for Item Delivery is " + num;

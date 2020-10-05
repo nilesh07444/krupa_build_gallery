@@ -1108,11 +1108,12 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     clsCommon objcm = new clsCommon();
                     string msgsms = objcm.GetSmsContent(SmsId);
                     msgsms = msgsms.Replace("{{OrdeNo}}", objOrder.OrderId + "");
-
+                    msgsms = HttpUtility.UrlEncode(msgsms);
                     //string msgsmscustomer = "Thank You For The Order. You Order Number is " + objOrder.OrderId + " - Shopping & Saving";
                     int SmsId1 = (int)SMSType.NewOrderClient;
                     string msgsmscustomer = objcm.GetSmsContent(SmsId1);
                     msgsmscustomer = msgsmscustomer.Replace("{{OrdeNo}}", objOrder.OrderId + "");
+                    msgsmscustomer = HttpUtility.UrlEncode(msgsmscustomer);
                     SendSMSForNewOrder(AdminMobileNumber, msgsms);
                     SendSMSForNewOrder(clsClientSession.MobileNumber, msgsmscustomer);
                     ReturnMessage = "Success^" + orderid;
@@ -1785,11 +1786,13 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             clsCommon objcm = new clsCommon();
                             string msgsms = objcm.GetSmsContent(SmsId);
                             msgsms = msgsms.Replace("{{OrdeNo}}", objOrder.OrderId + "");
+                            msgsms = HttpUtility.UrlEncode(msgsms);
 
                             //string msgsmscustomer = "Thank You For The Order. You Order Number is " + objOrder.OrderId + " - Shopping & Saving";
                             int SmsId1 = (int)SMSType.NewOrderClient;
                             string msgsmscustomer = objcm.GetSmsContent(SmsId1);
                             msgsmscustomer = msgsmscustomer.Replace("{{OrdeNo}}", objOrder.OrderId + "");
+                            msgsmscustomer = HttpUtility.UrlEncode(msgsmscustomer);
                             SendSMSForNewOrder(AdminMobileNumber, msgsms);
                             SendSMSForNewOrder(clsClientSession.MobileNumber, msgsmscustomer);
                         }

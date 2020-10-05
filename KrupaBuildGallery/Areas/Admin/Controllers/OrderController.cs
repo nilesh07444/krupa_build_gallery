@@ -193,6 +193,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             clsCommon objcm = new clsCommon();
                             string msg = objcm.GetSmsContent(SmsId);
                             msg = msg.Replace("{{OrdeNo}}", objordr.OrderId + "").Replace("{{Dispatchtime}}", Dispatchtime);
+                            msg = HttpUtility.UrlEncode(msg);
                             //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objclntusr.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
                             string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", objclntusr.MobileNo).Replace("--MSG--", msg);
                             var json = webClient.DownloadString(url);
@@ -228,6 +229,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             clsCommon objcm = new clsCommon();
                             string msg = objcm.GetSmsContent(SmsId);
                             msg = msg.Replace("{{OrdeNo}}", objordr.OrderId + "");
+                            msg = HttpUtility.UrlEncode(msg);
                             //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objclntusr.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
                             string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", objclntusr.MobileNo).Replace("--MSG--", msg);
                             var json = webClient.DownloadString(url);
@@ -274,6 +276,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         clsCommon objcm = new clsCommon();
                         string msg = objcm.GetSmsContent(SmsId);
                         msg = msg.Replace("{{OrdeNo}}", objordr.OrderId + "");
+                        msg = HttpUtility.UrlEncode(msg);
                         //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objclntusr.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
                         string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", objclntusr.MobileNo).Replace("--MSG--", msg);
                         var json = webClient.DownloadString(url);
@@ -320,6 +323,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     clsCommon objcm = new clsCommon();
                     string msg = objcm.GetSmsContent(SmsId);
                     msg = msg.Replace("{{OrdeNo}}", objordr.OrderId + "").Replace("{{ShipCharge}}", ShippingCharge+"");
+                    msg = HttpUtility.UrlEncode(msg);
                     //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objclntusr.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
                     string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", objclntusr.MobileNo).Replace("--MSG--", msg);
                     var json = webClient.DownloadString(url);
@@ -401,6 +405,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     clsCommon objcm = new clsCommon();
                     msgsms = objcm.GetSmsContent(SmsId);
                     msgsms = msgsms.Replace("{{OrdeNo}}", objReq.OrderId + "");
+                    msgsms = HttpUtility.UrlEncode(msgsms);
                     objCommon.SaveTransaction(objOrderItm.ProductItemId.Value, objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, "Item Return Request Rejected", 0, 0, clsAdminSession.UserID, DateTime.UtcNow, "Reject Return Item Request");
                     objOrderItm.ItemStatus = 4;
                 }
@@ -413,6 +418,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     clsCommon objcm = new clsCommon();
                     msgsms = objcm.GetSmsContent(SmsId);
                     msgsms = msgsms.Replace("{{OrdeNo}}", objReq.OrderId + "");
+                    msgsms = HttpUtility.UrlEncode(msgsms);
                 }
                 else if (objReq.ItemStatus == 8)
                 {
@@ -423,6 +429,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     clsCommon objcm = new clsCommon();
                     msgsms = objcm.GetSmsContent(SmsId);
                     msgsms = msgsms.Replace("{{OrdeNo}}", objReq.OrderId + "");
+                    msgsms = HttpUtility.UrlEncode(msgsms);
                 }
                 objReq.DateModified = DateTime.UtcNow;
                 objReq.ModifiedBy = clsAdminSession.UserID;
@@ -620,7 +627,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     clsCommon objcm = new clsCommon();
                     msgsms = objcm.GetSmsContent(SmsId);
                     msgsms = msgsms.Replace("{{OrdeNo}}", objReq.OrderId + "").Replace("{{RefundText}}", amtrefundtext);
-
+                    msgsms = HttpUtility.UrlEncode(msgsms);
                     objCommon.SaveTransaction(objOrderItm.ProductItemId.Value, objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, "Item Return Request Accepted", 0, 0, clsAdminSession.UserID, DateTime.UtcNow, "Accepted Return Item Request");
                     objCommon.SaveTransaction(objOrderItm.ProductItemId.Value, objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, "Refunded amount to " + amtrefundtext, 0, 0, clsAdminSession.UserID, DateTime.UtcNow, "Accepted Return Item Request Refund");
                     SendMessageSMS(mobilenumber, msgsms);
@@ -650,6 +657,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     clsCommon objcm = new clsCommon();
                     msgsms = objcm.GetSmsContent(SmsId);
                     msgsms = msgsms.Replace("{{OrdeNo}}", objReq.OrderId + "");
+                    msgsms = HttpUtility.UrlEncode(msgsms);
                     SendMessageSMS(mobilenumber, msgsms);
                     objCommon.SaveTransaction(objOrderItm.ProductItemId.Value, objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, "Item Replace Request Accepted", 0, 0, clsAdminSession.UserID, DateTime.UtcNow, "Accepted Replace Item Request");
                 }
@@ -698,6 +706,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     msgsms = objcm.GetSmsContent(SmsId);
                     
                     msgsms = msgsms.Replace("{{OrdeNo}}", objReq.OrderId + "").Replace("{{RefundAmount}}", RoundAmt+"");
+                    msgsms = HttpUtility.UrlEncode(msgsms);
                     SendMessageSMS(mobilenumber, msgsms);
                     objCommon.SavePaymentTransaction(objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, false, Convert.ToDecimal(RoundAmt), "Payment To Wallet Refund", clsAdminSession.UserID, true, DateTime.UtcNow, "Wallet");
                     objCommon.SaveTransaction(objOrderItm.ProductItemId.Value, objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, "Item Exchanged Request Accepted", 0, 0, clsAdminSession.UserID, DateTime.UtcNow, "Accepted Exchanged Item Request");
@@ -888,6 +897,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     clsCommon objcm = new clsCommon();
                     string msg = objcm.GetSmsContent(SmsId);
                     msg = msg.Replace("{{OrdeNo}}", objOrdr.OrderId + "").Replace("{{ItemText}}", ItemList);
+                    msg = HttpUtility.UrlEncode(msg);
                     //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objclntusr.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
                     string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", objclntusr.MobileNo).Replace("--MSG--", msg);
                     var json = webClient.DownloadString(url);
@@ -917,6 +927,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     clsCommon objcm = new clsCommon();
                     string msg = objcm.GetSmsContent(SmsId);
                     msg = msg.Replace("{{OrdeNo}}", objOrdr.OrderId + "").Replace("{{ItemText}}", ItemList + "");
+                    msg = HttpUtility.UrlEncode(msg);
                     //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objAdminUsr.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
                     string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", objAdminUsr.MobileNo).Replace("--MSG--", msg);
                     var json = webClient.DownloadString(url);
@@ -1075,6 +1086,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     clsCommon objcm = new clsCommon();
                     string msg = objcm.GetSmsContent(SmsId);
                     msg = msg.Replace("{{OrdeNo}}", objOrdr.OrderId + "").Replace("{{ItemText}}", ItmsText);
+                    msg = HttpUtility.UrlEncode(msg);
                     //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objclntusr.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
                     string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", objclntusr.MobileNo).Replace("--MSG--", msg);
                     var json = webClient.DownloadString(url);
@@ -1103,6 +1115,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     clsCommon objcm = new clsCommon();
                     string msg = objcm.GetSmsContent(SmsId);
                     msg = msg.Replace("{{OrdeNo}}", objOrdr.OrderId + "").Replace("{{ItemText}}", ItmsText + "");
+                    msg = HttpUtility.UrlEncode(msg);
                     //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objAdminUsr.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
                     string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", objAdminUsr.MobileNo).Replace("--MSG--", msg);
                     var json = webClient.DownloadString(url);
