@@ -720,7 +720,7 @@
                 </ul>
             </div>
             <div class="modal-footer">
-                <input type="hidden" id="hdnOrderidsforshippaymemt" />
+                <input type="hidden" id="hdnOrderidsforshippaymemt" value="0" />
                 <input type="hidden" value="0" id="hdnwaltamtcurr1" />
                 <input type="hidden" value="0" id="hdnWaltUsed1" />
                 <input type="hidden" value="0" id="hdnOnlinUsed1" />
@@ -906,7 +906,7 @@
                 type: "post",
                 dataType: "html",
                 contentType: 'application/json; charset=utf-8',
-                data: JSON.stringify({ Amount: $("#hdnOnlinUsed").val(), description: "Payments Order No. " + $("#hdnOrderidsforshippaymemt").val(), AmountPayByWallet: $("#hdnWaltUsed1").val() }), //add parameter
+                data: JSON.stringify({ Amount: $("#hdnOnlinUsed").val(), description: "Payments Order No. " + $("#hdnOrderidsforpaymemt").val(), AmountPayByWallet: $("#hdnWaltUsed").val() }), //add parameter
                 success: function (data) {
                     //success
                     $('.dvrazorpayscript').html(data); //populate the tab content.
@@ -918,7 +918,7 @@
             });
         }
         else {
-            SaveShippingCharge("","","");
+            MakepaymentSave("","","");
         }
     }
 
@@ -960,7 +960,7 @@
                 type: "post",
                 dataType: "html",
                 contentType: 'application/json; charset=utf-8',
-                data: JSON.stringify({ Amount: $("#hdnOnlinUsed1").val(), description: "Payments Order No. " + $("#hdnOrderidsforpaymemt").val(), AmountPayByWallet: $("#hdnWaltUsed").val() }), //add parameter
+                data: JSON.stringify({ Amount: $("#hdnOnlinUsed1").val(), description: "Payments Order No. " + $("#hdnOrderidsforshippaymemt").val(), AmountPayByWallet: $("#hdnWaltUsed1").val() }), //add parameter
                 success: function (data) {
                     //success
                     $('.dvrazorpayscriptship').html(data); //populate the tab content.
