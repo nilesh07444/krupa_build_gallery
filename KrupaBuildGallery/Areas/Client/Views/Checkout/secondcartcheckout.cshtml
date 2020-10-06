@@ -866,6 +866,7 @@
         }
         else {
             clearaddress();
+            pincodechange();
             $("#dvaddrsel").hide();
             $("#dvSaveaddress").show();
             $("#AddressTitle").siblings('.errorcls').show();
@@ -925,7 +926,7 @@
             }
         }
 
-
+        pincodechange();
     }
 
     function chkaddrs() {
