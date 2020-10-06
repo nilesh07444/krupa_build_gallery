@@ -1,0 +1,40 @@
+﻿@using KrupaBuildGallery.Model;
+
+<script>
+     var waltvalid1 = '@ViewBag.IsValidWallet';
+    var optionsship = {
+        "key": "@ViewBag.key", // Enter the Key ID generated from the Dashboard
+        "amount": "@ViewBag.Amount", // Amount is in currency subunits. Default currency is INR. Hence, 50000 means 50000 paise or ₹500.
+        "currency": "INR",
+        "name": "Shopping & Saving",
+        "description": "@ViewBag.Description",
+        "image": "https://razorpay.com/favicon.png",
+        "order_id": "@ViewBag.OrderId",// Replace this with the order_id created using Orders API (https://razorpay.com/docs/api/orders).
+        "handler": function (response) {
+            StartLoading();
+            var orderids = $("#hdnOrderidsforshippaymemt").val();
+            SaveShippingCharge(response.razorpay_payment_id, response.razorpay_order_id, response.razorpay_signature, $("#hdnOrderidsforshippaymemt").val());
+            //SaveShippingCharge(response.razorpay_payment_id, response.razorpay_order_id, response.razorpay_signature, orderids);
+        },
+        "prefill": {
+            "name": "@clsClientSession.FirstName @clsClientSession.LastName",
+            "email": "@clsClientSession.Email",
+            "contact": "@clsClientSession.MobileNumber"
+        },
+        "notes": {
+            "address": "note value"
+        },
+        "theme": {
+            "color": "#F37254"
+        }
+    };
+
+    if (waltvalid1.toLowerCase() == "true") {
+        var rzp11ship = new Razorpay(optionsship);
+        rzp11ship.open();
+    }
+    else {
+        alert("Wallet amount not enough");
+    } 
+</script>
+
