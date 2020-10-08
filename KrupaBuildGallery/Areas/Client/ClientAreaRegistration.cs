@@ -95,6 +95,21 @@ namespace KrupaBuildGallery.Areas.Client
             );
 
             context.MapRoute(
+              "Client_Noti",
+              "Notification",
+              new { controller = "Notification", action = "Index", id = UrlParameter.Optional }
+          );
+
+            
+            context.MapRoute(
+              "Client_NotiDetail",
+              "Notification/NotificationDetails",
+              new { controller = "Notification", action = "NotificationDetails", id = UrlParameter.Optional }
+          );
+
+            
+
+            context.MapRoute(
               "Client_search",
               "search",
               new { controller = "search", action = "Index", id = UrlParameter.Optional }

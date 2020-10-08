@@ -1,0 +1,58 @@
+﻿@{
+    ViewBag.Title = "Notification Details";
+    Layout = "~/Areas/Client/Views/Shared/_Layout.cshtml";
+    NotificationVM objNot = ViewData["objNotif"] as NotificationVM;
+}
+<!-- breadcrumb start -->
+<div class="breadcrumb-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="page-title">
+                    <h2>Notification Details</h2>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <nav aria-label="breadcrumb" class="theme-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active">Notification Details</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- breadcrumb End -->
+<!--section start-->
+<section class="section-b-space">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12" style="overflow-x:auto;">
+                <h3>@objNot.NotificationTitle</h3>
+                <span style="font-size: 15px;font-weight: bold;">@objNot.NotificationDate</span>
+                <hr/>
+                @if (!string.IsNullOrEmpty(objNot.NotificationImage))
+                {
+                    if (File.Exists(Server.MapPath("~/Images/NotificationMedia/" + objNot.NotificationImage)))
+                    {
+                        <img src="~/Images/NotificationMedia/@objNot.NotificationImage" alt="" class="img-fluid img-40 blur-up lazyloaded" style="margin-top:15px;width:300px; height:300px;" />
+                    }
+                }
+
+                <p style="white-space: pre-line;margin-top:15px;">
+                    @objNot.NotificationDescription
+                </p>
+
+
+            </div>
+        </div>
+    </div>
+</section>
+<!--section end-->
+
+
+
+
+
+

@@ -234,6 +234,7 @@
     <Compile Include="Areas\Client\Controllers\LoginController.cs" />
     <Compile Include="Areas\Client\Controllers\MyAddressController.cs" />
     <Compile Include="Areas\Client\Controllers\MyProfileController.cs" />
+    <Compile Include="Areas\Client\Controllers\NotificationController.cs" />
     <Compile Include="Areas\Client\Controllers\OrdersController.cs" />
     <Compile Include="Areas\Client\Controllers\PrivacyPolicyController.cs" />
     <Compile Include="Areas\Client\Controllers\ProductsController.cs" />
@@ -4150,6 +4151,8 @@
     <Content Include="Areas\Admin\Views\SMS\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\ProductItem\ItemPincode.cshtml" />
     <Content Include="Areas\Client\Views\Orders\_ShippingPayment.cshtml" />
+    <Content Include="Areas\Client\Views\Notification\Index.cshtml" />
+    <Content Include="Areas\Client\Views\Notification\NotificationDetails.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />

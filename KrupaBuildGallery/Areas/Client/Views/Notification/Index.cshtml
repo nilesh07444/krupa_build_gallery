@@ -1,0 +1,81 @@
+﻿@model List<KrupaBuildGallery.NotificationVM>
+@using KrupaBuildGallery.Model;
+@{
+    ViewBag.Title = "Notifications";
+}
+<style>
+    .clsunread {
+        background-color: #f4f4ff;
+        font-weight: bold;
+    }
+</style>
+<!-- breadcrumb start -->
+<div class="breadcrumb-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="page-title">
+                    <h2>Notifications</h2>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <nav aria-label="breadcrumb" class="theme-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="/">Home</a></li>
+                        <li class="breadcrumb-item active">Notifications</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- breadcrumb End -->
+<!--section start-->
+<section class="section-b-space">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12" style="overflow-x:auto;">
+                    <table class="table cart-table table-responsive-xs">
+                        <thead>
+                            <tr class="table-head">
+                                <th scope="col">Date</th>
+                                <th scope="col">Notification Title</th>                                
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.Count > 0)
+                            {
+                                foreach (KrupaBuildGallery.NotificationVM objNoti in Model)
+                                {
+                                    string strreadcls = "clsread";
+                                    if(!objNoti.IsRead)
+                                    {
+                                        strreadcls = "clsunread";
+                                    }
+                                    <tr class="@strreadcls">                                     
+                                        <td>@objNoti.NotificationDate</td>
+                                        <td>@objNoti.NotificationTitle</td>
+                                        <td> <a href="/Notification/NotificationDetails?Id=@objNoti.NotificationId" title="View"><i class="fa fa-eye font-success"></i></a> </td>
+                                    </tr>
+                                }
+
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="5" style="text-align:center;">
+                                        No Notifications.....
+                                    </td>
+                                </tr>
+
+                            }
+                        </tbody>
+                    </table>
+
+                            
+            </div>
+        </div>       
+    </div>
+</section>
+<!--section end-->
