@@ -307,7 +307,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     }
                     else
                     {
-                        tbl_ClientUsers objclint = _db.tbl_ClientUsers.Where(o => o.ClientRoleId == userid).FirstOrDefault();
+                        tbl_ClientUsers objclint = _db.tbl_ClientUsers.Where(o => o.ClientUserId == userid).FirstOrDefault();
                         objclint.FirstName = objGeneralVM.FirstName;
                         objclint.LastName = objGeneralVM.LastName;
                         objclint.Email = objGeneralVM.Email;
@@ -317,7 +317,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 }
                 else
                 {
-                    tbl_ClientUsers objclint = _db.tbl_ClientUsers.Where(o => o.ClientRoleId == userid).FirstOrDefault();
+                    tbl_ClientUsers objclint = _db.tbl_ClientUsers.Where(o => o.ClientUserId == userid).FirstOrDefault();
                     objclint.FirstName = objGeneralVM.FirstName;
                     objclint.LastName = objGeneralVM.LastName;
                     objclint.Email = objGeneralVM.Email;
