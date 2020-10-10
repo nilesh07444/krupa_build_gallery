@@ -23,5 +23,6 @@ namespace KrupaBuildGallery.Model
         public string FinancialYear { get; set; }
         public Nullable<long> CreatedBy { get; set; }
         public Nullable<bool> IsAdmin { get; set; }
+        public Nullable<long> FakeStock { get; set; }
     }
 }

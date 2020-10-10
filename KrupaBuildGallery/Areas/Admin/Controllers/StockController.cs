@@ -122,7 +122,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 IEnumerable<ModelError> allErrors = ModelState.Values.SelectMany(v => v.Errors);
                 if (ModelState.IsValid)
                 {
-                    if (itemStockVM.Quantity <= 0)
+                    if (itemStockVM.Quantity < 0)
                     {
                         ModelState.AddModelError("Quantity", ErrorMessage.QtyGreater);
                         return View(itemStockVM);
@@ -131,33 +131,68 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     {
 
                         long LoggedInUserId = Int64.Parse(clsAdminSession.UserID.ToString());
+                        if(itemStockVM.Quantity > 0)
+                        {
+                            tbl_ItemStocks objItemStock = new tbl_ItemStocks();
+                            objItemStock.CategoryId = itemStockVM.CategoryId;
+                            objItemStock.ProductId = itemStockVM.ProductId;
+                            objItemStock.SubProductId = itemStockVM.SubProductId;
+                            objItemStock.ProductItemId = itemStockVM.ProductItemId;
+                            objItemStock.Qty = Convert.ToInt64(itemStockVM.Quantity);
+                            objItemStock.FakeStock = 0;
+                            objItemStock.IsActive = true;
+                            objItemStock.IsDelete = false;
+                            objItemStock.CreatedBy = LoggedInUserId;
+                            objItemStock.CreatedDate = DateTime.UtcNow;
+                            objItemStock.UpdatedBy = LoggedInUserId;
+                            objItemStock.UpdatedDate = DateTime.UtcNow;
+                            _db.tbl_ItemStocks.Add(objItemStock);
 
-                        tbl_ItemStocks objItemStock = new tbl_ItemStocks();
-                        objItemStock.CategoryId = itemStockVM.CategoryId;
-                        objItemStock.ProductId = itemStockVM.ProductId;
-                        objItemStock.SubProductId = itemStockVM.SubProductId;
-                        objItemStock.ProductItemId = itemStockVM.ProductItemId;
-                        objItemStock.Qty = Convert.ToInt64(itemStockVM.Quantity);
+                            tbl_StockReport objstkreport = new tbl_StockReport();
+                            objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
+                            objstkreport.StockDate = DateTime.UtcNow;
+                            objstkreport.Qty = Convert.ToInt64(itemStockVM.Quantity);
+                            objstkreport.IsCredit = true;
+                            objstkreport.FakeStock = 0;
+                            objstkreport.IsAdmin = true;
+                            objstkreport.CreatedBy = LoggedInUserId;
+                            objstkreport.ItemId = itemStockVM.ProductItemId;
+                            objstkreport.Remarks = "Stock Added";
+                            _db.tbl_StockReport.Add(objstkreport);
+                            _db.SaveChanges();
+                        }
 
-                        objItemStock.IsActive = true;
-                        objItemStock.IsDelete = false;
-                        objItemStock.CreatedBy = LoggedInUserId;
-                        objItemStock.CreatedDate = DateTime.UtcNow;
-                        objItemStock.UpdatedBy = LoggedInUserId;
-                        objItemStock.UpdatedDate = DateTime.UtcNow;
-                        _db.tbl_ItemStocks.Add(objItemStock);
+                        if(!string.IsNullOrEmpty(itemStockVM.FakeStock))
+                        {
+                            tbl_ItemStocks objItemStock = new tbl_ItemStocks();
+                            objItemStock.CategoryId = itemStockVM.CategoryId;
+                            objItemStock.ProductId = itemStockVM.ProductId;
+                            objItemStock.SubProductId = itemStockVM.SubProductId;
+                            objItemStock.ProductItemId = itemStockVM.ProductItemId;
+                            objItemStock.Qty = 0;
+                            objItemStock.FakeStock = Convert.ToInt64(itemStockVM.FakeStock);
 
-                        tbl_StockReport objstkreport = new tbl_StockReport();
-                        objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
-                        objstkreport.StockDate = DateTime.UtcNow;
-                        objstkreport.Qty = Convert.ToInt64(itemStockVM.Quantity);
-                        objstkreport.IsCredit = true;
-                        objstkreport.IsAdmin = true;
-                        objstkreport.CreatedBy = LoggedInUserId;
-                        objstkreport.ItemId = itemStockVM.ProductItemId;
-                        objstkreport.Remarks = "Stock Added";
-                        _db.tbl_StockReport.Add(objstkreport);
-                        _db.SaveChanges();
+                            objItemStock.IsActive = true;
+                            objItemStock.IsDelete = false;
+                            objItemStock.CreatedBy = LoggedInUserId;
+                            objItemStock.CreatedDate = DateTime.UtcNow;
+                            objItemStock.UpdatedBy = LoggedInUserId;
+                            objItemStock.UpdatedDate = DateTime.UtcNow;
+                            _db.tbl_ItemStocks.Add(objItemStock);
+
+                            tbl_StockReport objstkreport = new tbl_StockReport();
+                            objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
+                            objstkreport.StockDate = DateTime.UtcNow;
+                            objstkreport.Qty = 0;
+                            objstkreport.IsCredit = false;
+                            objstkreport.IsAdmin = true;
+                            objstkreport.CreatedBy = LoggedInUserId;
+                            objstkreport.ItemId = itemStockVM.ProductItemId;
+                            objstkreport.Remarks = "Fake Stock Added";
+                            objstkreport.FakeStock = Convert.ToInt64(itemStockVM.FakeStock);
+                            _db.tbl_StockReport.Add(objstkreport);
+                            _db.SaveChanges();
+                        }                   
 
                         return RedirectToAction("Index");
 
@@ -441,11 +476,13 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             List<tbl_StockReport> debitstock = _db.tbl_StockReport.Where(o => o.ItemId == ItemId && o.StockDate < dtStart && o.IsCredit == false).ToList();
             decimal TotalCredit = 0;
             decimal TotalDebit = 0;
+            decimal TotalFakeStock = 0;
             TotalCredit = creditstock.Sum(x => x.Qty.HasValue ? x.Qty.Value : 0);
             TotalDebit = debitstock.Sum(x => x.Qty.HasValue ? x.Qty.Value : 0);
+            TotalFakeStock = debitstock.Sum(x => x.FakeStock.HasValue ? x.FakeStock.Value : 0);
             decimal TotalOpening = TotalCredit - TotalDebit;
             StringBuilder sb = new StringBuilder();
-            string[] arrycolmns = new string[] { "Date", "Opening", "Credit", "Debit", "Closing" };
+            string[] arrycolmns = new string[] { "Date", "Opening", "Credit", "Debit","Fake Stock","Closing" };
             var workSheet = excel.Workbook.Worksheets.Add("Report");
             workSheet.Cells[1, 1].Style.Font.Bold = true;
             workSheet.Cells[1, 1].Style.Font.Size = 20;
@@ -477,6 +514,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             {
                 foreach (var objj in lstStockss)
                 {
+                    string Fkstock = "0";
                     workSheet.Cells[row1 + 2, 1].Style.Font.Bold = false;
                     workSheet.Cells[row1 + 2, 1].Style.Font.Size = 12;
                     workSheet.Cells[row1 + 2, 1].Value = objj.StockDate.Value.ToString("dd-MM-yyyy");
@@ -527,6 +565,11 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     {
                         workSheet.Cells[row1 + 2, 4].Value = objj.Qty.Value;
                         OpStock = OpStock - objj.Qty.Value;
+                        if (objj.FakeStock != null && objj.FakeStock > 0)
+                        {
+                            OpStock = OpStock - objj.FakeStock.Value;
+                        }
+                        Fkstock = Convert.ToString(objj.FakeStock);
                     }
                     else
                     {
@@ -543,7 +586,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
                     workSheet.Cells[row1 + 2, 5].Style.Font.Bold = false;
                     workSheet.Cells[row1 + 2, 5].Style.Font.Size = 12;
-                    workSheet.Cells[row1 + 2, 5].Value = OpStock;
+                    workSheet.Cells[row1 + 2, 5].Value = Convert.ToDecimal(Fkstock);
                     workSheet.Cells[row1 + 2, 5].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
                     workSheet.Cells[row1 + 2, 5].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
                     workSheet.Cells[row1 + 2, 5].Style.Border.Top.Style = ExcelBorderStyle.Thin;
@@ -552,6 +595,18 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     workSheet.Cells[row1 + 2, 5].Style.Border.Right.Style = ExcelBorderStyle.Thin;
                     workSheet.Cells[row1 + 2, 5].Style.WrapText = true;
                     workSheet.Cells[row1 + 2, 5].AutoFitColumns(30, 70);
+
+                    workSheet.Cells[row1 + 2, 6].Style.Font.Bold = false;
+                    workSheet.Cells[row1 + 2, 6].Style.Font.Size = 12;
+                    workSheet.Cells[row1 + 2, 6].Value = OpStock;
+                    workSheet.Cells[row1 + 2, 6].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                    workSheet.Cells[row1 + 2, 6].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                    workSheet.Cells[row1 + 2, 6].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 6].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 6].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 6].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 6].Style.WrapText = true;
+                    workSheet.Cells[row1 + 2, 6].AutoFitColumns(30, 70);
                     row1 = row1 + 1;
                 }
             }
@@ -577,11 +632,13 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             List<tbl_StockReport> debitstock = _db.tbl_StockReport.Where(o => o.ItemId == ItemId && o.StockDate < dtStart && o.IsCredit == false).ToList();
             decimal TotalCredit = 0;
             decimal TotalDebit = 0;
+            decimal TotalFakeStock = 0;
             TotalCredit = creditstock.Sum(x => x.Qty.HasValue ? x.Qty.Value : 0);
             TotalDebit = debitstock.Sum(x => x.Qty.HasValue ? x.Qty.Value : 0);
-            decimal TotalOpening = TotalCredit - TotalDebit;
+            TotalFakeStock = debitstock.Sum(x => x.FakeStock.HasValue ? x.FakeStock.Value : 0);
+            decimal TotalOpening = TotalCredit - TotalDebit - TotalFakeStock;
             StringBuilder sb = new StringBuilder();
-            string[] arrycolmns = new string[] { "Date", "Opening", "Credit", "Debit", "Closing" };
+            string[] arrycolmns = new string[] { "Date", "Opening", "Credit", "Debit","Fake Stock","Closing" };
             List<ReportVM> lstReportVm = new List<ReportVM>();
             List<tbl_StockReport> lstStockss = _db.tbl_StockReport.Where(o => o.ItemId == ItemId && o.StockDate >= dtStart && o.StockDate <= dtEnd).OrderBy(x => x.StockDate).ToList();
             decimal OpStock = TotalOpening;
@@ -591,6 +648,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 foreach (var objj in lstStockss)
                 {
                     ReportVM objrp = new ReportVM();
+                    string Fkstock = "0";
                     objrp.Date = objj.StockDate.Value.ToString("dd-MM-yyyy");
                     objrp.Opening = OpStock.ToString();
                     if (objj.IsCredit == true)
@@ -607,12 +665,19 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     {
                         objrp.Debit = objj.Qty.Value.ToString();
                         OpStock = OpStock - objj.Qty.Value;
+                        if(objj.FakeStock != null && objj.FakeStock > 0)
+                        {
+                            OpStock = OpStock - objj.FakeStock.Value;
+                        }
+                        Fkstock = Convert.ToString(objj.FakeStock);
                     }
                     else
                     {
                         objrp.Debit = "";
                     }
+                    
                     objrp.Closing = OpStock.ToString();
+                    objrp.FakeStock = Fkstock;
                     lstReportVm.Add(objrp);
                     row1 = row1 + 1;
                 }

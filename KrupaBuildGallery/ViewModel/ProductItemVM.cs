@@ -126,5 +126,7 @@ namespace KrupaBuildGallery
         public bool IsAssured { get; set; }
 
         public List<ProductItemVM> RelatedItems { get; set; }
+
+        public string FakeStock { get; set; } 
     }
 }

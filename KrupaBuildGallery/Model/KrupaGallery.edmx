@@ -550,6 +550,7 @@
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="UpdatedBy" Type="bigint" />
           <Property Name="UpdatedDate" Type="datetime" />
+          <Property Name="FakeStock" Type="bigint" />
         </EntityType>
         <EntityType Name="tbl_Itemtext_master">
           <Key>
@@ -948,6 +949,7 @@
           <Property Name="FinancialYear" Type="nvarchar" MaxLength="100" />
           <Property Name="CreatedBy" Type="bigint" />
           <Property Name="IsAdmin" Type="bit" />
+          <Property Name="FakeStock" Type="bigint" />
         </EntityType>
         <EntityType Name="tbl_SubProducts">
           <Key>
@@ -1315,6 +1317,7 @@
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="UpdatedBy" Type="Int64" />
           <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
+          <Property Name="FakeStock" Type="Int64" />
         </EntityType>
         <EntityType Name="tbl_Itemtext_master">
           <Key>
@@ -1591,6 +1594,9 @@
           <Parameter Name="ClientUserId" Mode="In" Type="Int32" />
           </FunctionImport>
           <EntitySet Name="tbl_SMSContent" EntityType="krupagalleryModel.tbl_SMSContent" />
+          <FunctionImport Name="sp_GetNotificationList1" ReturnType="Collection(krupagalleryModel.sp_GetNotificationList1_Result)">
+            <Parameter Name="ClientUserId" Mode="In" Type="Int32" />
+          </FunctionImport>
         </EntityContainer>
         <EntityType Name="tbl_AdminRoles">
           <Key>
@@ -1980,6 +1986,7 @@
           <Property Name="FinancialYear" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="CreatedBy" Type="Int64" />
           <Property Name="IsAdmin" Type="Boolean" />
+          <Property Name="FakeStock" Type="Int64" />
         </EntityType>
         <EntityType Name="tbl_ComboOfferMaster">
           <Key>
@@ -2211,6 +2218,14 @@
           <Property Name="SMSDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="SeqNo" Type="Int32" />
         </EntityType>
+        <ComplexType Name="sp_GetNotificationList1_Result">
+          <Property Type="Int64" Name="NotificationId" Nullable="false" />
+          <Property Type="String" Name="NotificationDescription" Nullable="false" MaxLength="1000" />
+          <Property Type="String" Name="NotificationImage" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="NotificationTitle" Nullable="false" MaxLength="100" />
+          <Property Type="DateTime" Name="CreatedDate" Nullable="false" Precision="23" />
+          <Property Type="Int64" Name="IsRead" Nullable="false" />
+        </ComplexType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -2432,6 +2447,7 @@
           <EntitySetMapping Name="tbl_ItemStocks">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_ItemStocks">
               <MappingFragment StoreEntitySet="tbl_ItemStocks">
+                <ScalarProperty Name="FakeStock" ColumnName="FakeStock" />
                 <ScalarProperty Name="StockId" ColumnName="StockId" />
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
                 <ScalarProperty Name="ProductId" ColumnName="ProductId" />
@@ -3033,6 +3049,7 @@
           <EntitySetMapping Name="tbl_StockReport">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_StockReport">
               <MappingFragment StoreEntitySet="tbl_StockReport">
+                <ScalarProperty Name="FakeStock" ColumnName="FakeStock" />
                 <ScalarProperty Name="IsAdmin" ColumnName="IsAdmin" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
                 <ScalarProperty Name="FinancialYear" ColumnName="FinancialYear" />
@@ -3273,18 +3290,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="sp_GetNotificationList" FunctionName="krupagalleryModel.Store.sp_GetNotificationList">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="krupagalleryModel.sp_GetNotificationList_Result">
-                <ScalarProperty Name="NotificationId" ColumnName="NotificationId" />
-                <ScalarProperty Name="NotificationDescription" ColumnName="NotificationDescription" />
-                <ScalarProperty Name="NotificationImage" ColumnName="NotificationImage" />
-                <ScalarProperty Name="NotificationTitle" ColumnName="NotificationTitle" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
           <EntitySetMapping Name="tbl_SMSContent">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_SMSContent">
               <MappingFragment StoreEntitySet="tbl_SMSContent">
@@ -3295,6 +3300,18 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="sp_GetNotificationList1" FunctionName="krupagalleryModel.Store.sp_GetNotificationList">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="krupagalleryModel.sp_GetNotificationList1_Result">
+                <ScalarProperty Name="NotificationId" ColumnName="NotificationId" />
+                <ScalarProperty Name="NotificationDescription" ColumnName="NotificationDescription" />
+                <ScalarProperty Name="NotificationImage" ColumnName="NotificationImage" />
+                <ScalarProperty Name="NotificationTitle" ColumnName="NotificationTitle" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

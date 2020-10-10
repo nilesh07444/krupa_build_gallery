@@ -24,7 +24,7 @@ namespace KrupaBuildGallery
         public long ProductItemId { get; set; }
       
         [Required]
-        [Range(1,int.MaxValue, ErrorMessage = "Quatity must be greater than 0")]
+        [Range(0,int.MaxValue, ErrorMessage = "Quatity must be greater than equal 0")]
         [Display(Name = "Quantity *")]
         public long Quantity { get; set; }
         public bool IsActive { get; set; }
@@ -45,6 +45,7 @@ namespace KrupaBuildGallery
         public string strModifiedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
         public int ItemType { get; set; }
+        public string FakeStock { get; set; }
 
     }
 
