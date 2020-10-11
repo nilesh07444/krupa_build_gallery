@@ -27410,6 +27410,12 @@ h6.dashboardItemName {
         height: 47px;
     }
 }
+
+@media screen and (max-width: 767px) {
+    #samples img {
+        display: inline-block;
+    }
+}
     /* NILESH - Custom CSS End */
 
 

@@ -23,5 +23,6 @@ namespace KrupaBuildGallery.Model
         public Nullable<int> UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDate { get; set; }
         public int SliderType { get; set; }
+        public Nullable<int> ImageFor { get; set; }
     }
 }

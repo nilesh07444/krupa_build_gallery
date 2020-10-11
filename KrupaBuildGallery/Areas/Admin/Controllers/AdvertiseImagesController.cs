@@ -34,7 +34,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                      AdvertiseImageId = c.AdvertiseImageId,
                                      ImageUrl = c.AdvertiseImage, 
                                      IsActive = c.IsActive,
-                                     SliderType = c.SliderType
+                                     SliderType = c.SliderType,
+                                     ImageFor = c.ImageFor
                                  }).OrderByDescending(x => x.AdvertiseImageId).ToList();
 
             }
@@ -50,6 +51,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         {
             AdvertiseImageVM AdvertiseImageVM = new AdvertiseImageVM();
             AdvertiseImageVM.SliderTypeList = GetSliderTypeList();
+            AdvertiseImageVM.AdvertiseImageForList = GetAdvertiseImageFor();
             return View(AdvertiseImageVM);
         }
 
@@ -94,7 +96,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         return View(AdvertiseImageVM);
                     }
 
-                    tbl_AdvertiseImages objAdvertise = new tbl_AdvertiseImages(); 
+                    tbl_AdvertiseImages objAdvertise = new tbl_AdvertiseImages();
+                    objAdvertise.ImageFor = AdvertiseImageVM.ImageFor;
                     objAdvertise.AdvertiseImage = fileName;
                     objAdvertise.IsActive = true;
                     objAdvertise.SliderType = AdvertiseImageVM.SliderType;
@@ -124,7 +127,6 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             try
             {
-                 
                 objAdvertise = (from c in _db.tbl_AdvertiseImages
                            where c.AdvertiseImageId == Id
                            select new AdvertiseImageVM
@@ -132,11 +134,12 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                AdvertiseImageId = c.AdvertiseImageId,
                                ImageUrl = c.AdvertiseImage,
                                IsActive = c.IsActive ,
-                               SliderType = c.SliderType
+                               SliderType = c.SliderType,
+                               ImageFor = c.ImageFor
                            }).FirstOrDefault();
 
                 objAdvertise.SliderTypeList = GetSliderTypeList();
-
+                objAdvertise.AdvertiseImageForList = GetAdvertiseImageFor();
             }
             catch (Exception ex)
             {
@@ -167,6 +170,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         if (ext.ToUpper().Trim() != ".JPG" && ext.ToUpper() != ".PNG" && ext.ToUpper() != ".GIF" && ext.ToUpper() != ".JPEG" && ext.ToUpper() != ".BMP")
                         {
                             AdvertiseImageVM.SliderTypeList = GetSliderTypeList();
+                            AdvertiseImageVM.AdvertiseImageForList = GetAdvertiseImageFor();
 
                             ModelState.AddModelError("AdvertiseImageFile", ErrorMessage.SelectOnlyImage);
                             return View(AdvertiseImageVM);
@@ -182,6 +186,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     }
 
                     objAdvertise.AdvertiseImage = fileName;
+                    objAdvertise.ImageFor = AdvertiseImageVM.ImageFor;
                     objAdvertise.SliderType = AdvertiseImageVM.SliderType;
                     objAdvertise.UpdatedBy = LoggedInUserId;
                     objAdvertise.UpdatedDate = DateTime.UtcNow;
@@ -271,6 +276,16 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             lst.Add(new SelectListItem { Value = "2", Text = "Slider 2" });
             lst.Add(new SelectListItem { Value = "3", Text = "Slider 3" });
+
+            return lst;
+        }
+
+        private List<SelectListItem> GetAdvertiseImageFor()
+        {
+            List<SelectListItem> lst = new List<SelectListItem>();
+
+            lst.Add(new SelectListItem { Value = "1", Text = "Website" });
+            lst.Add(new SelectListItem { Value = "2", Text = "Mobile App" });
 
             return lst;
         }

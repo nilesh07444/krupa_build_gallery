@@ -79,6 +79,7 @@
           </Key>
           <Property Name="AdvertiseImageId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="AdvertiseImage" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="ImageFor" Type="int" />
           <Property Name="SliderType" Type="int" Nullable="false" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
           <Property Name="IsDeleted" Type="bit" Nullable="false" />
@@ -1595,7 +1596,7 @@
           </FunctionImport>
           <EntitySet Name="tbl_SMSContent" EntityType="krupagalleryModel.tbl_SMSContent" />
           <FunctionImport Name="sp_GetNotificationList1" ReturnType="Collection(krupagalleryModel.sp_GetNotificationList1_Result)">
-            <Parameter Name="ClientUserId" Mode="In" Type="Int32" />
+          <Parameter Name="ClientUserId" Mode="In" Type="Int32" />
           </FunctionImport>
         </EntityContainer>
         <EntityType Name="tbl_AdminRoles">
@@ -1836,6 +1837,7 @@
           <Property Name="UpdatedBy" Type="Int32" />
           <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
           <Property Name="SliderType" Type="Int32" Nullable="false" />
+          <Property Name="ImageFor" Type="Int32" />
         </EntityType>
         <EntityType Name="tbl_SecondCart">
           <Key>
@@ -2890,6 +2892,7 @@
           <EntitySetMapping Name="tbl_AdvertiseImages">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_AdvertiseImages">
               <MappingFragment StoreEntitySet="tbl_AdvertiseImages">
+                <ScalarProperty Name="ImageFor" ColumnName="ImageFor" />
                 <ScalarProperty Name="SliderType" ColumnName="SliderType" />
                 <ScalarProperty Name="UpdatedDate" ColumnName="UpdatedDate" />
                 <ScalarProperty Name="UpdatedBy" ColumnName="UpdatedBy" />
