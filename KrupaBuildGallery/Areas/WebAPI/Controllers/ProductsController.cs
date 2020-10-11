@@ -575,8 +575,9 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                       {
                                           SliderType = c.SliderType,
                                           AdvertiseImageId = c.AdvertiseImageId,
-                                          ImageUrl = c.AdvertiseImage
-                                      }).OrderByDescending(x => x.AdvertiseImageId).ToList();
+                                          ImageUrl = c.AdvertiseImage,
+                                          ImageFor = c.ImageFor
+                                      }).Where(x => x.ImageFor == 2).OrderByDescending(x => x.AdvertiseImageId).ToList();
 
                 lstComboOffers = (from i in _db.tbl_ComboOfferMaster
                                   where i.IsActive == true && DateTime.UtcNow >= i.OfferStartDate && DateTime.UtcNow <= i.OfferEndDate && i.IsDeleted == false
