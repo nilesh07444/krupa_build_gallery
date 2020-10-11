@@ -10,19 +10,14 @@
 namespace KrupaBuildGallery.Model
 {
     using System;
-    using System.Collections.Generic;
     
-    public partial class tbl_AdvertiseImages
+    public partial class sp_GetNotificationList1_Result
     {
-        public int AdvertiseImageId { get; set; }
-        public string AdvertiseImage { get; set; }
-        public bool IsActive { get; set; }
-        public bool IsDeleted { get; set; }
-        public int CreatedBy { get; set; }
+        public long NotificationId { get; set; }
+        public string NotificationDescription { get; set; }
+        public string NotificationImage { get; set; }
+        public string NotificationTitle { get; set; }
         public System.DateTime CreatedDate { get; set; }
-        public Nullable<int> UpdatedBy { get; set; }
-        public Nullable<System.DateTime> UpdatedDate { get; set; }
-        public int SliderType { get; set; }
-        public Nullable<int> ImageFor { get; set; }
+        public long IsRead { get; set; }
     }
 }

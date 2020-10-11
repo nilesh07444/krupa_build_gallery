@@ -64,6 +64,7 @@
                         <tr>
                             <th width="10%;">#</th>
                             <th width="15%;">Advertise Image</th>
+                            <th width="10%;">Image For</th>
                             <th width="15%;">Slider Type</th>
                             <th width="15%;">Active</th>
                             <th width="15%;">Action</th>
@@ -95,6 +96,7 @@
                                         }
 
                                     </td>
+                                    <td>@(obj.ImageFor == 1 ? "Website" : "Mobile App")</td>
                                     <td>@(obj.SliderType == 3 ? "Slider 3" : "Slider 2")</td>
                                     @if (obj.IsActive == true)
                                     {

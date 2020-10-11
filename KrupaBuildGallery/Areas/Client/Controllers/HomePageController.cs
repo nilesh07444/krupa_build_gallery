@@ -20,8 +20,9 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         }
         public ActionResult Index()
         {
+
             //string randomReferralCode = CommonMethod.GetRandomReferralCode(8);
-             
+
             //EmailMessageVM emailModel = clsCommon.GetSampleEmailTemplate();
             //clsCommon.SendEmail2(emailModel);
             //clsCommon.SendEmail("prajapati.nileshbhai@gmail.com", "admin@shopping-saving.com", "Test Email", emailModel.Body);
@@ -164,6 +165,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             objStatistics.TotalCustomers = ClientUserData.Where(x => x.ClientRoleId == (int)ClientRoles.Customer).ToList().Count;
             objStatistics.TotalDistributers = ClientUserData.Where(x => x.ClientRoleId == (int)ClientRoles.Distributor).ToList().Count;
             objStatistics.TotalHappyCustomers = _db.tbl_HappyCustomers.Where(x => !x.IsDelete && x.IsActive).ToList().Count;
+            objStatistics.TotalItems = _db.tbl_ProductItems.Where(x => !x.IsDelete && x.IsActive).ToList().Count;
             objStatistics.TotalSiteVisitors = 500;
 
             // Get Advertise Images
@@ -173,8 +175,9 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                   {
                                       AdvertiseImageId = c.AdvertiseImageId,
                                       SliderType = c.SliderType,
-                                      ImageUrl = c.AdvertiseImage
-                                  }).OrderByDescending(x => x.AdvertiseImageId).ToList();
+                                      ImageUrl = c.AdvertiseImage,
+                                      ImageFor = c.ImageFor
+                                  }).Where(x => x.ImageFor == 1).OrderByDescending(x => x.AdvertiseImageId).ToList();
 
             lstComboOffers = (from i in _db.tbl_ComboOfferMaster
                               where i.IsActive == true && DateTime.UtcNow >= i.OfferStartDate && DateTime.UtcNow <= i.OfferEndDate && i.IsDeleted == false

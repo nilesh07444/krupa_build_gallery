@@ -10,7 +10,7 @@ namespace KrupaBuildGallery
     public class HomeImageVM
     {
         public int HomeImageId { get; set; }
-        [Display(Name = "Home Image For")]
+        [Required, Display(Name = "Home Image For")]
         public int? HomeImageFor { get; set; }
         public string HomeImageName { get; set; }
         [Display(Name = "Heading Text 1")]
@@ -28,8 +28,9 @@ namespace KrupaBuildGallery
 
     public class AdvertiseImageVM
     {
-        public int AdvertiseImageId { get; set; } 
-        
+        public int AdvertiseImageId { get; set; }
+        [Required, Display(Name = "Advertise Image For")]
+        public int? ImageFor { get; set; }
         [Display(Name = "Advertise Image")]
         public HttpPostedFileBase AdvertiseImageFile { get; set; }
 
@@ -39,5 +40,6 @@ namespace KrupaBuildGallery
         [Display(Name = "Slider Type")]
         public int SliderType { get; set; }
         public List<SelectListItem> SliderTypeList { get; set; }
+        public List<SelectListItem> AdvertiseImageForList { get; set; }
     }
 }
