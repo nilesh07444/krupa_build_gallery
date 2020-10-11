@@ -104,13 +104,13 @@
                     }
 
                 }
-            <td>
-                <input type="file" id="variantimg_@objj.VariantItemId" name="variantimg_@objj.VariantItemId" style="width:150px;" />
-                @if (!string.IsNullOrEmpty(objj.VariantImg))
-                {
-                    <a href="~/Images/VariantMedia/@objj.VariantImg" target="_blank" style="color:blue;">View</a>
-                }
-            </td>
+                <td>
+                    <input type="file" id="variantimg_@objj.VariantItemId" name="variantimg_@objj.VariantItemId" style="width:150px;" />
+                    @if (!string.IsNullOrEmpty(objj.VariantImg))
+                    {
+                        <a href="~/Images/VariantMedia/@objj.VariantImg" target="_blank" style="color:blue;">View</a>
+                    }
+                </td>
             </tr>
         }
 
@@ -189,9 +189,10 @@ else if (strunittp.Contains("piece"))
         }
     </table>
     <div class="col-xl-3 col-md-3"></div>
+    <a href="javascript:void(0);" class="col-xl-3 col-md-3" style="width:200px;margin-top:15px;" onclick="AddNewVarint();">Add New</a>
     if (ProdItemId == 0)
     {
-        <a href="javascript:void(0);" class="col-xl-3 col-md-3" style="width:200px;margin-top:15px;" onclick="AddNewVarint();">Add New</a>
+
     }
 
 }
@@ -202,7 +203,7 @@ else if (strunittp.Contains("piece"))
         cntvr = cntvr + 1;
         var htmls = '<tr id="tr_' + cntvr + '"><td><input style="width:50px;" type="checkbox" name="chkvariant_' + cntvr + '" /></td>' +
             '<td style="width:200px;"><input type="text" value="" name="variantnm_' + cntvr + '" id="variantnm_' + cntvr + '" /></td>' +
-            '<td><input type="number" id="variantmrpprice_' + cntvr + '" style="width:100px;" data-itmmid="'+cntvr+'" placeholder="" name="variantmrpprice_' + cntvr + '" value="0" /></td>' +
+            '<td><input type="number" id="variantmrpprice_' + cntvr + '" style="width:100px;" data-itmmid="' + cntvr + '" placeholder="" name="variantmrpprice_' + cntvr + '" value="0" /></td>' +
             '<td><input type="number" id="variantcustprice_' + cntvr + '" style="width:100px;" placeholder="" name="variantcustprice_' + cntvr + '" value="0" /></td>' +
             '<td><input type="number" id="variantdistriprice_' + cntvr + '" style="width:100px;" placeholder="" name="variantdistriprice_' + cntvr + '" value="0" /></td>' +
             '<td><input type="file" id="variantimg_' + cntvr + '" name="variantimg_' + cntvr + '" /></td>' +
@@ -267,7 +268,7 @@ else if (strunittp.Contains("piece"))
                         $("#variantpice_" + idv).val(vll);
                     }
                 }
-               
+
             });
         }
     });
