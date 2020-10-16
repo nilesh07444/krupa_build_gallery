@@ -102,6 +102,7 @@
                                         <td>
                                             <a href="/admin/order/detail/@objorder.OrderId"><i class="fa fa-eye font-success"></i></a>
                                             <a href="javascript:void(0);" onclick="invoiceprint('@objorder.OrderId');" title="Print Invoice"><i class="fa fa-file font-success"></i></a>
+                                            <a href="/admin/order/downloadAddress?OrderId=@objorder.OrderId" target="_blank" title="Dowload Address"><i class="fa fa-address-book font-success"></i></a>
                                             <a href="javascript:void(0);" onclick="fnDeleteOrder('@objorder.OrderId')" style="display:none;"><i class="fa fa-trash font-danger"></i></a>
                                         </td>
                                     </tr>

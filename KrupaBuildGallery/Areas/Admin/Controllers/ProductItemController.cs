@@ -716,12 +716,24 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             }
                             else if (objUnt.UnitName.ToLower().Contains("piece"))
                             {
-                                List<tbl_ItemVariant> lstItmvrnt = _db.tbl_ItemVariant.Where(o => o.ProductItemId == objProductItem.ProductItemId).ToList();
+                                List<long> lstTemp = new List<long>();
                                 string[] arryvrntid = Convert.ToString(frm["hdnvrtn"]).Split(',');
+                                lstTemp = Array.ConvertAll<string, long>(arryvrntid, long.Parse).ToList();
+
+                                List<tbl_ItemVariant> lstItmvrnt = _db.tbl_ItemVariant.Where(o => o.ProductItemId == objProductItem.ProductItemId && lstTemp.Contains(o.VariantItemId) && (o.IsDeleted == null || o.IsDeleted == false)).ToList();
+                                List<tbl_ItemVariant> lstItmvrntOld = _db.tbl_ItemVariant.Where(o => o.ProductItemId == objProductItem.ProductItemId && !lstTemp.Contains(o.VariantItemId) && (o.IsDeleted == null || o.IsDeleted == false)).ToList();
+                                if(lstItmvrntOld != null && lstItmvrntOld.Count() > 0)
+                                {
+                                    foreach(tbl_ItemVariant objv in lstItmvrntOld)
+                                    {
+                                        objv.IsDeleted = true;
+                                    }
+                                }
+
                                 for (int kk = 0; kk < arryvrntid.Length; kk++)
                                 {
-                                    long varitItmid = Convert.ToInt64(arryvrntid[kk]);
-                                    tbl_ItemVariant objtbl_ItemVariant = lstItmvrnt.Where(o => o.VariantItemId == varitItmid).FirstOrDefault();
+                                    long varitItmid = Convert.ToInt64(arryvrntid[kk]);                                 
+                                    tbl_ItemVariant objtbl_ItemVariant = lstItmvrnt.Where(o => o.VariantItemId == varitItmid && o.ProductItemId == objProductItem.ProductItemId).FirstOrDefault();
                                     if (objtbl_ItemVariant != null)
                                     {
                                         HttpPostedFileBase fileUpload = Request.Files.Get("variantimg_" + arryvrntid[kk]);
@@ -746,6 +758,35 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                         {
                                             objtbl_ItemVariant.VariantImage = strvaritnimg1;
                                         }
+                                    }
+                                    else
+                                    {
+                                        tbl_ItemVariant objtbl_ItemVariant1 = new tbl_ItemVariant();
+                                        HttpPostedFileBase fileUpload = Request.Files.Get("variantimg_" + arryvrntid[kk]);
+                                        string strvaritnimg1 = "";
+                                        if (fileUpload != null && fileUpload.ContentLength > 0)
+                                        {
+                                            strvaritnimg1 = Guid.NewGuid() + "-" + Path.GetFileName(fileUpload.FileName);
+                                            fileUpload.SaveAs(variantpathImg + strvaritnimg1);
+                                        }
+                                        objtbl_ItemVariant1.ProductItemId = objProductItem.ProductItemId;
+                                        objtbl_ItemVariant1.IsActive = false;
+                                        objtbl_ItemVariant1.IsDeleted = false;
+                                        if (Request.Form["chkvariant_" + arryvrntid[kk]] != null)
+                                        {
+                                            objtbl_ItemVariant1.IsActive = true;
+                                        }
+                                        objtbl_ItemVariant1.UnitQty = frm["variantnm_" + arryvrntid[kk]].ToString();
+                                        objtbl_ItemVariant1.CustomerPrice = Math.Round(Convert.ToDecimal(frm["variantcustprice_" + arryvrntid[kk]].ToString()), 2);
+                                        objtbl_ItemVariant1.DistributorPrice = Math.Round(Convert.ToDecimal(frm["variantdistriprice_" + arryvrntid[kk]].ToString()), 2);
+                                        objtbl_ItemVariant1.MRPPrice = Math.Round(Convert.ToDecimal(frm["variantmrpprice_" + arryvrntid[kk]].ToString()), 2);
+                                        objtbl_ItemVariant1.PricePecentage = 100;
+                                        objtbl_ItemVariant1.CreatedDate = DateTime.UtcNow;
+                                        if (!string.IsNullOrEmpty(strvaritnimg1))
+                                        {
+                                            objtbl_ItemVariant1.VariantImage = strvaritnimg1;
+                                        }
+                                        _db.tbl_ItemVariant.Add(objtbl_ItemVariant1);
                                     }
                                 }
                                 _db.SaveChanges();
@@ -1135,7 +1176,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             }
             else
             {
-                var lstItmVarints = _db.tbl_ItemVariant.Where(o => o.ProductItemId == ProductItemId).ToList();
+                var lstItmVarints = _db.tbl_ItemVariant.Where(o => o.ProductItemId == ProductItemId && (o.IsDeleted == null || o.IsDeleted == false)).ToList();
                 List<VariantItemVM> lstVarintss = new List<VariantItemVM>();
                 if (lstItmVarints != null && lstItmVarints.Count() > 0 && (obj.UnitName.ToLower().Contains("killo") || obj.UnitName.ToLower().Contains("litr") || obj.UnitName.ToLower().Contains("sheet") || obj.UnitName.ToLower().Contains("piece")))
                 {
@@ -1420,6 +1461,50 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return ReturnMessage;
         }
 
+        public ActionResult MinimumStockReport()
+        {
+            List<ProductItemVM> lstProductItem = new List<ProductItemVM>();
 
+            try
+            {              
+                lstProductItem = (from i in _db.tbl_ProductItems
+                                  join c in _db.tbl_Categories on i.CategoryId equals c.CategoryId
+                                  join p in _db.tbl_Products on i.ProductId equals p.Product_Id
+                                  join s in _db.tbl_SubProducts on i.SubProductId equals s.SubProductId into outerJoinSubProduct
+                                  from s in outerJoinSubProduct.DefaultIfEmpty()
+                                  where !i.IsDelete && !c.IsDelete && !p.IsDelete  && i.IsActive == true
+                                  select new ProductItemVM
+                                  {
+                                      ProductItemId = i.ProductItemId,
+                                      CategoryId = c.CategoryId,
+                                      ProductId = i.ProductId,
+                                      SubProductId = i.SubProductId,
+                                      ItemName = i.ItemName,
+                                      CategoryName = c.CategoryName,
+                                      ProductName = p.ProductName,
+                                      SubProductName = s.SubProductName,
+                                      MainImage = i.MainImage,
+                                      MinimumQty = i.MinimumStock.HasValue ? i.MinimumStock.Value : 0,
+                                      MRPPrice = i.MRPPrice,
+                                      CustomerPrice = i.CustomerPrice,
+                                      DistributorPrice = i.DistributorPrice,
+                                      IsActive = i.IsActive
+                                  }).OrderByDescending(x => x.ProductItemId).ToList();
+                if (lstProductItem != null && lstProductItem.Count() > 0)
+                {
+                    lstProductItem.ForEach(x => { x.Sold = SoldItems(x.ProductItemId); x.InStock = ItemStock(x.ProductItemId) - x.Sold; });
+                }
+
+                lstProductItem = lstProductItem.Where(o => o.InStock <= o.MinimumQty).ToList().OrderBy(x => x.InStock).ToList();
+
+                ViewData["lstProductItem"] = lstProductItem;
+            }
+            catch (Exception ex)
+            {
+                string ErrorMessage = ex.Message.ToString();
+            }
+
+            return View();
+        }
     }
 }

@@ -1,0 +1,133 @@
+﻿@using KrupaBuildGallery.Helper;
+@using Newtonsoft.Json;
+@using KrupaBuildGallery.Model;
+@{
+    ViewBag.Title = "Minimum Stock Report";
+    int counter = 1;
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    List<ProductItemVM> lstItems = ViewData["lstProductItem"] as List<ProductItemVM>;
+}
+
+@{
+    UserPermissionVM objPermission = new UserPermissionVM();
+
+    int RoleId = Int32.Parse(clsAdminSession.RoleID.ToString());
+
+    if (RoleId != 1)
+    {
+        string strPermission = clsAdminSession.UserPermission;
+        objPermission = JsonConvert.DeserializeObject<UserPermissionVM>(strPermission, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+    }
+    bool IsSA = (RoleId == 1 ? true : false);  
+}
+<style>
+</style>
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="page-header-left">
+                        <h3>
+                            Minimum Stock Report
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item active">Minimum Stock Report</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h5>Minimum Stock Report List</h5>
+            </div>
+            <div class="card-body vendor-table">
+                <table class="display" id="basic-19">
+                    <thead>
+                        <tr>
+                            <th><input type="checkbox" id="mass_select_all" data-to-table="tasks" /></th>
+                            <th>#</th>
+                            <th width="10%;">Image</th>
+                            <th>Category</th>
+                            <th>Product</th>
+                            <th>Sub Product</th>
+                            <th>Item Name</th>
+                            <th>MRP Price</th>
+                            <th>Customer Price</th>
+                            <th>Dist. Price</th>
+                            <th>In Stock</th>
+                            <th>Minimum Stock</th>                                                       
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @if (lstItems != null && lstItems.Count > 0)
+                        {
+                            foreach (ProductItemVM item in lstItems)
+                            {
+                                <tr class="gradeX">
+                                    <td><input type="checkbox" class="chkitm" data-id="@item.ProductItemId" /></td>
+                                    <td>@counter.</td>
+                                    <td>
+                                        @if (!string.IsNullOrEmpty(item.MainImage))
+                                        {
+                                            if (File.Exists(Server.MapPath("~/Images/ProductItemMedia/" + item.MainImage)))
+                                            {
+                                                <img src="~/Images/ProductItemMedia/@item.MainImage" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                            }
+                                            else
+                                            {
+                                                <img src="@ErrorMessage.DefaultImagePath" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <img src="@ErrorMessage.DefaultImagePath" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height: 40px;" />
+                                        }
+
+                                    </td>
+                                    <td>@item.CategoryName</td>
+                                    <td>@item.ProductName</td>
+                                    <td>@item.SubProductName</td>
+                                    <td>@item.ItemName</td>
+                                    <td>@item.MRPPrice</td>
+                                    <td>@item.CustomerPrice</td>
+                                    <td>@item.DistributorPrice</td>
+                                    <td>@item.InStock</td>
+                                    <td>@item.MinimumQty</td>                                  
+                                </tr>
+                                counter++;
+                            }
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#basic-19').DataTable({
+            "pageLength": 100,
+            "columnDefs": [{
+                "targets": [0, 1],
+                "orderable": false
+            }]
+        });
+    });
+
+</script>

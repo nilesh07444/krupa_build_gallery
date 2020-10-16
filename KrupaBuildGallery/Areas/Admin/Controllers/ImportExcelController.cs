@@ -1680,5 +1680,40 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         //{
         //    return 
         //}
+
+        public void TempAddDataInVariant()
+        {
+            List<tbl_ProductItems> lstItmms = _db.tbl_ProductItems.ToList();
+            foreach(var objItm in lstItmms)
+            {
+                if(objItm != null)
+                {
+                    long ProdItemId = objItm.ProductItemId;
+                    tbl_ItemVariant objVrtn = _db.tbl_ItemVariant.Where(o => o.ProductItemId == ProdItemId).FirstOrDefault();
+                    if(objVrtn == null)
+                    {
+                        if(objItm.UnitType != 5 && objItm.UnitType != 7 && objItm.UnitType != 6 && objItm.UnitType != 15)
+                        {
+                            var objUnit = _db.tbl_Units.Where(o => o.UnitId == objItm.UnitType).FirstOrDefault();
+                            if (objUnit != null)
+                            {
+                                
+                                tbl_ItemVariant objtbl_ItemVariant = new tbl_ItemVariant();
+                                objtbl_ItemVariant.ProductItemId = objItm.ProductItemId;
+                                objtbl_ItemVariant.IsActive = true;
+                                objtbl_ItemVariant.UnitQty = objUnit.UnitName;
+                                objtbl_ItemVariant.CustomerPrice = Math.Round(objItm.CustomerPrice, 2);
+                                objtbl_ItemVariant.DistributorPrice = Math.Round(objItm.DistributorPrice, 2);
+                                objtbl_ItemVariant.PricePecentage = 100;
+                                objtbl_ItemVariant.CreatedDate = DateTime.UtcNow;
+                                _db.tbl_ItemVariant.Add(objtbl_ItemVariant);
+                                _db.SaveChanges();
+                            }
+                        }                   
+                        
+                    }
+                }
+            }
+        }
     }
 }

@@ -4156,6 +4156,7 @@
     <Content Include="Areas\Client\Views\Orders\_ShippingPayment.cshtml" />
     <Content Include="Areas\Client\Views\Notification\Index.cshtml" />
     <Content Include="Areas\Client\Views\Notification\NotificationDetails.cshtml" />
+    <Content Include="Areas\Admin\Views\ProductItem\MinimumStockReport.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />

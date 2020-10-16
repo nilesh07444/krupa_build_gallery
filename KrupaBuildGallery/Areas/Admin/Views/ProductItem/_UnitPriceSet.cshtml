@@ -3,6 +3,7 @@
     string strunittp = Convert.ToString(ViewBag.UntTyp);
     strunittp = strunittp.ToLower();
     int ProdItemId = Convert.ToInt32(ViewBag.ProductItemId);
+    long LastVrintId = 1;
 }
 <style>
     input:focus {
@@ -151,33 +152,34 @@ else if (strunittp.Contains("piece"))
         {
             foreach (var objj in lstVarint)
             {
+                LastVrintId = objj.VariantItemId;
                 string chk = "";
                 if (objj.IsActive == true)
                 {
                     chk = "checked";
                 }
-                <tr>
-                    <td><input class="" @chk style="width:50px;" type="checkbox" name="chkvariant_@objj.VariantItemId" /></td>
-                    <td style="width:200px;"><input type="text" value="@objj.UnitQtyText" name="variantnm_@objj.VariantItemId" id="variantnm_@objj.VariantItemId" /></td>
-                    <td><input type="number" id="variantmrpprice_@objj.VariantItemId" data-itmmid="@objj.VariantItemId" style="width:100px;" placeholder="" name="variantmrpprice_@objj.VariantItemId" value="@objj.MRPPrice" /></td>
-                    <td><input type="number" id="variantcustprice_@objj.VariantItemId" style="width:100px;" placeholder="" name="variantcustprice_@objj.VariantItemId" value="@objj.CustomerPrice" /></td>
-                    <td><input type="number" id="variantdistriprice_@objj.VariantItemId" style="width:100px;" placeholder="" name="variantdistriprice_@objj.VariantItemId" value="@objj.DistributorPrice" /></td>
-                    <td>
-                        <input type="file" id="variantimg_@objj.VariantItemId" name="variantimg_@objj.VariantItemId" />
-                        @if (!string.IsNullOrEmpty(objj.VariantImg))
-                        {
-                            <a href="~/Images/VariantMedia/@objj.VariantImg" target="_blank" style="color:blue;">View</a>
-                        }
-                        <input type="hidden" name="hdnvrtn" value="@objj.VariantItemId" />
-                    </td>
-
-                </tr>
+    <tr id="tr_@objj.VariantItemId">
+        <td><input class="chkkk" @chk style="width:50px;" type="checkbox" name="chkvariant_@objj.VariantItemId" /></td>
+        <td style="width:200px;"><input type="text" value="@objj.UnitQtyText" name="variantnm_@objj.VariantItemId" id="variantnm_@objj.VariantItemId" /></td>
+        <td><input type="number" id="variantmrpprice_@objj.VariantItemId" data-itmmid="@objj.VariantItemId" style="width:100px;" placeholder="" name="variantmrpprice_@objj.VariantItemId" value="@objj.MRPPrice" /></td>
+        <td><input type="number" id="variantcustprice_@objj.VariantItemId" style="width:100px;" placeholder="" name="variantcustprice_@objj.VariantItemId" value="@objj.CustomerPrice" /></td>
+        <td><input type="number" id="variantdistriprice_@objj.VariantItemId" style="width:100px;" placeholder="" name="variantdistriprice_@objj.VariantItemId" value="@objj.DistributorPrice" /></td>
+        <td>
+            <input type="file" id="variantimg_@objj.VariantItemId" name="variantimg_@objj.VariantItemId" />
+            @if (!string.IsNullOrEmpty(objj.VariantImg))
+            {
+                <a href="~/Images/VariantMedia/@objj.VariantImg" target="_blank" style="color:blue;">View</a>
+            }
+            <input type="hidden" name="hdnvrtn" value="@objj.VariantItemId" />
+        </td>
+        <td><a href="javascipt:void(0)" style="color:red" title="Remove" onclick="removeitmm('@objj.VariantItemId');"><i class="fa fa-trash font-danger"></i></a></td>
+    </tr>
             }
         }
         else
         {
             <tr>
-                <td><input class="" style="width:50px;" type="checkbox" name="chkvariant_1" /></td>
+                <td><input class="chkkk" style="width:50px;" type="checkbox" name="chkvariant_1" /></td>
                 <td style="width:200px;"><input type="text" value="" name="variantnm_1" id="variantnm_1" /></td>
                 <td><input type="number" id="variantmrpprice_1" style="width:100px;" data-itmmid="1" placeholder="" name="variantmrpprice_1" value="0" /></td>
                 <td><input type="number" id="variantcustprice_1" style="width:100px;" placeholder="" name="variantcustprice_1" value="0" /></td>
@@ -198,10 +200,10 @@ else if (strunittp.Contains("piece"))
 }
 
 <script>
-    var cntvr = 1;
+    var cntvr = parseInt('@LastVrintId');
     function AddNewVarint() {
         cntvr = cntvr + 1;
-        var htmls = '<tr id="tr_' + cntvr + '"><td><input style="width:50px;" type="checkbox" name="chkvariant_' + cntvr + '" /></td>' +
+        var htmls = '<tr id="tr_' + cntvr + '"><td><input style="width:50px;" class="chkkk" type="checkbox" name="chkvariant_' + cntvr + '" /></td>' +
             '<td style="width:200px;"><input type="text" value="" name="variantnm_' + cntvr + '" id="variantnm_' + cntvr + '" /></td>' +
             '<td><input type="number" id="variantmrpprice_' + cntvr + '" style="width:100px;" data-itmmid="' + cntvr + '" placeholder="" name="variantmrpprice_' + cntvr + '" value="0" /></td>' +
             '<td><input type="number" id="variantcustprice_' + cntvr + '" style="width:100px;" placeholder="" name="variantcustprice_' + cntvr + '" value="0" /></td>' +
@@ -213,7 +215,12 @@ else if (strunittp.Contains("piece"))
         $("#tblvaritn").append(htmls);
     }
     function removeitmm(id) {
-        $("#tr_" + id).remove();
+        if ($(".chkkk").length == 1) {
+            alert("Minimum 1 Varint Required");
+        }
+        else {
+            $("#tr_" + id).remove();
+        }
     }
 
     function calprcfromperc(idss, vrianttxt) {

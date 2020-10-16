@@ -14,6 +14,7 @@ using System.Text;
 using OfficeOpenXml.Style;
 using System.IO;
 using System.Drawing;
+using HiQPdf;
 
 namespace KrupaBuildGallery.Areas.Admin.Controllers
 {
@@ -2860,6 +2861,40 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         public string DateStringFromUtc(DateTime dt)
         {
             return CommonMethod.ConvertFromUTCOnlyDate(dt);
+        }
+
+       
+        public ActionResult DownloadAddress(long OrderId)
+        {
+            // get the HTML code of this view
+            string file = Server.MapPath("~/templates/address.html");
+            string htmldata = "";
+            StreamReader sr;
+            FileInfo fi = new FileInfo(file);
+            sr = System.IO.File.OpenText(file);
+            htmldata += sr.ReadToEnd();
+
+            var objOrder =  _db.tbl_Orders.Where(o => o.OrderId == OrderId).FirstOrDefault();
+            if(objOrder != null)
+            {
+                string gstnoo = "";
+                if(!string.IsNullOrEmpty(objOrder.GSTNo))
+                {
+                    gstnoo = "GST NO." + objOrder.GSTNo;
+                }
+                htmldata = htmldata.Replace("--CUSTNAME--", objOrder.OrderShipClientName).Replace("--ADDRESS--", objOrder.OrderShipAddress).Replace("--CITYPINCODE--", objOrder.OrderShipCity + "-" + objOrder.OrderShipPincode).Replace("--STATE--", objOrder.OrderShipState).Replace("--EMAIL--", "").Replace("--MOBILE--", objOrder.OrderShipClientPhone).Replace("--GSTNO--", gstnoo);
+            }
+
+            // instantiate the HiQPdf HTML to PDF converter
+            HtmlToPdf htmlToPdfConverter = new HtmlToPdf();
+            // render the HTML code as PDF in memory
+            byte[] pdfBuffer = htmlToPdfConverter.ConvertHtmlToMemory(htmldata,"");
+
+            // send the PDF file to browser
+            FileResult fileResult = new FileContentResult(pdfBuffer, "application/pdf");
+            fileResult.FileDownloadName = "Order No."+ objOrder.OrderId+"Address.pdf";
+
+            return fileResult;
         }
     }
 }

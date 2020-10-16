@@ -322,7 +322,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 string[] sheetsqty = { "32", "28", "21", "24", "18" };
                 if (objUnt != null)
                 {
-                    lstVarint = _db.tbl_ItemVariant.Where(o => o.ProductItemId == objProductItem.ProductItemId && o.IsActive == true).ToList();
+                    lstVarint = _db.tbl_ItemVariant.Where(o => o.ProductItemId == objProductItem.ProductItemId && o.IsActive == true && (o.IsDeleted == null || o.IsDeleted == false)).ToList();
                     if (lstVarint != null && lstVarint.Count() > 0)
                     {
                         foreach (tbl_ItemVariant objvv in lstVarint)
