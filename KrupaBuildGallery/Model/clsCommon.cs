@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KrupaBuildGallery.ViewModel;
+using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
@@ -246,6 +247,88 @@ namespace KrupaBuildGallery.Model
             {
                 return "";
             }
+        }
+
+        public static ChtMessage GetMessageModel(tbl_ChatMessages objm)
+        {
+            ChtMessage objMsg = new ChtMessage();
+            objMsg.ChatMeesageId = objm.ChatMeesageId;
+            objMsg.FromUserId = objm.FromUserId.Value;
+            objMsg.ToUserId = objm.ToUserId.Value;
+            objMsg.Message = objm.Message;
+            objMsg.Status = objm.Status;
+            objMsg.MessageDate = objm.MessageDate.Value.ToString("dd-MMM-yyyy hh:mm t");
+            return objMsg;
+        }
+
+        public MessageRecords GetChatMessagesByUserID(long currentUserID, long toUserID, int lastMessageID = 0)
+        {
+            krupagallarydbEntities _db = new krupagallarydbEntities();
+            MessageRecords obj = new MessageRecords();
+            var messages = _db.tbl_ChatMessages.Where(m => (m.ToUserId == toUserID || m.FromUserId == toUserID) && (m.ToUserId == currentUserID || m.FromUserId == currentUserID)).OrderByDescending(m => m.MessageDate);
+            if (lastMessageID > 0)
+            {
+                obj.Messages = messages.Where(m => m.ChatMeesageId < lastMessageID).Take(20).ToList().OrderBy(m => m.MessageDate).ToList();
+            }
+            else
+            {
+                obj.Messages = messages.Take(20).ToList().OrderBy(m => m.MessageDate).ToList();
+            }
+            obj.LastChatMessageId = obj.Messages.OrderBy(m => m.ChatMeesageId).Select(m => m.ChatMeesageId).FirstOrDefault();
+            return obj;
+        }
+        public bool IsOnlineUser(long UserId)
+        {
+            bool IsOnline = false;
+            krupagallarydbEntities _db = new krupagallarydbEntities();
+            var lstOnlines =  _db.tbl_ChatUsers.Where(o => o.UserId == UserId && o.IsOnline == true).ToList();
+            if(lstOnlines != null && lstOnlines.Count() > 0)
+            {
+                IsOnline = true;
+            }
+
+            return IsOnline;
+        }
+
+        public List<OnlineUserDetails> GetRecentChats(long currentUserID)
+        {
+            krupagallarydbEntities _db = new krupagallarydbEntities();
+            List<tbl_AdminUsers> lstAdminss =  _db.tbl_AdminUsers.Where(o => o.AdminUserId != currentUserID && o.AdminRoleId != 2 && o.AdminRoleId != 3 && o.AdminRoleId != 4 && o.IsActive == true && o.IsDeleted == false).ToList();
+
+            var recentMessages = _db.tbl_ChatMessages.Where(m => (m.ToUserId == currentUserID || m.FromUserId == currentUserID)).OrderByDescending(m => m.MessageDate).ToList();
+            var userIds = recentMessages.Select(m => (m.ToUserId == currentUserID ? m.FromUserId : m.ToUserId)).Distinct().ToArray();
+            var userIdsList = userIds.ToList();
+            var messagesByUserId = recentMessages.Where(m => m.ToUserId == currentUserID && m.Status == "Sent").ToList();
+            var newMessagesCount = (from p in messagesByUserId
+                                    group p by p.FromUserId into g
+                                    select new { FromUserID = g.Key, Count = g.Count() }).ToList();
+           
+            var users = (from m in lstAdminss
+                         join v in userIdsList on m.AdminUserId equals v
+                         select new OnlineUserDetails
+                         {
+                             UserID = m.AdminUserId,
+                             Name = m.FirstName+" "+m.LastName,
+                             ProfilePicture = m.ProfilePicture
+                         }).ToList();
+            users.ForEach(m =>
+            {
+                m.UnReadMessageCount = newMessagesCount.Where(x => x.FromUserID == m.UserID).Select(x => x.Count).FirstOrDefault();
+            });
+            users = users.OrderBy(d => userIdsList.IndexOf(d.UserID)).ToList();
+
+            var users1 = (from m in lstAdminss
+                          where !userIdsList.Contains(m.AdminUserId)
+                         select new OnlineUserDetails
+                         {
+                             UserID = m.AdminUserId,
+                             Name = m.FirstName + " " + m.LastName,
+                             ProfilePicture = m.ProfilePicture,
+                             UnReadMessageCount = 0
+                         }).ToList();
+
+            users.AddRange(users1);
+            return users;
         }
     }
 

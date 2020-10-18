@@ -67,6 +67,9 @@
         <EntityTypeShape EntityType="krupagalleryModel.tbl_NotificationUserRead" Width="1.5" PointX="0.75" PointY="25.75" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_ItemAvailablePincode" Width="1.5" PointX="25.375" PointY="4.75" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_SMSContent" Width="1.5" PointX="25.375" PointY="7.75" />
+        <EntityTypeShape EntityType="krupagalleryModel.tbl_ChatMessages" Width="1.5" PointX="7.375" PointY="25.75" />
+        <EntityTypeShape EntityType="krupagalleryModel.tbl_ChatUsers" Width="1.5" PointX="25.375" PointY="10.75" />
+        <EntityTypeShape EntityType="krupagalleryModel.tbl_DeletedChatMessage" Width="1.5" PointX="25.375" PointY="13.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -1,0 +1,46 @@
+﻿@using KrupaBuildGallery.Model;
+@{
+    List<OnlineUserDetails> lstt = ViewData["lstrecentChatsuser"] as List<OnlineUserDetails>;
+}
+@if (lstt != null && lstt.Count() > 0)
+{
+    foreach (var objj in lstt)
+    {
+        if (objj.UnReadMessageCount > 0)
+        {
+            <li class="list-group-item" data-user-id="@objj.UserID">
+                <figure class="avatar avatar-state-success">
+                    <img src="http://via.placeholder.com/128X128" class="rounded-circle" alt="image">
+                </figure>
+                <div class="users-list-body">
+                    <div>
+                        <h5 class="text-primary">@objj.Name</h5>
+                        @*<p>What's up, how are you?</p>*@
+                    </div>
+                    <div class="users-list-action">
+                        <div class="new-message-count bdgcnt">@objj.UnReadMessageCount</div>
+                        @*<small class="text-primary">@objj.</small>*@
+                    </div>
+                </div>
+            </li>
+        }
+        else
+        {
+            <li class="list-group-item" data-user-id="@objj.UserID">
+                <div>
+                    <figure class="avatar">
+                        <img src="http://via.placeholder.com/128X128" class="rounded-circle" alt="image">
+                    </figure>
+                </div>
+                <div class="users-list-body">
+                    <div>
+                        <h5>@objj.Name</h5>                       
+                    </div>
+                    <div class="users-list-action">
+                        <div class="new-message-count bdgcnt" style="display:none">0</div>
+                    </div>
+                </div>
+            </li>
+        }
+    }
+}

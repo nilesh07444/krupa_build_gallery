@@ -1,0 +1,780 @@
+﻿@using KrupaBuildGallery.Model
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Areas/Admin/Views/Shared/_ChatLayout.cshtml";
+    long CurrntUserId = clsAdminSession.UserID;
+}
+
+
+<!-- sidebar group -->
+<div class="sidebar-group">
+
+    <!-- Chats sidebar -->
+    <div id="chats" class="sidebar active">
+        <header>
+            <span>Chats</span>
+            <ul class="list-inline">
+                <li class="list-inline-item" data-toggle="tooltip" title="New group">
+                    <a class="btn btn-outline-light" href="#" data-toggle="modal" data-target="#newGroup">
+                        <i data-feather="users"></i>
+                    </a>
+                </li>
+                <li class="list-inline-item">
+                    <a class="btn btn-outline-light" data-toggle="tooltip" title="New chat" href="#"
+                       data-navigation-target="friends">
+                        <i data-feather="plus-circle"></i>
+                    </a>
+                </li>
+                <li class="list-inline-item d-xl-none d-inline">
+                    <a href="#" class="btn btn-outline-light text-danger sidebar-close">
+                        <i data-feather="x"></i>
+                    </a>
+                </li>
+            </ul>
+        </header>
+        <form>
+            <input type="text" class="form-control" placeholder="Search chats">
+        </form>
+        <div class="sidebar-body">
+            <ul class="list-group list-group-flush chtrecentusr">
+            </ul>
+        </div>
+    </div>
+    <!-- ./ Chats sidebar -->
+    <!-- Friends sidebar -->
+    <div id="friends" class="sidebar">
+        <header>
+            <span>Friends</span>
+            <ul class="list-inline">
+                <li class="list-inline-item" data-toggle="tooltip" title="Add friends">
+                    <a class="btn btn-outline-light" href="#" data-toggle="modal" data-target="#addFriends">
+                        <i data-feather="user-plus"></i>
+                    </a>
+                </li>
+                <li class="list-inline-item d-xl-none d-inline">
+                    <a href="#" class="btn btn-outline-light text-danger sidebar-close">
+                        <i data-feather="x"></i>
+                    </a>
+                </li>
+            </ul>
+        </header>
+        <form>
+            <input type="text" class="form-control" placeholder="Search friends">
+        </form>
+        <div class="sidebar-body">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item" data-navigation-target="chats">
+                    <div>
+                        <figure class="avatar">
+                            <img src="http://via.placeholder.com/128X128" class="rounded-circle" alt="image">
+                        </figure>
+                    </div>
+                    <div class="users-list-body">
+                        <div>
+                            <h5>Harrietta Souten</h5>
+                            <p>Dental Hygienist</p>
+                        </div>
+                        <div class="users-list-action">
+                            <div class="action-toggle">
+                                <div class="dropdown">
+                                    <a data-toggle="dropdown" href="#">
+                                        <i data-feather="more-horizontal"></i>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <a href="#" class="dropdown-item">New chat</a>
+                                        <a href="#" data-navigation-target="contact-information"
+                                           class="dropdown-item">Profile</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="#" class="dropdown-item text-danger">Block</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item" data-navigation-target="chats">
+                    <div>
+                        <figure class="avatar avatar-state-warning">
+                            <span class="avatar-title bg-success rounded-circle">A</span>
+                        </figure>
+                    </div>
+                    <div class="users-list-body">
+                        <div>
+                            <h5>Aline McShee</h5>
+                            <p>Marketing Assistant</p>
+                        </div>
+                        <div class="users-list-action">
+                            <div class="action-toggle">
+                                <div class="dropdown">
+                                    <a data-toggle="dropdown" href="#">
+                                        <i data-feather="more-horizontal"></i>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <a href="#" class="dropdown-item">New chat</a>
+                                        <a href="#" data-navigation-target="contact-information"
+                                           class="dropdown-item">Profile</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="#" class="dropdown-item text-danger">Block</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item" data-navigation-target="chats">
+                    <div>
+                        <figure class="avatar avatar-state-success">
+                            <img src="http://via.placeholder.com/128X128" class="rounded-circle" alt="image">
+                        </figure>
+                    </div>
+                    <div class="users-list-body">
+                        <div>
+                            <h5>Brietta Blogg</h5>
+                            <p>Actuary</p>
+                        </div>
+                        <div class="users-list-action">
+                            <div class="action-toggle">
+                                <div class="dropdown">
+                                    <a data-toggle="dropdown" href="#">
+                                        <i data-feather="more-horizontal"></i>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <a href="#" class="dropdown-item">New chat</a>
+                                        <a href="#" data-navigation-target="contact-information"
+                                           class="dropdown-item">Profile</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="#" class="dropdown-item text-danger">Block</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item" data-navigation-target="chats">
+                    <div>
+                        <figure class="avatar avatar-state-success">
+                            <img src="http://via.placeholder.com/128X128" class="rounded-circle" alt="image">
+                        </figure>
+                    </div>
+                    <div class="users-list-body">
+                        <div>
+                            <h5>Karl Hubane</h5>
+                            <p>Chemical Engineer</p>
+                        </div>
+                        <div class="users-list-action">
+                            <div class="action-toggle">
+                                <div class="dropdown">
+                                    <a data-toggle="dropdown" href="#">
+                                        <i data-feather="more-horizontal"></i>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <a href="#" class="dropdown-item">New chat</a>
+                                        <a href="#" data-navigation-target="contact-information"
+                                           class="dropdown-item">Profile</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="#" class="dropdown-item text-danger">Block</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item" data-navigation-target="chats">
+                    <div>
+                        <figure class="avatar">
+                            <img src="http://via.placeholder.com/128X128" class="rounded-circle" alt="image">
+                        </figure>
+                    </div>
+                    <div class="users-list-body">
+                        <div>
+                            <h5>Jillana Tows</h5>
+                            <p>Project Manager</p>
+                        </div>
+                        <div class="users-list-action">
+                            <div class="action-toggle">
+                                <div class="dropdown">
+                                    <a data-toggle="dropdown" href="#">
+                                        <i data-feather="more-horizontal"></i>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <a href="#" class="dropdown-item">New chat</a>
+                                        <a href="#" data-navigation-target="contact-information"
+                                           class="dropdown-item">Profile</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="#" class="dropdown-item text-danger">Block</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item" data-navigation-target="chats">
+                    <div>
+                        <figure class="avatar avatar-state-success">
+                            <span class="avatar-title bg-info rounded-circle">AD</span>
+                        </figure>
+                    </div>
+                    <div class="users-list-body">
+                        <div>
+                            <h5>Alina Derington</h5>
+                            <p>Nurse</p>
+                        </div>
+                        <div class="users-list-action">
+                            <div class="action-toggle">
+                                <div class="dropdown">
+                                    <a data-toggle="dropdown" href="#">
+                                        <i data-feather="more-horizontal"></i>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <a href="#" class="dropdown-item">New chat</a>
+                                        <a href="#" data-navigation-target="contact-information"
+                                           class="dropdown-item">Profile</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="#" class="dropdown-item text-danger">Block</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item" data-navigation-target="chats">
+                    <div>
+                        <figure class="avatar avatar-state-secondary">
+                            <span class="avatar-title bg-warning rounded-circle">S</span>
+                        </figure>
+                    </div>
+                    <div class="users-list-body">
+                        <div>
+                            <h5>Stevy Kermeen</h5>
+                            <p>Associate Professor</p>
+                        </div>
+                        <div class="users-list-action">
+                            <div class="action-toggle">
+                                <div class="dropdown">
+                                    <a data-toggle="dropdown" href="#">
+                                        <i data-feather="more-horizontal"></i>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <a href="#" class="dropdown-item">New chat</a>
+                                        <a href="#" data-navigation-target="contact-information"
+                                           class="dropdown-item">Profile</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="#" class="dropdown-item text-danger">Block</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item" data-navigation-target="chats">
+                    <div>
+                        <figure class="avatar">
+                            <img src="http://via.placeholder.com/128X128" class="rounded-circle" alt="image">
+                        </figure>
+                    </div>
+                    <div class="users-list-body">
+                        <div>
+                            <h5>Stevy Kermeen</h5>
+                            <p>Senior Quality Engineer</p>
+                        </div>
+                        <div class="users-list-action">
+                            <div class="action-toggle">
+                                <div class="dropdown">
+                                    <a data-toggle="dropdown" href="#">
+                                        <i data-feather="more-horizontal"></i>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <a href="#" class="dropdown-item">New chat</a>
+                                        <a href="#" data-navigation-target="contact-information"
+                                           class="dropdown-item">Profile</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="#" class="dropdown-item text-danger">Block</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item" data-navigation-target="chats">
+                    <div>
+                        <figure class="avatar">
+                            <img src="http://via.placeholder.com/128X128" class="rounded-circle" alt="image">
+                        </figure>
+                    </div>
+                    <div class="users-list-body">
+                        <div>
+                            <h5>Gloriane Shimmans</h5>
+                            <p>Web Designer</p>
+                        </div>
+                        <div class="users-list-action">
+                            <div class="action-toggle">
+                                <div class="dropdown">
+                                    <a data-toggle="dropdown" href="#">
+                                        <i data-feather="more-horizontal"></i>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <a href="#" class="dropdown-item">New chat</a>
+                                        <a href="#" data-navigation-target="contact-information"
+                                           class="dropdown-item">Profile</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="#" class="dropdown-item text-danger">Block</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item" data-navigation-target="chats">
+                    <div>
+                        <figure class="avatar avatar-state-warning">
+                            <span class="avatar-title bg-secondary rounded-circle">B</span>
+                        </figure>
+                    </div>
+                    <div class="users-list-body">
+                        <div>
+                            <h5>Bernhard Perrett</h5>
+                            <p>Software Engineer</p>
+                        </div>
+                        <div class="users-list-action">
+                            <div class="action-toggle">
+                                <div class="dropdown">
+                                    <a data-toggle="dropdown" href="#">
+                                        <i data-feather="more-horizontal"></i>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <a href="#" class="dropdown-item">New chat</a>
+                                        <a href="#" data-navigation-target="contact-information"
+                                           class="dropdown-item">Profile</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="#" class="dropdown-item text-danger">Block</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- ./ Friends sidebar -->
+    <!-- Favorites sidebar -->
+    <div id="favorites" class="sidebar">
+        <header>
+            <span>Favorites</span>
+            <ul class="list-inline">
+                <li class="list-inline-item d-xl-none d-inline">
+                    <a href="#" class="btn btn-outline-light text-danger sidebar-close">
+                        <i data-feather="x"></i>
+                    </a>
+                </li>
+            </ul>
+        </header>
+        <form>
+            <input type="text" class="form-control" placeholder="Search favorites">
+        </form>
+        <div class="sidebar-body">
+            <ul class="list-group list-group-flush users-list">
+                <li class="list-group-item">
+                    <div class="users-list-body">
+                        <div>
+                            <h5>Jennica Kindred</h5>
+                            <p>I know how important this file is to you. You can trust me ;)</p>
+                        </div>
+                        <div class="users-list-action">
+                            <div class="action-toggle">
+                                <div class="dropdown">
+                                    <a data-toggle="dropdown" href="#">
+                                        <i data-feather="more-horizontal"></i>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <a href="#" class="dropdown-item">Open</a>
+                                        <a href="#" class="dropdown-item">Remove favorites</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="users-list-body">
+                        <div>
+                            <h5>Marvin Rohan</h5>
+                            <p>Lorem ipsum dolor sitsdc sdcsdc sdcsdcs</p>
+                        </div>
+                        <div class="users-list-action">
+                            <div class="action-toggle">
+                                <div class="dropdown">
+                                    <a data-toggle="dropdown" href="#">
+                                        <i data-feather="more-horizontal"></i>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <a href="#" class="dropdown-item">Open</a>
+                                        <a href="#" class="dropdown-item">Remove favorites</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="users-list-body">
+                        <div>
+                            <h5>Frans Hanscombe</h5>
+                            <p>Lorem ipsum dolor sitsdc sdcsdc sdcsdcs</p>
+                        </div>
+                        <div class="users-list-action">
+                            <div class="action-toggle">
+                                <div class="dropdown">
+                                    <a data-toggle="dropdown" href="#">
+                                        <i data-feather="more-horizontal"></i>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <a href="#" class="dropdown-item">Open</a>
+                                        <a href="#" class="dropdown-item">Remove favorites</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <div class="users-list-body">
+                        <div>
+                            <h5>Karl Hubane</h5>
+                            <p>Lorem ipsum dolor sitsdc sdcsdc sdcsdcs</p>
+                        </div>
+                        <div class="users-list-action">
+                            <div class="action-toggle">
+                                <div class="dropdown">
+                                    <a data-toggle="dropdown" href="#">
+                                        <i data-feather="more-horizontal"></i>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <a href="#" class="dropdown-item">Open</a>
+                                        <a href="#" class="dropdown-item">Remove favorites</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- ./ Stars sidebar -->
+    <!-- Archived sidebar -->
+    <div id="archived" class="sidebar">
+        <header>
+            <span>Archived</span>
+            <ul class="list-inline">
+                <li class="list-inline-item d-xl-none d-inline">
+                    <a href="#" class="btn btn-outline-light text-danger sidebar-close">
+                        <i data-feather="x"></i>
+                    </a>
+                </li>
+            </ul>
+        </header>
+        <form>
+            <input type="text" class="form-control" placeholder="Search archived">
+        </form>
+        <div class="sidebar-body">
+            <ul class="list-group list-group-flush users-list">
+                <li class="list-group-item">
+                    <figure class="avatar">
+                        <span class="avatar-title bg-danger rounded-circle">M</span>
+                    </figure>
+                    <div class="users-list-body">
+                        <div>
+                            <h5>Mercedes Pllu</h5>
+                            <p>I know how important this file is to you. You can trust me ;)</p>
+                        </div>
+                        <div class="users-list-action">
+                            <div class="action-toggle">
+                                <div class="dropdown">
+                                    <a data-toggle="dropdown" href="#">
+                                        <i data-feather="more-horizontal"></i>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <a href="#" class="dropdown-item">Open</a>
+                                        <a href="#" class="dropdown-item">Restore</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="#" class="dropdown-item text-danger">Delete</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+                <li class="list-group-item">
+                    <figure class="avatar">
+                        <span class="avatar-title bg-secondary rounded-circle">R</span>
+                    </figure>
+                    <div class="users-list-body">
+                        <div>
+                            <h5>Rochelle Golley</h5>
+                            <p>Lorem ipsum dolor sitsdc sdcsdc sdcsdcs</p>
+                        </div>
+                        <div class="users-list-action">
+                            <div class="action-toggle">
+                                <div class="dropdown">
+                                    <a data-toggle="dropdown" href="#">
+                                        <i data-feather="more-horizontal"></i>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right">
+                                        <a href="#" class="dropdown-item">Open</a>
+                                        <a href="#" class="dropdown-item">Restore</a>
+                                        <div class="dropdown-divider"></div>
+                                        <a href="#" class="dropdown-item text-danger">Delete</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- ./ Archived sidebar -->
+
+</div>
+<!-- ./ sidebar group -->
+<!-- chat -->
+<div id="dvChatwindow" class="chat">
+
+</div>
+<!-- ./ chat -->
+
+<div class="sidebar-group">
+    <div id="contact-information" class="sidebar">
+        <header>
+            <span>Profile</span>
+            <ul class="list-inline">
+                <li class="list-inline-item">
+                    <a href="#" class="btn btn-outline-light text-danger sidebar-close">
+                        <i data-feather="x"></i>
+                    </a>
+                </li>
+            </ul>
+        </header>
+        <div class="sidebar-body">
+            <div class="pl-4 pr-4">
+                <div class="text-center">
+                    <figure class="avatar avatar-xl mb-4">
+                        <img src="http://via.placeholder.com/128X128" class="rounded-circle" alt="image">
+                    </figure>
+                    <h5 class="mb-1">Mirabelle Tow</h5>
+                    <small class="text-muted font-italic">Last seen: Today</small>
+
+                    <ul class="nav nav-tabs justify-content-center mt-5" id="myTab" role="tablist">
+                        <li class="nav-item">
+                            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab"
+                               aria-controls="home" aria-selected="true">About</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab"
+                               aria-controls="profile" aria-selected="false">Media</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                        <p class="text-muted">
+                            Lorem ipsum is a pseudo-Latin text used in web design, typography,
+                            layout, and printing in place of English to emphasise design elements over content.
+                            It's also called placeholder (or filler) text. It's a convenient tool for
+                            mock-ups.
+                        </p>
+                        <div class="mt-4 mb-4">
+                            <h6>Phone</h6>
+                            <p class="text-muted">(555) 555 55 55</p>
+                        </div>
+                        <div class="mt-4 mb-4">
+                            <h6>City</h6>
+                            <p class="text-muted">Germany / Berlin</p>
+                        </div>
+                        <div class="mt-4 mb-4">
+                            <h6>Website</h6>
+                            <p>
+                                <a href="#">www.franshanscombe.com</a>
+                            </p>
+                        </div>
+                        <div class="mt-4 mb-4">
+                            <h6 class="mb-3">Social media accounts</h6>
+                            <ul class="list-inline social-links">
+                                <li class="list-inline-item">
+                                    <a href="#" class="btn btn-sm btn-floating btn-facebook"
+                                       data-toggle="tooltip" title="Facebook">
+                                        <i class="fa fa-facebook"></i>
+                                    </a>
+                                </li>
+                                <li class="list-inline-item">
+                                    <a href="#" class="btn btn-sm btn-floating btn-twitter"
+                                       data-toggle="tooltip" title="Twitter">
+                                        <i class="fa fa-twitter"></i>
+                                    </a>
+                                </li>
+                                <li class="list-inline-item">
+                                    <a href="#" class="btn btn-sm btn-floating btn-dribbble"
+                                       data-toggle="tooltip" title="Dribbble">
+                                        <i class="fa fa-dribbble"></i>
+                                    </a>
+                                </li>
+                                <li class="list-inline-item">
+                                    <a href="#" class="btn btn-sm btn-floating btn-whatsapp"
+                                       data-toggle="tooltip" title="Whatsapp">
+                                        <i class="fa fa-whatsapp"></i>
+                                    </a>
+                                </li>
+                                <li class="list-inline-item">
+                                    <a href="#" class="btn btn-sm btn-floating btn-linkedin"
+                                       data-toggle="tooltip" title="Linkedin">
+                                        <i class="fa fa-linkedin"></i>
+                                    </a>
+                                </li>
+                                <li class="list-inline-item">
+                                    <a href="#" class="btn btn-sm btn-floating btn-google" data-toggle="tooltip"
+                                       title="Google">
+                                        <i class="fa fa-google"></i>
+                                    </a>
+                                </li>
+                                <li class="list-inline-item">
+                                    <a href="#" class="btn btn-sm btn-floating btn-behance"
+                                       data-toggle="tooltip" title="Behance">
+                                        <i class="fa fa-behance"></i>
+                                    </a>
+                                </li>
+                                <li class="list-inline-item">
+                                    <a href="#" class="btn btn-sm btn-floating btn-instagram"
+                                       data-toggle="tooltip" title="Instagram">
+                                        <i class="fa fa-instagram"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="mt-4 mb-4">
+                            <h6 class="mb-3">Settings</h6>
+                            <div class="form-group">
+                                <div class="form-item custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" id="customSwitch11">
+                                    <label class="custom-control-label" for="customSwitch11">Block</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="form-item custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" checked=""
+                                           id="customSwitch12">
+                                    <label class="custom-control-label" for="customSwitch12">Mute</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="form-item custom-control custom-switch">
+                                    <input type="checkbox" class="custom-control-input" id="customSwitch13">
+                                    <label class="custom-control-label" for="customSwitch13">
+                                        Get
+                                        notification
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                        <h6 class="mb-3 d-flex align-items-center justify-content-between">
+                            <span>Recent Files</span>
+                            <a href="#" class="btn btn-link small">
+                                <i data-feather="upload" class="mr-2"></i> Upload
+                            </a>
+                        </h6>
+                        <div>
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item pl-0 pr-0 d-flex align-items-center">
+                                    <a href="#">
+                                        <i class="fa fa-file-pdf-o text-danger mr-2"></i> report4221.pdf
+                                    </a>
+                                </li>
+                                <li class="list-group-item pl-0 pr-0 d-flex align-items-center">
+                                    <a href="#">
+                                        <i class="fa fa-image text-muted mr-2"></i> avatar_image.png
+                                    </a>
+                                </li>
+                                <li class="list-group-item pl-0 pr-0 d-flex align-items-center">
+                                    <a href="#">
+                                        <i class="fa fa-file-excel-o text-success mr-2"></i>
+                                        excel_report_file2020.xlsx
+                                    </a>
+                                </li>
+                                <li class="list-group-item pl-0 pr-0 d-flex align-items-center">
+                                    <a href="#">
+                                        <i class="fa fa-file-text-o text-warning mr-2"></i> articles342133.txt
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="dvrightmsg" style="display:none;">
+    <div class="message-item outgoing-message" data-chat-message-id="--MSGID--">
+        <div class="message-avatar">
+            <figure class="avatar">
+                <img src="http://via.placeholder.com/128X128" class="rounded-circle" alt="image">
+            </figure>
+            <div>
+                <h5>--USRNAME--</h5>
+                <div class="time">--MSGDATE-- <i class="ti-double-check text-info"></i></div>
+            </div>
+        </div>
+        <div class="message-content">
+            --MSG--
+        </div>
+    </div>
+</div>
+<div id="dvleftmsg" style="display:none;">
+    <div class="message-item" data-chat-message-id="--MSGID--">
+        <div class="message-avatar">
+            <figure class="avatar">
+                <img src="http://via.placeholder.com/128X128" class="rounded-circle" alt="image">
+            </figure>
+            <div>
+                <h5>--USRNAME--</h5>
+                <div class="time">--MSGDATE--</div>
+            </div>
+        </div>
+        <div class="message-content">
+            --MSG--
+        </div>
+    </div>
+</div>
+<input type="hidden" id="hdfLoggedInUserID" value="@CurrntUserId" />
+<input type="hidden" id="hdfLoggedInUserName" value="@clsAdminSession.UserName" />
+<input type="hidden" id="hdfLoggedInUserProfilePicture" value="@clsAdminSession.ImagePath" />
+<input type="hidden" id="hdfWindowIsActiveOrNot" value="True" />
+<input type="hidden" id="hdfPendingMessageID" />
+
+<script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
+<script src="~/signalr/hubs"></script>
+<script src="~/Scripts/Chat.js"></script>
+<script>
+    $(document).on('keypress', '.txt-chat-message', function (e) {
+        if (e.which == 13) {
+            sendChatMessage();
+        }
+        else {
+            sendUserTypingStatus();
+        }
+    });
+
+    $(document).on('click', '.clsSendMessage', function () {
+        sendChatMessage();
+    });
+
+    $(document).on('click', '.chtrecentusr .list-group-item', function () {
+        $(".chtrecentusr .list-group-item").removeClass("open-chat");
+        $(this).addClass("open-chat");
+        var userID = $(this).attr('data-user-id');
+        initiateChat(userID);
+    });
+
+</script>

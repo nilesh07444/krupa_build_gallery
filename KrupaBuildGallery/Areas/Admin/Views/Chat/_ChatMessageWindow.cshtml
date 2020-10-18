@@ -1,0 +1,146 @@
+﻿@using KrupaBuildGallery.Model;
+@{
+    ChatMessageModel objMdl = ViewData["objChatmsg"] as ChatMessageModel;
+    tbl_AdminUsers objUser = ViewData["objUser"] as tbl_AdminUsers;
+}
+<input type="hidden" class="hdf-current-chat-user-id" value="@objUser.AdminUserId" />
+<input type="hidden" class="hdf-current-chat-user-name" value="@objUser.FirstName @objUser.LastName" />
+<input type="hidden" class="hdf-current-chat-user-profile-picture" value="@objUser.ProfilePicture" />
+<input type="hidden" class="hdf-last-chat-message-id" value="@objMdl.LastChatMessageId" />
+<input type="hidden" class="hdf-old-messages-exist" value="@(objMdl.ChatMessages.Count < 20 ? "False" : "True")" />
+
+    <div class="chat-header">
+        <div class="chat-header-user">
+            <figure class="avatar">
+                <img src="http://via.placeholder.com/128X128" class="rounded-circle" alt="image">
+            </figure>
+            <div>
+                <h5>@objUser.FirstName @objUser.LastName</h5>
+                <small class="text-success">
+                    <i class="clswriting" style="opacity:0;">writing...</i>
+                </small>
+            </div>
+        </div>
+        <div class="chat-header-action">
+            <ul class="list-inline">
+                <li class="list-inline-item d-xl-none d-inline">
+                    <a href="#" class="btn btn-outline-light mobile-navigation-button">
+                        <i data-feather="menu"></i>
+                    </a>
+                </li>
+                <li class="list-inline-item" data-toggle="tooltip" title="Voice call">
+                    <a href="#" class="btn btn-outline-light text-success" data-toggle="modal"
+                       data-target="#call">
+                        <i data-feather="phone"></i>
+                    </a>
+                </li>
+                <li class="list-inline-item" data-toggle="tooltip" title="Video call">
+                    <a href="#" class="btn btn-outline-light text-warning" data-toggle="modal"
+                       data-target="#videoCall">
+                        <i data-feather="video"></i>
+                    </a>
+                </li>
+                <li class="list-inline-item">
+                    <a href="#" class="btn btn-outline-light" data-toggle="dropdown">
+                        <i data-feather="more-horizontal"></i>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right">
+                        <a href="#" data-navigation-target="contact-information"
+                           class="dropdown-item">Profile</a>
+                        <a href="#" class="dropdown-item">Add to archive</a>
+                        <a href="#" class="dropdown-item">Delete</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item text-danger">Block</a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="chat-body">
+        <!-- .no-message -->
+        <!--
+        <div class="no-message-container">
+            <div class="row mb-5">
+                <div class="col-md-4 offset-4">
+                    <img src="./dist/media/svg/undraw_empty_xct9.svg" class="img-fluid" alt="image">
+                </div>
+            </div>
+            <p class="lead">Select a chat to read messages</p>
+        </div>
+        -->
+        <div class="messages">
+            @if (objMdl != null && objMdl.ChatMessages != null && objMdl.ChatMessages.Count() > 0)
+            {
+                foreach (var objj in objMdl.ChatMessages)
+                {
+                    if (objj.FromUserId == clsAdminSession.UserID)
+                    {
+                        <div class="message-item outgoing-message" data-chat-message-id="@objj.ChatMeesageId">
+                            <div class="message-avatar">
+                                <figure class="avatar">
+                                    <img src="http://via.placeholder.com/128X128" class="rounded-circle" alt="image">
+                                </figure>
+                                <div>
+                                    <h5>@clsAdminSession.UserName</h5>
+                                    <div class="time">@objj.MessageDate <i class="ti-double-check text-info"></i></div>
+                                </div>
+                            </div>
+                            <div class="message-content">
+                                @objj.Message
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="message-item" data-chat-message-id="@objj.ChatMeesageId">
+                            <div class="message-avatar">
+                                <figure class="avatar">
+                                    <img src="http://via.placeholder.com/128X128" class="rounded-circle" alt="image">
+                                </figure>
+                                <div>
+                                    <h5>@clsAdminSession.UserName</h5>
+                                    <div class="time">@objj.MessageDate </div>
+                                </div>
+                            </div>
+                            <div class="message-content">
+                                @objj.Message
+                            </div>
+                        </div>
+                    }
+                }
+            }
+        </div>
+    </div>
+    <div class="chat-footer">
+        <form>
+            <div>
+                <button class="btn btn-light mr-3" data-toggle="tooltip" title="Emoji" style="display:none;" type="button">
+                    <i data-feather="smile"></i>
+                </button>
+            </div>
+            <input type="text" class="form-control txt-chat-message" placeholder="Write a message.">
+            <div class="form-buttons">
+                <button class="btn btn-light" data-toggle="tooltip" style="display:none;" title="Add files" type="button">
+                    <i data-feather="paperclip"></i>
+                </button>
+                <button class="btn btn-light d-sm-none d-block" data-toggle="tooltip"
+                        title="Send a voice record" type="button">
+                    <i data-feather="mic"></i>
+                </button>
+                <button class="btn btn-primary clsSendMessage" type="button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-send"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                </button>
+            </div>
+        </form>
+    </div>
+
+<script type="text/javascript">
+    $(document).find("div.chat-body").animate({ scrollTop: $(document).find("div.chat-body")[0].scrollHeight }, 0);
+    $(document).find('.chat-body').scroll(function () {
+        var div = $(this);
+        if (div.scrollTop() == 0) {
+          //  alert();
+            GetOldMessages();
+        }
+    });
+ </script>

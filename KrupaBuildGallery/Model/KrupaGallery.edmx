@@ -143,6 +143,28 @@
           <Property Name="UpdatedDate" Type="datetime" />
           <Property Name="IsImported" Type="bit" />
         </EntityType>
+        <EntityType Name="tbl_ChatMessages">
+          <Key>
+            <PropertyRef Name="ChatMeesageId" />
+          </Key>
+          <Property Name="ChatMeesageId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FromUserId" Type="bigint" />
+          <Property Name="ToUserId" Type="bigint" />
+          <Property Name="Message" Type="nvarchar(max)" />
+          <Property Name="Status" Type="nvarchar(max)" />
+          <Property Name="MessageDate" Type="datetime" />
+          <Property Name="UpdateDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="tbl_ChatUsers">
+          <Key>
+            <PropertyRef Name="ChatUserId" />
+          </Key>
+          <Property Name="ChatUserId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="bigint" />
+          <Property Name="ConnectionId" Type="nvarchar(max)" />
+          <Property Name="IsOnline" Type="bit" />
+          <Property Name="CreatedOn" Type="datetime" />
+        </EntityType>
         <EntityType Name="tbl_ClientOtherDetails">
           <Key>
             <PropertyRef Name="ClientOtherDetailsId" />
@@ -309,6 +331,15 @@
           <Property Name="ClientUserId" Type="bigint" />
           <Property Name="MessageDate" Type="datetime" Nullable="false" />
           <Property Name="IsDelete" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_DeletedChatMessage">
+          <Key>
+            <PropertyRef Name="DeletedChatId" />
+          </Key>
+          <Property Name="DeletedChatId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="bigint" />
+          <Property Name="MessageId" Type="bigint" />
+          <Property Name="DeletedDate" Type="datetime" />
         </EntityType>
         <EntityType Name="tbl_DistributorRequestDetails">
           <Key>
@@ -1039,6 +1070,8 @@
           <EntitySet Name="tbl_Cart" EntityType="Self.tbl_Cart" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_CashDeliveryAmount" EntityType="Self.tbl_CashDeliveryAmount" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Categories" EntityType="Self.tbl_Categories" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_ChatMessages" EntityType="Self.tbl_ChatMessages" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_ChatUsers" EntityType="Self.tbl_ChatUsers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ClientOtherDetails" EntityType="Self.tbl_ClientOtherDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ClientRoles" EntityType="Self.tbl_ClientRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ClientUsers" EntityType="Self.tbl_ClientUsers" Schema="dbo" store:Type="Tables" />
@@ -1046,6 +1079,7 @@
           <EntitySet Name="tbl_ComboOfferMaster" EntityType="Self.tbl_ComboOfferMaster" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ComboOfferSubItems" EntityType="Self.tbl_ComboOfferSubItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ContactFormData" EntityType="Self.tbl_ContactFormData" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_DeletedChatMessage" EntityType="Self.tbl_DeletedChatMessage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_DistributorRequestDetails" EntityType="Self.tbl_DistributorRequestDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_DynamicContent" EntityType="Self.tbl_DynamicContent" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ExtraAmount" EntityType="Self.tbl_ExtraAmount" Schema="dbo" store:Type="Tables" />
@@ -1598,6 +1632,9 @@
           <FunctionImport Name="sp_GetNotificationList1" ReturnType="Collection(krupagalleryModel.sp_GetNotificationList1_Result)">
           <Parameter Name="ClientUserId" Mode="In" Type="Int32" />
           </FunctionImport>
+          <EntitySet Name="tbl_ChatMessages" EntityType="krupagalleryModel.tbl_ChatMessages" />
+          <EntitySet Name="tbl_ChatUsers" EntityType="krupagalleryModel.tbl_ChatUsers" />
+          <EntitySet Name="tbl_DeletedChatMessage" EntityType="krupagalleryModel.tbl_DeletedChatMessage" />
         </EntityContainer>
         <EntityType Name="tbl_AdminRoles">
           <Key>
@@ -2228,6 +2265,37 @@
           <Property Type="DateTime" Name="CreatedDate" Nullable="false" Precision="23" />
           <Property Type="Int64" Name="IsRead" Nullable="false" />
         </ComplexType>
+        <EntityType Name="tbl_ChatMessages">
+          <Key>
+            <PropertyRef Name="ChatMeesageId" />
+          </Key>
+          <Property Name="ChatMeesageId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FromUserId" Type="Int64" />
+          <Property Name="ToUserId" Type="Int64" />
+          <Property Name="Message" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="MessageDate" Type="DateTime" Precision="3" />
+          <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="tbl_ChatUsers">
+          <Key>
+            <PropertyRef Name="ChatUserId" />
+          </Key>
+          <Property Name="ChatUserId" Type="Int64" Nullable="false" />
+          <Property Name="UserId" Type="Int64" />
+          <Property Name="ConnectionId" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IsOnline" Type="Boolean" />
+          <Property Name="CreatedOn" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="tbl_DeletedChatMessage">
+          <Key>
+            <PropertyRef Name="DeletedChatId" />
+          </Key>
+          <Property Name="DeletedChatId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int64" />
+          <Property Name="MessageId" Type="Int64" />
+          <Property Name="DeletedDate" Type="DateTime" Precision="3" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -3315,6 +3383,40 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <EntitySetMapping Name="tbl_ChatMessages">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_ChatMessages">
+              <MappingFragment StoreEntitySet="tbl_ChatMessages">
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="MessageDate" ColumnName="MessageDate" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="ToUserId" ColumnName="ToUserId" />
+                <ScalarProperty Name="FromUserId" ColumnName="FromUserId" />
+                <ScalarProperty Name="ChatMeesageId" ColumnName="ChatMeesageId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_ChatUsers">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_ChatUsers">
+              <MappingFragment StoreEntitySet="tbl_ChatUsers">
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="IsOnline" ColumnName="IsOnline" />
+                <ScalarProperty Name="ConnectionId" ColumnName="ConnectionId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="ChatUserId" ColumnName="ChatUserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_DeletedChatMessage">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_DeletedChatMessage">
+              <MappingFragment StoreEntitySet="tbl_DeletedChatMessage">
+                <ScalarProperty Name="DeletedDate" ColumnName="DeletedDate" />
+                <ScalarProperty Name="MessageId" ColumnName="MessageId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="DeletedChatId" ColumnName="DeletedChatId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
