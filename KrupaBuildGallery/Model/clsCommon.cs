@@ -257,7 +257,7 @@ namespace KrupaBuildGallery.Model
             objMsg.ToUserId = objm.ToUserId.Value;
             objMsg.Message = objm.Message;
             objMsg.Status = objm.Status;
-            objMsg.MessageDate = objm.MessageDate.Value.ToString("dd-MMM-yyyy hh:mm t");
+            objMsg.MessageDate = CommonMethod.ConvertFromUTCNew(objm.MessageDate.Value);
             return objMsg;
         }
 
@@ -265,7 +265,8 @@ namespace KrupaBuildGallery.Model
         {
             krupagallarydbEntities _db = new krupagallarydbEntities();
             MessageRecords obj = new MessageRecords();
-            var messages = _db.tbl_ChatMessages.Where(m => (m.ToUserId == toUserID || m.FromUserId == toUserID) && (m.ToUserId == currentUserID || m.FromUserId == currentUserID)).OrderByDescending(m => m.MessageDate);
+            List<long> msgIdsdeleted = _db.tbl_DeletedChatMessage.Where(o => o.UserId == currentUserID).Select(x => x.MessageId.Value).ToList();
+            var messages = _db.tbl_ChatMessages.Where(m => !msgIdsdeleted.Contains(m.ChatMeesageId) && (m.ToUserId == toUserID || m.FromUserId == toUserID) && (m.ToUserId == currentUserID || m.FromUserId == currentUserID)).OrderByDescending(m => m.MessageDate);
             if (lastMessageID > 0)
             {
                 obj.Messages = messages.Where(m => m.ChatMeesageId < lastMessageID).Take(20).ToList().OrderBy(m => m.MessageDate).ToList();

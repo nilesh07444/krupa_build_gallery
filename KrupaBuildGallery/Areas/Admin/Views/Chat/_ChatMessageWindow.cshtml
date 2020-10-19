@@ -3,6 +3,12 @@
     ChatMessageModel objMdl = ViewData["objChatmsg"] as ChatMessageModel;
     tbl_AdminUsers objUser = ViewData["objUser"] as tbl_AdminUsers;
 }
+<style>
+    .message-content {
+        white-space: pre-line;
+        padding-top: 0px !important;
+    }
+</style>
 <input type="hidden" class="hdf-current-chat-user-id" value="@objUser.AdminUserId" />
 <input type="hidden" class="hdf-current-chat-user-name" value="@objUser.FirstName @objUser.LastName" />
 <input type="hidden" class="hdf-current-chat-user-profile-picture" value="@objUser.ProfilePicture" />
@@ -10,7 +16,7 @@
 <input type="hidden" class="hdf-old-messages-exist" value="@(objMdl.ChatMessages.Count < 20 ? "False" : "True")" />
 
     <div class="chat-header">
-        <div class="chat-header-user">
+        <div class="chat-header-user" data-onuserid="@objUser.AdminUserId">
             <figure class="avatar">
                 <img src="http://via.placeholder.com/128X128" class="rounded-circle" alt="image">
             </figure>
@@ -88,6 +94,16 @@
                             <div class="message-content">
                                 @objj.Message
                             </div>
+                            <div class="action-toggle" style="float: right;">
+                                <div class="dropdown">
+                                    <a data-toggle="dropdown" href="#" aria-expanded="false">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; transform: translate3d(-112px, 19px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                        <a href="javascript:void(0);" class="dropdown-item text-danger" onclick="deletemsg('@objj.ChatMeesageId');">Delete</a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     }
                     else
@@ -98,12 +114,22 @@
                                     <img src="http://via.placeholder.com/128X128" class="rounded-circle" alt="image">
                                 </figure>
                                 <div>
-                                    <h5>@clsAdminSession.UserName</h5>
+                                    <h5>@objUser.FirstName @objUser.LastName</h5>
                                     <div class="time">@objj.MessageDate </div>
                                 </div>
                             </div>
                             <div class="message-content">
                                 @objj.Message
+                            </div>
+                           <div class="action-toggle" style="float: right;">
+                                <div class="dropdown">
+                                    <a data-toggle="dropdown" href="#" aria-expanded="false">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+                                    </a>
+                                    <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; transform: translate3d(-112px, 19px, 0px); top: 0px; left: 0px; will-change: transform;">
+                                        <a href="javascript:void(0);" class="dropdown-item text-danger" onclick="deletemsg('@objj.ChatMeesageId');">Delete</a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     }
@@ -118,7 +144,7 @@
                     <i data-feather="smile"></i>
                 </button>
             </div>
-            <input type="text" class="form-control txt-chat-message" placeholder="Write a message.">
+            <textarea class="form-control txt-chat-message" placeholder="Write a message."></textarea>            
             <div class="form-buttons">
                 <button class="btn btn-light" data-toggle="tooltip" style="display:none;" title="Add files" type="button">
                     <i data-feather="paperclip"></i>

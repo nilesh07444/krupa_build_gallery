@@ -4,7 +4,12 @@ chat.client.addNewChatMessage = function (messageRow, fromUserId, toUserId, from
     var currentUserId = $('#hdfLoggedInUserID').val();
     var currentChatUserID = $(document).find('.hdf-current-chat-user-id').val();
     if (currentChatUserID == fromUserId || currentChatUserID == toUserId) {
-        createNewMessageBlock(fromUserName, fromUserProfilePic, messageRow.MessageDate, messageRow.Message, (currentUserId == fromUserId ? 'right' : 'left'), messageRow.ChatMeesageId, messageRow.Status);
+        var d = new Date(messageRow.MessageDate + ' GMT');
+        var n = d.toLocaleTimeString();
+        var n1 = d.toLocaleDateString();      
+        var dtt = new Date(n1);
+        var msgdtt = dtt.customFormat("#D#-#MMM#-#YYYY#") + " " + n;
+        createNewMessageBlock(fromUserName, fromUserProfilePic,msgdtt, messageRow.Message, (currentUserId == fromUserId ? 'right' : 'left'), messageRow.ChatMeesageId, messageRow.Status);
         if (currentUserId != fromUserId) {
             var currentChatUserID = $(document).find('.hdf-current-chat-user-id').val();
             setTimeout(function () {
@@ -48,17 +53,23 @@ chat.client.updateMessageStatusInChatWindow = function (messageID, currentUserID
         }
     }
 }
-chat.client.refreshOnlineUserByUserID = function (userID, isOnline, lastSeen) {
-    var currentChatUserID = $(document).find('.hdf-current-chat-user-id').val();
-    if (currentChatUserID == userID) {
-        if (isOnline == true) {
-            $(document).find('span[class="spn-chat-user-online-status"]').html('<i class="fa fa-circle online-circle chat-user-online-status"></i>Online');
+chat.client.refershOnlineUsr = function (usrids) {
+    setTimeout(function () {
+        $(".chtrecentusr .list-group-item .avatar").removeClass("avatar-state-success");
+        $(".chat-header-user .avatar").removeClass("avatar-state-success");
+        if (usrids != "") {
+            var arryusrid = usrids.split('^');
+            if (arryusrid != null && arryusrid.length > 0) {
+                for (var jj = 0; jj < arryusrid.length; jj++) {
+                    var usrrid = arryusrid[jj];
+                    $(".chtrecentusr .list-group-item[data-user-id=" + usrrid + "] .avatar").addClass("avatar-state-success");
+                    $(".chat-header-user[data-onuserid=" + usrrid + "] .avatar").addClass("avatar-state-success");
+                }
+            }
         }
-        else {
-            $(document).find('span[class="spn-chat-user-online-status"]').text('Last seen : ' + lastSeen + '');
-        }
-    }
+    },800);    
 }
+
 $.connection.transports.longPolling.supportsKeepAlive = function () {
     return false;
 }
@@ -121,29 +132,6 @@ function changeUserOnlineStatus(cItem) {
         $(cItem).find('img').addClass('online-user-profile-pic');
     }
 }
-function changeUserNotificationCounts(notificationCounts) {
-    if (notificationCounts != null && notificationCounts != '' && notificationCounts != 0 && notificationCounts != '0') {
-        $('.user-notification-count').text(notificationCounts);
-    }
-    else {
-        $('.user-notification-count').text('');
-    }
-}
-function removeHtmlElement(ele) {
-    if (ele.length > 0) {
-        ele.animate({ "opacity": "hide", top: "100" }, 500);
-        setTimeout(function () {
-            ele.remove();
-        }, 500);
-    }
-}
-function removeNotificationPop(notificationID) {
-    var notificationPopup = $(document).find('#divNotificationPopUp-' + notificationID + '');
-    removeHtmlElement(notificationPopup);
-}
-function unfriendUser(friendMappingID) {
-    chat.server.unfriendUser(friendMappingID);
-}
 function initiateChat(toUserID) {
     $("#dvChatwindow").html('');
     $("#dvChatwindow").load('/admin/Chat/ChatMessageWindow?UserId=' + toUserID, function () {
@@ -166,11 +154,11 @@ function initiateChat(toUserID) {
 }
 function createNewMessageBlockHtml(name, profilePicture, createOn, message, align, chatMessageID, status) {
     if (align == "right") {
-        var htmll = $("#dvrightmsg").html().replace("--MSGID--", chatMessageID).replace("--USRNAME--", name).replace("--MSG--", message).replace("--MSGDATE--", createOn);            
+        var htmll = $("#dvrightmsg").html().replace("--MSGID--", chatMessageID).replace("--MSGID--", chatMessageID).replace("--USRNAME--", name).replace("--MSG--", message).replace("--MSGDATE--", createOn);            
         return htmll;
     }
     else {
-        var htmll = $("#dvleftmsg").html().replace("--MSGID--", chatMessageID).replace("--USRNAME--", name).replace("--MSG--", message).replace("--MSGDATE--", createOn);
+        var htmll = $("#dvleftmsg").html().replace("--MSGID--", chatMessageID).replace("--MSGID--", chatMessageID).replace("--USRNAME--", name).replace("--MSG--", message).replace("--MSGDATE--", createOn);
         return htmll;
     }
    
@@ -199,7 +187,10 @@ function sendUserTypingStatus() {
 }
 function refreshRecentChats() {
     $('.chtrecentusr').load('/admin/Chat/GetRecentChatUsers', function () {
-
+        if ($(".chtrecentusr .list-group-item").length > 0) {
+            var userID = $(".chtrecentusr .list-group-item:eq(0)").attr("data-user-id");
+            initiateChat(userID);
+        }
     });
 }
 function addChatMessageCount(currentUserId, fromUserId, fromUserName, fromUserProfilePic, toUserId, toUserName, toUserProfilePic) {
@@ -262,7 +253,7 @@ function GetOldMessages() {
                 var toUserName = $(document).find('.hdf-current-chat-user-name').val();
                 var toUserProfilePic = $(document).find('.hdf-current-chat-user-profile-picture').val();
                 $(messages.ChatMessages).each(function (index, item) {
-                    if (item.FromUserID == currentUserId) {
+                    if (item.FromUserId == currentUserId) {
                         html += createNewMessageBlockHtml(fromUserName, fromUserPrifilePic, item.MessageDate, item.Message, "right", item.ChatMeesageId, item.Status);
                     }
                     else {
@@ -277,5 +268,34 @@ function GetOldMessages() {
                 $(isOldMessageExsit).val("False");
             }
         });
+    }
+}
+function deletemsg(msgid) {
+    $(".message-item[data-chat-message-id=" + msgid + "]").remove();
+    var fromUserID = $('#hdfLoggedInUserID').val();
+    chat.server.deletemsg(fromUserID, msgid);
+}
+Date.prototype.customFormat = function (formatString) {
+
+    var YYYY, YY, MMMM, MMM, MM, M, DDDD, DDD, DD, D, hhhh, hhh, hh, h, mm, m, ss, s, ampm, AMPM, dMod, th;
+    var dateObject = this;
+    if (dateObject != "Invalid Date") {
+        YY = ((YYYY = dateObject.getFullYear()) + "").slice(-2);
+        MM = (M = dateObject.getMonth() + 1) < 10 ? ('0' + M) : M;
+        MMM = (MMMM = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"][M - 1]).substring(0, 3);
+        DD = (D = dateObject.getDate()) < 10 ? ('0' + D) : D;
+        DDD = (DDDD = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][dateObject.getDay()]).substring(0, 3);
+        th = (D >= 10 && D <= 20) ? 'th' : ((dMod = D % 10) == 1) ? 'st' : (dMod == 2) ? 'nd' : (dMod == 3) ? 'rd' : 'th';
+        formatString = formatString.replace("#YYYY#", YYYY).replace("#YY#", YY).replace("#MMMM#", MMMM).replace("#MMM#", MMM).replace("#MM#", MM).replace("#M#", M).replace("#DDDD#", DDDD).replace("#DDD#", DDD).replace("#DD#", DD).replace("#D#", D).replace("#th#", th);
+
+        h = (hhh = dateObject.getHours());
+        if (h == 0) h = 24;
+        if (h > 12) h -= 12;
+        hh = h < 10 ? ('0' + h) : h;
+        hhhh = hhh < 10 ? ('0' + hhh) : hhh;
+        AMPM = (ampm = hhh < 12 ? 'am' : 'pm').toUpperCase();
+        mm = (m = dateObject.getMinutes()) < 10 ? ('0' + m) : m;
+        ss = (s = dateObject.getSeconds()) < 10 ? ('0' + s) : s;
+        return formatString.replace("#hhhh#", hhhh).replace("#hhh#", hhh).replace("#hh#", hh).replace("#h#", h).replace("#mm#", mm).replace("#m#", m).replace("#ss#", ss).replace("#s#", s).replace("#ampm#", ampm).replace("#AMPM#", AMPM);
     }
 }

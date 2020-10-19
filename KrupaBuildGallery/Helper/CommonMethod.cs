@@ -20,6 +20,17 @@ namespace KrupaBuildGallery
             return dt;
         }
 
+        public static string ConvertFromUTCNew(DateTime? utcDateTime)
+        {
+            if (utcDateTime == null)
+                return "";
+
+            TimeZoneInfo nzTimeZone = TimeZoneInfo.FindSystemTimeZoneById("India Standard Time");
+            DateTime dateTimeAsTimeZone = TimeZoneInfo.ConvertTimeFromUtc(Convert.ToDateTime(utcDateTime), nzTimeZone);
+            string dt = dateTimeAsTimeZone.ToString("dd-MMM-yyyy hh:mm tt");
+            return dt;
+        }
+
         public static string ConvertFromUTCOnlyDate(DateTime? utcDateTime)
         {
             if (utcDateTime == null)

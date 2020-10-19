@@ -22,8 +22,10 @@ namespace KrupaBuildGallery.hubs
                 objCU.ConnectionId = Context.ConnectionId;
                 objCU.UserId = Convert.ToInt64(userID);
                 objCU.IsOnline = true;
+                objCU.CreatedOn = DateTime.UtcNow;
                 _db.tbl_ChatUsers.Add(objCU);
                 _db.SaveChanges();
+                RefereshOnline();
                 // RefreshOnlineUsers(uId);
             }
             return base.OnConnected();
@@ -40,6 +42,7 @@ namespace KrupaBuildGallery.hubs
                 objCU.IsOnline = false;
                 _db.SaveChanges();
                 //RefreshOnlineUsers(uId);
+                RefereshOnline();
             }
             return base.OnDisconnected(stopCalled);
         }
@@ -69,6 +72,21 @@ namespace KrupaBuildGallery.hubs
             List<long> lstUsrid = arryIds.ToList();
             List<string> lstcnctIds  = _db.tbl_ChatUsers.Where(m => lstUsrid.Contains(m.UserId.Value) && m.IsOnline == true).Select(m => m.ConnectionId).ToList();
             Clients.Clients(lstcnctIds).AddNewChatMessage(objMsg, fromUserId, toUserId, fromUserName, fromUserProfilePic, toUserName, toUserProfilePic);
+            RefereshOnline();
+        }
+
+        public void RefereshOnline()
+        {
+            krupagallarydbEntities _db = new krupagallarydbEntities();
+            DateTime dtPrev = DateTime.UtcNow.AddDays(-2);
+            List<long> lstusrIds = _db.tbl_ChatUsers.Where(m => m.IsOnline == true && m.CreatedOn > dtPrev).Select(m => m.UserId.Value).Distinct().ToList();
+            string strUserIds = "";
+            if (lstusrIds != null && lstusrIds.Count() > 0)
+            {
+                strUserIds = string.Join("^", lstusrIds);
+            }
+
+            Clients.All.RefershOnlineUsr(strUserIds);
         }
 
         public void SendUserTypingStatus(long toUserID,long fromUserID)
@@ -105,6 +123,17 @@ namespace KrupaBuildGallery.hubs
             List<long> lstUsrid = arryIds.ToList();
             List<string> lstcnctIds = _db.tbl_ChatUsers.Where(m => lstUsrid.Contains(m.UserId.Value) && m.IsOnline == true).Select(m => m.ConnectionId).ToList();
             Clients.Clients(lstcnctIds).UpdateMessageStatusInChatWindow(messageID, currentUserID, fromUserID);
+        }
+
+        public void deletemsg(long fromUserID,long MsgId)
+        {
+            krupagallarydbEntities _db = new krupagallarydbEntities();
+            tbl_DeletedChatMessage objmsg = new tbl_DeletedChatMessage();
+            objmsg.UserId = fromUserID;
+            objmsg.MessageId = MsgId;
+            objmsg.DeletedDate = DateTime.UtcNow;
+            _db.tbl_DeletedChatMessage.Add(objmsg);
+            _db.SaveChanges();
         }
     }
 }

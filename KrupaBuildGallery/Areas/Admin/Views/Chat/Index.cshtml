@@ -33,7 +33,7 @@
             </ul>
         </header>
         <form>
-            <input type="text" class="form-control" placeholder="Search chats">
+            <input type="text" class="form-control clssearchchat"  placeholder="Search chats">
         </form>
         <div class="sidebar-body">
             <ul class="list-group list-group-flush chtrecentusr">
@@ -729,6 +729,16 @@
         <div class="message-content">
             --MSG--
         </div>
+        <div class="action-toggle" style="float: right;">
+            <div class="dropdown">
+                <a data-toggle="dropdown" href="#" aria-expanded="false">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; transform: translate3d(-112px, 19px, 0px); top: 0px; left: 0px; will-change: transform;">
+                    <a href="javascript:void(0);" class="dropdown-item text-danger" onclick="deletemsg('--MSGID--');">Delete</a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <div id="dvleftmsg" style="display:none;">
@@ -745,6 +755,16 @@
         <div class="message-content">
             --MSG--
         </div>
+        <div class="action-toggle" style="float: right;">
+            <div class="dropdown">
+                <a data-toggle="dropdown" href="#" aria-expanded="false">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; transform: translate3d(-112px, 19px, 0px); top: 0px; left: 0px; will-change: transform;">
+                    <a href="javascript:void(0);" class="dropdown-item text-danger" onclick="deletemsg('--MSGID--');" >Delete</a>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <input type="hidden" id="hdfLoggedInUserID" value="@CurrntUserId" />
@@ -758,13 +778,33 @@
 <script src="~/Scripts/Chat.js"></script>
 <script>
     $(document).on('keypress', '.txt-chat-message', function (e) {
-        if (e.which == 13) {
+        if (e.which == 13 && !e.shiftKey) {
             sendChatMessage();
         }
         else {
             sendUserTypingStatus();
         }
+        
     });
+    $(document).on('keyup', '.clssearchchat', function (e) {
+        var text = $(this).val().toLowerCase();
+        if (text == "") {
+            $('.chtrecentusr .list-group-item').show();
+        }
+        else {
+            // Hide all content class element
+            $('.chtrecentusr .list-group-item').hide();
+            $('.chtrecentusr .list-group-item h5').each(function () {
+
+                if ($(this).text().toLowerCase().indexOf("" + text + "") != -1) {
+                    $(this).closest('.chtrecentusr .list-group-item').show();
+                }
+            });            
+            
+        }
+
+    });
+    
 
     $(document).on('click', '.clsSendMessage', function () {
         sendChatMessage();
@@ -776,5 +816,5 @@
         var userID = $(this).attr('data-user-id');
         initiateChat(userID);
     });
-
+    
 </script>
