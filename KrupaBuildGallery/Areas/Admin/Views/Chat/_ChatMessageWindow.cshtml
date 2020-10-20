@@ -6,8 +6,21 @@
 <style>
     .message-content {
         white-space: pre-line;
-        padding-top: 0px !important;
+        padding-top: 6px !important;
+        padding-top: 6px !important;
     }
+    .message-item {
+        margin-bottom: 10px !important;
+    }
+    .layout .content .chat .chat-body .messages .message-item .time {
+        color: #828282;
+        margin-top: 2px;
+        font-style: italic;
+        font-size: 10px;
+        text-align:right;
+    }
+   
+   
 </style>
 <input type="hidden" class="hdf-current-chat-user-id" value="@objUser.AdminUserId" />
 <input type="hidden" class="hdf-current-chat-user-name" value="@objUser.FirstName @objUser.LastName" />
@@ -82,19 +95,18 @@
                     if (objj.FromUserId == clsAdminSession.UserID)
                     {
                         <div class="message-item outgoing-message" data-chat-message-id="@objj.ChatMeesageId">
-                            <div class="message-avatar">
-                                <figure class="avatar">
+                            <div class="message-avatar" style="display:none;padding:0px !important">
+                                @*<figure class="avatar">
                                     <img src="http://via.placeholder.com/128X128" class="rounded-circle" alt="image">
-                                </figure>
+                                </figure>*@
                                 <div>
-                                    <h5>@clsAdminSession.UserName</h5>
-                                    <div class="time">@objj.MessageDate <i class="ti-double-check text-info"></i></div>
+                                    @*<h5>@clsAdminSession.UserName</h5>*@
+                                    @*<div class="time">@objj.MessageDate <i class="ti-double-check text-info"></i></div>*@
                                 </div>
                             </div>
-                            <div class="message-content">
-                                @objj.Message
-                            </div>
-                            <div class="action-toggle" style="float: right;">
+                            <div class="message-content">@objj.Message</div>
+                            <div class="time">@objj.MessageDate</div>
+                            <div class="action-toggle" style="float: right;display:none;">
                                 <div class="dropdown">
                                     <a data-toggle="dropdown" href="#" aria-expanded="false">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
@@ -109,19 +121,17 @@
                     else
                     {
                         <div class="message-item" data-chat-message-id="@objj.ChatMeesageId">
-                            <div class="message-avatar">
-                                <figure class="avatar">
+                            <div class="message-avatar" style="display:none;padding:0px !important">
+                                @*<figure class="avatar">
                                     <img src="http://via.placeholder.com/128X128" class="rounded-circle" alt="image">
-                                </figure>
-                                <div>
-                                    <h5>@objUser.FirstName @objUser.LastName</h5>
+                                </figure>*@                              
+                            </div>
+                            <div class="message-content">@objj.Message</div>
+                              <div>
+                                    @*<h5>@objUser.FirstName @objUser.LastName</h5>*@
                                     <div class="time">@objj.MessageDate </div>
                                 </div>
-                            </div>
-                            <div class="message-content">
-                                @objj.Message
-                            </div>
-                           <div class="action-toggle" style="float: right;">
+                           <div class="action-toggle" style="float: right;display:none;">
                                 <div class="dropdown">
                                     <a data-toggle="dropdown" href="#" aria-expanded="false">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>

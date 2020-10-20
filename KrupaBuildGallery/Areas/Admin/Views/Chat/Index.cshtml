@@ -717,19 +717,17 @@
 </div>
 <div id="dvrightmsg" style="display:none;">
     <div class="message-item outgoing-message" data-chat-message-id="--MSGID--">
-        <div class="message-avatar">
-            <figure class="avatar">
+        <div class="message-avatar" style="display:none;padding:0px !important">
+            @*<figure class="avatar">
                 <img src="http://via.placeholder.com/128X128" class="rounded-circle" alt="image">
-            </figure>
-            <div>
-                <h5>--USRNAME--</h5>
-                <div class="time">--MSGDATE-- <i class="ti-double-check text-info"></i></div>
-            </div>
+            </figure>*@
         </div>
-        <div class="message-content">
-            --MSG--
+        <div class="message-content">--MSG--</div>
+        <div>
+            @* <h5>--USRNAME--</h5>*@
+            <div class="time">--MSGDATE--</div>
         </div>
-        <div class="action-toggle" style="float: right;">
+        <div class="action-toggle" style="float: right;display:none;">
             <div class="dropdown">
                 <a data-toggle="dropdown" href="#" aria-expanded="false">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
@@ -740,32 +738,31 @@
             </div>
         </div>
     </div>
-</div>
-<div id="dvleftmsg" style="display:none;">
-    <div class="message-item" data-chat-message-id="--MSGID--">
-        <div class="message-avatar">
-            <figure class="avatar">
-                <img src="http://via.placeholder.com/128X128" class="rounded-circle" alt="image">
-            </figure>
-            <div>
-                <h5>--USRNAME--</h5>
-                <div class="time">--MSGDATE--</div>
-            </div>
         </div>
-        <div class="message-content">
-            --MSG--
-        </div>
-        <div class="action-toggle" style="float: right;">
-            <div class="dropdown">
-                <a data-toggle="dropdown" href="#" aria-expanded="false">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
-                </a>
-                <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; transform: translate3d(-112px, 19px, 0px); top: 0px; left: 0px; will-change: transform;">
-                    <a href="javascript:void(0);" class="dropdown-item text-danger" onclick="deletemsg('--MSGID--');" >Delete</a>
+        <div id="dvleftmsg" style="display:none;">
+            <div class="message-item" data-chat-message-id="--MSGID--">
+                <div class="message-avatar" style="display:none;padding:0px !important">
+                    @*<figure class="avatar">
+                        <img src="http://via.placeholder.com/128X128" class="rounded-circle" alt="image">
+                    </figure>*@
+
+                </div>
+                <div class="message-content">--MSG--</div>
+                <div>
+                    @*<h5>--USRNAME--</h5>*@
+                    <div class="time">--MSGDATE--</div>
+                </div>
+                <div class="action-toggle" style="float: right;display:none;">
+                    <div class="dropdown">
+                        <a data-toggle="dropdown" href="#" aria-expanded="false">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-horizontal"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right" x-placement="bottom-end" style="position: absolute; transform: translate3d(-112px, 19px, 0px); top: 0px; left: 0px; will-change: transform;">
+                            <a href="javascript:void(0);" class="dropdown-item text-danger" onclick="deletemsg('--MSGID--');">Delete</a>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </div>
 </div>
 <input type="hidden" id="hdfLoggedInUserID" value="@CurrntUserId" />
 <input type="hidden" id="hdfLoggedInUserName" value="@clsAdminSession.UserName" />
