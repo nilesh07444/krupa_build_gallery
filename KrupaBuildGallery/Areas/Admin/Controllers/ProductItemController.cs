@@ -21,7 +21,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             _db = new krupagallarydbEntities();
         }
 
-        public ActionResult Index(int CategoryId = -1, int ProductId = -1, int SubProductId = -1, int Active = -1)
+        public ActionResult Index(int? CategoryId = null, int ProductId = -1, int SubProductId = -1, int Active = -1)
         {
             List<ProductItemVM> lstProductItem = new List<ProductItemVM>();
 
@@ -35,35 +35,42 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         IsActv = true;
                     }
                 }
-                lstProductItem = (from i in _db.tbl_ProductItems
-                                  join c in _db.tbl_Categories on i.CategoryId equals c.CategoryId
-                                  join p in _db.tbl_Products on i.ProductId equals p.Product_Id
-                                  join s in _db.tbl_SubProducts on i.SubProductId equals s.SubProductId into outerJoinSubProduct
-                                  from s in outerJoinSubProduct.DefaultIfEmpty()
-                                  where !i.IsDelete && !c.IsDelete && !p.IsDelete && (CategoryId == -1 || i.CategoryId == CategoryId) && (ProductId == -1 || i.ProductId == ProductId) && (SubProductId == -1 || i.SubProductId == SubProductId) && (Active == -1 || i.IsActive == IsActv)
-                                  select new ProductItemVM
-                                  {
-                                      ProductItemId = i.ProductItemId,
-                                      CategoryId = c.CategoryId,
-                                      ProductId = i.ProductId,
-                                      SubProductId = i.SubProductId,
-                                      ItemName = i.ItemName,
-                                      CategoryName = c.CategoryName,
-                                      ProductName = p.ProductName,
-                                      SubProductName = s.SubProductName,
-                                      MainImage = i.MainImage,
-                                      MRPPrice = i.MRPPrice,
-                                      CustomerPrice = i.CustomerPrice,
-                                      DistributorPrice = i.DistributorPrice,
-                                      IsActive = i.IsActive
-                                  }).OrderByDescending(x => x.ProductItemId).ToList();
-                if (lstProductItem != null && lstProductItem.Count() > 0)
+                if(CategoryId != null)
                 {
-                    lstProductItem.ForEach(x => { x.Sold = SoldItems(x.ProductItemId); x.InStock = ItemStock(x.ProductItemId) - x.Sold; });
+                    lstProductItem = (from i in _db.tbl_ProductItems
+                                      join c in _db.tbl_Categories on i.CategoryId equals c.CategoryId
+                                      join p in _db.tbl_Products on i.ProductId equals p.Product_Id
+                                      join s in _db.tbl_SubProducts on i.SubProductId equals s.SubProductId into outerJoinSubProduct
+                                      from s in outerJoinSubProduct.DefaultIfEmpty()
+                                      where !i.IsDelete && !c.IsDelete && !p.IsDelete && (CategoryId == -1 || i.CategoryId == CategoryId) && (ProductId == -1 || i.ProductId == ProductId) && (SubProductId == -1 || i.SubProductId == SubProductId) && (Active == -1 || i.IsActive == IsActv)
+                                      select new ProductItemVM
+                                      {
+                                          ProductItemId = i.ProductItemId,
+                                          CategoryId = c.CategoryId,
+                                          ProductId = i.ProductId,
+                                          SubProductId = i.SubProductId,
+                                          ItemName = i.ItemName,
+                                          CategoryName = c.CategoryName,
+                                          ProductName = p.ProductName,
+                                          SubProductName = s.SubProductName,
+                                          MainImage = i.MainImage,
+                                          MRPPrice = i.MRPPrice,
+                                          CustomerPrice = i.CustomerPrice,
+                                          DistributorPrice = i.DistributorPrice,
+                                          IsActive = i.IsActive
+                                      }).OrderByDescending(x => x.ProductItemId).ToList();
+                    if (lstProductItem != null && lstProductItem.Count() > 0)
+                    {
+                        lstProductItem.ForEach(x => { x.Sold = SoldItems(x.ProductItemId); x.InStock = ItemStock(x.ProductItemId) - x.Sold; });
+                    }
+                    
                 }
-
+                else
+                {
+                    CategoryId = -1;
+                }
                 ViewData["CategoryList"] = GetCategoryList();
-                ViewData["ProductList"] = GetProductListByCategoryId(CategoryId);
+                ViewData["ProductList"] = GetProductListByCategoryId(Convert.ToInt64(CategoryId));
                 ViewData["SubProductList"] = GetSubProductListByProductId(ProductId);
                 ViewBag.CatId = CategoryId;
                 ViewBag.ProductId = ProductId;
