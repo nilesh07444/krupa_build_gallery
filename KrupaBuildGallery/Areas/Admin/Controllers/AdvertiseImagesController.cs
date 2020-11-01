@@ -34,7 +34,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                      AdvertiseImageId = c.AdvertiseImageId,
                                      ImageUrl = c.AdvertiseImage, 
                                      IsActive = c.IsActive,
-                                     SliderType = c.SliderType,
+                                     SliderType = c.SliderType.HasValue ? c.SliderType.Value:3,
                                      ImageFor = c.ImageFor
                                  }).OrderByDescending(x => x.AdvertiseImageId).ToList();
 
@@ -134,7 +134,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                AdvertiseImageId = c.AdvertiseImageId,
                                ImageUrl = c.AdvertiseImage,
                                IsActive = c.IsActive ,
-                               SliderType = c.SliderType,
+                               SliderType = c.SliderType.HasValue? c.SliderType.Value : 3,
                                ImageFor = c.ImageFor
                            }).FirstOrDefault();
 

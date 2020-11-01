@@ -18,5 +18,9 @@ namespace KrupaBuildGallery
         public string PriceString { get; set; }
 
         public string ReferalCode { get; set; }
+
+        public string Email { get; set; }
+
+        public string OtpEmail { get; set; }
     }
 }

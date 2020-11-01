@@ -124,7 +124,6 @@ namespace KrupaBuildGallery.hubs
             List<string> lstcnctIds = _db.tbl_ChatUsers.Where(m => lstUsrid.Contains(m.UserId.Value) && m.IsOnline == true).Select(m => m.ConnectionId).ToList();
             Clients.Clients(lstcnctIds).UpdateMessageStatusInChatWindow(messageID, currentUserID, fromUserID);
         }
-
         public void deletemsg(long fromUserID,long MsgId)
         {
             krupagallarydbEntities _db = new krupagallarydbEntities();

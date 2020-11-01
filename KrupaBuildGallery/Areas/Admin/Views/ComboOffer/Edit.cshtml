@@ -1,7 +1,7 @@
 ﻿@model ComboOfferVM
 @{
     ViewBag.Title = "Add Combo Offer";
-    List<KrupaBuildGallery.Model.tbl_ItemVariant> lstMainVarint = ViewData["MainVariantList"] as List<KrupaBuildGallery.Model.tbl_ItemVariant>;
+    List<KrupaBuildGallery.VariantItemVM> lstMainVarint = ViewData["MainVariantList"] as List<KrupaBuildGallery.VariantItemVM>;
   
 }
 
@@ -56,6 +56,8 @@
                                 @Html.EditorFor(model => model.ComboOfferPrice, new { htmlAttributes = new { @class = "form-control col-md-4", @placeholder = "Enter Offer Price", maxlength = "150" } })
 
                                 <lable class="col-xl-3 col-md-4" id="actualprice"></lable>
+                                <input type="hidden" name="hdnTotalActualOfferPrice" id="hdnTotalActualOfferPrice" value="0" />
+                                <input type="hidden" name="hdnTotalActualMRPPrice" id="hdnTotalActualMRPPrice" value="0" />
                                 @Html.ValidationMessageFor(model => model.ComboOfferPrice, "", new { @class = "text-danger" })
                             </div>
 
@@ -157,7 +159,7 @@
                                                 {
                                                     selectt = "selected";
                                                 }
-                                                <option value="@objj.VariantItemId" @selectt data-custprc="@objj.CustomerPrice">@objj.UnitQty</option>
+                                                <option value="@objj.VariantItemId" @selectt data-custprc="@objj.CustomerPrice" data-mrpprc="@objj.MRPPrice" >@objj.UnitQtys</option>
 
                                             }
                                         }
@@ -175,6 +177,7 @@
                                 <div class="col-sm-2">
                                     <label id="lbltotl" style="font-weight:bold;"></label>
                                     <input type="hidden" value="0" id="hdnTotalMain" />
+                                    <input type="hidden" value="0" id="hdnTotalMRPMain" name="hdnTotalMRPMain" />
                                 </div>
                             </div>
                             <div id="SubItems">
@@ -355,50 +358,74 @@
     function calculateprice(idds) {
         var prcc = 0;
         var qtyy = 0;
+        var mrpprcc = 0;
         if ($("#Qty_" + idds).val() != "" && $("#Qty_" + idds).val() != "0") {
             qtyy = $("#Qty_" + idds).val();
         }
         if($("#VarintItem_" + idds).val() != "" && $("#VarintItem_" + idds).val() != "0") {
-            prcc = Math.round(parseFloat($("#VarintItem_" + idds + " option:selected").attr("data-custprc")),2);
+            prcc = Math.round(parseFloat($("#VarintItem_" + idds + " option:selected").attr("data-custprc")), 2);
+            mrpprcc = Math.round(parseFloat($("#VarintItem_" + idds + " option:selected").attr("data-mrpprc")), 2);
         }
-        var totll = Math.round(prcc * qtyy,2);
+        var totll = Math.round(prcc * qtyy, 2);
+        var totllmrp = Math.round(mrpprcc * qtyy, 2);      
         $("#hdntotl_" + idds).val(totll);
-        $("#lbltotl_" + idds).text("Total: Rs " + totll);
+        $("#hdnmrptotl_" + idds).val(totllmrp);
+        $("#lbltotl_" + idds).text("Total CustomerPrc: Rs " + totll + "Total MRPPrc: Rs " + totllmrp); 
         TotalActualPrice();
     }
 
     function calculatmain() {
         var prcc = 0;
         var qtyy = 0;
+        var mrpprcc = 0;
         if ($("#Main_Qty").val() != "" && $("#Main_Qty").val() != "0") {
             qtyy = $("#Main_Qty").val();
         }
         if ($("#MainVariantItem").val() != "" && $("#MainVariantItem").val() != "0") {
             prcc = Math.round(parseFloat($("#MainVariantItem option:selected").attr("data-custprc")), 2);
+            mrpprcc = Math.round(parseFloat($("#MainVariantItem option:selected").attr("data-mrpprc")), 2);
         }
         var totll = Math.round(prcc * qtyy, 2);
-        $("#lbltotl").text("Total: Rs " + totll);
+        var totllmrp = Math.round(mrpprcc * qtyy, 2);      
+        $("#lbltotl").text("Total CustomerPrc: Rs " + totll + "Total MRPPrc: Rs " + totllmrp);
         $("#hdnTotalMain").val(totll);
+        $("#hdnTotalMRPMain").val(totllmrp);
         TotalActualPrice();
     }
 
 
     function TotalActualPrice() {
         var ttl = 0;
+        var ttlMrp = 0;
         $("input[name=hdntotl]").each(function () {
             if ($(this).val() != "" && $(this).val() != "0") {
-                ttl = ttl + Math.round(parseFloat($(this).val()),2);
+                ttl = ttl + Math.round(parseFloat($(this).val()), 2);
             }
         })
         if ($("#hdnTotalMain").val() != "" && $("#hdnTotalMain").val() != "0") {
             ttl = ttl + Math.round(parseFloat($("#hdnTotalMain").val()), 2);
         }
 
-        $("#actualprice").text("Actual Total: Rs " + ttl);
+        $("input[name=hdnmrptotal]").each(function () {
+            if ($(this).val() != "" && $(this).val() != "0") {
+                ttlMrp = ttlMrp + Math.round(parseFloat($(this).val()), 2);
+            }
+        })
+        if ($("#hdnTotalMRPMain").val() != "" && $("#hdnTotalMRPMain").val() != "0") {
+            ttlMrp = ttlMrp + Math.round(parseFloat($("#hdnTotalMRPMain").val()), 2);
+        }
+
+        $("#actualprice").text("Actual Total Customer: Rs " + ttl + "Total MRP: Rs " + ttlMrp);
+        $("#hdnTotalActualOfferPrice").val(ttl);
+        $("#hdnTotalActualMRPPrice").val(ttl);
     }
 
     jQuery(document).ready(function () {       
         calculatmain();
+        $("select[name=SubItemVarints").each(function () {
+            var idss = $(this).attr("data-id");
+            calculateprice(idss);
+        })
     });
 </script>
 

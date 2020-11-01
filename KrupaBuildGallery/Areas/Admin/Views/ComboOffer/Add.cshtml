@@ -54,6 +54,7 @@
 
                                 <lable class="col-xl-3 col-md-4" id="actualprice"></lable>
                                 <input type="hidden" name="hdnTotalActualOfferPrice" id="hdnTotalActualOfferPrice" value="0" />
+                                <input type="hidden" name="hdnTotalActualMRPPrice" id="hdnTotalActualMRPPrice" value="0" />
                                 @Html.ValidationMessageFor(model => model.ComboOfferPrice, "", new { @class = "text-danger" })
                             </div>
 
@@ -152,6 +153,7 @@
                                 <div class="col-sm-2">
                                     <label id="lbltotl" style="font-weight:bold;"></label>
                                     <input type="hidden" value="0" id="hdnTotalMain" name="hdnTotalMain" />
+                                    <input type="hidden" value="0" id="hdnTotalMRPMain" name="hdnTotalMRPMain" />
                                 </div>
                             </div>
                             <div id="SubItems">
@@ -296,7 +298,7 @@
                     var htmlData = "<option value='0'>-Select Variants-</option>";
                     if (result && result.length > 0) {
                         result.forEach(element => {
-                            htmlData += "<option value='" + element.VariantItemId + "' data-custprc='" + element.CustomerPrice+"'> " + element.UnitQty + " </option>";
+                            htmlData += "<option value='" + element.VariantItemId + "' data-custprc='" + element.CustomerPrice + "'data-mrpprc='" + element.MRPPrice + "'> " + element.UnitQtys + " </option>";
                         });
                     }
                     $("#MainVariantItem").html(htmlData);
@@ -363,37 +365,47 @@
 
     function calculateprice(idds) {        
         var prcc = 0;
+        var mrpprcc = 0;
         var qtyy = 0;
         if ($("#Qty_" + idds).val() != "" && $("#Qty_" + idds).val() != "0") {
             qtyy = $("#Qty_" + idds).val();
         }
         if($("#VarintItem_" + idds).val() != "" && $("#VarintItem_" + idds).val() != "0") {
-            prcc = Math.round(parseFloat($("#VarintItem_" + idds + " option:selected").attr("data-custprc")),2);
+            prcc = Math.round(parseFloat($("#VarintItem_" + idds + " option:selected").attr("data-custprc")), 2);
+            mrpprcc = Math.round(parseFloat($("#VarintItem_" + idds + " option:selected").attr("data-mrpprc")), 2);
         }
-        var totll = Math.round(prcc * qtyy,2);
+        var totll = Math.round(prcc * qtyy, 2);      
+        var totllmrp = Math.round(mrpprcc * qtyy, 2);      
         $("#hdntotl_" + idds).val(totll);
-        $("#lbltotl_" + idds).text("Total: Rs " + totll);
+        $("#hdnmrptotl_" + idds).val(totllmrp);
+        $("#lbltotl_" + idds).html("Total CustomerPrc: Rs " + totll + "<br/> Total MRPPrc: Rs " + totllmrp); 
         TotalActualPrice();
     }
 
     function calculatmain() {
         var prcc = 0;
         var qtyy = 0;
+        var mrpprcc = 0;
         if ($("#Main_Qty").val() != "" && $("#Main_Qty").val() != "0") {
             qtyy = $("#Main_Qty").val();
         }
         if ($("#MainVariantItem").val() != "" && $("#MainVariantItem").val() != "0") {
             prcc = Math.round(parseFloat($("#MainVariantItem option:selected").attr("data-custprc")), 2);
+            mrpprcc = Math.round(parseFloat($("#MainVariantItem option:selected").attr("data-mrpprc")), 2);
         }
-        var totll = Math.round(prcc * qtyy, 2);        
-        $("#lbltotl").text("Total: Rs " + totll);
+        var totll = Math.round(prcc * qtyy, 2);   
+        var totllmrp = Math.round(mrpprcc * qtyy, 2);      
+        $("#lbltotl").html("Total CustomerPrc: Rs " + totll + "<br/> Total MRPPrc: Rs " + totllmrp);         
         $("#hdnTotalMain").val(totll);
+        $("#hdnTotalMRPMain").val(totllmrp);
+        
         TotalActualPrice();
     }
 
 
     function TotalActualPrice() {
         var ttl = 0;
+        var ttlMrp = 0;
         $("input[name=hdntotl]").each(function () {
             if ($(this).val() != "" && $(this).val() != "0") {
                 ttl = ttl + Math.round(parseFloat($(this).val()),2);
@@ -403,8 +415,18 @@
             ttl = ttl + Math.round(parseFloat($("#hdnTotalMain").val()), 2);
         }
 
-        $("#actualprice").text("Actual Total: Rs " + ttl);
+        $("input[name=hdnmrptotal]").each(function () {
+            if ($(this).val() != "" && $(this).val() != "0") {
+                ttlMrp = ttlMrp + Math.round(parseFloat($(this).val()), 2);
+            }
+        })
+        if ($("#hdnTotalMRPMain").val() != "" && $("#hdnTotalMRPMain").val() != "0") {
+            ttlMrp = ttlMrp + Math.round(parseFloat($("#hdnTotalMRPMain").val()), 2);
+        }
+
+        $("#actualprice").html("Actual Total Customer: Rs " + ttl + "<br/> Total MRP: Rs " + ttlMrp);
         $("#hdnTotalActualOfferPrice").val(ttl);
+        $("#hdnTotalActualMRPPrice").val(ttlMrp);
     }
 </script>
 

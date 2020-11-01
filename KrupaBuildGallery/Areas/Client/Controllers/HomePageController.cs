@@ -174,7 +174,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                   select new AdvertiseImageVM
                                   {
                                       AdvertiseImageId = c.AdvertiseImageId,
-                                      SliderType = c.SliderType,
+                                      SliderType = c.SliderType.HasValue? c.SliderType.Value : 3,
                                       ImageUrl = c.AdvertiseImage,
                                       ImageFor = c.ImageFor
                                   }).Where(x => x.ImageFor == 1).OrderByDescending(x => x.AdvertiseImageId).ToList();

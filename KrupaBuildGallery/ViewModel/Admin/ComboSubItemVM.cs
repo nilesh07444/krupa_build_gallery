@@ -16,7 +16,7 @@ namespace KrupaBuildGallery.ViewModel.Admin
         public List<SelectListItem> Sub_ProductList { get; set; }
         public List<SelectListItem> Sub_SubProductList { get; set; }
         public List<SelectListItem> Sub_ProductItemList { get; set; }
-        public List<tbl_ItemVariant> Sub_ProductVariantList { get; set; }
+        public List<VariantItemVM> Sub_ProductVariantList { get; set; }
         public string Sub_CategoryName { get; set; }
         public string Sub_ProductName { get; set; }
         public string Sub_SubProductName { get; set; }

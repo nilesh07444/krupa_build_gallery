@@ -111,7 +111,7 @@
                             {
                                 strselc = "selected";
                             }
-                            <option value="@objj.VariantItemId" @strselc data-custprc="@objj.CustomerPrice">@objj.UnitQty</option>
+                            <option value="@objj.VariantItemId" @strselc data-custprc="@objj.CustomerPrice" data-mrpprc="@objj.MRPPrice"  >@objj.UnitQtys</option>
                         }
                     }
                 </select>
@@ -129,6 +129,7 @@
                 <label id="lbltotl_@cnt" style="font-weight:bold;">Total: Rs @objSub.ActualPrice</label>
                 <br />
                 <input type="hidden" id="hdntotl_@cnt" name="hdntotl" value="@objSub.ActualPrice" />
+                <input type="hidden" id="hdnmrptotl_@cnt" name="hdnmrptotal" value="0" />
                 <a href="javascipt:void(0)" style="color:red;display:none;" title="Remove" onclick="removesubitem('@cnt');"><i class="fa fa-trash font-danger"></i></a>
             </div>
         </div>
@@ -241,8 +242,8 @@
                 success: function (result) {
                     var htmlData = "<option value='0'>-Select Variants-</option>";
                     if (result && result.length > 0) {
-                        result.forEach(element => {
-                            htmlData += "<option value='" + element.VariantItemId + "' data-custprc='" + element.CustomerPrice+"'> " + element.UnitQty + " </option>";
+                        result.forEach(element => {                            
+                            htmlData += "<option value='" + element.VariantItemId + "' data-custprc='" + element.CustomerPrice + "'data-mrpprc='" + element.MRPPrice + "'> " + element.UnitQtys + " </option>";
                         });
                     }
                     $("#VarintItem_@cnt").html(htmlData);

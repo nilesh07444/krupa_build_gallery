@@ -10,14 +10,15 @@
 namespace KrupaBuildGallery.Model
 {
     using System;
+    using System.Collections.Generic;
     
-    public partial class sp_GetNotificationList1_Result
+    public partial class tbl_ChatRoom
     {
-        public long NotificationId { get; set; }
-        public string NotificationDescription { get; set; }
-        public string NotificationImage { get; set; }
-        public string NotificationTitle { get; set; }
-        public System.DateTime CreatedDate { get; set; }
-        public long IsRead { get; set; }
+        public long Pk_ChatRoomId { get; set; }
+        public string RoomUniqueId { get; set; }
+        public string RoomName { get; set; }
+        public Nullable<bool> IsDeleted { get; set; }
+        public Nullable<long> CreatedBy { get; set; }
+        public Nullable<bool> IsPrivate { get; set; }
     }
 }

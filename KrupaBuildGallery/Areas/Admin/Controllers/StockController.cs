@@ -327,7 +327,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         public int ItemStock(long ItemId)
         {
             long? TotalStock = _db.tbl_ItemStocks.Where(o => o.IsActive == true && o.IsDelete == false && o.ProductItemId == ItemId).Sum(o => (long?)o.Qty);
-            if (TotalStock != null)
+            if (TotalStock == null)
             {
                 TotalStock = 0;
             }
@@ -336,7 +336,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         public int SoldItems(long ItemId)
         {
             long? TotalSold = _db.tbl_OrderItemDetails.Where(o => o.ProductItemId == ItemId && o.IsDelete == false).Sum(o => (long?)o.QtyUsed.Value);
-            if (TotalSold != null)
+            if (TotalSold == null)
             {
                 TotalSold = 0;
             }
@@ -723,5 +723,185 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 _db.SaveChanges();
             }
         }
+
+        public void AllItemCurrentStock()
+        {
+          ExcelPackage excel = new ExcelPackage();
+          List<tbl_Categories> lstCategories = _db.tbl_Categories.Where(o => o.IsActive == true && o.IsDelete == false).ToList();
+          string[] arrycolmns = new string[] {"Category","Product","SubProduct","ItemName","Stock"};
+          var workSheet = excel.Workbook.Worksheets.Add("Report");
+          workSheet.Cells[1, 1].Style.Font.Bold = true;
+          workSheet.Cells[1, 1].Style.Font.Size = 20;
+          workSheet.Cells[1, 1].Style.VerticalAlignment = ExcelVerticalAlignment.Top;
+          workSheet.Cells[1, 1].Value = "Stock Report";
+          for (var col = 1; col < arrycolmns.Length + 1; col++)
+           {
+                workSheet.Cells[2, col].Style.Font.Bold = true;
+                workSheet.Cells[2, col].Style.Font.Size = 14;
+                workSheet.Cells[2, col].Value = arrycolmns[col - 1];
+                workSheet.Cells[2, col].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                workSheet.Cells[2, col].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                ///workSheet.Cells[2, col].AutoFitColumns(30, 150);
+                workSheet.Cells[2, col].AutoFitColumns(40,70);
+                workSheet.Cells[2, col].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[2, col].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[2, col].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[2, col].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[2, col].Style.WrapText = false;
+            }
+            int row1 = 1;
+            if(lstCategories != null && lstCategories.Count() > 0)
+            {
+                foreach(var objCt in lstCategories)
+                {
+                    workSheet.Cells[row1 + 2, 1].Style.Font.Bold = true;
+                    workSheet.Cells[row1 + 2, 1].Style.Font.Size = 13;
+                    workSheet.Cells[row1 + 2, 1].Value = objCt.CategoryName;
+                    workSheet.Cells[row1 + 2, 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                    workSheet.Cells[row1 + 2, 1].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                    workSheet.Cells[row1 + 2, 1, row1 + 2, 5].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2,1,row1 + 2, 5].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2,1,row1 + 2, 5].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 1, row1 + 2, 5].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                    workSheet.Cells[row1 + 2, 1, row1 + 2, 5].Style.WrapText = false;
+                    workSheet.Cells[row1 + 2, 1, row1 + 2, 5].Merge = true;
+                    row1 = row1 + 1;
+                    List<tbl_Products> lstProducts = _db.tbl_Products.Where(o => o.CategoryId == objCt.CategoryId && o.IsActive == true && o.IsDelete == false).ToList();
+                    if(lstProducts != null && lstProducts.Count() > 0)
+                    {
+                        foreach(var objPrdin in lstProducts)
+                        {
+                            workSheet.Cells[row1 + 2, 2].AutoFitColumns(40, 70);
+                            workSheet.Cells[row1 + 2, 2].Style.Font.Bold = true;
+                            workSheet.Cells[row1 + 2, 2].Style.Font.Size = 12;
+                            workSheet.Cells[row1 + 2, 2].Value = objPrdin.ProductName;
+                            workSheet.Cells[row1 + 2, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                            workSheet.Cells[row1 + 2, 2].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                            workSheet.Cells[row1 + 2,2].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                            workSheet.Cells[row1 + 2,2].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                            workSheet.Cells[row1 + 2,2].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                            workSheet.Cells[row1 + 2,2].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                            workSheet.Cells[row1 + 2,2].Style.WrapText = true;
+                            
+                            row1 = row1 + 1;                           
+                            List<tbl_SubProducts> lstSubProducts = _db.tbl_SubProducts.Where(o => o.CategoryId == objCt.CategoryId && o.ProductId == objPrdin.Product_Id && o.IsActive == true && o.IsDelete == false).ToList();
+                            if(lstSubProducts != null && lstSubProducts.Count() > 0)
+                            {
+                                foreach(var objSubPro in lstSubProducts)
+                                {
+                                    workSheet.Cells[row1 + 2, 3].Style.Font.Bold = true;
+                                    workSheet.Cells[row1 + 2, 3].AutoFitColumns(40, 70);
+                                    workSheet.Cells[row1 + 2, 3].Style.Font.Size = 12;
+                                    workSheet.Cells[row1 + 2, 3].Value = objSubPro.SubProductName;
+                                    workSheet.Cells[row1 + 2, 3].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                                    workSheet.Cells[row1 + 2, 3].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                                    workSheet.Cells[row1 + 2, 1, row1 + 2, 5].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 1, row1 + 2, 5].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 1, row1 + 2, 5].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 1, row1 + 2, 5].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 1, row1 + 2, 5].Style.WrapText = true;
+                                    
+                                    row1 = row1 + 1;
+                                    List<tbl_ProductItems> lstItmswithSub = _db.tbl_ProductItems.Where(o => o.CategoryId == objCt.CategoryId && o.ProductId == objPrdin.Product_Id && o.SubProductId == objSubPro.SubProductId).ToList();
+                                    if(lstItmswithSub != null && lstItmswithSub.Count() > 0)
+                                    {
+                                        foreach(var objItm in lstItmswithSub)
+                                        {
+                                            workSheet.Cells[row1 + 2, 4].Style.Font.Bold = false;
+                                            workSheet.Cells[row1 + 2, 4].Style.Font.Size = 11;
+                                            workSheet.Cells[row1 + 2, 4].AutoFitColumns(40, 70);
+                                            workSheet.Cells[row1 + 2, 4].Value = objItm.ItemName;
+                                            workSheet.Cells[row1 + 2, 4].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                                            workSheet.Cells[row1 + 2, 4].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                                            workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                            workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                            workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                            workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                            workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.WrapText = true;
+                                    
+                                            decimal Itmstk = Convert.ToDecimal(ItemStock(objItm.ProductItemId));
+                                            decimal SoldItm = Convert.ToDecimal(SoldItems(objItm.ProductItemId));
+                                            decimal reminingstk = Itmstk - SoldItm;
+                                            workSheet.Cells[row1 + 2, 5].Style.Font.Bold = false;
+                                            workSheet.Cells[row1 + 2, 5].Style.Font.Size = 11;
+                                            workSheet.Cells[row1 + 2, 5].Value = reminingstk;
+                                            workSheet.Cells[row1 + 2, 5].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                                            workSheet.Cells[row1 + 2, 5].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                                            workSheet.Cells[row1 + 2, 5].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                            workSheet.Cells[row1 + 2,5].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                            workSheet.Cells[row1 + 2,5].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                            workSheet.Cells[row1 + 2,5].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                            workSheet.Cells[row1 + 2,5].Style.WrapText = false;                                            
+                                            row1 = row1 + 1;
+                                        }
+                                    }
+                                }                               
+                            }
+
+                            List<tbl_ProductItems> lstItmswithoutSub = _db.tbl_ProductItems.Where(o => o.CategoryId == objCt.CategoryId && o.ProductId == objPrdin.Product_Id && (o.SubProductId == null || o.SubProductId == 0)).ToList();
+                            if (lstItmswithoutSub != null && lstItmswithoutSub.Count() > 0)
+                            {
+                                workSheet.Cells[row1 + 2, 3].Style.Font.Bold = true;
+                                workSheet.Cells[row1 + 2, 3].Style.Font.Size = 12;
+                                workSheet.Cells[row1 + 2, 3].Value = objPrdin.ProductName+ "'s Items (Without SubProduct)";
+                                workSheet.Cells[row1 + 2, 3].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                                workSheet.Cells[row1 + 2, 3].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                                workSheet.Cells[row1 + 2, 1, row1 + 2, 5].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                workSheet.Cells[row1 + 2, 1, row1 + 2, 5].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                workSheet.Cells[row1 + 2, 1, row1 + 2, 5].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                workSheet.Cells[row1 + 2, 1, row1 + 2, 5].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                workSheet.Cells[row1 + 2, 1, row1 + 2, 5].Style.WrapText = false;
+                               
+                                row1 = row1 + 1;
+
+                                foreach (var objItm in lstItmswithoutSub)
+                                {
+                                    workSheet.Cells[row1 + 2, 4].Style.Font.Bold = false;
+                                    workSheet.Cells[row1 + 2, 4].Style.Font.Size = 11;
+                                    workSheet.Cells[row1 + 2, 4].Value = objItm.ItemName;
+                                    workSheet.Cells[row1 + 2, 4].AutoFitColumns(40, 70);
+                                    workSheet.Cells[row1 + 2, 4].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                                    workSheet.Cells[row1 + 2, 4].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                                    workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.WrapText = true;
+                                    
+                                    decimal Itmstk = Convert.ToDecimal(ItemStock(objItm.ProductItemId));
+                                    decimal SoldItm = Convert.ToDecimal(SoldItems(objItm.ProductItemId));
+                                    decimal reminingstk = Itmstk - SoldItm;
+                                    workSheet.Cells[row1 + 2, 5].Style.Font.Bold = false;
+                                    workSheet.Cells[row1 + 2, 5].Style.Font.Size = 11;
+                                    workSheet.Cells[row1 + 2, 5].Value = reminingstk;
+                                    workSheet.Cells[row1 + 2, 5].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                                    workSheet.Cells[row1 + 2, 5].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                                    workSheet.Cells[row1 + 2, 5].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 5].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 5].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 5].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, 5].Style.WrapText = false;
+                                    row1 = row1 + 1;
+                                }
+                            }
+                           // if (lstItmswithSub != null && )
+                        }
+                    }
+                }
+            }
+
+            using (var memoryStream = new MemoryStream())
+            {
+                //excel.Workbook.Worksheets.MoveToStart("Summary");  //move sheet from last to first : Code by Gunjan
+                Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                Response.AddHeader("content-disposition", "attachment;  filename=Full Stock Report.xlsx");
+                excel.SaveAs(memoryStream);
+                memoryStream.WriteTo(Response.OutputStream);
+                Response.Flush();
+                Response.End();
+            }
+        }
+
+       
     }
 }

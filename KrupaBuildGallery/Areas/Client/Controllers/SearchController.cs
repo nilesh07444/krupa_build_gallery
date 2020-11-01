@@ -15,7 +15,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             _db = new krupagallarydbEntities();
         }
         // GET: Client/Search
-        public ActionResult Index(string q)
+        public ActionResult Index(string q,int sortby = 3)
         {
             List<ProductItemVM> lstProductItem = new List<ProductItemVM>();
             try
@@ -40,48 +40,53 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                       DistributorPrice = i.DistributorPrice,
                                       IsActive = i.IsActive
                                   }).OrderBy(x => x.ItemName).ToList();
-
+                List<tbl_ReviewRating> lstRatings = _db.tbl_ReviewRating.ToList();
                 if (clsClientSession.UserID != 0)
                 {
                     long UserId = clsClientSession.UserID;
                     List<long> wishlistitemsId = _db.tbl_WishList.Where(o => o.ClientUserId == UserId).Select(o => o.ItemId.Value).ToList();
-                    lstProductItem.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
+                    lstProductItem.ForEach(x => { x.IsWishListItem = IsInWhishList(x.ProductItemId, wishlistitemsId); x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); x.Ratings = GetRatingOfItem(x.ProductItemId, lstRatings);});
                 }
                 else
                 {
-                    lstProductItem.ForEach(x => { x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); });
+                    lstProductItem.ForEach(x => { x.CustomerPrice = GetOfferPrice(x.ProductItemId, x.CustomerPrice); x.DistributorPrice = GetDistributorOfferPrice(x.ProductItemId, x.DistributorPrice); x.Ratings = GetRatingOfItem(x.ProductItemId, lstRatings); });
                 }
 
-                //if (sortby == 1)
-                //{
-                //    if (clsClientSession.UserID == 0 || clsClientSession.RoleID == 1)
-                //    {
-                //        lstProductItem = lstProductItem.OrderBy(o => o.CustomerPrice).ToList();
-                //    }
-                //    else
-                //    {
-                //        lstProductItem = lstProductItem.OrderBy(o => o.DistributorPrice).ToList();
-                //    }
-                //}
-                //else if (sortby == 2)
-                //{
-                //    if (clsClientSession.UserID == 0 || clsClientSession.RoleID == 1)
-                //    {
-                //        lstProductItem = lstProductItem.OrderByDescending(o => o.CustomerPrice).ToList();
-                //    }
-                //    else
-                //    {
-                //        lstProductItem = lstProductItem.OrderByDescending(o => o.DistributorPrice).ToList();
-                //    }
-                //}
-                //else if (sortby == 3)
-                //{
-                //    lstProductItem = lstProductItem.OrderBy(o => o.ItemName).ToList();
-                //}
-                //else if (sortby == 4)
-                //{
-                //    lstProductItem = lstProductItem.OrderByDescending(o => o.ItemName).ToList();
-                //}
+                if (sortby == 1)
+                {
+                    if (clsClientSession.UserID == 0 || clsClientSession.RoleID == 1)
+                    {
+                        lstProductItem = lstProductItem.OrderBy(o => o.CustomerPrice).ToList();
+                    }
+                    else
+                    {
+                        lstProductItem = lstProductItem.OrderBy(o => o.DistributorPrice).ToList();
+                    }
+                }
+                else if (sortby == 2)
+                {
+                    if (clsClientSession.UserID == 0 || clsClientSession.RoleID == 1)
+                    {
+                        lstProductItem = lstProductItem.OrderByDescending(o => o.CustomerPrice).ToList();
+                    }
+                    else
+                    {
+                        lstProductItem = lstProductItem.OrderByDescending(o => o.DistributorPrice).ToList();
+                    }
+                }
+                else if (sortby == 3)
+                {
+                    lstProductItem = lstProductItem.OrderBy(o => o.ItemName).ToList();
+                }
+                else if (sortby == 4)
+                {
+                    lstProductItem = lstProductItem.OrderByDescending(o => o.ItemName).ToList();
+                }
+                else if(sortby == 5)
+                {
+                    lstProductItem = lstProductItem.OrderByDescending(o => o.Ratings).ToList();
+                }
+                ViewBag.SortBy = sortby;
                 ViewBag.Search = q;
             }
             catch (Exception ex)
@@ -143,6 +148,17 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 TotalSold = 0;
             }
             return Convert.ToInt32(TotalSold);
+        }
+
+        public decimal GetRatingOfItem(long ItemId, List<tbl_ReviewRating> lstreviewratings)
+        {
+            decimal rating = 0;
+            var lstt = lstreviewratings.Where(o => o.ProductItemId == ItemId).ToList();
+            if (lstt != null && lstt.Count() > 0)
+            {
+                rating = lstt.Select(o => o.Rating.Value).Average();
+            }
+            return rating;
         }
     }
 }

@@ -80,7 +80,7 @@
           <Property Name="AdvertiseImageId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="AdvertiseImage" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="ImageFor" Type="int" />
-          <Property Name="SliderType" Type="int" Nullable="false" />
+          <Property Name="SliderType" Type="int" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
           <Property Name="IsDeleted" Type="bit" Nullable="false" />
           <Property Name="CreatedBy" Type="int" Nullable="false" />
@@ -154,6 +154,29 @@
           <Property Name="Status" Type="nvarchar(max)" />
           <Property Name="MessageDate" Type="datetime" />
           <Property Name="UpdateDate" Type="datetime" />
+          <Property Name="RoomId" Type="bigint" />
+          <Property Name="RoomUniqueId" Type="nvarchar" MaxLength="200" />
+        </EntityType>
+        <EntityType Name="tbl_ChatRoom">
+          <Key>
+            <PropertyRef Name="Pk_ChatRoomId" />
+          </Key>
+          <Property Name="Pk_ChatRoomId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RoomUniqueId" Type="nvarchar" MaxLength="150" />
+          <Property Name="RoomName" Type="nvarchar" MaxLength="500" />
+          <Property Name="IsDeleted" Type="bit" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="IsPrivate" Type="bit" />
+        </EntityType>
+        <EntityType Name="tbl_ChatRoomUsers">
+          <Key>
+            <PropertyRef Name="ChatRoomUserId" />
+          </Key>
+          <Property Name="ChatRoomUserId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Fk_ChatRoomId" Type="bigint" />
+          <Property Name="Fk_UserId" Type="bigint" />
+          <Property Name="LastAccessDate" Type="datetime" />
+          <Property Name="IsDeleted" Type="bit" />
         </EntityType>
         <EntityType Name="tbl_ChatUsers">
           <Key>
@@ -1071,6 +1094,8 @@
           <EntitySet Name="tbl_CashDeliveryAmount" EntityType="Self.tbl_CashDeliveryAmount" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Categories" EntityType="Self.tbl_Categories" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ChatMessages" EntityType="Self.tbl_ChatMessages" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_ChatRoom" EntityType="Self.tbl_ChatRoom" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_ChatRoomUsers" EntityType="Self.tbl_ChatRoomUsers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ChatUsers" EntityType="Self.tbl_ChatUsers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ClientOtherDetails" EntityType="Self.tbl_ClientOtherDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ClientRoles" EntityType="Self.tbl_ClientRoles" Schema="dbo" store:Type="Tables" />
@@ -1625,16 +1650,15 @@
           <EntitySet Name="tbl_Notification" EntityType="krupagalleryModel.tbl_Notification" />
           <EntitySet Name="tbl_NotificationUserRead" EntityType="krupagalleryModel.tbl_NotificationUserRead" />
           <EntitySet Name="tbl_ItemAvailablePincode" EntityType="krupagalleryModel.tbl_ItemAvailablePincode" />
-          <FunctionImport Name="sp_GetNotificationList" ReturnType="Collection(krupagalleryModel.sp_GetNotificationList_Result)">
-          <Parameter Name="ClientUserId" Mode="In" Type="Int32" />
-          </FunctionImport>
           <EntitySet Name="tbl_SMSContent" EntityType="krupagalleryModel.tbl_SMSContent" />
-          <FunctionImport Name="sp_GetNotificationList1" ReturnType="Collection(krupagalleryModel.sp_GetNotificationList1_Result)">
-          <Parameter Name="ClientUserId" Mode="In" Type="Int32" />
-          </FunctionImport>
           <EntitySet Name="tbl_ChatMessages" EntityType="krupagalleryModel.tbl_ChatMessages" />
           <EntitySet Name="tbl_ChatUsers" EntityType="krupagalleryModel.tbl_ChatUsers" />
           <EntitySet Name="tbl_DeletedChatMessage" EntityType="krupagalleryModel.tbl_DeletedChatMessage" />
+          <FunctionImport Name="sp_GetNotificationList" ReturnType="Collection(krupagalleryModel.sp_GetNotificationList_Result)">
+          <Parameter Name="ClientUserId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <EntitySet Name="tbl_ChatRoom" EntityType="krupagalleryModel.tbl_ChatRoom" />
+          <EntitySet Name="tbl_ChatRoomUsers" EntityType="krupagalleryModel.tbl_ChatRoomUsers" />
         </EntityContainer>
         <EntityType Name="tbl_AdminRoles">
           <Key>
@@ -1873,7 +1897,7 @@
           <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="UpdatedBy" Type="Int32" />
           <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
-          <Property Name="SliderType" Type="Int32" Nullable="false" />
+          <Property Name="SliderType" Type="Int32" />
           <Property Name="ImageFor" Type="Int32" />
         </EntityType>
         <EntityType Name="tbl_SecondCart">
@@ -2240,14 +2264,6 @@
           <Property Name="Pincode" Type="Int32" />
           <Property Name="ProductItemId" Type="Int64" />
         </EntityType>
-        <ComplexType Name="sp_GetNotificationList_Result">
-          <Property Type="Int64" Name="NotificationId" Nullable="false" />
-          <Property Type="String" Name="NotificationDescription" Nullable="false" MaxLength="1000" />
-          <Property Type="String" Name="NotificationImage" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="NotificationTitle" Nullable="false" MaxLength="100" />
-          <Property Type="DateTime" Name="CreatedDate" Nullable="false" Precision="23" />
-          <Property Type="Int64" Name="IsRead" Nullable="false" />
-        </ComplexType>
         <EntityType Name="tbl_SMSContent">
           <Key>
             <PropertyRef Name="SMSContentId" />
@@ -2257,14 +2273,6 @@
           <Property Name="SMSDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="SeqNo" Type="Int32" />
         </EntityType>
-        <ComplexType Name="sp_GetNotificationList1_Result">
-          <Property Type="Int64" Name="NotificationId" Nullable="false" />
-          <Property Type="String" Name="NotificationDescription" Nullable="false" MaxLength="1000" />
-          <Property Type="String" Name="NotificationImage" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="NotificationTitle" Nullable="false" MaxLength="100" />
-          <Property Type="DateTime" Name="CreatedDate" Nullable="false" Precision="23" />
-          <Property Type="Int64" Name="IsRead" Nullable="false" />
-        </ComplexType>
         <EntityType Name="tbl_ChatMessages">
           <Key>
             <PropertyRef Name="ChatMeesageId" />
@@ -2276,6 +2284,8 @@
           <Property Name="Status" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="MessageDate" Type="DateTime" Precision="3" />
           <Property Name="UpdateDate" Type="DateTime" Precision="3" />
+          <Property Name="RoomId" Type="Int64" />
+          <Property Name="RoomUniqueId" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_ChatUsers">
           <Key>
@@ -2295,6 +2305,35 @@
           <Property Name="UserId" Type="Int64" />
           <Property Name="MessageId" Type="Int64" />
           <Property Name="DeletedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <ComplexType Name="sp_GetNotificationList_Result">
+          <Property Type="Int64" Name="NotificationId" Nullable="false" />
+          <Property Type="String" Name="NotificationDescription" Nullable="false" MaxLength="1000" />
+          <Property Type="String" Name="NotificationImage" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="NotificationTitle" Nullable="false" MaxLength="100" />
+          <Property Type="DateTime" Name="CreatedDate" Nullable="false" Precision="23" />
+          <Property Type="Int64" Name="IsRead" Nullable="false" />
+        </ComplexType>
+        <EntityType Name="tbl_ChatRoom">
+          <Key>
+            <PropertyRef Name="Pk_ChatRoomId" />
+          </Key>
+          <Property Name="Pk_ChatRoomId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RoomUniqueId" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="RoomName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="IsPrivate" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="tbl_ChatRoomUsers">
+          <Key>
+            <PropertyRef Name="ChatRoomUserId" />
+          </Key>
+          <Property Name="ChatRoomUserId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Fk_ChatRoomId" Type="Int64" />
+          <Property Name="Fk_UserId" Type="Int64" />
+          <Property Name="LastAccessDate" Type="DateTime" Precision="3" />
+          <Property Name="IsDeleted" Type="Boolean" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -3371,21 +3410,11 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="sp_GetNotificationList1" FunctionName="krupagalleryModel.Store.sp_GetNotificationList">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="krupagalleryModel.sp_GetNotificationList1_Result">
-                <ScalarProperty Name="NotificationId" ColumnName="NotificationId" />
-                <ScalarProperty Name="NotificationDescription" ColumnName="NotificationDescription" />
-                <ScalarProperty Name="NotificationImage" ColumnName="NotificationImage" />
-                <ScalarProperty Name="NotificationTitle" ColumnName="NotificationTitle" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
           <EntitySetMapping Name="tbl_ChatMessages">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_ChatMessages">
               <MappingFragment StoreEntitySet="tbl_ChatMessages">
+                <ScalarProperty Name="RoomUniqueId" ColumnName="RoomUniqueId" />
+                <ScalarProperty Name="RoomId" ColumnName="RoomId" />
                 <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
                 <ScalarProperty Name="MessageDate" ColumnName="MessageDate" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
@@ -3414,6 +3443,41 @@
                 <ScalarProperty Name="MessageId" ColumnName="MessageId" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="DeletedChatId" ColumnName="DeletedChatId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="sp_GetNotificationList" FunctionName="krupagalleryModel.Store.sp_GetNotificationList">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="krupagalleryModel.sp_GetNotificationList_Result">
+                <ScalarProperty Name="NotificationId" ColumnName="NotificationId" />
+                <ScalarProperty Name="NotificationDescription" ColumnName="NotificationDescription" />
+                <ScalarProperty Name="NotificationImage" ColumnName="NotificationImage" />
+                <ScalarProperty Name="NotificationTitle" ColumnName="NotificationTitle" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="IsRead" ColumnName="IsRead" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="tbl_ChatRoom">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_ChatRoom">
+              <MappingFragment StoreEntitySet="tbl_ChatRoom">
+                <ScalarProperty Name="IsPrivate" ColumnName="IsPrivate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="RoomName" ColumnName="RoomName" />
+                <ScalarProperty Name="RoomUniqueId" ColumnName="RoomUniqueId" />
+                <ScalarProperty Name="Pk_ChatRoomId" ColumnName="Pk_ChatRoomId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_ChatRoomUsers">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_ChatRoomUsers">
+              <MappingFragment StoreEntitySet="tbl_ChatRoomUsers">
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="LastAccessDate" ColumnName="LastAccessDate" />
+                <ScalarProperty Name="Fk_UserId" ColumnName="Fk_UserId" />
+                <ScalarProperty Name="Fk_ChatRoomId" ColumnName="Fk_ChatRoomId" />
+                <ScalarProperty Name="ChatRoomUserId" ColumnName="ChatRoomUserId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -70,6 +70,8 @@
         <EntityTypeShape EntityType="krupagalleryModel.tbl_ChatMessages" Width="1.5" PointX="7.375" PointY="25.75" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_ChatUsers" Width="1.5" PointX="25.375" PointY="10.75" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_DeletedChatMessage" Width="1.5" PointX="25.375" PointY="13.75" />
+        <EntityTypeShape EntityType="krupagalleryModel.tbl_ChatRoom" Width="1.5" PointX="25.375" PointY="16.75" />
+        <EntityTypeShape EntityType="krupagalleryModel.tbl_ChatRoomUsers" Width="1.5" PointX="25.375" PointY="19.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

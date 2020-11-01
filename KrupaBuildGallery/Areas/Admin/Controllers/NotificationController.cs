@@ -64,6 +64,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         fileName = notificationVM.NotificationImage;
                     }
 
+                
+
                     tbl_Notification objNotification = new tbl_Notification();
                     objNotification.NotificationTitle = notificationVM.NotificationTitle;
                     objNotification.NotificationDescription = notificationVM.NotificationDescription;
@@ -76,7 +78,11 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     _db.tbl_Notification.Add(objNotification);
                     _db.SaveChanges();
                     //string imgurl = "http://krupatest-001-site1.ftempurl.com/Images/NotificationMedia/" + fileName;
-                    string imgurl = "http://krupatest-001-site1.ftempurl.com/Content/assets/images/kbg/logo.png";
+                    string imgurl = "https://shopping-saving.com/Content/assets/images/kbg/logo.png";//  "http://krupatest-001-site1.ftempurl.com/Content/assets/images/kbg/logo.png";
+                    if (!string.IsNullOrEmpty(fileName))
+                    {
+                        imgurl = "https://shopping-saving.com/Images/NotificationMedia/" + fileName;
+                    }
                     WebRequest tRequest = WebRequest.Create("https://fcm.googleapis.com/fcm/send");
                     tRequest.Method = "post";
                     //serverKey - Key from Firebase cloud messaging server  
@@ -89,18 +95,23 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         to = "/topics/ShoppingSaving",
                         priority = "high",
                         content_available = true,
-                        notification = new
-                        {                           
-                            body = notificationVM.NotificationDescription,
-                            title = notificationVM.NotificationTitle,
-                            image= imgurl,
-                            click_action = "OPEN_ACTIVITY_1",
-                            badge = 1,
-                            sound = "default"
-                        },
+                        //notification = new
+                        //{                           
+                        //    body = notificationVM.NotificationDescription,
+                        //    title = notificationVM.NotificationTitle,
+                        //    image= imgurl,
+                        //    click_action = "OPEN_ACTIVITY_1",
+                        //    badge = 1,
+                        //    sound = "default"
+                        //},
                         data = new
                         {
-                            notificationdetailid = objNotification.NotificationId
+                            body = notificationVM.NotificationDescription,
+                            title = notificationVM.NotificationTitle,
+                            notificationdetailid = objNotification.NotificationId,
+                            imageurl = imgurl,
+                            badge = 1,
+                            sound = "default"
                         }
 
                     };

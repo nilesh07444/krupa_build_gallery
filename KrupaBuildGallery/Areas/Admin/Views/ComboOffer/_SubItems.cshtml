@@ -69,8 +69,9 @@
         </div>
         <div class="col-sm-2">
             <label id="lbltotl_@ViewBag.Id" style="font-weight:bold;">Total:</label>
-            <br/>
+            <br />
             <input type="hidden" id="hdntotl_@ViewBag.Id" name="hdntotl" value="0" />
+            <input type="hidden" id="hdnmrptotl_@ViewBag.Id" name="hdnmrptotal" value="0" />
             <a href="javascipt:void(0)" style="color:red" title="Remove" onclick="removesubitem('@ViewBag.Id');"><i class="fa fa-trash font-danger"></i></a>
         </div>
     </div>
@@ -184,7 +185,7 @@
                     var htmlData = "<option value='0'>-Select Variants-</option>";
                     if (result && result.length > 0) {
                         result.forEach(element => {
-                            htmlData += "<option value='" + element.VariantItemId + "' data-custprc='" + element.CustomerPrice+"'> " + element.UnitQty + " </option>";
+                            htmlData += "<option value='" + element.VariantItemId + "' data-custprc='" + element.CustomerPrice + "'data-mrpprc='" + element.MRPPrice + "'> " + element.UnitQtys + " </option>";                           
                         });
                     }
                     $("#VarintItem_@ViewBag.Id").html(htmlData);

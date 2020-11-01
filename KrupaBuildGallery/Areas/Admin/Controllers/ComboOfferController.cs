@@ -115,7 +115,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     objComoffer.ModifiedBy = LoggedInUserId;
                     objComoffer.ModifiedDate = DateTime.UtcNow;
                     objComoffer.IsCashOnDelivery = objOffer.IsCashonDelieveryuse;
-                    objComoffer.TotalActualPrice = Convert.ToDecimal(frm["hdnTotalActualOfferPrice"].ToString());
+                    objComoffer.TotalActualPrice = Convert.ToDecimal(frm["hdnTotalActualMRPPrice"].ToString());    //Convert.ToDecimal(frm["hdnTotalActualOfferPrice"].ToString());
                     objComoffer.MainItemActualPrice = Convert.ToDecimal(frm["hdnTotalMain"].ToString());
                     _db.tbl_ComboOfferMaster.Add(objComoffer);
                     _db.SaveChanges();
@@ -205,7 +205,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 objOffer.Main_ProductList = GetProductListByCategoryId(objOffer.Main_CategoryId);
                 objOffer.Main_SubProductList = GetSubProductListByProductId(objOffer.Main_ProductId);
                 objOffer.Main_ProductItemList = GetProductItems(objOffer.Main_ProductId, objOffer.Main_SubProductId);
-                ViewData["MainVariantList"] = _db.tbl_ItemVariant.Where(x => (Id == -1 || x.ProductItemId.Value == objOffer.Main_ProductItemId) && x.IsActive == true).OrderBy(x => x.UnitQty).ToList();
+                ViewData["MainVariantList"] = GetVariantItms(objOffer.Main_ProductItemId);
+                 //= _db.tbl_ItemVariant.Where(x => (Id == -1 || x.ProductItemId.Value == objOffer.Main_ProductItemId) && x.IsActive == true).OrderBy(x => x.UnitQty).ToList();
                               
 
             }
@@ -391,9 +392,115 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
         public JsonResult GetVariantListByItemId(double Id)
         {
-            var tbl_ItemVariantList = _db.tbl_ItemVariant.Where(x => (Id == -1 || x.ProductItemId.Value == Id) && x.IsActive == true).OrderBy(x => x.UnitQty).ToList();
+            List<VariantItemVM> lstVrntVM = GetVariantItms(Id);
+            return Json(lstVrntVM, JsonRequestBehavior.AllowGet);
+        }
 
-            return Json(tbl_ItemVariantList, JsonRequestBehavior.AllowGet);
+        public List<VariantItemVM> GetVariantItms(double Id)
+        {
+            var objProdItm = _db.tbl_ProductItems.Where(o => o.ProductItemId == Id).FirstOrDefault();
+            List<tbl_ItemVariant> lstVarint = new List<tbl_ItemVariant>();
+            List<VariantItemVM> lstVrntVM = new List<VariantItemVM>();
+            if (objProdItm != null)
+            {
+                var objUnt = _db.tbl_Units.Where(o => o.UnitId == objProdItm.UnitType).FirstOrDefault();
+
+
+                string[] kgs = { "50 Grams", "100 Grams", "250 Grams", "500 Grams", "1 Kg", "2 Kg", "5 Kg" };
+                string[] kgsQty = { "0.05", "0.10", "0.25", "0.50", "1", "2", "5" };
+                string[] ltrs = { "50 ml", "100 ml", "250 ml", "500 ml", "1 Ltr", "2 Ltr", "5 Ltr" };
+                string[] ltrsQty = { "0.05", "0.10", "0.25", "0.50", "1", "2", "5" };
+
+                string[] sheets = { "8x4", "7x4", "7x3", "6x4", "6x3" };
+                string[] sheetsqty = { "32", "28", "21", "24", "18" };
+                if (objUnt != null)
+                {
+                    lstVarint = _db.tbl_ItemVariant.Where(o => o.ProductItemId == objProdItm.ProductItemId && o.IsActive == true && (o.IsDeleted == null || o.IsDeleted == false)).ToList();
+                    if (lstVarint != null && lstVarint.Count() > 0)
+                    {
+                        foreach (tbl_ItemVariant objvv in lstVarint)
+                        {
+                            VariantItemVM objVM = new VariantItemVM();
+                            objVM.VariantItemId = Convert.ToInt32(objvv.VariantItemId);
+                            objVM.UnitQtys = objvv.UnitQty;
+                            if (objUnt.UnitName.ToLower().Contains("killo"))
+                            {
+                                int idxxx = Array.IndexOf(kgs, objvv.UnitQty);
+                                decimal qtt = Convert.ToDecimal(kgsQty[idxxx].ToString());
+                                if (qtt >= 1)
+                                {
+                                    objvv.CustomerPrice = Math.Round((objProdItm.CustomerPrice * qtt * objvv.PricePecentage.Value) / 100, 2);
+                                    objvv.DistributorPrice = Math.Round((objProdItm.DistributorPrice * qtt * objvv.PricePecentage.Value) / 100, 2);
+                                    objVM.CustomerPrice = objvv.CustomerPrice.Value;
+                                    objVM.DistributorPrice = objvv.DistributorPrice.Value;
+                                    objVM.MRPPrice = Math.Round((objProdItm.MRPPrice * qtt * objvv.PricePecentage.Value) / 100, 2);
+                                    objVM.VariantImg = objvv.VariantImage;
+                                }
+                                else
+                                {
+                                    objvv.CustomerPrice = Math.Round((objProdItm.CustomerPrice * objvv.PricePecentage.Value) / 100, 2);
+                                    objvv.DistributorPrice = Math.Round((objProdItm.DistributorPrice * objvv.PricePecentage.Value) / 100, 2);
+                                    objVM.CustomerPrice = objvv.CustomerPrice.Value;
+                                    objVM.DistributorPrice = objvv.DistributorPrice.Value;
+                                    objVM.MRPPrice = Math.Round((objProdItm.MRPPrice * objvv.PricePecentage.Value) / 100, 2);
+                                    objVM.VariantImg = objvv.VariantImage;
+                                }
+                            }
+                            else if (objUnt.UnitName.ToLower().Contains("litr"))
+                            {
+                                int idxxx = Array.IndexOf(ltrs, objvv.UnitQty);
+                                decimal qtt = Convert.ToDecimal(ltrsQty[idxxx].ToString());
+                                if (qtt >= 1)
+                                {
+                                    objvv.CustomerPrice = Math.Round((objProdItm.CustomerPrice * qtt * objvv.PricePecentage.Value) / 100, 2);
+                                    objvv.DistributorPrice = Math.Round((objProdItm.DistributorPrice * qtt * objvv.PricePecentage.Value) / 100, 2);
+                                    objVM.CustomerPrice = objvv.CustomerPrice.Value;
+                                    objVM.DistributorPrice = objvv.DistributorPrice.Value;
+                                    objVM.MRPPrice = Math.Round((objProdItm.MRPPrice * qtt * objvv.PricePecentage.Value) / 100, 2);
+                                    objVM.VariantImg = objvv.VariantImage;
+                                }
+                                else
+                                {
+                                    objvv.CustomerPrice = Math.Round((objProdItm.CustomerPrice * objvv.PricePecentage.Value) / 100, 2);
+                                    objvv.DistributorPrice = Math.Round((objProdItm.DistributorPrice * objvv.PricePecentage.Value) / 100, 2);
+                                    objVM.CustomerPrice = objvv.CustomerPrice.Value;
+                                    objVM.DistributorPrice = objvv.DistributorPrice.Value;
+                                    objVM.MRPPrice = Math.Round((objProdItm.MRPPrice * objvv.PricePecentage.Value) / 100, 2);
+                                    objVM.VariantImg = objvv.VariantImage;
+                                }
+                            }
+                            else if (objUnt.UnitName.ToLower().Contains("sheet"))
+                            {
+                                int idxxx = Array.IndexOf(sheets, objvv.UnitQty);
+                                decimal sqft = Convert.ToDecimal(sheetsqty[idxxx]);
+                                objvv.CustomerPrice = Math.Round(sqft * objProdItm.CustomerPrice, 2);
+                                objvv.DistributorPrice = Math.Round(sqft * objProdItm.DistributorPrice, 2);
+                                objVM.CustomerPrice = objvv.CustomerPrice.Value;
+                                objVM.DistributorPrice = objvv.DistributorPrice.Value;
+                                objVM.MRPPrice = Math.Round(sqft * objProdItm.MRPPrice, 2);
+                                objVM.VariantImg = objvv.VariantImage;
+                            }
+                            else if (objUnt.UnitName.ToLower().Contains("piece"))
+                            {
+                                objVM.CustomerPrice = Math.Round(objvv.CustomerPrice.Value, 2);
+                                objVM.DistributorPrice = Math.Round(objvv.DistributorPrice.Value, 2);
+                                objVM.MRPPrice = Math.Round(objvv.MRPPrice.Value, 2);
+                                objVM.VariantImg = objvv.VariantImage;
+                            }
+                            else
+                            {
+                                objVM.CustomerPrice = objvv.CustomerPrice.Value;
+                                objVM.DistributorPrice = objvv.DistributorPrice.Value;
+                                objVM.MRPPrice = Math.Round(objProdItm.MRPPrice, 2);
+                                objVM.VariantImg = objvv.VariantImage;
+                            }
+                            lstVrntVM.Add(objVM);
+                        }
+                    }
+                }
+            }
+
+            return lstVrntVM;
         }
 
         public ActionResult GetSubItemsOfCombo(int Id)
@@ -425,7 +532,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         objj.Sub_ProductList = GetProductListByCategoryId(objj.CategoryId);
                         objj.Sub_SubProductList = GetSubProductListByProductId(objj.ProductId);
                         objj.Sub_ProductItemList = GetProductItems(objj.ProductId, objj.SubProductId);
-                        objj.Sub_ProductVariantList = _db.tbl_ItemVariant.Where(x => (ComboId == -1 || x.ProductItemId.Value == objj.ProductItemId) && x.IsActive == true).OrderBy(x => x.UnitQty).ToList();
+                        objj.Sub_ProductVariantList = GetVariantItms(objj.ProductItemId);     // _db.tbl_ItemVariant.Where(x => (ComboId == -1 || x.ProductItemId.Value == objj.ProductItemId) && x.IsActive == true).OrderBy(x => x.UnitQty).ToList();
                         lstSubItemss.Add(objj);
                     }
                 }

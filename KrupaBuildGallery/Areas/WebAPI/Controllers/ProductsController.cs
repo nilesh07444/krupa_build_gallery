@@ -573,7 +573,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                       where !c.IsDeleted && c.IsActive
                                       select new AdvertiseImageVM
                                       {
-                                          SliderType = c.SliderType,
+                                          SliderType = c.SliderType.HasValue? c.SliderType.Value : 2,
                                           AdvertiseImageId = c.AdvertiseImageId,
                                           ImageUrl = c.AdvertiseImage,
                                           ImageFor = c.ImageFor

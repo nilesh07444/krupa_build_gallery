@@ -5,7 +5,7 @@
     long CurrntUserId = clsAdminSession.UserID;
 }
 
-
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
 <!-- sidebar group -->
 <div class="sidebar-group">
 
@@ -769,7 +769,7 @@
 <input type="hidden" id="hdfLoggedInUserProfilePicture" value="@clsAdminSession.ImagePath" />
 <input type="hidden" id="hdfWindowIsActiveOrNot" value="True" />
 <input type="hidden" id="hdfPendingMessageID" />
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js" defer></script>
 <script src="~/Scripts/jquery.signalR-2.4.1.min.js"></script>
 <script src="~/signalr/hubs"></script>
 <script src="~/Scripts/Chat.js"></script>
@@ -813,5 +813,7 @@
         var userID = $(this).attr('data-user-id');
         initiateChat(userID);
     });
-    
+    $(document).ready(function () {
+        $('.js-example-basic-multiple').select2();
+    });
 </script>

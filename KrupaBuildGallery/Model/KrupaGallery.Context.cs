@@ -91,6 +91,8 @@ namespace KrupaBuildGallery.Model
         public DbSet<tbl_ChatMessages> tbl_ChatMessages { get; set; }
         public DbSet<tbl_ChatUsers> tbl_ChatUsers { get; set; }
         public DbSet<tbl_DeletedChatMessage> tbl_DeletedChatMessage { get; set; }
+        public DbSet<tbl_ChatRoom> tbl_ChatRoom { get; set; }
+        public DbSet<tbl_ChatRoomUsers> tbl_ChatRoomUsers { get; set; }
     
         public virtual ObjectResult<sp_GetNotificationList_Result> sp_GetNotificationList(Nullable<int> clientUserId)
         {
@@ -99,15 +101,6 @@ namespace KrupaBuildGallery.Model
                 new ObjectParameter("ClientUserId", typeof(int));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_GetNotificationList_Result>("sp_GetNotificationList", clientUserIdParameter);
-        }
-    
-        public virtual ObjectResult<sp_GetNotificationList1_Result> sp_GetNotificationList1(Nullable<int> clientUserId)
-        {
-            var clientUserIdParameter = clientUserId.HasValue ?
-                new ObjectParameter("ClientUserId", clientUserId) :
-                new ObjectParameter("ClientUserId", typeof(int));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_GetNotificationList1_Result>("sp_GetNotificationList1", clientUserIdParameter);
         }
     }
 }

@@ -32,5 +32,6 @@ namespace KrupaBuildGallery.ViewModel
         public string StatusString { get; set; }
         public string Reason { get; set; }
         public string CancellationChequePhoto { get; set; }
+        public string DateOfBirthString { get; set; }
     }  
 }

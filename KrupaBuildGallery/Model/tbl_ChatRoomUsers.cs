@@ -12,16 +12,12 @@ namespace KrupaBuildGallery.Model
     using System;
     using System.Collections.Generic;
     
-    public partial class tbl_ChatMessages
+    public partial class tbl_ChatRoomUsers
     {
-        public long ChatMeesageId { get; set; }
-        public Nullable<long> FromUserId { get; set; }
-        public Nullable<long> ToUserId { get; set; }
-        public string Message { get; set; }
-        public string Status { get; set; }
-        public Nullable<System.DateTime> MessageDate { get; set; }
-        public Nullable<System.DateTime> UpdateDate { get; set; }
-        public Nullable<long> RoomId { get; set; }
-        public string RoomUniqueId { get; set; }
+        public long ChatRoomUserId { get; set; }
+        public Nullable<long> Fk_ChatRoomId { get; set; }
+        public Nullable<long> Fk_UserId { get; set; }
+        public Nullable<System.DateTime> LastAccessDate { get; set; }
+        public Nullable<bool> IsDeleted { get; set; }
     }
 }

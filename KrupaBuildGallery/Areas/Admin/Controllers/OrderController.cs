@@ -2882,7 +2882,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 {
                     gstnoo = "GST NO." + objOrder.GSTNo;
                 }
-                htmldata = htmldata.Replace("--CUSTNAME--", objOrder.OrderShipClientName).Replace("--ADDRESS--", objOrder.OrderShipAddress).Replace("--CITYPINCODE--", objOrder.OrderShipCity + "-" + objOrder.OrderShipPincode).Replace("--STATE--", objOrder.OrderShipState).Replace("--EMAIL--", "").Replace("--MOBILE--", objOrder.OrderShipClientPhone).Replace("--GSTNO--", gstnoo);
+                htmldata = htmldata.Replace("--CUSTNAME--", objOrder.OrderShipClientName).Replace("--ADDRESS--", objOrder.OrderShipAddress).Replace("--CITYPINCODE--", objOrder.OrderShipCity + "-" + objOrder.OrderShipPincode).Replace("--STATE--", objOrder.OrderShipState+"- INDIA").Replace("--EMAIL--", "").Replace("--MOBILE--", objOrder.OrderShipClientPhone).Replace("--GSTNO--", gstnoo);
             }
 
             // instantiate the HiQPdf HTML to PDF converter

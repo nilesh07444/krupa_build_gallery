@@ -305,9 +305,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>KrupaGallery.edmx</DependentUpon>
     </Compile>
-    <Compile Include="Model\sp_GetNotificationList1_Result.cs">
-      <DependentUpon>KrupaGallery.tt</DependentUpon>
-    </Compile>
     <Compile Include="Model\sp_GetNotificationList_Result.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
@@ -339,6 +336,12 @@
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\tbl_ChatMessages.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_ChatRoom.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_ChatRoomUsers.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\tbl_ChatUsers.cs">

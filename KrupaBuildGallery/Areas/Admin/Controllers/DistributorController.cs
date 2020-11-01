@@ -773,7 +773,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 double RoundAmt = CommonMethod.GetRoundValue(Convert.ToDouble(TotalFinal));
                 double RoundedAmt = CommonMethod.GetRoundedValue(Convert.ToDouble(TotalFinal));
                 string amtwrd = CommonMethod.ConvertToWords(RoundAmt.ToString());
-                string address = objOrder.OrderShipAddress + "<br/>" + objOrder.OrderShipCity + "-" + objOrder.OrderPincode + "<br/>" + objOrder.OrderShipState;
+                string address = objOrder.OrderShipAddress + "<br/>" + objOrder.OrderShipCity + "-" + objOrder.OrderPincode + "<br/>" + objOrder.OrderShipState + "<br/> INDIA";
                 newhtmldata = htmldata.Replace("--INVOICENO--", InvoiceNo).Replace("--GSTTITLE--", GSTTitle).Replace("--GSTNo--", GSTNo).Replace("--INVOICEDATE--", DateOfInvoice).Replace("--ORDERNO--", orderNo).Replace("--CLIENTUSERNAME--", ClientUserName).Replace("--CLIENTUSERADDRESS--", address).Replace("--CLIENTUSEREMAIL--", objOrder.ClientEmail).Replace("--CLIENTUSERMOBILE--", objOrder.ClientMobileNo).Replace("--ITEMLIST--", ItemHtmls).Replace("--GSTCALCULATIONDATA--", GST_HTML_DATA).Replace("--SHIPPING--", Math.Round(objOrder.ShipmentCharge, 2).ToString()).Replace("--SUBTOTAL--", Math.Round(SubTotal, 2).ToString()).Replace("--TOTAL--", Math.Round(TotalFinal, 2).ToString()).Replace("--EXTRAAMOUNT--", Math.Round(objOrder.ExtraAmount, 2).ToString()).Replace("--ROUNDOFF--", Math.Round(RoundedAmt, 2).ToString()).Replace("--ROUNDTOTAL--", Math.Round(RoundAmt, 2).ToString()).Replace("--AMTWORD--", amtwrd).Replace("--PAYMENTMODE--","Payment: "+ PaymentMode).Replace("--PROMODISC--", Math.Round(objOrder.PromoDiscount, 2).ToString()).Replace("--DISPPROMO--", shwpromo);
 
             }
@@ -796,7 +796,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             decimal Grand_CGST_Amt = 0;
             decimal Grand_SGST_Amt = 0;
             decimal Grand_FinalAmt = 0;
-
+            bool IsZeroAmt = true;
             lstGSTPer.ToList().ForEach(per =>
             {
                 decimal TotaltaxableAmount = lstOrderItms.Where(x => x.GST_Per == per && x.IsCombo == false).Select(x => x.Price * x.Qty - x.Discount).Sum();
@@ -818,33 +818,40 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 }
 
                 decimal FinalAmt = TotaltaxableAmount + IGST_Amt + CGST_Amt + SGST_Amt;
+                if(TotaltaxableAmount > 0)
+                {
+                    IsZeroAmt = false;
+                    srBuild.Append("<tr>");
+                    srBuild.Append("<td class=\"text-center\"><strong> " + per.ToString("0.##") + "%</strong></td>");
+                    srBuild.Append("<td class=\"text-center\">" + TotaltaxableAmount.ToString("0.##") + "</td>");
+                    srBuild.Append("<td class=\"text-center\">" + IGST_Amt.ToString("0.##") + "</td>");
+                    srBuild.Append("<td class=\"text-center\">" + CGST_Amt.ToString("0.##") + "</td>");
+                    srBuild.Append("<td class=\"text-center\">" + SGST_Amt.ToString("0.##") + "</td>");
+                    srBuild.Append("<td class=\"text-center\">" + FinalAmt.ToString("0.##") + "</td>");
+                    srBuild.Append("</tr>");
 
-                srBuild.Append("<tr>");
-                srBuild.Append("<td class=\"text-center\"><strong> " + per.ToString("0.##") + "%</strong></td>");
-                srBuild.Append("<td class=\"text-center\">" + TotaltaxableAmount.ToString("0.##") + "</td>");
-                srBuild.Append("<td class=\"text-center\">" + IGST_Amt.ToString("0.##") + "</td>");
-                srBuild.Append("<td class=\"text-center\">" + CGST_Amt.ToString("0.##") + "</td>");
-                srBuild.Append("<td class=\"text-center\">" + SGST_Amt.ToString("0.##") + "</td>");
-                srBuild.Append("<td class=\"text-center\">" + FinalAmt.ToString("0.##") + "</td>");
-                srBuild.Append("</tr>");
-
-                Grand_TotaltaxableAmount += TotaltaxableAmount;
-                Grand_IGST_Amt += IGST_Amt;
-                Grand_CGST_Amt += CGST_Amt;
-                Grand_SGST_Amt += SGST_Amt;
-                Grand_FinalAmt += FinalAmt;
+                    Grand_TotaltaxableAmount += TotaltaxableAmount;
+                    Grand_IGST_Amt += IGST_Amt;
+                    Grand_CGST_Amt += CGST_Amt;
+                    Grand_SGST_Amt += SGST_Amt;
+                    Grand_FinalAmt += FinalAmt;
+                }              
 
             });
 
-            // Taxable Amount
-            srBuild.Append("<tr>");
-            srBuild.Append("<td class=\"text-center\"><strong>Taxable Amount</strong></td>");
-            srBuild.Append("<td class=\"text-center\">" + Grand_TotaltaxableAmount.ToString("0.##") + "</td>");
-            srBuild.Append("<td class=\"text-center\">" + Grand_IGST_Amt.ToString("0.##") + "</td>");
-            srBuild.Append("<td class=\"text-center\">" + Grand_CGST_Amt.ToString("0.##") + "</td>");
-            srBuild.Append("<td class=\"text-center\">" + Grand_SGST_Amt.ToString("0.##") + "</td>");
-            srBuild.Append("<td class=\"text-center\">" + Grand_FinalAmt.ToString("0.##") + "</td>");
-            srBuild.Append("</tr>");
+            if(IsZeroAmt == false)
+            {
+                // Taxable Amount
+                srBuild.Append("<tr>");
+                srBuild.Append("<td class=\"text-center\"><strong>Taxable Amount</strong></td>");
+                srBuild.Append("<td class=\"text-center\">" + Grand_TotaltaxableAmount.ToString("0.##") + "</td>");
+                srBuild.Append("<td class=\"text-center\">" + Grand_IGST_Amt.ToString("0.##") + "</td>");
+                srBuild.Append("<td class=\"text-center\">" + Grand_CGST_Amt.ToString("0.##") + "</td>");
+                srBuild.Append("<td class=\"text-center\">" + Grand_SGST_Amt.ToString("0.##") + "</td>");
+                srBuild.Append("<td class=\"text-center\">" + Grand_FinalAmt.ToString("0.##") + "</td>");
+                srBuild.Append("</tr>");
+            }
+           
 
             htmlData = srBuild.ToString();
 
@@ -1620,7 +1627,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 }
                 double RoundAmt = CommonMethod.GetRoundValue(Convert.ToDouble(TotalFinal));
                 double RoundedAmt = CommonMethod.GetRoundedValue(Convert.ToDouble(TotalFinal));
-                string address = objOrder.OrderShipAddress + "<br/>" + objOrder.OrderShipCity + "-" + objOrder.OrderPincode + "<br/>" + objOrder.OrderShipState;
+                string address = objOrder.OrderShipAddress + "<br/>" + objOrder.OrderShipCity + "-" + objOrder.OrderPincode + "<br/>" + objOrder.OrderShipState + "<br/> INDIA";
                 newhtmldata = htmldata.Replace("--INVOICENO--", InvoiceNo).Replace("--GSTTITLE--", GSTTitle).Replace("--GSTNo--", GSTNo).Replace("--CANCELEDDATE--", DateOfCancelReturnExchage).Replace("--RETURNDATE--", DateOfCancelReturnExchage).Replace("--INVOICEDATE--", DateOfInvoice).Replace("--ORDERNO--", orderNo).Replace("--CLIENTUSERNAME--", ClientUserName).Replace("--CLIENTUSERADDRESS--", address).Replace("--CLIENTUSEREMAIL--", objOrder.ClientEmail).Replace("--CLIENTUSERMOBILE--", objOrder.ClientMobileNo).Replace("--ITEMLIST--", ItemHtmls).Replace("--GSTCALCULATIONDATA--", GST_HTML_DATA).Replace("--SHIPPING--", Math.Round(shipcharge, 2).ToString()).Replace("--SUBTOTAL--", Math.Round(SubTotal, 2).ToString()).Replace("--TOTAL--", Math.Round(TotalFinal, 2).ToString()).Replace("--EXTRAAMOUNT--", Math.Round(objOrder.ExtraAmount, 2).ToString()).Replace("--ExchangeCHARGE--", Math.Round(amtcut, 2).ToString()).Replace("--RETURNCHARGE--", Math.Round(amtcut, 2).ToString()).Replace("--ROUNDOFF--", Math.Round(RoundedAmt, 2).ToString()).Replace("--ROUNDTOTAL--", Math.Round(RoundAmt, 2).ToString()); ;
 
             }
@@ -1851,7 +1858,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 }
                 double RoundAmt = CommonMethod.GetRoundValue(Convert.ToDouble(TotalFinal));
                 double RoundedAmt = CommonMethod.GetRoundedValue(Convert.ToDouble(TotalFinal));
-                string address = objOrder.OrderShipAddress + "<br/>" + objOrder.OrderShipCity + "-" + objOrder.OrderPincode + "<br/>" + objOrder.OrderShipState;
+                string address = objOrder.OrderShipAddress + "<br/>" + objOrder.OrderShipCity + "-" + objOrder.OrderPincode + "<br/>" + objOrder.OrderShipState + "<br/> INDIA";
                 newhtmldata = htmldata.Replace("--INVOICENO--", InvoiceNo).Replace("--GSTTITLE--", GSTTitle).Replace("--GSTNo--", GSTNo).Replace("--INVOICEDATE--", DateOfInvoice).Replace("--ORDERNO--", orderNo).Replace("--CLIENTUSERNAME--", ClientUserName).Replace("--CLIENTUSERADDRESS--", address).Replace("--CLIENTUSEREMAIL--", objOrder.ClientEmail).Replace("--CLIENTUSERMOBILE--", objOrder.ClientMobileNo).Replace("--ITEMLIST--", ItemHtmls).Replace("--GSTCALCULATIONDATA--", GST_HTML_DATA).Replace("--SHIPPING--", Math.Round(objOrder.ShipmentCharge, 2).ToString()).Replace("--SUBTOTAL--", Math.Round(SubTotal, 2).ToString()).Replace("--TOTAL--", Math.Round(TotalFinal, 2).ToString()).Replace("--EXTRAAMOUNT--", Math.Round(objOrder.ExtraAmount, 2).ToString()).Replace("--ROUNDOFF--", Math.Round(RoundedAmt, 2).ToString()).Replace("--ROUNDTOTAL--", Math.Round(RoundAmt, 2).ToString()).Replace("--PAYMENTMODE--", "Payment: " + PaymentMode).Replace("--PROMODISC--", Math.Round(objOrder.PromoDiscount, 2).ToString()).Replace("--DISPPROMO--", shwpromo);
 
             }
