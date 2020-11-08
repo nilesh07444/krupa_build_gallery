@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Http;
 using KrupaBuildGallery.ViewModel;
 using System.Net;
+using System.Net.Http;
 
 namespace KrupaBuildGallery.Areas.WebAPI.Controllers
 {
@@ -432,6 +433,29 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
 
             return response;
 
+        }
+
+        public HttpResponseMessage UploadFileDistributor(string Flname)
+        {
+            HttpResponseMessage result = null;
+            var httpRequest = HttpContext.Current.Request;
+            if (httpRequest.Files.Count > 0)
+            {
+                string flnm = "";
+                foreach (string file in httpRequest.Files)
+                {
+                    var postedFile = httpRequest.Files[file];
+                    var filePath = HttpContext.Current.Server.MapPath("~/Images/UsersDocuments/" + postedFile.FileName);
+                    postedFile.SaveAs(filePath);
+                    flnm = postedFile.FileName;
+                }
+                result = Request.CreateResponse(HttpStatusCode.Created, flnm);
+            }
+            else
+            {
+                result = Request.CreateResponse(HttpStatusCode.BadRequest);
+            }
+            return result;
         }
     }
 }
