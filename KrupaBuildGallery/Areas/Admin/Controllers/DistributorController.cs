@@ -1458,6 +1458,10 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 {
                     file = Server.MapPath("~/templates/InvoiceReturn.html");
                 }
+                else if (objItem.ItemStatus == 7)
+                {
+                    file = Server.MapPath("~/templates/InvoiceReplace.html");
+                }
                 else if (objItem.ItemStatus == 8 && objItem.IsDeleted == true)
                 {
                     file = Server.MapPath("~/templates/InvoiceExchange.html");
@@ -1510,6 +1514,14 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         TotalFinal = TotalFinal + FinalPrice;
                         if(objItm.IsCombo && objItm.IsMainItem)
                         {
+                            if(objItem.ItemStatus == 7)
+                            {
+                                objItm.MRPPrice = 0;
+                                objItm.Price = 0;
+                                objItm.Discount = 0;
+                                TaxableAmt = 0;
+                                FinalPrice = 0;
+                            }
                             srBuild.Append("<tr>");
                             srBuild.Append("<td>" + cntsrNo + "</td>");
                             srBuild.Append("<td>" + objItm.ComboName + "</td>");
@@ -1526,6 +1538,14 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             srBuild.Append("<td class=\"text-center\">" + Convert.ToDecimal(objItm.GST_Per).ToString("0.##") + "%</td>");
                             srBuild.Append("<td class=\"text-center\">" + Math.Round(FinalPrice, 2) + "</td>");
                             srBuild.Append("</tr>");
+                        }
+                        if (objItem.ItemStatus == 7)
+                        {
+                            objItm.MRPPrice = 0;
+                            objItm.Price = 0;
+                            objItm.Discount = 0;
+                            TaxableAmt = 0;
+                            FinalPrice = 0;
                         }
                         srBuild.Append("<tr>");
                         srBuild.Append("<td></td>");
@@ -1557,6 +1577,14 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     decimal FinalPrice = Math.Round(basicTotalPrice + objItem.GSTAmt - objItem.Discount, 2);
                     decimal TaxableAmt = Math.Round(basicTotalPrice - objItem.Discount, 2);
                     TotalFinal = TotalFinal + FinalPrice;
+                    if (objItem.ItemStatus == 7)
+                    {
+                        objItem.MRPPrice = 0;
+                        objItem.Price = 0;
+                        objItem.Discount = 0;
+                        TaxableAmt = 0;
+                        FinalPrice = 0;
+                    }
                     srBuild.Append("<tr>");
                     srBuild.Append("<td>" + cntsrNo + "</td>");
                     srBuild.Append("<td>" + objItem.ItemName + "</td>");
@@ -1615,7 +1643,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     TotalFinal = TotalFinal - amtcut;
                 }
                 // decimal refundamtt = objOrderItm.FinalItemPrice.Value - amtcut;
-
+              
                 ItemHtmls = srBuild.ToString();
                 List<OrderItemsVM> lstitms = new List<OrderItemsVM>();
                 lstitms.Add(objItem);
@@ -1627,8 +1655,15 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 }
                 double RoundAmt = CommonMethod.GetRoundValue(Convert.ToDouble(TotalFinal));
                 double RoundedAmt = CommonMethod.GetRoundedValue(Convert.ToDouble(TotalFinal));
+                if (objItem.ItemStatus == 7)
+                {
+                    shipcharge = 0;
+                    RoundAmt = 0;
+                    RoundedAmt = 0;
+                    SubTotal = 0;
+                }
                 string address = objOrder.OrderShipAddress + "<br/>" + objOrder.OrderShipCity + "-" + objOrder.OrderPincode + "<br/>" + objOrder.OrderShipState + "<br/> INDIA";
-                newhtmldata = htmldata.Replace("--INVOICENO--", InvoiceNo).Replace("--GSTTITLE--", GSTTitle).Replace("--GSTNo--", GSTNo).Replace("--CANCELEDDATE--", DateOfCancelReturnExchage).Replace("--RETURNDATE--", DateOfCancelReturnExchage).Replace("--INVOICEDATE--", DateOfInvoice).Replace("--ORDERNO--", orderNo).Replace("--CLIENTUSERNAME--", ClientUserName).Replace("--CLIENTUSERADDRESS--", address).Replace("--CLIENTUSEREMAIL--", objOrder.ClientEmail).Replace("--CLIENTUSERMOBILE--", objOrder.ClientMobileNo).Replace("--ITEMLIST--", ItemHtmls).Replace("--GSTCALCULATIONDATA--", GST_HTML_DATA).Replace("--SHIPPING--", Math.Round(shipcharge, 2).ToString()).Replace("--SUBTOTAL--", Math.Round(SubTotal, 2).ToString()).Replace("--TOTAL--", Math.Round(TotalFinal, 2).ToString()).Replace("--EXTRAAMOUNT--", Math.Round(objOrder.ExtraAmount, 2).ToString()).Replace("--ExchangeCHARGE--", Math.Round(amtcut, 2).ToString()).Replace("--RETURNCHARGE--", Math.Round(amtcut, 2).ToString()).Replace("--ROUNDOFF--", Math.Round(RoundedAmt, 2).ToString()).Replace("--ROUNDTOTAL--", Math.Round(RoundAmt, 2).ToString()); ;
+                newhtmldata = htmldata.Replace("--INVOICENO--", InvoiceNo).Replace("--GSTTITLE--", GSTTitle).Replace("--GSTNo--", GSTNo).Replace("--CANCELEDDATE--", DateOfCancelReturnExchage).Replace("--RETURNDATE--", DateOfCancelReturnExchage).Replace("--REPLACEDATE--", DateOfCancelReturnExchage).Replace("--INVOICEDATE--", DateOfInvoice).Replace("--ORDERNO--", orderNo).Replace("--CLIENTUSERNAME--", ClientUserName).Replace("--CLIENTUSERADDRESS--", address).Replace("--CLIENTUSEREMAIL--", objOrder.ClientEmail).Replace("--CLIENTUSERMOBILE--", objOrder.ClientMobileNo).Replace("--ITEMLIST--", ItemHtmls).Replace("--GSTCALCULATIONDATA--", GST_HTML_DATA).Replace("--SHIPPING--", Math.Round(shipcharge, 2).ToString()).Replace("--SUBTOTAL--", Math.Round(SubTotal, 2).ToString()).Replace("--TOTAL--", Math.Round(TotalFinal, 2).ToString()).Replace("--EXTRAAMOUNT--", Math.Round(objOrder.ExtraAmount, 2).ToString()).Replace("--ExchangeCHARGE--", Math.Round(amtcut, 2).ToString()).Replace("--RETURNCHARGE--", Math.Round(amtcut, 2).ToString()).Replace("--ROUNDOFF--", Math.Round(RoundedAmt, 2).ToString()).Replace("--ROUNDTOTAL--", Math.Round(RoundAmt, 2).ToString()); ;
 
             }
 
