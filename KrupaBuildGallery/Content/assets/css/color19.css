@@ -27362,11 +27362,17 @@ h6.dashboardItemName {
     .category-responsive {
         margin-top: 63px;
     }
+    .contenedor {
+        padding-top: 71px !important;
+    }
 }
 
 @media only screen and (min-width: 400px) {
     .category-responsive {
         margin-top: 63px;
+    }
+    .contenedor {
+        /*padding-top: 48px !important;*/
     }
 }
 
@@ -27414,6 +27420,9 @@ h6.dashboardItemName {
 @media screen and (max-width: 767px) {
     #samples img {
         display: inline-block;
+    }
+    .contenedor {
+        padding-top: 70px;
     }
 }
     /* NILESH - Custom CSS End */

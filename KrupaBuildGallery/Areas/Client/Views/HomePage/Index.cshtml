@@ -31,43 +31,62 @@
 <link href="~/Content/assets/css/rateit.css" rel="stylesheet" />
 <script src="~/Scripts/jquery.rateit.js"></script>
 
+<link href="~/Content/assets/css/blink.css" rel="stylesheet" />
+<script src="~/Scripts/jquery.blink.js"></script>
+
 <!-- Home Image Section start -->
 @if (lstImages != null && lstImages.Count > 0)
 {
-    <div id="demo" class="carousel slide category-responsive" data-ride="carousel">
-
-        <!-- Indicators -->
-        <ul class="carousel-indicators">
-            @{ int imgIndicator = 0; }
-            @foreach (HomeImageVM item in lstImages)
-            {
-                <li data-target="#demo" data-slide-to="@imgIndicator" class="@(imgIndicator == 0 ? "active" : "")"></li>
-                imgIndicator++;
-            }
-        </ul>
-
-        <!-- The slideshow -->
-        <div class="carousel-inner">
-            @{ int imgCarousel = 0; }
-            @foreach (HomeImageVM item in lstImages)
-            {
-                <div class="carousel-item @(imgCarousel == 0 ? "active" : "")">
-
-                    <img src="@item.ImageUrl" alt="Los Angeles" width="1100" height="500">
-                </div>
-                imgCarousel++;
-            }
+    <div class="contenedor">
+        <div class="blink-slider">
+            <div class="blink-view" id="blink">
+                @foreach (HomeImageVM item in lstImages)
+                {
+                    <div class="viewSlide">
+                        <img class="fullImg" src="@item.ImageUrl" />
+                    </div>
+                }
+            </div>
         </div>
-
-        <!-- Left and right controls -->
-        <a class="carousel-control-prev" href="#demo" data-slide="prev">
-            <span class="carousel-control-prev-icon"></span>
-        </a>
-        <a class="carousel-control-next" href="#demo" data-slide="next">
-            <span class="carousel-control-next-icon"></span>
-        </a>
     </div>
 }
+
+@*@if (lstImages != null && lstImages.Count > 0)
+    {
+        <div id="demo" class="carousel slide category-responsive" data-ride="carousel">
+
+            <!-- Indicators -->
+            <ul class="carousel-indicators">
+                @{ int imgIndicator = 0; }
+                @foreach (HomeImageVM item in lstImages)
+                {
+                    <li data-target="#demo" data-slide-to="@imgIndicator" class="@(imgIndicator == 0 ? "active" : "")"></li>
+                    imgIndicator++;
+                }
+            </ul>
+
+            <!-- The slideshow -->
+            <div class="carousel-inner">
+                @{ int imgCarousel = 0; }
+                @foreach (HomeImageVM item in lstImages)
+                {
+                    <div class="carousel-item @(imgCarousel == 0 ? "active" : "")">
+
+                        <img src="@item.ImageUrl" alt="Los Angeles" width="1100" height="500">
+                    </div>
+                    imgCarousel++;
+                }
+            </div>
+
+            <!-- Left and right controls -->
+            <a class="carousel-control-prev" href="#demo" data-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </a>
+            <a class="carousel-control-next" href="#demo" data-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </a>
+        </div>
+    }*@
 
 <!-- Category list Section  start-->
 @if (lstCategory != null && lstCategory.Count > 0)
@@ -155,7 +174,7 @@
                         {
                             if (File.Exists(Server.MapPath(ErrorMessage.AdvertiseDirectoryPath + obj.ImageUrl)))
                             {
-                                <img src="@ErrorMessage.AdvertiseDirectoryPath/@obj.ImageUrl" alt="" class="bg-img blur-up lazyload" />
+                                <img src="@ErrorMessage.AdvertiseDirectoryPath/@obj.ImageUrl" alt="" class="img-responsive" />
                             }
                             else
                             {
@@ -476,7 +495,6 @@
     <!-- Product slider end -->
 }
 <!-- Popular Products List end -->
-
 <!-- Advertisement Images 3 - Start -->
 @if (lstAdvertiseImages3 != null && lstAdvertiseImages3.Count > 0)
 {
@@ -510,7 +528,6 @@
     </section>
 }
 <!-- Advertisement Images 3 - end -->
- 
 <!-- UpPack Products List -->
 @if (lstUnPackItems != null && lstUnPackItems.Count() > 0)
 {
@@ -745,6 +762,7 @@
 }
 
 <script>
+
     function addremovewishlist(itemid, objthis) {
         var URL = '/Client/Products/AddRemoveWishList';
         jQuery.ajax({
@@ -769,6 +787,7 @@
             }
         });
     }
+
     function msgsuccess(msg) {
         $.notify({
             icon: 'fa fa-check',
@@ -806,5 +825,9 @@
                     '</div>'
             });
     }
+
+    $(document).ready(function () {
+        $("#blink").blink();
+    });
 
 </script>
