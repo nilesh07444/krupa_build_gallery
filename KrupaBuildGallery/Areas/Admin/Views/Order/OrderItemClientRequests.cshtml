@@ -111,7 +111,12 @@
                                         }
                                         else if (Convert.ToInt32(ViewBag.Status) == 7 && objorder.ItemStatus == 7 && objorder.OrderItemStatus == 7)
                                         {
-                                            <a href="/admin/order/detail/@objorder.OrderId" title="Assign Delivery Person and Dispatched" ><i class="fa fa-user-o font-info"></i></a>
+                                            <a href="/admin/order/detail/@objorder.OrderId" title="Assign Delivery Person and Dispatched"><i class="fa fa-user-o font-info"></i></a>
+                                        }
+                                        @if (Convert.ToInt32(ViewBag.Status) == 7 && objorder.ItemStatus == 7 && objorder.OrderItemStatus == 7)
+                                        {
+                                            <a href="javascript:void(0);" onclick="invoiceprintItem('@objorder.OrderItemId','@objorder.OrderId');" title="Print Invoice"><i class="fa fa-file font-success"></i></a>
+
                                         }
                                     </td>
                                 </tr>
@@ -160,6 +165,9 @@
             </div>
         </div>
     </div>
+</div>
+<div style="display: none;" id="dvPrint">
+
 </div>
 <script>
 
@@ -218,6 +226,17 @@
         }
      });
         
+    }
+
+    function invoiceprintItem(orderiddetailitm, orderid) {
+        $("#dvPrint").load('/admin/Distributor/PrintInvoiceOrderItem?OrderItemId=' + orderiddetailitm + '&OrderId=' + orderid, function () {
+            w = window.open();
+            w.document.write($("#dvPrint").html());
+            setTimeout(function () {
+                w.print();
+                w.close();
+            }, 100);
+        });
     }
 </script>
 

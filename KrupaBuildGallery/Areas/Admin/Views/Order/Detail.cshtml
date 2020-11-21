@@ -426,10 +426,10 @@
                                             }
                                         </td>
                                         <td>
-                                            @if (objorderItem.IsDeleted == true && (objorderItem.ItemStatus == 5 || objorderItem.ItemStatus == 6 || objorderItem.ItemStatus == 8))
+                                            @if((objorderItem.IsDeleted == true && (objorderItem.ItemStatus == 5 || objorderItem.ItemStatus == 6 || objorderItem.ItemStatus == 8)) || objorderItem.ItemStatus == 7)
                                             {
                                                 <a href="javascript:void(0);" onclick="invoiceprintItem('@objorderItem.OrderItemId','@objorderItem.OrderId');" title="Print Invoice"><i class="fa fa-file font-success"></i></a>
-                                            }
+                                            }                                          
                                         </td>
                                     </tr>
                                             }
@@ -478,7 +478,7 @@
                                             }
                                         </td>
                                         <td>
-                                            @if (objorderItem.IsDeleted == true && (objorderItem.ItemStatus == 5 || objorderItem.ItemStatus == 6 || objorderItem.ItemStatus == 8))
+                                            @if ((objorderItem.IsDeleted == true && (objorderItem.ItemStatus == 5 || objorderItem.ItemStatus == 6 || objorderItem.ItemStatus == 8)) || objorderItem.ItemStatus == 7)
                                             {
                                                 <a href="javascript:void(0);" onclick="invoiceprintItem('@objorderItem.OrderItemId','@objorderItem.OrderId');" title="Print Invoice"><i class="fa fa-file font-success"></i></a>
                                             }
