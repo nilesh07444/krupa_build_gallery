@@ -1,4 +1,5 @@
 ﻿using ConstructionDiary.Models;
+using KrupaBuildGallery.Filters;
 using KrupaBuildGallery.Helper;
 using KrupaBuildGallery.Model;
 using System;
@@ -17,7 +18,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         {
             _db = new krupagallarydbEntities();
         }
-        // GET: Admin/ItemText
+
+        [AdminPermission(RolePermissionEnum.View)]
         public ActionResult Index()
         {
 
@@ -40,6 +42,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(lstItemText);
         }
 
+        [AdminPermission(RolePermissionEnum.Add)]
         public ActionResult Add()
         {
             return View();
@@ -82,6 +85,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(itemtextVM);
         }
 
+        [AdminPermission(RolePermissionEnum.Edit)]
         public ActionResult Edit(int Id)
         {
             ItemTextVM objItemTextVM = new ItemTextVM();

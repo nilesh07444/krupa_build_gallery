@@ -1,4 +1,6 @@
 ﻿using ConstructionDiary.Models;
+using KrupaBuildGallery.Filters;
+using KrupaBuildGallery.Helper;
 using KrupaBuildGallery.Model;
 using KrupaBuildGallery.ViewModel;
 using System;
@@ -20,7 +22,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         {
             _db = new krupagallarydbEntities();
         }
-        // GET: Admin/FreeOffer
+
+        [AdminPermission(RolePermissionEnum.View)]
         public ActionResult Index()
         {
             List<FreeOfferVM> lstOfferVm = new List<FreeOfferVM>();
@@ -45,6 +48,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(lstOfferVm);
         }
 
+        [AdminPermission(RolePermissionEnum.Add)]
         public ActionResult Add()
         {
             FreeOfferVM objOffer = new FreeOfferVM();
@@ -114,6 +118,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(objOffer);
         }
 
+        [AdminPermission(RolePermissionEnum.Edit)]
         public ActionResult Edit(int Id)
         {
             FreeOfferVM objOffer = new FreeOfferVM();

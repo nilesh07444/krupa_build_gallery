@@ -1,4 +1,5 @@
 ﻿using ConstructionDiary.Models;
+using KrupaBuildGallery.Filters;
 using KrupaBuildGallery.Helper;
 using KrupaBuildGallery.Model;
 using System;
@@ -18,6 +19,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             _db = new krupagallarydbEntities();
         }
 
+        [AdminPermission(RolePermissionEnum.View)]
         public ActionResult Index()
         {
             List<GodownVM> lstGodown = new List<GodownVM>();
@@ -42,6 +44,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(lstGodown);
         }
 
+        [AdminPermission(RolePermissionEnum.Add)]
         public ActionResult Add()
         {
             return View();
@@ -88,6 +91,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(godownVM);
         }
 
+        [AdminPermission(RolePermissionEnum.Edit)]
         public ActionResult Edit(int Id)
         {
             GodownVM objGodown = new GodownVM();

@@ -1,4 +1,5 @@
-﻿using KrupaBuildGallery.Helper;
+﻿using KrupaBuildGallery.Filters;
+using KrupaBuildGallery.Helper;
 using KrupaBuildGallery.Model;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             _db = new krupagallarydbEntities();
         }
 
+        [AdminPermission(RolePermissionEnum.View)]
         public ActionResult Index()
         {
             List<ReferenceVM> lstReference = new List<ReferenceVM>();
@@ -39,6 +41,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(lstReference);
         }
 
+        [AdminPermission(RolePermissionEnum.Add)]
         public ActionResult Add()
         {
             return View();
@@ -85,6 +88,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(referenceVM);
         }
 
+        [AdminPermission(RolePermissionEnum.Edit)]
         public ActionResult Edit(int Id)
         {
             ReferenceVM objReference = new ReferenceVM();

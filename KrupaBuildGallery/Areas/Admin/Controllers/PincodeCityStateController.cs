@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using ConstructionDiary.Models;
+using KrupaBuildGallery.Filters;
 using KrupaBuildGallery.Helper;
 using KrupaBuildGallery.Model;
 using KrupaBuildGallery.ViewModel;
@@ -19,6 +20,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         {
             _db = new krupagallarydbEntities();
         }
+
+        [AdminPermission(RolePermissionEnum.View)]
         public ActionResult Index(string state)
         {
             List<PincodeCityStateVM> lstPincode = new List<PincodeCityStateVM>();
@@ -52,6 +55,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(lstPincode);
         }
 
+        [AdminPermission(RolePermissionEnum.Add)]
         public ActionResult Add()
         {
             return View();

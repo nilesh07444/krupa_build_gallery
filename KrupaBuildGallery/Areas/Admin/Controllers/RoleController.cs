@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using ConstructionDiary.Models;
+using KrupaBuildGallery.Filters;
 using KrupaBuildGallery.Helper;
 using KrupaBuildGallery.Model;
 
@@ -18,6 +19,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         {
             _db = new krupagallarydbEntities();
         }
+
+        [AdminPermission(RolePermissionEnum.View)]
         public ActionResult Index()
         {
             List<RoleVM> lstRoles = new List<RoleVM>();
@@ -45,6 +48,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(lstRoles);
         }
 
+        [AdminPermission(RolePermissionEnum.Add)]
         public ActionResult Add()
         {
             RoleVM objRole = new RoleVM();
@@ -140,6 +144,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(roleVM);
         }
 
+        [AdminPermission(RolePermissionEnum.Edit)]
         public ActionResult Edit(int Id)
         {
             RoleVM objRole = new RoleVM();
@@ -330,7 +335,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             return ReturnMessage;
         }
-         
+
+        [AdminPermission(RolePermissionEnum.View)]
         public ActionResult View(int Id)
         {
             RoleVM objRole = new RoleVM();

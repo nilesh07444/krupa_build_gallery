@@ -1,4 +1,6 @@
-﻿using KrupaBuildGallery.Model;
+﻿using KrupaBuildGallery.Helper;
+using KrupaBuildGallery.Model;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -331,7 +333,7 @@ namespace KrupaBuildGallery
         }
 
         public static string GetRandomReferralCode(int length)
-        { 
+        {
             Random random = new Random();
             var chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             string randomReferralCode = new string(chars.Select(c => chars[random.Next(chars.Length)]).Take(length).ToArray());
@@ -343,15 +345,295 @@ namespace KrupaBuildGallery
             {
                 GetRandomReferralCode(length);
             }
-             
+
             return randomReferralCode;
         }
-        
+
         public static string GetSMSUrl()
         {
-           string smsurl = WebConfigurationManager.AppSettings["SMSUrl"];
+            string smsurl = WebConfigurationManager.AppSettings["SMSUrl"];
             return smsurl;
         }
 
+        public static bool IsPageAccessDeniedToUser(string controllerName, int permissionMode)
+        {
+            bool IsDenied = false;
+
+            string strPermission = clsAdminSession.UserPermission;
+            UserPermissionVM objPermission = JsonConvert.DeserializeObject<UserPermissionVM>(strPermission, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+             
+            if (objPermission == null)
+                return true;
+
+            // For SA pages
+            if (controllerName.ToLower() == "adminuser")
+            {
+            }
+            if (controllerName.ToLower() == "agent")
+            {
+            }
+
+            // Check for view permission
+            IsDenied = CheckPageAccess(objPermission, controllerName, permissionMode);
+
+            #region Old Commented code
+
+            // importexcel
+
+            /*
+             
+            string[] commonControllerName = { "contactusmessage", "dynamiccontent", "feedback", "godown", "happycustomer", "homeimages", "notification", "pincodecitystate", "sms", "promocode", "reference" };
+            int commonPos = Array.IndexOf(commonControllerName, controllerName.ToLower());
+
+            if (permissionMode == (int)ModulePermission.None)
+            {
+                IsDenied = true;
+            }
+            else if (permissionMode == (int)ModulePermission.View)
+            {
+
+                if (commonPos > -1)
+                {
+                    if (objPermission.ManagePageContent < (int)ModulePermission.View)
+                    {
+                        return IsDenied = true;
+                    }
+                } 
+                else if (controllerName.ToLower() == "subproduct")
+                {
+                    if (objPermission.SubProduct < (int)ModulePermission.View)
+                    {
+                        return IsDenied = true;
+                    }
+                } 
+                else if(controllerName.ToLower() == "stock")
+                {
+                    if (objPermission.Stock < (int)ModulePermission.View)
+                    {
+                        return IsDenied = true;
+                    }
+                } 
+                else if (controllerName.ToLower() == "role")
+                {
+                    if (objPermission.Role < (int)ModulePermission.View)
+                    {
+                        return IsDenied = true;
+                    }
+                } 
+                else if (controllerName.ToLower() == "productitem")
+                {
+                    if (objPermission.ProductItem < (int)ModulePermission.View)
+                    {
+                        return IsDenied = true;
+                    }
+                } 
+                else if (controllerName.ToLower() == "product")
+                {
+                    if (objPermission.Product < (int)ModulePermission.View)
+                    {
+                        return IsDenied = true;
+                    }
+                } 
+                else if (controllerName.ToLower() == "order")
+                {
+                    if (objPermission.Order < (int)ModulePermission.View)
+                    {
+                        return IsDenied = true;
+                    }
+                } 
+                else if (controllerName.ToLower() == "itemtext")
+                {
+                    if (objPermission.ItemText < (int)ModulePermission.View)
+                    {
+                        return IsDenied = true;
+                    }
+                } 
+                else if (controllerName.ToLower() == "itemtext")
+                {
+                    if (objPermission.ItemText < (int)ModulePermission.View)
+                    {
+                        return IsDenied = true;
+                    }
+                } 
+                else if (controllerName.ToLower() == "generalsetting")
+                {
+                    if (objPermission.Setting < (int)ModulePermission.View)
+                    {
+                        return IsDenied = true;
+                    }
+                } 
+                else if (controllerName.ToLower() == "offer" || controllerName.ToLower() == "combooffer" || controllerName.ToLower() == "freeoffer")
+                {
+                    if (objPermission.Offer < (int)ModulePermission.View)
+                    {
+                        return IsDenied = true;
+                    }
+                }
+                else if (controllerName.ToLower() == "customer")
+                {
+                    if (objPermission.Customers < (int)ModulePermission.View)
+                    {
+                        return IsDenied = true;
+                    }
+                }
+                else if (controllerName.ToLower() == "distributor")
+                {
+                    if (objPermission.Distibutors < (int)ModulePermission.View)
+                    {
+                        return IsDenied = true;
+                    }
+                } 
+                else if (controllerName.ToLower() == "category")
+                {
+                    if (objPermission.Category < (int)ModulePermission.View)
+                    {
+                        return IsDenied = true;
+                    }
+                }
+
+            }
+            else if (permissionMode == (int)ModulePermission.Add)
+            {
+                if (commonPos > -1)
+                {
+                    if (objPermission.ManagePageContent < (int)ModulePermission.View)
+                    {
+                        return IsDenied = true;
+                    }
+                }
+
+                if (controllerName.ToLower() == "category")
+                {
+                    if (objPermission.Category < (int)ModulePermission.Add)
+                    {
+                        return IsDenied = true;
+                    }
+                }
+            }
+            else if (permissionMode == (int)ModulePermission.Edit)
+            {
+                if (controllerName.ToLower() == "category")
+                {
+                    if (objPermission.Category < (int)ModulePermission.Edit)
+                    {
+                        return IsDenied = true;
+                    }
+                }
+            }
+            */
+
+            #endregion
+
+            return IsDenied;
+        }
+
+        public static bool CheckPageAccess(UserPermissionVM objPermission, string controllerName, int permissionMode)
+        {
+            bool IsDenied = false;
+
+            string[] commonControllerName = { "contactusmessage", "dynamiccontent", "feedback", "godown", "happycustomer", "homeimages", "notification", "pincodecitystate", "sms", "promocode", "reference" };
+            int commonPos = Array.IndexOf(commonControllerName, controllerName.ToLower());
+
+            if (commonPos > -1)
+            {
+                if (objPermission.ManagePageContent < (int)ModulePermission.View)
+                {
+                    return IsDenied = true;
+                }
+            }
+            else if (controllerName.ToLower() == "subproduct")
+            {
+                if (objPermission.SubProduct < permissionMode)
+                {
+                    IsDenied = true;
+                }
+            }
+            else if (controllerName.ToLower() == "stock")
+            {
+                if (objPermission.Stock < permissionMode)
+                {
+                    IsDenied = true;
+                }
+            }
+            else if (controllerName.ToLower() == "role")
+            {
+                if (objPermission.Role < permissionMode)
+                {
+                    IsDenied = true;
+                }
+            }
+            else if (controllerName.ToLower() == "productitem")
+            {
+                if (objPermission.ProductItem < permissionMode)
+                {
+                    IsDenied = true;
+                }
+            }
+            else if (controllerName.ToLower() == "product")
+            {
+                if (objPermission.Product < permissionMode)
+                {
+                    IsDenied = true;
+                }
+            }
+            else if (controllerName.ToLower() == "order")
+            {
+                if (objPermission.Order < permissionMode)
+                {
+                    IsDenied = true;
+                }
+            }
+            else if (controllerName.ToLower() == "itemtext")
+            {
+                if (objPermission.ItemText < permissionMode)
+                {
+                    IsDenied = true;
+                }
+            }
+            else if (controllerName.ToLower() == "itemtext")
+            {
+                if (objPermission.ItemText < permissionMode)
+                {
+                    IsDenied = true;
+                }
+            }
+            else if (controllerName.ToLower() == "generalsetting")
+            {
+                if (objPermission.Setting < permissionMode)
+                {
+                    IsDenied = true;
+                }
+            }
+            else if (controllerName.ToLower() == "offer" || controllerName.ToLower() == "combooffer" || controllerName.ToLower() == "freeoffer")
+            {
+                if (objPermission.Offer < permissionMode)
+                {
+                    IsDenied = true;
+                }
+            }
+            else if (controllerName.ToLower() == "customer")
+            {
+                if (objPermission.Customers < permissionMode)
+                {
+                    IsDenied = true;
+                }
+            }
+            else if (controllerName.ToLower() == "distributor")
+            {
+                if (objPermission.Distibutors < permissionMode)
+                {
+                    IsDenied = true;
+                }
+            }
+            else if (controllerName.ToLower() == "category")
+            {
+                if (objPermission.Category < permissionMode)
+                {
+                    IsDenied = true;
+                }
+            }
+             
+            return IsDenied;
+        }
     }
 }

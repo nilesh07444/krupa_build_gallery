@@ -1,4 +1,5 @@
 ﻿using ConstructionDiary.Models;
+using KrupaBuildGallery.Filters;
 using KrupaBuildGallery.Helper;
 using KrupaBuildGallery.Model;
 using System;
@@ -17,7 +18,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         {
             _db = new krupagallarydbEntities();
         }
-
+         
         public ActionResult Index()
         {
             DashboardCountVM obj = new DashboardCountVM();
@@ -34,5 +35,6 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             obj.TotalPendingDistributorRequest = _db.tbl_DistributorRequestDetails.Where(x => x.Status == 0).ToList().Count;
             return View(obj);
         }
+
     }
 }

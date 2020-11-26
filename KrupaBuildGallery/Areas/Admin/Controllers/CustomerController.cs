@@ -1,4 +1,6 @@
 ﻿using ConstructionDiary.Models;
+using KrupaBuildGallery.Filters;
+using KrupaBuildGallery.Helper;
 using KrupaBuildGallery.Model;
 using KrupaBuildGallery.ViewModel;
 using OfficeOpenXml;
@@ -22,7 +24,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         {
             _db = new krupagallarydbEntities();
         }
-        // GET: Admin/Customer
+
+        [AdminPermission(RolePermissionEnum.View)]
         public ActionResult Index(int Status = -1,string StartDate = "",string EndDate = "")
         {
             List<ClientUserVM> lstClientUser = new List<ClientUserVM>();
@@ -258,6 +261,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return ReturnMessage;
         }
 
+        [AdminPermission(RolePermissionEnum.View)]
         public ActionResult Detail(long Id)
         {
             ClientUserVM objClientUserVM = (from cu in _db.tbl_ClientUsers

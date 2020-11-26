@@ -1,4 +1,5 @@
 ﻿using ConstructionDiary.Models;
+using KrupaBuildGallery.Filters;
 using KrupaBuildGallery.Helper;
 using KrupaBuildGallery.Model;
 using System;
@@ -18,10 +19,11 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         {
             _db = new krupagallarydbEntities();
         }
-        // GET: Admin/GeneralSetting
+
+        [AdminPermission(RolePermissionEnum.View)]
         public ActionResult Index()
         {
-            //tbl_GeneralSetting objGenSetting = _db.tbl_GeneralSetting.FirstOrDefault();
+            
             List<tbl_ExtraAmount> extramtlst = _db.tbl_ExtraAmount.ToList();
             ViewData["extramtlst"] = extramtlst;
 
@@ -53,6 +55,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(objGenSetting);
         }
 
+        [AdminPermission(RolePermissionEnum.Add)]
         [HttpPost]
         public string SaveGeneralSetting(FormCollection frm)
         {
@@ -116,6 +119,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return ReturnMessage;
         }
 
+        [AdminPermission(RolePermissionEnum.Add)]
         [HttpPost]
         public string SaveExtraAmtSetting(FormCollection frm)
         {
@@ -158,6 +162,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return ReturnMessage;
         }
 
+        [AdminPermission(RolePermissionEnum.Add)]
         [HttpPost]
         public ActionResult UploadAdvertiseBanner(GeneralSettingVM settingVM, HttpPostedFileBase AdvertiseBannerImageFile)
         {
@@ -196,7 +201,6 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             return View(settingVM);
         }
-
-
+        
     }
 }

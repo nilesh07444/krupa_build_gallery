@@ -39,7 +39,7 @@ namespace KrupaBuildGallery.Helper
     }
 
     public enum Modules
-    { 
+    {
         Role = 1,
         Category = 2,
         Product = 3,
@@ -84,6 +84,16 @@ namespace KrupaBuildGallery.Helper
         PrivacyPolicy = 2,
         TermsCondition = 3,
         ReturnPolicy = 4
+    }
+
+    public enum RolePermissionEnum
+    {
+        DoNotCheck = -1,
+        None = 0,
+        View = 1,
+        Add = 2,
+        Edit = 3,
+        Full = 4
     }
 
 }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using ConstructionDiary.Models;
+using KrupaBuildGallery.Filters;
 using KrupaBuildGallery.Helper;
 using KrupaBuildGallery.Model;
 using KrupaBuildGallery.ViewModel;
@@ -22,6 +23,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             HappyCustomerDirectoryPath = ErrorMessage.HappyCustomerDirectoryPath;
         }
 
+        [AdminPermission(RolePermissionEnum.View)]
         public ActionResult Index()
         {
             List<HappyCustomerVM> lstHappyCustomers = new List<HappyCustomerVM>();
@@ -47,6 +49,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(lstHappyCustomers);
         }
 
+        [AdminPermission(RolePermissionEnum.Add)]
         public ActionResult Add()
         {
             HappyCustomerVM customerVM = new HappyCustomerVM(); 
@@ -123,6 +126,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(customerVM);
         }
 
+        [AdminPermission(RolePermissionEnum.Edit)]
         public ActionResult Edit(int Id)
         {
             HappyCustomerVM objCustomer = new HappyCustomerVM();

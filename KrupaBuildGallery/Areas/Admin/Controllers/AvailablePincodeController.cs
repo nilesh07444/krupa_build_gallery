@@ -1,4 +1,5 @@
 ﻿using ConstructionDiary.Models;
+using KrupaBuildGallery.Filters;
 using KrupaBuildGallery.Helper;
 using KrupaBuildGallery.Model;
 using System;
@@ -17,6 +18,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         {
             _db = new krupagallarydbEntities();
         }
+
+        [AdminPermission(RolePermissionEnum.View)]
         public ActionResult Index()
         {
             List<AvailablePincodeVM> lstPincode = new List<AvailablePincodeVM>();
@@ -39,6 +42,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(lstPincode);
         }
 
+        [AdminPermission(RolePermissionEnum.Add)]
         public ActionResult Add()
         {
             return View();
@@ -85,6 +89,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(pincodeVM);
         }
 
+        [AdminPermission(RolePermissionEnum.Edit)]
         public ActionResult Edit(int Id)
         {
             AvailablePincodeVM objPincode = new AvailablePincodeVM();

@@ -205,6 +205,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\Controllers\AccessDeniedController.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminUserController.cs" />
     <Compile Include="Areas\Admin\Controllers\AdvertiseImagesController.cs" />
     <Compile Include="Areas\Admin\Controllers\AgentController.cs" />
@@ -274,6 +275,7 @@
     <Compile Include="Areas\WebAPI\Controllers\RegisterController.cs" />
     <Compile Include="Areas\WebAPI\Controllers\WishListController.cs" />
     <Compile Include="Areas\WebAPI\WebAPIAreaRegistration.cs" />
+    <Compile Include="Filters\AdminPermissionAttribute.cs" />
     <Compile Include="Filters\CustomAuthorize.cs" />
     <Compile Include="Filters\CustomClientAuthorize.cs" />
     <Compile Include="Helper\CommonMethod.cs" />
@@ -4258,6 +4260,7 @@
     <Content Include="Areas\Admin\Views\Chat\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Chat\_ChatMessageWindow.cshtml" />
     <Content Include="Areas\Admin\Views\Chat\_UsersChat.cshtml" />
+    <Content Include="Areas\Admin\Views\AccessDenied\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />

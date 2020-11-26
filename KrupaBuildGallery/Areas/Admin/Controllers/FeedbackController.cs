@@ -1,4 +1,5 @@
 ﻿using ConstructionDiary.Models;
+using KrupaBuildGallery.Filters;
 using KrupaBuildGallery.Helper;
 using KrupaBuildGallery.Model;
 using System;
@@ -17,6 +18,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         {
             _db = new krupagallarydbEntities();
         }
+
+        [AdminPermission(RolePermissionEnum.View)]
         public ActionResult Index()
         {
 
@@ -40,7 +43,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             return View(lstFeedbacks);
         }
-         
+        
         [HttpPost]
         public string DeleteFeedback(int FeedbackId)
         {

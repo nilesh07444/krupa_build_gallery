@@ -1,4 +1,5 @@
 ﻿using ConstructionDiary.Models;
+using KrupaBuildGallery.Filters;
 using KrupaBuildGallery.Helper;
 using KrupaBuildGallery.Model;
 using Newtonsoft.Json;
@@ -21,6 +22,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         {
             _db = new krupagallarydbEntities();
         }
+
+        [AdminPermission(RolePermissionEnum.View)]
         public ActionResult Index()
         {
             List<NotificationVM> lstNotifications = (from n in _db.tbl_Notification
@@ -37,6 +40,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(lstNotifications);
         }
 
+        [AdminPermission(RolePermissionEnum.Add)]
         public ActionResult Add()
         {
             return View();
@@ -146,6 +150,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(notificationVM);
         }
 
+        [AdminPermission(RolePermissionEnum.Edit)]
         public ActionResult Edit(int Id)
         {
             NotificationVM objNotification = new NotificationVM();
@@ -283,6 +288,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return ReturnMessage;
         }
 
+        [AdminPermission(RolePermissionEnum.View)]
         public ActionResult View(int Id)
         {
             NotificationVM objNotification = new NotificationVM();

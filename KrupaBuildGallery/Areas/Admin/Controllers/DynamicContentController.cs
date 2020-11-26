@@ -1,4 +1,6 @@
 ﻿using ConstructionDiary.Models;
+using KrupaBuildGallery.Filters;
+using KrupaBuildGallery.Helper;
 using KrupaBuildGallery.Model;
 using System;
 using System.Collections.Generic;
@@ -17,6 +19,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             _db = new krupagallarydbEntities();
         }
 
+        [AdminPermission(RolePermissionEnum.View)]
         public ActionResult Index()
         {
             List<DynamicContentVM> lstDyanamicContent = new List<DynamicContentVM>();
@@ -40,6 +43,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(lstDyanamicContent);
         }
 
+        [AdminPermission(RolePermissionEnum.Add)]
         public ActionResult Add()
         {
             DynamicContentVM contentVM = new DynamicContentVM();
@@ -81,6 +85,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(contentVM);
         }
 
+        [AdminPermission(RolePermissionEnum.Edit)]
         public ActionResult Edit(int Id)
         {
             DynamicContentVM objDyanamicContent = new DynamicContentVM();

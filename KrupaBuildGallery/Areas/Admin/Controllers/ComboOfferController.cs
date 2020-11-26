@@ -1,4 +1,5 @@
 ﻿using ConstructionDiary.Models;
+using KrupaBuildGallery.Filters;
 using KrupaBuildGallery.Helper;
 using KrupaBuildGallery.Model;
 using KrupaBuildGallery.ViewModel.Admin;
@@ -21,30 +22,32 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         {
             _db = new krupagallarydbEntities();
         }
+
+        [AdminPermission(RolePermissionEnum.View)]
         public ActionResult Index()
         {
             List<ComboOfferVM> lstOfferVm = new List<ComboOfferVM>();
             try
             {
                 lstOfferVm = (from i in _db.tbl_ComboOfferMaster
-                              join p in _db.tbl_ProductItems on i.MainItemId equals p.ProductItemId                              
+                              join p in _db.tbl_ProductItems on i.MainItemId equals p.ProductItemId
                               where i.IsDeleted == false
-                             select new ComboOfferVM
-                             {
-                                ComboOfferId = i.ComboOfferId,
-                                Main_CategoryId = i.MainItemCatId,
-                                Main_ProductId = i.MainItemProductId.Value,
-                                Main_SubProductId = i.MainItemsSubProductId,
-                                Main_ProductItemId = i.MainItemId,
-                                Main_Qty = i.MainItemQty,                               
-                                Main_ProductItemName = p.ItemName,                               
-                                OfferTitle = i.OfferTitle,
-                                OfferImage = i.OfferImage,
-                                dtOfferEndDate = i.OfferEndDate,
-                                dtOfferStartDate = i.OfferStartDate,
-                                ComboOfferPrice = i.OfferPrice,
-                                IsActive = i.IsActive.Value
-                            }).ToList();
+                              select new ComboOfferVM
+                              {
+                                  ComboOfferId = i.ComboOfferId,
+                                  Main_CategoryId = i.MainItemCatId,
+                                  Main_ProductId = i.MainItemProductId.Value,
+                                  Main_SubProductId = i.MainItemsSubProductId,
+                                  Main_ProductItemId = i.MainItemId,
+                                  Main_Qty = i.MainItemQty,
+                                  Main_ProductItemName = p.ItemName,
+                                  OfferTitle = i.OfferTitle,
+                                  OfferImage = i.OfferImage,
+                                  dtOfferEndDate = i.OfferEndDate,
+                                  dtOfferStartDate = i.OfferStartDate,
+                                  ComboOfferPrice = i.OfferPrice,
+                                  IsActive = i.IsActive.Value
+                              }).ToList();
             }
             catch (Exception ex)
             {
@@ -53,6 +56,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(lstOfferVm);
         }
 
+        [AdminPermission(RolePermissionEnum.Add)]
         public ActionResult Add()
         {
             ComboOfferVM objOffer = new ComboOfferVM();
@@ -71,7 +75,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Add(ComboOfferVM objOffer, HttpPostedFileBase OfferImageFile,FormCollection frm)
+        public ActionResult Add(ComboOfferVM objOffer, HttpPostedFileBase OfferImageFile, FormCollection frm)
         {
             try
             {
@@ -119,7 +123,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     objComoffer.MainItemActualPrice = Convert.ToDecimal(frm["hdnTotalMain"].ToString());
                     _db.tbl_ComboOfferMaster.Add(objComoffer);
                     _db.SaveChanges();
-                    if(frm["SubItemProductItem"] != null)
+                    if (frm["SubItemProductItem"] != null)
                     {
                         string[] arrySubItems = Request.Form.GetValues("SubItemProductItem");
                         string[] arrySubItemsCat = Request.Form.GetValues("SubItemCategory");
@@ -128,11 +132,11 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         string[] arrySubItemsVariant = Request.Form.GetValues("SubItemVarints");
                         string[] arrySubItemsQty = Request.Form.GetValues("SubItemQty");
                         string[] arrySubItemsTtl = Request.Form.GetValues("hdntotl");
-                        for (int j=0; j< arrySubItems.Length;j++)
+                        for (int j = 0; j < arrySubItems.Length; j++)
                         {
                             tbl_ComboOfferSubItems objSub = new tbl_ComboOfferSubItems();
                             objSub.ComboOfferId = objComoffer.ComboOfferId;
-                            if(arrySubItems[j] != "" && arrySubItems[j] != "0")
+                            if (arrySubItems[j] != "" && arrySubItems[j] != "0")
                             {
                                 objSub.CategoryId = GetInt64Val(arrySubItemsCat[j]);
                                 objSub.ProductId = GetInt64Val(arrySubItemsProd[j]);
@@ -152,7 +156,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             }
                         }
                     }
-                   
+
 
                     return RedirectToAction("Add");
                 }
@@ -174,6 +178,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(objOffer);
         }
 
+        [AdminPermission(RolePermissionEnum.Edit)]
         public ActionResult Edit(int Id)
         {
             ComboOfferVM objOffer = new ComboOfferVM();
@@ -181,23 +186,23 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             {
                 objOffer = (from i in _db.tbl_ComboOfferMaster
                             where i.ComboOfferId == Id
-                                  select new ComboOfferVM
-                                  {
-                                      ComboOfferId = i.ComboOfferId,
-                                      Main_CategoryId = i.MainItemCatId,
-                                      Main_ProductId = i.MainItemProductId.Value,
-                                      Main_SubProductId = i.MainItemsSubProductId,
-                                      Main_ProductItemId = i.MainItemId,
-                                      Main_Qty = i.MainItemQty,
-                                      OfferTitle = i.OfferTitle,
-                                      OfferImage = i.OfferImage,
-                                      IsCashonDelieveryuse = i.IsCashOnDelivery.HasValue ? i.IsCashOnDelivery.Value : false,
-                                      dtOfferEndDate = i.OfferEndDate,
-                                      dtOfferStartDate = i.OfferStartDate,
-                                      OfferDescription = i.Description,
-                                      ComboOfferPrice = i.OfferPrice,
-                                      MainVariantId = i.MainItemVarintId
-                                  }).FirstOrDefault();
+                            select new ComboOfferVM
+                            {
+                                ComboOfferId = i.ComboOfferId,
+                                Main_CategoryId = i.MainItemCatId,
+                                Main_ProductId = i.MainItemProductId.Value,
+                                Main_SubProductId = i.MainItemsSubProductId,
+                                Main_ProductItemId = i.MainItemId,
+                                Main_Qty = i.MainItemQty,
+                                OfferTitle = i.OfferTitle,
+                                OfferImage = i.OfferImage,
+                                IsCashonDelieveryuse = i.IsCashOnDelivery.HasValue ? i.IsCashOnDelivery.Value : false,
+                                dtOfferEndDate = i.OfferEndDate,
+                                dtOfferStartDate = i.OfferStartDate,
+                                OfferDescription = i.Description,
+                                ComboOfferPrice = i.OfferPrice,
+                                MainVariantId = i.MainItemVarintId
+                            }).FirstOrDefault();
 
                 objOffer.OfferStartDate = Convert.ToDateTime(objOffer.dtOfferStartDate).ToString("dd/MM/yyyy");
                 objOffer.OfferEndDate = Convert.ToDateTime(objOffer.dtOfferEndDate).ToString("dd/MM/yyyy");
@@ -206,8 +211,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 objOffer.Main_SubProductList = GetSubProductListByProductId(objOffer.Main_ProductId);
                 objOffer.Main_ProductItemList = GetProductItems(objOffer.Main_ProductId, objOffer.Main_SubProductId);
                 ViewData["MainVariantList"] = GetVariantItms(objOffer.Main_ProductItemId);
-                 //= _db.tbl_ItemVariant.Where(x => (Id == -1 || x.ProductItemId.Value == objOffer.Main_ProductItemId) && x.IsActive == true).OrderBy(x => x.UnitQty).ToList();
-                              
+                //= _db.tbl_ItemVariant.Where(x => (Id == -1 || x.ProductItemId.Value == objOffer.Main_ProductItemId) && x.IsActive == true).OrderBy(x => x.UnitQty).ToList();
+
 
             }
             catch (Exception ex)
@@ -218,7 +223,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public ActionResult Edit(ComboOfferVM objOffer,HttpPostedFileBase OfferImageFile)
+        public ActionResult Edit(ComboOfferVM objOffer, HttpPostedFileBase OfferImageFile)
         {
             try
             {
@@ -239,7 +244,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     {
                         fileName = objOffer.OfferImage;
                     }
-                  
+
                     objComoffer.MainItemCatId = objOffer.Main_CategoryId;
                     objComoffer.MainItemId = objOffer.Main_ProductItemId;
                     objComoffer.MainItemProductId = objOffer.Main_ProductId;
@@ -548,7 +553,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         public long GetInt64Val(string vl)
         {
             long reurnvl = 0;
-            if(!string.IsNullOrEmpty(vl))
+            if (!string.IsNullOrEmpty(vl))
             {
                 reurnvl = Convert.ToInt64(vl);
             }

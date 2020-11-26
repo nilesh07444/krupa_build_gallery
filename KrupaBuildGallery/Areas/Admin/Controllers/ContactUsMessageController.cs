@@ -1,4 +1,6 @@
 ﻿using ConstructionDiary.Models;
+using KrupaBuildGallery.Filters;
+using KrupaBuildGallery.Helper;
 using KrupaBuildGallery.Model;
 using KrupaBuildGallery.ViewModel;
 using System;
@@ -17,7 +19,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         {
             _db = new krupagallarydbEntities();
         }
-         
+
+        [AdminPermission(RolePermissionEnum.View)]
         public ActionResult Index()
         {
             List<ContactUsMessageVM> lstContactUsMessageVM = new List<ContactUsMessageVM>();
@@ -72,6 +75,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return ReturnMessage;
         }
 
+        [AdminPermission(RolePermissionEnum.View)]
         public ActionResult View(long Id)
         {
             ContactUsMessageVM lstContactUsMessageVM = new ContactUsMessageVM();

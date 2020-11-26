@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using ConstructionDiary.Models;
+using KrupaBuildGallery.Filters;
 using KrupaBuildGallery.Helper;
 using KrupaBuildGallery.Model;
 using KrupaBuildGallery.ViewModel;
@@ -21,7 +22,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             _db = new krupagallarydbEntities();
             AdvertiseDirectoryPath = ErrorMessage.AdvertiseDirectoryPath;
         }
-
+        [AdminPermission(RolePermissionEnum.View)]
         public ActionResult Index()
         {
             List<AdvertiseImageVM> lstHomeImages = new List<AdvertiseImageVM>();
@@ -47,6 +48,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(lstHomeImages);
         }
 
+        [AdminPermission(RolePermissionEnum.Add)]
         public ActionResult Add()
         {
             AdvertiseImageVM AdvertiseImageVM = new AdvertiseImageVM();
@@ -121,6 +123,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(AdvertiseImageVM);
         }
 
+        [AdminPermission(RolePermissionEnum.Edit)]
         public ActionResult Edit(int Id)
         {
             AdvertiseImageVM objAdvertise = new AdvertiseImageVM();

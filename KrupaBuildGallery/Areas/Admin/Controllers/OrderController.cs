@@ -15,6 +15,8 @@ using OfficeOpenXml.Style;
 using System.IO;
 using System.Drawing;
 using HiQPdf;
+using KrupaBuildGallery.Filters;
+using KrupaBuildGallery.Helper;
 
 namespace KrupaBuildGallery.Areas.Admin.Controllers
 {
@@ -26,7 +28,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         {
             _db = new krupagallarydbEntities();
         }
-        // GET: Admin/Order
+
+        [AdminPermission(RolePermissionEnum.View)]
         public ActionResult Index(int Status = -1)
         {
 
@@ -81,6 +84,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(lstOrders);
         }
 
+        [AdminPermission(RolePermissionEnum.View)]
         public ActionResult Detail(long Id)
         {
             OrderVM objOrder = new OrderVM();
@@ -1659,6 +1663,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return PartialView("~/Areas/Admin/Views/Order/_PaymentReport.cshtml", lstReportVm);
         }
 
+        [AdminPermission(RolePermissionEnum.View)]
         public ActionResult SalesReport()
         {
             return View();
@@ -2862,8 +2867,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         {
             return CommonMethod.ConvertFromUTCOnlyDate(dt);
         }
-
-       
+         
         public ActionResult DownloadAddress(long OrderId)
         {
             // get the HTML code of this view

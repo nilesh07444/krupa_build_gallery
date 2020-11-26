@@ -1,4 +1,6 @@
 ﻿using ConstructionDiary.Models;
+using KrupaBuildGallery.Filters;
+using KrupaBuildGallery.Helper;
 using KrupaBuildGallery.Model;
 using System;
 using System.Collections.Generic;
@@ -16,6 +18,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         {
             _db = new krupagallarydbEntities();
         }
+
+        [AdminPermission(RolePermissionEnum.View)]
         public ActionResult Index()
         {
             List<SMSContentVM> lstSMS = (from s in _db.tbl_SMSContent
@@ -29,6 +33,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(lstSMS);
         }
 
+        [AdminPermission(RolePermissionEnum.Edit)]
         public ActionResult Edit(int Id)
         {
             SMSContentVM objSMS = (from s in _db.tbl_SMSContent

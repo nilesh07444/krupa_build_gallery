@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using ConstructionDiary.Models;
+using KrupaBuildGallery.Filters;
 using KrupaBuildGallery.Helper;
 using KrupaBuildGallery.Model;
 using KrupaBuildGallery.ViewModel;
@@ -22,6 +23,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             HomeDirectoryPath = ErrorMessage.HomeDirectoryPath;
         }
 
+        [AdminPermission(RolePermissionEnum.View)]
         public ActionResult Index()
         {
             List<HomeImageVM> lstHomeImages = new List<HomeImageVM>();
@@ -48,6 +50,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(lstHomeImages);
         }
 
+        [AdminPermission(RolePermissionEnum.Add)]
         public ActionResult Add()
         {
             HomeImageVM homeImageVM = new HomeImageVM();
@@ -119,6 +122,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(homeImageVM);
         }
 
+        [AdminPermission(RolePermissionEnum.Edit)]
         public ActionResult Edit(int Id)
         {
             HomeImageVM objHome = new HomeImageVM();

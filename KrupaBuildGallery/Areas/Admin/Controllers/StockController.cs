@@ -1,4 +1,5 @@
 ﻿using ConstructionDiary.Models;
+using KrupaBuildGallery.Filters;
 using KrupaBuildGallery.Helper;
 using KrupaBuildGallery.Model;
 using KrupaBuildGallery.ViewModel;
@@ -23,7 +24,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         {
             _db = new krupagallarydbEntities();
         }
-        // GET: Admin/Stock
+
+        [AdminPermission(RolePermissionEnum.View)]
         public ActionResult Index()
         {
             List<ItemStockVM> lstItemStockVM = new List<ItemStockVM>();
@@ -60,6 +62,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(lstItemStockVM);
         }
 
+        [AdminPermission(RolePermissionEnum.Add)]
         public ActionResult Add()
         {
             ItemStockVM objItemStock = new ItemStockVM();
@@ -70,6 +73,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             objItemStock.ProductItemList = new List<SelectListItem>();
             return View(objItemStock);
         }
+        [AdminPermission(RolePermissionEnum.Edit)]
         public ActionResult Edit(int id)
         {
             ItemStockVM objProductItemStock = new ItemStockVM();

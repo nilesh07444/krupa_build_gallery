@@ -147,7 +147,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                                 CategoryId = c.CategoryId,
                                                 CategoryName = c.CategoryName,
                                                 CategoryImage = c.CategoryImage
-                                            }).OrderByDescending(x => x.CategoryId).ToList().Take(9).ToList();
+                                            }).OrderBy(x => x.CategoryName).ToList().Take(9).ToList();
 
             lstHappyCustomers = (from c in _db.tbl_HappyCustomers
                                  where c.IsActive

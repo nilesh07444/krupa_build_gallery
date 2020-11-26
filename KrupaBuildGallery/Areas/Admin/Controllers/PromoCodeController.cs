@@ -1,4 +1,6 @@
 ﻿using ConstructionDiary.Models;
+using KrupaBuildGallery.Filters;
+using KrupaBuildGallery.Helper;
 using KrupaBuildGallery.Model;
 using System;
 using System.Collections.Generic;
@@ -16,6 +18,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         {
             _db = new krupagallarydbEntities();
         }
+
+        [AdminPermission(RolePermissionEnum.View)]
         public ActionResult Index()
         {
             List<PromoCodeVM> lstPromoCode = new List<PromoCodeVM>();
@@ -45,7 +49,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             return View(lstPromoCode);
         }
-         
+
+        [AdminPermission(RolePermissionEnum.Add)]
         public ActionResult Add()
         {
             return View();
@@ -95,6 +100,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(PromocodeVM);
         }
 
+        [AdminPermission(RolePermissionEnum.Edit)]
         public ActionResult Edit(long Id)
         {
             PromoCodeVM objPromoCode = new PromoCodeVM();

@@ -18,6 +18,8 @@ using System.Globalization;
 using OfficeOpenXml.Style;
 using OfficeOpenXml;
 using HiQPdf;
+using KrupaBuildGallery.Filters;
+using KrupaBuildGallery.Helper;
 
 namespace KrupaBuildGallery.Areas.Admin.Controllers
 {
@@ -29,7 +31,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         {
             _db = new krupagallarydbEntities();
         }
-        // GET: Admin/Distributor
+
+        [AdminPermission(RolePermissionEnum.View)]
         public ActionResult Index(int Status = -1, string StartDate = "", string EndDate = "")
         {
             List<ClientUserVM> lstClientUser = new List<ClientUserVM>();
@@ -271,6 +274,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(lstDistriRequest);
         }
 
+        [AdminPermission(RolePermissionEnum.View)]
         public ActionResult Detail(long Id)
         {
             ClientUserVM objClientUserVM = (from cu in _db.tbl_ClientUsers
@@ -1130,8 +1134,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             return ReturnMessage;
         }
-
-
+        
         [HttpPost]
         public string ChangeCreditLimit(long ClientUserId, string CreditLimit)
         {
@@ -1193,6 +1196,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             }
         }
 
+        [AdminPermission(RolePermissionEnum.Edit)]
         public ActionResult Edit(int Id)
         {
             ClientUserVM objClientUserVM = (from cu in _db.tbl_ClientUsers
