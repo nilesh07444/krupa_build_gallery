@@ -599,8 +599,9 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 objHome.lstAds2 = lstAdvertiseImages.Where(o => o.SliderType == 2).ToList();
                 objHome.lstComboOffers = lstComboOffers;
                 objHome.HomePageSlider = GetHomeImages();
-
-                objHome.BannerImage = _db.tbl_GeneralSetting.FirstOrDefault().AdvertiseBannerImage;
+                var objGenSetting = _db.tbl_GeneralSetting.FirstOrDefault();
+                objHome.BannerImage = objGenSetting.AdvertiseBannerImage;
+                objHome.FlashMessage = objGenSetting.FlashMessage;
                 WebsiteStatisticsVM objWebStats = new WebsiteStatisticsVM();
                 var ClientUserData = _db.tbl_ClientUsers.Where(x => !x.IsDelete && x.IsActive).ToList();
                 objWebStats.TotalCustomers = ClientUserData.Where(x => x.ClientRoleId == (int)ClientRoles.Customer).ToList().Count;

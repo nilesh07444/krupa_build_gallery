@@ -190,7 +190,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                   TotlOriginalOfferPrice = i.TotalActualPrice.Value
                               }).OrderBy(x => x.OfferTitle).ToList().Take(8).ToList();
 
-
+            string strFlashNoticemsg = _db.tbl_GeneralSetting.FirstOrDefault().FlashMessage;
             ViewData["lstPopularProductItem"] = lstPopularProductItem;
             ViewData["lstOfferItems"] = lstOfferItems;
             ViewData["lstImages"] = lstImages;
@@ -201,7 +201,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             ViewData["lstAdvertiseImages2"] = lstAdvertiseImages.Where(x => x.SliderType == 2).ToList();
             ViewData["lstAdvertiseImages3"] = lstAdvertiseImages.Where(x => x.SliderType == 3).ToList();
             ViewData["lstComboOffers"] = lstComboOffers;
-
+            ViewBag.FlashMsg = strFlashNoticemsg;
             return View();
         }
 

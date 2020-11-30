@@ -48,6 +48,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                                   CashLimitPerOrder = s.CashLimitPerOrder,
                                                   CashLimitPerYear = s.CashLimitPerYear,
                                                   RazorPayKey = s.RazorPayKey,
+                                                  FlashMessage = s.FlashMessage,
                                                   RazorPaySecret = s.RazorPaySecret,
                                                   ReferenceReferralDiscountPoints = s.ReferenceReferralDiscountPoints
                                               }).FirstOrDefault();
@@ -71,6 +72,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 string txtadminemail = frm["txtadminemail"];
                 string txtfrommail = frm["txtfrommail"];
                 string txtsmsmobil = frm["txtsmsmobil"];
+                string txtFlashMessage = frm["txtFlashMessage"];
                 bool EnableSSL = false;
                 if (frm["rdbSSL"].ToString() == "Yes")
                 {
@@ -106,6 +108,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 objGenSetting.CashLimitPerOrder = txtCashLimitPerOrder;
                 objGenSetting.CashLimitPerYear = txtCashLimitPerYear;
                 objGenSetting.ReferenceReferralDiscountPoints = txtReferralDiscountPoint;
+                objGenSetting.FlashMessage = txtFlashMessage;
 
                 _db.SaveChanges();
                 return "Success";
