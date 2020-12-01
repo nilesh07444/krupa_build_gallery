@@ -465,6 +465,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             List<ComboOfferVM> lstComboOffers = new List<ComboOfferVM>();
             List<long> wishlistitemsId = new List<long>();
             bool IsDisplayFeedbackForm = false;
+
             try
             {
                 long UserId = Convert.ToInt64(objGen.ClientUserId);
@@ -565,7 +566,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                                     CategoryId = c.CategoryId,
                                                     CategoryName = c.CategoryName,
                                                     CategoryImage = c.CategoryImage
-                                                }).OrderByDescending(x => x.CategoryId).ToList().Take(9).ToList();
+                                                }).OrderBy(x => x.CategoryName).ToList().Take(9).ToList();
 
                 List<AdvertiseImageVM> lstAdvertiseImages = new List<AdvertiseImageVM>();
                 // Get Advertise Images
