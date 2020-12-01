@@ -488,6 +488,7 @@
           <Property Name="RazorPayKey" Type="nvarchar" MaxLength="500" />
           <Property Name="RazorPaySecret" Type="nvarchar" MaxLength="500" />
           <Property Name="ReferenceReferralDiscountPoints" Type="int" />
+          <Property Name="FlashMessage" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="tbl_Godown">
           <Key>
@@ -1783,6 +1784,7 @@
           <Property Name="RazorPayKey" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="RazorPaySecret" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="ReferenceReferralDiscountPoints" Type="Int32" />
+          <Property Name="FlashMessage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_Wallet">
           <Key>
@@ -2864,6 +2866,7 @@
           <EntitySetMapping Name="tbl_GeneralSetting">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_GeneralSetting">
               <MappingFragment StoreEntitySet="tbl_GeneralSetting">
+                <ScalarProperty Name="FlashMessage" ColumnName="FlashMessage" />
                 <ScalarProperty Name="ReferenceReferralDiscountPoints" ColumnName="ReferenceReferralDiscountPoints" />
                 <ScalarProperty Name="RazorPaySecret" ColumnName="RazorPaySecret" />
                 <ScalarProperty Name="RazorPayKey" ColumnName="RazorPayKey" />

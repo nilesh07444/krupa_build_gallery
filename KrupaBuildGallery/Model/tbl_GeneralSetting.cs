@@ -35,5 +35,6 @@ namespace KrupaBuildGallery.Model
         public string RazorPayKey { get; set; }
         public string RazorPaySecret { get; set; }
         public Nullable<int> ReferenceReferralDiscountPoints { get; set; }
+        public string FlashMessage { get; set; }
     }
 }
