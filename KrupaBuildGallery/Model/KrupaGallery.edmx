@@ -79,14 +79,14 @@
           </Key>
           <Property Name="AdvertiseImageId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="AdvertiseImage" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="ImageFor" Type="int" />
-          <Property Name="SliderType" Type="int" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
           <Property Name="IsDeleted" Type="bit" Nullable="false" />
           <Property Name="CreatedBy" Type="int" Nullable="false" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="UpdatedBy" Type="int" />
           <Property Name="UpdatedDate" Type="datetime" />
+          <Property Name="SliderType" Type="int" />
+          <Property Name="ImageFor" Type="int" />
         </EntityType>
         <EntityType Name="tbl_AvailablePincode">
           <Key>
@@ -125,7 +125,7 @@
           <Property Name="CreatedDate" Type="datetime" />
           <Property Name="IsAccept" Type="int" />
           <Property Name="Amount" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="Reason" Type="nvarchar" MaxLength="250" />
+          <Property Name="Reason" Type="nvarchar" MaxLength="150" />
           <Property Name="ModifiedDate" Type="datetime" />
         </EntityType>
         <EntityType Name="tbl_Categories">
@@ -2172,7 +2172,7 @@
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="IsAccept" Type="Int32" />
           <Property Name="Amount" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="Reason" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Reason" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="tbl_PincodeCityState">
