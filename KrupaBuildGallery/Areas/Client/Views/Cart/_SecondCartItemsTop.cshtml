@@ -101,6 +101,12 @@ else
                 success: function (data) {
                     //success
                     $("#ulCartitemssecond").html(data); //populate the tab content.
+                    if ($("#shipamount").length > 0 && $("#onlineamtinorder").length > 0) {
+                        location.reload();
+                    }
+                    else if ($(".cart-table").length > 0) {
+                        location.reload();
+                    }
 
                 },
                 error: function () {
