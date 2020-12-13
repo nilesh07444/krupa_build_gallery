@@ -22,5 +22,6 @@ namespace KrupaBuildGallery
         public int Setting { get; set; }
         public int ManagePageContent { get; set; }
         public int ItemText { get; set; }
+        public int BidItem { get; set; }
     }
 }

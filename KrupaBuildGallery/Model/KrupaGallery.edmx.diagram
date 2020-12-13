@@ -72,6 +72,15 @@
         <EntityTypeShape EntityType="krupagalleryModel.tbl_DeletedChatMessage" Width="1.5" PointX="25.375" PointY="13.75" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_ChatRoom" Width="1.5" PointX="25.375" PointY="16.75" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_ChatRoomUsers" Width="1.5" PointX="25.375" PointY="19.75" />
+        <EntityTypeShape EntityType="krupagalleryModel.tbl_BidDealerItems" Width="1.5" PointX="19.375" PointY="25.75" />
+        <EntityTypeShape EntityType="krupagalleryModel.tbl_BidDealers" Width="1.5" PointX="25.375" PointY="22.75" />
+        <EntityTypeShape EntityType="krupagalleryModel.tbl_Bids" Width="1.5" PointX="3.375" PointY="26.75" />
+        <EntityTypeShape EntityType="krupagalleryModel.tbl_DealerSuggestions" Width="1.5" PointX="13.375" PointY="26.75" />
+        <EntityTypeShape EntityType="krupagalleryModel.tbl_DealerTerms" Width="1.5" PointX="15.375" PointY="26.75" />
+        <EntityTypeShape EntityType="krupagalleryModel.tbl_PurchaseDealers" Width="1.5" PointX="27.375" PointY="4.75" />
+        <EntityTypeShape EntityType="krupagalleryModel.tbl_BidItemUnitTypes" Width="1.5" PointX="27.375" PointY="11.75" />
+        <EntityTypeShape EntityType="krupagalleryModel.tbl_PurchaseBidItems" Width="1.5" PointX="27.375" PointY="0.75" />
+        <EntityTypeShape EntityType="krupagalleryModel.tbl_PurchaseDealersRequest" Width="1.5" PointX="27.375" PointY="14.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

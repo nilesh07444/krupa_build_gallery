@@ -1,0 +1,181 @@
+﻿@model List<KrupaBuildGallery.PurchaseDealerVM>
+@{
+    ViewBag.Title = "Purchase Dealer Requests";
+
+    int counter = 1;
+}
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="page-header-left">
+                        <h3>
+                            Purchase Dealer Request List
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item active">Purchase Dealer Request List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h5>Purchase Dealer Request List</h5>
+            </div>
+            <div class="card-body vendor-table">
+
+                <h3>Filter:</h3>
+                <div class="row" style="margin-top:25px; border-bottom: 2px solid #f8f8f9; padding-bottom: 25px; margin-bottom: 10px;">
+                    <div class="col-md-2">
+                        <label>Status</label>
+                        <select class="form-control" id="selectstatus" style="width:150px;" onchange="changestatus();">
+                            <option value="-1">All</option>
+                            <option value="0">Pending</option>
+                            <option value="1">Accepted</option>
+                            <option value="2">Rejected</option>
+                        </select>
+                    </div>
+                </div>
+
+                <br />
+                <table class="display" id="basic-1">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Firm Name</th>
+                            <th>Email</th>
+                            <th>Firm Contact No.</th>
+                            <th>Owner Name</th>
+                            <th>City</th>
+                            <th>State</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            foreach (KrupaBuildGallery.PurchaseDealerVM objreq in Model)
+                            {
+                                string stauscolor = "badge-secondary";
+                                string statunm = "";
+                                if (objreq.Status == 2)
+                                {
+                                    stauscolor = "badge-danger";
+                                    statunm = "Rejected";
+                                }
+                                else if (objreq.Status == 0)
+                                {
+                                    stauscolor = "badge-warning";
+                                    statunm = "Pending";
+                                }
+                                else if (objreq.Status == 1)
+                                {
+                                    stauscolor = "badge-success";
+                                    statunm = "Accepted";
+                                }
+                                <tr class="gradeX">
+                                    <td>@counter.</td>
+                                    <td>@objreq.FirmName</td>
+                                    <td>@objreq.Email</td>
+                                    <td>@objreq.FirmContactNo</td>
+                                    <td>@objreq.OwnerName</td>
+                                    <td>@objreq.FirmCity</td>                                    
+                                    <td>@objreq.State</td>
+                                    <td><span class="badge @stauscolor">@statunm</span></td>
+                                    <td>
+                                        <a href="/admin/purchasedealers/requestdetail/@objreq.Pk_Dealer_Id"><i class="fa fa-eye font-success"></i></a>
+                                        <a href="javascript:void(0);" onclick="fnDeleteReq('@objreq.Pk_Dealer_Id');"><i class="fa fa-trash font-danger"></i></a>
+                                    </td>
+                                </tr>
+                                counter++;
+                            }
+
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+</div>
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteReqModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete Confirm</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete ?
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="hdnReqid" />
+                <button data-dismiss="modal" class="btn btn-default" type="button">Close</button>
+                <button id="btnDeleteReq" class="btn btn-primary" type="button">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Delete modal -->
+<script>
+     function fnDeleteReq(ReqId) {
+        jQuery("#hdnReqid").val(ReqId);
+        $('#deleteReqModal').modal('show');
+    }
+
+      jQuery(document).on("click", "#btnDeleteReq", function () {
+
+        var Reqid = jQuery("#hdnReqid").val();
+        if (Reqid != "" && Reqid != null) {
+            $('#deleteReqModal').modal('hide');
+            $.blockUI({ message: "<h4>Please Wait...</h4>" });
+            var URL = '@Url.Action("DeletePurchaseDealerRequest", "PurchaseDealers")';
+            $.ajax({
+                type: 'POST',
+                async: true,
+                url: URL + "?RequestId=" + Reqid,
+                success: function (result) {
+                    if (result == "success") {
+                        alert("Request deleted successfully");
+                        window.location.reload();
+                    }
+                    else if (result == "notfound") {
+                        alert("Request Not Found");
+                    }
+                    else {
+                        alert("Something went wrong. Please try again");
+                    }
+
+                    $.unblockUI();
+                },
+                error: function (resultData) {
+                    console.log("error");
+                    $.unblockUI();
+                }
+            });
+        }
+      });
+
+     $(document).ready(function () {
+        $("#selectstatus").val("@ViewBag.Status");
+    });
+    function changestatus() {
+        var statusid = $("#selectstatus").val();
+        location.href = "/admin/purchasedealers/requestlist?Status="+statusid;
+    }
+
+</script>

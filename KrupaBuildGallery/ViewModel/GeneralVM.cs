@@ -64,5 +64,6 @@ namespace KrupaBuildGallery
         public string ReferalCode { get; set; }
         public bool HasErr { get; set; }
         public string ErrMsg { get; set; }
+        public string DealerId { get; set; }
     }
 }

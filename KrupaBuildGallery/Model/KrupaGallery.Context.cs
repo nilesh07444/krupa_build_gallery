@@ -93,6 +93,15 @@ namespace KrupaBuildGallery.Model
         public DbSet<tbl_DeletedChatMessage> tbl_DeletedChatMessage { get; set; }
         public DbSet<tbl_ChatRoom> tbl_ChatRoom { get; set; }
         public DbSet<tbl_ChatRoomUsers> tbl_ChatRoomUsers { get; set; }
+        public DbSet<tbl_BidDealerItems> tbl_BidDealerItems { get; set; }
+        public DbSet<tbl_BidDealers> tbl_BidDealers { get; set; }
+        public DbSet<tbl_Bids> tbl_Bids { get; set; }
+        public DbSet<tbl_DealerSuggestions> tbl_DealerSuggestions { get; set; }
+        public DbSet<tbl_DealerTerms> tbl_DealerTerms { get; set; }
+        public DbSet<tbl_PurchaseDealers> tbl_PurchaseDealers { get; set; }
+        public DbSet<tbl_BidItemUnitTypes> tbl_BidItemUnitTypes { get; set; }
+        public DbSet<tbl_PurchaseBidItems> tbl_PurchaseBidItems { get; set; }
+        public DbSet<tbl_PurchaseDealersRequest> tbl_PurchaseDealersRequest { get; set; }
     
         public virtual ObjectResult<sp_GetNotificationList_Result> sp_GetNotificationList(Nullable<int> clientUserId)
         {
@@ -101,6 +110,15 @@ namespace KrupaBuildGallery.Model
                 new ObjectParameter("ClientUserId", typeof(int));
     
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_GetNotificationList_Result>("sp_GetNotificationList", clientUserIdParameter);
+        }
+    
+        public virtual ObjectResult<sp_GetBidDealerItems_Result> sp_GetBidDealerItems(Nullable<int> dealerId)
+        {
+            var dealerIdParameter = dealerId.HasValue ?
+                new ObjectParameter("DealerId", dealerId) :
+                new ObjectParameter("DealerId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<sp_GetBidDealerItems_Result>("sp_GetBidDealerItems", dealerIdParameter);
         }
     }
 }

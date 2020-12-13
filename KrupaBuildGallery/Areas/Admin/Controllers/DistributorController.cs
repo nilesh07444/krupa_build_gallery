@@ -924,7 +924,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             string ToEmail = objReq.Email;
                             tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
                             string FromEmail = objGensetting.FromEmail;
-                            string Subject = "Your Registration as a Distributor Rejected - Krupa Build Gallery";
+                            string Subject = "Your Registration as a Distributor Rejected - Shoping Saving";
                             string bodyhtml = "Following is the reason<br/>";
                             bodyhtml += "===============================<br/>";
                             bodyhtml += Reason;

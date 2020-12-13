@@ -210,6 +210,7 @@
     <Compile Include="Areas\Admin\Controllers\AdvertiseImagesController.cs" />
     <Compile Include="Areas\Admin\Controllers\AgentController.cs" />
     <Compile Include="Areas\Admin\Controllers\AvailablePincodeController.cs" />
+    <Compile Include="Areas\Admin\Controllers\BidItemController.cs" />
     <Compile Include="Areas\Admin\Controllers\CategoryController.cs" />
     <Compile Include="Areas\Admin\Controllers\ChatController.cs" />
     <Compile Include="Areas\Admin\Controllers\ComboOfferController.cs" />
@@ -236,6 +237,7 @@
     <Compile Include="Areas\Admin\Controllers\ProductController.cs" />
     <Compile Include="Areas\Admin\Controllers\ProductItemController.cs" />
     <Compile Include="Areas\Admin\Controllers\PromoCodeController.cs" />
+    <Compile Include="Areas\Admin\Controllers\PurchaseDealersController.cs" />
     <Compile Include="Areas\Admin\Controllers\ReferenceController.cs" />
     <Compile Include="Areas\Admin\Controllers\RoleController.cs" />
     <Compile Include="Areas\Admin\Controllers\SMSController.cs" />
@@ -263,6 +265,7 @@
     <Compile Include="Areas\Client\Controllers\TermsConditionController.cs" />
     <Compile Include="Areas\Client\Controllers\WishlistController.cs" />
     <Compile Include="Areas\WebAPI\Controllers\AgentController.cs" />
+    <Compile Include="Areas\WebAPI\Controllers\BidController.cs" />
     <Compile Include="Areas\WebAPI\Controllers\CartController.cs" />
     <Compile Include="Areas\WebAPI\Controllers\CategoryController.cs" />
     <Compile Include="Areas\WebAPI\Controllers\CheckoutController.cs" />
@@ -307,6 +310,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>KrupaGallery.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Model\sp_GetBidDealerItems_Result.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\sp_GetNotificationList_Result.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
@@ -326,6 +332,18 @@
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\tbl_AvailablePincode.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_BidDealerItems.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_BidDealers.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_BidItemUnitTypes.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_Bids.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\tbl_Cart.cs">
@@ -368,6 +386,12 @@
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\tbl_ContactFormData.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_DealerSuggestions.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_DealerTerms.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
     <Compile Include="Model\tbl_DeletedChatMessage.cs">
@@ -472,6 +496,15 @@
     <Compile Include="Model\tbl_PromoCode.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\tbl_PurchaseBidItems.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_PurchaseDealers.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Model\tbl_PurchaseDealersRequest.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\tbl_ReferenceMaster.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
@@ -526,6 +559,9 @@
     <Compile Include="ViewModel\Admin\RoleVM.cs" />
     <Compile Include="ViewModel\Admin\SMSContentVM.cs" />
     <Compile Include="ViewModel\Admin\UserPermissionVM.cs" />
+    <Compile Include="ViewModel\BidItemVM.cs" />
+    <Compile Include="ViewModel\BidTermsVM.cs" />
+    <Compile Include="ViewModel\BidVM.cs" />
     <Compile Include="ViewModel\CartVM.cs" />
     <Compile Include="ViewModel\CashOrderAmountVM.cs" />
     <Compile Include="ViewModel\CategoryVM.cs" />
@@ -536,6 +572,7 @@
     <Compile Include="ViewModel\ComboOfferClientVM.cs" />
     <Compile Include="ViewModel\ContactUsMessageVM.cs" />
     <Compile Include="ViewModel\DashboardCountVM.cs" />
+    <Compile Include="ViewModel\DealerSuggestionVM.cs" />
     <Compile Include="ViewModel\DistributorRequestVM.cs" />
     <Compile Include="ViewModel\EmailMessageVM.cs" />
     <Compile Include="ViewModel\FeedbackVM.cs" />
@@ -559,6 +596,7 @@
     <Compile Include="ViewModel\ProductItemVM.cs" />
     <Compile Include="ViewModel\ProductVM.cs" />
     <Compile Include="ViewModel\CategoryInfo.cs" />
+    <Compile Include="ViewModel\PurchaseDealerVM.cs" />
     <Compile Include="ViewModel\PwdVM.cs" />
     <Compile Include="ViewModel\RegisterVM.cs" />
     <Compile Include="ViewModel\ReportVM.cs" />
@@ -4261,6 +4299,13 @@
     <Content Include="Areas\Admin\Views\Chat\_ChatMessageWindow.cshtml" />
     <Content Include="Areas\Admin\Views\Chat\_UsersChat.cshtml" />
     <Content Include="Areas\Admin\Views\AccessDenied\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\BidItem\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\BidItem\Add.cshtml" />
+    <Content Include="Areas\Admin\Views\BidItem\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\PurchaseDealers\RequestList.cshtml" />
+    <Content Include="Areas\Admin\Views\PurchaseDealers\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\PurchaseDealers\RequestDetail.cshtml" />
+    <Content Include="Areas\Admin\Views\PurchaseDealers\Detail.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />
@@ -4334,6 +4379,7 @@
     <Folder Include="Areas\Client\Views\HappyCustomer\" />
     <Folder Include="Areas\WebAPI\Models\" />
     <Folder Include="Areas\WebAPI\Views\Agent\" />
+    <Folder Include="Areas\WebAPI\Views\Bid\" />
     <Folder Include="Areas\WebAPI\Views\Cart\" />
     <Folder Include="Areas\WebAPI\Views\Category\" />
     <Folder Include="Areas\WebAPI\Views\Checkout\" />

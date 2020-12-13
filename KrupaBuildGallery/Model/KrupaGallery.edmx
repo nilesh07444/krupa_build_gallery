@@ -79,14 +79,14 @@
           </Key>
           <Property Name="AdvertiseImageId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="AdvertiseImage" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="ImageFor" Type="int" />
+          <Property Name="SliderType" Type="int" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
           <Property Name="IsDeleted" Type="bit" Nullable="false" />
           <Property Name="CreatedBy" Type="int" Nullable="false" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="UpdatedBy" Type="int" />
           <Property Name="UpdatedDate" Type="datetime" />
-          <Property Name="SliderType" Type="int" />
-          <Property Name="ImageFor" Type="int" />
         </EntityType>
         <EntityType Name="tbl_AvailablePincode">
           <Key>
@@ -98,6 +98,54 @@
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
           <Property Name="UpdatedBy" Type="int" Nullable="false" />
           <Property Name="UpdatedDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_BidDealerItems">
+          <Key>
+            <PropertyRef Name="Pk_DealerItem_Id" />
+          </Key>
+          <Property Name="Pk_DealerItem_Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Fk_ItemId" Type="bigint" />
+          <Property Name="Fk_PurchaseDealerId" Type="bigint" />
+        </EntityType>
+        <EntityType Name="tbl_BidDealers">
+          <Key>
+            <PropertyRef Name="Pk_BidDealers" />
+          </Key>
+          <Property Name="Pk_BidDealers" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Fk_BidId" Type="bigint" />
+          <Property Name="FK_DealerId" Type="bigint" />
+          <Property Name="Price" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="MinimumQtyToBuy" Type="bigint" />
+          <Property Name="TermsAndCondions" Type="nvarchar(max)" />
+          <Property Name="PaymentTerms" Type="nvarchar(max)" />
+          <Property Name="PaymentType" Type="nvarchar" MaxLength="80" />
+          <Property Name="PickupCity" Type="nvarchar" MaxLength="200" />
+          <Property Name="PickupCityPincode" Type="nvarchar" MaxLength="10" />
+          <Property Name="BidValidDays" Type="int" />
+          <Property Name="BidSendDate" Type="datetime" />
+          <Property Name="BidModifiedDate" Type="datetime" />
+          <Property Name="BidStatus" Type="int" />
+          <Property Name="Remarks" Type="nvarchar" MaxLength="250" />
+          <Property Name="Fk_Item_Id" Type="bigint" />
+        </EntityType>
+        <EntityType Name="tbl_BidItemUnitTypes">
+          <Key>
+            <PropertyRef Name="BidItemUnitTypeId" />
+          </Key>
+          <Property Name="BidItemUnitTypeId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UnitTypeName" Type="nvarchar" MaxLength="250" />
+        </EntityType>
+        <EntityType Name="tbl_Bids">
+          <Key>
+            <PropertyRef Name="Pk_Bid_id" />
+          </Key>
+          <Property Name="Pk_Bid_id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ItemId" Type="bigint" />
+          <Property Name="Qty" Type="bigint" />
+          <Property Name="Remarks" Type="nvarchar(max)" />
+          <Property Name="BidStatus" Type="bigint" />
+          <Property Name="IsDeleted" Type="bigint" />
+          <Property Name="BidDate" Type="datetime" />
         </EntityType>
         <EntityType Name="tbl_Cart">
           <Key>
@@ -125,7 +173,7 @@
           <Property Name="CreatedDate" Type="datetime" />
           <Property Name="IsAccept" Type="int" />
           <Property Name="Amount" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="Reason" Type="nvarchar" MaxLength="150" />
+          <Property Name="Reason" Type="nvarchar" MaxLength="250" />
           <Property Name="ModifiedDate" Type="datetime" />
         </EntityType>
         <EntityType Name="tbl_Categories">
@@ -354,6 +402,25 @@
           <Property Name="ClientUserId" Type="bigint" />
           <Property Name="MessageDate" Type="datetime" Nullable="false" />
           <Property Name="IsDelete" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_DealerSuggestions">
+          <Key>
+            <PropertyRef Name="Pk_DealerSuggstion_Id" />
+          </Key>
+          <Property Name="Pk_DealerSuggstion_Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Fk_DealerId" Type="bigint" />
+          <Property Name="Suggestion" Type="nvarchar(max)" />
+          <Property Name="PicFile" Type="nvarchar" MaxLength="300" />
+        </EntityType>
+        <EntityType Name="tbl_DealerTerms">
+          <Key>
+            <PropertyRef Name="Pk_DealerTerms_Id" />
+          </Key>
+          <Property Name="Pk_DealerTerms_Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Fk_Dealer_Id" Type="bigint" />
+          <Property Name="Terms" Type="nvarchar(max)" />
+          <Property Name="IsDeleted" Type="bit" />
+          <Property Name="TermsType" Type="int" />
         </EntityType>
         <EntityType Name="tbl_DeletedChatMessage">
           <Key>
@@ -928,6 +995,89 @@
           <Property Name="UpdatedBy" Type="bigint" />
           <Property Name="UpdatedDate" Type="datetime" />
         </EntityType>
+        <EntityType Name="tbl_PurchaseBidItems">
+          <Key>
+            <PropertyRef Name="Pk_PurchaseBidItemId" />
+          </Key>
+          <Property Name="Pk_PurchaseBidItemId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ItemName" Type="nvarchar" MaxLength="800" />
+          <Property Name="UnitType" Type="bigint" />
+          <Property Name="IsDeleted" Type="bit" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="ModifiedBy" Type="bigint" />
+        </EntityType>
+        <EntityType Name="tbl_PurchaseDealers">
+          <Key>
+            <PropertyRef Name="Pk_Dealer_Id" />
+          </Key>
+          <Property Name="Pk_Dealer_Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FirmName" Type="nvarchar" MaxLength="500" />
+          <Property Name="FirmAddress" Type="nvarchar" MaxLength="500" />
+          <Property Name="FirmCity" Type="nvarchar" MaxLength="300" />
+          <Property Name="FirmGSTNo" Type="nvarchar" MaxLength="25" />
+          <Property Name="VisitingCardPhoto" Type="nvarchar" MaxLength="100" />
+          <Property Name="FirmContactNo" Type="nvarchar" MaxLength="15" />
+          <Property Name="AlternateNo" Type="nvarchar" MaxLength="15" />
+          <Property Name="Email" Type="nvarchar" MaxLength="40" />
+          <Property Name="BusinessDetails" Type="nvarchar(max)" />
+          <Property Name="BankAcNumber" Type="nvarchar" MaxLength="30" />
+          <Property Name="IFSCCode" Type="nvarchar" MaxLength="25" />
+          <Property Name="BankBranch" Type="nvarchar" MaxLength="60" />
+          <Property Name="BankAcNumber2" Type="nvarchar" MaxLength="30" />
+          <Property Name="IFSCCode2" Type="nvarchar" MaxLength="25" />
+          <Property Name="BankBranch2" Type="nvarchar" MaxLength="60" />
+          <Property Name="OwnerName" Type="nvarchar" MaxLength="100" />
+          <Property Name="OwnerContactNo" Type="nvarchar" MaxLength="15" />
+          <Property Name="Remark" Type="nvarchar" MaxLength="250" />
+          <Property Name="BussinessCode" Type="nvarchar" MaxLength="40" />
+          <Property Name="Password" Type="nvarchar" MaxLength="90" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="Status" Type="bigint" />
+          <Property Name="RejectReason" Type="nvarchar(max)" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="ModifiedBy" Type="bigint" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="IsDelete" Type="bit" />
+          <Property Name="State" Type="nvarchar" MaxLength="250" />
+        </EntityType>
+        <EntityType Name="tbl_PurchaseDealersRequest">
+          <Key>
+            <PropertyRef Name="Pk_Dealer_Id" />
+          </Key>
+          <Property Name="Pk_Dealer_Id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FirmName" Type="nvarchar" MaxLength="500" />
+          <Property Name="FirmAddress" Type="nvarchar" MaxLength="500" />
+          <Property Name="FirmCity" Type="nvarchar" MaxLength="300" />
+          <Property Name="FirmGSTNo" Type="nvarchar" MaxLength="25" />
+          <Property Name="VisitingCardPhoto" Type="nvarchar" MaxLength="100" />
+          <Property Name="FirmContactNo" Type="nvarchar" MaxLength="15" />
+          <Property Name="AlternateNo" Type="nvarchar" MaxLength="15" />
+          <Property Name="Email" Type="nvarchar" MaxLength="40" />
+          <Property Name="BusinessDetails" Type="nvarchar(max)" />
+          <Property Name="BankAcNumber" Type="nvarchar" MaxLength="30" />
+          <Property Name="IFSCCode" Type="nvarchar" MaxLength="25" />
+          <Property Name="BankBranch" Type="nvarchar" MaxLength="60" />
+          <Property Name="BankAcNumber2" Type="nvarchar" MaxLength="30" />
+          <Property Name="IFSCCode2" Type="nvarchar" MaxLength="25" />
+          <Property Name="BankBranch2" Type="nvarchar" MaxLength="60" />
+          <Property Name="OwnerName" Type="nvarchar" MaxLength="100" />
+          <Property Name="OwnerContactNo" Type="nvarchar" MaxLength="15" />
+          <Property Name="Remark" Type="nvarchar" MaxLength="250" />
+          <Property Name="BussinessCode" Type="nvarchar" MaxLength="40" />
+          <Property Name="Password" Type="nvarchar" MaxLength="90" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="Status" Type="bigint" />
+          <Property Name="RejectReason" Type="nvarchar(max)" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="ModifiedBy" Type="bigint" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="IsDelete" Type="bit" />
+          <Property Name="State" Type="nvarchar" MaxLength="250" />
+        </EntityType>
         <EntityType Name="tbl_ReferenceMaster">
           <Key>
             <PropertyRef Name="ReferenceId" />
@@ -1081,6 +1231,9 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Function Name="sp_GetBidDealerItems" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="DealerId" Type="int" Mode="In" />
+        </Function>
         <Function Name="sp_GetNotificationList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="ClientUserId" Type="int" Mode="In" />
         </Function>
@@ -1091,6 +1244,10 @@
           <EntitySet Name="tbl_AdminUsers" EntityType="Self.tbl_AdminUsers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_AdvertiseImages" EntityType="Self.tbl_AdvertiseImages" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_AvailablePincode" EntityType="Self.tbl_AvailablePincode" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_BidDealerItems" EntityType="Self.tbl_BidDealerItems" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_BidDealers" EntityType="Self.tbl_BidDealers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_BidItemUnitTypes" EntityType="Self.tbl_BidItemUnitTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_Bids" EntityType="Self.tbl_Bids" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Cart" EntityType="Self.tbl_Cart" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_CashDeliveryAmount" EntityType="Self.tbl_CashDeliveryAmount" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Categories" EntityType="Self.tbl_Categories" Schema="dbo" store:Type="Tables" />
@@ -1105,6 +1262,8 @@
           <EntitySet Name="tbl_ComboOfferMaster" EntityType="Self.tbl_ComboOfferMaster" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ComboOfferSubItems" EntityType="Self.tbl_ComboOfferSubItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ContactFormData" EntityType="Self.tbl_ContactFormData" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_DealerSuggestions" EntityType="Self.tbl_DealerSuggestions" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_DealerTerms" EntityType="Self.tbl_DealerTerms" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_DeletedChatMessage" EntityType="Self.tbl_DeletedChatMessage" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_DistributorRequestDetails" EntityType="Self.tbl_DistributorRequestDetails" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_DynamicContent" EntityType="Self.tbl_DynamicContent" Schema="dbo" store:Type="Tables" />
@@ -1139,6 +1298,9 @@
           <EntitySet Name="tbl_ProductItems" EntityType="Self.tbl_ProductItems" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_Products" EntityType="Self.tbl_Products" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_PromoCode" EntityType="Self.tbl_PromoCode" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_PurchaseBidItems" EntityType="Self.tbl_PurchaseBidItems" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_PurchaseDealers" EntityType="Self.tbl_PurchaseDealers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_PurchaseDealersRequest" EntityType="Self.tbl_PurchaseDealersRequest" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ReferenceMaster" EntityType="Self.tbl_ReferenceMaster" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ReviewRating" EntityType="Self.tbl_ReviewRating" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_SecondCart" EntityType="Self.tbl_SecondCart" Schema="dbo" store:Type="Tables" />
@@ -1660,6 +1822,18 @@
           </FunctionImport>
           <EntitySet Name="tbl_ChatRoom" EntityType="krupagalleryModel.tbl_ChatRoom" />
           <EntitySet Name="tbl_ChatRoomUsers" EntityType="krupagalleryModel.tbl_ChatRoomUsers" />
+          <EntitySet Name="tbl_BidDealerItems" EntityType="krupagalleryModel.tbl_BidDealerItems" />
+          <EntitySet Name="tbl_BidDealers" EntityType="krupagalleryModel.tbl_BidDealers" />
+          <EntitySet Name="tbl_Bids" EntityType="krupagalleryModel.tbl_Bids" />
+          <EntitySet Name="tbl_DealerSuggestions" EntityType="krupagalleryModel.tbl_DealerSuggestions" />
+          <EntitySet Name="tbl_DealerTerms" EntityType="krupagalleryModel.tbl_DealerTerms" />
+          <EntitySet Name="tbl_PurchaseDealers" EntityType="krupagalleryModel.tbl_PurchaseDealers" />
+          <EntitySet Name="tbl_BidItemUnitTypes" EntityType="krupagalleryModel.tbl_BidItemUnitTypes" />
+          <EntitySet Name="tbl_PurchaseBidItems" EntityType="krupagalleryModel.tbl_PurchaseBidItems" />
+          <FunctionImport Name="sp_GetBidDealerItems" ReturnType="Collection(krupagalleryModel.sp_GetBidDealerItems_Result)">
+          <Parameter Name="DealerId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <EntitySet Name="tbl_PurchaseDealersRequest" EntityType="krupagalleryModel.tbl_PurchaseDealersRequest" />
         </EntityContainer>
         <EntityType Name="tbl_AdminRoles">
           <Key>
@@ -2172,7 +2346,7 @@
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="IsAccept" Type="Int32" />
           <Property Name="Amount" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="Reason" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="Reason" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="tbl_PincodeCityState">
@@ -2336,6 +2510,161 @@
           <Property Name="Fk_UserId" Type="Int64" />
           <Property Name="LastAccessDate" Type="DateTime" Precision="3" />
           <Property Name="IsDeleted" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="tbl_BidDealerItems">
+          <Key>
+            <PropertyRef Name="Pk_DealerItem_Id" />
+          </Key>
+          <Property Name="Pk_DealerItem_Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Fk_ItemId" Type="Int64" />
+          <Property Name="Fk_PurchaseDealerId" Type="Int64" />
+        </EntityType>
+        <EntityType Name="tbl_BidDealers">
+          <Key>
+            <PropertyRef Name="Pk_BidDealers" />
+          </Key>
+          <Property Name="Pk_BidDealers" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Fk_BidId" Type="Int64" />
+          <Property Name="FK_DealerId" Type="Int64" />
+          <Property Name="Price" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="MinimumQtyToBuy" Type="Int64" />
+          <Property Name="TermsAndCondions" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PaymentTerms" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PaymentType" Type="String" MaxLength="80" FixedLength="false" Unicode="true" />
+          <Property Name="PickupCity" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="PickupCityPincode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="BidValidDays" Type="Int32" />
+          <Property Name="BidSendDate" Type="DateTime" Precision="3" />
+          <Property Name="BidModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="BidStatus" Type="Int32" />
+          <Property Name="Remarks" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Fk_Item_Id" Type="Int64" />
+        </EntityType>
+        <EntityType Name="tbl_Bids">
+          <Key>
+            <PropertyRef Name="Pk_Bid_id" />
+          </Key>
+          <Property Name="Pk_Bid_id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ItemId" Type="Int64" />
+          <Property Name="Qty" Type="Int64" />
+          <Property Name="Remarks" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="BidStatus" Type="Int64" />
+          <Property Name="IsDeleted" Type="Int64" />
+          <Property Name="BidDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="tbl_DealerSuggestions">
+          <Key>
+            <PropertyRef Name="Pk_DealerSuggstion_Id" />
+          </Key>
+          <Property Name="Pk_DealerSuggstion_Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Fk_DealerId" Type="Int64" />
+          <Property Name="Suggestion" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="PicFile" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="tbl_DealerTerms">
+          <Key>
+            <PropertyRef Name="Pk_DealerTerms_Id" />
+          </Key>
+          <Property Name="Pk_DealerTerms_Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Fk_Dealer_Id" Type="Int64" />
+          <Property Name="Terms" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <Property Name="TermsType" Type="Int32" />
+        </EntityType>
+        <EntityType Name="tbl_PurchaseDealers">
+          <Key>
+            <PropertyRef Name="Pk_Dealer_Id" />
+          </Key>
+          <Property Name="Pk_Dealer_Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FirmName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="FirmAddress" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="FirmCity" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="FirmGSTNo" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="VisitingCardPhoto" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="FirmContactNo" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="AlternateNo" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="BusinessDetails" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="BankAcNumber" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="IFSCCode" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="BankBranch" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="BankAcNumber2" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="IFSCCode2" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="BankBranch2" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="OwnerName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="OwnerContactNo" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="Remark" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="BussinessCode" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" MaxLength="90" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="Status" Type="Int64" />
+          <Property Name="RejectReason" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int64" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="IsDelete" Type="Boolean" />
+          <Property Name="State" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="tbl_BidItemUnitTypes">
+          <Key>
+            <PropertyRef Name="BidItemUnitTypeId" />
+          </Key>
+          <Property Name="BidItemUnitTypeId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UnitTypeName" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="tbl_PurchaseBidItems">
+          <Key>
+            <PropertyRef Name="Pk_PurchaseBidItemId" />
+          </Key>
+          <Property Name="Pk_PurchaseBidItemId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ItemName" Type="String" MaxLength="800" FixedLength="false" Unicode="true" />
+          <Property Name="UnitType" Type="Int64" />
+          <Property Name="IsDeleted" Type="Boolean" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int64" />
+        </EntityType>
+        <ComplexType Name="sp_GetBidDealerItems_Result">
+          <Property Type="Int64" Name="Pk_PurchaseBidItemId" Nullable="false" />
+          <Property Type="String" Name="ItemName" Nullable="true" MaxLength="800" />
+          <Property Type="Int64" Name="IsSelect" Nullable="false" />
+        </ComplexType>
+        <EntityType Name="tbl_PurchaseDealersRequest">
+          <Key>
+            <PropertyRef Name="Pk_Dealer_Id" />
+          </Key>
+          <Property Name="Pk_Dealer_Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FirmName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="FirmAddress" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="FirmCity" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="FirmGSTNo" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="VisitingCardPhoto" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="FirmContactNo" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="AlternateNo" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="BusinessDetails" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="BankAcNumber" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="IFSCCode" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="BankBranch" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="BankAcNumber2" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="IFSCCode2" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="BankBranch2" Type="String" MaxLength="60" FixedLength="false" Unicode="true" />
+          <Property Name="OwnerName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="OwnerContactNo" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="Remark" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="BussinessCode" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" MaxLength="90" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="Status" Type="Int64" />
+          <Property Name="RejectReason" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int64" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="IsDelete" Type="Boolean" />
+          <Property Name="State" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -3481,6 +3810,174 @@
                 <ScalarProperty Name="Fk_UserId" ColumnName="Fk_UserId" />
                 <ScalarProperty Name="Fk_ChatRoomId" ColumnName="Fk_ChatRoomId" />
                 <ScalarProperty Name="ChatRoomUserId" ColumnName="ChatRoomUserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_BidDealerItems">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_BidDealerItems">
+              <MappingFragment StoreEntitySet="tbl_BidDealerItems">
+                <ScalarProperty Name="Fk_PurchaseDealerId" ColumnName="Fk_PurchaseDealerId" />
+                <ScalarProperty Name="Fk_ItemId" ColumnName="Fk_ItemId" />
+                <ScalarProperty Name="Pk_DealerItem_Id" ColumnName="Pk_DealerItem_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_BidDealers">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_BidDealers">
+              <MappingFragment StoreEntitySet="tbl_BidDealers">
+                <ScalarProperty Name="Fk_Item_Id" ColumnName="Fk_Item_Id" />
+                <ScalarProperty Name="Remarks" ColumnName="Remarks" />
+                <ScalarProperty Name="BidStatus" ColumnName="BidStatus" />
+                <ScalarProperty Name="BidModifiedDate" ColumnName="BidModifiedDate" />
+                <ScalarProperty Name="BidSendDate" ColumnName="BidSendDate" />
+                <ScalarProperty Name="BidValidDays" ColumnName="BidValidDays" />
+                <ScalarProperty Name="PickupCityPincode" ColumnName="PickupCityPincode" />
+                <ScalarProperty Name="PickupCity" ColumnName="PickupCity" />
+                <ScalarProperty Name="PaymentType" ColumnName="PaymentType" />
+                <ScalarProperty Name="PaymentTerms" ColumnName="PaymentTerms" />
+                <ScalarProperty Name="TermsAndCondions" ColumnName="TermsAndCondions" />
+                <ScalarProperty Name="MinimumQtyToBuy" ColumnName="MinimumQtyToBuy" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="FK_DealerId" ColumnName="FK_DealerId" />
+                <ScalarProperty Name="Fk_BidId" ColumnName="Fk_BidId" />
+                <ScalarProperty Name="Pk_BidDealers" ColumnName="Pk_BidDealers" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Bids">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_Bids">
+              <MappingFragment StoreEntitySet="tbl_Bids">
+                <ScalarProperty Name="BidDate" ColumnName="BidDate" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="BidStatus" ColumnName="BidStatus" />
+                <ScalarProperty Name="Remarks" ColumnName="Remarks" />
+                <ScalarProperty Name="Qty" ColumnName="Qty" />
+                <ScalarProperty Name="ItemId" ColumnName="ItemId" />
+                <ScalarProperty Name="Pk_Bid_id" ColumnName="Pk_Bid_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_DealerSuggestions">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_DealerSuggestions">
+              <MappingFragment StoreEntitySet="tbl_DealerSuggestions">
+                <ScalarProperty Name="PicFile" ColumnName="PicFile" />
+                <ScalarProperty Name="Suggestion" ColumnName="Suggestion" />
+                <ScalarProperty Name="Fk_DealerId" ColumnName="Fk_DealerId" />
+                <ScalarProperty Name="Pk_DealerSuggstion_Id" ColumnName="Pk_DealerSuggstion_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_DealerTerms">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_DealerTerms">
+              <MappingFragment StoreEntitySet="tbl_DealerTerms">
+                <ScalarProperty Name="TermsType" ColumnName="TermsType" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="Terms" ColumnName="Terms" />
+                <ScalarProperty Name="Fk_Dealer_Id" ColumnName="Fk_Dealer_Id" />
+                <ScalarProperty Name="Pk_DealerTerms_Id" ColumnName="Pk_DealerTerms_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_PurchaseDealers">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_PurchaseDealers">
+              <MappingFragment StoreEntitySet="tbl_PurchaseDealers">
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="RejectReason" ColumnName="RejectReason" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="BussinessCode" ColumnName="BussinessCode" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="OwnerContactNo" ColumnName="OwnerContactNo" />
+                <ScalarProperty Name="OwnerName" ColumnName="OwnerName" />
+                <ScalarProperty Name="BankBranch2" ColumnName="BankBranch2" />
+                <ScalarProperty Name="IFSCCode2" ColumnName="IFSCCode2" />
+                <ScalarProperty Name="BankAcNumber2" ColumnName="BankAcNumber2" />
+                <ScalarProperty Name="BankBranch" ColumnName="BankBranch" />
+                <ScalarProperty Name="IFSCCode" ColumnName="IFSCCode" />
+                <ScalarProperty Name="BankAcNumber" ColumnName="BankAcNumber" />
+                <ScalarProperty Name="BusinessDetails" ColumnName="BusinessDetails" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="AlternateNo" ColumnName="AlternateNo" />
+                <ScalarProperty Name="FirmContactNo" ColumnName="FirmContactNo" />
+                <ScalarProperty Name="VisitingCardPhoto" ColumnName="VisitingCardPhoto" />
+                <ScalarProperty Name="FirmGSTNo" ColumnName="FirmGSTNo" />
+                <ScalarProperty Name="FirmCity" ColumnName="FirmCity" />
+                <ScalarProperty Name="FirmAddress" ColumnName="FirmAddress" />
+                <ScalarProperty Name="FirmName" ColumnName="FirmName" />
+                <ScalarProperty Name="Pk_Dealer_Id" ColumnName="Pk_Dealer_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_BidItemUnitTypes">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_BidItemUnitTypes">
+              <MappingFragment StoreEntitySet="tbl_BidItemUnitTypes">
+                <ScalarProperty Name="UnitTypeName" ColumnName="UnitTypeName" />
+                <ScalarProperty Name="BidItemUnitTypeId" ColumnName="BidItemUnitTypeId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_PurchaseBidItems">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_PurchaseBidItems">
+              <MappingFragment StoreEntitySet="tbl_PurchaseBidItems">
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="UnitType" ColumnName="UnitType" />
+                <ScalarProperty Name="ItemName" ColumnName="ItemName" />
+                <ScalarProperty Name="Pk_PurchaseBidItemId" ColumnName="Pk_PurchaseBidItemId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="sp_GetBidDealerItems" FunctionName="krupagalleryModel.Store.sp_GetBidDealerItems">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="krupagalleryModel.sp_GetBidDealerItems_Result">
+                <ScalarProperty Name="Pk_PurchaseBidItemId" ColumnName="Pk_PurchaseBidItemId" />
+                <ScalarProperty Name="ItemName" ColumnName="ItemName" />
+                <ScalarProperty Name="IsSelect" ColumnName="IsSelect" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <EntitySetMapping Name="tbl_PurchaseDealersRequest">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_PurchaseDealersRequest">
+              <MappingFragment StoreEntitySet="tbl_PurchaseDealersRequest">
+                <ScalarProperty Name="State" ColumnName="State" />
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="RejectReason" ColumnName="RejectReason" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="BussinessCode" ColumnName="BussinessCode" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="OwnerContactNo" ColumnName="OwnerContactNo" />
+                <ScalarProperty Name="OwnerName" ColumnName="OwnerName" />
+                <ScalarProperty Name="BankBranch2" ColumnName="BankBranch2" />
+                <ScalarProperty Name="IFSCCode2" ColumnName="IFSCCode2" />
+                <ScalarProperty Name="BankAcNumber2" ColumnName="BankAcNumber2" />
+                <ScalarProperty Name="BankBranch" ColumnName="BankBranch" />
+                <ScalarProperty Name="IFSCCode" ColumnName="IFSCCode" />
+                <ScalarProperty Name="BankAcNumber" ColumnName="BankAcNumber" />
+                <ScalarProperty Name="BusinessDetails" ColumnName="BusinessDetails" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="AlternateNo" ColumnName="AlternateNo" />
+                <ScalarProperty Name="FirmContactNo" ColumnName="FirmContactNo" />
+                <ScalarProperty Name="VisitingCardPhoto" ColumnName="VisitingCardPhoto" />
+                <ScalarProperty Name="FirmGSTNo" ColumnName="FirmGSTNo" />
+                <ScalarProperty Name="FirmCity" ColumnName="FirmCity" />
+                <ScalarProperty Name="FirmAddress" ColumnName="FirmAddress" />
+                <ScalarProperty Name="FirmName" ColumnName="FirmName" />
+                <ScalarProperty Name="Pk_Dealer_Id" ColumnName="Pk_Dealer_Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

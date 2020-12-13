@@ -1,0 +1,361 @@
+﻿@model  KrupaBuildGallery.PurchaseDealerVM
+<link href="~/Content/lightbox.min.css" rel="stylesheet" />
+<style>
+    .label-wrapper {
+        display: table;
+        float: right;
+        min-height: 28px;
+    }
+
+    .form-horizontal .form-group {
+        margin-right: -15px;
+        margin-left: -15px;
+    }
+
+        .form-horizontal .form-group:before {
+            content: " ";
+            display: table
+        }
+
+        .form-horizontal .form-group:after {
+            clear: both !important
+        }
+
+    .form-horizontal .label-wrapper .control-label {
+        display: table-cell;
+        font-weight: bold;
+    }
+
+    .form-text-row {
+        /*padding-top: 6px;*/
+    }
+
+    .col-md-3 {
+        float: left;
+    }
+
+    @@media(max-width: 992px) {
+        .form-horizontal .label-wrapper {
+            float: none;
+            margin-bottom: 3px;
+            margin-top: 5px
+        }
+    }
+</style>
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col">
+                    <div class="page-header-left">
+                        <h3>
+                            Purchase Dealer Detail
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="/admin/purchasedealers">Purchase Dealer</a></li>
+                        <li class="breadcrumb-item active">Purchase Dealer Detail</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Purchase Dealer Detail</h5>
+                    </div>
+                    <div class="card-body form-horizontal">
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Firm Name:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@Model.FirmName</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Firm City:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@Model.FirmCity</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Firm State:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@Model.State</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Firm Address:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@Model.FirmAddress</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Firm Mobile No:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@Model.FirmContactNo</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Firm Alternate Mobile No.:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                @if (!string.IsNullOrEmpty(Model.AlternateNo))
+                                {
+                                    <div class="form-text-row">@Model.AlternateNo</div>
+                                }
+                                else
+                                {
+                                    <div class="form-text-row">N/A</div>
+                                }
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Email:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@Model.Email</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Owner Name:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@Model.OwnerName</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Owner Mobile No:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@Model.OwnerContactNo</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Firm GST No:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@Model.FirmGSTNo</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">1. Bank Account No.:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@Model.BankAcNumber</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">1. IFSC Code.:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@Model.IFSCCode</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">1. Bank Branch.:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@Model.BankBranch</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">2. Bank Account No:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                @if (!string.IsNullOrEmpty(Model.BankAcNumber2))
+                                {
+                                    <div class="form-text-row">@Model.BankAcNumber2</div>
+                                }
+                                else
+                                {
+                                    <div class="form-text-row">N/A</div>
+                                }
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">2. IFSC Code:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                @if (!string.IsNullOrEmpty(Model.IFSCCode2))
+                                {
+                                    <div class="form-text-row">@Model.IFSCCode2</div>
+                                }
+                                else
+                                {
+                                    <div class="form-text-row">N/A</div>
+                                }
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">3. Bank Branch:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                @if (!string.IsNullOrEmpty(Model.BankBranch2))
+                                {
+                                    <div class="form-text-row">@Model.BankBranch2</div>
+                                }
+                                else
+                                {
+                                    <div class="form-text-row">N/A</div>
+                                }
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Business Details:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@Model.BusinessDetails</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">VisitingCardPhoto Photo:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">
+                                    @if (!string.IsNullOrEmpty(Model.VisitingCardPhoto))
+                                    {
+                                        if (File.Exists(Server.MapPath("~/Images/UsersDocuments/" + (Model.VisitingCardPhoto))))
+                                        {
+                                            <a class="example-image-link" href="~/Images/UsersDocuments/@Model.VisitingCardPhoto" data-lightbox="ProfilePhoto">
+                                                <img src="~/Images/UsersDocuments/@Model.VisitingCardPhoto" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                            </a>
+
+                                        }
+                                        else
+                                        {
+                                            <span>-</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span>-</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+
+                        @if (Model.Status == 1)
+                        {
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <div class="label-wrapper"><label class="control-label">Status:</label></div>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="form-text-row">Accepted</div>
+                                </div>
+                            </div>
+                        }
+                        @if (Model.Status == 2)
+                        {
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <div class="label-wrapper"><label class="control-label">Status:</label></div>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="form-text-row">Rejected</div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <div class="label-wrapper"><label class="control-label">Reason:</label></div>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="form-text-row">@Model.RejectReason</div>
+                                </div>
+                            </div>
+                        }
+                        <br />
+                        <input type="hidden" value="@Model.Pk_Dealer_Id" id="requestid" />
+                        @if (Model.Status == 0)
+                        {
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="label-wrapper"><label class="control-label">Do you want to Approve/Reject?</label></div>
+                                </div>
+                                <div class="col-md-8">
+                                    <label class="radio-inline"><input type="radio" value="Approve" name="optradioapprove">Approve</label>
+                                    <label class="radio-inline"><input type="radio" value="Reject" name="optradioapprove">Reject</label>
+                                </div>
+                            </div>
+                        }
+
+                        <div class="row distributorinfo" style="margin-top:5px;display:none;">
+                            <div class="col-md-4">
+                                <div class="label-wrapper"><label class="control-label">Password:</label></div>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="password" name="txtpassword" id="txtpassword" autocomplete="off" style="width:400px;height:30px;" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="row distributorinfo" style="margin-top:10px;display:none;">
+                            <div class="col-md-2">
+
+                            </div>
+                            <div class="col-md-10">
+                                <button type="button" class="btn btn-primary" onclick="ApproveDealer();">Approve and Add to Purchase Dealers</button>
+                            </div>
+                        </div>
+                        <div class="row distributorinforeject" style="display:none;">
+                            <div class="col-md-4">
+                                <div class="label-wrapper"><label class="control-label">Reason:</label></div>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="text" name="txtreason" id="txtreason" autocomplete="off" style="width:150px;height:30px;" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="row distributorinforeject" style="margin-top:5px;display:none;">
+                            <div class="col-md-4">
+
+                            </div>
+                            <div class="col-md-6">
+                                <button type="button" class="btn btn-primary" onclick="RejectDealer();">Reject</button>
+                            </div>
+                        </div>
+                    </div>
+                
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <div style="display: none;" id="dvPrint">
+    </div>
+</div>
+
+<script src="~/Scripts/prism.min.js"></script>
+<script src="~/Scripts/lightbox.js"></script>
+@*<script src="~/Scripts/lightbox-plus-jquery.min.js"></script>*@

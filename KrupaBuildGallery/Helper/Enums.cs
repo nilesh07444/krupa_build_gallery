@@ -35,7 +35,8 @@ namespace KrupaBuildGallery.Helper
         ContactRequest = 12,
         Setting = 13,
         ManagePageContent = 14,
-        ItemText = 15
+        ItemText = 15,
+        BidItem = 16
     }
 
     public enum Modules
