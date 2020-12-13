@@ -127,6 +127,8 @@
           <Property Name="BidStatus" Type="int" />
           <Property Name="Remarks" Type="nvarchar" MaxLength="250" />
           <Property Name="Fk_Item_Id" Type="bigint" />
+          <Property Name="RejectReason" Type="nvarchar" MaxLength="350" />
+          <Property Name="StatusDate" Type="datetime" />
         </EntityType>
         <EntityType Name="tbl_BidItemUnitTypes">
           <Key>
@@ -2539,6 +2541,8 @@
           <Property Name="BidStatus" Type="Int32" />
           <Property Name="Remarks" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Name="Fk_Item_Id" Type="Int64" />
+          <Property Name="RejectReason" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="StatusDate" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="tbl_Bids">
           <Key>
@@ -3825,6 +3829,8 @@
           <EntitySetMapping Name="tbl_BidDealers">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_BidDealers">
               <MappingFragment StoreEntitySet="tbl_BidDealers">
+                <ScalarProperty Name="StatusDate" ColumnName="StatusDate" />
+                <ScalarProperty Name="RejectReason" ColumnName="RejectReason" />
                 <ScalarProperty Name="Fk_Item_Id" ColumnName="Fk_Item_Id" />
                 <ScalarProperty Name="Remarks" ColumnName="Remarks" />
                 <ScalarProperty Name="BidStatus" ColumnName="BidStatus" />

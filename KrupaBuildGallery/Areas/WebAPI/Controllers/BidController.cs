@@ -272,6 +272,92 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
 
         }
 
-       
+        [Route("GetBids"), HttpPost]
+        public ResponseDataModel<List<BidVM>> GetBids(GeneralVM objGen)
+        {
+            ResponseDataModel<List<BidVM>> response = new ResponseDataModel<List<BidVM>>();
+            string strmsg = "";
+            try
+            {                
+                long DealerId = Convert.ToInt64(objGen.DealerId);
+                string StartDate = objGen.startdate;
+                string EndDate = objGen.enddate;
+                DateTime dtStart = DateTime.MinValue;
+                DateTime dtEnd = DateTime.MaxValue;
+                if (!string.IsNullOrEmpty(StartDate))
+                {
+                    dtStart = DateTime.ParseExact(StartDate, "dd/MM/yyyy", null);
+                }
+
+                if (!string.IsNullOrEmpty(EndDate))
+                {
+                    dtEnd = DateTime.ParseExact(EndDate, "dd/MM/yyyy", null);
+                }
+                dtEnd = new DateTime(dtEnd.Year, dtEnd.Month, dtEnd.Day, 23, 59, 59);
+                List<BidVM> lstBids = new List<BidVM>();
+                lstBids = (from cu in _db.tbl_Bids
+                           join itm in _db.tbl_PurchaseBidItems on cu.ItemId equals itm.Pk_PurchaseBidItemId
+                           join unityp in _db.tbl_BidItemUnitTypes on itm.UnitType equals unityp.BidItemUnitTypeId
+                           where cu.IsDeleted == 0 && cu.BidDate >= dtStart && cu.BidDate <= dtEnd 
+                           select new BidVM
+                           {
+                               BidId = cu.Pk_Bid_id,
+                               ItemId = cu.ItemId.Value,
+                               ItemName = itm.ItemName,
+                               Qty = cu.Qty.Value,
+                               Unittype = unityp.UnitTypeName,
+                               BidStatus = cu.BidStatus.Value,
+                               BidDate = cu.BidDate.Value
+                           }).OrderByDescending(x => x.BidDate).ToList();            
+                
+                if(lstBids != null && lstBids.Count() > 0)
+                {
+                    List<tbl_BidDealers> lstDelrBid = _db.tbl_BidDealers.Where(o => o.FK_DealerId == DealerId).ToList();
+                    List<long> BidIdList = lstDelrBid.Select(x => x.Fk_BidId.Value).ToList();
+                    List<BidVM> lstBidsN = (from cu in lstBids
+                                            join dlitm in _db.tbl_BidDealerItems on cu.ItemId equals dlitm.Fk_ItemId
+                                            where !BidIdList.Contains(cu.BidId)
+                               select new BidVM
+                               {
+                                   BidId = cu.BidId,
+                                   ItemId = cu.ItemId,
+                                   ItemName = cu.ItemName,
+                                   Qty = cu.Qty,
+                                   Unittype = cu.Unittype,
+                                   BidStatus = cu.BidStatus,
+                                   BidDate = cu.BidDate,
+                                   DelearBidId = 0
+                               }).OrderByDescending(x => x.BidDate).ToList();
+
+                    List<BidVM> lstBidsN1 = (from cu in lstBids
+                                            where BidIdList.Contains(cu.BidId)
+                                            select new BidVM
+                                            {
+                                                BidId = cu.BidId,
+                                                ItemId = cu.ItemId,
+                                                ItemName = cu.ItemName,
+                                                Qty = cu.Qty,
+                                                Unittype = cu.Unittype,
+                                                BidStatus = cu.BidStatus,
+                                                BidDate = cu.BidDate,
+                                                DelearBidId = 1                                                
+                                            }).OrderByDescending(x => x.BidDate).ToList();
+
+                    lstBids = lstBidsN.Union(lstBidsN1).ToList();
+                    lstBids = lstBids.Where(x => (x.BidStatus == 3 && DealerId == 1) || (x.BidStatus != 3)).ToList();
+                }
+
+
+                response.Data = lstBids;
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
     }
 }

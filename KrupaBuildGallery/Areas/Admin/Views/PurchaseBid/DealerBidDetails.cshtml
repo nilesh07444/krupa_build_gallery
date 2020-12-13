@@ -1,0 +1,323 @@
+﻿@{
+    BidDealerVM objDelBids = ViewData["Bids"] as BidDealerVM;
+    BidVM objBid = ViewData["objBid"] as BidVM;
+}
+<link href="~/Content/lightbox.min.css" rel="stylesheet" />
+<style>
+    .label-wrapper {
+        display: table;
+        float: right;
+        min-height: 28px;
+    }
+
+    .form-horizontal .form-group {
+        margin-right: -15px;
+        margin-left: -15px;
+    }
+
+        .form-horizontal .form-group:before {
+            content: " ";
+            display: table
+        }
+
+        .form-horizontal .form-group:after {
+            clear: both !important
+        }
+
+    .form-horizontal .label-wrapper .control-label {
+        display: table-cell;
+        font-weight: bold;
+    }
+
+    .form-text-row {
+        /*padding-top: 6px;*/
+    }
+
+    .col-md-3 {
+        float: left;
+    }
+
+    @@media(max-width: 992px) {
+        .form-horizontal .label-wrapper {
+            float: none;
+            margin-bottom: 3px;
+            margin-top: 5px
+        }
+    }
+</style>
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col">
+                    <div class="page-header-left">
+                        <h3>
+                           Dealer Bid Detail
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="/admin/purchasebid/detail/@objBid.BidId">Bid Details</a></li>
+                        <li class="breadcrumb-item active">Dealer Bid Detail</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Dealer Bid Detail</h5>
+                    </div>
+                    <div class="card-body form-horizontal">
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Item:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@objBid.ItemName</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Qty:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@objBid.Qty - @objBid.Unittype</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Dealer Bid Status:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row"><b>@objDelBids.Status</b></div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Business Code:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@objDelBids.BusinessCode</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Firm Name:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@objDelBids.FirmName</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Firm Mobile No:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@objDelBids.FirmMobile</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Bid Price:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">₹ @objDelBids.Price </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Bid Receive Date:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@objDelBids.BidSentDate.ToString("dd/MM/yyyy")</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Bid Valid Days:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@objDelBids.BidValidDays</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Minimum Qty to Buy:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@objDelBids.MinimumQtytoBuy</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Payment Type:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@objDelBids.PaymentType</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Pickup City:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@objDelBids.PickupCity - @objDelBids.PickupCityPincode</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Terms and Condition</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@objDelBids.TermsCondition</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Payment Terms</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@objDelBids.PaymentTerms</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Remarks</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                @if (string.IsNullOrEmpty(objDelBids.Remarks))
+                                {
+                                    <div class="form-text-row">N/A</div>
+                                }
+                                else
+                                {
+                                    <div class="form-text-row">@objDelBids.Remarks</div>
+                                }
+
+                            </div>
+                        </div>
+
+                        @if (Model.Status == 2)
+                        {
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <div class="label-wrapper"><label class="control-label">Reject Reason:</label></div>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="form-text-row">@objDelBids.RejectReason</div>
+                                </div>
+                            </div>
+                        }
+                        <br />
+                        <input type="hidden" value="@objDelBids.BidDealerId" id="requestid" />
+                        @if (objDelBids.BidStatus == 0)
+                        {
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="label-wrapper"><label class="control-label">Do you want to Accept/Reject?</label></div>
+                                </div>
+                                <div class="col-md-8">
+                                    <label class="radio-inline"><input type="radio" value="Approve" name="optradioapprove">Accept</label>
+                                    <label class="radio-inline"><input type="radio" value="Reject" name="optradioapprove">Reject</label>
+                                </div>
+                            </div>
+                        }
+
+                        <div class="row distributorinfo" style="margin-top:10px;display:none;">
+                            <div class="col-md-2">
+
+                            </div>
+                            <div class="col-md-10">
+                                <button type="button" class="btn btn-primary" onclick="AcceptBid();">Accept Bid</button>
+                            </div>
+                        </div>
+                        <div class="row distributorinforeject" style="display:none;">
+                            <div class="col-md-4">
+                                <div class="label-wrapper"><label class="control-label">Reason:</label></div>
+                            </div>
+                            <div class="col-md-8">
+                                <input type="text" name="txtreason" id="txtreason" autocomplete="off" style="width:150px;height:30px;" class="form-control" />
+                            </div>
+                        </div>
+                        <div class="row distributorinforeject" style="margin-top:5px;display:none;">
+                            <div class="col-md-4">
+
+                            </div>
+                            <div class="col-md-6">
+                                <button type="button" class="btn btn-primary" onclick="RejectBid();">Reject Bid</button>
+                            </div>
+                        </div>
+                    </div>
+                 
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script src="~/Scripts/prism.min.js"></script>
+<script src="~/Scripts/lightbox.js"></script>
+@*<script src="~/Scripts/lightbox-plus-jquery.min.js"></script>*@
+<script>
+    $("input[name=optradioapprove]").click(function () {
+        if ($(this).val() == "Approve") {
+            $(".distributorinfo").show();
+            $(".distributorinforeject").hide();
+        }
+        else {
+            $(".distributorinforeject").show();
+            $(".distributorinfo").hide();
+        }
+    });
+
+    function AcceptBid() {
+       
+        var URL = '/Admin/Purchasebid/AcceptRejectBid';
+        $.ajax({
+            type: 'POST',
+            async: true,
+            url: URL + "?RequestId=" + $("#requestid").val() + "&IsApprove=true",
+            success: function (result) {
+                alert("Bid Accepted");
+                location.href = "/admin/purchasebid/detail/@objBid.BidId";
+            },
+            error: function (resultData) {
+                console.log("error");
+
+            }
+        });
+    }
+
+    function RejectBid() {
+        var URL = '/Admin/Purchasebid/AcceptRejectBid';
+        var reason = $("#txtreason").val();
+        if (reason == "") {
+            alert("Please enter reason to reject");
+            return false;
+        }
+        $.ajax({
+            type: 'POST',
+            async: true,
+            url: URL + "?RequestId=" + $("#requestid").val() + "&IsApprove=false&Reason=" + $("#txtreason").val(),
+            success: function (result) {
+                alert("Bid Rejected!");
+                location.href = "/admin/purchasebid/detail/@objBid.BidId";
+            },
+            error: function (resultData) {
+                console.log("error");
+
+            }
+        });
+    }
+</script>

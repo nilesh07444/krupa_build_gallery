@@ -237,6 +237,7 @@
     <Compile Include="Areas\Admin\Controllers\ProductController.cs" />
     <Compile Include="Areas\Admin\Controllers\ProductItemController.cs" />
     <Compile Include="Areas\Admin\Controllers\PromoCodeController.cs" />
+    <Compile Include="Areas\Admin\Controllers\PurchaseBidController.cs" />
     <Compile Include="Areas\Admin\Controllers\PurchaseDealersController.cs" />
     <Compile Include="Areas\Admin\Controllers\ReferenceController.cs" />
     <Compile Include="Areas\Admin\Controllers\RoleController.cs" />
@@ -559,6 +560,7 @@
     <Compile Include="ViewModel\Admin\RoleVM.cs" />
     <Compile Include="ViewModel\Admin\SMSContentVM.cs" />
     <Compile Include="ViewModel\Admin\UserPermissionVM.cs" />
+    <Compile Include="ViewModel\BidDealerVM.cs" />
     <Compile Include="ViewModel\BidItemVM.cs" />
     <Compile Include="ViewModel\BidTermsVM.cs" />
     <Compile Include="ViewModel\BidVM.cs" />
@@ -4306,6 +4308,10 @@
     <Content Include="Areas\Admin\Views\PurchaseDealers\Index.cshtml" />
     <Content Include="Areas\Admin\Views\PurchaseDealers\RequestDetail.cshtml" />
     <Content Include="Areas\Admin\Views\PurchaseDealers\Detail.cshtml" />
+    <Content Include="Areas\Admin\Views\PurchaseBid\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\PurchaseBid\Add.cshtml" />
+    <Content Include="Areas\Admin\Views\PurchaseBid\Detail.cshtml" />
+    <Content Include="Areas\Admin\Views\PurchaseBid\DealerBidDetails.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />

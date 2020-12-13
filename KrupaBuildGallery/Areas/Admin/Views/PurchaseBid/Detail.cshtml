@@ -1,0 +1,189 @@
+﻿@{ 
+    List<BidDealerVM> lstBids = ViewData["Bids"] as List<BidDealerVM>;
+    BidVM objBid = ViewData["objBid"] as BidVM;
+}
+<link href="~/Content/lightbox.min.css" rel="stylesheet" />
+<style>
+    .label-wrapper {
+        display: table;
+        float: right;
+        min-height: 28px;
+    }
+
+    .form-horizontal .form-group {
+        margin-right: -15px;
+        margin-left: -15px;
+    }
+
+        .form-horizontal .form-group:before {
+            content: " ";
+            display: table
+        }
+
+        .form-horizontal .form-group:after {
+            clear: both !important
+        }
+
+    .form-horizontal .label-wrapper .control-label {
+        display: table-cell;
+        font-weight: bold;
+    }
+
+    .form-text-row {
+        /*padding-top: 6px;*/
+    }
+
+    .col-md-3 {
+        float: left;
+    }
+
+    @@media(max-width: 992px) {
+        .form-horizontal .label-wrapper {
+            float: none;
+            margin-bottom: 3px;
+            margin-top: 5px
+        }
+    }
+</style>
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col">
+                    <div class="page-header-left">
+                        <h3>
+                            Bid Detail
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="/admin/purchasebid">Purchase Bids</a></li>
+                        <li class="breadcrumb-item active">Bid Detail</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Bid Detail</h5>
+                    </div>
+                    <div class="card-body form-horizontal">
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Item:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@objBid.ItemName</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Qty:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@objBid.Qty - @objBid.Unittype</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Bid Date:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@objBid.BidDate.ToString("dd/MM/yyyy")</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Remarks :</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                @if (string.IsNullOrEmpty(objBid.Remarks))
+                                {
+                                    <div class="form-text-row">N/A</div>
+                                }
+                                else
+                                {
+                                    <div class="form-text-row">@objBid.Remarks</div>
+                                }
+
+                            </div>
+                        </div>
+                       
+                    </div>
+                    <div class="card-header">
+                        <h5>Bid Receive List</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="card-body vendor-table">
+                            <table class="display" id="basic-1">
+                                <thead>
+                                    <tr>
+                                        <th>BusinessCode</th>
+                                        <th>Firm Name</th>
+                                        <th>Firm Mobile</th>
+                                        <th>Price</th>
+                                        <th>Bid Sent Date</th>
+                                        <th>Bid Valid Days</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (lstBids != null && lstBids.Count > 0)
+                                    {
+                                        foreach (KrupaBuildGallery.BidDealerVM obj  in lstBids)
+                                        {
+
+                                            string stauscolor = "badge-warning";
+                                            if (obj.BidStatus == 1)
+                                            {
+                                                stauscolor = "badge-success";
+                                            }
+                                            else if (obj.BidStatus == 2)
+                                            {
+                                                stauscolor = "badge-danger";
+                                            }
+                                            else if (obj.BidStatus == 3)
+                                            {
+                                                stauscolor = "badge-secondary";
+                                            }
+
+                                    <tr>
+                                        <td>@obj.BusinessCode</td>
+                                        <td>@obj.FirmName</td>
+                                        <td>@obj.FirmMobile</td>
+                                        <td>₹ @Math.Round(obj.Price, 2)</td>
+                                        <td>@obj.BidSentDate.ToString("MMM dd,yyyyy")</td>
+                                        <td>@obj.BidValidDays</td>
+                                        <td><span class="badge @stauscolor">@obj.Status</span></td>
+                                        <td>                                           
+                                            <a href="/admin/purchasebid/dealerbiddetails/@obj.BidDealerId" title="Dealer Bid Details"><i class="fa fa-eye mr-2 font-success"></i></a>
+                                        </td>
+                                    </tr>
+                                        }
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+  
+</div>
+
+<script src="~/Scripts/prism.min.js"></script>
+<script src="~/Scripts/lightbox.js"></script>
+@*<script src="~/Scripts/lightbox-plus-jquery.min.js"></script>*@
