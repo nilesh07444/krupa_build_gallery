@@ -47,6 +47,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                      Email = cu.Email,
                                      FirmContactNo = cu.FirmContactNo,
                                      OwnerName = cu.OwnerName,
+                                     IsActive = cu.IsActive.Value,
                                      Status = cu.Status.HasValue ? cu.Status.Value : 0,
                                      CreatedDate = cu.CreatedDate.Value,
                                      OwnerContactNo = cu.OwnerContactNo,
@@ -71,7 +72,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             try
             {
 
-                lstDealerRequest = (from cu in _db.tbl_PurchaseDealers
+                lstDealerRequest = (from cu in _db.tbl_PurchaseDealersRequest
                                     where !cu.IsDelete.Value && (Status == -1 || cu.Status == Status)
                                     select new PurchaseDealerVM
                                     {
@@ -394,6 +395,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                    Email = cu.Email,
                                    FirmContactNo = cu.FirmContactNo,
                                    OwnerName = cu.OwnerName,
+                                   IsActive = cu.IsActive.Value,
                                    Status = cu.Status.HasValue ? cu.Status.Value : 0,
                                    CreatedDate = cu.CreatedDate.Value,
                                    OwnerContactNo = cu.OwnerContactNo,

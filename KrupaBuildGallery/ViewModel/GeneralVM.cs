@@ -65,5 +65,6 @@ namespace KrupaBuildGallery
         public bool HasErr { get; set; }
         public string ErrMsg { get; set; }
         public string DealerId { get; set; }
+        public string BidId { get; set; }
     }
 }

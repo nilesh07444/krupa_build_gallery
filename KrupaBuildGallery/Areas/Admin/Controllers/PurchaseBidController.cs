@@ -134,7 +134,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     objBidItm.IsDeleted = 0;
                     objBidItm.BidStatus = -1;
                     objBidItm.Qty = objBidVM.Qty;
-                    objBidVM.Remarks = objBidVM.Remarks;
+                    objBidItm.Remarks = objBidVM.Remarks;
                     _db.tbl_Bids.Add(objBidItm);
                     _db.SaveChanges();
 

@@ -284,6 +284,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 string EndDate = objGen.enddate;
                 DateTime dtStart = DateTime.MinValue;
                 DateTime dtEnd = DateTime.MaxValue;
+                long StatuID = Convert.ToInt64(objGen.StatusId);
                 if (!string.IsNullOrEmpty(StartDate))
                 {
                     dtStart = DateTime.ParseExact(StartDate, "dd/MM/yyyy", null);
@@ -308,11 +309,10 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                Unittype = unityp.UnitTypeName,
                                BidStatus = cu.BidStatus.Value,
                                BidDate = cu.BidDate.Value
-                           }).OrderByDescending(x => x.BidDate).ToList();            
-                
-                if(lstBids != null && lstBids.Count() > 0)
-                {
-                    List<tbl_BidDealers> lstDelrBid = _db.tbl_BidDealers.Where(o => o.FK_DealerId == DealerId).ToList();
+                           }).OrderByDescending(x => x.BidDate).ToList();
+                List<tbl_BidDealers> lstDelrBid = _db.tbl_BidDealers.Where(o => o.FK_DealerId == DealerId).ToList();
+                if (lstBids != null && lstBids.Count() > 0)
+                {                   
                     List<long> BidIdList = lstDelrBid.Select(x => x.Fk_BidId.Value).ToList();
                     List<BidVM> lstBidsN = (from cu in lstBids
                                             join dlitm in _db.tbl_BidDealerItems on cu.ItemId equals dlitm.Fk_ItemId
@@ -347,7 +347,31 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     lstBids = lstBids.Where(x => (x.BidStatus == 3 && DealerId == 1) || (x.BidStatus != 3)).ToList();
                 }
 
+                if(lstBids != null && lstBids.Count() > 0)
+                {
+                    foreach(BidVM objdl in lstBids)
+                    {
+                        var obj = lstDelrBid.Where(x => x.Fk_BidId == objdl.BidId && x.FK_DealerId == DealerId).FirstOrDefault();
+                        if(obj != null)
+                        {
+                            objdl.BidStatus = obj.BidStatus.Value;
+                            objdl.DelearBidId = obj.Pk_BidDealers;
+                        }
+                        else
+                        {
+                            if(objdl.BidStatus != 3)
+                            {
+                                objdl.BidStatus = -1;
+                            }                            
+                        }
+                    }
+                }
 
+                if(StatuID != -2)
+                {
+                    lstBids = lstBids.Where(o => o.BidStatus == StatuID).ToList();
+                }
+               
                 response.Data = lstBids;
             }
             catch (Exception ex)
@@ -359,5 +383,157 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             return response;
 
         }
+
+        [Route("SaveBidDealers"), HttpPost]
+        public ResponseDataModel<string> SaveBidDealers(BidDealerVM objBidDVM)
+        {
+            ResponseDataModel<string> response = new ResponseDataModel<string>();
+            string strmsg = "";
+            try
+            {
+                tbl_BidDealers obj = _db.tbl_BidDealers.Where(o => o.Fk_BidId == objBidDVM.BidId && o.FK_DealerId == objBidDVM.DealerId).FirstOrDefault();
+                if(obj == null)
+                {
+                    obj = new tbl_BidDealers();
+                    obj.BidSendDate = DateTime.Now;
+                    obj.BidStatus = 0;
+                }
+                obj.Fk_BidId = objBidDVM.BidId;
+                obj.FK_DealerId = objBidDVM.DealerId;
+                obj.Price = objBidDVM.Price;
+                obj.MinimumQtyToBuy = objBidDVM.MinimumQtytoBuy;
+                obj.TermsAndCondions = objBidDVM.TermsCondition;
+                obj.PaymentTerms = objBidDVM.PaymentTerms;
+                obj.PaymentType = objBidDVM.PaymentType;
+                obj.PickupCity = objBidDVM.PickupCity;
+                obj.PickupCityPincode = objBidDVM.PickupCityPincode;
+                obj.BidValidDays = objBidDVM.BidValidDays;                
+                obj.BidModifiedDate = DateTime.Now;
+                
+                if(obj == null || obj.Pk_BidDealers == 0)
+                {
+                    _db.tbl_BidDealers.Add(obj);
+                }                
+                _db.SaveChanges();
+
+
+                List<tbl_BidDealers> lstBiddle = _db.tbl_BidDealers.Where(o => o.Fk_BidId == objBidDVM.BidId).ToList();
+                if (lstBiddle != null && lstBiddle.Count() == 1)
+                {
+                    tbl_Bids objBd = _db.tbl_Bids.Where(o => o.Pk_Bid_id == objBidDVM.BidId).FirstOrDefault();
+                    if (objBd != null)
+                    {
+                        objBd.BidStatus = 0;
+                    }
+                    _db.SaveChanges();                   
+                }
+                response.Data = "Success";
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+
+        [Route("GetDealerBid"), HttpPost]
+        public ResponseDataModel<BidDealerVM> GetDealerBid(GeneralVM objGen)
+        {
+            ResponseDataModel<BidDealerVM> response = new ResponseDataModel<BidDealerVM>();
+            string strmsg = "";
+            try
+            {
+                long DealerId = Convert.ToInt64(objGen.DealerId);
+                long BidId = Convert.ToInt64(objGen.BidId);
+                BidDealerVM objBidDealerVM = (from cu in _db.tbl_BidDealers
+                                              join dl in _db.tbl_PurchaseDealers on cu.FK_DealerId equals dl.Pk_Dealer_Id
+                                              where cu.Fk_BidId == BidId && cu.FK_DealerId == DealerId
+                                              select new BidDealerVM
+                                              {
+                                                  BidDealerId = cu.Pk_BidDealers,
+                                                  DealerId = dl.Pk_Dealer_Id,
+                                                  FirmName = dl.FirmName,
+                                                  BusinessCode = dl.BussinessCode,
+                                                  BidValidDays = cu.BidValidDays.Value,
+                                                  FirmMobile = dl.FirmContactNo,
+                                                  Price = cu.Price.Value,
+                                                  BidSentDate = cu.BidSendDate.Value,
+                                                  MinimumQtytoBuy = cu.MinimumQtyToBuy.Value,
+                                                  BidStatus = cu.BidStatus.Value,
+                                                  TermsCondition = cu.TermsAndCondions,
+                                                  PaymentTerms = cu.PaymentTerms,
+                                                  PaymentType = cu.PaymentType,
+                                                  PickupCity = cu.PickupCity,
+                                                  PickupCityPincode = cu.PickupCityPincode,
+                                                  Remarks = cu.Remarks,
+                                                  RejectReason = cu.RejectReason,
+                                                  BidId = cu.Fk_BidId.Value
+                                              }).FirstOrDefault();
+                if(objBidDealerVM == null)
+                {
+                    objBidDealerVM = new BidDealerVM();
+                }
+                response.Data = objBidDealerVM;
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+
+        [Route("BidderLogin"), HttpPost]
+        public ResponseDataModel<PurchaseDealerVM> BidderLogin(PurchaseDealerVM objDlr)
+        {
+            ResponseDataModel<PurchaseDealerVM> response = new ResponseDataModel<PurchaseDealerVM>();
+            PurchaseDealerVM objBidder = new PurchaseDealerVM();
+            try
+            {
+                //string EncyptedPassword = clsCommon.EncryptString(objLogin.Password); // Encrypt(userLogin.Password);
+
+                var data = _db.tbl_PurchaseDealers.Where(x => x.BussinessCode == objDlr.BussinessCode && x.Password == objDlr.Password
+                                        && !x.IsDelete.Value).FirstOrDefault();
+
+                if (data != null)
+                {
+                    if (!data.IsActive.Value)
+                    {
+                        response.IsError = true;
+                        response.AddError("Your Account is not active. Please contact administrator.");
+                    }
+                    else
+                    {
+                        objBidder.FirmName = data.FirmName;
+                        objBidder.FirmContactNo = data.FirmContactNo;
+                        objBidder.Pk_Dealer_Id = data.Pk_Dealer_Id;
+                        objBidder.BussinessCode = data.BussinessCode;
+                        
+                        response.Data = objBidder;
+                    }
+                }
+                else
+                {
+                    response.IsError = true;
+                    response.AddError("Invalid BussinessCode or Password");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+
+
     }
 }
