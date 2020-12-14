@@ -152,6 +152,10 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 int DealerId = Convert.ToInt32(objGen.DealerId);
                 int StatuId = Convert.ToInt32(objGen.StatusId);
                 string searchq = objGen.searchq;
+                if(string.IsNullOrEmpty(searchq))
+                {
+                    searchq = "";
+                }
                 List<sp_GetBidDealerItems_Result> lstresult = _db.sp_GetBidDealerItems(DealerId).ToList();
                 if (StatuId == 1)
                 {
@@ -206,6 +210,65 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
 
         }
 
+        [Route("GetDealerTermsCondition"), HttpPost]
+        public ResponseDataModel<BidTermsVM> GetDealerTermsCondition(GeneralVM objGen)
+        {
+            ResponseDataModel<BidTermsVM> response = new ResponseDataModel<BidTermsVM>();
+            string strmsg = "";
+            try
+            {
+                long DealerId = Convert.ToInt64(objGen.DealerId);               
+                BidTermsVM objBT = (from crt in _db.tbl_DealerTerms
+                                                  where crt.Fk_Dealer_Id == DealerId && crt.TermsType == 1
+                                                  select new BidTermsVM
+                                                  {
+                                                      DealerId = DealerId,
+                                                      Terms = crt.Terms,
+                                                      TermsType = crt.TermsType.Value
+                                                  }).FirstOrDefault();
+
+                response.Data = objBT;
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+
+
+        [Route("GetDealerPaymentCondition"), HttpPost]
+        public ResponseDataModel<BidTermsVM> GetDealerPaymentCondition(GeneralVM objGen)
+        {
+            ResponseDataModel<BidTermsVM> response = new ResponseDataModel<BidTermsVM>();
+            string strmsg = "";
+            try
+            {
+                long DealerId = Convert.ToInt64(objGen.DealerId);
+                BidTermsVM objBT = (from crt in _db.tbl_DealerTerms
+                                    where crt.Fk_Dealer_Id == DealerId && crt.TermsType == 2
+                                    select new BidTermsVM
+                                    {
+                                        DealerId = DealerId,
+                                        Terms = crt.Terms,
+                                        TermsType = crt.TermsType.Value
+                                    }).FirstOrDefault();
+
+                response.Data = objBT;
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+
         [Route("SaveDealerTerms"), HttpPost]
         public ResponseDataModel<string> SaveDealerTerms(BidTermsVM objTerm)
         {
@@ -213,16 +276,16 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             string strmsg = "";
             try
             {
-                tbl_DealerTerms objTerms = new tbl_DealerTerms();
-                if (objTerm.Pk_DelearTerms >  0)
+                tbl_DealerTerms objTerms = _db.tbl_DealerTerms.Where(o => o.Fk_Dealer_Id == objTerm.DealerId && o.TermsType == objTerm.TermsType).FirstOrDefault();
+                if(objTerms == null)
                 {
-                    objTerms = _db.tbl_DealerTerms.Where(o => o.Pk_DealerTerms_Id == objTerm.Pk_DelearTerms).FirstOrDefault();
+                    objTerms = new tbl_DealerTerms();
                 }
                 objTerms.IsDeleted = false;
                 objTerms.Terms = objTerm.Terms;
                 objTerms.TermsType = objTerm.TermsType;
                 objTerms.Fk_Dealer_Id = objTerm.DealerId;
-                if (objTerm.Pk_DelearTerms == 0)
+                if (objTerms.Pk_DealerTerms_Id == 0)
                 {
                     _db.tbl_DealerTerms.Add(objTerms);
                 }
@@ -358,7 +421,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                             }).OrderByDescending(x => x.BidDate).ToList();
 
                     lstBids = lstBidsN.Union(lstBidsN1).ToList();
-                    lstBids = lstBids.Where(x => (x.BidStatus == 3 && DealerId == 1) || (x.BidStatus != 3)).ToList();
+                    lstBids = lstBids.Where(x => (x.BidStatus == 3 && x.DelearBidId == 1) || (x.BidStatus != 3)).ToList();
                 }
 
                 if(lstBids != null && lstBids.Count() > 0)
@@ -385,7 +448,10 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 {
                     lstBids = lstBids.Where(o => o.BidStatus == StatuID).ToList();
                 }
-               
+                if (lstBids != null && lstBids.Count() > 0)
+                {
+                    lstBids.ForEach(x => { x.TotalBids = TotalBids(x.BidId); x.Status = GetGenBidStatus(x.BidStatus); x.BidDateStr = x.BidDate.ToString("dd/MM/yyyy"); });
+                }
                 response.Data = lstBids;
             }
             catch (Exception ex)
@@ -396,6 +462,36 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
 
             return response;
 
+        }
+
+        public int TotalBids(long BidId)
+        {
+            int? TotalBid = _db.tbl_BidDealers.Where(o => o.Fk_BidId == BidId).ToList().Count;
+
+            return Convert.ToInt32(TotalBid);
+        }
+
+        public string GetGenBidStatus(long StatusId)
+        {
+            string Status = "Open";
+
+            if (StatusId == 0)
+            {
+                Status = "Pending";
+            }
+            else if (StatusId == 1)
+            {
+                Status = "Accepted";
+            }
+            else if (StatusId == 2)
+            {
+                Status = "Rejected";
+            }
+            else if (StatusId == 3)
+            {
+                Status = "Closed";
+            }
+            return Status;
         }
 
         [Route("SaveBidDealers"), HttpPost]
