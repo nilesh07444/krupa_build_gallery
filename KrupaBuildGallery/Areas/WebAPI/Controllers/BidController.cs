@@ -150,7 +150,21 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             try
             {
                 int DealerId = Convert.ToInt32(objGen.DealerId);
-                List<sp_GetBidDealerItems_Result>  lstresult = _db.sp_GetBidDealerItems(DealerId).ToList();
+                int StatuId = Convert.ToInt32(objGen.StatusId);
+                string searchq = objGen.searchq;
+                List<sp_GetBidDealerItems_Result> lstresult = _db.sp_GetBidDealerItems(DealerId).ToList();
+                if (StatuId == 1)
+                {
+                    lstresult = lstresult.Where(o => o.IsSelect > 0 && (searchq == "" || o.ItemName.ToLower().Contains(searchq))).OrderBy(x => x.ItemName).ToList();
+                }
+                else if(StatuId == 0)
+                {
+                    lstresult = lstresult.Where(o => o.IsSelect == 0 && (searchq == "" || o.ItemName.ToLower().Contains(searchq))).OrderBy(x => x.ItemName).ToList();
+                }
+                else
+                {
+                    lstresult = lstresult.Where(o => (searchq == "" || o.ItemName.ToLower().Contains(searchq))).OrderBy(x => x.ItemName).ToList();
+                }
                 response.Data = lstresult;
             }
             catch (Exception ex)
@@ -523,6 +537,53 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     response.AddError("Invalid BussinessCode or Password");
                 }
 
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+
+
+        [Route("SaveDealerBidItems"), HttpPost]
+        public ResponseDataModel<string> SaveDealerBidItems(GeneralVM objG)
+        {
+            ResponseDataModel<string> response = new ResponseDataModel<string>();
+            string strmsg = "";
+            try
+            {
+                long DealerId = Convert.ToInt64(objG.DealerId);
+                string BidItemIds = objG.BidItemIds;
+                List<string> lstItms = new List<string>();
+                if(!string.IsNullOrEmpty(BidItemIds))
+                {
+                    lstItms = BidItemIds.Split('^').ToList();
+
+                    List<tbl_BidDealerItems> lstBdItm =_db.tbl_BidDealerItems.Where(o => o.Fk_PurchaseDealerId == DealerId).ToList();
+                    foreach(tbl_BidDealerItems objD in lstBdItm)
+                    {
+                        _db.tbl_BidDealerItems.Remove(objD);                        
+                    }
+                    _db.SaveChanges();
+                    foreach (string str in lstItms)
+                    {
+                        if(!string.IsNullOrEmpty(str))
+                        {
+                            long ItmId = Convert.ToInt64(str.Trim());
+                            tbl_BidDealerItems objB = new tbl_BidDealerItems();
+                            objB.Fk_ItemId = ItmId;
+                            objB.Fk_PurchaseDealerId = DealerId;
+                            _db.tbl_BidDealerItems.Add(objB);                         
+                        }
+                    }
+                    _db.SaveChanges();
+                }
+
+                response.Data = "Success";
             }
             catch (Exception ex)
             {
