@@ -207,7 +207,7 @@
                             </div>
                         </div>
 
-                        @if (Model.Status == 2)
+                        @if (objDelBids.BidStatus == 2)
                         {
                             <div class="form-group">
                                 <div class="col-md-3">
@@ -234,10 +234,10 @@
                         }
 
                         <div class="row distributorinfo" style="margin-top:10px;display:none;">
-                            <div class="col-md-2">
+                            <div class="col-md-4">
 
                             </div>
-                            <div class="col-md-10">
+                            <div class="col-md-8">
                                 <button type="button" class="btn btn-primary" onclick="AcceptBid();">Accept Bid</button>
                             </div>
                         </div>
@@ -282,19 +282,20 @@
     });
 
     function AcceptBid() {
-       
+        StartLoading();
         var URL = '/Admin/Purchasebid/AcceptRejectBid';
         $.ajax({
             type: 'POST',
             async: true,
-            url: URL + "?RequestId=" + $("#requestid").val() + "&IsApprove=true",
+            url: URL + "?BidId=" + $("#requestid").val() + "&IsApprove=true",
             success: function (result) {
-                alert("Bid Accepted");
+                StopLoading();
+                alert("Bid Accepted");               
                 location.href = "/admin/purchasebid/detail/@objBid.BidId";
             },
             error: function (resultData) {
                 console.log("error");
-
+                StopLoading();
             }
         });
     }
@@ -306,17 +307,19 @@
             alert("Please enter reason to reject");
             return false;
         }
+        StartLoading();
         $.ajax({
             type: 'POST',
             async: true,
-            url: URL + "?RequestId=" + $("#requestid").val() + "&IsApprove=false&Reason=" + $("#txtreason").val(),
+            url: URL + "?BidId=" + $("#requestid").val() + "&IsApprove=false&Reason=" + $("#txtreason").val(),
             success: function (result) {
+                StopLoading();
                 alert("Bid Rejected!");
                 location.href = "/admin/purchasebid/detail/@objBid.BidId";
             },
             error: function (resultData) {
                 console.log("error");
-
+                StopLoading();
             }
         });
     }
