@@ -238,7 +238,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         {
                             if(objdel.BidStatus != 1)
                             {
-                                objdel.BidStatus = 3;
+                                objdel.BidStatus = 2;
                             }                            
                         }
                     }

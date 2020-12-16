@@ -29,6 +29,7 @@ namespace KrupaBuildGallery
         public string Status { get; set; }
         public List<SelectListItem> BidItemList { get; set; }        
         public long DelearBidId { get; set; }
+        public List<BidDealerVM> lstBidDealer { get; set; }
         
     }
 }

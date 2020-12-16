@@ -156,18 +156,18 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 {
                     searchq = "";
                 }
-                List<sp_GetBidDealerItems_Result> lstresult = _db.sp_GetBidDealerItems(DealerId).ToList();
+                List<sp_GetBidDealerItems_Result> lstresult = _db.sp_GetBidDealerItems(DealerId).ToList().OrderByDescending(x => x.IsSelect).ThenBy(x => x.ItemName).ToList();
                 if (StatuId == 1)
                 {
-                    lstresult = lstresult.Where(o => o.IsSelect > 0 && (searchq == "" || o.ItemName.ToLower().Contains(searchq))).OrderBy(x => x.ItemName).ToList();
+                    lstresult = lstresult.Where(o => o.IsSelect > 0 && (searchq == "" || o.ItemName.ToLower().Contains(searchq))).ToList();//.OrderBy(x => x.ItemName).ToList();
                 }
                 else if(StatuId == 0)
                 {
-                    lstresult = lstresult.Where(o => o.IsSelect == 0 && (searchq == "" || o.ItemName.ToLower().Contains(searchq))).OrderBy(x => x.ItemName).ToList();
+                    lstresult = lstresult.Where(o => o.IsSelect == 0 && (searchq == "" || o.ItemName.ToLower().Contains(searchq))).ToList();//.OrderBy(x => x.ItemName).ToList();
                 }
                 else
                 {
-                    lstresult = lstresult.Where(o => (searchq == "" || o.ItemName.ToLower().Contains(searchq))).OrderBy(x => x.ItemName).ToList();
+                    lstresult = lstresult.Where(o => (searchq == "" || o.ItemName.ToLower().Contains(searchq))).ToList();//.OrderBy(x => x.ItemName).ToList();
                 }
                 response.Data = lstresult;
             }
@@ -585,6 +585,18 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 if(objBidDealerVM == null)
                 {
                     objBidDealerVM = new BidDealerVM();
+                    objBidDealerVM.TermsCondition = "";
+                    objBidDealerVM.PaymentTerms = "";
+                    var objDelerTerms = _db.tbl_DealerTerms.Where(o => o.Fk_Dealer_Id == DealerId && o.TermsType == 1).FirstOrDefault();
+                    if(objDelerTerms != null)
+                    {
+                        objBidDealerVM.TermsCondition = objDelerTerms.Terms;
+                    }
+                    var objDelerPaymentTerms = _db.tbl_DealerTerms.Where(o => o.Fk_Dealer_Id == DealerId && o.TermsType == 2).FirstOrDefault();
+                    if (objDelerPaymentTerms != null)
+                    {
+                        objBidDealerVM.PaymentTerms = objDelerPaymentTerms.Terms;
+                    }
                 }
                 response.Data = objBidDealerVM;
             }
@@ -691,6 +703,115 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
 
         }
 
+        [Route("GetBidDetails"), HttpPost]
+        public ResponseDataModel<BidVM> GetBidDetails(GeneralVM objGen)
+        {
+            ResponseDataModel<BidVM> response = new ResponseDataModel<BidVM>();
+            string strmsg = "";
+            try
+            {
+                long DealerId = Convert.ToInt64(objGen.DealerId);
+                long BidId = Convert.ToInt64(objGen.BidId);
+                BidVM objBid = (from cu in _db.tbl_Bids
+                                join itm in _db.tbl_PurchaseBidItems on cu.ItemId equals itm.Pk_PurchaseBidItemId
+                                join unityp in _db.tbl_BidItemUnitTypes on itm.UnitType equals unityp.BidItemUnitTypeId
+                                where cu.Pk_Bid_id == BidId
+                                select new BidVM
+                                {
+                                    BidId = cu.Pk_Bid_id,
+                                    ItemId = cu.ItemId.Value,
+                                    ItemName = itm.ItemName,
+                                    Qty = cu.Qty.Value,
+                                    Unittype = unityp.UnitTypeName,
+                                    BidStatus = cu.BidStatus.Value,
+                                    BidDate = cu.BidDate.Value
+                                }).OrderByDescending(x => x.BidDate).FirstOrDefault();
+                objBid.Status = GetGenBidStatus(objBid.BidStatus);
+                objBid.BidDateStr = objBid.BidDate.ToString("dd/MM/yyyy");
+                List<BidDealerVM> lstBidDealerVM = (from cu in _db.tbl_BidDealers
+                                                    join dl in _db.tbl_PurchaseDealers on cu.FK_DealerId equals dl.Pk_Dealer_Id
+                                                    where cu.Fk_BidId == BidId 
+                                                    select new BidDealerVM
+                                                    {
+                                                        BidDealerId = cu.Pk_BidDealers,
+                                                        DealerId = dl.Pk_Dealer_Id,
+                                                        FirmName = dl.FirmName,
+                                                        BusinessCode = dl.BussinessCode,
+                                                        BidValidDays = cu.BidValidDays.Value,
+                                                        FirmMobile = dl.FirmContactNo,
+                                                        Price = cu.Price.Value,
+                                                        BidSentDate = cu.BidSendDate.Value,
+                                                        MinimumQtytoBuy = cu.MinimumQtyToBuy.Value,
+                                                        BidStatus = cu.BidStatus.Value
+                                                    }).OrderByDescending(x => x.BidSentDate).ToList();
+                if (lstBidDealerVM != null && lstBidDealerVM.Count() > 0)
+                {
+                    lstBidDealerVM.ForEach(x => x.Status = GetGenBidStatus(x.BidStatus));
+                }
+                objBid.lstBidDealer = lstBidDealerVM;
+                response.Data = objBid;
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
 
+            return response;
+
+        }
+
+
+        [Route("SendOTP"), HttpPost]
+        public ResponseDataModel<OtpVM> SendOTP(OtpVM objOtpVM)
+        {
+            ResponseDataModel<OtpVM> response = new ResponseDataModel<OtpVM>();
+            OtpVM objOtp = new OtpVM();
+            try
+            {
+                string BusinessCode = objOtpVM.BusinessCode;
+                tbl_PurchaseDealers objadminusr = _db.tbl_PurchaseDealers.Where(o => (o.BussinessCode == BusinessCode) && o.IsActive.Value == true).FirstOrDefault();
+                if (objadminusr == null)
+                {
+                    response.AddError("Your Account is not exist.Please Contact to support");
+                }
+                else
+                {
+                    using (WebClient webClient = new WebClient())
+                    {
+                        Random random = new Random();
+                        int num = random.Next(555555, 999999);
+                        //string msg = "Your Otp code for Login is " + num;
+                        int SmsId = (int)SMSType.LoginOtp;
+                        clsCommon objcm = new clsCommon();
+                        string msg = objcm.GetSmsContent(SmsId);
+                        msg = msg.Replace("{{OTP}}", num + "");
+                        msg = HttpUtility.UrlEncode(msg);
+                        //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + MobileNum + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                        string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", objadminusr.OwnerContactNo).Replace("--MSG--", msg);
+                        var json = webClient.DownloadString(url);
+                        if (json.Contains("invalidnumber"))
+                        {
+                            response.AddError("Invalid Mobile Number");
+                        }
+                        else
+                        {
+                            objOtp.Otp = num.ToString();
+                            response.Data = objOtp;
+                        }
+
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
     }
 }
