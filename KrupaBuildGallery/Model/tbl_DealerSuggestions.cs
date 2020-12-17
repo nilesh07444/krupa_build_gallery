@@ -18,5 +18,6 @@ namespace KrupaBuildGallery.Model
         public Nullable<long> Fk_DealerId { get; set; }
         public string Suggestion { get; set; }
         public string PicFile { get; set; }
+        public System.DateTime SuggestionDate { get; set; }
     }
 }

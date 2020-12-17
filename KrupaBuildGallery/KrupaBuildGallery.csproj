@@ -217,6 +217,7 @@
     <Compile Include="Areas\Admin\Controllers\ContactUsMessageController.cs" />
     <Compile Include="Areas\Admin\Controllers\CustomerController.cs" />
     <Compile Include="Areas\Admin\Controllers\DashboardController.cs" />
+    <Compile Include="Areas\Admin\Controllers\DealerSugessionController.cs" />
     <Compile Include="Areas\Admin\Controllers\DistributorController.cs" />
     <Compile Include="Areas\Admin\Controllers\DynamicContentController.cs" />
     <Compile Include="Areas\Admin\Controllers\FeedbackController.cs" />
@@ -4312,6 +4313,8 @@
     <Content Include="Areas\Admin\Views\PurchaseBid\Add.cshtml" />
     <Content Include="Areas\Admin\Views\PurchaseBid\Detail.cshtml" />
     <Content Include="Areas\Admin\Views\PurchaseBid\DealerBidDetails.cshtml" />
+    <Content Include="Areas\Admin\Views\DealerSugession\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\DealerSugession\View.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />

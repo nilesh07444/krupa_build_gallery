@@ -1,0 +1,114 @@
+﻿@using KrupaBuildGallery.Helper;
+@model DealerSuggestionVM
+
+@{
+    ViewBag.Title = "View Dealer Suggestion";
+}
+
+<style>
+    .labeltext {
+        font-weight: bold;
+        font-size: 14px;
+        color: #000000;
+    }
+
+    .labelvalue {
+        font-size: 14px;
+        color: #000000;
+        padding-left: 15px;
+    }
+
+    .profile-table table tbody tr td:first-child {
+        min-width: 150px;
+        font-weight: bold;
+    }
+</style>
+<link href="~/Content/lightbox.min.css" rel="stylesheet" />
+
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col">
+                    <div class="page-header-left">
+                        <h3>
+                            Dealer Suggestion Detail - @Model.DealerName
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="/admin/dealersugession">Dealer Suggesion</a></li>
+                        <li class="breadcrumb-item active">View</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Dealer Suggesion</h5>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="row">
+                            <div class="table-responsive profile-table">
+                                <table class="table table-responsive">
+                                    <tbody>
+
+                                        <tr>
+                                            <td>Suggestion Date:</td>
+                                            <td>@Model.SuggestionDate.ToString("dd/mm/yyyy")</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Dealer Name:</td>
+                                            <td>@Model.DealerName</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Suggesion:</td>
+                                            <td>@Model.Suggestion</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Photo:</td>
+                                            <td>
+                                                @if (!string.IsNullOrEmpty(Model.PicFile))
+                                                {
+                                                    if (File.Exists(Server.MapPath("~/Images/UserDocuments/" + Model.PicFile)))
+                                                    {
+                                                        <a target="_blank" href="~/Images/AdminUserMedia/@Model.PicFile">
+                                                            <img src="~/Images/AdminUserMedia/@Model.PicFile" style="width: 50px; height: 50px;" />
+                                                        </a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <img src="@ErrorMessage.DefaultImagePath" style="width: 50px; height: 50px;" />
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <img src="@ErrorMessage.DefaultImagePath" style="width: 50px; height: 50px;" />
+                                                }
+
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+</div>

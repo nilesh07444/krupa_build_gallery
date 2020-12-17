@@ -413,6 +413,7 @@
           <Property Name="Fk_DealerId" Type="bigint" />
           <Property Name="Suggestion" Type="nvarchar(max)" />
           <Property Name="PicFile" Type="nvarchar" MaxLength="300" />
+          <Property Name="SuggestionDate" Type="datetime" Nullable="false" />
         </EntityType>
         <EntityType Name="tbl_DealerTerms">
           <Key>
@@ -2564,6 +2565,7 @@
           <Property Name="Fk_DealerId" Type="Int64" />
           <Property Name="Suggestion" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="PicFile" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="SuggestionDate" Type="DateTime" Nullable="false" Precision="3" />
         </EntityType>
         <EntityType Name="tbl_DealerTerms">
           <Key>
@@ -3866,6 +3868,7 @@
           <EntitySetMapping Name="tbl_DealerSuggestions">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_DealerSuggestions">
               <MappingFragment StoreEntitySet="tbl_DealerSuggestions">
+                <ScalarProperty Name="SuggestionDate" ColumnName="SuggestionDate" />
                 <ScalarProperty Name="PicFile" ColumnName="PicFile" />
                 <ScalarProperty Name="Suggestion" ColumnName="Suggestion" />
                 <ScalarProperty Name="Fk_DealerId" ColumnName="Fk_DealerId" />
