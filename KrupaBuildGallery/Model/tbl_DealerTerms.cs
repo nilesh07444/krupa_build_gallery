@@ -19,5 +19,7 @@ namespace KrupaBuildGallery.Model
         public string Terms { get; set; }
         public Nullable<bool> IsDeleted { get; set; }
         public Nullable<int> TermsType { get; set; }
+        public string TermsTitle { get; set; }
+        public Nullable<System.DateTime> CreatedDate { get; set; }
     }
 }

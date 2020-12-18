@@ -136,6 +136,7 @@
           </Key>
           <Property Name="BidItemUnitTypeId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="UnitTypeName" Type="nvarchar" MaxLength="250" />
+          <Property Name="IsDeleted" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="tbl_Bids">
           <Key>
@@ -148,6 +149,8 @@
           <Property Name="BidStatus" Type="bigint" />
           <Property Name="IsDeleted" Type="bigint" />
           <Property Name="BidDate" Type="datetime" />
+          <Property Name="BidNo" Type="int" />
+          <Property Name="BidYear" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="tbl_Cart">
           <Key>
@@ -424,6 +427,8 @@
           <Property Name="Terms" Type="nvarchar(max)" />
           <Property Name="IsDeleted" Type="bit" />
           <Property Name="TermsType" Type="int" />
+          <Property Name="TermsTitle" Type="nvarchar" MaxLength="450" />
+          <Property Name="CreatedDate" Type="datetime" />
         </EntityType>
         <EntityType Name="tbl_DeletedChatMessage">
           <Key>
@@ -2556,6 +2561,8 @@
           <Property Name="BidStatus" Type="Int64" />
           <Property Name="IsDeleted" Type="Int64" />
           <Property Name="BidDate" Type="DateTime" Precision="3" />
+          <Property Name="BidNo" Type="Int32" />
+          <Property Name="BidYear" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_DealerSuggestions">
           <Key>
@@ -2576,6 +2583,8 @@
           <Property Name="Terms" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="IsDeleted" Type="Boolean" />
           <Property Name="TermsType" Type="Int32" />
+          <Property Name="TermsTitle" Type="String" MaxLength="450" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="tbl_PurchaseDealers">
           <Key>
@@ -2618,6 +2627,7 @@
           </Key>
           <Property Name="BidItemUnitTypeId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UnitTypeName" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="IsDeleted" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="tbl_PurchaseBidItems">
           <Key>
@@ -3855,6 +3865,8 @@
           <EntitySetMapping Name="tbl_Bids">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_Bids">
               <MappingFragment StoreEntitySet="tbl_Bids">
+                <ScalarProperty Name="BidYear" ColumnName="BidYear" />
+                <ScalarProperty Name="BidNo" ColumnName="BidNo" />
                 <ScalarProperty Name="BidDate" ColumnName="BidDate" />
                 <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
                 <ScalarProperty Name="BidStatus" ColumnName="BidStatus" />
@@ -3879,6 +3891,8 @@
           <EntitySetMapping Name="tbl_DealerTerms">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_DealerTerms">
               <MappingFragment StoreEntitySet="tbl_DealerTerms">
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="TermsTitle" ColumnName="TermsTitle" />
                 <ScalarProperty Name="TermsType" ColumnName="TermsType" />
                 <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
                 <ScalarProperty Name="Terms" ColumnName="Terms" />
@@ -3926,6 +3940,7 @@
           <EntitySetMapping Name="tbl_BidItemUnitTypes">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_BidItemUnitTypes">
               <MappingFragment StoreEntitySet="tbl_BidItemUnitTypes">
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
                 <ScalarProperty Name="UnitTypeName" ColumnName="UnitTypeName" />
                 <ScalarProperty Name="BidItemUnitTypeId" ColumnName="BidItemUnitTypeId" />
               </MappingFragment>

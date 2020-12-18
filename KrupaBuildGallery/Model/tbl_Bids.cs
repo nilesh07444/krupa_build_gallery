@@ -21,5 +21,7 @@ namespace KrupaBuildGallery.Model
         public Nullable<long> BidStatus { get; set; }
         public Nullable<long> IsDeleted { get; set; }
         public Nullable<System.DateTime> BidDate { get; set; }
+        public Nullable<int> BidNo { get; set; }
+        public string BidYear { get; set; }
     }
 }

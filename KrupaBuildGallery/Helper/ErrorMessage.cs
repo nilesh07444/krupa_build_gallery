@@ -21,6 +21,7 @@ namespace KrupaBuildGallery.Helper
         public static string MobileNoExists = "Mobile No is already exist";
         public static string SelectExcelFile = "Please select excel file";
         public static string PincodeExists = "Pincode is already exist";
+        public static string UnitExists = "Unit is already exist";
 
         // Client Portal Messages
 

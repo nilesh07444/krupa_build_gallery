@@ -16,5 +16,6 @@ namespace KrupaBuildGallery.Model
     {
         public long BidItemUnitTypeId { get; set; }
         public string UnitTypeName { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }
