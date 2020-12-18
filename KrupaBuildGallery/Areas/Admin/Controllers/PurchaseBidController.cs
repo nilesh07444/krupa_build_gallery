@@ -127,74 +127,149 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 if (ModelState.IsValid)
                 {
                     long LoggedInUserId = Int64.Parse(clsAdminSession.UserID.ToString());
+                    int year = DateTime.UtcNow.Year;
+                    int toyear = year + 1;
+                    if (DateTime.UtcNow.Month <= 3)
+                    {
+                        year = year - 1;
+                        toyear = year;
+                    }
+                    DateTime dtfincialyear = new DateTime(year, 4, 1);
+                    DateTime dtendyear = new DateTime(toyear, 3, 31);
+                    var objBidstemp = _db.tbl_Bids.Where(o => o.BidDate >= dtfincialyear && o.BidDate <= dtendyear).OrderByDescending(o => o.BidDate).FirstOrDefault();
+                    long Bidno = 1;
+                    if (objBidstemp != null)
+                    {
+                        if (objBidstemp.BidNo == null)
+                        {
+                            objBidstemp.BidNo = 1;
+                        }
+                        Bidno = objBidstemp.BidNo.Value + 1;
+                    }
+
 
                     tbl_Bids objBidItm = new tbl_Bids();
                     objBidItm.ItemId = objBidVM.ItemId;
                     objBidItm.BidDate = DateTime.Now;
                     objBidItm.IsDeleted = 0;
                     objBidItm.BidStatus = -1;
+                    objBidItm.BidNo = Convert.ToInt32(Bidno);
+                    objBidItm.BidYear = year + "-" + toyear;
                     objBidItm.Qty = objBidVM.Qty;
                     objBidItm.Remarks = objBidVM.Remarks;
                     _db.tbl_Bids.Add(objBidItm);
                     _db.SaveChanges();
 
-                    string notibody = "";
-                    var obj = _db.tbl_PurchaseBidItems.Where(o => o.Pk_PurchaseBidItemId == objBidVM.ItemId).FirstOrDefault();
-                    notibody = "New Bid for Item - " + obj.ItemName + " Qty:" + objBidItm.Qty;
-                    WebRequest tRequest = WebRequest.Create("https://fcm.googleapis.com/fcm/send");
-                    tRequest.Method = "post";
-                    //serverKey - Key from Firebase cloud messaging server  
-                    tRequest.Headers.Add(string.Format("Authorization: key={0}", "AAAAav-0MMY:APA91bHt6Bann_b6RoXLP3XxTI-eE5d2Uimxc231h756R8mwxjrJyqnaE959-EYhOsEtRLus1C2mZG_NyY5VACFZAKRkn0S6PSB-1QDBg3EaITICkDutSJRYaoG1Wd23JUmEwwlJcY94"));
-                    //Sender Id - From firebase project setting  
-                    tRequest.Headers.Add(string.Format("Sender: id={0}", "459556532422"));
-                    tRequest.ContentType = "application/json";
-                    var payload = new
-                    {
-                        to = "/topics/ShoppingSaving3",
-                        priority = "high",
-                        content_available = true,
-                        //notification = new
-                        //{                           
-                        //    body = notificationVM.NotificationDescription,
-                        //    title = notificationVM.NotificationTitle,
-                        //    image= imgurl,
-                        //    click_action = "OPEN_ACTIVITY_1",
-                        //    badge = 1,
-                        //    sound = "default"
-                        //},
-                        data = new
-                        {
-                            body = notibody,
-                            title = "New Shopping Saving Bid",
-                            notificationdetailid = objBidItm.Pk_Bid_id,
-                            imageurl = "",
-                            badge = 1,
-                            sound = "default"
-                        }
+                    var Itm = _db.tbl_PurchaseBidItems.Where(o => o.Pk_PurchaseBidItemId == objBidVM.ItemId).FirstOrDefault();
+                    List<PurchaseDealerVM> lstPurchaseDealerVM = (from cu in _db.tbl_BidDealerItems
+                                                             join dl in _db.tbl_PurchaseDealers on cu.Fk_PurchaseDealerId equals dl.Pk_Dealer_Id
+                                                             where cu.Fk_ItemId == objBidVM.ItemId
+                                                             select new PurchaseDealerVM
+                                                             {
+                                                                OwnerContactNo = dl.OwnerContactNo
+                                                             }).ToList();
 
-                    };
-
-                    string postbody = JsonConvert.SerializeObject(payload).ToString();
-                    Byte[] byteArray = Encoding.UTF8.GetBytes(postbody);
-                    tRequest.ContentLength = byteArray.Length;
-                    using (Stream dataStream = tRequest.GetRequestStream())
+                    List<string> lstMobileNos = new List<string>();
+                    if(lstPurchaseDealerVM != null && lstPurchaseDealerVM.Count() > 0)
                     {
-                        dataStream.Write(byteArray, 0, byteArray.Length);
-                        using (WebResponse tResponse = tRequest.GetResponse())
-                        {
-                            using (Stream dataStreamResponse = tResponse.GetResponseStream())
-                            {
-                                if (dataStreamResponse != null) using (StreamReader tReader = new StreamReader(dataStreamResponse))
-                                    {
-                                        String sResponseFromServer = tReader.ReadToEnd();
-                                        //result.Response = sResponseFromServer;
-                                    }
-                            }
-                        }
+                        lstMobileNos = lstPurchaseDealerVM.Select(x => x.OwnerContactNo).ToList();
                     }
 
+                    var test = lstMobileNos.ToArray();
+                    for (int i = 0; i < lstMobileNos.Count; i += 15)
+                    {
+                        int length = Math.Min(100, lstMobileNos.Count - i);
+                        string[] carray = new string[length];
+                        Array.Copy(test, i, carray, 0, length);
+                        using (WebClient webClient = new WebClient())
+                        {
+                            string arrystrmobile = string.Join(",", carray);
+                            WebClient client = new WebClient();
+                            Random random = new Random();
+                            int num = random.Next(111566, 999999);
+                            string msg = "New Bid for Item:" + Itm.ItemName + "\n";
+                            msg += "Shopping & Saving\n";
+                            //int SmsId = (int)SMSType.DistributorReqAccepted;
+                            //clsCommon objcm = new clsCommon();
+                            //string msg = objcm.GetSmsContent(SmsId);
+                            // msg = msg.Replace("{{MobileNo}}", objReq.MobileNo + "").Replace("{{Password}}", Password);
+                            msg = HttpUtility.UrlEncode(msg);
+                            //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objReq.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";                            
+                            string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", arrystrmobile).Replace("--MSG--", msg);
+                            var json = webClient.DownloadString(url);
+                            if (json.Contains("invalidnumber"))
+                            {
+                                /// return "InvalidNumber";
+                            }
+                            else
+                            {
+                                //  return num.ToString();
+                            }
+
+                        }
+                    }
                     return RedirectToAction("Index");
                 }
+                    
+                   
+
+                    /*      string notibody = "";
+                          var obj = _db.tbl_PurchaseBidItems.Where(o => o.Pk_PurchaseBidItemId == objBidVM.ItemId).FirstOrDefault();
+                          notibody = "New Bid for Item - " + obj.ItemName + " Qty:" + objBidItm.Qty;
+                          WebRequest tRequest = WebRequest.Create("https://fcm.googleapis.com/fcm/send");
+                          tRequest.Method = "post";
+                          //serverKey - Key from Firebase cloud messaging server  
+                          tRequest.Headers.Add(string.Format("Authorization: key={0}", "AAAAav-0MMY:APA91bHt6Bann_b6RoXLP3XxTI-eE5d2Uimxc231h756R8mwxjrJyqnaE959-EYhOsEtRLus1C2mZG_NyY5VACFZAKRkn0S6PSB-1QDBg3EaITICkDutSJRYaoG1Wd23JUmEwwlJcY94"));
+                          //Sender Id - From firebase project setting  
+                          tRequest.Headers.Add(string.Format("Sender: id={0}", "459556532422"));
+                          tRequest.ContentType = "application/json";
+                          var payload = new
+                          {
+                              to = "/topics/ShoppingSaving3",
+                              priority = "high",
+                              content_available = true,
+                              //notification = new
+                              //{                           
+                              //    body = notificationVM.NotificationDescription,
+                              //    title = notificationVM.NotificationTitle,
+                              //    image= imgurl,
+                              //    click_action = "OPEN_ACTIVITY_1",
+                              //    badge = 1,
+                              //    sound = "default"
+                              //},
+                              data = new
+                              {
+                                  body = notibody,
+                                  title = "New Shopping Saving Bid",
+                                  notificationdetailid = objBidItm.Pk_Bid_id,
+                                  imageurl = "",
+                                  badge = 1,
+                                  sound = "default"
+                              }
+
+                          };
+
+                          string postbody = JsonConvert.SerializeObject(payload).ToString();
+                          Byte[] byteArray = Encoding.UTF8.GetBytes(postbody);
+                          tRequest.ContentLength = byteArray.Length;
+                          using (Stream dataStream = tRequest.GetRequestStream())
+                          {
+                              dataStream.Write(byteArray, 0, byteArray.Length);
+                              using (WebResponse tResponse = tRequest.GetResponse())
+                              {
+                                  using (Stream dataStreamResponse = tResponse.GetResponseStream())
+                                  {
+                                      if (dataStreamResponse != null) using (StreamReader tReader = new StreamReader(dataStreamResponse))
+                                          {
+                                              String sResponseFromServer = tReader.ReadToEnd();
+                                              //result.Response = sResponseFromServer;
+                                          }
+                                  }
+                              }
+                          }*/
+
+                  
+                
             }
             catch (Exception ex)
             {

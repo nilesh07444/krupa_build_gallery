@@ -315,6 +315,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 obj.Fk_DealerId = objSugg.DealerId;
                 obj.Suggestion = objSugg.Suggestion;
                 obj.PicFile = objSugg.PicFile;
+                obj.SuggestionDate = DateTime.Now;
                 _db.tbl_DealerSuggestions.Add(obj);
                 _db.SaveChanges();
 
@@ -656,7 +657,6 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
 
         }
 
-
         [Route("SaveDealerBidItems"), HttpPost]
         public ResponseDataModel<string> SaveDealerBidItems(GeneralVM objG)
         {
@@ -761,7 +761,6 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
 
         }
 
-
         [Route("SendOTP"), HttpPost]
         public ResponseDataModel<OtpVM> SendOTP(OtpVM objOtpVM)
         {
@@ -803,6 +802,70 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     }
                 }
 
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+
+        [Route("GetBidDashboardStats"), HttpPost]
+        public ResponseDataModel<GeneralVM> GetBidDashboardStats(GeneralVM objGen)
+        {
+            ResponseDataModel<GeneralVM> response = new ResponseDataModel<GeneralVM>();
+            string strmsg = "";
+            int TotalOpenBids = 0;
+            int TotalAcceptedBids = 0;
+            try
+            {
+                long DealerId = Convert.ToInt64(objGen.DealerId);             
+                List<BidVM> lstBid = (from cu in _db.tbl_Bids
+                                join itm in _db.tbl_BidDealerItems on cu.ItemId equals itm.Fk_ItemId                                
+                                where itm.Fk_PurchaseDealerId == DealerId && cu.BidStatus != 3
+                                select new BidVM
+                                {
+                                    BidId = cu.Pk_Bid_id,
+                                    ItemId = cu.ItemId.Value,                                  
+                                    BidStatus = cu.BidStatus.Value,
+                                    BidDate = cu.BidDate.Value
+                                }).OrderByDescending(x => x.BidDate).ToList();
+
+                List<tbl_BidDealers> lstDelrBid = _db.tbl_BidDealers.Where(o => o.FK_DealerId == DealerId).ToList();
+                List<long> BidIdList = lstDelrBid.Select(x => x.Fk_BidId.Value).ToList();
+                if (lstBid != null && lstBid.Count() > 0)
+                {
+                    if(BidIdList != null && BidIdList.Count() > 0)
+                    {
+                        List<BidVM> lstBidsN1 = (from cu in lstBid
+                                                 where !BidIdList.Contains(cu.BidId)
+                                                 select new BidVM
+                                                 {
+                                                     BidId = cu.BidId,
+                                                     ItemId = cu.ItemId,
+                                                 }).OrderByDescending(x => x.BidDate).ToList();
+                        if(lstBidsN1 != null && lstBidsN1.Count() > 0)
+                        {
+                            TotalOpenBids = lstBidsN1.Count();
+                        }
+                    }
+                    else
+                    {
+                        TotalOpenBids = lstBid.Count();
+                    }
+                }
+                
+                if(lstDelrBid != null && lstDelrBid.Count() > 0)
+                {
+                    TotalAcceptedBids = lstDelrBid.Where(x => x.BidStatus == 1).ToList().Count();
+                }
+                GeneralVM objGeneralVM1 = new GeneralVM();
+                objGeneralVM1.TotalOpenBids = TotalOpenBids.ToString();
+                objGeneralVM1.TotalAcceptedBids = TotalAcceptedBids.ToString();
+                response.Data = objGeneralVM1;
             }
             catch (Exception ex)
             {
