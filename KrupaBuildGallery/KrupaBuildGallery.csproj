@@ -211,6 +211,7 @@
     <Compile Include="Areas\Admin\Controllers\AgentController.cs" />
     <Compile Include="Areas\Admin\Controllers\AvailablePincodeController.cs" />
     <Compile Include="Areas\Admin\Controllers\BidItemController.cs" />
+    <Compile Include="Areas\Admin\Controllers\BidItemUnitTypeController.cs" />
     <Compile Include="Areas\Admin\Controllers\CategoryController.cs" />
     <Compile Include="Areas\Admin\Controllers\ChatController.cs" />
     <Compile Include="Areas\Admin\Controllers\ComboOfferController.cs" />
@@ -544,6 +545,7 @@
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModel\Admin\AdminUserVM.cs" />
     <Compile Include="ViewModel\Admin\AvailablePincodeVM.cs" />
+    <Compile Include="ViewModel\Admin\BidItemUnitTypeVM.cs" />
     <Compile Include="ViewModel\Admin\ComboOfferVM.cs" />
     <Compile Include="ViewModel\Admin\ComboSubItemVM.cs" />
     <Compile Include="ViewModel\Admin\DynamicContentVM.cs" />
@@ -4315,6 +4317,9 @@
     <Content Include="Areas\Admin\Views\PurchaseBid\DealerBidDetails.cshtml" />
     <Content Include="Areas\Admin\Views\DealerSugession\Index.cshtml" />
     <Content Include="Areas\Admin\Views\DealerSugession\View.cshtml" />
+    <Content Include="Areas\Admin\Views\BidItemUnitType\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\BidItemUnitType\Add.cshtml" />
+    <Content Include="Areas\Admin\Views\BidItemUnitType\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />

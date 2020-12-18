@@ -1,0 +1,178 @@
+﻿@using KrupaBuildGallery.Helper;
+@using Newtonsoft.Json;
+@using KrupaBuildGallery.Model;
+
+@model List<BidItemUnitTypeVM>
+@{
+    ViewBag.Title = "Bid Units";
+
+    int counter = 1;
+}
+
+@{
+    UserPermissionVM objPermission = new UserPermissionVM();
+
+    int RoleId = Int32.Parse(clsAdminSession.RoleID.ToString());
+
+    if (RoleId != 1)
+    {
+        string strPermission = clsAdminSession.UserPermission;
+        objPermission = JsonConvert.DeserializeObject<UserPermissionVM>(strPermission, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+    }
+    bool IsSA = (RoleId == 1 ? true : false);
+}
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="page-header-left">
+                        <h3>
+                            Bid Unit List
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item active">Bid Unit List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h5>Bid Unit List</h5>
+            </div>
+            <div class="card-body vendor-table">
+                @if (IsSA || objPermission.BidItem >= (int)ModulePermission.Add)
+                {
+                    <div class="btn-popup pull-right">
+                        <button type="button" class="btn btn-primary" id="btnAdd">Add New Unit</button>
+                    </div>
+                }
+
+                <table class="display" id="basic-1">
+                    <thead>
+                        <tr>
+                            <th width="10%;">#</th>
+                            <th>Item Unit</th>
+                            <th width="15%;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            foreach (BidItemUnitTypeVM itmtxt in Model)
+                            {
+                                <tr class="gradeX">
+                                    <td>@counter.</td>
+                                    <td>@itmtxt.UnitTypeName</td>
+                                    <td>
+                                        @if (IsSA || objPermission.ItemText >= (int)ModulePermission.Edit)
+                                        {
+                                            <a href="/admin/BidItemUnitType/edit/@itmtxt.BidItemUnitTypeId"><i class="fa fa-edit mr-2 font-success"></i></a>
+                                        }
+                                        @if (IsSA || objPermission.ItemText >= (int)ModulePermission.Full)
+                                        {
+                                            <a href="javascript:void(0);" onclick="fnDeleteItemUnit('@itmtxt.BidItemUnitTypeId')"><i class="fa fa-trash font-danger"></i></a>
+                                        }
+                                    </td>
+                                </tr>
+                                counter++;
+                            }
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade open" id="deleteItemUnitModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete Confirm</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete ?
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="hdnunitid" />
+                <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
+                <button id="btnItemtextDelete" class="btn btn-primary" type="button">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Delete modal -->
+@*<script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>*@
+
+<script>
+
+    //jQuery(document).ready(function () {
+    //    StartLoading()
+    //    jQuery('html, body').animate({ scrollTop: 0 }, 1000);
+    //});
+
+    $(document).on("click", "#btnAdd", function () {
+        window.location.href = "/admin/biditemunittype/add";
+    });
+
+    function fnDeleteItemUnit(id) {
+        jQuery("#hdnunitid").val(id);
+        $('#deleteItemUnitModal').modal('show');
+    }
+
+    //jQuery(window).on("load", function () {
+    //    StopLoading();
+    //});
+
+    jQuery(document).on("click", "#btnItemtextDelete", function () {
+
+        var unitid = jQuery("#hdnunitid").val();
+        if (unitid != "" && unitid != null) {
+            $('#deleteItemUnitModal').modal('hide');
+
+            StartLoading();
+
+            var URL = '@Url.Action("DeleteBidUnit", "BidItemUnitType")';
+            $.ajax({
+                type: 'POST',
+                async: true,
+                url: URL + "?Id=" + unitid,
+                success: function (result) {
+                    if (result == "success") {
+                        alert("Unit deleted successfully");
+                        window.location.reload();
+                    }
+                    else if (result == "notfound") {
+                        alert("Unit not Found");
+                    }
+                    else {
+                        alert("Something went wrong. Please try again");
+                    }
+
+                   StopLoading();
+                },
+                error: function (resultData) {
+                    StopLoading();
+                }
+            });
+        }
+    });
+
+</script>
