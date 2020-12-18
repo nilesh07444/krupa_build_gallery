@@ -37,7 +37,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                Qty = cu.Qty.Value,
                                Unittype = unityp.UnitTypeName,
                                BidStatus = cu.BidStatus.Value,
-                               BidDate = cu.BidDate.Value
+                               BidDate = cu.BidDate.Value,
+                               BidNumber = "BD/"+cu.BidYear+"/"+cu.BidNo
                            }).OrderByDescending(x => x.BidDate).ToList();
                 if (lstBids != null && lstBids.Count() > 0)
                 {

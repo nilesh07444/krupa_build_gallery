@@ -124,10 +124,14 @@
                         <h5>Bid Receive List</h5>
                     </div>
                     <div class="card-body">
+                        <button type="button" name="btnAcceptReject" id="btnAcceptReject" class="btn btn-primary" onclick="acceptrejectmultiple();" style="display: inline-block;">
+                            Accept/Reject
+                        </button>
                         <div class="card-body vendor-table">
                             <table class="display" id="basic-1">
                                 <thead>
                                     <tr>
+                                        <th></th>
                                         <th>BusinessCode</th>
                                         <th>Firm Name</th>
                                         <th>Firm Mobile</th>
@@ -141,7 +145,7 @@
                                 <tbody>
                                     @if (lstBids != null && lstBids.Count > 0)
                                     {
-                                        foreach (KrupaBuildGallery.BidDealerVM obj  in lstBids)
+                                        foreach (KrupaBuildGallery.BidDealerVM obj in lstBids)
                                         {
 
                                             string stauscolor = "badge-warning";
@@ -159,6 +163,12 @@
                                             }
 
                                     <tr>
+                                        <td>
+                                            @if (obj.BidStatus != 3 && objBid.BidStatus != 3)
+                                            {
+                                                <input type="checkbox" class="chkrbd" data-bidids="@obj.BidDealerId" value="@obj.BidDealerId" />
+                                            }
+                                        </td>
                                         <td>@obj.BusinessCode</td>
                                         <td>@obj.FirmName</td>
                                         <td>@obj.FirmMobile</td>
@@ -166,7 +176,7 @@
                                         <td>@obj.BidSentDate.ToString("MMM dd,yyyyy")</td>
                                         <td>@obj.BidValidDays</td>
                                         <td><span class="badge @stauscolor">@obj.Status</span></td>
-                                        <td>                                           
+                                        <td>
                                             <a href="/admin/purchasebid/dealerbiddetails/@obj.BidDealerId" title="Dealer Bid Details"><i class="fa fa-eye mr-2 font-success"></i></a>
                                         </td>
                                     </tr>
@@ -187,3 +197,6 @@
 <script src="~/Scripts/prism.min.js"></script>
 <script src="~/Scripts/lightbox.js"></script>
 @*<script src="~/Scripts/lightbox-plus-jquery.min.js"></script>*@
+<script>
+    //acceptrejectmultiple
+</script>

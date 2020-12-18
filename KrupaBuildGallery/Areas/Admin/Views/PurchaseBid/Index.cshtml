@@ -63,6 +63,7 @@
                     <thead>
                         <tr>
                             <th width="10%;">#</th>
+                            <th width="10%;">BidNumber</th>                            
                             <th width="15%;">Bid Date</th>
                             <th>Item Name</th>
                             <th>Unit Type</th>
@@ -91,21 +92,22 @@
                                 {
                                     stauscolor = "badge-secondary";
                                 }
-                                <tr class="gradeX">
-                                    <td>@counter.</td>
-                                    <td>@bd.BidDate.ToString("dd/MM/yyyy")</td>
-                                    <td>@bd.ItemName</td>
-                                    <td>@bd.Unittype</td>
-                                    <td>@bd.Qty</td>
-                                    <td>@bd.TotalBids</td>
-                                    <td><span class="badge @stauscolor" style="cursor:pointer;">@bd.Status</span></td>
-                                    <td>
-                                        <a title="View Detail" href="/admin/purchasebid/detail/@bd.BidId"><i class="fa fa-eye mr-2 font-success"></i></a>
-                                        <a title="Close Bid" href="javascript:void(0);" onclick="CloseBid('@bd.BidId'); "><i class="fa fa-wrench font-success"></i></a>
-                                        @*<a title="Edit" href="/admin/purchasebid/edit/@bd.BidId"><i class="fa fa-edit mr-2 font-success"></i></a>*@
-                                        @*<a title="Delete" href="javascript:void(0);" onclick="fnDeleteBid('@bd.BidId')"><i class="fa fa-trash font-danger"></i></a>*@
-                                    </td>
-                                </tr>
+                        <tr class="gradeX">
+                            <td>@counter.</td>
+                            <td>@bd.BidNumber</td>
+                            <td>@bd.BidDate.ToString("dd/MM/yyyy")</td>
+                            <td>@bd.ItemName</td>
+                            <td>@bd.Unittype</td>
+                            <td>@bd.Qty</td>
+                            <td>@bd.TotalBids</td>
+                            <td><span class="badge @stauscolor" style="cursor:pointer;">@bd.Status</span></td>
+                            <td>
+                                <a title="View Detail" href="/admin/purchasebid/detail/@bd.BidId"><i class="fa fa-eye mr-2 font-success"></i></a>
+                                <a title="Close Bid" href="javascript:void(0);" onclick="CloseBid('@bd.BidId'); "><i class="fa fa-wrench font-success"></i></a>
+                                @*<a title="Edit" href="/admin/purchasebid/edit/@bd.BidId"><i class="fa fa-edit mr-2 font-success"></i></a>*@
+                                @*<a title="Delete" href="javascript:void(0);" onclick="fnDeleteBid('@bd.BidId')"><i class="fa fa-trash font-danger"></i></a>*@
+                            </td>
+                        </tr>
                                 counter++;
                             }
                         }

@@ -30,6 +30,7 @@ namespace KrupaBuildGallery
         public List<SelectListItem> BidItemList { get; set; }        
         public long DelearBidId { get; set; }
         public List<BidDealerVM> lstBidDealer { get; set; }
+        public string BidNumber { get; set; }
         
     }
 }
