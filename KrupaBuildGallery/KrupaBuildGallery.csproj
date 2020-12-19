@@ -565,6 +565,7 @@
     <Compile Include="ViewModel\Admin\UserPermissionVM.cs" />
     <Compile Include="ViewModel\BidDealerVM.cs" />
     <Compile Include="ViewModel\BidItemVM.cs" />
+    <Compile Include="ViewModel\BidReportItemsVM.cs" />
     <Compile Include="ViewModel\BidTermsVM.cs" />
     <Compile Include="ViewModel\BidVM.cs" />
     <Compile Include="ViewModel\CartVM.cs" />
@@ -4321,6 +4322,8 @@
     <Content Include="Areas\Admin\Views\BidItemUnitType\Add.cshtml" />
     <Content Include="Areas\Admin\Views\BidItemUnitType\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\PurchaseDealers\Add.cshtml" />
+    <Content Include="Areas\Admin\Views\PurchaseBid\BidReportByItem.cshtml" />
+    <Content Include="Areas\Admin\Views\PurchaseBid\_BidReportItemwise.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />
