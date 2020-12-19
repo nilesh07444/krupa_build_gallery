@@ -386,7 +386,9 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                Qty = cu.Qty.Value,
                                Unittype = unityp.UnitTypeName,
                                BidStatus = cu.BidStatus.Value,
-                               BidDate = cu.BidDate.Value
+                               BidDate = cu.BidDate.Value,
+                               BidNum = cu.BidNo.Value,
+                               BidYear = cu.BidYear
                            }).OrderByDescending(x => x.BidDate).ToList();
                 List<tbl_BidDealers> lstDelrBid = _db.tbl_BidDealers.Where(o => o.FK_DealerId == DealerId).ToList();
                 if (lstBids != null && lstBids.Count() > 0)
@@ -404,7 +406,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                    Unittype = cu.Unittype,
                                    BidStatus = cu.BidStatus,
                                    BidDate = cu.BidDate,
-                                   DelearBidId = 0
+                                   DelearBidId = 0,
+                                   BidNumber = cu.BidNumber
                                }).OrderByDescending(x => x.BidDate).ToList();
 
                     List<BidVM> lstBidsN1 = (from cu in lstBids
@@ -418,7 +421,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                                 Unittype = cu.Unittype,
                                                 BidStatus = cu.BidStatus,
                                                 BidDate = cu.BidDate,
-                                                DelearBidId = 1                                                
+                                                DelearBidId = 1,
+                                                BidNumber = cu.BidNumber
                                             }).OrderByDescending(x => x.BidDate).ToList();
 
                     lstBids = lstBidsN.Union(lstBidsN1).ToList();
@@ -636,7 +640,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         objBidder.FirmContactNo = data.FirmContactNo;
                         objBidder.Pk_Dealer_Id = data.Pk_Dealer_Id;
                         objBidder.BussinessCode = data.BussinessCode;
-                        
+                        objBidder.OwnerName = data.OwnerName;
+                        objBidder.OwnerContactNo = data.OwnerContactNo;
                         response.Data = objBidder;
                     }
                 }
@@ -724,7 +729,9 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                     Qty = cu.Qty.Value,
                                     Unittype = unityp.UnitTypeName,
                                     BidStatus = cu.BidStatus.Value,
-                                    BidDate = cu.BidDate.Value
+                                    BidDate = cu.BidDate.Value,
+                                    BidNum = cu.BidNo.Value,
+                                    BidYear = cu.BidYear
                                 }).OrderByDescending(x => x.BidDate).FirstOrDefault();
                 objBid.Status = GetGenBidStatus(objBid.BidStatus);
                 objBid.BidDateStr = objBid.BidDate.ToString("dd/MM/yyyy");
@@ -825,7 +832,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 long DealerId = Convert.ToInt64(objGen.DealerId);             
                 List<BidVM> lstBid = (from cu in _db.tbl_Bids
                                 join itm in _db.tbl_BidDealerItems on cu.ItemId equals itm.Fk_ItemId                                
-                                where itm.Fk_PurchaseDealerId == DealerId && cu.BidStatus != 3
+                                where itm.Fk_PurchaseDealerId == DealerId
                                 select new BidVM
                                 {
                                     BidId = cu.Pk_Bid_id,
@@ -849,12 +856,13 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                                  }).OrderByDescending(x => x.BidDate).ToList();
                         if(lstBidsN1 != null && lstBidsN1.Count() > 0)
                         {
-                            TotalOpenBids = lstBidsN1.Count();
+
+                            TotalOpenBids = lstBidsN1.Where(x => x.BidStatus != 3).ToList().Count();
                         }
                     }
                     else
                     {
-                        TotalOpenBids = lstBid.Count();
+                        TotalOpenBids = lstBid.Where(x => x.BidStatus != 3).ToList().Count();
                     }
                 }
                 
@@ -876,5 +884,236 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             return response;
 
         }
+
+        [Route("GetDealerInfo"), HttpPost]
+        public ResponseDataModel<PurchaseDealerVM> GetDealerInfo(GeneralVM objGen)
+        {
+            ResponseDataModel<PurchaseDealerVM> response = new ResponseDataModel<PurchaseDealerVM>();
+            PurchaseDealerVM objBidder = new PurchaseDealerVM();
+            try
+            {
+                long DealerId = Convert.ToInt64(objGen.DealerId);
+                //string EncyptedPassword = clsCommon.EncryptString(objLogin.Password); // Encrypt(userLogin.Password);
+
+                var data = _db.tbl_PurchaseDealers.Where(x => x.Pk_Dealer_Id == DealerId).FirstOrDefault();
+
+                if (data != null)
+                {
+                    objBidder.FirmName = data.FirmName;
+                    objBidder.FirmContactNo = data.FirmContactNo;
+                    objBidder.Pk_Dealer_Id = data.Pk_Dealer_Id;
+                    objBidder.BussinessCode = data.BussinessCode;
+                    objBidder.OwnerName = data.OwnerName;
+                    objBidder.OwnerContactNo = data.OwnerContactNo;
+                    objBidder.FirmGSTNo = data.FirmGSTNo;
+                    objBidder.FirmCity = data.FirmCity;
+                    objBidder.State = data.State;
+                    objBidder.Email = data.Email;
+                    objBidder.BankAcNumber = data.BankAcNumber;
+                    objBidder.BankBranch = data.BankBranch;
+                    objBidder.IFSCCode = data.IFSCCode;
+                    objBidder.FirmAddress = data.FirmAddress;
+
+                    response.Data = objBidder;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+
+        [Route("SendOTPDealerForChangePwd"), HttpPost]
+        public ResponseDataModel<OtpVM> SendOTPDealerForChangePwd(OtpVM objOtpVM)
+        {
+            ResponseDataModel<OtpVM> response = new ResponseDataModel<OtpVM>();
+            OtpVM objOtp = new OtpVM();
+            try
+            {
+                string BusinessCode = objOtpVM.BusinessCode;
+                tbl_PurchaseDealers purcdelr = _db.tbl_PurchaseDealers.Where(o => o.BussinessCode == BusinessCode).FirstOrDefault();
+
+                if (purcdelr == null)
+                {
+                    response.IsError = true;
+                    response.AddError("Account is not exist");
+                }
+                else
+                {
+                    string MobileNum = purcdelr.OwnerContactNo;
+                    using (WebClient webClient = new WebClient())
+                    {
+                        WebClient client = new WebClient();
+                        Random random = new Random();
+                        int num = random.Next(310450, 789899);
+                        //string msg = "Your change password OTP code is " + num;
+                        int SmsId = (int)SMSType.ChangePwdOtp;
+                        clsCommon objcm = new clsCommon();
+                        string msg = objcm.GetSmsContent(SmsId);
+                        msg = msg.Replace("{{OTP}}", num + "");
+                        msg = HttpUtility.UrlEncode(msg);
+                        //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + MobileNum + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                        string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", MobileNum).Replace("--MSG--", msg);
+                        var json = webClient.DownloadString(url);
+                        if (json.Contains("invalidnumber"))
+                        {
+                            response.IsError = true;
+                            response.AddError("Invalid Mobile Number");
+                        }
+                        else
+                        {
+                            objOtp.Otp = num.ToString();
+                        }
+                        response.Data = objOtp;
+                    }
+                }
+
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+
+        [Route("ChangePasswordDealer"), HttpPost]
+        public ResponseDataModel<OtpVM> ChangePasswordDealer(PwdVM objPwdVM)
+        {
+            ResponseDataModel<OtpVM> response = new ResponseDataModel<OtpVM>();
+            try
+            {
+                string CurrentPassword = objPwdVM.OldPassword;
+                string NewPassword = objPwdVM.NewPassword;
+
+                long LoggedInUserId = Int64.Parse(objPwdVM.ClientUserId);
+                tbl_PurchaseDealers objUser = _db.tbl_PurchaseDealers.Where(x => x.Pk_Dealer_Id == LoggedInUserId).FirstOrDefault();
+
+                if (objUser != null)
+                {
+                    //string EncryptedCurrentPassword = clsCommon.EncryptString(CurrentPassword);
+                    if (objUser.Password == CurrentPassword)
+                    {
+                        objUser.Password = NewPassword;// clsCommon.EncryptString(NewPassword);
+                        _db.SaveChanges();
+                    }
+                    else
+                    {
+                        response.AddError("Current Password not match");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+
+        [Route("GetDealerTermList"), HttpPost]
+        public ResponseDataModel<List<BidTermsVM>> GetDealerTermList(GeneralVM objGeneralVM)
+        {
+            ResponseDataModel<List<BidTermsVM>> response = new ResponseDataModel<List<BidTermsVM>>();
+            GeneralVM objGenVm = new GeneralVM();
+            try
+            {
+                long DealerId = Convert.ToInt64(objGeneralVM.DealerId);
+                int TermsTypId = Convert.ToInt32(objGeneralVM.TermsTypeId);
+            
+                List<BidTermsVM> lstBidTermsVM = (from crt in _db.tbl_DealerTerms
+                                                  where crt.Fk_Dealer_Id == DealerId && crt.TermsType.Value == TermsTypId
+                                                  select new BidTermsVM
+                                                  {
+                                                      DealerId = DealerId,
+                                                      Terms = crt.Terms,
+                                                      TermsType = crt.TermsType.Value,
+                                                      TermsTitle = crt.TermsTitle,
+                                                      Pk_DelearTerms = crt.Pk_DealerTerms_Id
+                                                  }).ToList();
+               
+                response.Data = lstBidTermsVM;
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+
+
+        [Route("SaveDealerTermsData"), HttpPost]
+        public ResponseDataModel<string> SaveDealerTermsData(BidTermsVM objTerms)
+        {
+            ResponseDataModel<string> response = new ResponseDataModel<string>();
+            GeneralVM objGenVm = new GeneralVM();
+            bool IsValid = true;
+            try
+            {
+                long dealerId = Convert.ToInt64(objTerms.DealerId);
+                tbl_DealerTerms obj = new tbl_DealerTerms();
+                if (objTerms.Pk_DelearTerms == 0)
+                {
+                    var objshipexist = _db.tbl_DealerTerms.Where(o => o.TermsTitle.ToLower() == objTerms.TermsTitle.ToLower() && o.Fk_Dealer_Id == objTerms.DealerId && o.TermsType == objTerms.TermsType).FirstOrDefault();
+                    if (objshipexist != null)
+                    {
+                        response.AddError("Terms Title Already Exist");
+                        IsValid = false;
+                    }
+                    obj.CreatedDate = DateTime.UtcNow;
+                }
+                else
+                {
+                    long shipadreid = Convert.ToInt64(objTerms.Pk_DelearTerms);
+                    var objshipexist = _db.tbl_DealerTerms.Where(o => o.Pk_DealerTerms_Id != shipadreid && o.TermsTitle.ToLower() == objTerms.TermsTitle.ToLower() && o.Fk_Dealer_Id == objTerms.DealerId && o.TermsType == objTerms.TermsType).FirstOrDefault();
+                    if (objshipexist != null)
+                    {
+                        response.AddError("Terms Title Already Exist");
+                        IsValid = false;
+                    }
+
+                    obj = _db.tbl_DealerTerms.Where(o => o.Pk_DealerTerms_Id == shipadreid).FirstOrDefault();
+                }
+                if (IsValid)
+                {
+                    obj.IsDeleted = false;
+                    obj.Terms = objTerms.Terms;
+                    obj.TermsType = objTerms.TermsType;
+                    obj.Fk_Dealer_Id = objTerms.DealerId;
+                    obj.TermsTitle = objTerms.TermsTitle;
+                    _db.SaveChanges();
+                }
+                if (IsValid)
+                {
+                    response.Data = "Success";
+                }
+                else
+                {
+                    response.Data = "Already Exist";
+                }
+
+
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
+
     }
 }

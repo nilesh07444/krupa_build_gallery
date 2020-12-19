@@ -11,6 +11,6 @@ namespace KrupaBuildGallery
         public long DealerId { get; set; }
         public string Terms { get; set; }
         public int TermsType { get; set; }
-
+        public string TermsTitle { get; set; }
     }
 }

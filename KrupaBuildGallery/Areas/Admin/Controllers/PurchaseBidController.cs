@@ -38,7 +38,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                Unittype = unityp.UnitTypeName,
                                BidStatus = cu.BidStatus.Value,
                                BidDate = cu.BidDate.Value,
-                               BidNumber = "BD/"+cu.BidYear+"/"+cu.BidNo
+                               BidNum = cu.BidNo.Value,
+                               BidYear = cu.BidYear                               
                            }).OrderByDescending(x => x.BidDate).ToList();
                 if (lstBids != null && lstBids.Count() > 0)
                 {
@@ -448,10 +449,13 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                          Qty = cu.Qty.Value,
                                          Unittype = unityp.UnitTypeName,
                                          BidStatus = cu.BidStatus.Value,
-                                         BidDate = cu.BidDate.Value
+                                         BidDate = cu.BidDate.Value,
+                                         BidNum = cu.BidNo.Value,
+                                         BidYear = cu.BidYear
                                      }).OrderByDescending(x => x.BidDate).FirstOrDefault();
+                    string BidNumber = "BD/" + objBids.BidYear + "/" + objBids.BidNum;
                     if (IsApprove == "false")
-                    {
+                    {                       
                         objBid.BidStatus = 2; //   0 For Pending  1 For Accept 2 For Reject
                         objBid.RejectReason = Reason;
                         _db.SaveChanges();
@@ -461,7 +465,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             string ToEmail = objDeler.Email;
                             tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
                             string FromEmail = objGensetting.FromEmail;
-                            string Subject = "Your Bid for Item - "+ objBids.ItemName + " Rejected - Shoping Saving";
+                            string Subject = "Your Bid " + BidNumber + " for Item - " + objBids.ItemName + " Rejected - Shoping Saving";
                             string bodyhtml = "Following is the reason<br/>";
                             bodyhtml += "===============================<br/>";
                             bodyhtml += Reason;
@@ -477,7 +481,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             WebClient client = new WebClient();
                             Random random = new Random();
                             int num = random.Next(111566, 999999);
-                            string msg = "Your Bid for Item - " + objBids.ItemName + " Rejected - Shoping Saving\n";
+                            string msg = "Your Bid " + BidNumber + " for Item - " + objBids.ItemName + " Rejected - Shoping Saving\n";
                             msg += "Following Is The Reason:\n";
                             msg += Reason;
                             //int SmsId = (int)SMSType.DistributorReqRejected;
@@ -510,8 +514,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             string ToEmail = objDeler.Email;
                             tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
                             string FromEmail = objGensetting.FromEmail;
-                            string Subject = "Your Bid for Item:"+ objBids.ItemName +" Accepted - Shopping & Saving";
-                            string bodyhtml = "Your Bid for Item:" + objBids.ItemName + " Accepted<br/>";
+                            string Subject = "Your Bid " + BidNumber + " for Item:" + objBids.ItemName +" Accepted - Shopping & Saving";
+                            string bodyhtml = "Your Bid " + BidNumber + " for Item:" + objBids.ItemName + " Accepted<br/>";
                             bodyhtml += "We will contact you asap:<br/>";                      
                             bodyhtml += "Shopping & Saving <br/>";
                             clsCommon.SendEmail(ToEmail, FromEmail, Subject, bodyhtml);
@@ -526,7 +530,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             WebClient client = new WebClient();
                             Random random = new Random();
                             int num = random.Next(111566, 999999);
-                            string msg = "Your Bid for Item:" + objBids.ItemName + " Accepted \n";
+                            string msg = "Your Bid " + objBids.BidNumber + " for Item:" + objBids.ItemName + " Accepted \n";
                             msg += "We will contact you asap:\n";
                             msg += "Shopping & Saving\n";                            
                             //int SmsId = (int)SMSType.DistributorReqAccepted;
@@ -578,6 +582,188 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         }
                     }
                 }
+                _db.SaveChanges();
+                ReturnMessage = "Success";
+            }
+            catch (Exception ex)
+            {
+                string msg = ex.Message.ToString();
+                ReturnMessage = "exception";
+            }
+
+            return ReturnMessage;
+        }
+
+
+        [HttpPost]
+        public string AcceptRejectBidMultiple(string BidIds, string IsApprove, string Reason = "")
+        {
+            string ReturnMessage = "";
+
+            try
+            {
+                string[] arryBidIds = BidIds.Trim('^').Split('^');
+
+                if(arryBidIds != null && arryBidIds.Count() > 0)
+                {
+                    foreach(string strbd in arryBidIds)
+                    {
+                        if(!string.IsNullOrEmpty(strbd))
+                        {
+                            long BidId = Convert.ToInt64(strbd);
+                            var objBid = _db.tbl_BidDealers.Where(o => o.Pk_BidDealers == BidId).FirstOrDefault();
+                            if (objBid != null)
+                            {
+                                var objDeler = _db.tbl_PurchaseDealers.Where(o => o.Pk_Dealer_Id == objBid.FK_DealerId).FirstOrDefault();
+                                BidVM objBids = (from cu in _db.tbl_Bids
+                                                 join itm in _db.tbl_PurchaseBidItems on cu.ItemId equals itm.Pk_PurchaseBidItemId
+                                                 join unityp in _db.tbl_BidItemUnitTypes on itm.UnitType equals unityp.BidItemUnitTypeId
+                                                 where cu.Pk_Bid_id == objBid.Fk_BidId
+                                                 select new BidVM
+                                                 {
+                                                     BidId = cu.Pk_Bid_id,
+                                                     ItemId = cu.ItemId.Value,
+                                                     ItemName = itm.ItemName,
+                                                     Qty = cu.Qty.Value,
+                                                     Unittype = unityp.UnitTypeName,
+                                                     BidStatus = cu.BidStatus.Value,
+                                                     BidDate = cu.BidDate.Value,
+                                                     BidNum = cu.BidNo.Value,
+                                                     BidYear = cu.BidYear
+                                                 }).OrderByDescending(x => x.BidDate).FirstOrDefault();
+                                string BidNumber = "BD/" + objBids.BidYear + "/" + objBids.BidNum;
+                                if (IsApprove == "false")
+                                {
+                                    objBid.BidStatus = 2; //   0 For Pending  1 For Accept 2 For Reject
+                                    objBid.RejectReason = Reason;
+                                    _db.SaveChanges();
+                                    try
+                                    {
+
+                                        string ToEmail = objDeler.Email;
+                                        tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
+                                        string FromEmail = objGensetting.FromEmail;
+                                        string Subject = "Your Bid "+ BidNumber + " for Item - " + objBids.ItemName + " Rejected - Shoping Saving";
+                                        string bodyhtml = "Following is the reason<br/>";
+                                        bodyhtml += "===============================<br/>";
+                                        bodyhtml += Reason;
+                                        clsCommon.SendEmail(ToEmail, FromEmail, Subject, bodyhtml);
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        string ErrorMessage = e.Message.ToString();
+                                    }
+
+                                    using (WebClient webClient = new WebClient())
+                                    {
+                                        WebClient client = new WebClient();
+                                        Random random = new Random();
+                                        int num = random.Next(111566, 999999);
+                                        string msg = "Your Bid " + BidNumber + " for Item - " + objBids.ItemName + " Rejected - Shoping Saving\n";
+                                        msg += "Following Is The Reason:\n";
+                                        msg += Reason;
+                                        //int SmsId = (int)SMSType.DistributorReqRejected;
+                                        //clsCommon objcm = new clsCommon();
+                                        //string msg = objcm.GetSmsContent(SmsId);
+                                        //msg = msg.Replace("{{Reason}}", Reason);
+                                        msg = HttpUtility.UrlEncode(msg);
+                                        //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objReq.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                                        string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", objDeler.OwnerContactNo).Replace("--MSG--", msg);
+                                        var json = webClient.DownloadString(url);
+                                        if (json.Contains("invalidnumber"))
+                                        {
+                                            /// return "InvalidNumber";
+                                        }
+                                        else
+                                        {
+                                            //  return num.ToString();
+                                        }
+
+                                    }
+
+                                }
+                                else
+                                {
+                                    objBid.BidStatus = 1; //   0 For Pending  1 For Accept 2 For Reject
+                                    _db.SaveChanges();
+
+                                    try
+                                    {
+                                        string ToEmail = objDeler.Email;
+                                        tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
+                                        string FromEmail = objGensetting.FromEmail;
+                                        string Subject = "Your Bid " + BidNumber + " for Item:" + objBids.ItemName + " Accepted - Shopping & Saving";
+                                        string bodyhtml = "Your Bid " + BidNumber + " for Item:" + objBids.ItemName + " Accepted<br/>";
+                                        bodyhtml += "We will contact you asap:<br/>";
+                                        bodyhtml += "Shopping & Saving <br/>";
+                                        clsCommon.SendEmail(ToEmail, FromEmail, Subject, bodyhtml);
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        string ErrorMessage = e.Message.ToString();
+                                    }
+
+                                    using (WebClient webClient = new WebClient())
+                                    {
+                                        WebClient client = new WebClient();
+                                        Random random = new Random();
+                                        int num = random.Next(111566, 999999);
+                                        string msg = "Your Bid for Item:" + objBids.ItemName + " Accepted \n";
+                                        msg += "We will contact you asap:\n";
+                                        msg += "Shopping & Saving\n";
+                                        //int SmsId = (int)SMSType.DistributorReqAccepted;
+                                        //clsCommon objcm = new clsCommon();
+                                        //string msg = objcm.GetSmsContent(SmsId);
+                                        // msg = msg.Replace("{{MobileNo}}", objReq.MobileNo + "").Replace("{{Password}}", Password);
+                                        msg = HttpUtility.UrlEncode(msg);
+                                        //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objReq.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";                            
+                                        string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", objDeler.OwnerContactNo).Replace("--MSG--", msg);
+                                        var json = webClient.DownloadString(url);
+                                        if (json.Contains("invalidnumber"))
+                                        {
+                                            /// return "InvalidNumber";
+                                        }
+                                        else
+                                        {
+                                            //  return num.ToString();
+                                        }
+
+                                    }
+
+
+                                }
+
+                                List<tbl_BidDealers> lstBiddle = _db.tbl_BidDealers.Where(o => o.Fk_BidId == objBid.Fk_BidId).ToList();
+                                if (lstBiddle != null && lstBiddle.Count() > 0)
+                                {
+                                    var lst = lstBiddle.Where(o => o.BidStatus.Value == 1).ToList();
+                                    if (lst != null && lst.Count() > 0)
+                                    {
+                                        tbl_Bids objBd = _db.tbl_Bids.Where(o => o.Pk_Bid_id == objBid.Fk_BidId).FirstOrDefault();
+                                        if (objBd != null)
+                                        {
+                                            objBd.BidStatus = 1;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        var lst2 = lstBiddle.Where(o => o.BidStatus.Value == 2).ToList();
+                                        if (lst2 != null && lst2.Count() > 0)
+                                        {
+                                            tbl_Bids objBd = _db.tbl_Bids.Where(o => o.Pk_Bid_id == objBid.Fk_BidId).FirstOrDefault();
+                                            if (objBd != null)
+                                            {
+                                                objBd.BidStatus = 2;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }           
+
+
                 _db.SaveChanges();
                 ReturnMessage = "Success";
             }

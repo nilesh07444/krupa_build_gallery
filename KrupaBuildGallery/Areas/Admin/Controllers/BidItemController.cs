@@ -195,7 +195,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
         public List<SelectListItem> GetBidUnitItems()
         {
-            var lstUnts = _db.tbl_BidItemUnitTypes.OrderBy(x => x.UnitTypeName).ToList();
+            var lstUnts = _db.tbl_BidItemUnitTypes.Where(x => x.IsDeleted == false).OrderBy(x => x.UnitTypeName).ToList();
             List<SelectListItem> lstselc = new List<SelectListItem>();
             if (lstUnts != null && lstUnts.Count() > 0)
             {

@@ -31,6 +31,7 @@ namespace KrupaBuildGallery
         public long DelearBidId { get; set; }
         public List<BidDealerVM> lstBidDealer { get; set; }
         public string BidNumber { get; set; }
-        
+        public int BidNum { get; set; }
+        public string BidYear { get; set; }
     }
 }

@@ -44,6 +44,10 @@
             margin-top: 5px
         }
     }
+
+    #txtreason:focus {
+        outline-color: #151414 !important;
+    }
 </style>
 <div class="page-body">
 
@@ -125,7 +129,7 @@
                     </div>
                     <div class="card-body">
                         <button type="button" name="btnAcceptReject" id="btnAcceptReject" class="btn btn-primary" onclick="acceptrejectmultiple();" style="display: inline-block;">
-                            Accept/Reject
+                            Accept / Reject
                         </button>
                         <div class="card-body vendor-table">
                             <table class="display" id="basic-1">
@@ -193,10 +197,97 @@
     </div>
   
 </div>
+<div class="modal fade open" id="approverejectitemrequestmodal" tabindex="-1" role="dialog" aria-labelledby="approverejectitemrequestmodal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Accept/Reject Bid</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="label-wrapper"><label class="control-label" id="lblconfirm">Do you want to Accept/Reject bids?</label></div>
+                    </div>
+                    <div class="col-md-8">
+                        <label class="radio-inline"><input type="radio" value="Accept" checked name="optradioapprove" onclick="$('#dvreason').hide();">Accept</label>
+                        <label class="radio-inline"><input type="radio" value="Reject" name="optradioapprove" onclick="$('#dvreason').show();" >Reject</label>
+                    </div>
+                </div>
+                <div class="row" id="dvreason" style="display:none;">
+                    <div class="col-md-4">
+                        <div class="label-wrapper"><label class="control-label">Reason</label></div>
+                    </div>
+                    <div class="col-md-8">
+                        <textarea id="txtreason" >
 
+                        </textarea>                       
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">              
+                <input type="hidden" id="bidids" value="" />
+                <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
+                <button id="saveacceptreject" onclick="saveacceptreject();" class="btn btn-primary" type="button">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="~/Scripts/prism.min.js"></script>
 <script src="~/Scripts/lightbox.js"></script>
 @*<script src="~/Scripts/lightbox-plus-jquery.min.js"></script>*@
 <script>
+    function acceptrejectmultiple() {
+        var stritddd = '';
+        if ($(".chkrbd:checked").length == 0) {
+            alert("Please Select atlest 1 Bid");
+            return;
+        }
+
+        $(".chkrbd:checked").each(function () {
+            stritddd = stritddd + $(this).val() + '^';
+        });
+
+        $("#bidids").val(stritddd);               
+        $("#approverejectitemrequestmodal").modal("show");
+        $("input[name=optradioapprove][value=Approve]").prop("checked", true)
+    }
+
+    function saveacceptreject() {
+        var approvereject = "false";
+        if ($("input[name=optradioapprove]:checked").val() == "Accept") {
+            approvereject = "true";
+        }
+        else {
+            if ($("#txtreason").val().trim() == "") {
+                alert("Please Enter Reason to Reject");
+                return;
+            }
+        }
+        var bidids = $("#bidids").val();
+        $("#approverejectitemrequestmodal").modal("hide");
+          StartLoading();
+          var URL = '@Url.Action("AcceptRejectBidMultiple", "PurchaseBid")';
+        jQuery.ajax({
+        type: 'POST',
+        async: true,
+            url: URL + "?BidIds=" + bidids + "&IsApprove=" + approvereject + "&Reason=" + $("#txtreason").val(),
+        success: function (result) {
+            if (result == "Success") {
+                alert("Save Status Successfully..")
+                location.reload();
+            }
+            else {
+            }
+               StopLoading();
+        },
+        error: function (resultData) {
+            StopLoading();
+            console.log("error");
+
+        }
+     });
+
+    }
     //acceptrejectmultiple
 </script>

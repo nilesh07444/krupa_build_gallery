@@ -67,6 +67,7 @@ namespace KrupaBuildGallery
         public string DealerId { get; set; }
         public string BidId { get; set; }
         public string BidItemIds { get; set; }
+        public string TermsTypeId { get; set; }
 
         public string TotalOpenBids { get; set; }
         public string TotalAcceptedBids { get; set; }
