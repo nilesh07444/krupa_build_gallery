@@ -386,7 +386,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                Qty = cu.Qty.Value,
                                Unittype = unityp.UnitTypeName,
                                BidStatus = cu.BidStatus.Value,
-                               BidDate = cu.BidDate.Value
+                               BidDate = cu.BidDate.Value,
+                               BidNumber = "BD/"+cu.BidYear+"/"+cu.BidNo
                            }).OrderByDescending(x => x.BidDate).ToList();
                 List<tbl_BidDealers> lstDelrBid = _db.tbl_BidDealers.Where(o => o.FK_DealerId == DealerId).ToList();
                 if (lstBids != null && lstBids.Count() > 0)
@@ -404,7 +405,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                    Unittype = cu.Unittype,
                                    BidStatus = cu.BidStatus,
                                    BidDate = cu.BidDate,
-                                   DelearBidId = 0
+                                   DelearBidId = 0,
+                                   BidNumber = cu.BidNumber
                                }).OrderByDescending(x => x.BidDate).ToList();
 
                     List<BidVM> lstBidsN1 = (from cu in lstBids
@@ -418,7 +420,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                                 Unittype = cu.Unittype,
                                                 BidStatus = cu.BidStatus,
                                                 BidDate = cu.BidDate,
-                                                DelearBidId = 1                                                
+                                                DelearBidId = 1,
+                                                BidNumber = cu.BidNumber
                                             }).OrderByDescending(x => x.BidDate).ToList();
 
                     lstBids = lstBidsN.Union(lstBidsN1).ToList();
@@ -724,7 +727,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                     Qty = cu.Qty.Value,
                                     Unittype = unityp.UnitTypeName,
                                     BidStatus = cu.BidStatus.Value,
-                                    BidDate = cu.BidDate.Value
+                                    BidDate = cu.BidDate.Value,
+                                    BidNumber = "BD/" + cu.BidYear + "/" + cu.BidNo
                                 }).OrderByDescending(x => x.BidDate).FirstOrDefault();
                 objBid.Status = GetGenBidStatus(objBid.BidStatus);
                 objBid.BidDateStr = objBid.BidDate.ToString("dd/MM/yyyy");

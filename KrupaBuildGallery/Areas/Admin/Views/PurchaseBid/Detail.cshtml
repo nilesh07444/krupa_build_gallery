@@ -193,10 +193,95 @@
     </div>
   
 </div>
-
+<div class="modal fade open" id="approverejectitemrequestmodal" tabindex="-1" role="dialog" aria-labelledby="approverejectitemrequestmodal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Accept/Reject Bid</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="label-wrapper"><label class="control-label" id="lblconfirm">Do you want to Accept/Reject bids?</label></div>
+                    </div>
+                    <div class="col-md-8">
+                        <label class="radio-inline"><input type="radio" value="Accept" checked name="optradioapprove">Accept</label>
+                        <label class="radio-inline"><input type="radio" value="Reject" name="optradioapprove">Reject</label>
+                    </div>
+                </div>
+                <div class="row" id="dvreason">
+                    <div class="col-md-4">
+                        <div class="label-wrapper"><label class="control-label">Reason</label></div>
+                    </div>
+                    <div class="col-md-8">
+                       <input type="text" id="txtreason" />
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">              
+                <input type="hidden" id="bidids" value="" />
+                <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
+                <button id="saveacceptreject" onclick="saveacceptreject();" class="btn btn-primary" type="button">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="~/Scripts/prism.min.js"></script>
 <script src="~/Scripts/lightbox.js"></script>
 @*<script src="~/Scripts/lightbox-plus-jquery.min.js"></script>*@
 <script>
+    function acceptrejectmultiple() {
+        var stritddd = '';
+        if ($(".chkrbd:checked").length == 0) {
+            alert("Please Select atlest 1 Bid");
+            return;
+        }
+
+        $(".chkrdr:checked").each(function () {
+            stritddd = stritddd + $(this).val() + '^';
+        });
+
+        $("#bidids").val(stritddd);               
+        $("#approverejectitemrequestmodal").modal("show");
+        $("input[name=optradioapprove][value=Approve]").prop("checked", true)
+    }
+
+    function saveacceptreject() {
+        var approvereject = "false";
+        if ($("input[name=optradioapprove]:checked").val() == "Accept") {
+            approvereject = "true";
+        }
+        else {
+            if ($("#txtreason").val() == "") {
+                alert("Please Enter Reason to Reject");
+                return;
+            }
+        }
+        var bidids = $("#bidids").val();
+
+          StartLoading();
+          var URL = '@Url.Action("AcceptRejectBidMultiple", "PurchaseBid")';
+        jQuery.ajax({
+        type: 'POST',
+        async: true,
+            url: URL + "?BidIds=" + bidids + "&IsApprove=" + approvereject + "&Reason=" + $("#txtreason").val(),
+        success: function (result) {
+            if (result == "Success") {
+                alert("Save Status Successfully..")
+                location.reload();
+            }
+            else {
+            }
+               StopLoading();
+        },
+        error: function (resultData) {
+            StopLoading();
+            console.log("error");
+
+        }
+     });
+
+    }
     //acceptrejectmultiple
 </script>
