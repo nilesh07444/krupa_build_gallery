@@ -407,7 +407,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                    BidStatus = cu.BidStatus,
                                    BidDate = cu.BidDate,
                                    DelearBidId = 0,
-                                   BidNumber = cu.BidNumber
+                                   BidNum = cu.BidNum,
+                                   BidYear = cu.BidYear
                                }).OrderByDescending(x => x.BidDate).ToList();
 
                     List<BidVM> lstBidsN1 = (from cu in lstBids
@@ -422,7 +423,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                                 BidStatus = cu.BidStatus,
                                                 BidDate = cu.BidDate,
                                                 DelearBidId = 1,
-                                                BidNumber = cu.BidNumber
+                                                BidNum = cu.BidNum,
+                                                BidYear = cu.BidYear
                                             }).OrderByDescending(x => x.BidDate).ToList();
 
                     lstBids = lstBidsN.Union(lstBidsN1).ToList();
@@ -591,18 +593,32 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 {
                     objBidDealerVM = new BidDealerVM();
                     objBidDealerVM.TermsCondition = "";
-                    objBidDealerVM.PaymentTerms = "";
-                    var objDelerTerms = _db.tbl_DealerTerms.Where(o => o.Fk_Dealer_Id == DealerId && o.TermsType == 1).FirstOrDefault();
-                    if(objDelerTerms != null)
-                    {
-                        objBidDealerVM.TermsCondition = objDelerTerms.Terms;
-                    }
-                    var objDelerPaymentTerms = _db.tbl_DealerTerms.Where(o => o.Fk_Dealer_Id == DealerId && o.TermsType == 2).FirstOrDefault();
-                    if (objDelerPaymentTerms != null)
-                    {
-                        objBidDealerVM.PaymentTerms = objDelerPaymentTerms.Terms;
-                    }
+                    objBidDealerVM.PaymentTerms = "";                   
                 }
+
+                List<BidTermsVM> lstBidTermsCondVM = (from crt in _db.tbl_DealerTerms
+                                                  where crt.Fk_Dealer_Id == DealerId && crt.TermsType.Value == 1
+                                                  select new BidTermsVM
+                                                  {
+                                                      DealerId = DealerId,
+                                                      Terms = crt.Terms,
+                                                      TermsType = crt.TermsType.Value,
+                                                      TermsTitle = crt.TermsTitle,
+                                                      Pk_DelearTerms = crt.Pk_DealerTerms_Id
+                                                  }).ToList();
+                List<BidTermsVM> lstBidPaymentTermVM = (from crt in _db.tbl_DealerTerms
+                                                      where crt.Fk_Dealer_Id == DealerId && crt.TermsType.Value == 2
+                                                      select new BidTermsVM
+                                                      {
+                                                          DealerId = DealerId,
+                                                          Terms = crt.Terms,
+                                                          TermsType = crt.TermsType.Value,
+                                                          TermsTitle = crt.TermsTitle,
+                                                          Pk_DelearTerms = crt.Pk_DealerTerms_Id
+                                                      }).ToList();
+                objBidDealerVM.lstPaymentTerms = lstBidPaymentTermVM;
+                objBidDealerVM.lstTermsCondi = lstBidTermsCondVM;              
+
                 response.Data = objBidDealerVM;
             }
             catch (Exception ex)
@@ -1092,6 +1108,10 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     obj.TermsType = objTerms.TermsType;
                     obj.Fk_Dealer_Id = objTerms.DealerId;
                     obj.TermsTitle = objTerms.TermsTitle;
+                    if(obj.Pk_DealerTerms_Id == 0)
+                    {
+                        _db.tbl_DealerTerms.Add(obj);
+                    }
                     _db.SaveChanges();
                 }
                 if (IsValid)

@@ -30,5 +30,7 @@ namespace KrupaBuildGallery
         public string RejectReason { get; set; }
         public DateTime StatusDate { get; set; }   
         public string OwnerContactNo { get; set; }
+        public List<BidTermsVM> lstTermsCondi { get; set; }
+        public List<BidTermsVM> lstPaymentTerms { get; set; }
     }
 }
