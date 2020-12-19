@@ -1,4 +1,5 @@
-﻿using KrupaBuildGallery.Model;
+﻿using KrupaBuildGallery.Helper;
+using KrupaBuildGallery.Model;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using System;
@@ -15,9 +16,11 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
     public class PurchaseDealersController : Controller
     {
         private readonly krupagallarydbEntities _db;
+        public string UsersDocumentsDirectoryPath = "";
         public PurchaseDealersController()
         {
             _db = new krupagallarydbEntities();
+            UsersDocumentsDirectoryPath = ErrorMessage.UsersDocumentsDirectoryPath;
         }
         // GET: Admin/PurchaseDealers
         public ActionResult Index(string StartDate = "", string EndDate = "")
@@ -37,24 +40,24 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     dtEnd = DateTime.ParseExact(EndDate, "dd/MM/yyyy", null);
                 }
                 lstpurchasedelr = (from cu in _db.tbl_PurchaseDealers
-                                 where !cu.IsDelete.Value && cu.CreatedDate >= dtStart && cu.CreatedDate <= dtEnd
-                                 select new PurchaseDealerVM
-                                 {
-                                     Pk_Dealer_Id = cu.Pk_Dealer_Id,
-                                     FirmName = cu.FirmName,
-                                     FirmCity = cu.FirmCity,
-                                     State = cu.State,
-                                     Email = cu.Email,
-                                     FirmContactNo = cu.FirmContactNo,
-                                     OwnerName = cu.OwnerName,
-                                     IsActive = cu.IsActive.Value,
-                                     Status = cu.Status.HasValue ? cu.Status.Value : 0,
-                                     CreatedDate = cu.CreatedDate.Value,
-                                     OwnerContactNo = cu.OwnerContactNo,
-                                     BussinessCode = cu.BussinessCode                                         
-                                 }).OrderByDescending(x => x.CreatedDate).ToList();
+                                   where !cu.IsDelete.Value && cu.CreatedDate >= dtStart && cu.CreatedDate <= dtEnd
+                                   select new PurchaseDealerVM
+                                   {
+                                       Pk_Dealer_Id = cu.Pk_Dealer_Id,
+                                       FirmName = cu.FirmName,
+                                       FirmCity = cu.FirmCity,
+                                       State = cu.State,
+                                       Email = cu.Email,
+                                       FirmContactNo = cu.FirmContactNo,
+                                       OwnerName = cu.OwnerName,
+                                       IsActive = cu.IsActive.Value,
+                                       Status = cu.Status.HasValue ? cu.Status.Value : 0,
+                                       CreatedDate = cu.CreatedDate.Value,
+                                       OwnerContactNo = cu.OwnerContactNo,
+                                       BussinessCode = cu.BussinessCode
+                                   }).OrderByDescending(x => x.CreatedDate).ToList();
 
-               
+
                 ViewBag.StartDate = StartDate;
                 ViewBag.EndDate = EndDate;
             }
@@ -82,7 +85,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                         State = cu.State,
                                         Email = cu.Email,
                                         FirmContactNo = cu.FirmContactNo,
-                                        OwnerName = cu.OwnerName,                                        
+                                        OwnerName = cu.OwnerName,
                                         Status = cu.Status.HasValue ? cu.Status.Value : 0
                                     }).OrderBy(x => x.FirmName).ToList();
 
@@ -103,33 +106,33 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             try
             {
                 objDealerReq = (from cu in _db.tbl_PurchaseDealersRequest
-                               where !cu.IsDelete.Value && cu.Pk_Dealer_Id == Id
-                              select new PurchaseDealerVM
-                              {
-                                  Pk_Dealer_Id = cu.Pk_Dealer_Id,
-                                  FirmName = cu.FirmName,
-                                  FirmAddress = cu.FirmAddress,
-                                  Email = cu.Email,
-                                  FirmCity = cu.FirmCity,
-                                  FirmGSTNo = cu.FirmGSTNo,
-                                  VisitingCardPhoto = cu.VisitingCardPhoto,
-                                  FirmContactNo = cu.FirmContactNo,
-                                  AlternateNo = cu.AlternateNo,
-                                  BusinessDetails = cu.BusinessDetails,
-                                  BankAcNumber = cu.BankAcNumber,
-                                  IFSCCode = cu.IFSCCode,
-                                  BankBranch = cu.BankBranch,
-                                  BankAcNumber2 = cu.BankAcNumber2,
-                                  BankBranch2 = cu.BankBranch2,
-                                  IFSCCode2 = cu.IFSCCode2,
-                                  OwnerName = cu.OwnerName,
-                                  OwnerContactNo = cu.OwnerContactNo,
-                                  Remark = cu.Remark,
-                                  BussinessCode = cu.BussinessCode,
-                                  Status = cu.Status.HasValue ? cu.Status.Value : 0,
-                                  State = cu.State,
-                                  IsActive = cu.IsActive.Value
-                              }).FirstOrDefault();
+                                where !cu.IsDelete.Value && cu.Pk_Dealer_Id == Id
+                                select new PurchaseDealerVM
+                                {
+                                    Pk_Dealer_Id = cu.Pk_Dealer_Id,
+                                    FirmName = cu.FirmName,
+                                    FirmAddress = cu.FirmAddress,
+                                    Email = cu.Email,
+                                    FirmCity = cu.FirmCity,
+                                    FirmGSTNo = cu.FirmGSTNo,
+                                    VisitingCardPhoto = cu.VisitingCardPhoto,
+                                    FirmContactNo = cu.FirmContactNo,
+                                    AlternateNo = cu.AlternateNo,
+                                    BusinessDetails = cu.BusinessDetails,
+                                    BankAcNumber = cu.BankAcNumber,
+                                    IFSCCode = cu.IFSCCode,
+                                    BankBranch = cu.BankBranch,
+                                    BankAcNumber2 = cu.BankAcNumber2,
+                                    BankBranch2 = cu.BankBranch2,
+                                    IFSCCode2 = cu.IFSCCode2,
+                                    OwnerName = cu.OwnerName,
+                                    OwnerContactNo = cu.OwnerContactNo,
+                                    Remark = cu.Remark,
+                                    BussinessCode = cu.BussinessCode,
+                                    Status = cu.Status.HasValue ? cu.Status.Value : 0,
+                                    State = cu.State,
+                                    IsActive = cu.IsActive.Value
+                                }).FirstOrDefault();
 
             }
             catch (Exception ex)
@@ -272,7 +275,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             //int SmsId = (int)SMSType.DistributorReqAccepted;
                             //clsCommon objcm = new clsCommon();
                             //string msg = objcm.GetSmsContent(SmsId);
-                           // msg = msg.Replace("{{MobileNo}}", objReq.MobileNo + "").Replace("{{Password}}", Password);
+                            // msg = msg.Replace("{{MobileNo}}", objReq.MobileNo + "").Replace("{{Password}}", Password);
                             msg = HttpUtility.UrlEncode(msg);
                             //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objReq.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";                            
                             string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", objReq.FirmContactNo).Replace("--MSG--", msg);
@@ -385,26 +388,26 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             }
 
             lstDelers = (from cu in _db.tbl_PurchaseDealers
-                               where !cu.IsDelete.Value && cu.CreatedDate >= dtStart && cu.CreatedDate <= dtEnd
-                               select new PurchaseDealerVM
-                               {
-                                   Pk_Dealer_Id = cu.Pk_Dealer_Id,
-                                   FirmName = cu.FirmName,
-                                   FirmCity = cu.FirmCity,
-                                   State = cu.State,
-                                   Email = cu.Email,
-                                   FirmContactNo = cu.FirmContactNo,
-                                   OwnerName = cu.OwnerName,
-                                   IsActive = cu.IsActive.Value,
-                                   Status = cu.Status.HasValue ? cu.Status.Value : 0,
-                                   CreatedDate = cu.CreatedDate.Value,
-                                   OwnerContactNo = cu.OwnerContactNo,
-                                   BussinessCode = cu.BussinessCode
-                               }).OrderByDescending(x => x.CreatedDate).ToList();
+                         where !cu.IsDelete.Value && cu.CreatedDate >= dtStart && cu.CreatedDate <= dtEnd
+                         select new PurchaseDealerVM
+                         {
+                             Pk_Dealer_Id = cu.Pk_Dealer_Id,
+                             FirmName = cu.FirmName,
+                             FirmCity = cu.FirmCity,
+                             State = cu.State,
+                             Email = cu.Email,
+                             FirmContactNo = cu.FirmContactNo,
+                             OwnerName = cu.OwnerName,
+                             IsActive = cu.IsActive.Value,
+                             Status = cu.Status.HasValue ? cu.Status.Value : 0,
+                             CreatedDate = cu.CreatedDate.Value,
+                             OwnerContactNo = cu.OwnerContactNo,
+                             BussinessCode = cu.BussinessCode
+                         }).OrderByDescending(x => x.CreatedDate).ToList();
 
 
             StringBuilder sb = new StringBuilder();
-            string[] arrycolmns = new string[] { "BusinessCode", "Firm Name", "Firm Contact No", "Email", "City", "State","Owner Name","Owner Contact No", "Created Date", "IsActive" };
+            string[] arrycolmns = new string[] { "BusinessCode", "Firm Name", "Firm Contact No", "Email", "City", "State", "Owner Name", "Owner Contact No", "Created Date", "IsActive" };
             var workSheet = excel.Workbook.Worksheets.Add("Report");
             workSheet.Cells[1, 1].Style.Font.Bold = true;
             workSheet.Cells[1, 1].Style.Font.Size = 20;
@@ -508,36 +511,186 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
         public ActionResult Detail(long Id)
         {
-            PurchaseDealerVM objPurchaseDealerVM = (from cu in _db.tbl_PurchaseDealers                                            
-                                            where !cu.IsDelete.Value && cu.Pk_Dealer_Id == Id
-                                            select new PurchaseDealerVM
-                                            {
-                                                Pk_Dealer_Id = cu.Pk_Dealer_Id,
-                                                FirmName = cu.FirmName,
-                                                FirmAddress = cu.FirmAddress,
-                                                Email = cu.Email,
-                                                FirmCity = cu.FirmCity,
-                                                FirmGSTNo = cu.FirmGSTNo,
-                                                VisitingCardPhoto = cu.VisitingCardPhoto,
-                                                FirmContactNo = cu.FirmContactNo,
-                                                AlternateNo = cu.AlternateNo,
-                                                BusinessDetails = cu.BusinessDetails,
-                                                BankAcNumber = cu.BankAcNumber,
-                                                IFSCCode = cu.IFSCCode,
-                                                BankBranch = cu.BankBranch,
-                                                BankAcNumber2 = cu.BankAcNumber2,
-                                                BankBranch2 = cu.BankBranch2,
-                                                IFSCCode2 = cu.IFSCCode2,
-                                                OwnerName = cu.OwnerName,
-                                                OwnerContactNo = cu.OwnerContactNo,
-                                                Remark = cu.Remark,
-                                                BussinessCode = cu.BussinessCode,
-                                                Status = cu.Status.HasValue ? cu.Status.Value : 0,
-                                                State = cu.State,
-                                                IsActive = cu.IsActive.Value
-                                            }).FirstOrDefault();
+            PurchaseDealerVM objPurchaseDealerVM = (from cu in _db.tbl_PurchaseDealers
+                                                    where !cu.IsDelete.Value && cu.Pk_Dealer_Id == Id
+                                                    select new PurchaseDealerVM
+                                                    {
+                                                        Pk_Dealer_Id = cu.Pk_Dealer_Id,
+                                                        FirmName = cu.FirmName,
+                                                        FirmAddress = cu.FirmAddress,
+                                                        Email = cu.Email,
+                                                        FirmCity = cu.FirmCity,
+                                                        FirmGSTNo = cu.FirmGSTNo,
+                                                        VisitingCardPhoto = cu.VisitingCardPhoto,
+                                                        FirmContactNo = cu.FirmContactNo,
+                                                        AlternateNo = cu.AlternateNo,
+                                                        BusinessDetails = cu.BusinessDetails,
+                                                        BankAcNumber = cu.BankAcNumber,
+                                                        IFSCCode = cu.IFSCCode,
+                                                        BankBranch = cu.BankBranch,
+                                                        BankAcNumber2 = cu.BankAcNumber2,
+                                                        BankBranch2 = cu.BankBranch2,
+                                                        IFSCCode2 = cu.IFSCCode2,
+                                                        OwnerName = cu.OwnerName,
+                                                        OwnerContactNo = cu.OwnerContactNo,
+                                                        Remark = cu.Remark,
+                                                        BussinessCode = cu.BussinessCode,
+                                                        Status = cu.Status.HasValue ? cu.Status.Value : 0,
+                                                        State = cu.State,
+                                                        IsActive = cu.IsActive.Value
+                                                    }).FirstOrDefault();
 
-          
+
+            return View(objPurchaseDealerVM);
+        }
+
+        public ActionResult Add()
+        {
+            PurchaseDealerVM obj = new PurchaseDealerVM();
+
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+            }
+
+            return View(obj);
+        }
+
+        [HttpPost]
+        public ActionResult Add(PurchaseDealerVM objPurchaseDealerVM, HttpPostedFileBase VisitingCardPhotoFile)
+        {
+            try
+            {
+                IEnumerable<ModelError> allErrors = ModelState.Values.SelectMany(v => v.Errors);
+                if (ModelState.IsValid)
+                {
+
+                    string fileName = string.Empty;
+                    string path = Server.MapPath(UsersDocumentsDirectoryPath);
+
+                    bool folderExists = Directory.Exists(path);
+                    if (!folderExists)
+                        Directory.CreateDirectory(path);
+
+                    if (VisitingCardPhotoFile != null)
+                    {
+                        string ext = Path.GetExtension(VisitingCardPhotoFile.FileName);
+                        string f_name = Path.GetFileNameWithoutExtension(VisitingCardPhotoFile.FileName);
+
+                        fileName = Guid.NewGuid() + ext;
+                        VisitingCardPhotoFile.SaveAs(path + fileName);
+                    }
+
+                    tbl_PurchaseDealers objRequest = new tbl_PurchaseDealers();
+                    objRequest.FirmName = objPurchaseDealerVM.FirmName;
+                    objRequest.FirmAddress = objPurchaseDealerVM.FirmAddress;
+                    objRequest.FirmCity = objPurchaseDealerVM.FirmCity;
+                    objRequest.FirmGSTNo = objPurchaseDealerVM.FirmGSTNo;
+                    objRequest.VisitingCardPhoto = objPurchaseDealerVM.VisitingCardPhoto;
+                    objRequest.FirmContactNo = objPurchaseDealerVM.FirmContactNo;
+                    objRequest.AlternateNo = objPurchaseDealerVM.AlternateNo;
+                    objRequest.Email = objPurchaseDealerVM.Email;
+                    objRequest.BusinessDetails = objPurchaseDealerVM.BusinessDetails;
+                    objRequest.BankAcNumber = objPurchaseDealerVM.BankAcNumber;
+                    objRequest.IFSCCode = objPurchaseDealerVM.IFSCCode;
+                    objRequest.BankBranch = objPurchaseDealerVM.BankBranch;
+                    objRequest.BankAcNumber2 = objPurchaseDealerVM.BankAcNumber2;
+                    objRequest.IFSCCode2 = objPurchaseDealerVM.IFSCCode2;
+                    objRequest.BankBranch2 = objPurchaseDealerVM.BankBranch2;
+                    objRequest.OwnerName = objPurchaseDealerVM.OwnerName;
+                    objRequest.OwnerContactNo = objPurchaseDealerVM.OwnerContactNo;
+                    objRequest.Remark = objPurchaseDealerVM.Remark;
+                    objRequest.BussinessCode = "";
+                    objRequest.IsActive = true;
+                    objRequest.IsDelete = false;
+                    objRequest.State = objPurchaseDealerVM.State;
+                    objRequest.Status = 1;
+                    objRequest.CreatedBy = clsAdminSession.UserID;
+                    objRequest.CreatedDate = DateTime.Now;
+                    objRequest.ModifiedDate = DateTime.Now;
+                    objRequest.ModifiedBy = clsAdminSession.UserID;
+                    objRequest.Password = objPurchaseDealerVM.Password;
+                    objRequest.VisitingCardPhoto = fileName;
+                    _db.tbl_PurchaseDealers.Add(objRequest);
+                    _db.SaveChanges();
+
+                    if (objRequest.Pk_Dealer_Id.ToString().Length > 5)
+                    {
+                        objRequest.BussinessCode = "BC" + objRequest.Pk_Dealer_Id;
+                    }
+                    else
+                    {
+                        objRequest.BussinessCode = "BC" + objRequest.Pk_Dealer_Id.ToString("00000");
+                    }
+
+                    _db.SaveChanges();
+
+                    #region Send Email
+
+                    try
+                    {
+                        string ToEmail = objRequest.Email;
+                        tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
+                        string FromEmail = objGensetting.FromEmail;
+                        string Subject = "Your Registration As a Purchase Dealer Created - Shopping & Saving";
+                        string bodyhtml = "Thank You For Become A Valuable Dealer Of Shopping & Saving<br/>";
+                        bodyhtml += "Following Are The Login Details:<br/>";
+                        bodyhtml += "===============================<br/>";
+                        bodyhtml += "BusinessCode: " + objRequest.BussinessCode + "<br/>";
+                        bodyhtml += "Password: " + objRequest.Password + "<br/>";
+                        clsCommon.SendEmail(ToEmail, FromEmail, Subject, bodyhtml);
+                    }
+                    catch (Exception e)
+                    {
+                        string ErrorMessage = e.Message.ToString();
+                    }
+
+
+                    #endregion
+
+                    #region Send SMS
+
+                    using (WebClient webClient = new WebClient())
+                    {
+                        WebClient client = new WebClient();
+                        Random random = new Random();
+                        int num = random.Next(111566, 999999);
+                        string msg = "Thank You For Become A Valuable Purchase Dealer Of Shopping & Saving\n";
+                        msg += "Login Details:\n";
+                        msg += "BusinessCode:" + objRequest.BussinessCode + "\n";
+                        msg += "Password:" + objRequest.Password + "\n";
+                        //int SmsId = (int)SMSType.DistributorReqAccepted;
+                        //clsCommon objcm = new clsCommon();
+                        //string msg = objcm.GetSmsContent(SmsId);
+                        // msg = msg.Replace("{{MobileNo}}", objReq.MobileNo + "").Replace("{{Password}}", Password);
+                        msg = HttpUtility.UrlEncode(msg);
+                        //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objReq.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";                            
+                        string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", objRequest.FirmContactNo).Replace("--MSG--", msg);
+                        var json = webClient.DownloadString(url);
+                        if (json.Contains("invalidnumber"))
+                        {
+                            /// return "InvalidNumber";
+                        }
+                        else
+                        {
+                            //  return num.ToString();
+                        }
+
+                    }
+
+                    #endregion
+
+                    return RedirectToAction("Index");
+                }
+            }
+            catch (Exception ex)
+            {
+                string ErrorMessage = ex.Message.ToString();
+            }
+
             return View(objPurchaseDealerVM);
         }
 

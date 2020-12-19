@@ -71,6 +71,14 @@
                         <input type="button" value="Export To Excel" class="btn btn-info" onclick="exporttoexcel();" style="position: absolute; bottom: 0;" />
                     </div>
                 </div>
+
+                @if (IsSA || objPermission.BidItem >= (int)ModulePermission.Add)
+                {
+                    <div class="btn-popup pull-right">
+                        <button type="button" class="btn btn-primary" id="btnAddDealer">Add New Dealer</button>
+                    </div>
+                }
+
                 <table class="display" id="basic-1">
                     <thead>
                         <tr>
@@ -83,7 +91,7 @@
                             <th>Owner Name</th>
                             <th>Owner Contact No</th>
                             <th>City</th>
-                            <th>State</th>                            
+                            <th>State</th>
                             <th width="15%;">Active</th>
                             <th>Actions</th>
                         </tr>
@@ -111,9 +119,9 @@
                                     {
                                         <td><span class="badge badge-danger" style="cursor:pointer;" title="Click to Active" onclick="fnChangeStatus('@objusr.Pk_Dealer_Id','Active');">InActive</span></td>
                                     }
-                                <td>
-                                    <a href="/admin/purchasedealers/detail/@objusr.Pk_Dealer_Id"><i class="fa fa-eye font-success"></i></a>                                    
-                                </td>
+                                    <td>
+                                        <a href="/admin/purchasedealers/detail/@objusr.Pk_Dealer_Id"><i class="fa fa-eye font-success"></i></a>
+                                    </td>
                                 </tr>
                                 counter++;
                             }
@@ -192,7 +200,7 @@
        });
 
      $(document).ready(function () {
-     
+
     });
 
     function viewreport() {
@@ -200,8 +208,13 @@
     }
 
     function exporttoexcel() {
-        
+
         $("#export").attr("href", "/admin/PurchaseDealers/Export?StartDate=" + $("#StartDate").val() + "&EndDate=" + $("#EndDate").val());
         $("#export")[0].click();
     }
+
+    $(document).on("click", "#btnAddDealer", function () {
+        window.location.href = "/admin/purchasedealers/add";
+    });
+
 </script>

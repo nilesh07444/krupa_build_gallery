@@ -34,6 +34,6 @@ namespace KrupaBuildGallery.Helper
         public static string DefaultImagePath = "/Images/default_image.jpg";
         public static string HappyCustomerDirectoryPath = "/Images/HappyCustomerMedia/";
         public static string AdvertiseDirectoryPath = "/Images/AdvertiseMedia/";
-
+        public static string UsersDocumentsDirectoryPath = "/Images/UsersDocuments/";
     }
 }

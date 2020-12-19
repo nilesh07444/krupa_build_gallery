@@ -4320,6 +4320,7 @@
     <Content Include="Areas\Admin\Views\BidItemUnitType\Index.cshtml" />
     <Content Include="Areas\Admin\Views\BidItemUnitType\Add.cshtml" />
     <Content Include="Areas\Admin\Views\BidItemUnitType\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\PurchaseDealers\Add.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />
