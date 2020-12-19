@@ -387,7 +387,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                Unittype = unityp.UnitTypeName,
                                BidStatus = cu.BidStatus.Value,
                                BidDate = cu.BidDate.Value,
-                               BidNumber = "BD/"+cu.BidYear+"/"+cu.BidNo
+                               BidNum = cu.BidNo.Value,
+                               BidYear = cu.BidYear
                            }).OrderByDescending(x => x.BidDate).ToList();
                 List<tbl_BidDealers> lstDelrBid = _db.tbl_BidDealers.Where(o => o.FK_DealerId == DealerId).ToList();
                 if (lstBids != null && lstBids.Count() > 0)
@@ -728,7 +729,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                     Unittype = unityp.UnitTypeName,
                                     BidStatus = cu.BidStatus.Value,
                                     BidDate = cu.BidDate.Value,
-                                    BidNumber = "BD/" + cu.BidYear + "/" + cu.BidNo
+                                    BidNum = cu.BidNo.Value,
+                                    BidYear = cu.BidYear
                                 }).OrderByDescending(x => x.BidDate).FirstOrDefault();
                 objBid.Status = GetGenBidStatus(objBid.BidStatus);
                 objBid.BidDateStr = objBid.BidDate.ToString("dd/MM/yyyy");

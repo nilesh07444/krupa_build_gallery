@@ -38,7 +38,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                Unittype = unityp.UnitTypeName,
                                BidStatus = cu.BidStatus.Value,
                                BidDate = cu.BidDate.Value,
-                               BidNumber = "BD/"+cu.BidYear+"/"+cu.BidNo
+                               BidNum = cu.BidNo.Value,
+                               BidYear = cu.BidYear                               
                            }).OrderByDescending(x => x.BidDate).ToList();
                 if (lstBids != null && lstBids.Count() > 0)
                 {
@@ -449,10 +450,12 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                          Unittype = unityp.UnitTypeName,
                                          BidStatus = cu.BidStatus.Value,
                                          BidDate = cu.BidDate.Value,
-                                         BidNumber = "BD/" + cu.BidYear + "/" + cu.BidNo
+                                         BidNum = cu.BidNo.Value,
+                                         BidYear = cu.BidYear
                                      }).OrderByDescending(x => x.BidDate).FirstOrDefault();
+                    string BidNumber = "BD/" + objBids.BidYear + "/" + objBids.BidNum;
                     if (IsApprove == "false")
-                    {
+                    {                       
                         objBid.BidStatus = 2; //   0 For Pending  1 For Accept 2 For Reject
                         objBid.RejectReason = Reason;
                         _db.SaveChanges();
@@ -462,7 +465,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             string ToEmail = objDeler.Email;
                             tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
                             string FromEmail = objGensetting.FromEmail;
-                            string Subject = "Your Bid " + objBids.BidNumber + " for Item - " + objBids.ItemName + " Rejected - Shoping Saving";
+                            string Subject = "Your Bid " + BidNumber + " for Item - " + objBids.ItemName + " Rejected - Shoping Saving";
                             string bodyhtml = "Following is the reason<br/>";
                             bodyhtml += "===============================<br/>";
                             bodyhtml += Reason;
@@ -478,7 +481,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             WebClient client = new WebClient();
                             Random random = new Random();
                             int num = random.Next(111566, 999999);
-                            string msg = "Your Bid " + objBids.BidNumber + " for Item - " + objBids.ItemName + " Rejected - Shoping Saving\n";
+                            string msg = "Your Bid " + BidNumber + " for Item - " + objBids.ItemName + " Rejected - Shoping Saving\n";
                             msg += "Following Is The Reason:\n";
                             msg += Reason;
                             //int SmsId = (int)SMSType.DistributorReqRejected;
@@ -511,8 +514,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             string ToEmail = objDeler.Email;
                             tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
                             string FromEmail = objGensetting.FromEmail;
-                            string Subject = "Your Bid " + objBids.BidNumber + " for Item:" + objBids.ItemName +" Accepted - Shopping & Saving";
-                            string bodyhtml = "Your Bid " + objBids.BidNumber + " for Item:" + objBids.ItemName + " Accepted<br/>";
+                            string Subject = "Your Bid " + BidNumber + " for Item:" + objBids.ItemName +" Accepted - Shopping & Saving";
+                            string bodyhtml = "Your Bid " + BidNumber + " for Item:" + objBids.ItemName + " Accepted<br/>";
                             bodyhtml += "We will contact you asap:<br/>";                      
                             bodyhtml += "Shopping & Saving <br/>";
                             clsCommon.SendEmail(ToEmail, FromEmail, Subject, bodyhtml);
@@ -625,9 +628,10 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                                      Unittype = unityp.UnitTypeName,
                                                      BidStatus = cu.BidStatus.Value,
                                                      BidDate = cu.BidDate.Value,
-                                                     BidNumber = "BD/"+cu.BidYear+"/"+cu.BidNo
-                                                     
+                                                     BidNum = cu.BidNo.Value,
+                                                     BidYear = cu.BidYear
                                                  }).OrderByDescending(x => x.BidDate).FirstOrDefault();
+                                string BidNumber = "BD/" + objBids.BidYear + "/" + objBids.BidNum;
                                 if (IsApprove == "false")
                                 {
                                     objBid.BidStatus = 2; //   0 For Pending  1 For Accept 2 For Reject
@@ -639,7 +643,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                         string ToEmail = objDeler.Email;
                                         tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
                                         string FromEmail = objGensetting.FromEmail;
-                                        string Subject = "Your Bid "+ objBids.BidNumber+" for Item - " + objBids.ItemName + " Rejected - Shoping Saving";
+                                        string Subject = "Your Bid "+ BidNumber + " for Item - " + objBids.ItemName + " Rejected - Shoping Saving";
                                         string bodyhtml = "Following is the reason<br/>";
                                         bodyhtml += "===============================<br/>";
                                         bodyhtml += Reason;
@@ -655,7 +659,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                         WebClient client = new WebClient();
                                         Random random = new Random();
                                         int num = random.Next(111566, 999999);
-                                        string msg = "Your Bid " + objBids.BidNumber + " for Item - " + objBids.ItemName + " Rejected - Shoping Saving\n";
+                                        string msg = "Your Bid " + BidNumber + " for Item - " + objBids.ItemName + " Rejected - Shoping Saving\n";
                                         msg += "Following Is The Reason:\n";
                                         msg += Reason;
                                         //int SmsId = (int)SMSType.DistributorReqRejected;
@@ -688,8 +692,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                         string ToEmail = objDeler.Email;
                                         tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
                                         string FromEmail = objGensetting.FromEmail;
-                                        string Subject = "Your Bid " + objBids.BidNumber + " for Item:" + objBids.ItemName + " Accepted - Shopping & Saving";
-                                        string bodyhtml = "Your Bid " + objBids.BidNumber + " for Item:" + objBids.ItemName + " Accepted<br/>";
+                                        string Subject = "Your Bid " + BidNumber + " for Item:" + objBids.ItemName + " Accepted - Shopping & Saving";
+                                        string bodyhtml = "Your Bid " + BidNumber + " for Item:" + objBids.ItemName + " Accepted<br/>";
                                         bodyhtml += "We will contact you asap:<br/>";
                                         bodyhtml += "Shopping & Saving <br/>";
                                         clsCommon.SendEmail(ToEmail, FromEmail, Subject, bodyhtml);
