@@ -1,0 +1,122 @@
+﻿
+@{
+    ViewBag.Title = "Bid Report By Item";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    List<SelectListItem> lstItems = ViewData["ItemList"] as List<SelectListItem>;
+}
+
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="page-header-left">
+                        <h3>
+                            Bid Report Itemwise
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item active">Bid Report Itemwise</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h5>Bid Report Itemwise</h5>
+            </div>
+            <div class="card-body vendor-table">
+                <h3>Filter:</h3>
+                <div class="row" style="margin-top:25px;border-bottom: 2px solid #f8f8f9;padding-bottom: 25px;margin-bottom: 10px;">
+                    <div class="col-sm-3">
+                        <label>Bid Items</label>
+                        <select id="Itemsid" class="form-control">
+                            <option value="-1">All</option>
+                            @if (lstItems != null && lstItems.Count() > 0)
+                            {
+                                foreach (var objc in lstItems)
+                                {
+                                    <option value="@objc.Value">@objc.Text</option>
+                                }
+                            }
+                        </select>
+                    </div>                  
+                    <div class="col-sm-3">
+                        <label>Start Date *</label>
+                        <input class="form-control col-md-8 clsDatePicker text-box single-line valid" id="StartDate" name="StartDate" placeholder="DD/MM/YYY" readonly="readonly" type="text" value="">
+                    </div>
+                    <div class="col-sm-3">
+                        <label>End Date *</label>
+                        <input class="form-control col-md-8 clsDatePicker text-box single-line valid" id="EndDate" name="EndDate" placeholder="DD/MM/YYY" readonly="readonly" type="text" value="">
+                    </div>
+                </div>
+                <div class="row" style="margin-top:25px;border-bottom: 2px solid #f8f8f9;padding-bottom: 25px;margin-bottom: 10px;">
+                    
+                    <div class="col-sm-2">
+                        <input type="button" value="View Report" class="btn btn-info" onclick="viewreport();" style="position: absolute; bottom: 0;" />
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="button" value="Export To Excel" class="btn btn-info" onclick="exporttoexcel();" style="position: absolute; bottom: 0;" />
+                    </div>
+                </div>
+                <a href="" id="export" target="_blank" style="display:none;">export</a>
+
+                <div id="dvreport">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+</div>
+
+<script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script>
+
+    function viewreport() {        
+
+        if ($("#StartDate").val() == "") {
+            alert("Please select Start Date");
+            return false;
+        }
+
+        if ($("#EndDate").val() == "") {
+            alert("Please select End Date");
+            return false;
+        }
+        StartLoading();
+        $("#dvreport").load("/admin/PurchaseBid/GetBidReportItemWise?ItemId=" + $("#Itemsid").val() + "&StartDate=" + $("#StartDate").val() + "&EndDate=" + $("#EndDate").val(), function () {
+            StopLoading();
+        });
+
+    }
+
+    function exporttoexcel() {
+     
+
+        if ($("#StartDate").val() == "") {
+            alert("Please select Start Date");
+            return false;
+        }
+
+        if ($("#EndDate").val() == "") {
+            alert("Please select End Date");
+            return false;
+        }
+
+        $("#export").attr("href", "/admin/PurchaseBid/ExportBidReportItemWise?ItemId=" + $("#Itemsid").val() + "&StartDate=" + $("#StartDate").val() + "&EndDate=" + $("#EndDate").val());
+        $("#export")[0].click();
+    }
+</script>

@@ -1,0 +1,100 @@
+﻿@model List<KrupaBuildGallery.BidReportItemsVM>
+@{
+    ViewBag.Title = "Bid Report Itemwise";
+
+}
+<style>
+    #tblstk {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+        #tblstk td, #customers th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #tblstk tr:nth-child(even) {
+          /*  background-color: #f2f2f2;*/
+        }
+
+        #tblstk tr:hover {
+            background-color: #ddd;
+        }
+
+        #tblstk th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #4CAF50;
+            color: white;
+        }
+</style>
+
+<table style="width:100%;border-collapse:collapse;overflow:auto" id="tblstk">
+    <tr>
+        <th>Item Name</th>
+        <th>Bid Number</th>
+        <th>Bid Date</th>
+        <th>Qty</th>
+        <th>BusinessCode</th>
+        <th>Firm Name</th>
+        <th>Contact Number</th>
+        <th>Bid Receive Date</th>
+        <th>Bid Price</th>
+        <th>Bid Status</th>
+        <th>Bid Valid Days</th>
+    </tr>
+    @if (Model != null && Model.Count() > 0)
+    {
+        foreach (var obj in Model)
+        {
+            <tr style="font-weight:bold;background-color: #eeeef9;" data-tr="Itm">
+                <td>@obj.ItemName</td>
+            </tr>
+
+            if (obj.lstBids != null && obj.lstBids.Count() > 0)
+            {
+                foreach (var objBd in obj.lstBids)
+                {
+                    string BidNo = "BD/" + objBd.BidYear + "/" + objBd.BidNum;
+                    <tr style="font-weight:bold;background-color:#ddd;">
+                        <td></td>
+                        <td>@BidNo</td>
+                        <td>@objBd.BidDate.ToString("dd/MM/yyyy")</td>
+                        <td>@objBd.Qty @objBd.Unittype</td>
+                        <td></td>
+                        <td colspan="6"></td>
+                    </tr>
+                    foreach (var objDel in objBd.lstBidDealer)
+                    {
+                        <tr style="font-weight:bold;">
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>@objDel.BusinessCode</td>
+                            <td>@objDel.FirmName</td>
+                            <td>@objDel.OwnerContactNo</td>
+                            <td>@objDel.BidSentDate.ToString("dd/MM/yyyy")</td>
+                            <td>@objDel.Price</td>
+                            <td>@objDel.Status</td>
+                            <td>@objDel.BidValidDays</td>
+                        </tr>
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        <tr>
+            <td colspan="6">
+                No Bid Data....
+            </td>
+        </tr>
+    }
+
+
+</table>
+
