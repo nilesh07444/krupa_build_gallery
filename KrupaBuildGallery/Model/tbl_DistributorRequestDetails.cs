@@ -41,5 +41,7 @@ namespace KrupaBuildGallery.Model
         public Nullable<int> Status { get; set; }
         public string Reason { get; set; }
         public string CancellationChequePhoto { get; set; }
+        public string AddharPhoto2 { get; set; }
+        public string ShopPhoto2 { get; set; }
     }
 }

@@ -129,6 +129,9 @@
           <Property Name="Fk_Item_Id" Type="bigint" />
           <Property Name="RejectReason" Type="nvarchar" MaxLength="350" />
           <Property Name="StatusDate" Type="datetime" />
+          <Property Name="BidPhoto" Type="nvarchar" MaxLength="300" />
+          <Property Name="BidPhoto2" Type="nvarchar" MaxLength="300" />
+          <Property Name="BidPhoto3" Type="nvarchar" MaxLength="300" />
         </EntityType>
         <EntityType Name="tbl_BidItemUnitTypes">
           <Key>
@@ -470,6 +473,8 @@
           <Property Name="Status" Type="int" />
           <Property Name="Reason" Type="nvarchar" MaxLength="800" />
           <Property Name="CancellationChequePhoto" Type="nvarchar(max)" />
+          <Property Name="AddharPhoto2" Type="nvarchar" MaxLength="450" />
+          <Property Name="ShopPhoto2" Type="nvarchar" MaxLength="450" />
         </EntityType>
         <EntityType Name="tbl_DynamicContent">
           <Key>
@@ -1050,6 +1055,8 @@
           <Property Name="CreatedBy" Type="bigint" />
           <Property Name="IsDelete" Type="bit" />
           <Property Name="State" Type="nvarchar" MaxLength="250" />
+          <Property Name="Pincode" Type="nvarchar" MaxLength="10" />
+          <Property Name="VisitingCardPhoto2" Type="nvarchar" MaxLength="250" />
         </EntityType>
         <EntityType Name="tbl_PurchaseDealersRequest">
           <Key>
@@ -1085,6 +1092,8 @@
           <Property Name="CreatedBy" Type="bigint" />
           <Property Name="IsDelete" Type="bit" />
           <Property Name="State" Type="nvarchar" MaxLength="250" />
+          <Property Name="Pincode" Type="nvarchar" MaxLength="10" />
+          <Property Name="VisitingCardPhoto2" Type="nvarchar" MaxLength="250" />
         </EntityType>
         <EntityType Name="tbl_ReferenceMaster">
           <Key>
@@ -1495,6 +1504,8 @@
           <Property Name="Status" Type="Int32" />
           <Property Name="Reason" Type="String" MaxLength="800" FixedLength="false" Unicode="true" />
           <Property Name="CancellationChequePhoto" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="AddharPhoto2" Type="String" MaxLength="450" FixedLength="false" Unicode="true" />
+          <Property Name="ShopPhoto2" Type="String" MaxLength="450" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_Godown">
           <Key>
@@ -2549,6 +2560,9 @@
           <Property Name="Fk_Item_Id" Type="Int64" />
           <Property Name="RejectReason" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
           <Property Name="StatusDate" Type="DateTime" Precision="3" />
+          <Property Name="BidPhoto" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="BidPhoto2" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="BidPhoto3" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_Bids">
           <Key>
@@ -2620,6 +2634,8 @@
           <Property Name="CreatedBy" Type="Int64" />
           <Property Name="IsDelete" Type="Boolean" />
           <Property Name="State" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Pincode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="VisitingCardPhoto2" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_BidItemUnitTypes">
           <Key>
@@ -2681,6 +2697,8 @@
           <Property Name="CreatedBy" Type="Int64" />
           <Property Name="IsDelete" Type="Boolean" />
           <Property Name="State" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Pincode" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="VisitingCardPhoto2" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -2831,6 +2849,8 @@
           <EntitySetMapping Name="tbl_DistributorRequestDetails">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_DistributorRequestDetails">
               <MappingFragment StoreEntitySet="tbl_DistributorRequestDetails">
+                <ScalarProperty Name="ShopPhoto2" ColumnName="ShopPhoto2" />
+                <ScalarProperty Name="AddharPhoto2" ColumnName="AddharPhoto2" />
                 <ScalarProperty Name="CancellationChequePhoto" ColumnName="CancellationChequePhoto" />
                 <ScalarProperty Name="Reason" ColumnName="Reason" />
                 <ScalarProperty Name="Status" ColumnName="Status" />
@@ -3841,6 +3861,9 @@
           <EntitySetMapping Name="tbl_BidDealers">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_BidDealers">
               <MappingFragment StoreEntitySet="tbl_BidDealers">
+                <ScalarProperty Name="BidPhoto3" ColumnName="BidPhoto3" />
+                <ScalarProperty Name="BidPhoto2" ColumnName="BidPhoto2" />
+                <ScalarProperty Name="BidPhoto" ColumnName="BidPhoto" />
                 <ScalarProperty Name="StatusDate" ColumnName="StatusDate" />
                 <ScalarProperty Name="RejectReason" ColumnName="RejectReason" />
                 <ScalarProperty Name="Fk_Item_Id" ColumnName="Fk_Item_Id" />
@@ -3904,6 +3927,8 @@
           <EntitySetMapping Name="tbl_PurchaseDealers">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_PurchaseDealers">
               <MappingFragment StoreEntitySet="tbl_PurchaseDealers">
+                <ScalarProperty Name="VisitingCardPhoto2" ColumnName="VisitingCardPhoto2" />
+                <ScalarProperty Name="Pincode" ColumnName="Pincode" />
                 <ScalarProperty Name="State" ColumnName="State" />
                 <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
@@ -3972,6 +3997,8 @@
           <EntitySetMapping Name="tbl_PurchaseDealersRequest">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_PurchaseDealersRequest">
               <MappingFragment StoreEntitySet="tbl_PurchaseDealersRequest">
+                <ScalarProperty Name="VisitingCardPhoto2" ColumnName="VisitingCardPhoto2" />
+                <ScalarProperty Name="Pincode" ColumnName="Pincode" />
                 <ScalarProperty Name="State" ColumnName="State" />
                 <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />

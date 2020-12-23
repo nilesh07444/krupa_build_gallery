@@ -83,7 +83,9 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 objRequest.FirmAddress = objPurchaseDealerVM.FirmAddress;
                 objRequest.FirmCity = objPurchaseDealerVM.FirmCity;
                 objRequest.FirmGSTNo = objPurchaseDealerVM.FirmGSTNo;
+                objRequest.Pincode = objPurchaseDealerVM.Pincode;
                 objRequest.VisitingCardPhoto = objPurchaseDealerVM.VisitingCardPhoto;
+                objRequest.VisitingCardPhoto2 = objPurchaseDealerVM.VisitingCardPhoto2;
                 objRequest.FirmContactNo = objPurchaseDealerVM.FirmContactNo;
                 objRequest.AlternateNo = objPurchaseDealerVM.AlternateNo;
                 objRequest.Email = objPurchaseDealerVM.Email;
@@ -526,8 +528,11 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 obj.PickupCityPincode = objBidDVM.PickupCityPincode;
                 obj.BidValidDays = objBidDVM.BidValidDays;                
                 obj.BidModifiedDate = DateTime.Now;
-                
-                if(obj == null || obj.Pk_BidDealers == 0)
+                obj.Remarks = objBidDVM.Remarks;
+                obj.BidPhoto = objBidDVM.BidImage;     
+                obj.BidPhoto2 = objBidDVM.BidImage2;
+                obj.BidPhoto3 = objBidDVM.BidImage3;
+                if (obj == null || obj.Pk_BidDealers == 0)
                 {
                     _db.tbl_BidDealers.Add(obj);
                 }                
@@ -587,7 +592,10 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                                   PickupCityPincode = cu.PickupCityPincode,
                                                   Remarks = cu.Remarks,
                                                   RejectReason = cu.RejectReason,
-                                                  BidId = cu.Fk_BidId.Value
+                                                  BidId = cu.Fk_BidId.Value,
+                                                  BidImage = cu.BidPhoto,
+                                                  BidImage2 = cu.BidPhoto2,
+                                                  BidImage3 = cu.BidPhoto3
                                               }).FirstOrDefault();
                 if(objBidDealerVM == null)
                 {
@@ -766,7 +774,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                                         BidSentDate = cu.BidSendDate.Value,
                                                         MinimumQtytoBuy = cu.MinimumQtyToBuy.Value,
                                                         BidStatus = cu.BidStatus.Value
-                                                    }).OrderByDescending(x => x.BidSentDate).ToList();
+                                                    }).OrderBy(x => x.Price).ToList();
                 if (lstBidDealerVM != null && lstBidDealerVM.Count() > 0)
                 {
                     lstBidDealerVM.ForEach(x => x.Status = GetGenBidStatus(x.BidStatus));
@@ -869,6 +877,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                                  {
                                                      BidId = cu.BidId,
                                                      ItemId = cu.ItemId,
+                                                     BidStatus = cu.BidStatus,
+                                                     BidDate = cu.BidDate
                                                  }).OrderByDescending(x => x.BidDate).ToList();
                         if(lstBidsN1 != null && lstBidsN1.Count() > 0)
                         {

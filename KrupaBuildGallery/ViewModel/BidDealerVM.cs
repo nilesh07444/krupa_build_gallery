@@ -32,5 +32,8 @@ namespace KrupaBuildGallery
         public string OwnerContactNo { get; set; }
         public List<BidTermsVM> lstTermsCondi { get; set; }
         public List<BidTermsVM> lstPaymentTerms { get; set; }
+        public string BidImage { get; set; }
+        public string BidImage2 { get; set; }
+        public string BidImage3 { get; set; }
     }
 }

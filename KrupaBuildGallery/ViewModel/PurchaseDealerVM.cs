@@ -79,5 +79,8 @@ namespace KrupaBuildGallery
         public DateTime CreatedDate { get; set; }
         [Display(Name = "Visiting Card Photo")]
         public HttpPostedFileBase VisitingCardPhotoFile { get; set; }
+
+        public string VisitingCardPhoto2 { get; set; }
+        public string Pincode { get; set; }
     }
 }
