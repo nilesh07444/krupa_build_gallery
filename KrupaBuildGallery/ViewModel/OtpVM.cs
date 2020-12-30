@@ -24,5 +24,7 @@ namespace KrupaBuildGallery
         public string OtpEmail { get; set; }
 
         public string BusinessCode { get; set; }
+
+        public string Password { get; set; }
     }
 }

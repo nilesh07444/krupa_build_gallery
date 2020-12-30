@@ -800,10 +800,11 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             try
             {
                 string BusinessCode = objOtpVM.BusinessCode;
-                tbl_PurchaseDealers objadminusr = _db.tbl_PurchaseDealers.Where(o => (o.BussinessCode == BusinessCode) && o.IsActive.Value == true).FirstOrDefault();
+                string Password = objOtpVM.Password;
+                tbl_PurchaseDealers objadminusr = _db.tbl_PurchaseDealers.Where(o => (o.BussinessCode == BusinessCode && (Password == "" || o.Password == Password)) && o.IsActive.Value == true).FirstOrDefault();
                 if (objadminusr == null)
                 {
-                    response.AddError("Your Account is not exist.Please Contact to support");
+                    response.AddError("BusinessCode or Password Wrong.Please Contact to support");
                 }
                 else
                 {
