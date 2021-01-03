@@ -28,6 +28,12 @@ namespace KrupaBuildGallery
         public string Status { get; set; }
         public long BidId { get; set; }
         public string RejectReason { get; set; }
-        public DateTime StatusDate { get; set; }        
+        public DateTime StatusDate { get; set; }   
+        public string OwnerContactNo { get; set; }
+        public List<BidTermsVM> lstTermsCondi { get; set; }
+        public List<BidTermsVM> lstPaymentTerms { get; set; }
+        public string BidImage { get; set; }
+        public string BidImage2 { get; set; }
+        public string BidImage3 { get; set; }
     }
 }

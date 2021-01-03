@@ -32,5 +32,8 @@ namespace KrupaBuildGallery.Model
         public Nullable<long> Fk_Item_Id { get; set; }
         public string RejectReason { get; set; }
         public Nullable<System.DateTime> StatusDate { get; set; }
+        public string BidPhoto { get; set; }
+        public string BidPhoto2 { get; set; }
+        public string BidPhoto3 { get; set; }
     }
 }

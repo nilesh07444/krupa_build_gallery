@@ -131,6 +131,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                     OwnerName = cu.OwnerName,
                                     OwnerContactNo = cu.OwnerContactNo,
                                     Remark = cu.Remark,
+                                    VisitingCardPhoto2 = cu.VisitingCardPhoto2,
+                                    Pincode = cu.Pincode,
                                     BussinessCode = cu.BussinessCode,
                                     Status = cu.Status.HasValue ? cu.Status.Value : 0,
                                     State = cu.State,
@@ -228,6 +230,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         objRequest.BussinessCode = "";
                         objRequest.Password = Password;
                         objRequest.IsDelete = false;
+                        objRequest.VisitingCardPhoto2 = objReq.VisitingCardPhoto2;
+                        objRequest.Pincode = objReq.Pincode;
                         objRequest.State = objReq.State;
                         objRequest.Status = 1;
                         objRequest.IsActive = true;
@@ -536,6 +540,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                                         IFSCCode2 = cu.IFSCCode2,
                                                         OwnerName = cu.OwnerName,
                                                         OwnerContactNo = cu.OwnerContactNo,
+                                                        Pincode = cu.Pincode,
+                                                        VisitingCardPhoto2 = cu.VisitingCardPhoto2,
                                                         Remark = cu.Remark,
                                                         BussinessCode = cu.BussinessCode,
                                                         Status = cu.Status.HasValue ? cu.Status.Value : 0,

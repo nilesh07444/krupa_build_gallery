@@ -32,6 +32,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                       DealerId = s.Fk_DealerId,
                                       Suggestion = s.Suggestion,
                                       DealerName = d.OwnerName,
+                                      OwnerNumber = d.OwnerContactNo,
                                       PicFile = s.PicFile,
                                       SuggestionDate = s.SuggestionDate
                                   }).OrderByDescending(x => x.SuggestionDate).ToList();
@@ -57,6 +58,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                       DealerId = s.Fk_DealerId,
                                       Suggestion = s.Suggestion,
                                       DealerName = d.OwnerName,
+                                      OwnerNumber = d.OwnerContactNo,
                                       PicFile = s.PicFile,
                                       SuggestionDate = s.SuggestionDate
                                   }).Where(x => x.SuggetionId == Id).FirstOrDefault();

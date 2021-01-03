@@ -83,7 +83,9 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 objRequest.FirmAddress = objPurchaseDealerVM.FirmAddress;
                 objRequest.FirmCity = objPurchaseDealerVM.FirmCity;
                 objRequest.FirmGSTNo = objPurchaseDealerVM.FirmGSTNo;
+                objRequest.Pincode = objPurchaseDealerVM.Pincode;
                 objRequest.VisitingCardPhoto = objPurchaseDealerVM.VisitingCardPhoto;
+                objRequest.VisitingCardPhoto2 = objPurchaseDealerVM.VisitingCardPhoto2;
                 objRequest.FirmContactNo = objPurchaseDealerVM.FirmContactNo;
                 objRequest.AlternateNo = objPurchaseDealerVM.AlternateNo;
                 objRequest.Email = objPurchaseDealerVM.Email;
@@ -407,7 +409,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                    BidStatus = cu.BidStatus,
                                    BidDate = cu.BidDate,
                                    DelearBidId = 0,
-                                   BidNumber = cu.BidNumber
+                                   BidNum = cu.BidNum,
+                                   BidYear = cu.BidYear
                                }).OrderByDescending(x => x.BidDate).ToList();
 
                     List<BidVM> lstBidsN1 = (from cu in lstBids
@@ -422,7 +425,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                                 BidStatus = cu.BidStatus,
                                                 BidDate = cu.BidDate,
                                                 DelearBidId = 1,
-                                                BidNumber = cu.BidNumber
+                                                BidNum = cu.BidNum,
+                                                BidYear = cu.BidYear
                                             }).OrderByDescending(x => x.BidDate).ToList();
 
                     lstBids = lstBidsN.Union(lstBidsN1).ToList();
@@ -524,8 +528,11 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 obj.PickupCityPincode = objBidDVM.PickupCityPincode;
                 obj.BidValidDays = objBidDVM.BidValidDays;                
                 obj.BidModifiedDate = DateTime.Now;
-                
-                if(obj == null || obj.Pk_BidDealers == 0)
+                obj.Remarks = objBidDVM.Remarks;
+                obj.BidPhoto = objBidDVM.BidImage;     
+                obj.BidPhoto2 = objBidDVM.BidImage2;
+                obj.BidPhoto3 = objBidDVM.BidImage3;
+                if (obj == null || obj.Pk_BidDealers == 0)
                 {
                     _db.tbl_BidDealers.Add(obj);
                 }                
@@ -585,24 +592,41 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                                   PickupCityPincode = cu.PickupCityPincode,
                                                   Remarks = cu.Remarks,
                                                   RejectReason = cu.RejectReason,
-                                                  BidId = cu.Fk_BidId.Value
+                                                  BidId = cu.Fk_BidId.Value,
+                                                  BidImage = cu.BidPhoto,
+                                                  BidImage2 = cu.BidPhoto2,
+                                                  BidImage3 = cu.BidPhoto3
                                               }).FirstOrDefault();
                 if(objBidDealerVM == null)
                 {
                     objBidDealerVM = new BidDealerVM();
                     objBidDealerVM.TermsCondition = "";
-                    objBidDealerVM.PaymentTerms = "";
-                    var objDelerTerms = _db.tbl_DealerTerms.Where(o => o.Fk_Dealer_Id == DealerId && o.TermsType == 1).FirstOrDefault();
-                    if(objDelerTerms != null)
-                    {
-                        objBidDealerVM.TermsCondition = objDelerTerms.Terms;
-                    }
-                    var objDelerPaymentTerms = _db.tbl_DealerTerms.Where(o => o.Fk_Dealer_Id == DealerId && o.TermsType == 2).FirstOrDefault();
-                    if (objDelerPaymentTerms != null)
-                    {
-                        objBidDealerVM.PaymentTerms = objDelerPaymentTerms.Terms;
-                    }
+                    objBidDealerVM.PaymentTerms = "";                   
                 }
+
+                List<BidTermsVM> lstBidTermsCondVM = (from crt in _db.tbl_DealerTerms
+                                                  where crt.Fk_Dealer_Id == DealerId && crt.TermsType.Value == 1
+                                                  select new BidTermsVM
+                                                  {
+                                                      DealerId = DealerId,
+                                                      Terms = crt.Terms,
+                                                      TermsType = crt.TermsType.Value,
+                                                      TermsTitle = crt.TermsTitle,
+                                                      Pk_DelearTerms = crt.Pk_DealerTerms_Id
+                                                  }).ToList();
+                List<BidTermsVM> lstBidPaymentTermVM = (from crt in _db.tbl_DealerTerms
+                                                      where crt.Fk_Dealer_Id == DealerId && crt.TermsType.Value == 2
+                                                      select new BidTermsVM
+                                                      {
+                                                          DealerId = DealerId,
+                                                          Terms = crt.Terms,
+                                                          TermsType = crt.TermsType.Value,
+                                                          TermsTitle = crt.TermsTitle,
+                                                          Pk_DelearTerms = crt.Pk_DealerTerms_Id
+                                                      }).ToList();
+                objBidDealerVM.lstPaymentTerms = lstBidPaymentTermVM;
+                objBidDealerVM.lstTermsCondi = lstBidTermsCondVM;              
+
                 response.Data = objBidDealerVM;
             }
             catch (Exception ex)
@@ -750,7 +774,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                                         BidSentDate = cu.BidSendDate.Value,
                                                         MinimumQtytoBuy = cu.MinimumQtyToBuy.Value,
                                                         BidStatus = cu.BidStatus.Value
-                                                    }).OrderByDescending(x => x.BidSentDate).ToList();
+                                                    }).OrderBy(x => x.Price).ToList();
                 if (lstBidDealerVM != null && lstBidDealerVM.Count() > 0)
                 {
                     lstBidDealerVM.ForEach(x => x.Status = GetGenBidStatus(x.BidStatus));
@@ -776,10 +800,11 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             try
             {
                 string BusinessCode = objOtpVM.BusinessCode;
-                tbl_PurchaseDealers objadminusr = _db.tbl_PurchaseDealers.Where(o => (o.BussinessCode == BusinessCode) && o.IsActive.Value == true).FirstOrDefault();
+                string Password = objOtpVM.Password;
+                tbl_PurchaseDealers objadminusr = _db.tbl_PurchaseDealers.Where(o => (o.BussinessCode == BusinessCode && (Password == "" || o.Password == Password)) && o.IsActive.Value == true).FirstOrDefault();
                 if (objadminusr == null)
                 {
-                    response.AddError("Your Account is not exist.Please Contact to support");
+                    response.AddError("BusinessCode or Password Wrong.Please Contact to support");
                 }
                 else
                 {
@@ -853,6 +878,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                                  {
                                                      BidId = cu.BidId,
                                                      ItemId = cu.ItemId,
+                                                     BidStatus = cu.BidStatus,
+                                                     BidDate = cu.BidDate
                                                  }).OrderByDescending(x => x.BidDate).ToList();
                         if(lstBidsN1 != null && lstBidsN1.Count() > 0)
                         {
@@ -1092,6 +1119,10 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     obj.TermsType = objTerms.TermsType;
                     obj.Fk_Dealer_Id = objTerms.DealerId;
                     obj.TermsTitle = objTerms.TermsTitle;
+                    if(obj.Pk_DealerTerms_Id == 0)
+                    {
+                        _db.tbl_DealerTerms.Add(obj);
+                    }
                     _db.SaveChanges();
                 }
                 if (IsValid)

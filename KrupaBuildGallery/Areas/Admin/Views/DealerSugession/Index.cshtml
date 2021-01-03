@@ -58,7 +58,8 @@
                             <th style="width:50px !important;"></th>
                             <th>Suggesion Date</th>
                             <th>Dealer Name</th>
-                            <th>Suggestion</th> 
+                            <th>Dealer Owner Mobile</th>
+                            <th>Suggestion</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -71,6 +72,7 @@
                                     <td style="width:50px !important;">@counter.</td>
                                     <td>@obj.SuggestionDate.ToString("dd/MM/yyyy")</td>
                                     <td>@obj.DealerName</td>
+                                    <td>@obj.OwnerNumber</td>
                                     <td>@obj.Suggestion</td>
                                     <td>
                                         @if (IsSA || objPermission.ManagePageContent >= (int)ModulePermission.View)

@@ -14,6 +14,7 @@ namespace KrupaBuildGallery
         public DateTime SuggestionDate { get; set; }
         //
         public string DealerName { get; set; }
+        public string OwnerNumber { get; set; }
         
     }
 }

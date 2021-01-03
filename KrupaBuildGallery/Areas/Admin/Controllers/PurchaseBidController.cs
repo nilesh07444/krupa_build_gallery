@@ -1,8 +1,11 @@
 ﻿using KrupaBuildGallery.Model;
 using Newtonsoft.Json;
+using OfficeOpenXml;
+using OfficeOpenXml.Style;
 using System;
 using System.Collections.Generic;
 using System.Data.Objects.SqlClient;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -425,7 +428,6 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View();
         }
 
-
         [HttpPost]
         public string AcceptRejectBid(long BidId, string IsApprove,string Reason = "")
         {
@@ -594,7 +596,6 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return ReturnMessage;
         }
 
-
         [HttpPost]
         public string AcceptRejectBidMultiple(string BidIds, string IsApprove, string Reason = "")
         {
@@ -760,6 +761,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                 }
                             }
                         }
+                        _db.SaveChanges();
                     }
                 }           
 
@@ -774,6 +776,320 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             }
 
             return ReturnMessage;
+        }
+
+        public ActionResult BidReportItemWise()
+        {
+            ViewData["ItemList"] = GetBidItemList(); 
+            return View("~/Areas/Admin/Views/PurchaseBid/BidReportByItem.cshtml");
+        }
+
+        public void ExportBidReportItemWise(long ItemId, string StartDate, string EndDate)
+        {
+            ExcelPackage excel = new ExcelPackage();
+            DateTime dtStart = DateTime.ParseExact(StartDate, "dd/MM/yyyy", null);
+            DateTime dtEnd = DateTime.ParseExact(EndDate, "dd/MM/yyyy", null);
+            dtEnd = new DateTime(dtEnd.Year, dtEnd.Month, dtEnd.Day, 23, 59, 59);
+            var objPrdItm = _db.tbl_ProductItems.Where(o => o.ProductItemId == ItemId).FirstOrDefault();
+            List<long> lstItems = new List<long>();
+            List<BidReportItemsVM> lstReports = new List<BidReportItemsVM>();
+            if (ItemId == -1)
+            {
+                lstItems = _db.tbl_PurchaseBidItems.OrderBy(x => x.ItemName).ToList().Select(x => x.Pk_PurchaseBidItemId).ToList();
+            }
+            else
+            {
+                lstItems.Add(ItemId);
+            }
+
+            foreach (long ItmId in lstItems)
+            {
+                BidReportItemsVM objItm = new BidReportItemsVM();
+                objItm.ItemId = ItemId;
+                var objBidItm = _db.tbl_PurchaseBidItems.Where(o => o.Pk_PurchaseBidItemId == ItmId).FirstOrDefault();
+                if (objBidItm != null)
+                {
+                    objItm.ItemName = objBidItm.ItemName;
+                }
+                List<BidVM> lstBdVM = new List<BidVM>();
+                List<tbl_Bids> lstBids = _db.tbl_Bids.Where(o => o.BidDate >= dtStart && o.BidDate <= dtEnd && o.ItemId == ItmId).OrderBy(x => x.BidDate).ToList();
+                if (lstBids != null && lstBids.Count() > 0)
+                {
+                    foreach (var objBd in lstBids)
+                    {
+                        BidVM objBid = (from cu in _db.tbl_Bids
+                                        join itm in _db.tbl_PurchaseBidItems on cu.ItemId equals itm.Pk_PurchaseBidItemId
+                                        join unityp in _db.tbl_BidItemUnitTypes on itm.UnitType equals unityp.BidItemUnitTypeId
+                                        where cu.Pk_Bid_id == objBd.Pk_Bid_id
+                                        select new BidVM
+                                        {
+                                            BidId = cu.Pk_Bid_id,
+                                            ItemId = cu.ItemId.Value,
+                                            ItemName = itm.ItemName,
+                                            Qty = cu.Qty.Value,
+                                            BidNum = cu.BidNo.Value,
+                                            BidYear = cu.BidYear,
+                                            Unittype = unityp.UnitTypeName,
+                                            BidStatus = cu.BidStatus.Value,
+                                            BidDate = cu.BidDate.Value
+                                        }).OrderByDescending(x => x.BidDate).FirstOrDefault();
+                        objBid.Status = GetGenBidStatus(objBid.BidStatus);
+                        List<BidDealerVM> lstBidDealerVM = (from cu in _db.tbl_BidDealers
+                                                            join dl in _db.tbl_PurchaseDealers on cu.FK_DealerId equals dl.Pk_Dealer_Id
+                                                            where cu.Fk_BidId == objBd.Pk_Bid_id
+                                                            select new BidDealerVM
+                                                            {
+                                                                BidDealerId = cu.Pk_BidDealers,
+                                                                DealerId = dl.Pk_Dealer_Id,
+                                                                FirmName = dl.FirmName,
+                                                                BusinessCode = dl.BussinessCode,
+                                                                BidValidDays = cu.BidValidDays.Value,
+                                                                FirmMobile = dl.FirmContactNo,
+                                                                Price = cu.Price.Value,
+                                                                OwnerContactNo = dl.OwnerContactNo,
+                                                                BidSentDate = cu.BidSendDate.Value,
+                                                                MinimumQtytoBuy = cu.MinimumQtyToBuy.Value,
+                                                                BidStatus = cu.BidStatus.Value
+                                                            }).OrderByDescending(x => x.BidSentDate).ToList();
+                        if (lstBidDealerVM != null && lstBidDealerVM.Count() > 0)
+                        {
+                            lstBidDealerVM.ForEach(x => x.Status = GetGenBidStatus(x.BidStatus));
+                        }
+                        objBid.lstBidDealer = lstBidDealerVM;
+                        lstBdVM.Add(objBid);
+                    }
+                }
+                objItm.lstBids = lstBdVM;
+                lstReports.Add(objItm);
+            }
+            StringBuilder sb = new StringBuilder();
+            string[] arrycolmns = new string[] { "Item Name", "Bid Number", "Bid Date", "Qty", "BusinessCode", "Firm Name", "Contact Number", "Bid Receive Date", "Bid Price","Bid Status", "Bid Valid Days" };
+            var workSheet = excel.Workbook.Worksheets.Add("Bid Report");
+            workSheet.Cells[1, 1].Style.Font.Bold = true;
+            workSheet.Cells[1, 1].Style.Font.Size = 20;
+            workSheet.Cells[1, 1].Style.VerticalAlignment = ExcelVerticalAlignment.Top;
+            workSheet.Cells[1, 1].Value = "Bid Report: " + StartDate + " to " + EndDate;
+            for (var col = 1; col < arrycolmns.Length + 1; col++)
+            {
+                workSheet.Cells[2, col].Style.Font.Bold = true;
+                workSheet.Cells[2, col].Style.Font.Size = 12;
+                workSheet.Cells[2, col].Value = arrycolmns[col - 1];
+                workSheet.Cells[2, col].Style.HorizontalAlignment = ExcelHorizontalAlignment.Center;
+                workSheet.Cells[2, col].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                workSheet.Cells[2, col].AutoFitColumns(30, 70);
+                workSheet.Cells[2, col].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[2, col].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[2, col].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[2, col].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[2, col].Style.WrapText = true;
+            }
+            int row1 = 1;
+            foreach (var obj in lstReports)
+            {
+                decimal TotalDateWise = 0;
+                decimal TotalDateWiseQty = 0;
+                workSheet.Cells[row1 + 2, 1].Style.Font.Bold = true;
+                workSheet.Cells[row1 + 2, 1].Style.Font.Size = 12;
+                workSheet.Cells[row1 + 2, 1].Value = obj.ItemName;
+                workSheet.Cells[row1 + 2, 1].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                workSheet.Cells[row1 + 2, 1].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                workSheet.Cells[row1 + 2, 1].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[row1 + 2, 1].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[row1 + 2, 1].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[row1 + 2, 1].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                workSheet.Cells[row1 + 2, 1].Style.WrapText = true;
+                workSheet.Cells[row1 + 2, 1].AutoFitColumns(30, 70);
+                workSheet.Cells[row1 + 2, 1, row1 + 2, arrycolmns.Length - 1].Style.Fill.PatternType = ExcelFillStyle.Solid;
+                workSheet.Cells[row1 + 2, 1, row1 + 2, arrycolmns.Length - 1].Style.Fill.BackgroundColor.SetColor(Color.AliceBlue);
+                workSheet.Cells[row1 + 2, 1, row1 + 2, arrycolmns.Length - 1].Merge = true;
+
+                row1 = row1 + 1;                
+                if (obj.lstBids != null && obj.lstBids.Count() > 0)
+                {
+                    foreach (var ordrr in obj.lstBids)
+                    {
+                        string BidNo = "BD/" + ordrr.BidYear + "/" + ordrr.BidNum;
+                        workSheet.Cells[row1 + 2, 2].Style.Font.Bold = false;
+                        workSheet.Cells[row1 + 2, 2].Style.Font.Size = 12;
+                        workSheet.Cells[row1 + 2, 2].Value = BidNo;
+                        workSheet.Cells[row1 + 2, 2].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                        workSheet.Cells[row1 + 2, 2].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                        workSheet.Cells[row1 + 2, 2].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        workSheet.Cells[row1 + 2, 2].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        workSheet.Cells[row1 + 2, 2].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        workSheet.Cells[row1 + 2, 2].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        workSheet.Cells[row1 + 2, 2].Style.WrapText = true;
+                        workSheet.Cells[row1 + 2, 2].AutoFitColumns(30, 70);
+
+                        workSheet.Cells[row1 + 2, 3].Style.Font.Bold = false;
+                        workSheet.Cells[row1 + 2, 3].Style.Font.Size = 12;
+                        workSheet.Cells[row1 + 2, 3].Value = ordrr.BidDate.ToString("dd/MM/yyyy");
+                        workSheet.Cells[row1 + 2, 3].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                        workSheet.Cells[row1 + 2, 3].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                        workSheet.Cells[row1 + 2, 3, row1 + 2, arrycolmns.Length].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        workSheet.Cells[row1 + 2, 3, row1 + 2, arrycolmns.Length].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        workSheet.Cells[row1 + 2, 3, row1 + 2, arrycolmns.Length].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        workSheet.Cells[row1 + 2, 3, row1 + 2, arrycolmns.Length].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        workSheet.Cells[row1 + 2, 3].Style.WrapText = true;                     
+                        workSheet.Cells[row1 + 2, 3].AutoFitColumns(30, 70);
+
+                        workSheet.Cells[row1 + 2, 4].Style.Font.Bold = false;
+                        workSheet.Cells[row1 + 2, 4].Style.Font.Size = 12;
+                        workSheet.Cells[row1 + 2, 4].Value = ordrr.Qty +" "+ordrr.Unittype;
+                        workSheet.Cells[row1 + 2, 4].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                        workSheet.Cells[row1 + 2, 4].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                        workSheet.Cells[row1 + 2, 4, row1 + 2, arrycolmns.Length].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                        workSheet.Cells[row1 + 2, 4, row1 + 2, arrycolmns.Length].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                        workSheet.Cells[row1 + 2, 4, row1 + 2, arrycolmns.Length].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                        workSheet.Cells[row1 + 2, 4, row1 + 2, arrycolmns.Length].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                        workSheet.Cells[row1 + 2, 4].Style.WrapText = true;
+                        workSheet.Cells[row1 + 2, 4, row1 + 2, arrycolmns.Length].Merge = true;
+                        workSheet.Cells[row1 + 2, 4].AutoFitColumns(30, 70);
+                        row1 = row1 + 1;                        
+                        if (ordrr.lstBidDealer != null && ordrr.lstBidDealer.Count() > 0)
+                        {
+                            foreach (var objItem in ordrr.lstBidDealer)
+                            {
+                               
+                                for (var col = 5; col < arrycolmns.Length + 1; col++)
+                                {
+                                    if (arrycolmns[col - 1] == "BusinessCode")
+                                    {
+                                        workSheet.Cells[row1 + 2, col].Value = objItem.BusinessCode;
+                                    }
+                                    else if (arrycolmns[col - 1] == "Firm Name")
+                                    {
+                                        workSheet.Cells[row1 + 2, col].Value = objItem.FirmName;
+                                    }
+                                    else if (arrycolmns[col - 1] == "Contact Number")
+                                    {
+                                        workSheet.Cells[row1 + 2, col].Value = objItem.OwnerContactNo;
+                                    }
+                                    else if (arrycolmns[col - 1] == "Bid Receive Date")
+                                    {
+                                        workSheet.Cells[row1 + 2, col].Value = objItem.BidSentDate.ToString("dd/MM/yyyy");
+                                    }
+                                    else if (arrycolmns[col - 1] == "Bid Price")
+                                    {
+                                        workSheet.Cells[row1 + 2, col].Value = objItem.Price;
+                                    }
+                                    else if (arrycolmns[col - 1] == "Bid Status")
+                                    {
+                                        workSheet.Cells[row1 + 2, col].Value = objItem.Status;
+                                    }
+                                    else if (arrycolmns[col - 1] == "Bid Valid Days")
+                                    {
+                                        workSheet.Cells[row1 + 2, col].Value = objItem.BidValidDays;
+                                    }
+                                   
+                                    workSheet.Cells[row1 + 2, col].Style.Font.Bold = false;
+                                    workSheet.Cells[row1 + 2, col].Style.Font.Size = 12;
+                                    workSheet.Cells[row1 + 2, col].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                                    workSheet.Cells[row1 + 2, col].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                                    workSheet.Cells[row1 + 2, col].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, col].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, col].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, col].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                    workSheet.Cells[row1 + 2, col].Style.WrapText = true;
+                                    workSheet.Cells[row1 + 2, col].AutoFitColumns(30, 70);
+                                }
+                                row1 = row1 + 1;
+                            }
+                        }
+                       
+                        row1 = row1 + 1;
+                    }
+                    row1 = row1 + 1;                   
+                }
+            }
+            using (var memoryStream = new MemoryStream())
+            {
+                //excel.Workbook.Worksheets.MoveToStart("Summary");  //move sheet from last to first : Code by Gunjan
+                Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                Response.AddHeader("content-disposition", "attachment;  filename=Bid Report Item.xlsx");
+                excel.SaveAs(memoryStream);
+                memoryStream.WriteTo(Response.OutputStream);
+                Response.Flush();
+                Response.End();
+            }
+        }
+
+        public ActionResult GetBidReportItemWise(long ItemId, string StartDate, string EndDate)
+        {
+            DateTime dtStart = DateTime.ParseExact(StartDate, "dd/MM/yyyy", null);
+            DateTime dtEnd = DateTime.ParseExact(EndDate, "dd/MM/yyyy", null);
+            dtEnd = new DateTime(dtEnd.Year, dtEnd.Month, dtEnd.Day, 23, 59, 59);
+            var objPrdItm = _db.tbl_ProductItems.Where(o => o.ProductItemId == ItemId).FirstOrDefault();
+            List<long> lstItems = new List<long>();
+            List<BidReportItemsVM> lstReports = new List<BidReportItemsVM>();
+            if(ItemId == -1)
+            {
+                lstItems = _db.tbl_PurchaseBidItems.OrderBy(x => x.ItemName).ToList().Select(x => x.Pk_PurchaseBidItemId).ToList();
+            }
+            else
+            {
+                lstItems.Add(ItemId);
+            }
+
+            foreach(long ItmId in lstItems)
+            {
+                BidReportItemsVM objItm = new BidReportItemsVM();
+                objItm.ItemId = ItemId;
+                var objBidItm = _db.tbl_PurchaseBidItems.Where(o => o.Pk_PurchaseBidItemId == ItmId).FirstOrDefault();
+                if(objBidItm != null)
+                {
+                    objItm.ItemName = objBidItm.ItemName;
+                }
+                List<BidVM> lstBdVM=  new List<BidVM>();              
+                List<tbl_Bids> lstBids = _db.tbl_Bids.Where(o => o.BidDate >= dtStart && o.BidDate <= dtEnd && o.ItemId == ItmId).OrderBy(x => x.BidDate).ToList();
+                if(lstBids != null && lstBids.Count() > 0)
+                {
+                    foreach(var objBd in lstBids)
+                    {
+                        BidVM objBid = (from cu in _db.tbl_Bids
+                                        join itm in _db.tbl_PurchaseBidItems on cu.ItemId equals itm.Pk_PurchaseBidItemId
+                                        join unityp in _db.tbl_BidItemUnitTypes on itm.UnitType equals unityp.BidItemUnitTypeId
+                                        where cu.Pk_Bid_id == objBd.Pk_Bid_id
+                                        select new BidVM
+                                        {
+                                            BidId = cu.Pk_Bid_id,
+                                            ItemId = cu.ItemId.Value,
+                                            ItemName = itm.ItemName,
+                                            Qty = cu.Qty.Value,
+                                            Unittype = unityp.UnitTypeName,
+                                            BidStatus = cu.BidStatus.Value,
+                                            BidDate = cu.BidDate.Value
+                                        }).OrderByDescending(x => x.BidDate).FirstOrDefault();
+                        objBid.Status = GetGenBidStatus(objBid.BidStatus);
+                        List<BidDealerVM> lstBidDealerVM = (from cu in _db.tbl_BidDealers
+                                                            join dl in _db.tbl_PurchaseDealers on cu.FK_DealerId equals dl.Pk_Dealer_Id
+                                                            where cu.Fk_BidId == objBd.Pk_Bid_id
+                                                            select new BidDealerVM
+                                                            {
+                                                                BidDealerId = cu.Pk_BidDealers,
+                                                                DealerId = dl.Pk_Dealer_Id,
+                                                                FirmName = dl.FirmName,
+                                                                BusinessCode = dl.BussinessCode,
+                                                                BidValidDays = cu.BidValidDays.Value,
+                                                                FirmMobile = dl.FirmContactNo,
+                                                                Price = cu.Price.Value,
+                                                                OwnerContactNo = dl.OwnerContactNo,
+                                                                BidSentDate = cu.BidSendDate.Value,
+                                                                MinimumQtytoBuy = cu.MinimumQtyToBuy.Value,
+                                                                BidStatus = cu.BidStatus.Value
+                                                            }).OrderByDescending(x => x.BidSentDate).ToList();
+                        if (lstBidDealerVM != null && lstBidDealerVM.Count() > 0)
+                        {
+                            lstBidDealerVM.ForEach(x => x.Status = GetGenBidStatus(x.BidStatus));
+                        }
+                        objBid.lstBidDealer = lstBidDealerVM;
+                        lstBdVM.Add(objBid);
+                    }
+                }
+                objItm.lstBids = lstBdVM;
+                lstReports.Add(objItm);
+            }
+            return PartialView("~/Areas/Admin/Views/PurchaseBid/_BidReportItemwise.cshtml", lstReports);
         }
     }
 }

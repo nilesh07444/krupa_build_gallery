@@ -314,6 +314,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                         objRequest.ShopPhoto = shopphotoname;
                         objRequest.AddharPhoto = addharphoto;
                         objRequest.GSTPhoto = gstphotoname;
+                        objRequest.AddharPhoto2 = objDistributorRequestVM.AddharPhoto2;
+                        objRequest.ShopPhoto2 = objDistributorRequestVM.ShopPhoto2;
                         DateTime dt = DateTime.ParseExact(dob, "dd/MM/yyyy", null);
                         objRequest.Dob = dt;
                         objRequest.IsDelete = false;
