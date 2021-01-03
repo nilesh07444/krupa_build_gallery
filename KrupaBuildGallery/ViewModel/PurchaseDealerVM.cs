@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace KrupaBuildGallery
 {
@@ -79,5 +80,7 @@ namespace KrupaBuildGallery
         public DateTime CreatedDate { get; set; }
         [Display(Name = "Visiting Card Photo")]
         public HttpPostedFileBase VisitingCardPhotoFile { get; set; }
+
+        public List<SelectListItem> StateList { get; set; }
     }
 }

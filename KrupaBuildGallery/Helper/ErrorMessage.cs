@@ -22,7 +22,9 @@ namespace KrupaBuildGallery.Helper
         public static string SelectExcelFile = "Please select excel file";
         public static string PincodeExists = "Pincode is already exist";
         public static string UnitExists = "Unit is already exist";
-
+        public static string EmailExists = "Email is already exist";
+        public static string OwnerContactNoExists = "Owner Contact No is already exist";
+        public static string FirmContactNoExists = "Firm Contact No is already exist";
         // Client Portal Messages
 
 
