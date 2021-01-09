@@ -81,7 +81,7 @@
                                 @Html.ValidationMessageFor(model => model.ProductItemId, "", new { @class = "text-danger" })
                             </div>
 
-                            <div class="form-group row">
+                            <div class="form-group row clsqtyyy">
                                 @Html.LabelFor(model => model.Quantity, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.EditorFor(model => model.Quantity, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Quantity", maxlength = "200" } })
 
@@ -89,16 +89,18 @@
                                 @Html.ValidationMessageFor(model => model.Quantity, "", new { @class = "text-danger" })
                             </div>
 
-                            <div class="form-group row">
+                            <div class="form-group row clsfakstock">
                                 @Html.LabelFor(model => model.FakeStock, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.EditorFor(model => model.FakeStock, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Fake Stock", maxlength = "200" } })
 
-                                <lable class="col-xl-3 col-md-4"></lable>                             
+                                <lable class="col-xl-3 col-md-4"></lable>
                             </div>
+                            <div class="form-group row clsvarint">
 
+                            </div>
                             <div class="form-group row">
                                 <lable class="col-xl-3 col-md-4"></lable>
-                                <button type="submit" class="btn btn-primary" style="margin-right:10px;">Submit</button>
+                                <button type="button" class="btn btn-primary" style="margin-right:10px;" onclick="validateandsubmit();">Submit</button>
                                 <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
                             </div>
 
@@ -186,36 +188,8 @@
 
         var ProductId = jQuery("#ProductId option:selected").val();
         var SubProductId = jQuery("#SubProductId option:selected").val();
-         var itmtypid = parseInt($(".chkitemtype:checked").val());
-        if ((ProductId != "" && ProductId != null) || (SubProductId != "" && SubProductId != null)) {
-            var URL = '@Url.Action("GetItemList", "Stock")';
-            $.ajax({
-                type: 'GET', 
-                async: true,
-                url: URL + "?ProductId=" + ProductId + "&SubProductId=" + SubProductId+ "&ItemType=" + itmtypid,
-                success: function (result) {
-                    var htmlData = "<option value='0'>-Select Product Item-</option>";
-                    if (result && result.length > 0) {
-                        result.forEach(element => {
-                            htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
-                        });
-                    }
-                    $("#ProductItemId").html(htmlData);
-                },
-                error: function (error) {
-                }
-            });
-        }
-       else {
-            var htmlSubData = "<option value='0'>- Select Product Item -</option>";
-            $("#ProductItemId").html(htmlSubData);
-        }
-    });
-    jQuery(document).on("change", ".chkitemtype", function () {
-
-        var ProductId = jQuery("#ProductId option:selected").val();
-        var SubProductId = jQuery("#SubProductId option:selected").val();
-        var itmtypid = parseInt(jQuery(this).val());
+        var itmtypid = parseInt($(".chkitemtype:checked").val());
+      
         if ((ProductId != "" && ProductId != null) || (SubProductId != "" && SubProductId != null)) {
             var URL = '@Url.Action("GetItemList", "Stock")';
             $.ajax({
@@ -230,6 +204,7 @@
                         });
                     }
                     $("#ProductItemId").html(htmlData);
+                    loadvariant();
                 },
                 error: function (error) {
                 }
@@ -238,7 +213,95 @@
        else {
             var htmlSubData = "<option value='0'>- Select Product Item -</option>";
             $("#ProductItemId").html(htmlSubData);
+            loadvariant();
+        }
+       
+    });
+    jQuery(document).on("change", ".chkitemtype", function () {
+
+        var ProductId = jQuery("#ProductId option:selected").val();
+        var SubProductId = jQuery("#SubProductId option:selected").val();
+        var itmtypid = parseInt(jQuery(this).val());
+      
+        if ((ProductId != "" && ProductId != null) || (SubProductId != "" && SubProductId != null)) {
+            var URL = '@Url.Action("GetItemList", "Stock")';
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: URL + "?ProductId=" + ProductId + "&SubProductId=" + SubProductId+ "&ItemType=" + itmtypid,
+                success: function (result) {
+                    var htmlData = "<option value='0'>-Select Product Item-</option>";
+                    if (result && result.length > 0) {
+                        result.forEach(element => {
+                            htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
+                        });
+                    }
+                    $("#ProductItemId").html(htmlData);
+                    loadvariant();
+                },
+                error: function (error) {
+                }
+            });
+        }
+       else {
+            var htmlSubData = "<option value='0'>- Select Product Item -</option>";
+            $("#ProductItemId").html(htmlSubData);
+            loadvariant();
         }
     });
+
+    jQuery(document).on("change", "#ProductItemId", function () {
+
+        loadvariant();
+    });
+
+    function loadvariant() {
+        var ItmId = jQuery("#ProductItemId option:selected").val();       
+        if ((ItmId != "" && ItmId != null && ItmId != 0)) {
+            $(".clsvarint").load('@Url.Action("GetUnitsStockData", "Stock")' + '?ProductItemId=' + ItmId, function () {
+                if ($("input[name^=variantqty_]").length > 0) {
+                    $(".clsqtyyy").hide();
+                    $(".clsfakstock").hide();
+                }
+                else {
+                    $(".clsqtyyy").show();
+                    $(".clsfakstock").show();
+                }
+         });
+        }
+       else {
+            $(".clsvarint").html("");
+        }
+        if ($("input[name^=variantqty_]").length > 0) {
+            $(".clsqtyyy").hide();
+            $(".clsfakstock").hide();
+            
+        }
+        else {
+            $(".clsqtyyy").show();
+            $(".clsfakstock").show();
+        }
+    }
+
+    function validateandsubmit() {
+        var flgvalid = false;
+        if ($("input[name^=variantqty_]").length > 0) {
+            $("input[name^=variantqty_]").each(function () {
+                if ($(this).val() != "" && parseInt($(this).val()) > 0) {                  
+                    flgvalid = true;
+                }
+            });
+            if (flgvalid == true) {
+                $("#ProductItemStockFormId").submit();
+            }
+            else {
+                alert("Please enter Qty for variant");
+                return false;
+            }
+        }
+        else {
+            $("#ProductItemStockFormId").submit();
+        }      
+    }
 </script>
 

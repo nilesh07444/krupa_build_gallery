@@ -38,6 +38,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                   join p in _db.tbl_Products on stk.ProductId equals p.Product_Id
                                   join s in _db.tbl_SubProducts on stk.SubProductId equals s.SubProductId into outerJoinSubProduct
                                   from s in outerJoinSubProduct.DefaultIfEmpty()
+                                  join v in _db.tbl_ItemVariant on stk.VariantItemId equals v.VariantItemId into outerJoinVartint
+                                  from v in outerJoinVartint.DefaultIfEmpty()
                                   where !stk.IsDelete
                                   select new ItemStockVM
                                   {
@@ -50,7 +52,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                       CategoryName = c.CategoryName,
                                       ProductName = p.ProductName,
                                       SubProductName = s.SubProductName,
+                                      VariantName = v.UnitQty,
                                       Quantity = stk.Qty,
+                                      FakeStockQty = stk.FakeStock.HasValue ? stk.FakeStock.Value : 0,
                                       IsActive = i.IsActive
                                   }).OrderByDescending(x => x.StockId).ToList();
             }
@@ -133,9 +137,86 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     }
                     else
                     {
-
+                        bool IsVaritnStock = false;
                         long LoggedInUserId = Int64.Parse(clsAdminSession.UserID.ToString());
-                        if(itemStockVM.Quantity > 0)
+                        var lstVarnt = _db.tbl_ItemVariant.Where(o => o.ProductItemId == itemStockVM.ProductItemId).ToList();
+                        if(lstVarnt != null && lstVarnt.Count() > 0)
+                        {
+                            foreach(var obj in lstVarnt)
+                            {
+                                if(Request.Form["variantqty_" + obj.VariantItemId] != null)
+                                {
+                                    string strqty = Request.Form["variantqty_" + obj.VariantItemId].ToString();
+                                    if (!string.IsNullOrEmpty(strqty) && Convert.ToInt32(strqty) > 0)
+                                    {
+                                        tbl_ItemStocks objItemStock = new tbl_ItemStocks();
+                                        objItemStock.CategoryId = itemStockVM.CategoryId;
+                                        objItemStock.ProductId = itemStockVM.ProductId;
+                                        objItemStock.SubProductId = itemStockVM.SubProductId;
+                                        objItemStock.VariantItemId = obj.VariantItemId;
+                                        objItemStock.ProductItemId = itemStockVM.ProductItemId;
+                                        objItemStock.Qty = Convert.ToInt64(strqty);
+                                        objItemStock.FakeStock = 0;
+                                        objItemStock.IsActive = true;
+                                        objItemStock.IsDelete = false;
+                                        objItemStock.CreatedBy = LoggedInUserId;
+                                        objItemStock.CreatedDate = DateTime.UtcNow;
+                                        objItemStock.UpdatedBy = LoggedInUserId;
+                                        objItemStock.UpdatedDate = DateTime.UtcNow;
+                                        _db.tbl_ItemStocks.Add(objItemStock);
+
+                                        tbl_StockReport objstkreport = new tbl_StockReport();
+                                        objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
+                                        objstkreport.StockDate = DateTime.UtcNow;
+                                        objstkreport.Qty = Convert.ToInt64(strqty);
+                                        objstkreport.IsCredit = true;
+                                        objstkreport.VariantItemId = obj.VariantItemId;
+                                        objstkreport.FakeStock = 0;
+                                        objstkreport.IsAdmin = true;
+                                        objstkreport.CreatedBy = LoggedInUserId;
+                                        objstkreport.ItemId = itemStockVM.ProductItemId;
+                                        objstkreport.Remarks = "Stock Added";
+                                        _db.tbl_StockReport.Add(objstkreport);
+                                        _db.SaveChanges();                                       
+                                    }
+                                    IsVaritnStock = true;
+                                    string strfkqty = Request.Form["variantfakeqty_" + obj.VariantItemId].ToString();
+                                    if(!string.IsNullOrEmpty(strfkqty) && Convert.ToInt32(strfkqty) > 0)
+                                    {
+                                        tbl_ItemStocks objItemStock = new tbl_ItemStocks();
+                                        objItemStock.CategoryId = itemStockVM.CategoryId;
+                                        objItemStock.ProductId = itemStockVM.ProductId;
+                                        objItemStock.SubProductId = itemStockVM.SubProductId;
+                                        objItemStock.ProductItemId = itemStockVM.ProductItemId;
+                                        objItemStock.Qty = 0;
+                                        objItemStock.FakeStock = Convert.ToInt64(strfkqty);
+                                        objItemStock.VariantItemId = obj.VariantItemId;
+                                        objItemStock.IsActive = true;
+                                        objItemStock.IsDelete = false;
+                                        objItemStock.CreatedBy = LoggedInUserId;
+                                        objItemStock.CreatedDate = DateTime.UtcNow;
+                                        objItemStock.UpdatedBy = LoggedInUserId;
+                                        objItemStock.UpdatedDate = DateTime.UtcNow;
+                                        _db.tbl_ItemStocks.Add(objItemStock);
+
+                                        tbl_StockReport objstkreport = new tbl_StockReport();
+                                        objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
+                                        objstkreport.StockDate = DateTime.UtcNow;
+                                        objstkreport.Qty = 0;
+                                        objstkreport.IsCredit = false;
+                                        objstkreport.VariantItemId = obj.VariantItemId;
+                                        objstkreport.IsAdmin = true;
+                                        objstkreport.CreatedBy = LoggedInUserId;
+                                        objstkreport.ItemId = itemStockVM.ProductItemId;
+                                        objstkreport.Remarks = "Fake Stock Added";
+                                        objstkreport.FakeStock = Convert.ToInt64(strfkqty);
+                                        _db.tbl_StockReport.Add(objstkreport);
+                                        _db.SaveChanges();
+                                    }
+                                }
+                            }
+                        }                       
+                        if (itemStockVM.Quantity > 0 && IsVaritnStock == false)
                         {
                             tbl_ItemStocks objItemStock = new tbl_ItemStocks();
                             objItemStock.CategoryId = itemStockVM.CategoryId;
@@ -144,6 +225,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             objItemStock.ProductItemId = itemStockVM.ProductItemId;
                             objItemStock.Qty = Convert.ToInt64(itemStockVM.Quantity);
                             objItemStock.FakeStock = 0;
+                            objItemStock.VariantItemId = 0;
                             objItemStock.IsActive = true;
                             objItemStock.IsDelete = false;
                             objItemStock.CreatedBy = LoggedInUserId;
@@ -158,6 +240,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             objstkreport.Qty = Convert.ToInt64(itemStockVM.Quantity);
                             objstkreport.IsCredit = true;
                             objstkreport.FakeStock = 0;
+                            objstkreport.VariantItemId = 0;
                             objstkreport.IsAdmin = true;
                             objstkreport.CreatedBy = LoggedInUserId;
                             objstkreport.ItemId = itemStockVM.ProductItemId;
@@ -172,6 +255,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             objItemStock.CategoryId = itemStockVM.CategoryId;
                             objItemStock.ProductId = itemStockVM.ProductId;
                             objItemStock.SubProductId = itemStockVM.SubProductId;
+                            objItemStock.VariantItemId = 0;
                             objItemStock.ProductItemId = itemStockVM.ProductItemId;
                             objItemStock.Qty = 0;
                             objItemStock.FakeStock = Convert.ToInt64(itemStockVM.FakeStock);
@@ -188,6 +272,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
                             objstkreport.StockDate = DateTime.UtcNow;
                             objstkreport.Qty = 0;
+                            objstkreport.VariantItemId = 0;
                             objstkreport.IsCredit = false;
                             objstkreport.IsAdmin = true;
                             objstkreport.CreatedBy = LoggedInUserId;
@@ -261,10 +346,10 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 else
                 {
                     long Itmid = objtbl_ItemStocks.ProductItemId;
-                    int soldQty = SoldItems(Itmid);
-                    int stockQty = ItemStock(Itmid);
+                    int soldQty = SoldItems(Itmid, objtbl_ItemStocks.VariantItemId.Value);
+                    int stockQty = ItemStock(Itmid, objtbl_ItemStocks.VariantItemId.Value);
                     int remaining = stockQty - soldQty;
-                    if (remaining < objtbl_ItemStocks.Qty)
+                    if (remaining < objtbl_ItemStocks.Qty && objtbl_ItemStocks.Qty > 0)
                     {
                         ReturnMessage = "qtyless";
                     }
@@ -277,17 +362,23 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         objtbl_ItemStocks.UpdatedDate = DateTime.UtcNow;
 
                         _db.SaveChanges();
-                        tbl_StockReport objstkreport = new tbl_StockReport();
-                        objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
-                        objstkreport.StockDate = DateTime.UtcNow;
-                        objstkreport.Qty = Convert.ToInt64(objtbl_ItemStocks.Qty);
-                        objstkreport.IsCredit = false;
-                        objstkreport.IsAdmin = true;
-                        objstkreport.CreatedBy = LoggedInUserId;
-                        objstkreport.ItemId = objtbl_ItemStocks.ProductItemId;
-                        objstkreport.Remarks = "Stock Deleted";
-                        _db.tbl_StockReport.Add(objstkreport);
-                        _db.SaveChanges();
+
+                        if(objtbl_ItemStocks.Qty > 0)
+                        {
+                            tbl_StockReport objstkreport = new tbl_StockReport();
+                            objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
+                            objstkreport.StockDate = DateTime.UtcNow;
+                            objstkreport.Qty = Convert.ToInt64(objtbl_ItemStocks.Qty);
+                            objstkreport.IsCredit = false;
+                            objstkreport.VariantItemId = objtbl_ItemStocks.VariantItemId.Value;
+                            objstkreport.IsAdmin = true;
+                            objstkreport.CreatedBy = LoggedInUserId;
+                            objstkreport.ItemId = objtbl_ItemStocks.ProductItemId;
+                            objstkreport.Remarks = "Stock Deleted";
+                            _db.tbl_StockReport.Add(objstkreport);
+                            _db.SaveChanges();
+                        }
+                    
                         ReturnMessage = "success";
                     }
                 }
@@ -328,22 +419,54 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return ProductItemList;
         }
 
-        public int ItemStock(long ItemId)
+        public JsonResult GetVarintsByItemId(double Id)
         {
-            long? TotalStock = _db.tbl_ItemStocks.Where(o => o.IsActive == true && o.IsDelete == false && o.ProductItemId == ItemId).Sum(o => (long?)o.Qty);
+            List<SelectListItem> vartiantlist = new List<SelectListItem>();
+            var objProdItm = _db.tbl_ProductItems.Where(o => o.ProductItemId == Id).FirstOrDefault();
+            var objUnitType = _db.tbl_Units.Where(x => x.UnitId == objProdItm.UnitType).FirstOrDefault();
+            if (objUnitType != null)
+            {
+                if (objUnitType.UnitName.ToLower().Contains("sheet") || objUnitType.UnitName.ToLower().Contains("piece"))
+                {
+                    vartiantlist = _db.tbl_ItemVariant.Where(x => (x.ProductItemId == Id) && (x.IsDeleted == false || x.IsDeleted == null))
+                         .Select(o => new SelectListItem { Value = SqlFunctions.StringConvert((double)o.VariantItemId).Trim(), Text = o.UnitQty})
+                         .OrderBy(x => x.Text).ToList();
+                }
+            }         
+
+            return Json(vartiantlist, JsonRequestBehavior.AllowGet);
+        }
+
+
+        public int ItemStock(long ItemId, long VariantId = 0)
+        {
+            long? TotalStock = _db.tbl_ItemStocks.Where(o => o.IsActive == true && o.IsDelete == false && o.ProductItemId == ItemId && o.VariantItemId == VariantId).Sum(o => (long?)o.Qty);
             if (TotalStock == null)
             {
                 TotalStock = 0;
             }
             return Convert.ToInt32(TotalStock);
         }
-        public int SoldItems(long ItemId)
+        public int SoldItems(long ItemId,long VariantId = 0)
         {
-            long? TotalSold = _db.tbl_OrderItemDetails.Where(o => o.ProductItemId == ItemId && o.IsDelete == false).Sum(o => (long?)o.QtyUsed.Value);
-            if (TotalSold == null)
+            long? TotalSold = 0;
+            if(VariantId == 0)
             {
-                TotalSold = 0;
+                TotalSold = _db.tbl_OrderItemDetails.Where(o => o.ProductItemId == ItemId && o.IsDelete == false).Sum(o => (long?)o.QtyUsed.Value);
+                if (TotalSold == null)
+                {
+                    TotalSold = 0;
+                }
             }
+            else
+            {
+                TotalSold = _db.tbl_OrderItemDetails.Where(o => o.ProductItemId == ItemId && o.VariantItemId == VariantId && o.IsDelete == false).Sum(o => (long?)o.QtyUsed.Value);
+                if (TotalSold == null)
+                {
+                    TotalSold = 0;
+                }
+            }
+            
             return Convert.ToInt32(TotalSold);
         }
 
@@ -470,14 +593,14 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             Response.Close();
         }
 
-        public void ExportStockReport(long ItemId, string StartDate, string EndDate)
+        public void ExportStockReport(long ItemId,long VriantId, string StartDate, string EndDate)
         {
             ExcelPackage excel = new ExcelPackage();
             DateTime dtStart = DateTime.ParseExact(StartDate, "dd/MM/yyyy", null);
             DateTime dtEnd = DateTime.ParseExact(EndDate, "dd/MM/yyyy", null);
             var objPrdItm = _db.tbl_ProductItems.Where(o => o.ProductItemId == ItemId).FirstOrDefault();
-            List<tbl_StockReport> creditstock = _db.tbl_StockReport.Where(o => o.ItemId == ItemId && o.StockDate < dtStart && o.IsCredit == true).ToList();
-            List<tbl_StockReport> debitstock = _db.tbl_StockReport.Where(o => o.ItemId == ItemId && o.StockDate < dtStart && o.IsCredit == false).ToList();
+            List<tbl_StockReport> creditstock = _db.tbl_StockReport.Where(o => o.ItemId == ItemId && o.VariantItemId == VriantId && o.StockDate < dtStart && o.IsCredit == true).ToList();
+            List<tbl_StockReport> debitstock = _db.tbl_StockReport.Where(o => o.ItemId == ItemId && o.VariantItemId == VriantId && o.StockDate < dtStart && o.IsCredit == false).ToList();
             decimal TotalCredit = 0;
             decimal TotalDebit = 0;
             decimal TotalFakeStock = 0;
@@ -485,13 +608,22 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             TotalDebit = debitstock.Sum(x => x.Qty.HasValue ? x.Qty.Value : 0);
             TotalFakeStock = debitstock.Sum(x => x.FakeStock.HasValue ? x.FakeStock.Value : 0);
             decimal TotalOpening = TotalCredit - TotalDebit;
+            string varintnm = "";
+            if(VriantId != 0)
+            {
+                var objVrti = _db.tbl_ItemVariant.Where(o => o.VariantItemId == VriantId).FirstOrDefault();
+                if(objVrti != null)
+                {
+                    varintnm = " - " + objVrti.UnitQty;
+                }
+            }
             StringBuilder sb = new StringBuilder();
             string[] arrycolmns = new string[] { "Date", "Opening", "Credit", "Debit","Fake Stock","Closing" };
             var workSheet = excel.Workbook.Worksheets.Add("Report");
             workSheet.Cells[1, 1].Style.Font.Bold = true;
             workSheet.Cells[1, 1].Style.Font.Size = 20;
             workSheet.Cells[1, 1].Style.VerticalAlignment = ExcelVerticalAlignment.Top;
-            workSheet.Cells[1, 1].Value = "Stock Report -" + objPrdItm.ItemName + " - " + StartDate + " to " + EndDate;
+            workSheet.Cells[1, 1].Value = "Stock Report -" + objPrdItm.ItemName+ varintnm + " - " + StartDate + " to " + EndDate;
             for (var col = 1; col < arrycolmns.Length + 1; col++)
             {
                 workSheet.Cells[2, col].Style.Font.Bold = true;
@@ -511,7 +643,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 sb.Append("<td>" + col + "</td>");
             sb.Append("</tr>");
 
-            List<tbl_StockReport> lstStockss = _db.tbl_StockReport.Where(o => o.ItemId == ItemId && o.StockDate >= dtStart && o.StockDate <= dtEnd).OrderBy(x => x.StockDate).ToList();
+            List<tbl_StockReport> lstStockss = _db.tbl_StockReport.Where(o => o.ItemId == ItemId && o.VariantItemId == VriantId && o.StockDate >= dtStart && o.StockDate <= dtEnd).OrderBy(x => x.StockDate).ToList();
             decimal OpStock = TotalOpening;
             int row1 = 1;
             if (lstStockss != null && lstStockss.Count() > 0)
@@ -627,13 +759,13 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             }
         }
 
-        public ActionResult GetStockReport(long ItemId, string StartDate, string EndDate)
+        public ActionResult GetStockReport(long ItemId, long VriantId, string StartDate, string EndDate)
         {           
             DateTime dtStart = DateTime.ParseExact(StartDate, "dd/MM/yyyy", null);
             DateTime dtEnd = DateTime.ParseExact(EndDate, "dd/MM/yyyy", null);
             var objPrdItm = _db.tbl_ProductItems.Where(o => o.ProductItemId == ItemId).FirstOrDefault();
-            List<tbl_StockReport> creditstock = _db.tbl_StockReport.Where(o => o.ItemId == ItemId && o.StockDate < dtStart && o.IsCredit == true).ToList();
-            List<tbl_StockReport> debitstock = _db.tbl_StockReport.Where(o => o.ItemId == ItemId && o.StockDate < dtStart && o.IsCredit == false).ToList();
+            List<tbl_StockReport> creditstock = _db.tbl_StockReport.Where(o => o.ItemId == ItemId && o.VariantItemId == VriantId && o.StockDate < dtStart && o.IsCredit == true).ToList();
+            List<tbl_StockReport> debitstock = _db.tbl_StockReport.Where(o => o.ItemId == ItemId && o.VariantItemId == VriantId && o.StockDate < dtStart && o.IsCredit == false).ToList();
             decimal TotalCredit = 0;
             decimal TotalDebit = 0;
             decimal TotalFakeStock = 0;
@@ -644,7 +776,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             StringBuilder sb = new StringBuilder();
             string[] arrycolmns = new string[] { "Date", "Opening", "Credit", "Debit","Fake Stock","Closing" };
             List<ReportVM> lstReportVm = new List<ReportVM>();
-            List<tbl_StockReport> lstStockss = _db.tbl_StockReport.Where(o => o.ItemId == ItemId && o.StockDate >= dtStart && o.StockDate <= dtEnd).OrderBy(x => x.StockDate).ToList();
+            List<tbl_StockReport> lstStockss = _db.tbl_StockReport.Where(o => o.ItemId == ItemId && o.VariantItemId == VriantId && o.StockDate >= dtStart && o.StockDate <= dtEnd).OrderBy(x => x.StockDate).ToList();
             decimal OpStock = TotalOpening;
             int row1 = 1;
             if (lstStockss != null && lstStockss.Count() > 0)
@@ -810,33 +942,78 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                     if(lstItmswithSub != null && lstItmswithSub.Count() > 0)
                                     {
                                         foreach(var objItm in lstItmswithSub)
-                                        {
-                                            workSheet.Cells[row1 + 2, 4].Style.Font.Bold = false;
-                                            workSheet.Cells[row1 + 2, 4].Style.Font.Size = 11;
-                                            workSheet.Cells[row1 + 2, 4].AutoFitColumns(40, 70);
-                                            workSheet.Cells[row1 + 2, 4].Value = objItm.ItemName;
-                                            workSheet.Cells[row1 + 2, 4].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
-                                            workSheet.Cells[row1 + 2, 4].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                                            workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                            workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                            workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                            workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                            workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.WrapText = true;
-                                    
-                                            decimal Itmstk = Convert.ToDecimal(ItemStock(objItm.ProductItemId));
-                                            decimal SoldItm = Convert.ToDecimal(SoldItems(objItm.ProductItemId));
-                                            decimal reminingstk = Itmstk - SoldItm;
-                                            workSheet.Cells[row1 + 2, 5].Style.Font.Bold = false;
-                                            workSheet.Cells[row1 + 2, 5].Style.Font.Size = 11;
-                                            workSheet.Cells[row1 + 2, 5].Value = reminingstk;
-                                            workSheet.Cells[row1 + 2, 5].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
-                                            workSheet.Cells[row1 + 2, 5].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                                            workSheet.Cells[row1 + 2, 5].Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                            workSheet.Cells[row1 + 2,5].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                            workSheet.Cells[row1 + 2,5].Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                            workSheet.Cells[row1 + 2,5].Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                            workSheet.Cells[row1 + 2,5].Style.WrapText = false;                                            
-                                            row1 = row1 + 1;
+                                        {                                         
+                                            var objUnitType = _db.tbl_Units.Where(x => x.UnitId == objItm.UnitType).FirstOrDefault();
+                                            long VaritnStockId = 0;
+                                            if (objUnitType != null)
+                                            {
+                                                if (objUnitType.UnitName.ToLower().Contains("sheet") || objUnitType.UnitName.ToLower().Contains("piece"))
+                                                {
+                                                    var lstItmm = _db.tbl_ItemVariant.Where(o => o.ProductItemId == objItm.ProductItemId && (o.IsDeleted == null || o.IsDeleted == false)).ToList();
+                                                    if(lstItmm != null && lstItmm.Count() > 0)
+                                                    {
+                                                        foreach(var objj in lstItmm)
+                                                        {
+                                                            workSheet.Cells[row1 + 2, 4].Style.Font.Bold = false;
+                                                            workSheet.Cells[row1 + 2, 4].Style.Font.Size = 11;
+                                                            workSheet.Cells[row1 + 2, 4].AutoFitColumns(40, 70);
+                                                            workSheet.Cells[row1 + 2, 4].Value = objItm.ItemName+ " - "+ objj.UnitQty;
+                                                            workSheet.Cells[row1 + 2, 4].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                                                            workSheet.Cells[row1 + 2, 4].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                                                            workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                                            workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                                            workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                                            workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                                            workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.WrapText = true;
+
+                                                            decimal Itmstk = Convert.ToDecimal(ItemStock(objItm.ProductItemId, objj.VariantItemId));
+                                                            decimal SoldItm = Convert.ToDecimal(SoldItems(objItm.ProductItemId, objj.VariantItemId));
+                                                            decimal reminingstk = Itmstk - SoldItm;
+                                                            workSheet.Cells[row1 + 2, 5].Style.Font.Bold = false;
+                                                            workSheet.Cells[row1 + 2, 5].Style.Font.Size = 11;
+                                                            workSheet.Cells[row1 + 2, 5].Value = reminingstk;
+                                                            workSheet.Cells[row1 + 2, 5].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                                                            workSheet.Cells[row1 + 2, 5].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                                                            workSheet.Cells[row1 + 2, 5].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                                            workSheet.Cells[row1 + 2, 5].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                                            workSheet.Cells[row1 + 2, 5].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                                            workSheet.Cells[row1 + 2, 5].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                                            workSheet.Cells[row1 + 2, 5].Style.WrapText = false;
+                                                            row1 = row1 + 1;
+                                                        }
+                                                    }                                                   
+                                                }
+                                                else
+                                                {
+                                                    workSheet.Cells[row1 + 2, 4].Style.Font.Bold = false;
+                                                    workSheet.Cells[row1 + 2, 4].Style.Font.Size = 11;
+                                                    workSheet.Cells[row1 + 2, 4].AutoFitColumns(40, 70);
+                                                    workSheet.Cells[row1 + 2, 4].Value = objItm.ItemName;
+                                                    workSheet.Cells[row1 + 2, 4].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                                                    workSheet.Cells[row1 + 2, 4].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                                                    workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                                    workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                                    workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                                    workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                                    workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.WrapText = true;
+
+                                                    decimal Itmstk = Convert.ToDecimal(ItemStock(objItm.ProductItemId));
+                                                    decimal SoldItm = Convert.ToDecimal(SoldItems(objItm.ProductItemId));
+                                                    decimal reminingstk = Itmstk - SoldItm;
+                                                    workSheet.Cells[row1 + 2, 5].Style.Font.Bold = false;
+                                                    workSheet.Cells[row1 + 2, 5].Style.Font.Size = 11;
+                                                    workSheet.Cells[row1 + 2, 5].Value = reminingstk;
+                                                    workSheet.Cells[row1 + 2, 5].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                                                    workSheet.Cells[row1 + 2, 5].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                                                    workSheet.Cells[row1 + 2, 5].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                                    workSheet.Cells[row1 + 2, 5].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                                    workSheet.Cells[row1 + 2, 5].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                                    workSheet.Cells[row1 + 2, 5].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                                    workSheet.Cells[row1 + 2, 5].Style.WrapText = false;
+                                                    row1 = row1 + 1;
+                                                }
+                                            }
+                                          
                                         }
                                     }
                                 }                               
@@ -860,32 +1037,78 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
                                 foreach (var objItm in lstItmswithoutSub)
                                 {
-                                    workSheet.Cells[row1 + 2, 4].Style.Font.Bold = false;
-                                    workSheet.Cells[row1 + 2, 4].Style.Font.Size = 11;
-                                    workSheet.Cells[row1 + 2, 4].Value = objItm.ItemName;
-                                    workSheet.Cells[row1 + 2, 4].AutoFitColumns(40, 70);
-                                    workSheet.Cells[row1 + 2, 4].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
-                                    workSheet.Cells[row1 + 2, 4].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                                    workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                    workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                    workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                    workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                    workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.WrapText = true;
+                                    var objUnitType = _db.tbl_Units.Where(x => x.UnitId == objItm.UnitType).FirstOrDefault();
+                                    long VaritnStockId = 0;
+                                    if (objUnitType != null)
+                                    {
+                                        if (objUnitType.UnitName.ToLower().Contains("sheet") || objUnitType.UnitName.ToLower().Contains("piece"))
+                                        {
+                                            var lstItmm = _db.tbl_ItemVariant.Where(o => o.ProductItemId == objItm.ProductItemId && (o.IsDeleted == null || o.IsDeleted == false)).ToList();
+                                            if (lstItmm != null && lstItmm.Count() > 0)
+                                            {
+                                                foreach (var objj in lstItmm)
+                                                {
+                                                    workSheet.Cells[row1 + 2, 4].Style.Font.Bold = false;
+                                                    workSheet.Cells[row1 + 2, 4].Style.Font.Size = 11;
+                                                    workSheet.Cells[row1 + 2, 4].Value = objItm.ItemName + " - " + objj.UnitQty;
+                                                    workSheet.Cells[row1 + 2, 4].AutoFitColumns(40, 70);
+                                                    workSheet.Cells[row1 + 2, 4].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                                                    workSheet.Cells[row1 + 2, 4].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                                                    workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                                    workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                                    workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                                    workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                                    workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.WrapText = true;
+
+                                                    decimal Itmstk = Convert.ToDecimal(ItemStock(objItm.ProductItemId, objj.VariantItemId));
+                                                    decimal SoldItm = Convert.ToDecimal(SoldItems(objItm.ProductItemId, objj.VariantItemId));
+                                                    decimal reminingstk = Itmstk - SoldItm;
+                                                    workSheet.Cells[row1 + 2, 5].Style.Font.Bold = false;
+                                                    workSheet.Cells[row1 + 2, 5].Style.Font.Size = 11;
+                                                    workSheet.Cells[row1 + 2, 5].Value = reminingstk;
+                                                    workSheet.Cells[row1 + 2, 5].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                                                    workSheet.Cells[row1 + 2, 5].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                                                    workSheet.Cells[row1 + 2, 5].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                                    workSheet.Cells[row1 + 2, 5].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                                    workSheet.Cells[row1 + 2, 5].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                                    workSheet.Cells[row1 + 2, 5].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                                    workSheet.Cells[row1 + 2, 5].Style.WrapText = false;
+                                                    row1 = row1 + 1;
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            workSheet.Cells[row1 + 2, 4].Style.Font.Bold = false;
+                                            workSheet.Cells[row1 + 2, 4].Style.Font.Size = 11;
+                                            workSheet.Cells[row1 + 2, 4].Value = objItm.ItemName;
+                                            workSheet.Cells[row1 + 2, 4].AutoFitColumns(40, 70);
+                                            workSheet.Cells[row1 + 2, 4].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                                            workSheet.Cells[row1 + 2, 4].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                                            workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                            workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                            workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                            workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                            workSheet.Cells[row1 + 2, 1, row1 + 2, 4].Style.WrapText = true;
+
+                                            decimal Itmstk = Convert.ToDecimal(ItemStock(objItm.ProductItemId));
+                                            decimal SoldItm = Convert.ToDecimal(SoldItems(objItm.ProductItemId));
+                                            decimal reminingstk = Itmstk - SoldItm;
+                                            workSheet.Cells[row1 + 2, 5].Style.Font.Bold = false;
+                                            workSheet.Cells[row1 + 2, 5].Style.Font.Size = 11;
+                                            workSheet.Cells[row1 + 2, 5].Value = reminingstk;
+                                            workSheet.Cells[row1 + 2, 5].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
+                                            workSheet.Cells[row1 + 2, 5].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
+                                            workSheet.Cells[row1 + 2, 5].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                                            workSheet.Cells[row1 + 2, 5].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                                            workSheet.Cells[row1 + 2, 5].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                                            workSheet.Cells[row1 + 2, 5].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+                                            workSheet.Cells[row1 + 2, 5].Style.WrapText = false;
+                                            row1 = row1 + 1;
+                                        }
+                                    }
+
                                     
-                                    decimal Itmstk = Convert.ToDecimal(ItemStock(objItm.ProductItemId));
-                                    decimal SoldItm = Convert.ToDecimal(SoldItems(objItm.ProductItemId));
-                                    decimal reminingstk = Itmstk - SoldItm;
-                                    workSheet.Cells[row1 + 2, 5].Style.Font.Bold = false;
-                                    workSheet.Cells[row1 + 2, 5].Style.Font.Size = 11;
-                                    workSheet.Cells[row1 + 2, 5].Value = reminingstk;
-                                    workSheet.Cells[row1 + 2, 5].Style.HorizontalAlignment = ExcelHorizontalAlignment.Left;
-                                    workSheet.Cells[row1 + 2, 5].Style.VerticalAlignment = ExcelVerticalAlignment.Center;
-                                    workSheet.Cells[row1 + 2, 5].Style.Border.Top.Style = ExcelBorderStyle.Thin;
-                                    workSheet.Cells[row1 + 2, 5].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
-                                    workSheet.Cells[row1 + 2, 5].Style.Border.Left.Style = ExcelBorderStyle.Thin;
-                                    workSheet.Cells[row1 + 2, 5].Style.Border.Right.Style = ExcelBorderStyle.Thin;
-                                    workSheet.Cells[row1 + 2, 5].Style.WrapText = false;
-                                    row1 = row1 + 1;
                                 }
                             }
                            // if (lstItmswithSub != null && )
@@ -906,6 +1129,63 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             }
         }
 
-       
+        public ActionResult GetUnitsStockData(int ProductItemId = 0)
+        {
+            string[] kgs = { "50 Grams", "100 Grams", "250 Grams", "500 Grams", "1 Kg", "2 Kg", "5 Kg" };
+            string[] kgsQty = { "0.05", "0.10", "0.25", "0.50", "1", "2", "5" };
+            string[] ltrs = { "50 ml", "100 ml", "250 ml", "500 ml", "1 Ltr", "2 Ltr", "5 Ltr" };
+            string[] ltrsQty = { "0.05", "0.10", "0.25", "0.50", "1", "2", "5" };
+
+            string[] sheets = { "8x4", "7x4", "7x3", "6x4", "6x3" };
+            string[] sheetsqty = { "32", "28", "21", "24", "18" };
+            var objProdItm = _db.tbl_ProductItems.Where(o => o.ProductItemId == ProductItemId).FirstOrDefault();
+            var obj = _db.tbl_Units.Where(x => x.UnitId == objProdItm.UnitType).FirstOrDefault();
+            ViewBag.UntTyp = obj.UnitName;
+            var lstItmVarints = _db.tbl_ItemVariant.Where(o => o.ProductItemId == ProductItemId && (o.IsDeleted == null || o.IsDeleted == false)).ToList();
+            List<VariantItemVM> lstVarintss = new List<VariantItemVM>();
+            if (lstItmVarints != null && lstItmVarints.Count() > 0 && (obj.UnitName.ToLower().Contains("sheet") || obj.UnitName.ToLower().Contains("piece")))
+            {
+                int cnt = 1;
+                foreach (var objvarint in lstItmVarints)
+                {
+                    VariantItemVM objVariant = new VariantItemVM();
+                    objVariant.UnitQtyText = objvarint.UnitQty;
+                    objVariant.PricePercentage = objvarint.PricePecentage.Value;
+                    objVariant.VariantItemId = Convert.ToInt32(objvarint.VariantItemId);
+                    objVariant.IsActive = objvarint.IsActive.Value;
+                    objVariant.VariantImg = objvarint.VariantImage;
+                    objVariant.MRPPrice = objvarint.MRPPrice.HasValue ? objvarint.MRPPrice.Value : 0;
+                    objVariant.CustomerPrice = objvarint.CustomerPrice.HasValue ? objvarint.CustomerPrice.Value : 0;
+                    objVariant.DistributorPrice = objvarint.DistributorPrice.HasValue ? objvarint.DistributorPrice.Value : 0;
+                    if (!obj.UnitName.ToLower().Contains("piece"))
+                    {
+                        if (Array.IndexOf(kgs, objVariant.UnitQtyText) >= 0)
+                        {
+                            int idxxx = Array.IndexOf(kgs, objVariant.UnitQtyText);
+                            decimal qtt = Convert.ToDecimal(kgsQty[idxxx].ToString());
+                            objVariant.UnitQtys = Convert.ToString(qtt);
+                        }
+                        else if (Array.IndexOf(ltrs, objVariant.UnitQtyText) >= 0)
+                        {
+                            int idxxx = Array.IndexOf(ltrs, objVariant.UnitQtyText);
+                            decimal qtt = Convert.ToDecimal(ltrsQty[idxxx].ToString());
+                            objVariant.UnitQtys = Convert.ToString(qtt);
+                        }
+                        else
+                        {
+                            objVariant.UnitQtys = "1";
+                        }
+                    }
+
+                    lstVarintss.Add(objVariant);
+                    cnt = cnt + 1;
+                }
+
+                ViewData["lstVarintss"] = lstVarintss;
+            }
+            ViewBag.ProductItemId = ProductItemId;
+            return PartialView("~/Areas/Admin/Views/Stock/_StockUnitType.cshtml");
+        }
+
     }
 }

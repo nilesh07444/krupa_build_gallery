@@ -776,7 +776,7 @@
                                                 </div>
                                             </div>
                                             <div class="form-row" style="margin-top:15px;margin-bottom:30px;">
-                                                <input id="btnSubmitFeedback" type="button" value="Submit" class="btn btn-solid">
+                                                <input id="btnSubmitFeedback" onclick="SubmitFeedback();" type="button" value="Submit" class="btn btn-solid">
                                             </div>
                                         </form>
                                     </div>
@@ -962,7 +962,7 @@
           }
         }
 
-    $(document).on("click", "#btnSubmitFeedback", function () {
+        function SubmitFeedback() {
 
         $(".clserror").hide();
 
@@ -1037,6 +1037,10 @@
             });
 
         }
+
+        }
+
+    $(document).on("click", "#btnSubmitFeedback", function () {
 
     });
 

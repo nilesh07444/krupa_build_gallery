@@ -306,6 +306,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                                 PancardPhoto = co.PanCardPhoto,
                                                 ShopPhoto = co.ShopPhoto,
                                                 Prefix = cu.Prefix,
+                                                AddharPhoto2 = co.AddharPhoto2,
+                                                ShopPhoto2 = co.ShopPhoto2,
                                                 CreditLimit = co.CreditLimitAmt.HasValue ? co.CreditLimitAmt.Value : 0,
                                                 AmountDue = co.AmountDue.HasValue ? co.AmountDue.Value : 0
                                             }).FirstOrDefault();
@@ -893,6 +895,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                   Prefix = cu.Prefix,
                                   Status = cu.Status.HasValue ? cu.Status.Value : 0,
                                   Reason = cu.Reason,
+                                  AddharPhoto2 = cu.AddharPhoto2,
+                                  ShopPhoto2 = cu.ShopPhoto2,
                                   CancellationChequePhoto = cu.CancellationChequePhoto
                               }).FirstOrDefault();
 
@@ -1004,6 +1008,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         objClientOther.AddharPhoto = objReq.AddharPhoto;
                         objClientOther.ShopName = objReq.ShopName;
                         objClientOther.GSTPhoto = objReq.GSTPhoto;
+                        objClientOther.AddharPhoto2 = objReq.AddharPhoto2;
+                        objClientOther.ShopPhoto2 = objReq.ShopPhoto2;
                         objClientOther.ShopPhoto = objReq.ShopPhoto;
                         objClientOther.DistributorCode = "KBG/" + DateTime.Now.ToString("ddMMyyyy") + "/" + objClient.ClientUserId;
                         _db.tbl_ClientOtherDetails.Add(objClientOther);
@@ -1226,6 +1232,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                                 ShopName = co.ShopName,
                                                 GSTPhoto = co.GSTPhoto,
                                                 PancardPhoto = co.PanCardPhoto,
+                                                AddharPhoto2 = co.AddharPhoto2,
+                                                ShopPhoto2 = co.ShopPhoto2,
                                                 ShopPhoto = co.ShopPhoto,
                                                 Prefix = cu.Prefix,
                                                 BirthDate = co.Dob.HasValue ? co.Dob.Value : DateTime.MinValue,
@@ -1311,7 +1319,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 objclientoth.Addharcardno = addharno;
                 objclientoth.GSTno = gstno;
                 objclientoth.Pancardno = pancardno;
-                objclientoth.ShopName = shopname;
+                objclientoth.ShopName = shopname;                
                 DateTime dt = DateTime.ParseExact(dob, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                 objclientoth.Dob = dt;
                 if (!string.IsNullOrEmpty(shopphotoname))

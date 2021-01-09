@@ -856,13 +856,23 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                 _db.SaveChanges();
                             }
                         }
-
+                        var objProdItm = _db.tbl_ProductItems.Where(o => o.ProductItemId == objitm.ProductItemId).FirstOrDefault();
+                        var objUnitType = _db.tbl_Units.Where(x => x.UnitId == objProdItm.UnitType).FirstOrDefault();
+                        long VaritnStockId = 0;
+                        if (objUnitType != null)
+                        {
+                            if (objUnitType.UnitName.ToLower().Contains("sheet") || objUnitType.UnitName.ToLower().Contains("piece"))
+                            {
+                                VaritnStockId = objitm.VariantItemId.Value;
+                            }
+                        }
                         tbl_StockReport objstkreport = new tbl_StockReport();
                         objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
                         objstkreport.StockDate = DateTime.UtcNow;
                         objstkreport.Qty = Convert.ToInt64(objitm.QtyUsed);
                         objstkreport.IsCredit = true;
                         objstkreport.IsAdmin = false;
+                        objstkreport.VariantItemId = VaritnStockId;
                         objstkreport.CreatedBy = UserId;
                         objstkreport.ItemId = objitm.ProductItemId;
                         objstkreport.Remarks = "Ordered Item Cancelled:" + objitm.OrderId;
@@ -878,11 +888,22 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                     objj.ItemStatus = 5;
                                     objj.IsDelete = true;
                                     objj.UpdatedDate = DateTime.UtcNow;
+                                    var objProdItm1 = _db.tbl_ProductItems.Where(o => o.ProductItemId == objj.ProductItemId).FirstOrDefault();
+                                    var objUnitType1 = _db.tbl_Units.Where(x => x.UnitId == objProdItm1.UnitType).FirstOrDefault();
+                                    long VaritnStockId1 = 0;
+                                    if (objUnitType1 != null)
+                                    {
+                                        if (objUnitType1.UnitName.ToLower().Contains("sheet") || objUnitType1.UnitName.ToLower().Contains("piece"))
+                                        {
+                                            VaritnStockId1 = objj.VariantItemId.Value;
+                                        }
+                                    }
                                     tbl_StockReport objstkreports = new tbl_StockReport();
                                     objstkreports.FinancialYear = clsCommon.GetCurrentFinancialYear();
                                     objstkreports.StockDate = DateTime.UtcNow;
                                     objstkreports.Qty = Convert.ToInt64(objitm.QtyUsed);
                                     objstkreports.IsCredit = true;
+                                    objstkreport.VariantItemId = VaritnStockId1;
                                     objstkreports.IsAdmin = false;
                                     objstkreports.CreatedBy = UserId;
                                     objstkreports.ItemId = objj.ProductItemId;

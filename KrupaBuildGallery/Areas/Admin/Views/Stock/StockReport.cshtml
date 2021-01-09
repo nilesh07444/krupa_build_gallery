@@ -78,15 +78,21 @@
                                 }
                             </select>
                         </div>
+
+                    </div>
+                    <div class="row" style="margin-top:25px;border-bottom: 2px solid #f8f8f9;padding-bottom: 25px;margin-bottom: 10px;">
                         <div class="col-sm-3">
                             <label>Items *</label>
                             <select id="ProductItemId" class="form-control">
                                 <option value="0">-Select Product Item-</option>
                             </select>
                         </div>
-                    </div>
-                    <div class="row" style="margin-top:25px;border-bottom: 2px solid #f8f8f9;padding-bottom: 25px;margin-bottom: 10px;">
-                       
+                        <div class="col-sm-3 clsvaritnss" style="display:none;">
+                            <label>Variants *</label>
+                            <select id="VariantsItem" class="form-control">
+                                <option value="0">-Select Variant-</option>
+                            </select>
+                        </div>
                         <div class="col-sm-3">
                             <label>Start Date *</label>
                             <input class="form-control col-md-8 clsDatePicker text-box single-line valid" id="StartDate" name="StartDate" placeholder="DD/MM/YYY" readonly="readonly" type="text" value="">
@@ -95,8 +101,10 @@
                             <label>End Date *</label>
                             <input class="form-control col-md-8 clsDatePicker text-box single-line valid" id="EndDate" name="EndDate" placeholder="DD/MM/YYY" readonly="readonly" type="text" value="">
                         </div>
+                    </div>
+                    <div class="row" style="margin-top:25px;border-bottom: 2px solid #f8f8f9;padding-bottom: 25px;margin-bottom: 10px;">                     
                         <div class="col-sm-2">
-                            <input type="button" value="View Report" class="btn btn-info" onclick="viewreport();" style="position: absolute; bottom: 0;" />                            
+                            <input type="button" value="View Report" class="btn btn-info" onclick="viewreport();" style="position: absolute; bottom: 0;" />
                         </div>
                         <div class="col-sm-2">
                             <input type="button" value="Export To Excel" class="btn btn-info" onclick="exporttoexcel();" style="position: absolute; bottom: 0;" />
@@ -209,6 +217,42 @@
         }
     });
 
+
+    jQuery(document).on("change", "#ProductItemId", function () {
+
+        var Itmid = jQuery("#ProductItemId option:selected").val();
+        $(".clsvaritnss").hide();
+        if (Itmid != "" && Itmid != null) {
+
+            var URL = '@Url.Action("GetVarintsByItemId", "Stock")';
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: URL + "/" + Itmid,
+                success: function (result) {                 
+                    if (result && result.length > 0) {
+                        var htmlData = "";
+                        result.forEach(element => {
+                            htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
+                        });
+                        $(".clsvaritnss").show();
+                        $("#VariantsItem").html(htmlData);
+                    }
+                    else {
+                        var htmlSubData = "<option value='0'>- Select Variant -</option>";
+                        $("#VariantsItem").html(htmlSubData);
+                    }
+                },
+                error: function (error) {
+                }
+            });
+        }
+        else {
+            var htmlSubData = "<option value='0'>- Select Variant -</option>";
+            $("#VariantsItem").html(htmlSubData);
+        }
+    });
+
     function viewreport() {
         if ($("#ProductItemId").val() == "0") {
             alert("Please select Item");
@@ -219,15 +263,16 @@
             alert("Please select Start Date");
             return false;
         }
+        
 
         if ($("#EndDate").val() == "") {
             alert("Please select End Date");
             return false;
         }
-        $("#dvreport").load("/admin/Stock/GetStockReport?ItemId=" + $("#ProductItemId").val() + "&StartDate=" + $("#StartDate").val() + "&EndDate=" + $("#EndDate").val(), function () {
+        $("#dvreport").load("/admin/Stock/GetStockReport?ItemId=" + $("#ProductItemId").val() + "&VriantId=" + $("#VariantsItem").val() +  "&StartDate=" + $("#StartDate").val() + "&EndDate=" + $("#EndDate").val(), function () {
 
         });
-     
+
     }
 
     function exporttoexcel() {
@@ -247,7 +292,7 @@
             return false;
         }
 
-        $("#export").attr("href", "/admin/Stock/ExportStockReport?ItemId=" + $("#ProductItemId").val() + "&StartDate=" + $("#StartDate").val() + "&EndDate=" + $("#EndDate").val());
+        $("#export").attr("href", "/admin/Stock/ExportStockReport?ItemId=" + $("#ProductItemId").val() + "&VriantId=" + $("#VariantsItem").val() + "&StartDate=" + $("#StartDate").val() + "&EndDate=" + $("#EndDate").val());
         $("#export")[0].click();
     }
 </script>

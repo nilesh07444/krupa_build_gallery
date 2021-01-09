@@ -54,7 +54,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                         VariantId = crt.VariantItemId.Value,
                                         Price = RoleId == 1 ? vr.CustomerPrice.Value : vr.DistributorPrice.Value,
                                     }).OrderByDescending(x => x.CartId).ToList();
-                    lstCartList.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price,RoleId,x.VariantId); x.StockQty = RemainingStock(x.ItemId); });
+                    lstCartList.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price,RoleId,x.VariantId); x.StockQty = RemainingStock(x.ItemId,x.VariantId); });
                 }
                 else
                 {
@@ -75,7 +75,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                         VariantId = crt.VariantItemId.Value,
                                         Price = vr.CustomerPrice.Value
                                     }).OrderByDescending(x => x.CartId).ToList();
-                    lstCartList.ForEach(x => { x.Price = GetOfferPrice(x.ItemId, x.Price,x.VariantId); x.StockQty = RemainingStock(x.ItemId); });
+                    lstCartList.ForEach(x => { x.Price = GetOfferPrice(x.ItemId, x.Price,x.VariantId); x.StockQty = RemainingStock(x.ItemId, x.VariantId); });
                 }
                 response.Data = lstCartList;
             }
@@ -128,7 +128,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                        VariantId = crt.VariantItemId.Value,
                                        Price = RoleId == 1 ? vr.CustomerPrice.Value : vr.DistributorPrice.Value,
                                    }).OrderByDescending(x => x.CartId).ToList();
-                    lstCartList.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price, RoleId, x.VariantId); x.StockQty = RemainingStock(x.ItemId); });
+                    lstCartList.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price, RoleId, x.VariantId); x.StockQty = RemainingStock(x.ItemId, x.VariantId); });
 
                     List<tbl_Cart> lst = _db.tbl_Cart.Where(o => o.ClientUserId == ClientUserId && o.IsCombo == true && o.ComboId > 0).ToList();
 
@@ -196,7 +196,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                        VariantId = crt.VariantItemId.Value,
                                        Price = vr.CustomerPrice.Value
                                    }).OrderByDescending(x => x.CartId).ToList();
-                    lstCartList.ForEach(x => { x.Price = GetOfferPrice(x.ItemId, x.Price, x.VariantId); x.StockQty = RemainingStock(x.ItemId); });
+                    lstCartList.ForEach(x => { x.Price = GetOfferPrice(x.ItemId, x.Price, x.VariantId); x.StockQty = RemainingStock(x.ItemId, x.VariantId); });
 
                     List<tbl_Cart> lst = _db.tbl_Cart.Where(o => o.CartSessionId == cookiesessionval && o.IsCombo == true && o.ComboId > 0).ToList();
 
@@ -272,9 +272,19 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 }
                 long ItemId = objcart.ItemId;
                 long VarintId = objcart.VariantId;
+                var objProdItm = _db.tbl_ProductItems.Where(o => o.ProductItemId == ItemId).FirstOrDefault();
+                var objUnitType = _db.tbl_Units.Where(x => x.UnitId == objProdItm.UnitType).FirstOrDefault();
+                long VaritnStockId = 0;
+                if (objUnitType != null)
+                {
+                    if (objUnitType.UnitName.ToLower().Contains("sheet") || objUnitType.UnitName.ToLower().Contains("piece"))
+                    {
+                        VaritnStockId = VarintId;
+                    }
+                }
                 long UserId = Convert.ToInt64(objcart.ClientUserId);
-                int TotalStk = ItemStock(ItemId);
-                int TotalSold = SoldItems(ItemId);
+                int TotalStk = ItemStock(ItemId, VaritnStockId);
+                int TotalSold = SoldItems(ItemId, VaritnStockId);
                 int InStock = TotalStk - TotalSold;
                 long Qty = objcart.Qty; 
                 string GuidNew = Guid.NewGuid().ToString();
@@ -645,28 +655,50 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             return price;
         }
 
-        public int ItemStock(long ItemId)
+        public int ItemStock(long ItemId, long VariantId)
         {
-            long? TotalStock = _db.tbl_ItemStocks.Where(o => o.IsActive == true && o.IsDelete == false && o.ProductItemId == ItemId).Sum(o => (long?)o.Qty);
+            long? TotalStock = _db.tbl_ItemStocks.Where(o => o.IsActive == true && o.IsDelete == false && o.VariantItemId == VariantId && o.ProductItemId == ItemId).Sum(o => (long?)o.Qty);
             if (TotalStock == null)
             {
                 TotalStock = 0;
             }
             return Convert.ToInt32(TotalStock);
         }
-        public int SoldItems(long ItemId)
+        public int SoldItems(long ItemId,long VariantId)
         {
-            long? TotalSold = _db.tbl_OrderItemDetails.Where(o => o.ProductItemId == ItemId && o.IsDelete == false).Sum(o => (long?)o.QtyUsed.Value);
-            if (TotalSold == null)
+            long? TotalSold = 0;
+            if (VariantId == 0)
             {
-                TotalSold = 0;
+                TotalSold = _db.tbl_OrderItemDetails.Where(o => o.ProductItemId == ItemId && o.IsDelete == false).Sum(o => (long?)o.QtyUsed.Value);
+                if (TotalSold == null)
+                {
+                    TotalSold = 0;
+                }
+            }
+            else
+            {
+                TotalSold = _db.tbl_OrderItemDetails.Where(o => o.ProductItemId == ItemId && o.VariantItemId == VariantId && o.IsDelete == false).Sum(o => (long?)o.QtyUsed.Value);
+                if (TotalSold == null)
+                {
+                    TotalSold = 0;
+                }
             }
             return Convert.ToInt32(TotalSold);
         }
-        public int RemainingStock(long ItemId)
+        public int RemainingStock(long ItemId, long VariantId)
         {
-            long? TotalStock = _db.tbl_ItemStocks.Where(o => o.IsActive == true && o.IsDelete == false && o.ProductItemId == ItemId).Sum(o => (long?)o.Qty);
-            long? TotalSold = _db.tbl_OrderItemDetails.Where(o => o.ProductItemId == ItemId && o.IsDelete == false).Sum(o => (long?)o.QtyUsed.Value);
+            var objProdItm = _db.tbl_ProductItems.Where(o => o.ProductItemId == ItemId).FirstOrDefault();
+            var objUnitType = _db.tbl_Units.Where(x => x.UnitId == objProdItm.UnitType).FirstOrDefault();
+            long VaritnStockId = 0;
+            if (objUnitType != null)
+            {
+                if (objUnitType.UnitName.ToLower().Contains("sheet") || objUnitType.UnitName.ToLower().Contains("piece"))
+                {
+                    VaritnStockId = VariantId;
+                }
+            }
+            long? TotalStock = _db.tbl_ItemStocks.Where(o => o.IsActive == true && o.IsDelete == false && o.VariantItemId == VaritnStockId && o.ProductItemId == ItemId).Sum(o => (long?)o.Qty);
+            long? TotalSold = _db.tbl_OrderItemDetails.Where(o => o.ProductItemId == ItemId && (VaritnStockId == 0 || o.VariantItemId == VaritnStockId) && o.IsDelete == false).Sum(o => (long?)o.QtyUsed.Value);
             if (TotalStock == null)
             {
                 TotalStock = 0;
@@ -712,8 +744,18 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     {
                         long ItemId = objCrt.CartItemId.Value;
                         long UserId = Convert.ToInt64(objCrt.ClientUserId);
-                        int TotalStk = ItemStock(ItemId);
-                        int TotalSold = SoldItems(ItemId);
+                        var objProdItm = _db.tbl_ProductItems.Where(o => o.ProductItemId == ItemId).FirstOrDefault();
+                        var objUnitType = _db.tbl_Units.Where(x => x.UnitId == objProdItm.UnitType).FirstOrDefault();
+                        long VaritnStockId = 0;
+                        if (objUnitType != null)
+                        {
+                            if (objUnitType.UnitName.ToLower().Contains("sheet") || objUnitType.UnitName.ToLower().Contains("piece"))
+                            {
+                                VaritnStockId = objCrt.VariantItemId.Value;
+                            }
+                        }
+                        int TotalStk = ItemStock(ItemId, VaritnStockId);
+                        int TotalSold = SoldItems(ItemId, VaritnStockId);
                         int InStock = TotalStk - TotalSold;
                         long Qty = objcart.Qty;
                         objCrt.CartItemQty = Qty;
@@ -881,7 +923,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                        VariantId = crt.VariantItemId.Value,
                                        Price = RoleId == 1 ? vr.CustomerPrice.Value : vr.DistributorPrice.Value,
                                    }).OrderByDescending(x => x.CartId).ToList();
-                    lstCartList.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price, RoleId, x.VariantId); x.StockQty = RemainingStock(x.ItemId); });
+                    lstCartList.ForEach(x => { x.Price = GetPriceGenral(x.ItemId, x.Price, RoleId, x.VariantId); x.StockQty = RemainingStock(x.ItemId,x.VariantId); });
                 }
                 else
                 {
@@ -901,7 +943,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                                        VariantId = crt.VariantItemId.Value,
                                        Price = vr.CustomerPrice.Value
                                    }).OrderByDescending(x => x.CartId).ToList();
-                    lstCartList.ForEach(x => { x.Price = GetOfferPrice(x.ItemId, x.Price, x.VariantId); x.StockQty = RemainingStock(x.ItemId); });
+                    lstCartList.ForEach(x => { x.Price = GetOfferPrice(x.ItemId, x.Price, x.VariantId); x.StockQty = RemainingStock(x.ItemId,x.VariantId); });
                 }
                 response.Data = lstCartList;
             }
@@ -927,8 +969,18 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 long ItemId = objcart.ItemId;
                 long VarintId = objcart.VariantId;
                 long UserId = Convert.ToInt64(objcart.ClientUserId);
-                int TotalStk = ItemStock(ItemId);
-                int TotalSold = SoldItems(ItemId);
+                var objProdItm = _db.tbl_ProductItems.Where(o => o.ProductItemId == ItemId).FirstOrDefault();
+                var objUnitType = _db.tbl_Units.Where(x => x.UnitId == objProdItm.UnitType).FirstOrDefault();
+                long VaritnStockId = 0;
+                if (objUnitType != null)
+                {
+                    if (objUnitType.UnitName.ToLower().Contains("sheet") || objUnitType.UnitName.ToLower().Contains("piece"))
+                    {
+                        VaritnStockId = VarintId;
+                    }
+                }
+                int TotalStk = ItemStock(ItemId, VaritnStockId);
+                int TotalSold = SoldItems(ItemId, VaritnStockId);
                 int InStock = TotalStk - TotalSold;
                 long Qty = objcart.Qty;
                 string GuidNew = Guid.NewGuid().ToString();
@@ -1058,8 +1110,18 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 {
                     long ItemId = objCrt.CartItemId.Value;
                     long UserId = Convert.ToInt64(objCrt.ClientUserId);
-                    int TotalStk = ItemStock(ItemId);
-                    int TotalSold = SoldItems(ItemId);
+                    var objProdItm = _db.tbl_ProductItems.Where(o => o.ProductItemId == ItemId).FirstOrDefault();
+                    var objUnitType = _db.tbl_Units.Where(x => x.UnitId == objProdItm.UnitType).FirstOrDefault();
+                    long VaritnStockId = 0;
+                    if (objUnitType != null)
+                    {
+                        if (objUnitType.UnitName.ToLower().Contains("sheet") || objUnitType.UnitName.ToLower().Contains("piece"))
+                        {
+                            VaritnStockId = objCrt.VariantItemId.Value;
+                        }
+                    }
+                    int TotalStk = ItemStock(ItemId, VaritnStockId);
+                    int TotalSold = SoldItems(ItemId, VaritnStockId);
                     int InStock = TotalStk - TotalSold;
                     long Qty = objcart.Qty;
 
@@ -1168,8 +1230,18 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     {
                         long ItemId = objcmbs.ProductItemId;
                         long VarintId = objcmbs.VarintId;
-                        int TotalStk = ItemStock(ItemId);
-                        int TotalSold = SoldItems(ItemId);
+                        var objProdItm = _db.tbl_ProductItems.Where(o => o.ProductItemId == ItemId).FirstOrDefault();
+                        var objUnitType = _db.tbl_Units.Where(x => x.UnitId == objProdItm.UnitType).FirstOrDefault();
+                        long VaritnStockId = 0;
+                        if (objUnitType != null)
+                        {
+                            if (objUnitType.UnitName.ToLower().Contains("sheet") || objUnitType.UnitName.ToLower().Contains("piece"))
+                            {
+                                VaritnStockId = VarintId;
+                            }
+                        }
+                        int TotalStk = ItemStock(ItemId, VaritnStockId);
+                        int TotalSold = SoldItems(ItemId, VaritnStockId);
                         int InStock = TotalStk - TotalSold;
                         Qty = qtytemp * objcmbs.Qty;                      
                         if (UserId == 0)

@@ -38,6 +38,7 @@ namespace KrupaBuildGallery
         public string ProductName { get; set; }
         public string SubProductName { get; set; }
         public string ProductItemName { get; set; }
+        public string VariantName { get; set; }
 
         // Additional fields
         public string strCreatedBy { get; set; }
@@ -46,7 +47,7 @@ namespace KrupaBuildGallery
         public DateTime? UpdatedDate { get; set; }
         public int ItemType { get; set; }
         public string FakeStock { get; set; }
-
+        public long FakeStockQty { get; set; }
     }
 
 

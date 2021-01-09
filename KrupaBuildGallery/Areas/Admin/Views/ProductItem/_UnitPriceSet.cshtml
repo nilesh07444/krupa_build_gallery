@@ -19,10 +19,9 @@
     }
 </style>
 @if (lstVarint != null && lstVarint.Count() > 0 && !strunittp.Contains("piece"))
-{
-    <lable class="col-xl-3 col-md-4"></lable>
+{    
     <input type="hidden" value="@strunittp" id="hdnUntType" />
-    <table class="col-xl-8 col-md-8">
+    <table class="col-xl-12 col-md-12">
         <tr>
             <td colspan="4" style="text-align:center;font-size:19px;">
                 Item Variants
@@ -57,6 +56,39 @@
                 <td style="display: none;">
                     Price
                 </td>
+            }
+            @if (strunittp == "sheets")
+            {
+                if (ProdItemId == 0)
+                {
+                    <td>
+                        Qty
+                    </td>
+                    <td>
+                        Fake Stock
+                    </td>
+                }
+                else
+                {
+
+                    <td style="display: none;">
+                        Qty
+                    </td>
+                    <td style="display: none;">
+                        Fake Stock
+                    </td>
+                }
+                <td>Min Qty</td>
+            }
+            else
+            {
+                <td style="display: none;">
+                    Qty
+                </td>
+                <td style="display: none;">
+                    Fake Stock
+                </td>
+                <td style="display: none;">Min Qty</td>
             }
             <td>
                 Image
@@ -105,6 +137,30 @@
                     }
 
                 }
+                @if (strunittp != "sheets" || ProdItemId != 0)
+                {
+                    <td style="display:none;"></td>
+                }
+                else
+                {
+                    <td><input type="number" id="variantqty_@objj.VariantItemId" data-idd="@objj.VariantItemId" style="width:100px;" data-unit="@objj.UnitQtys" placeholder="" name="variantqty_@objj.VariantItemId" /></td>
+                }
+                 @if (strunittp != "sheets" || ProdItemId != 0)
+                {
+                    <td style="display:none;"></td>
+                }
+                else
+                {
+                    <td><input type="number" id="variantfakeqty_@objj.VariantItemId" data-idd="@objj.VariantItemId" style="width:100px;" data-unit="@objj.UnitQtys" placeholder="" name="variantfakeqty_@objj.VariantItemId" /></td>
+                }
+                  @if (strunittp != "sheets")
+                {
+                    <td style="display:none;"></td>
+                }
+                else
+                {
+                    <td><input type="number" id="variantminqty_@objj.VariantItemId" value="@objj.MinQty" data-idd="@objj.VariantItemId" style="width:100px;" data-unit="@objj.UnitQtys" placeholder="" name="variantminqty_@objj.VariantItemId" /></td>
+                }
                 <td>
                     <input type="file" id="variantimg_@objj.VariantItemId" name="variantimg_@objj.VariantItemId" style="width:150px;" />
                     @if (!string.IsNullOrEmpty(objj.VariantImg))
@@ -119,10 +175,9 @@
 }
 else if (strunittp.Contains("piece"))
 {
-
-    <lable class="col-xl-2 col-md-2"></lable>
+        
     <input type="hidden" value="" id="hdnUntType" />
-    <table class="col-xl-10 col-md-10" id="tblvaritn" style="display:block;">
+    <table class="col-xl-12 col-md-12" id="tblvaritn" style="display:block;">
         <tr>
             <td colspan="3" style="text-align:center;font-size:19px;">
                 Item Variants
@@ -143,6 +198,13 @@ else if (strunittp.Contains("piece"))
             <td>
                 Distributor Price
             </td>
+                <td>
+                    Qty
+                </td>               
+                <td>
+                    Fake Stock
+                </td>
+                <td>Min Qty</td>            
             <td>
                 Image
             </td>
@@ -164,6 +226,9 @@ else if (strunittp.Contains("piece"))
         <td><input type="number" id="variantmrpprice_@objj.VariantItemId" data-itmmid="@objj.VariantItemId" style="width:100px;" placeholder="" name="variantmrpprice_@objj.VariantItemId" value="@objj.MRPPrice" /></td>
         <td><input type="number" id="variantcustprice_@objj.VariantItemId" style="width:100px;" placeholder="" name="variantcustprice_@objj.VariantItemId" value="@objj.CustomerPrice" /></td>
         <td><input type="number" id="variantdistriprice_@objj.VariantItemId" style="width:100px;" placeholder="" name="variantdistriprice_@objj.VariantItemId" value="@objj.DistributorPrice" /></td>
+        <td><input type="number" readonly style="width:60px;" /></td>
+        <td><input type="number" readonly style="width:60px;" /></td>
+        <td><input type="number" id="variantminqty_@objj.VariantItemId" style="width:100px;" placeholder="" name="variantminqty_@objj.VariantItemId" value="@objj.MinQty" /></td>
         <td>
             <input type="file" id="variantimg_@objj.VariantItemId" name="variantimg_@objj.VariantItemId" />
             @if (!string.IsNullOrEmpty(objj.VariantImg))
@@ -178,15 +243,18 @@ else if (strunittp.Contains("piece"))
         }
         else
         {
-            <tr>
-                <td><input class="chkkk" style="width:50px;" type="checkbox" name="chkvariant_1" /></td>
-                <td style="width:200px;"><input type="text" value="" name="variantnm_1" id="variantnm_1" /></td>
-                <td><input type="number" id="variantmrpprice_1" style="width:100px;" data-itmmid="1" placeholder="" name="variantmrpprice_1" value="0" /></td>
-                <td><input type="number" id="variantcustprice_1" style="width:100px;" placeholder="" name="variantcustprice_1" value="0" /></td>
-                <td><input type="number" id="variantdistriprice_1" style="width:100px;" placeholder="" name="variantdistriprice_1" value="0" /></td>
-                <td><input type="file" id="variantimg_1" name="variantimg_1" /><input type="hidden" name="hdnvrtn" value="1" /></td>
+    <tr>
+        <td><input class="chkkk" style="width:50px;" type="checkbox" name="chkvariant_1" /></td>
+        <td style="width:200px;"><input type="text" value="" name="variantnm_1" id="variantnm_1" /></td>
+        <td><input type="number" id="variantmrpprice_1" style="width:100px;" data-itmmid="1" placeholder="" name="variantmrpprice_1" value="0" /></td>
+        <td><input type="number" id="variantcustprice_1" style="width:100px;" placeholder="" name="variantcustprice_1" value="0" /></td>
+        <td><input type="number" id="variantdistriprice_1" style="width:100px;" placeholder="" name="variantdistriprice_1" value="0" /></td>
+        <td><input type="number" id="variantqty_1" style="width:60px;" placeholder="" name="variantqty_1" value="0" /></td>
+        <td><input type="number" id="variantfakeqty_1" style="width:60px;" placeholder="" name="variantfakeqty_1" value="0" /></td>
+        <td><input type="number" id="variantminqty_1" style="width:100px;" placeholder="" name="variantminqty_1" value="0" /></td>
+        <td><input type="file" id="variantimg_1" name="variantimg_1" /><input type="hidden" name="hdnvrtn" value="1" /></td>
 
-            </tr>
+    </tr>
 
         }
     </table>
@@ -201,19 +269,41 @@ else if (strunittp.Contains("piece"))
 
 <script>
     var cntvr = parseInt('@LastVrintId');
+    var proitm = '@ProdItemId';
     function AddNewVarint() {
         cntvr = cntvr + 1;
-        var htmls = '<tr id="tr_' + cntvr + '"><td><input style="width:50px;" class="chkkk" type="checkbox" name="chkvariant_' + cntvr + '" /></td>' +
-            '<td style="width:200px;"><input type="text" value="" name="variantnm_' + cntvr + '" id="variantnm_' + cntvr + '" /></td>' +
-            '<td><input type="number" id="variantmrpprice_' + cntvr + '" style="width:100px;" data-itmmid="' + cntvr + '" placeholder="" name="variantmrpprice_' + cntvr + '" value="0" /></td>' +
-            '<td><input type="number" id="variantcustprice_' + cntvr + '" style="width:100px;" placeholder="" name="variantcustprice_' + cntvr + '" value="0" /></td>' +
-            '<td><input type="number" id="variantdistriprice_' + cntvr + '" style="width:100px;" placeholder="" name="variantdistriprice_' + cntvr + '" value="0" /></td>' +
-            '<td><input type="file" id="variantimg_' + cntvr + '" name="variantimg_' + cntvr + '" /></td>' +
-            '<td><a href="javascipt:void(0)" style="color:red" title="Remove" onclick="removeitmm(\'' + cntvr + '\');"><i class="fa fa-trash font-danger"></i></a>' +
-            '<input type="hidden" name="hdnvrtn" value="' + cntvr + '" /></td><tr/>';
+       // if (proitm == '0') {
+            var htmls = '<tr id="tr_' + cntvr + '"><td><input style="width:50px;" class="chkkk" type="checkbox" name="chkvariant_' + cntvr + '" /></td>' +
+                '<td style="width:200px;"><input type="text" value="" name="variantnm_' + cntvr + '" id="variantnm_' + cntvr + '" /></td>' +
+                '<td><input type="number" id="variantmrpprice_' + cntvr + '" style="width:100px;" data-itmmid="' + cntvr + '" placeholder="" name="variantmrpprice_' + cntvr + '" value="0" /></td>' +
+                '<td><input type="number" id="variantcustprice_' + cntvr + '" style="width:100px;" placeholder="" name="variantcustprice_' + cntvr + '" value="0" /></td>' +
+                '<td><input type="number" id="variantdistriprice_' + cntvr + '" style="width:100px;" placeholder="" name="variantdistriprice_' + cntvr + '" value="0" /></td>' +
+                '<td><input type="number" id="variantqty_' + cntvr + '" style="width:60px;" placeholder="" name="variantqty_' + cntvr + '" value="0" /></td>' +
+                '<td><input type="number" id="variantfakeqty_' + cntvr + '" style="width:60px;" placeholder="" name="variantfakeqty_' + cntvr + '" value="0" /></td>' +
+                '<td><input type="number" id="variantminqty_' + cntvr + '" style="width:100px;" placeholder="" name="variantminqty_' + cntvr + '" value="0" /></td>' +
+                '<td><input type="file" id="variantimg_' + cntvr + '" name="variantimg_' + cntvr + '" /></td>' +
+                '<td><a href="javascipt:void(0)" style="color:red" title="Remove" onclick="removeitmm(\'' + cntvr + '\');"><i class="fa fa-trash font-danger"></i></a>' +
+                '<input type="hidden" name="hdnvrtn" value="' + cntvr + '" /></td><tr/>';
 
-        $("#tblvaritn").append(htmls);
+            $("#tblvaritn").append(htmls);
+       // }
+        //else {
+        //    var htmls = '<tr id="tr_' + cntvr + '"><td><input style="width:50px;" class="chkkk" type="checkbox" name="chkvariant_' + cntvr + '" /></td>' +
+        //        '<td style="width:200px;"><input type="text" value="" name="variantnm_' + cntvr + '" id="variantnm_' + cntvr + '" /></td>' +
+        //        '<td><input type="number" id="variantmrpprice_' + cntvr + '" style="width:100px;" data-itmmid="' + cntvr + '" placeholder="" name="variantmrpprice_' + cntvr + '" value="0" /></td>' +
+        //        '<td><input type="number" id="variantcustprice_' + cntvr + '" style="width:100px;" placeholder="" name="variantcustprice_' + cntvr + '" value="0" /></td>' +
+        //        '<td><input type="number" id="variantdistriprice_' + cntvr + '" style="width:100px;" placeholder="" name="variantdistriprice_' + cntvr + '" value="0" /></td>' +
+        //        '<td><input type="number" id="variantqty_' + cntvr + '" style="width:100px;" placeholder="" name="variantminqty_' + cntvr + '" value="0" /></td>' +
+        //        '<td><input type="number" id="variantminqty_' + cntvr + '" style="width:100px;" placeholder="" name="variantminqty_' + cntvr + '" value="0" /></td>' +
+        //        '<td><input type="file" id="variantimg_' + cntvr + '" name="variantimg_' + cntvr + '" /></td>' +
+        //        '<td><a href="javascipt:void(0)" style="color:red" title="Remove" onclick="removeitmm(\'' + cntvr + '\');"><i class="fa fa-trash font-danger"></i></a>' +
+        //        '<input type="hidden" name="hdnvrtn" value="' + cntvr + '" /></td><tr/>';
+
+        //    $("#tblvaritn").append(htmls);
+        //}
+      
     }
+ 
     function removeitmm(id) {
         if ($(".chkkk").length == 1) {
             alert("Minimum 1 Varint Required");

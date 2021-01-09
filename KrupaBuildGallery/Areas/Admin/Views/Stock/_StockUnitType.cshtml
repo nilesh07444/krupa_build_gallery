@@ -1,0 +1,112 @@
+﻿
+@{
+    List<VariantItemVM> lstVarint = ViewData["lstVarintss"] as List<VariantItemVM>;
+    string strunittp = Convert.ToString(ViewBag.UntTyp);
+    strunittp = strunittp.ToLower();
+    int ProdItemId = Convert.ToInt32(ViewBag.ProductItemId);
+    long LastVrintId = 1;
+}
+<style>
+    input:focus {
+        color: #495057;
+        background-color: #fff;
+        border-color: #80bdff;
+        outline: 0;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    }
+
+    #tblvaritn input[type=file] {
+        width: 155px !important;
+    }
+</style>
+@if (lstVarint != null && lstVarint.Count() > 0 && !strunittp.Contains("piece"))
+{
+    <lable class="col-xl-3 col-md-4"></lable>
+    <input type="hidden" value="@strunittp" id="hdnUntType" />
+    <table class="col-xl-8 col-md-8">
+        <tr>
+            <td colspan="2" style="text-align:center;font-size:19px;">
+                Item Variants
+            </td>
+        </tr>
+        <tr>
+            <td style="width:200px;">
+                Units
+            </td>
+            <td>
+                Qty
+            </td>
+            <td>
+                Fake Stock
+            </td>
+        </tr>
+        @foreach (var objj in lstVarint)
+        {
+            string chk = "";
+            if (objj.IsActive == true)
+            {
+                chk = "checked";
+            }
+    <tr>
+        <td style="width:200px;">@objj.UnitQtyText</td>
+        <td><input type="number" id="variantqty_@objj.VariantItemId" data-idd="@objj.VariantItemId" style="width:100px;" data-unit="@objj.UnitQtys" placeholder="" name="variantqty_@objj.VariantItemId" /></td>
+        <td><input type="number" id="variantfakeqty_@objj.VariantItemId" data-idd="@objj.VariantItemId" style="width:100px;" data-unit="@objj.UnitQtys" placeholder="" name="variantfakeqty_@objj.VariantItemId" /></td>
+    </tr>
+        }
+
+    </table>
+}
+else if (strunittp.Contains("piece"))
+{
+
+    <lable class="col-xl-2 col-md-2"></lable>
+    <input type="hidden" value="" id="hdnUntType" />
+    <table class="col-xl-10 col-md-10" id="tblvaritn" style="display:block;">
+        <tr>
+            <td colspan="2" style="text-align:center;font-size:19px;">
+                Item Variants
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Units
+            </td>
+            <td>
+                Qty
+            </td>
+            <td>
+                Fake Stock
+            </td>
+        </tr>
+        @if (lstVarint != null && lstVarint.Count() > 0)
+        {
+            foreach (var objj in lstVarint)
+            {
+                LastVrintId = objj.VariantItemId;
+                string chk = "";
+                if (objj.IsActive == true)
+                {
+                    chk = "checked";
+                }
+    <tr id="tr_@objj.VariantItemId">
+        <td style="width:200px;"><input type="text" value="@objj.UnitQtyText" name="variantnm_@objj.VariantItemId" id="variantnm_@objj.VariantItemId" /></td>
+        <td><input type="number" id="variantqty_@objj.VariantItemId" data-idd="@objj.VariantItemId" style="width:100px;" data-unit="@objj.UnitQtys" placeholder="" name="variantqty_@objj.VariantItemId" /></td>
+        <td><input type="number" id="variantfakeqty_@objj.VariantItemId" data-idd="@objj.VariantItemId" style="width:100px;" data-unit="@objj.UnitQtys" placeholder="" name="variantfakeqty_@objj.VariantItemId" /></td>
+        
+    </tr>
+            }
+        }
+     
+    </table>
+    <div class="col-xl-3 col-md-3"></div>  
+    if (ProdItemId == 0)
+    {
+
+    }
+
+}
+
+<script>
+    var cntvr = parseInt('@LastVrintId');
+    var proitm = '@ProdItemId';  
+</script>

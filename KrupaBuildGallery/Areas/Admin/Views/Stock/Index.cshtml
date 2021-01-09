@@ -69,6 +69,7 @@
                             <th>Product Name</th>
                             <th>Sub Product Name</th>
                             <th>Item Name</th>
+                            <th>Variant Name</th>                            
                             <th>Qty</th>
                             <th>Fake Stock</th>
                             <th style="width:10% !important;">Actions</th>
@@ -79,19 +80,16 @@
                         {
                             foreach (ItemStockVM item in Model)
                             {
-                                int fkstk = 0;
-                                if(!string.IsNullOrEmpty(item.FakeStock))
-                                {
-                                    fkstk = Convert.ToInt32(item.FakeStock);
-                                }
+                               
                         <tr class="gradeX">
                             <td style="width:5% !important;">@counter.</td>
                             <td>@item.CategoryName</td>
                             <td>@item.ProductName</td>
                             <td>@item.SubProductName</td>
                             <td>@item.ProductItemName</td>
+                            <td>@item.VariantName</td>                            
                             <td>@item.Quantity</td>
-                            <td>@fkstk</td>
+                            <td>@item.FakeStockQty</td>
                             <td style="width:10% !important;">
                                 @if (IsSA || objPermission.Stock >= (int)ModulePermission.View)
                                 {

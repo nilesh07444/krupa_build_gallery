@@ -637,10 +637,21 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     objCommon.SaveTransaction(objOrderItm.ProductItemId.Value, objOrderItm.OrderDetailId, objOrderItm.OrderId.Value, "Refunded amount to " + amtrefundtext, 0, 0, clsAdminSession.UserID, DateTime.UtcNow, "Accepted Return Item Request Refund");
                     SendMessageSMS(mobilenumber, msgsms);
                     _db.SaveChanges();
+                    var objProdItm = _db.tbl_ProductItems.Where(o => o.ProductItemId == objOrderItm.ProductItemId).FirstOrDefault();
+                    var objUnitType = _db.tbl_Units.Where(x => x.UnitId == objProdItm.UnitType).FirstOrDefault();
+                    long VaritnStockId = 0;
+                    if (objUnitType != null)
+                    {
+                        if (objUnitType.UnitName.ToLower().Contains("sheet") || objUnitType.UnitName.ToLower().Contains("piece"))
+                        {
+                            VaritnStockId = objOrderItm.VariantItemId.Value;
+                        }
+                    }
                     tbl_StockReport objstkreport = new tbl_StockReport();
                     objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
                     objstkreport.StockDate = DateTime.UtcNow;
                     objstkreport.Qty = Convert.ToInt64(objOrderItm.QtyUsed);
+                    objstkreport.VariantItemId = VaritnStockId;
                     objstkreport.IsCredit = true;
                     objstkreport.IsAdmin = false;
                     objstkreport.CreatedBy = clsClientSession.UserID;
@@ -694,11 +705,23 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     objReq.DateModified = DateTime.UtcNow;
                     objReq.ModifiedBy = clsAdminSession.UserID;
                     _db.SaveChanges();
+
+                    var objProdItm = _db.tbl_ProductItems.Where(o => o.ProductItemId == objOrderItm.ProductItemId).FirstOrDefault();
+                    var objUnitType = _db.tbl_Units.Where(x => x.UnitId == objProdItm.UnitType).FirstOrDefault();
+                    long VaritnStockId = 0;
+                    if (objUnitType != null)
+                    {
+                        if (objUnitType.UnitName.ToLower().Contains("sheet") || objUnitType.UnitName.ToLower().Contains("piece"))
+                        {
+                            VaritnStockId = objOrderItm.VariantItemId.Value;
+                        }
+                    }
                     tbl_StockReport objstkreport = new tbl_StockReport();
                     objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
                     objstkreport.StockDate = DateTime.UtcNow;
                     objstkreport.Qty = Convert.ToInt64(objOrderItm.QtyUsed);
                     objstkreport.IsCredit = true;
+                    objstkreport.VariantItemId = VaritnStockId;
                     objstkreport.IsAdmin = false;
                     objstkreport.CreatedBy = clsClientSession.UserID;
                     objstkreport.ItemId = objOrderItm.ProductItemId;

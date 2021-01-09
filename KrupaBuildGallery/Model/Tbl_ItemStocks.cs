@@ -27,5 +27,6 @@ namespace KrupaBuildGallery.Model
         public Nullable<long> UpdatedBy { get; set; }
         public Nullable<System.DateTime> UpdatedDate { get; set; }
         public Nullable<long> FakeStock { get; set; }
+        public Nullable<long> VariantItemId { get; set; }
     }
 }

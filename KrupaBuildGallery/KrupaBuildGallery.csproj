@@ -4324,6 +4324,7 @@
     <Content Include="Areas\Admin\Views\PurchaseDealers\Add.cshtml" />
     <Content Include="Areas\Admin\Views\PurchaseBid\BidReportByItem.cshtml" />
     <Content Include="Areas\Admin\Views\PurchaseBid\_BidReportItemwise.cshtml" />
+    <Content Include="Areas\Admin\Views\Stock\_StockUnitType.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />

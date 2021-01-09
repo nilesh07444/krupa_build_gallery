@@ -869,10 +869,22 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                         objOrderItem.FinalItemPrice = AfterTax;
                                         _db.tbl_OrderItemDetails.Add(objOrderItem);
                                         _db.SaveChanges();
+
+                                        var objProdItm = _db.tbl_ProductItems.Where(o => o.ProductItemId == objOrderItem.ProductItemId).FirstOrDefault();
+                                        var objUnitType = _db.tbl_Units.Where(x => x.UnitId == objProdItm.UnitType).FirstOrDefault();
+                                        long VaritnStockId = 0;
+                                        if (objUnitType != null)
+                                        {
+                                            if (objUnitType.UnitName.ToLower().Contains("sheet") || objUnitType.UnitName.ToLower().Contains("piece"))
+                                            {
+                                                VaritnStockId = objOrderItem.VariantItemId.Value;
+                                            }
+                                        }
                                         tbl_StockReport objstkreport = new tbl_StockReport();
                                         objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
                                         objstkreport.StockDate = DateTime.UtcNow;
                                         objstkreport.Qty = Convert.ToInt64(objOrderItem.QtyUsed);
+                                        objstkreport.VariantItemId = VaritnStockId;
                                         objstkreport.IsCredit = false;
                                         objstkreport.IsAdmin = false;
                                         objstkreport.CreatedBy = clientusrid;
@@ -943,9 +955,20 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 objOrderItem.FinalItemPrice = AfterTax;
                                 _db.tbl_OrderItemDetails.Add(objOrderItem);
                                 _db.SaveChanges();
+                                var objProdItm = _db.tbl_ProductItems.Where(o => o.ProductItemId == objOrderItem.ProductItemId).FirstOrDefault();
+                                var objUnitType = _db.tbl_Units.Where(x => x.UnitId == objProdItm.UnitType).FirstOrDefault();
+                                long VaritnStockId = 0;
+                                if (objUnitType != null)
+                                {
+                                    if (objUnitType.UnitName.ToLower().Contains("sheet") || objUnitType.UnitName.ToLower().Contains("piece"))
+                                    {
+                                        VaritnStockId = objOrderItem.VariantItemId.Value;
+                                    }
+                                }
                                 tbl_StockReport objstkreport = new tbl_StockReport();
                                 objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
                                 objstkreport.StockDate = DateTime.UtcNow;
+                                objstkreport.VariantItemId = VaritnStockId;
                                 objstkreport.Qty = Convert.ToInt64(objOrderItem.QtyUsed);
                                 objstkreport.IsCredit = false;
                                 objstkreport.IsAdmin = false;
@@ -1020,9 +1043,21 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                 objOrderItem.IsFree = true;
                                 _db.tbl_OrderItemDetails.Add(objOrderItem);
                                 _db.SaveChanges();
+
+                                var objProdItm = _db.tbl_ProductItems.Where(o => o.ProductItemId == objOrderItem.ProductItemId).FirstOrDefault();
+                                var objUnitType = _db.tbl_Units.Where(x => x.UnitId == objProdItm.UnitType).FirstOrDefault();
+                                long VaritnStockId = 0;
+                                if (objUnitType != null)
+                                {
+                                    if (objUnitType.UnitName.ToLower().Contains("sheet") || objUnitType.UnitName.ToLower().Contains("piece"))
+                                    {
+                                        VaritnStockId = objOrderItem.VariantItemId.Value;
+                                    }
+                                }
                                 tbl_StockReport objstkreport = new tbl_StockReport();
                                 objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
                                 objstkreport.StockDate = DateTime.UtcNow;
+                                objstkreport.VariantItemId = VaritnStockId;
                                 objstkreport.Qty = Convert.ToInt64(objOrderItem.QtyUsed);
                                 objstkreport.IsCredit = false;
                                 objstkreport.IsAdmin = false;
@@ -1520,9 +1555,20 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                                 objOrderItem.ItemStatus = Convert.ToInt32(OrderStatus.NewOrder);
                                                 _db.tbl_OrderItemDetails.Add(objOrderItem);
                                                 _db.SaveChanges();
+                                                var objProdItm = _db.tbl_ProductItems.Where(o => o.ProductItemId == objOrderItem.ProductItemId).FirstOrDefault();
+                                                var objUnitType = _db.tbl_Units.Where(x => x.UnitId == objProdItm.UnitType).FirstOrDefault();
+                                                long VaritnStockId = 0;
+                                                if (objUnitType != null)
+                                                {
+                                                    if (objUnitType.UnitName.ToLower().Contains("sheet") || objUnitType.UnitName.ToLower().Contains("piece"))
+                                                    {
+                                                        VaritnStockId = objOrderItem.VariantItemId.Value;
+                                                    }
+                                                }
                                                 tbl_StockReport objstkreport = new tbl_StockReport();
                                                 objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
                                                 objstkreport.StockDate = DateTime.UtcNow;
+                                                objstkreport.VariantItemId = VaritnStockId;
                                                 objstkreport.Qty = Convert.ToInt64(objOrderItem.QtyUsed);
                                                 objstkreport.IsCredit = false;
                                                 objstkreport.IsAdmin = false;
@@ -1594,9 +1640,20 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                         objOrderItem.ItemStatus = Convert.ToInt32(OrderStatus.NewOrder);
                                         _db.tbl_OrderItemDetails.Add(objOrderItem);
                                         _db.SaveChanges();
+                                        var objProdItm = _db.tbl_ProductItems.Where(o => o.ProductItemId == objOrderItem.ProductItemId).FirstOrDefault();
+                                        var objUnitType = _db.tbl_Units.Where(x => x.UnitId == objProdItm.UnitType).FirstOrDefault();
+                                        long VaritnStockId = 0;
+                                        if (objUnitType != null)
+                                        {
+                                            if (objUnitType.UnitName.ToLower().Contains("sheet") || objUnitType.UnitName.ToLower().Contains("piece"))
+                                            {
+                                                VaritnStockId = objOrderItem.VariantItemId.Value;
+                                            }
+                                        }
                                         tbl_StockReport objstkreport = new tbl_StockReport();
                                         objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
                                         objstkreport.StockDate = DateTime.UtcNow;
+                                        objstkreport.VariantItemId = VaritnStockId;
                                         objstkreport.Qty = Convert.ToInt64(objOrderItem.QtyUsed);
                                         objstkreport.IsCredit = false;
                                         objstkreport.IsAdmin = false;
@@ -1672,11 +1729,22 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                                         objOrderItem.IsFree = true;
                                         _db.tbl_OrderItemDetails.Add(objOrderItem);
                                         _db.SaveChanges();
+                                        var objProdItm = _db.tbl_ProductItems.Where(o => o.ProductItemId == objOrderItem.ProductItemId).FirstOrDefault();
+                                        var objUnitType = _db.tbl_Units.Where(x => x.UnitId == objProdItm.UnitType).FirstOrDefault();
+                                        long VaritnStockId = 0;
+                                        if (objUnitType != null)
+                                        {
+                                            if (objUnitType.UnitName.ToLower().Contains("sheet") || objUnitType.UnitName.ToLower().Contains("piece"))
+                                            {
+                                                VaritnStockId = objOrderItem.VariantItemId.Value;
+                                            }
+                                        }
                                         tbl_StockReport objstkreport = new tbl_StockReport();
                                         objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
                                         objstkreport.StockDate = DateTime.UtcNow;
                                         objstkreport.Qty = Convert.ToInt64(objOrderItem.QtyUsed);
                                         objstkreport.IsCredit = false;
+                                        objstkreport.VariantItemId = VaritnStockId;
                                         objstkreport.IsAdmin = false;
                                         objstkreport.CreatedBy = clientusrid;
                                         objstkreport.ItemId = objOrderItem.ProductItemId;
@@ -1883,7 +1951,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         {
                             if (objcrt != null)
                             {
-                                int cntremingstk = RemainingStock(objcrt.CartItemId.Value);
+                                int cntremingstk = RemainingStock(objcrt.CartItemId.Value, objcrt.VariantItemId.Value);
                                 decimal qtyy = GetVarintQnty(objcrt.VariantItemId.Value);
                                 if (cntremingstk < (Convert.ToInt32(objcrt.CartItemQty) * qtyy))
                                 {
@@ -1964,10 +2032,20 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             return ReturnMessage;
         }
 
-        public int RemainingStock(long ItemId)
+        public int RemainingStock(long ItemId,long VariantId)
         {
-            long? TotalStock = _db.tbl_ItemStocks.Where(o => o.IsActive == true && o.IsDelete == false && o.ProductItemId == ItemId).Sum(o => (long?)o.Qty);
-            long? TotalSold = _db.tbl_OrderItemDetails.Where(o => o.ProductItemId == ItemId && o.IsDelete == false).Sum(o => (long?)o.QtyUsed.Value);
+            var objProdItm = _db.tbl_ProductItems.Where(o => o.ProductItemId == ItemId).FirstOrDefault();
+            var objUnitType = _db.tbl_Units.Where(x => x.UnitId == objProdItm.UnitType).FirstOrDefault();
+            long VaritnStockId = 0;
+            if (objUnitType != null)
+            {
+                if (objUnitType.UnitName.ToLower().Contains("sheet") || objUnitType.UnitName.ToLower().Contains("piece"))
+                {
+                    VaritnStockId = VariantId;
+                }
+            }
+            long? TotalStock = _db.tbl_ItemStocks.Where(o => o.IsActive == true && o.IsDelete == false && o.VariantItemId == VaritnStockId && o.ProductItemId == ItemId).Sum(o => (long?)o.Qty);
+            long? TotalSold = _db.tbl_OrderItemDetails.Where(o => o.ProductItemId == ItemId && (VaritnStockId == 0 || o.VariantItemId == VaritnStockId) && o.IsDelete == false).Sum(o => (long?)o.QtyUsed.Value);
             if (TotalStock == null)
             {
                 TotalStock = 0;

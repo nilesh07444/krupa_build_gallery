@@ -204,6 +204,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         _db.SaveChanges();
                         string variantpathImg = Server.MapPath("~/Images/VariantMedia/");
                         string strvaritnimg = "";
+                        bool IsVariantStock = false;
                         string[] kgs = { "50 Grams", "100 Grams", "250 Grams", "500 Grams", "1 Kg", "2 Kg", "5 Kg" };
                         string[] kgsQty = { "0.05", "0.10", "0.25", "0.50", "1", "2", "5" };
                         string[] ltrs = { "50 ml", "100 ml", "250 ml", "500 ml", "1 Ltr", "2 Ltr", "5 Ltr" };
@@ -289,6 +290,14 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                     {
                                         objtbl_ItemVariant.IsActive = true;
                                     }
+                                    int variantminqty = 0;
+                                    if (Request.Form["variantminqty_" + kk] != null && !string.IsNullOrEmpty(Request.Form["variantminqty_" + kk]))
+                                    {
+                                        variantminqty = Convert.ToInt32(Request.Form["variantminqty_" + kk].ToString());
+                                    }
+
+
+                                    objtbl_ItemVariant.MinQty = variantminqty;
                                     decimal sqft = Convert.ToDecimal(sheetsqty[k]);
                                     objtbl_ItemVariant.UnitQty = sheets[k];
                                     objtbl_ItemVariant.CustomerPrice = Math.Round(sqft * objProductItem.CustomerPrice, 2);
@@ -300,8 +309,91 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                         objtbl_ItemVariant.VariantImage = strvaritnimg;
                                     }
                                     _db.tbl_ItemVariant.Add(objtbl_ItemVariant);
+                                    _db.SaveChanges();
+                                    int qtystk = 0;
+                                    if (Request.Form["variantqty_" + kk] != null && !string.IsNullOrEmpty(Request.Form["variantqty_" + kk]))
+                                    {
+                                        qtystk = Convert.ToInt32(Request.Form["variantqty_" + kk].ToString());
+                                    }
+
+                                    int fkstk = 0;
+                                    if (Request.Form["variantfakeqty_" + kk] != null && !string.IsNullOrEmpty(Request.Form["variantfakeqty_" + kk]))
+                                    {
+                                        fkstk = Convert.ToInt32(Request.Form["variantfakeqty_" + kk].ToString());
+                                    }
+                                    
+                                    if(qtystk > 0)
+                                    {
+                                        tbl_ItemStocks objItemStock1 = new tbl_ItemStocks();
+                                        objItemStock1.CategoryId = productItemVM.CategoryId;
+                                        objItemStock1.ProductId = productItemVM.ProductId;
+                                        objItemStock1.SubProductId = productItemVM.SubProductId;
+                                        objItemStock1.ProductItemId = objProductItem.ProductItemId;
+                                        objItemStock1.VariantItemId = objtbl_ItemVariant.VariantItemId;
+                                        objItemStock1.Qty = qtystk;
+                                        objItemStock1.FakeStock = 0;
+                                        objItemStock1.IsActive = true;
+                                        objItemStock1.IsDelete = false;
+                                        objItemStock1.CreatedBy = LoggedInUserId;
+                                        objItemStock1.CreatedDate = DateTime.UtcNow;
+                                        objItemStock1.UpdatedBy = LoggedInUserId;
+                                        objItemStock1.UpdatedDate = DateTime.UtcNow;
+                                        _db.tbl_ItemStocks.Add(objItemStock1);
+                                        _db.SaveChanges();
+
+                                        tbl_StockReport objstkreport1 = new tbl_StockReport();
+                                        objstkreport1.FinancialYear = clsCommon.GetCurrentFinancialYear();
+                                        objstkreport1.StockDate = DateTime.UtcNow;
+                                        objstkreport1.Qty = qtystk;
+                                        objstkreport1.VariantItemId = objtbl_ItemVariant.VariantItemId;
+                                        objstkreport1.IsCredit = true;
+                                        objstkreport1.FakeStock = 0;
+                                        objstkreport1.IsAdmin = true;
+                                        objstkreport1.CreatedBy = LoggedInUserId;
+                                        objstkreport1.ItemId = objProductItem.ProductItemId;
+                                        objstkreport1.Remarks = "Opening Stock";
+                                        _db.tbl_StockReport.Add(objstkreport1);
+                                        _db.SaveChanges();                                       
+                                    }
+                                    IsVariantStock = true;
+                                    if (fkstk > 0)
+                                    {
+                                        tbl_ItemStocks objItemStock11 = new tbl_ItemStocks();
+                                        objItemStock11.CategoryId = productItemVM.CategoryId;
+                                        objItemStock11.ProductId = productItemVM.ProductId;
+                                        objItemStock11.SubProductId = productItemVM.SubProductId;
+                                        objItemStock11.ProductItemId = objProductItem.ProductItemId;
+                                        objItemStock11.VariantItemId = objtbl_ItemVariant.VariantItemId;
+                                        objItemStock11.FakeStock = Convert.ToInt64(fkstk);
+                                        objItemStock11.Qty = 0;
+                                        objItemStock11.VariantItemId = 0;
+                                        objItemStock11.IsActive = true;
+                                        objItemStock11.IsDelete = false;
+                                        objItemStock11.CreatedBy = LoggedInUserId;
+                                        objItemStock11.CreatedDate = DateTime.UtcNow;
+                                        objItemStock11.UpdatedBy = LoggedInUserId;
+                                        objItemStock11.UpdatedDate = DateTime.UtcNow;
+                                        _db.tbl_ItemStocks.Add(objItemStock11);
+                                        _db.SaveChanges();
+
+                                        tbl_StockReport objstkreport11 = new tbl_StockReport();
+                                        objstkreport11.FinancialYear = clsCommon.GetCurrentFinancialYear();
+                                        objstkreport11.StockDate = DateTime.UtcNow;
+                                        objstkreport11.Qty = 0;
+                                        objstkreport11.VariantItemId = 0;
+                                        objstkreport11.IsCredit = false;
+                                        objstkreport11.FakeStock = Convert.ToInt64(fkstk);
+                                        objstkreport11.IsAdmin = true;
+                                        objstkreport11.VariantItemId = objtbl_ItemVariant.VariantItemId;
+                                        objstkreport11.CreatedBy = LoggedInUserId;
+                                        objstkreport11.ItemId = objProductItem.ProductItemId;
+                                        objstkreport11.Remarks = "Opening Fake Stock";
+                                        _db.tbl_StockReport.Add(objstkreport11);
+                                        _db.SaveChanges();
+
+                                    }
                                 }
-                                _db.SaveChanges();
+                                
                             }
                             else if (objUnt.UnitName.ToLower().Contains("piece"))
                             {
@@ -322,6 +414,14 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                     {
                                         objtbl_ItemVariant.IsActive = true;
                                     }
+                                    int variantminqty = 0;
+                                    if (Request.Form["variantminqty_" + arryvrntid[kk]] != null && !string.IsNullOrEmpty(Request.Form["variantminqty_" + arryvrntid[kk]]))
+                                    {
+                                        variantminqty = Convert.ToInt32(Request.Form["variantminqty_" + arryvrntid[kk]].ToString());
+                                    }
+
+
+                                    objtbl_ItemVariant.MinQty = variantminqty;
                                     objtbl_ItemVariant.UnitQty = frm["variantnm_" + arryvrntid[kk]].ToString();
                                     objtbl_ItemVariant.CustomerPrice = Math.Round(Convert.ToDecimal(frm["variantcustprice_" + arryvrntid[kk]].ToString()), 2);
                                     objtbl_ItemVariant.DistributorPrice = Math.Round(Convert.ToDecimal(frm["variantdistriprice_" + arryvrntid[kk]].ToString()), 2);
@@ -333,8 +433,90 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                         objtbl_ItemVariant.VariantImage = strvaritnimg1;
                                     }
                                     _db.tbl_ItemVariant.Add(objtbl_ItemVariant);
+                                    _db.SaveChanges();
+                                    int qtystk = 0;
+                                    if (Request.Form["variantqty_" + arryvrntid[kk]] != null && !string.IsNullOrEmpty(Request.Form["variantqty_" + arryvrntid[kk]]))
+                                    {
+                                        qtystk = Convert.ToInt32(Request.Form["variantqty_" + arryvrntid[kk]].ToString());
+                                    }
+                                    if(qtystk > 0)
+                                    {
+                                        tbl_ItemStocks objItemStock1 = new tbl_ItemStocks();
+                                        objItemStock1.CategoryId = productItemVM.CategoryId;
+                                        objItemStock1.ProductId = productItemVM.ProductId;
+                                        objItemStock1.SubProductId = productItemVM.SubProductId;
+                                        objItemStock1.ProductItemId = objProductItem.ProductItemId;
+                                        objItemStock1.VariantItemId = objtbl_ItemVariant.VariantItemId;
+                                        objItemStock1.Qty = qtystk;
+                                        objItemStock1.FakeStock = 0;
+                                        objItemStock1.IsActive = true;
+                                        objItemStock1.IsDelete = false;
+                                        objItemStock1.CreatedBy = LoggedInUserId;
+                                        objItemStock1.CreatedDate = DateTime.UtcNow;
+                                        objItemStock1.UpdatedBy = LoggedInUserId;
+                                        objItemStock1.UpdatedDate = DateTime.UtcNow;
+                                        _db.tbl_ItemStocks.Add(objItemStock1);
+                                        _db.SaveChanges();
+
+                                        tbl_StockReport objstkreport1 = new tbl_StockReport();
+                                        objstkreport1.FinancialYear = clsCommon.GetCurrentFinancialYear();
+                                        objstkreport1.StockDate = DateTime.UtcNow;
+                                        objstkreport1.Qty = qtystk;
+                                        objstkreport1.VariantItemId = objtbl_ItemVariant.VariantItemId;
+                                        objstkreport1.IsCredit = true;
+                                        objstkreport1.FakeStock = 0;
+                                        objstkreport1.IsAdmin = true;
+                                        objstkreport1.CreatedBy = LoggedInUserId;
+                                        objstkreport1.ItemId = objProductItem.ProductItemId;
+                                        objstkreport1.Remarks = "Opening Stock";
+                                        _db.tbl_StockReport.Add(objstkreport1);
+                                        _db.SaveChanges();
+                                    }
+                                
+                                    IsVariantStock = true;
+                                    int fkstk = 0;
+                                    if (Request.Form["variantfakeqty_" + arryvrntid[kk]] != null && !string.IsNullOrEmpty(Request.Form["variantfakeqty_" + arryvrntid[kk]]))
+                                    {
+                                        fkstk = Convert.ToInt32(Request.Form["variantfakeqty_" + arryvrntid[kk]].ToString());
+                                    }
+                                    if (fkstk > 0)
+                                    {
+                                        tbl_ItemStocks objItemStock11 = new tbl_ItemStocks();
+                                        objItemStock11.CategoryId = productItemVM.CategoryId;
+                                        objItemStock11.ProductId = productItemVM.ProductId;
+                                        objItemStock11.SubProductId = productItemVM.SubProductId;
+                                        objItemStock11.ProductItemId = objProductItem.ProductItemId;
+                                        objItemStock11.VariantItemId = objtbl_ItemVariant.VariantItemId;
+                                        objItemStock11.FakeStock = Convert.ToInt64(fkstk);
+                                        objItemStock11.Qty = 0;
+                                        objItemStock11.VariantItemId = 0;
+                                        objItemStock11.IsActive = true;
+                                        objItemStock11.IsDelete = false;
+                                        objItemStock11.CreatedBy = LoggedInUserId;
+                                        objItemStock11.CreatedDate = DateTime.UtcNow;
+                                        objItemStock11.UpdatedBy = LoggedInUserId;
+                                        objItemStock11.UpdatedDate = DateTime.UtcNow;
+                                        _db.tbl_ItemStocks.Add(objItemStock11);
+                                        _db.SaveChanges();
+
+                                        tbl_StockReport objstkreport11 = new tbl_StockReport();
+                                        objstkreport11.FinancialYear = clsCommon.GetCurrentFinancialYear();
+                                        objstkreport11.StockDate = DateTime.UtcNow;
+                                        objstkreport11.Qty = 0;
+                                        objstkreport11.VariantItemId = 0;
+                                        objstkreport11.IsCredit = false;
+                                        objstkreport11.FakeStock = Convert.ToInt64(fkstk);
+                                        objstkreport11.IsAdmin = true;
+                                        objstkreport11.VariantItemId = objtbl_ItemVariant.VariantItemId;
+                                        objstkreport11.CreatedBy = LoggedInUserId;
+                                        objstkreport11.ItemId = objProductItem.ProductItemId;
+                                        objstkreport11.Remarks = "Opening Fake Stock";
+                                        _db.tbl_StockReport.Add(objstkreport11);
+                                        _db.SaveChanges();
+
+                                    }
                                 }
-                                _db.SaveChanges();
+                                
                             }
                             else
                             {
@@ -380,68 +562,75 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                             }
                         }
 
-
-                        tbl_ItemStocks objItemStock = new tbl_ItemStocks();
-                        objItemStock.CategoryId = productItemVM.CategoryId;
-                        objItemStock.ProductId = productItemVM.ProductId;
-                        objItemStock.SubProductId = productItemVM.SubProductId;
-                        objItemStock.ProductItemId = objProductItem.ProductItemId;
-                        objItemStock.Qty = Convert.ToInt64(productItemVM.InitialQty);
-                        objItemStock.FakeStock = 0;
-                        objItemStock.IsActive = true;
-                        objItemStock.IsDelete = false;
-                        objItemStock.CreatedBy = LoggedInUserId;
-                        objItemStock.CreatedDate = DateTime.UtcNow;
-                        objItemStock.UpdatedBy = LoggedInUserId;
-                        objItemStock.UpdatedDate = DateTime.UtcNow;
-                        _db.tbl_ItemStocks.Add(objItemStock);
-                        _db.SaveChanges();
-                                              
-                        tbl_StockReport objstkreport = new tbl_StockReport();
-                        objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
-                        objstkreport.StockDate = DateTime.UtcNow;
-                        objstkreport.Qty = Convert.ToInt64(productItemVM.InitialQty);
-                        objstkreport.IsCredit = false;
-                        objstkreport.FakeStock = 0;
-                        objstkreport.IsAdmin = true;
-                        objstkreport.CreatedBy = LoggedInUserId;
-                        objstkreport.ItemId = objProductItem.ProductItemId;
-                        objstkreport.Remarks = "Opening Stock";
-                        _db.tbl_StockReport.Add(objstkreport);
-                        _db.SaveChanges();
-
-                        if (!string.IsNullOrEmpty(productItemVM.FakeStock))
+                        if(IsVariantStock == false)
                         {
-                            tbl_ItemStocks objItemStock1 = new tbl_ItemStocks();
-                            objItemStock1.CategoryId = productItemVM.CategoryId;
-                            objItemStock1.ProductId = productItemVM.ProductId;
-                            objItemStock1.SubProductId = productItemVM.SubProductId;
-                            objItemStock1.ProductItemId = objProductItem.ProductItemId;
-                            objItemStock1.FakeStock = Convert.ToInt64(productItemVM.FakeStock);
-                            objItemStock1.Qty = 0;
+                            tbl_ItemStocks objItemStock = new tbl_ItemStocks();
+                            objItemStock.CategoryId = productItemVM.CategoryId;
+                            objItemStock.ProductId = productItemVM.ProductId;
+                            objItemStock.SubProductId = productItemVM.SubProductId;
+                            objItemStock.ProductItemId = objProductItem.ProductItemId;
+                            objItemStock.Qty = Convert.ToInt64(productItemVM.InitialQty);
+                            objItemStock.VariantItemId = 0;
+                            objItemStock.FakeStock = 0;
                             objItemStock.IsActive = true;
                             objItemStock.IsDelete = false;
                             objItemStock.CreatedBy = LoggedInUserId;
                             objItemStock.CreatedDate = DateTime.UtcNow;
                             objItemStock.UpdatedBy = LoggedInUserId;
                             objItemStock.UpdatedDate = DateTime.UtcNow;
-                            _db.tbl_ItemStocks.Add(objItemStock1);
+                            _db.tbl_ItemStocks.Add(objItemStock);
                             _db.SaveChanges();
 
-                            tbl_StockReport objstkreport1 = new tbl_StockReport();
-                            objstkreport1.FinancialYear = clsCommon.GetCurrentFinancialYear();
-                            objstkreport1.StockDate = DateTime.UtcNow;
-                            objstkreport1.Qty = 0;
-                            objstkreport1.IsCredit = false;                            
-                            objstkreport1.FakeStock = Convert.ToInt64(productItemVM.FakeStock);
-                            objstkreport1.IsAdmin = true;
-                            objstkreport1.CreatedBy = LoggedInUserId;
-                            objstkreport1.ItemId = objProductItem.ProductItemId;
-                            objstkreport1.Remarks = "Opening Fake Stock";
-                            _db.tbl_StockReport.Add(objstkreport1);
+                            tbl_StockReport objstkreport = new tbl_StockReport();
+                            objstkreport.FinancialYear = clsCommon.GetCurrentFinancialYear();
+                            objstkreport.StockDate = DateTime.UtcNow;
+                            objstkreport.Qty = Convert.ToInt64(productItemVM.InitialQty);
+                            objstkreport.IsCredit = true;
+                            objstkreport.VariantItemId = 0;
+                            objstkreport.FakeStock = 0;
+                            objstkreport.IsAdmin = true;
+                            objstkreport.CreatedBy = LoggedInUserId;
+                            objstkreport.ItemId = objProductItem.ProductItemId;
+                            objstkreport.Remarks = "Opening Stock";
+                            _db.tbl_StockReport.Add(objstkreport);
                             _db.SaveChanges();
 
+                            if (!string.IsNullOrEmpty(productItemVM.FakeStock))
+                            {
+                                tbl_ItemStocks objItemStock1 = new tbl_ItemStocks();
+                                objItemStock1.CategoryId = productItemVM.CategoryId;
+                                objItemStock1.ProductId = productItemVM.ProductId;
+                                objItemStock1.SubProductId = productItemVM.SubProductId;
+                                objItemStock1.ProductItemId = objProductItem.ProductItemId;
+                                objItemStock1.FakeStock = Convert.ToInt64(productItemVM.FakeStock);
+                                objItemStock1.Qty = 0;
+                                objItemStock1.VariantItemId = 0;
+                                objItemStock1.IsActive = true;
+                                objItemStock1.IsDelete = false;
+                                objItemStock1.CreatedBy = LoggedInUserId;
+                                objItemStock1.CreatedDate = DateTime.UtcNow;
+                                objItemStock1.UpdatedBy = LoggedInUserId;
+                                objItemStock1.UpdatedDate = DateTime.UtcNow;
+                                _db.tbl_ItemStocks.Add(objItemStock1);
+                                _db.SaveChanges();
+
+                                tbl_StockReport objstkreport1 = new tbl_StockReport();
+                                objstkreport1.FinancialYear = clsCommon.GetCurrentFinancialYear();
+                                objstkreport1.StockDate = DateTime.UtcNow;
+                                objstkreport1.Qty = 0;
+                                objstkreport1.VariantItemId = 0;
+                                objstkreport1.IsCredit = false;
+                                objstkreport1.FakeStock = Convert.ToInt64(productItemVM.FakeStock);
+                                objstkreport1.IsAdmin = true;
+                                objstkreport1.CreatedBy = LoggedInUserId;
+                                objstkreport1.ItemId = objProductItem.ProductItemId;
+                                objstkreport1.Remarks = "Opening Fake Stock";
+                                _db.tbl_StockReport.Add(objstkreport1);
+                                _db.SaveChanges();
+
+                            }
                         }
+                     
 
 
                         //productItemVM = new ProductItemVM();
@@ -710,8 +899,14 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                             {
                                                 objtbl_ItemVariant.IsActive = true;
                                             }
+                                            int variantminqty = 0;
+                                            if (Request.Form["variantminqty_" + kk] != null && !string.IsNullOrEmpty(Request.Form["variantminqty_" + kk]))
+                                            {
+                                                variantminqty = Convert.ToInt32(Request.Form["variantminqty_" + kk].ToString());
+                                            }
                                             decimal sqft = Convert.ToDecimal(sheetsqty[k]);
                                             objtbl_ItemVariant.UnitQty = sheets[k];
+                                            objtbl_ItemVariant.MinQty = variantminqty;
                                             objtbl_ItemVariant.CustomerPrice = Math.Round(sqft * objProductItem.CustomerPrice, 2);
                                             objtbl_ItemVariant.DistributorPrice = Math.Round(sqft * objProductItem.DistributorPrice, 2);
                                             objtbl_ItemVariant.PricePecentage = 100;
@@ -756,10 +951,16 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                         }
                                         objtbl_ItemVariant.ProductItemId = objProductItem.ProductItemId;
                                         objtbl_ItemVariant.IsActive = false;
+                                        int variantminqty = 0;
+                                        if (Request.Form["variantminqty_" + arryvrntid[kk]] != null && !string.IsNullOrEmpty(Request.Form["variantminqty_" + arryvrntid[kk]]))
+                                        {
+                                            variantminqty = Convert.ToInt32(Request.Form["variantminqty_" + arryvrntid[kk]].ToString());
+                                        }
                                         if (Request.Form["chkvariant_" + arryvrntid[kk]] != null)
                                         {
                                             objtbl_ItemVariant.IsActive = true;
                                         }
+                                        objtbl_ItemVariant.MinQty = variantminqty;
                                         objtbl_ItemVariant.UnitQty = frm["variantnm_" + arryvrntid[kk]].ToString();
                                         objtbl_ItemVariant.CustomerPrice = Math.Round(Convert.ToDecimal(frm["variantcustprice_" + arryvrntid[kk]].ToString()), 2);
                                         objtbl_ItemVariant.DistributorPrice = Math.Round(Convert.ToDecimal(frm["variantdistriprice_" + arryvrntid[kk]].ToString()), 2);
@@ -769,6 +970,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                         {
                                             objtbl_ItemVariant.VariantImage = strvaritnimg1;
                                         }
+                                        _db.SaveChanges();
                                     }
                                     else
                                     {
@@ -787,17 +989,103 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                         {
                                             objtbl_ItemVariant1.IsActive = true;
                                         }
+                                        int variantminqty = 0;
+                                        if (Request.Form["variantminqty_" + arryvrntid[kk]] != null && !string.IsNullOrEmpty(Request.Form["variantminqty_" + arryvrntid[kk]]))
+                                        {
+                                            variantminqty = Convert.ToInt32(Request.Form["variantminqty_" + arryvrntid[kk]].ToString());
+                                        }
                                         objtbl_ItemVariant1.UnitQty = frm["variantnm_" + arryvrntid[kk]].ToString();
                                         objtbl_ItemVariant1.CustomerPrice = Math.Round(Convert.ToDecimal(frm["variantcustprice_" + arryvrntid[kk]].ToString()), 2);
                                         objtbl_ItemVariant1.DistributorPrice = Math.Round(Convert.ToDecimal(frm["variantdistriprice_" + arryvrntid[kk]].ToString()), 2);
                                         objtbl_ItemVariant1.MRPPrice = Math.Round(Convert.ToDecimal(frm["variantmrpprice_" + arryvrntid[kk]].ToString()), 2);
                                         objtbl_ItemVariant1.PricePecentage = 100;
+                                        objtbl_ItemVariant1.MinQty = variantminqty;
                                         objtbl_ItemVariant1.CreatedDate = DateTime.UtcNow;
                                         if (!string.IsNullOrEmpty(strvaritnimg1))
                                         {
                                             objtbl_ItemVariant1.VariantImage = strvaritnimg1;
                                         }
                                         _db.tbl_ItemVariant.Add(objtbl_ItemVariant1);
+                                        _db.SaveChanges();
+                                        int qtystk = 0;
+                                        if (Request.Form["variantqty_" + arryvrntid[kk]] != null && !string.IsNullOrEmpty(Request.Form["variantqty_" + arryvrntid[kk]]))
+                                        {
+                                            qtystk = Convert.ToInt32(Request.Form["variantqty_" + arryvrntid[kk]].ToString());
+                                        }
+                                        if (qtystk > 0)
+                                        {
+                                            tbl_ItemStocks objItemStock1 = new tbl_ItemStocks();
+                                            objItemStock1.CategoryId = productItemVM.CategoryId;
+                                            objItemStock1.ProductId = productItemVM.ProductId;
+                                            objItemStock1.SubProductId = productItemVM.SubProductId;
+                                            objItemStock1.ProductItemId = objProductItem.ProductItemId;
+                                            objItemStock1.VariantItemId = objtbl_ItemVariant1.VariantItemId;
+                                            objItemStock1.Qty = qtystk;
+                                            objItemStock1.FakeStock = 0;
+                                            objItemStock1.IsActive = true;
+                                            objItemStock1.IsDelete = false;
+                                            objItemStock1.CreatedBy = LoggedInUserId;
+                                            objItemStock1.CreatedDate = DateTime.UtcNow;
+                                            objItemStock1.UpdatedBy = LoggedInUserId;
+                                            objItemStock1.UpdatedDate = DateTime.UtcNow;
+                                            _db.tbl_ItemStocks.Add(objItemStock1);
+                                            _db.SaveChanges();
+
+                                            tbl_StockReport objstkreport1 = new tbl_StockReport();
+                                            objstkreport1.FinancialYear = clsCommon.GetCurrentFinancialYear();
+                                            objstkreport1.StockDate = DateTime.UtcNow;
+                                            objstkreport1.Qty = qtystk;
+                                            objstkreport1.VariantItemId = objtbl_ItemVariant1.VariantItemId;
+                                            objstkreport1.IsCredit = true;
+                                            objstkreport1.FakeStock = 0;
+                                            objstkreport1.IsAdmin = true;
+                                            objstkreport1.CreatedBy = LoggedInUserId;
+                                            objstkreport1.ItemId = objProductItem.ProductItemId;
+                                            objstkreport1.Remarks = "Opening Stock";
+                                            _db.tbl_StockReport.Add(objstkreport1);
+                                            _db.SaveChanges();
+                                        }
+                                        int fkstk = 0;
+                                        if (Request.Form["variantfakeqty_" + arryvrntid[kk]] != null && !string.IsNullOrEmpty(Request.Form["variantfakeqty_" + arryvrntid[kk]]))
+                                        {
+                                            fkstk = Convert.ToInt32(Request.Form["variantfakeqty_" + arryvrntid[kk]].ToString());
+                                        }
+                                        if (fkstk > 0)
+                                        {
+                                            tbl_ItemStocks objItemStock11 = new tbl_ItemStocks();
+                                            objItemStock11.CategoryId = productItemVM.CategoryId;
+                                            objItemStock11.ProductId = productItemVM.ProductId;
+                                            objItemStock11.SubProductId = productItemVM.SubProductId;
+                                            objItemStock11.ProductItemId = objProductItem.ProductItemId;
+                                            objItemStock11.VariantItemId = objtbl_ItemVariant1.VariantItemId;
+                                            objItemStock11.FakeStock = Convert.ToInt64(fkstk);
+                                            objItemStock11.Qty = 0;
+                                            objItemStock11.VariantItemId = 0;
+                                            objItemStock11.IsActive = true;
+                                            objItemStock11.IsDelete = false;
+                                            objItemStock11.CreatedBy = LoggedInUserId;
+                                            objItemStock11.CreatedDate = DateTime.UtcNow;
+                                            objItemStock11.UpdatedBy = LoggedInUserId;
+                                            objItemStock11.UpdatedDate = DateTime.UtcNow;
+                                            _db.tbl_ItemStocks.Add(objItemStock11);
+                                            _db.SaveChanges();
+
+                                            tbl_StockReport objstkreport11 = new tbl_StockReport();
+                                            objstkreport11.FinancialYear = clsCommon.GetCurrentFinancialYear();
+                                            objstkreport11.StockDate = DateTime.UtcNow;
+                                            objstkreport11.Qty = 0;
+                                            objstkreport11.VariantItemId = 0;
+                                            objstkreport11.IsCredit = false;
+                                            objstkreport11.FakeStock = Convert.ToInt64(fkstk);
+                                            objstkreport11.IsAdmin = true;
+                                            objstkreport11.VariantItemId = objtbl_ItemVariant1.VariantItemId;
+                                            objstkreport11.CreatedBy = LoggedInUserId;
+                                            objstkreport11.ItemId = objProductItem.ProductItemId;
+                                            objstkreport11.Remarks = "Opening Fake Stock";
+                                            _db.tbl_StockReport.Add(objstkreport11);
+                                            _db.SaveChanges();
+
+                                        }
                                     }
                                 }
                                 _db.SaveChanges();
@@ -992,6 +1280,37 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             if (TotalSold == null)
             {
                 TotalSold = 0;
+            }
+            return Convert.ToInt32(TotalSold);
+        }
+
+        public int ItemStock(long ItemId,long VariantId)
+        {
+            long? TotalStock = _db.tbl_ItemStocks.Where(o => o.IsActive == true && o.IsDelete == false && o.VariantItemId == VariantId && o.ProductItemId == ItemId).Sum(o => (long?)o.Qty);
+            if (TotalStock == null)
+            {
+                TotalStock = 0;
+            }
+            return Convert.ToInt32(TotalStock);
+        }
+        public int SoldItems(long ItemId, long VariantId)
+        {
+            long? TotalSold = 0;
+            if (VariantId == 0)
+            {
+                TotalSold = _db.tbl_OrderItemDetails.Where(o => o.ProductItemId == ItemId && o.IsDelete == false).Sum(o => (long?)o.QtyUsed.Value);
+                if (TotalSold == null)
+                {
+                    TotalSold = 0;
+                }
+            }
+            else
+            {
+                TotalSold = _db.tbl_OrderItemDetails.Where(o => o.ProductItemId == ItemId && o.VariantItemId == VariantId && o.IsDelete == false).Sum(o => (long?)o.QtyUsed.Value);
+                if (TotalSold == null)
+                {
+                    TotalSold = 0;
+                }
             }
             return Convert.ToInt32(TotalSold);
         }
@@ -1207,6 +1526,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         }
 
                         objVariant.IsActive = objvarint.IsActive.Value;
+                        objVariant.MinQty = objvarint.MinQty.HasValue ? objvarint.MinQty.Value : 0;
                         objVariant.VariantImg = objvarint.VariantImage;
                         objVariant.MRPPrice = objvarint.MRPPrice.HasValue ? objvarint.MRPPrice.Value : 0;
                         objVariant.CustomerPrice = objvarint.CustomerPrice.HasValue ? objvarint.CustomerPrice.Value : 0;
@@ -1475,6 +1795,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         public ActionResult MinimumStockReport()
         {
             List<ProductItemVM> lstProductItem = new List<ProductItemVM>();
+            List<ProductItemVM> lstProductItemNew = new List<ProductItemVM>();
 
             try
             {              
@@ -1494,6 +1815,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                       CategoryName = c.CategoryName,
                                       ProductName = p.ProductName,
                                       SubProductName = s.SubProductName,
+                                      UnitType = i.UnitType.Value,
                                       MainImage = i.MainImage,
                                       MinimumQty = i.MinimumStock.HasValue ? i.MinimumStock.Value : 0,
                                       MRPPrice = i.MRPPrice,
@@ -1503,12 +1825,62 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                   }).OrderByDescending(x => x.ProductItemId).ToList();
                 if (lstProductItem != null && lstProductItem.Count() > 0)
                 {
-                    lstProductItem.ForEach(x => { x.Sold = SoldItems(x.ProductItemId); x.InStock = ItemStock(x.ProductItemId) - x.Sold; });
+
+                    foreach(var obj in lstProductItem)
+                    {
+                        var objUnitType = _db.tbl_Units.Where(x => x.UnitId == obj.UnitType).FirstOrDefault();
+                        long VaritnStockId = 0;
+                        if (objUnitType != null)
+                        {
+                            if (objUnitType.UnitName.ToLower().Contains("sheet") || objUnitType.UnitName.ToLower().Contains("piece"))
+                            {
+                                var lstVaritnts = _db.tbl_ItemVariant.Where(o => o.ProductItemId == obj.ProductItemId && (o.IsDeleted == null || o.IsDeleted == false)).ToList();
+                                if(lstVaritnts != null && lstVaritnts.Count() > 0)
+                                {
+                                    foreach(var oV in lstVaritnts)
+                                    {
+                                        ProductItemVM objNw = new ProductItemVM();
+                                        objNw.ProductItemId = objNw.ProductItemId;
+                                        objNw.CategoryId = obj.CategoryId;
+                                        objNw.ProductId = obj.ProductId;
+                                        objNw.SubProductId = obj.SubProductId;
+                                        objNw.ItemName = obj.ItemName;
+                                        objNw.CategoryName = obj.CategoryName;
+                                        objNw.ProductName = obj.ProductName;
+                                        objNw.SubProductName = obj.SubProductName;
+                                        objNw.UnitType = obj.UnitType;
+                                        objNw.MainImage = obj.MainImage;
+                                        objNw.MinimumQty = obj.MinimumQty;
+                                        objNw.MRPPrice = obj.MRPPrice;
+                                        objNw.CustomerPrice = obj.CustomerPrice;
+                                        objNw.DistributorPrice = obj.DistributorPrice;
+                                        objNw.IsActive = obj.IsActive;
+                                        objNw.ItemName = obj.ItemName + " - " + oV.UnitQty;
+                                        objNw.Sold = SoldItems(objNw.ProductItemId, oV.VariantItemId);
+                                        objNw.MinimumQty = Convert.ToInt32(oV.MinQty);
+                                        objNw.InStock = ItemStock(objNw.ProductItemId, oV.VariantItemId) - objNw.Sold;
+                                        lstProductItemNew.Add(objNw);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                ProductItemVM objNw = new ProductItemVM();
+                                objNw = obj;
+                                objNw.Sold = SoldItems(objNw.ProductItemId, 0);
+                                objNw.InStock = ItemStock(objNw.ProductItemId, 0) - objNw.Sold;
+                                lstProductItemNew.Add(objNw);
+                            }
+                        }
+                    }
+
+
+                 //   lstProductItem.ForEach(x => { x.Sold = SoldItems(x.ProductItemId); x.InStock = ItemStock(x.ProductItemId) - x.Sold; });
                 }
 
-                lstProductItem = lstProductItem.Where(o => o.InStock <= o.MinimumQty).ToList().OrderBy(x => x.InStock).ToList();
+                lstProductItemNew = lstProductItemNew.Where(o => o.InStock <= o.MinimumQty).ToList().OrderBy(x => x.InStock).ToList();
 
-                ViewData["lstProductItem"] = lstProductItem;
+                ViewData["lstProductItem"] = lstProductItemNew;
             }
             catch (Exception ex)
             {

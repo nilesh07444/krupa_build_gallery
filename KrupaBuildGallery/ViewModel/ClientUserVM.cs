@@ -46,5 +46,7 @@ namespace KrupaBuildGallery.ViewModel
         public decimal PointRemaining { get; set; }
         public DateTime CreatedDate { get; set; }
         public string Refrence { get; set; }
+        public string AddharPhoto2 { get; set; }
+        public string ShopPhoto2 { get; set; }
     }
 }

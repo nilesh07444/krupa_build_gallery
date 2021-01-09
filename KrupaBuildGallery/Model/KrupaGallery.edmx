@@ -280,6 +280,8 @@
           <Property Name="DistributorCode" Type="nvarchar" MaxLength="150" />
           <Property Name="AddharPhoto" Type="nvarchar(max)" />
           <Property Name="ShipGSTNo" Type="nvarchar" MaxLength="100" />
+          <Property Name="AddharPhoto2" Type="nvarchar(max)" />
+          <Property Name="ShopPhoto2" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="tbl_ClientRoles">
           <Key>
@@ -687,6 +689,7 @@
           <Property Name="UpdatedBy" Type="bigint" />
           <Property Name="UpdatedDate" Type="datetime" />
           <Property Name="FakeStock" Type="bigint" />
+          <Property Name="VariantItemId" Type="bigint" />
         </EntityType>
         <EntityType Name="tbl_Itemtext_master">
           <Key>
@@ -712,6 +715,7 @@
           <Property Name="MRPPrice" Type="decimal" Precision="18" Scale="2" />
           <Property Name="VariantImage" Type="nvarchar(max)" />
           <Property Name="IsDeleted" Type="bit" />
+          <Property Name="MinQty" Type="bigint" />
         </EntityType>
         <EntityType Name="tbl_LoginHistory">
           <Key>
@@ -1173,6 +1177,7 @@
           <Property Name="CreatedBy" Type="bigint" />
           <Property Name="IsAdmin" Type="bit" />
           <Property Name="FakeStock" Type="bigint" />
+          <Property Name="VariantItemId" Type="bigint" />
         </EntityType>
         <EntityType Name="tbl_SubProducts">
           <Key>
@@ -1416,6 +1421,8 @@
           <Property Name="DistributorCode" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="AddharPhoto" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="ShipGSTNo" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="AddharPhoto2" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="ShopPhoto2" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="tbl_ClientRoles">
           <Key>
@@ -1560,6 +1567,7 @@
           <Property Name="UpdatedBy" Type="Int64" />
           <Property Name="UpdatedDate" Type="DateTime" Precision="3" />
           <Property Name="FakeStock" Type="Int64" />
+          <Property Name="VariantItemId" Type="Int64" />
         </EntityType>
         <EntityType Name="tbl_Itemtext_master">
           <Key>
@@ -2071,6 +2079,7 @@
           <Property Name="MRPPrice" Type="Decimal" Precision="18" Scale="2" />
           <Property Name="VariantImage" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="IsDeleted" Type="Boolean" />
+          <Property Name="MinQty" Type="Int64" />
         </EntityType>
         <EntityType Name="tbl_Units">
           <Key>
@@ -2245,6 +2254,7 @@
           <Property Name="CreatedBy" Type="Int64" />
           <Property Name="IsAdmin" Type="Boolean" />
           <Property Name="FakeStock" Type="Int64" />
+          <Property Name="VariantItemId" Type="Int64" />
         </EntityType>
         <EntityType Name="tbl_ComboOfferMaster">
           <Key>
@@ -2752,6 +2762,8 @@
           <EntitySetMapping Name="tbl_ClientOtherDetails">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_ClientOtherDetails">
               <MappingFragment StoreEntitySet="tbl_ClientOtherDetails">
+                <ScalarProperty Name="ShopPhoto2" ColumnName="ShopPhoto2" />
+                <ScalarProperty Name="AddharPhoto2" ColumnName="AddharPhoto2" />
                 <ScalarProperty Name="ShipGSTNo" ColumnName="ShipGSTNo" />
                 <ScalarProperty Name="ClientOtherDetailsId" ColumnName="ClientOtherDetailsId" />
                 <ScalarProperty Name="ClientUserId" ColumnName="ClientUserId" />
@@ -2923,6 +2935,7 @@
           <EntitySetMapping Name="tbl_ItemStocks">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_ItemStocks">
               <MappingFragment StoreEntitySet="tbl_ItemStocks">
+                <ScalarProperty Name="VariantItemId" ColumnName="VariantItemId" />
                 <ScalarProperty Name="FakeStock" ColumnName="FakeStock" />
                 <ScalarProperty Name="StockId" ColumnName="StockId" />
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
@@ -3341,6 +3354,7 @@
           <EntitySetMapping Name="tbl_ItemVariant">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_ItemVariant">
               <MappingFragment StoreEntitySet="tbl_ItemVariant">
+                <ScalarProperty Name="MinQty" ColumnName="MinQty" />
                 <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
                 <ScalarProperty Name="VariantImage" ColumnName="VariantImage" />
                 <ScalarProperty Name="MRPPrice" ColumnName="MRPPrice" />
@@ -3527,6 +3541,7 @@
           <EntitySetMapping Name="tbl_StockReport">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_StockReport">
               <MappingFragment StoreEntitySet="tbl_StockReport">
+                <ScalarProperty Name="VariantItemId" ColumnName="VariantItemId" />
                 <ScalarProperty Name="FakeStock" ColumnName="FakeStock" />
                 <ScalarProperty Name="IsAdmin" ColumnName="IsAdmin" />
                 <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
