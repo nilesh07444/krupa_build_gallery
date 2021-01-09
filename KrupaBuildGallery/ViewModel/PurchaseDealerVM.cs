@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace KrupaBuildGallery
 {
@@ -82,5 +83,7 @@ namespace KrupaBuildGallery
 
         public string VisitingCardPhoto2 { get; set; }
         public string Pincode { get; set; }
+
+        public List<SelectListItem> StateList { get; set; }
     }
 }

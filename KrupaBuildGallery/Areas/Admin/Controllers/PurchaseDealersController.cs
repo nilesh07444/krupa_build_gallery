@@ -1,9 +1,11 @@
-﻿using KrupaBuildGallery.Helper;
+﻿using ConstructionDiary.Models;
+using KrupaBuildGallery.Helper;
 using KrupaBuildGallery.Model;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using System;
 using System.Collections.Generic;
+using System.Data.Objects.SqlClient;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -13,6 +15,7 @@ using System.Web.Mvc;
 
 namespace KrupaBuildGallery.Areas.Admin.Controllers
 {
+    [CustomAuthorize]
     public class PurchaseDealersController : Controller
     {
         private readonly krupagallarydbEntities _db;
@@ -556,7 +559,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
             try
             {
-
+                obj.StateList = GetStatesList();
             }
             catch (Exception ex)
             {
@@ -573,6 +576,49 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 IEnumerable<ModelError> allErrors = ModelState.Values.SelectMany(v => v.Errors);
                 if (ModelState.IsValid)
                 {
+
+                    #region Validation
+
+                    // Duplicate EmailId
+                    if (!string.IsNullOrEmpty(objPurchaseDealerVM.Email))
+                    {
+                        var duplicateEmail = _db.tbl_PurchaseDealers.Where(x => x.Email.ToLower() == objPurchaseDealerVM.Email.ToLower()).FirstOrDefault();
+                        if (duplicateEmail != null)
+                        {
+                            objPurchaseDealerVM.StateList = GetStatesList();
+
+                            ModelState.AddModelError("Email", ErrorMessage.EmailExists);
+                            return View(objPurchaseDealerVM);
+                        }
+                    }
+
+                    // Duplicate OwnerContactNo
+                    if (!string.IsNullOrEmpty(objPurchaseDealerVM.OwnerContactNo))
+                    {
+                        var duplicateOwnerContactNo = _db.tbl_PurchaseDealers.Where(x => x.OwnerContactNo.ToLower() == objPurchaseDealerVM.OwnerContactNo.ToLower()).FirstOrDefault();
+                        if (duplicateOwnerContactNo != null)
+                        {
+                            objPurchaseDealerVM.StateList = GetStatesList();
+
+                            ModelState.AddModelError("OwnerContactNo", ErrorMessage.OwnerContactNoExists);
+                            return View(objPurchaseDealerVM);
+                        }
+                    }
+
+                    // Duplicate FirmContactNo
+                    if (!string.IsNullOrEmpty(objPurchaseDealerVM.FirmContactNo))
+                    {
+                        var duplicateFirmContactNo = _db.tbl_PurchaseDealers.Where(x => x.FirmContactNo.ToLower() == objPurchaseDealerVM.FirmContactNo.ToLower()).FirstOrDefault();
+                        if (duplicateFirmContactNo != null)
+                        {
+                            objPurchaseDealerVM.StateList = GetStatesList();
+
+                            ModelState.AddModelError("FirmContactNo", ErrorMessage.FirmContactNoExists);
+                            return View(objPurchaseDealerVM);
+                        }
+                    }
+
+                    #endregion 
 
                     string fileName = string.Empty;
                     string path = Server.MapPath(UsersDocumentsDirectoryPath);
@@ -700,5 +746,15 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return View(objPurchaseDealerVM);
         }
 
+        private List<SelectListItem> GetStatesList()
+        {
+            List<string> lstStates = _db.tbl_PincodeCityState.Select(x => x.State).Distinct().OrderBy(x => x).ToList();
+
+            var GetStatesList = lstStates
+                         .Select(o => new SelectListItem { Value = o, Text = o })
+                         .OrderBy(x => x.Text).ToList();
+
+            return GetStatesList;
+        }
     }
 }
