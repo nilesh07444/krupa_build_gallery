@@ -1,0 +1,85 @@
+﻿@{
+    List<SelectListItem> lstCategoriess = ViewData["catrgories"] as List<SelectListItem>;
+}
+        <td>
+            <a href="javascipt:void(0)" style="color:red" title="Remove" onclick="removesubitem('@ViewBag.Id');"><i class="fa fa-trash font-danger"></i></a>
+        </td>
+        <td class="srno">
+            @ViewBag.Id
+        </td>
+        <td>
+            <select class="form-control PCat" id="Category_@ViewBag.Id" name="SubItemCategory" data-id="@ViewBag.Id" style="width:210px;" >
+                <option value="">- Select -</option>
+                @if (lstCategoriess != null && lstCategoriess.Count() > 0)
+                {
+                    foreach (var objj in lstCategoriess)
+                    {
+                        <option value="@objj.Value">@objj.Text</option>
+                    }
+                }
+            </select>
+        </td>
+        <td>
+            <select class="form-control PPrd" id="Product_@ViewBag.Id" name="SubItemProduct" data-id="@ViewBag.Id" style="width:210px;" >
+                <option value="">- Select -</option>
+            </select>
+        </td>
+        <td>
+            <select class="form-control SPrd" id="SubProduct_@ViewBag.Id" name="SubItemSubProduct" data-id="@ViewBag.Id" style="width:210px;" >
+                <option value="">- Select -</option>
+            </select>
+        </td>
+        <td>
+            <select class="form-control PItm" id="ProductItem_@ViewBag.Id" data-id="@ViewBag.Id" name="SubItemProductItem" style="width:210px;">
+                <option value="">- Select -</option>
+            </select>
+        </td>
+        <td>
+            <select class="form-control VItm" id="VarintItem_@ViewBag.Id" data-id="@ViewBag.Id" name="SubItemVarints" style="width:210px;">
+                <option value="">- Select -</option>
+            </select>
+        </td>
+        <td>
+            <input type="number" value="0" name="Qty" id="Qty_@ViewBag.Id" data-id="@ViewBag.Id" onblur="calamt('@ViewBag.Id');" />
+        </td>
+        <td>
+            <input type="number" value="0" name="Price" id="Prc_@ViewBag.Id" data-id="@ViewBag.Id" onblur="calamt('@ViewBag.Id');"  />
+        </td>
+        <td>
+            <input type="text" value="0" name="FP" id="FP_@ViewBag.Id" data-id="@ViewBag.Id" tabindex="-1" style="pointer-events:none;" />
+        </td>
+        <td>
+            <input type="number" value="0" name="LC" id="LC_@ViewBag.Id" data-id="@ViewBag.Id" onblur="calamt('@ViewBag.Id');"  />
+        </td>
+        <td>
+            <input type="number" value="0" name="EXPM1" id="EXPM1_@ViewBag.Id" data-id="@ViewBag.Id" onblur="calamt('@ViewBag.Id');"  />
+        </td>
+        <td>
+            <input type="text" value="0" name="Total" data-id="@ViewBag.Id" id="Total_@ViewBag.Id" tabindex="-1" style="pointer-events: none;" />
+        </td>
+        <td>
+            <input type="number" value="0" name="TD" id="TD_@ViewBag.Id" data-id="@ViewBag.Id" onblur="calamt('@ViewBag.Id');"  />
+        </td>
+        <td>
+            <input type="number" value="0" name="CD" id="CD_@ViewBag.Id" data-id="@ViewBag.Id" onblur="calamt('@ViewBag.Id');"  />
+        </td>
+        <td>
+            <input type="number" value="0" name="EXPM2" id="EXPM2_@ViewBag.Id" data-id="@ViewBag.Id" onblur="calamt('@ViewBag.Id');"  />
+        </td>
+        <td>
+            <input type="text" value="0" name="BA" data-id="@ViewBag.Id" id="BA_@ViewBag.Id" tabindex="-1" style="pointer-events: none;" />
+        </td>
+        <td>
+            <input type="text" value="0" name="IGST" data-id="@ViewBag.Id" id="IGST_@ViewBag.Id" tabindex="-1" onblur="calamt('@ViewBag.Id');"  />
+        </td>
+        <td>
+            <input type="text" value="0" name="SGST" data-id="@ViewBag.Id" id="SGST_@ViewBag.Id" tabindex="-1" onblur="calamt('@ViewBag.Id');"  />
+        </td>
+        <td>
+            <input type="text" value="0" name="CGST" data-id="@ViewBag.Id" id="CGST_@ViewBag.Id" tabindex="-1" onblur="calamt('@ViewBag.Id');"  />
+        </td>
+        <td>
+            <input type="text" value="0" name="Famt" data-id="@ViewBag.Id" id="Famt_@ViewBag.Id" tabindex="-1" style="pointer-events: none;" />
+        </td>
+  
+

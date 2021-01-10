@@ -1,0 +1,657 @@
+﻿@using KrupaBuildGallery.Model
+@{
+    ViewBag.Title = "Add Purchase";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    List<tbl_PurchaseDealers> lstDealers = ViewData["DealerParty"] as List<tbl_PurchaseDealers>;
+}
+<style>
+    .select_input select {
+        padding: 8px;
+        margin-bottom: 0px;
+    }
+
+    .form-row {
+        margin-bottom: 15px;
+    }
+
+    input:focus {
+        outline-color: black;
+    }
+
+    #PurchaseItems input {
+        width: 90px !important;
+    }
+</style>
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col">
+                    <div class="page-header-left">
+                        <h3>
+                            Add Purchase
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="/admin/purchase">Purchase</a></li>
+                        <li class="breadcrumb-item active">Add Purchase</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Add Purchase</h5>
+                    </div>
+                    <div class="card-body">
+                        @using (Html.BeginForm("Add", "Purchase", FormMethod.Post, new { ID = "theFormId", enctype = "multipart/form-data", autocomplete = "off", @class = "theme-form" }))
+                        {
+                            //      string birthstring = Model.BirthDate.ToString("dd/MM/yyyy");
+                            <div class="form-row">
+                                <div class="col-md-4">
+                                    <label for="billnum">Bill Number</label>
+                                    <input type="text" class="form-control" id="billnum" name="billnum" value="" placeholder="" onblur="checkbillexist();">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-6 select_input">
+                                    <label for="prefix">Party Dealer *</label>
+                                    <select class="form-control" name="partydealer" id="partydealer" required="">
+                                        @if (lstDealers != null && lstDealers.Count() > 0)
+                                        {
+                                            <option value="0">Select</option>
+                                            foreach (var obj in lstDealers)
+                                            {
+                                                <option value="@obj.Pk_Dealer_Id" data-firtname="@obj.FirmName" data-ownername="@obj.OwnerName" data-firmstate="@obj.State" data-firmcity="@obj.FirmCity" data-firmpincode="@obj.Pincode" data-firmcontact="@obj.FirmContactNo" data-firtgst="@obj.FirmGSTNo">@obj.BussinessCode - @obj.FirmName</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="purchasedate">Purchase Date *</label>
+                                    <input type="text" class="form-control" id="purchasedate" name="purchasedate" value="" placeholder="Purchase Date" required="" onblur="checkbillexist();">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-4">
+                                    <label for="firmname">Firm Name</label>
+                                    <input type="text" class="form-control" id="firmname" name="firmname" value="" style="pointer-events:none;" placeholder="">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="ownername">Owner Name</label>
+                                    <input type="text" class="form-control" id="ownername" name="ownername" value="" style="pointer-events:none;" placeholder="">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="firmcontact">Firm Contact Number</label>
+                                    <input type="text" class="form-control" id="firmcontact" name="firmcontact" value="" style="pointer-events:none;" placeholder="">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-4">
+                                    <label for="gstnum">GST Number</label>
+                                    <input type="text" class="form-control" id="gstnum" name="gstnum" value="" style="pointer-events:none;" placeholder="">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="city">City</label>
+                                    <input type="text" class="form-control" id="city" name="city" value="" style="pointer-events:none;" placeholder="">
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="state">State</label>
+                                    <input type="text" class="form-control" id="state" name="state" value="" style="pointer-events:none;" placeholder="">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div style="width:99%;overflow: auto;">
+                                    <table id="PurchaseItems">
+                                        <tr>
+                                            <th>Delete</th>
+                                            <th>Sr.No</th>
+                                            <th>Category</th>
+                                            <th>Product</th>
+                                            <th>SubProduct</th>
+                                            <th>Item</th>
+                                            <th>Variant</th>
+                                            <th>Qty</th>
+                                            <th>Price</th>
+                                            <th>FP</th>
+                                            <th>LC</th>
+                                            <th>ExPM1</th>
+                                            <th>Total</th>
+                                            <th>TD</th>
+                                            <th>CD</th>
+                                            <th>ExPM2</th>
+                                            <th>BA</th>
+                                            <th>IGST</th>
+                                            <th>SGST</th>
+                                            <th>CGST</th>
+                                            <th>FAmt</th>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div>
+                                    <a href="javascript:void(0);" class="btn" onclick="AddSubItem();">Add New Item</a>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-6">
+                                    <label for="remarks" style="vertical-align:top">Remarks</label>
+                                    <textarea id="remarks" name="remarks" style="width:280px;height:100px;"></textarea>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label>Total Amount</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="text" value="" id="txtTotalAmt" name="txtTotalAmt" style="pointer-events:none;" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label>Extra +/-</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="number" value="" id="txtExtra1" name="txtExtra1" onblur="finalcal();" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label>Insurance</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="number" value="" id="txtInsu" name="txtInsu" onblur="finalcal();" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label>TDS</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="number" value="" id="txtTDS" name="txtTDS" onblur="finalcal();" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label>Extra +/-</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="number" value="" id="txtExtra2" name="txtExtra2" onblur="finalcal();" />
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label>Final Bill Amount</label>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <input type="text" value="" id="txtBillAmt" name="txtBillAmt" style="pointer-events:none;" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="col-md-6">
+                                    <button type="button" class="btn btn-primary" onclick="SavePurchase();">Submit</button>
+                                    <button type="button" class="btn btn-danger" id="btnCancel">Cancel</button>
+                                </div>
+                            </div>
+
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+</div>
+<script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/Scripts/prism.min.js"></script>
+<script src="~/Scripts/lightbox.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/select2/3.2/select2.min.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/select2/3.2/select2.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.css" />
+<script>
+    var flgBillExist = false;
+    var jid = 0;
+    $(document).ready(function () {
+        $("#purchasedate").datepicker({
+            format: "dd/mm/yyyy",
+        });
+    });
+    $("#partydealer").select2();
+    function checkdetails() {
+        return true;
+    }
+
+    $("#partydealer").change(function () {
+        $("#firmname").val($("#partydealer option:selected").attr("data-firtname"));
+        $("#ownername").val($("#partydealer option:selected").attr("data-ownername"));
+        $("#firmcontact").val($("#partydealer option:selected").attr("data-firmcontact"));
+        $("#gstnum").val($("#partydealer option:selected").attr("data-firtgst"));
+        $("#city").val($("#partydealer option:selected").attr("data-firmcity"));
+        $("#state").val($("#partydealer option:selected").attr("data-firmstate"));
+        checkbillexist();
+        $(".clsitms").remove();
+        jid = 0;
+        AddSubItem();
+    });
+
+     function AddSubItem() {
+        jid = jid + 1;
+         $("#PurchaseItems").append($("<tr class='clsitms dvsubitm_"+jid+"'>").load('@Url.Action("GetPurchaseItem", "Purchase")' + '?Id=' + jid, function () {
+             finalcal();
+             resetsrno();
+        }));
+    }
+
+    function removesubitem(idds) {
+        $(".dvsubitm_" + idds).remove();
+        resetsrno();
+        finalcal();
+    }
+
+    $(document).ready(function () {
+        AddSubItem();
+        jQuery(document).on("change", ".PCat", function () {
+         var ID = $(this).attr("data-id");
+            var CategoryId = jQuery("#Category_" + ID+" option:selected").val();
+
+        if (CategoryId != "" && CategoryId != null) {
+
+            var URL = '@Url.Action("GetProductListByCategoryId", "SubProduct")';
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: URL + "/" + CategoryId,
+                success: function (result) {
+                    var htmlData = "<option value='0'>-Select Product-</option>";
+                    if (result && result.length > 0) {
+                        result.forEach(element => {
+                            htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
+                        });
+                    }
+                    $("#Product_" + ID).html(htmlData);
+                },
+                error: function (error) {
+                }
+            });
+        }
+       else {
+             var htmlSubData = "<option value='0'>- Select Product -</option>";
+            $("#Product_" + ID).html(htmlSubData);
+        }
+    });
+
+        jQuery(document).on("change", ".PPrd", function () {
+            var ID = $(this).attr("data-id");
+            var ProductId = jQuery("#Product_" + ID+" option:selected").val();
+
+        if (ProductId != "" && ProductId != null) {
+
+            var URL = '@Url.Action("GetSubProductListByProductId", "SubProduct")';
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: URL + "/" + ProductId,
+                success: function (result) {
+                    var htmlData = "<option value='0'>-Select SubProduct-</option>";
+                    if (result && result.length > 0) {
+                        result.forEach(element => {
+                            htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
+                        });
+                    }
+                    $("#SubProduct_" + ID).html(htmlData);
+                },
+                error: function (error) {
+                }
+            });
+        }
+        else {
+             var htmlSubData = "<option value='0'>- Select SubProduct -</option>";
+            $("#SubProduct_" + ID).html(htmlSubData);
+        }
+    });
+
+        jQuery(document).on("change", ".PPrd,.SPrd", function () {
+            var ID = $(this).attr("data-id");
+            var ProductId = jQuery("#Product_" + ID+" option:selected").val();
+            var SubProductId = jQuery("#SubProduct_" + ID+" option:selected").val();
+            var htmlSubDatavrnt = "<option value='0'>- Select Variant Item -</option>";
+            $("#VarintItem_" + ID).html(htmlSubDatavrnt);
+
+        if ((ProductId != "" && ProductId != null) || (SubProductId != "" && SubProductId != null)) {
+            var URL = '@Url.Action("GetItemList", "Stock")';
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: URL + "?ProductId=" + ProductId + "&SubProductId=" + SubProductId,
+                success: function (result) {
+                    var htmlData = "<option value='0'>-Select Product Item-</option>";
+                    if (result && result.length > 0) {
+                        result.forEach(element => {
+                            htmlData += "<option value='" + element.Value + "'> " + element.Text + " </option>";
+                        });
+                    }
+                    $("#ProductItem_" + ID).html(htmlData);
+                },
+                error: function (error) {
+                }
+            });
+        }
+       else {
+            var htmlSubData = "<option value='0'>- Select Product Item -</option>";
+            $("#ProductItem_" + ID).html(htmlSubData);
+        }
+    });
+
+    jQuery(document).on("change", ".PItm", function () {
+        var ID = $(this).attr("data-id");
+        var ItemIdd = jQuery("#ProductItem_" + ID+" option:selected").val();
+        var gstperc = 0;
+        if (ItemIdd != "" && ItemIdd != null) {
+            var URL = '@Url.Action("GetVariantListByItemIdForPurchase", "Purchase")';
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: URL + "/" + ItemIdd,
+                success: function (result) {
+                    var htmlData = "<option value='-1'>-Select Variants-</option>";
+                    if (result && result.length > 0) {
+                        result.forEach(element => {
+                            gstperc = element.GST;
+                            htmlData += "<option value='" + element.VariantItemId + "'> " + element.UnitQtyText + " </option>";
+                        });
+                    }
+                    $("#VarintItem_" + ID).html(htmlData);
+                    if ($("#state").val().toLowerCase() == "gujarat") {
+                        $("#IGST_" + ID).val(0);
+                        $("#SGST_" + ID).val(parseFloat(gstperc)/2);
+                        $("#CGST_" + ID).val(parseFloat(gstperc)/2);
+
+                    }
+                    else {
+                        $("#IGST_" + ID).val(gstperc);
+                        $("#SGST_" + ID).val(0);
+                        $("#CGST_" + ID).val(0);
+                    }
+                    calamt(ID);
+                },
+                error: function (error) {
+                }
+            });
+        }
+        else {
+            var htmlSubData = "<option value='-1'>- Select Variants -</option>";
+            $("#VarintItem_" + ID).html(htmlSubData);
+        }
+    });
+
+    });
+
+    function resetsrno() {
+        var k = 1;
+        $(".srno").each(function () {
+            $(this).html(k);
+            k = k + 1;
+        });
+    }
+
+    function calamt(id) {
+        var qty = 0, price = 0, fp = 0, lc = 0, epm1 = 0, total = 0, td = 0, cd = 0, epm2 = 0, ba = 0, igst = 0,sgst = 0,cgst=0, famt = 0, tdamt = 0, cdamt = 0, igstamt = 0,sgstamt = 0,cgstamt = 0;
+        if ($("#Qty_" + id).val() != "") {
+            qty = parseInt($("#Qty_" + id).val());
+        }
+        if ($("#Prc_" + id).val() != "") {
+            price = parseFloat($("#Prc_" + id).val());
+        }
+        fp = qty * price;
+        fp = parseFloat(fp.toFixed(2));
+        $("#FP_" + id).val(fp);
+        if ($("#LC_" + id).val() != "") {
+            lc = parseFloat($("#LC_" + id).val());
+        }
+        if ($("#EXPM1_" + id).val() != "") {
+            epm1 = parseFloat($("#EXPM1_" + id).val());
+        }
+        total = parseFloat(((fp + lc) + (epm1)));
+        total = parseFloat(total.toFixed(2));
+        $("#Total_" + id).val(total);
+
+        if ($("#TD_" + id).val() != "") {
+            td = parseFloat(parseFloat($("#TD_" + id).val()).toFixed(2));
+        }
+
+        try {
+            tdamt = parseFloat(((total * td) / 100));
+        }
+        catch (e) {
+            tdamt = 0;
+        }
+
+        tdamt = parseFloat(tdamt.toFixed(2));
+
+        if ($("#CD_" + id).val() != "") {
+            cd = parseFloat($("#CD_" + id).val());
+        }
+
+        try {
+            cdamt = (((total - tdamt) * cd) / 100);
+        }
+        catch (e) {
+            cdamt = 0;
+        }
+        cdamt = parseFloat(cdamt.toFixed(2));
+
+        if ($("#EXPM2_" + id).val() != "") {
+            epm2 = parseFloat(parseFloat($("#EXPM2_" + id).val()).toFixed(2));
+        }
+        ba = parseFloat(((total - (tdamt + cdamt)) + (epm2)));
+        ba = parseFloat(ba.toFixed(2));
+        $("#BA_" + id).val(ba);
+
+
+        if ($("#IGST_" + id).val() != "") {
+            igst = parseFloat($("#IGST_" + id).val()).toFixed(2);
+        }
+        if ($("#SGST_" + id).val() != "") {
+            sgst = parseFloat($("#SGST_" + id).val()).toFixed(2);
+        }
+        if ($("#CGST_" + id).val() != "") {
+            cgst = parseFloat($("#CGST_" + id).val()).toFixed(2);
+        }
+
+        try {
+            igstamt = parseFloat(((parseFloat(ba) * parseFloat(igst)) / 100));
+        }
+        catch (e) {
+            igstamt = 0;
+        }
+
+        try {
+            cgstamt = parseFloat(((ba * cgst) / 100));
+        }
+        catch (e) {
+            cgstamt = 0;
+        }
+
+
+        try {
+            sgstamt = parseFloat(((ba * sgst) / 100));
+        }
+        catch (e) {
+            sgstamt = 0;
+        }
+
+        famt = parseFloat(ba) + parseFloat(igstamt) + parseFloat(sgstamt) + parseFloat(cgstamt);
+        $("#Famt_" + id).val(famt.toFixed(2));
+        finalcal();
+    }
+
+    function finalcal() {
+        var totlamt = 0;
+        var extr1 = 0;
+        var extr2 = 0;
+        var insu = 0;
+        var tds = 0;
+        var finl = 0;
+        var tdsamt = 0;
+        $("input[name=Famt]").each(function () {
+            totlamt = totlamt + parseFloat($(this).val());
+        });
+        $("#txtTotalAmt").val(totlamt);
+        if ($("#txtExtra1").val() != "") {
+            extr1 = parseFloat($("#txtExtra1").val());
+        }
+        finl = totlamt + extr1;
+
+        if ($("#txtInsu").val() != "") {
+            insu = parseFloat($("#txtInsu").val());
+        }
+        finl = finl + insu;
+
+        if ($("#txtTDS").val() != "") {
+            tds = parseFloat($("#txtTDS").val());
+        }
+
+        try {
+            tdsamt = parseFloat(((finl * tds) / 100));
+        }
+        catch (e) {
+            tdsamt = 0;
+        }
+        finl = tdsamt + finl;
+        if ($("#txtExtra2").val() != "") {
+            extr2 = parseFloat($("#txtExtra2").val());
+        }
+        finl = finl + extr2;
+        $("#txtBillAmt").val(finl);
+    }
+
+    function checkbillexist() {
+        flgBillExist = false;
+        var billnum = $("#billnum").val();
+        var partydealer = $("#partydealer").val();
+        if (billnum != "" && partydealer != "0") {
+            var dt = $("#purchasedate").val();
+            var URL = '/Admin/Purchase/CheckBillNumber';
+            jQuery.ajax({
+                type: 'GET',
+                async: true,
+                url: URL + "?billnum=" + billnum + "&dealerid=" + partydealer + "&date=" + dt,
+                success: function (result) {
+                    if (result == "BillNumberExist") {
+                        flgBillExist = true;
+                        alert("Bill Number Already Exist");
+                        return false;
+                    }
+                },
+                error: function (resultData) {
+                    console.log("error");
+
+                }
+            });
+        }
+
+    }
+
+    function SavePurchase() {
+        var isvalid = true;
+        StartLoading()
+
+        if ($("#partydealer").val() == "" || $("#partydealer").val() == "0") {
+            alert("Please Select Dealer");
+            isvalid = false;
+            StopLoading();
+        }
+        else if ($("#purchasedate").val() == "") {
+            isvalid = false;
+            alert("Please Select Purchase Date");
+            StopLoading();
+        }
+
+        if (flgBillExist == true) {
+            isvalid = false;
+            alert("Bill Number Already Exist");
+            StopLoading();
+        }
+
+        if (isvalid == true) {
+            if ($("input[name=Qty]").length == 0) {
+                isvalid = false;
+                alert("Please Add Item");
+                StopLoading();
+            }
+            else {
+                $("select[name=SubItemProductItem]").each(function () {
+                    var ids = $(this).attr("data-id");
+                    var varin = $("#VarintItem_" + ids).val();
+                    if ($(this).val() == "" || $(this).val() == "0" || varin == "" || varin == "-1") {
+                        isvalid = false;
+                    }
+                });
+
+                if (isvalid == false) {
+                    alert("Please select Item and Variant");
+                    StopLoading();
+                }
+                else {
+                    $("input[name=Qty]").each(function () {
+                        var ids = $(this).attr("data-id");
+                        var prcc = $("#Prc_" + ids).val();
+                        if ($(this).val() == "" || $(this).val() == "0" || prcc == "" || prcc == "0") {
+                            isvalid = false;
+                        }
+                    });
+                    if (isvalid == false) {
+                        alert("Please Enter Purchase Item Qty and Price");
+                        StopLoading();
+                    }
+                    else {
+                        $.ajax({
+                            type: 'POST',
+                            url: '/Admin/Purchase/Add',
+                            data: $('#theFormId').serialize(),
+                            success: function (msg) {
+                                if (msg == "Success") {
+                                    alert("saved successfully!");
+                                    StopLoading();
+                                }
+                                else {
+                                    alert(msg);
+                                    StopLoading();
+                                }
+                            }
+                        });
+                    }
+                }
+
+            }
+
+        }
+
+
+
+    }
+
+</script>
+<script>
+
+    $(document).on("click", "#btnCancel", function () {
+        window.location.href = "/admin/purchase";
+    });
+
+</script>

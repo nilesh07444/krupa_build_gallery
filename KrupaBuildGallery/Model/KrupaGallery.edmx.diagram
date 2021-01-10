@@ -81,6 +81,8 @@
         <EntityTypeShape EntityType="krupagalleryModel.tbl_BidItemUnitTypes" Width="1.5" PointX="27.375" PointY="11.75" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_PurchaseBidItems" Width="1.5" PointX="27.375" PointY="0.75" />
         <EntityTypeShape EntityType="krupagalleryModel.tbl_PurchaseDealersRequest" Width="1.5" PointX="27.375" PointY="14.75" />
+        <EntityTypeShape EntityType="krupagalleryModel.tbl_Purchase" Width="1.5" PointX="21.375" PointY="27.75" />
+        <EntityTypeShape EntityType="krupagalleryModel.tbl_PurchaseItems" Width="1.5" PointX="27.375" PointY="22.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

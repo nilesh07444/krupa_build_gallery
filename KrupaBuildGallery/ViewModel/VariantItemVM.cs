@@ -17,5 +17,6 @@ namespace KrupaBuildGallery
         public decimal DistributorPrice { get; set; }
         public string VariantImg { get; set; }
         public long MinQty { get; set; }
+        public string GST { get; set; }
     }
 }

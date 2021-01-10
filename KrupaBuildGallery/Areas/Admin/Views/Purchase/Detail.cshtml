@@ -1,0 +1,264 @@
+﻿@using KrupaBuildGallery.Model;
+@{
+    List<PurchaseItemVM> lstPurchaseItms = ViewData["lstPurchaseItems"] as List<PurchaseItemVM>;
+    tbl_Purchase objtbl_Purchase = ViewData["objPurchase"] as tbl_Purchase;
+}
+<link href="~/Content/lightbox.min.css" rel="stylesheet" />
+<style>
+    .label-wrapper {
+        display: table;
+        float: right;
+        min-height: 28px;
+    }
+
+    .form-horizontal .form-group {
+        margin-right: -15px;
+        margin-left: -15px;
+    }
+
+        .form-horizontal .form-group:before {
+            content: " ";
+            display: table
+        }
+
+        .form-horizontal .form-group:after {
+            clear: both !important
+        }
+
+    .form-horizontal .label-wrapper .control-label {
+        display: table-cell;
+        font-weight: bold;
+    }
+
+    .form-text-row {
+        /*padding-top: 6px;*/
+    }
+
+    .col-md-3 {
+        float: left;
+    }
+
+    @@media(max-width: 992px) {
+        .form-horizontal .label-wrapper {
+            float: none;
+            margin-bottom: 3px;
+            margin-top: 5px
+        }
+    }
+
+    #txtreason:focus {
+        outline-color: #151414 !important;
+    }
+</style>
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col">
+                    <div class="page-header-left">
+                        <h3>
+                            Purchase Detail
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="/admin/purchase">Purchase</a></li>
+                        <li class="breadcrumb-item active">Purchase Detail</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Purchase Detail</h5>
+                    </div>
+                    <div class="card-body form-horizontal">
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Bill Number:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@objtbl_Purchase.BillNo</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Dealer Code:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@objtbl_Purchase.DealerPartyCode</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Purchase Date:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@objtbl_Purchase.PurchaseDate.Value.ToString("dd/MM/yyyy")</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Total Bill:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">₹ @objtbl_Purchase.TotalBillAmt</div>
+                            </div>
+                        </div>
+                        @if (objtbl_Purchase.PlusMinus1 != 0)
+                        {
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <div class="label-wrapper"><label class="control-label">Extra +/-:</label></div>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="form-text-row">₹ @objtbl_Purchase.PlusMinus1</div>
+                                </div>
+                            </div>
+                        }
+
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Insurance:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">₹ @objtbl_Purchase.Insurance</div>
+                            </div>
+                        </div>
+                        @if (objtbl_Purchase.TDS != 0)
+                        {
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <div class="label-wrapper"><label class="control-label">TDS (%) :</label></div>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="form-text-row">@objtbl_Purchase.TDS</div>
+                                </div>
+                            </div>
+                        }
+                        @if (objtbl_Purchase.PlusMinus2 != 0)
+                        {
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <div class="label-wrapper"><label class="control-label">Extra +/-:</label></div>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="form-text-row">₹ @objtbl_Purchase.PlusMinus2</div>
+                                </div>
+                            </div>
+                        }
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Final Bill Amount:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">₹ @objtbl_Purchase.FinalBillAmount</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Remarks :</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                @if (string.IsNullOrEmpty(objtbl_Purchase.Remarks))
+                                {
+                                    <div class="form-text-row">N/A</div>
+                                }
+                                else
+                                {
+                                    <div class="form-text-row">@objtbl_Purchase.Remarks</div>
+                                }
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="card-header">
+                        <h5>Purchase Items</h5>
+                    </div>
+                    <div class="card-body">                        
+                        <div class="card-body vendor-table">
+                            <table class="display" id="basic-190">
+                                <thead>
+                                    <tr>                                       
+                                        <th>Category</th>
+                                        <th>Product</th>
+                                        <th>SubProduct</th>
+                                        <th>Item</th>
+                                        <th>Variant</th>
+                                        <th>Qty</th>
+                                        <th>Price</th>
+                                        <th>FP</th>
+                                        <th>LC</th>
+                                        <th>ExPM1</th>
+                                        <th>Total</th>
+                                        <th>TD</th>
+                                        <th>CD</th>
+                                        <th>ExPM2</th>
+                                        <th>BA</th>
+                                        <th>IGST</th>
+                                        <th>SGST</th>
+                                        <th>CGST</th>
+                                        <th>FAmt</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (lstPurchaseItms != null && lstPurchaseItms.Count > 0)
+                                    {
+                                        foreach (KrupaBuildGallery.PurchaseItemVM obj in lstPurchaseItms)
+                                        {
+                                            <tr>
+                                               <td>@obj.CategoryName</td>
+                                                <td>@obj.ProductName</td>
+                                                <td>@obj.SubProductName</td>
+                                                <td>@obj.ItemName</td>
+                                                <td>@obj.VariantName</td>
+                                                <td>@obj.Qty</td>
+                                                <td>@obj.Price</td>
+                                                <td>@obj.FinalPrice</td>
+                                                <td>@obj.LabourCharge</td>
+                                                <td>@obj.ExtraPlusMinus</td>
+                                                <td>@obj.Total</td>
+                                                <td>@obj.TradeDiscount</td>
+                                                <td>@obj.CashDiscount</td>
+                                                <td>@obj.ExtraPlusMinus2</td>
+                                                <td>@obj.BillAmount</td>
+                                                <td>@obj.IGST</td>
+                                                 <td>@obj.SGST</td>
+                                                <td>@obj.CGST</td>
+                                                <td>@obj.FinalAmount</td>
+                                            </tr>
+                                        }
+                                    }
+
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script>
+    $(document).ready(function () {
+        $('#basic-190').DataTable({
+            "pageLength": 100,
+            "columnDefs": [{
+                "targets": [0, 1],
+                "orderable": false
+            }]
+        });
+    });
+</script>

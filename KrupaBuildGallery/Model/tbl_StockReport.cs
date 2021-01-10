@@ -25,5 +25,6 @@ namespace KrupaBuildGallery.Model
         public Nullable<bool> IsAdmin { get; set; }
         public Nullable<long> FakeStock { get; set; }
         public Nullable<long> VariantItemId { get; set; }
+        public Nullable<long> PurchaseItemId { get; set; }
     }
 }

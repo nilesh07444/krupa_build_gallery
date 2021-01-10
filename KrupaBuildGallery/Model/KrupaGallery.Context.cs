@@ -102,6 +102,8 @@ namespace KrupaBuildGallery.Model
         public DbSet<tbl_BidItemUnitTypes> tbl_BidItemUnitTypes { get; set; }
         public DbSet<tbl_PurchaseBidItems> tbl_PurchaseBidItems { get; set; }
         public DbSet<tbl_PurchaseDealersRequest> tbl_PurchaseDealersRequest { get; set; }
+        public DbSet<tbl_Purchase> tbl_Purchase { get; set; }
+        public DbSet<tbl_PurchaseItems> tbl_PurchaseItems { get; set; }
     
         public virtual ObjectResult<sp_GetNotificationList_Result> sp_GetNotificationList(Nullable<int> clientUserId)
         {
