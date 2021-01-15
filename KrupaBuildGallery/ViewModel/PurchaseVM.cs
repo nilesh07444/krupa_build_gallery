@@ -27,6 +27,8 @@ namespace KrupaBuildGallery
         public Nullable<decimal> PaymentPaid { get; set; }
         public Nullable<long> AutoBillId { get; set; }
         public string Remarks { get; set; }        
+        public decimal OutStandingAmt { get; set; }
+        public decimal TotalAmtPaidWithoutBill { get; set; }
 
     }
 }

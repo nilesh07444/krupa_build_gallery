@@ -1022,21 +1022,23 @@
           <Property Name="BillYear" Type="nvarchar" MaxLength="150" />
           <Property Name="DealerPartyCode" Type="nvarchar" MaxLength="200" />
           <Property Name="DealerId" Type="bigint" />
-          <Property Name="TotalBillAmt" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="PlusMinus1" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="Insurance" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="TDS" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="PlusMinus2" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="FinalBillAmount" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="TotalBillAmt" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="PlusMinus1" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Insurance" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="TDS" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="PlusMinus2" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="FinalBillAmount" Type="decimal" Precision="18" Scale="4" />
           <Property Name="PurchaseDate" Type="datetime" />
           <Property Name="CreatedDate" Type="datetime" />
           <Property Name="CreatedBy" Type="bigint" />
           <Property Name="ModifiedDate" Type="datetime" />
           <Property Name="ModifiedBy" Type="bigint" />
           <Property Name="IsDeleted" Type="bit" />
-          <Property Name="PaymentPaid" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="PaymentPaid" Type="decimal" Precision="18" Scale="4" />
           <Property Name="AutoBillId" Type="bigint" />
           <Property Name="Remarks" Type="nvarchar" MaxLength="600" />
+          <Property Name="TotalVatav" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="TotalAmtPayment" Type="decimal" Precision="18" Scale="4" />
         </EntityType>
         <EntityType Name="tbl_PurchaseBidItems">
           <Key>
@@ -1136,26 +1138,50 @@
           <Property Name="ItemId" Type="bigint" />
           <Property Name="VariantId" Type="bigint" />
           <Property Name="Qty" Type="bigint" />
-          <Property Name="Price" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="FinalPrice" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="LabourCharge" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="ExtraPlusMinus" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="Total" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="TradeDiscount" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="CashDiscount" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="ExtraPlusMinus2" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="BillAmount" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="IGST" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="SGST" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="CGST" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="FinalAmount" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="Price" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="FinalPrice" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="LabourCharge" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="ExtraPlusMinus" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="Total" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="TradeDiscount" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="CashDiscount" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="ExtraPlusMinus2" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="BillAmount" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="IGST" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="SGST" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="CGST" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="FinalAmount" Type="decimal" Precision="18" Scale="4" />
           <Property Name="StockVariantId" Type="bigint" />
           <Property Name="StockId" Type="bigint" />
           <Property Name="StockReportId" Type="bigint" />
-          <Property Name="IGSTAmount" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="SGSTAmount" Type="decimal" Precision="18" Scale="2" />
-          <Property Name="CGSTAmount" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="IGSTAmount" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="SGSTAmount" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="CGSTAmount" Type="decimal" Precision="18" Scale="4" />
           <Property Name="Fk_PurchaseId" Type="bigint" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_PurchasePayment">
+          <Key>
+            <PropertyRef Name="PurchasePaymentId" />
+          </Key>
+          <Property Name="PurchasePaymentId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PurchaseId" Type="bigint" />
+          <Property Name="DealerId" Type="bigint" />
+          <Property Name="BillNumber" Type="nvarchar" MaxLength="250" />
+          <Property Name="PaymentDate" Type="datetime" />
+          <Property Name="ChequeNo" Type="nvarchar" MaxLength="250" />
+          <Property Name="ChequeDate" Type="datetime" />
+          <Property Name="Amount" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="PaymentBy" Type="nvarchar" MaxLength="250" />
+          <Property Name="Vatav" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="BankName" Type="nvarchar" MaxLength="400" />
+          <Property Name="AccountNumber" Type="nvarchar" MaxLength="100" />
+          <Property Name="CreatedDate" Type="datetime" />
+          <Property Name="CreatedBy" Type="bigint" />
+          <Property Name="ModifiedDate" Type="datetime" />
+          <Property Name="ModfiedBy" Type="bigint" />
+          <Property Name="Remarks" Type="nvarchar" MaxLength="350" />
+          <Property Name="ChequeBankName" Type="nvarchar" MaxLength="250" />
+          <Property Name="IsDeleted" Type="bit" />
         </EntityType>
         <EntityType Name="tbl_ReferenceMaster">
           <Key>
@@ -1384,6 +1410,7 @@
           <EntitySet Name="tbl_PurchaseDealers" EntityType="Self.tbl_PurchaseDealers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_PurchaseDealersRequest" EntityType="Self.tbl_PurchaseDealersRequest" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_PurchaseItems" EntityType="Self.tbl_PurchaseItems" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="tbl_PurchasePayment" EntityType="Self.tbl_PurchasePayment" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ReferenceMaster" EntityType="Self.tbl_ReferenceMaster" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_ReviewRating" EntityType="Self.tbl_ReviewRating" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="tbl_SecondCart" EntityType="Self.tbl_SecondCart" Schema="dbo" store:Type="Tables" />
@@ -1925,6 +1952,7 @@
           <EntitySet Name="tbl_PurchaseDealersRequest" EntityType="krupagalleryModel.tbl_PurchaseDealersRequest" />
           <EntitySet Name="tbl_Purchase" EntityType="krupagalleryModel.tbl_Purchase" />
           <EntitySet Name="tbl_PurchaseItems" EntityType="krupagalleryModel.tbl_PurchaseItems" />
+          <EntitySet Name="tbl_PurchasePayment" EntityType="krupagalleryModel.tbl_PurchasePayment" />
         </EntityContainer>
         <EntityType Name="tbl_AdminRoles">
           <Key>
@@ -2784,21 +2812,23 @@
           <Property Name="BillYear" Type="String" MaxLength="150" FixedLength="false" Unicode="true" />
           <Property Name="DealerPartyCode" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
           <Property Name="DealerId" Type="Int64" />
-          <Property Name="TotalBillAmt" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="PlusMinus1" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="Insurance" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="TDS" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="PlusMinus2" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="FinalBillAmount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="TotalBillAmt" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="PlusMinus1" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Insurance" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="TDS" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="PlusMinus2" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="FinalBillAmount" Type="Decimal" Precision="18" Scale="4" />
           <Property Name="PurchaseDate" Type="DateTime" Precision="3" />
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="CreatedBy" Type="Int64" />
           <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
           <Property Name="ModifiedBy" Type="Int64" />
           <Property Name="IsDeleted" Type="Boolean" />
-          <Property Name="PaymentPaid" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="PaymentPaid" Type="Decimal" Precision="18" Scale="4" />
           <Property Name="AutoBillId" Type="Int64" />
           <Property Name="Remarks" Type="String" MaxLength="600" FixedLength="false" Unicode="true" />
+          <Property Name="TotalVatav" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="TotalAmtPayment" Type="Decimal" Precision="18" Scale="4" />
         </EntityType>
         <EntityType Name="tbl_PurchaseItems">
           <Key>
@@ -2811,26 +2841,50 @@
           <Property Name="ItemId" Type="Int64" />
           <Property Name="VariantId" Type="Int64" />
           <Property Name="Qty" Type="Int64" />
-          <Property Name="Price" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="FinalPrice" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="LabourCharge" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="ExtraPlusMinus" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="Total" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="TradeDiscount" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="CashDiscount" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="ExtraPlusMinus2" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="BillAmount" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="IGST" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="SGST" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="CGST" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="FinalAmount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="Price" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="FinalPrice" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="LabourCharge" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="ExtraPlusMinus" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="Total" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="TradeDiscount" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="CashDiscount" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="ExtraPlusMinus2" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="BillAmount" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="IGST" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="SGST" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="CGST" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="FinalAmount" Type="Decimal" Precision="18" Scale="4" />
           <Property Name="StockVariantId" Type="Int64" />
           <Property Name="StockId" Type="Int64" />
           <Property Name="StockReportId" Type="Int64" />
-          <Property Name="IGSTAmount" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="SGSTAmount" Type="Decimal" Precision="18" Scale="2" />
-          <Property Name="CGSTAmount" Type="Decimal" Precision="18" Scale="2" />
+          <Property Name="IGSTAmount" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="SGSTAmount" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="CGSTAmount" Type="Decimal" Precision="18" Scale="4" />
           <Property Name="Fk_PurchaseId" Type="Int64" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tbl_PurchasePayment">
+          <Key>
+            <PropertyRef Name="PurchasePaymentId" />
+          </Key>
+          <Property Name="PurchasePaymentId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PurchaseId" Type="Int64" />
+          <Property Name="DealerId" Type="Int64" />
+          <Property Name="BillNumber" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="PaymentDate" Type="DateTime" Precision="3" />
+          <Property Name="ChequeNo" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="ChequeDate" Type="DateTime" Precision="3" />
+          <Property Name="Amount" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="PaymentBy" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="Vatav" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="BankName" Type="String" MaxLength="400" FixedLength="false" Unicode="true" />
+          <Property Name="AccountNumber" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedDate" Type="DateTime" Precision="3" />
+          <Property Name="CreatedBy" Type="Int64" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModfiedBy" Type="Int64" />
+          <Property Name="Remarks" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="ChequeBankName" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
+          <Property Name="IsDeleted" Type="Boolean" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -4174,6 +4228,8 @@
           <EntitySetMapping Name="tbl_Purchase">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_Purchase">
               <MappingFragment StoreEntitySet="tbl_Purchase">
+                <ScalarProperty Name="TotalAmtPayment" ColumnName="TotalAmtPayment" />
+                <ScalarProperty Name="TotalVatav" ColumnName="TotalVatav" />
                 <ScalarProperty Name="Remarks" ColumnName="Remarks" />
                 <ScalarProperty Name="AutoBillId" ColumnName="AutoBillId" />
                 <ScalarProperty Name="PaymentPaid" ColumnName="PaymentPaid" />
@@ -4227,6 +4283,31 @@
                 <ScalarProperty Name="ProductId" ColumnName="ProductId" />
                 <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
                 <ScalarProperty Name="PurchaseItemId" ColumnName="PurchaseItemId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_PurchasePayment">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_PurchasePayment">
+              <MappingFragment StoreEntitySet="tbl_PurchasePayment">
+                <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
+                <ScalarProperty Name="ChequeBankName" ColumnName="ChequeBankName" />
+                <ScalarProperty Name="Remarks" ColumnName="Remarks" />
+                <ScalarProperty Name="ModfiedBy" ColumnName="ModfiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="AccountNumber" ColumnName="AccountNumber" />
+                <ScalarProperty Name="BankName" ColumnName="BankName" />
+                <ScalarProperty Name="Vatav" ColumnName="Vatav" />
+                <ScalarProperty Name="PaymentBy" ColumnName="PaymentBy" />
+                <ScalarProperty Name="Amount" ColumnName="Amount" />
+                <ScalarProperty Name="ChequeDate" ColumnName="ChequeDate" />
+                <ScalarProperty Name="ChequeNo" ColumnName="ChequeNo" />
+                <ScalarProperty Name="PaymentDate" ColumnName="PaymentDate" />
+                <ScalarProperty Name="BillNumber" ColumnName="BillNumber" />
+                <ScalarProperty Name="DealerId" ColumnName="DealerId" />
+                <ScalarProperty Name="PurchaseId" ColumnName="PurchaseId" />
+                <ScalarProperty Name="PurchasePaymentId" ColumnName="PurchasePaymentId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

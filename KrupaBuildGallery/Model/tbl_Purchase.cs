@@ -34,5 +34,7 @@ namespace KrupaBuildGallery.Model
         public Nullable<decimal> PaymentPaid { get; set; }
         public Nullable<long> AutoBillId { get; set; }
         public string Remarks { get; set; }
+        public Nullable<decimal> TotalVatav { get; set; }
+        public Nullable<decimal> TotalAmtPayment { get; set; }
     }
 }

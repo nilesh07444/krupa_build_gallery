@@ -245,11 +245,11 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
                         if (objRequest.Pk_Dealer_Id.ToString().Length > 5)
                         {
-                            objRequest.BussinessCode = "BC" + objRequest.Pk_Dealer_Id;
+                            objRequest.BussinessCode = "SSBC" + objRequest.Pk_Dealer_Id;
                         }
                         else
                         {
-                            objRequest.BussinessCode = "BC" + objRequest.Pk_Dealer_Id.ToString("00000");
+                            objRequest.BussinessCode = "SSBC" + objRequest.Pk_Dealer_Id.ToString("00000");
                         }
                         _db.SaveChanges();
                         try
@@ -671,11 +671,11 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
 
                     if (objRequest.Pk_Dealer_Id.ToString().Length > 5)
                     {
-                        objRequest.BussinessCode = "BC" + objRequest.Pk_Dealer_Id;
+                        objRequest.BussinessCode = "SSBC" + objRequest.Pk_Dealer_Id;
                     }
                     else
                     {
-                        objRequest.BussinessCode = "BC" + objRequest.Pk_Dealer_Id.ToString("00000");
+                        objRequest.BussinessCode = "SSBC" + objRequest.Pk_Dealer_Id.ToString("00000");
                     }
 
                     _db.SaveChanges();

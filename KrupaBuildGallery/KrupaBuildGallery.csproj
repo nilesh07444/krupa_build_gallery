@@ -515,6 +515,9 @@
     <Compile Include="Model\tbl_PurchaseItems.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
+    <Compile Include="Model\tbl_PurchasePayment.cs">
+      <DependentUpon>KrupaGallery.tt</DependentUpon>
+    </Compile>
     <Compile Include="Model\tbl_ReferenceMaster.cs">
       <DependentUpon>KrupaGallery.tt</DependentUpon>
     </Compile>
@@ -611,6 +614,7 @@
     <Compile Include="ViewModel\CategoryInfo.cs" />
     <Compile Include="ViewModel\PurchaseDealerVM.cs" />
     <Compile Include="ViewModel\PurchaseItemVM.cs" />
+    <Compile Include="ViewModel\PurchasePaymentVM.cs" />
     <Compile Include="ViewModel\PurchaseVM.cs" />
     <Compile Include="ViewModel\PwdVM.cs" />
     <Compile Include="ViewModel\RegisterVM.cs" />
@@ -4338,6 +4342,7 @@
     <Content Include="Areas\Admin\Views\Purchase\_PurchaseItems.cshtml" />
     <Content Include="Areas\Admin\Views\Purchase\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Purchase\Detail.cshtml" />
+    <Content Include="Areas\Admin\Views\Purchase\AddPayment.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />

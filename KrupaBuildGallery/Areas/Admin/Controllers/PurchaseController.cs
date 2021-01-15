@@ -428,6 +428,145 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             }
             return reurnvl;
         }
+
+        public ActionResult AddPayment()
+        {
+            var DealerParty = _db.tbl_PurchaseDealers.OrderBy(x => x.FirmName).ThenBy(x => x.BussinessCode).ToList();
+            ViewData["DealerParty"] = DealerParty;
+
+            return View();
+        }
+
+        [ValidateInput(false)]
+        [HttpPost]
+        public string AddPayment(FormCollection frm)
+        {
+            try
+            {
+                string BillNum = frm["purchasebills"].ToString();
+                string dealerid = frm["partydealer"].ToString();
+                string paymentdate = frm["paymentdate"].ToString();
+                string paymentby = frm["paymentby"].ToString();
+                DateTime dtpaymentdate = DateTime.ParseExact(paymentdate, "dd/MM/yyyy", null);
+                long PurchaseId = 0;
+                string BillNumber = "";
+                if(!string.IsNullOrEmpty(BillNum))
+                {
+                    PurchaseId = Convert.ToInt64(BillNum);
+                }
+                tbl_Purchase objPurchasetemp = _db.tbl_Purchase.Where(o => o.PurchaseId == PurchaseId).FirstOrDefault();
+                decimal Totlpaymentpaid = 0;
+                decimal Totlvatav = 0;
+                if (objPurchasetemp != null)
+                {
+                    BillNumber = objPurchasetemp.BillNo;
+                    List<tbl_PurchasePayment> lstPym = _db.tbl_PurchasePayment.Where(o => o.PurchaseId == PurchaseId).ToList();
+                    if(lstPym != null && lstPym.Count() > 0)
+                    {
+                        Totlpaymentpaid = lstPym.Select(x => x.Amount.Value).Sum();
+                        Totlvatav = lstPym.Select(x => x.Vatav.Value).Sum();
+                    }
+                }
+
+                tbl_PurchasePayment objPurcPay = new tbl_PurchasePayment();
+                objPurcPay.PurchaseId = PurchaseId;
+                objPurcPay.BillNumber = BillNumber;
+                objPurcPay.PaymentDate = dtpaymentdate;
+                objPurcPay.PaymentBy = paymentby;
+                objPurcPay.ChequeNo = "";
+                objPurcPay.DealerId = Convert.ToInt64(dealerid);
+                objPurcPay.ChequeBankName = "";
+                if (paymentby == "Cheque")
+                {
+                    objPurcPay.ChequeNo = frm["cheqnum"].ToString();
+                    string cheqdt = frm["chqdate"].ToString();
+                    DateTime dtchkdate = DateTime.ParseExact(cheqdt, "dd/MM/yyyy", null);
+                    objPurcPay.ChequeDate = dtchkdate;
+                    objPurcPay.ChequeBankName = frm["cheqbank"].ToString();
+                }
+                else if(paymentby == "Bank Transfer")
+                {
+                    objPurcPay.AccountNumber = frm["accnum"].ToString();
+                }
+                objPurcPay.Amount = Convert.ToDecimal(frm["amount"].ToString());
+                decimal vatav = 0;
+                if(!string.IsNullOrEmpty(frm["vatav"].ToString()))
+                {
+                    vatav = Convert.ToDecimal(frm["vatav"].ToString());
+                }
+                objPurcPay.Vatav = vatav;
+                objPurcPay.CreatedDate = DateTime.UtcNow;
+                objPurcPay.CreatedBy = clsAdminSession.UserID;
+                objPurcPay.IsDeleted = false;
+                objPurcPay.Remarks = frm["remarks"].ToString();              
+                _db.tbl_PurchasePayment.Add(objPurcPay);
+                _db.SaveChanges();
+               if(objPurchasetemp != null)
+                {
+                    objPurchasetemp.PaymentPaid = Totlpaymentpaid + objPurcPay.Amount;
+                    objPurchasetemp.TotalVatav = objPurcPay.Vatav + Totlvatav;
+                    objPurchasetemp.TotalAmtPayment = Totlpaymentpaid + objPurcPay.Amount + objPurcPay.Vatav + Totlvatav;
+                    _db.SaveChanges();
+                }
+                return "Success";
+            }
+            catch (Exception e)
+            {
+                return "Fail " + e.Message.ToString();
+            }
+
+        }
+
+        public JsonResult GetPurchaseBills(double DealerId)
+        {
+            decimal TotalAmtPaidWithoutBill = 0;
+            List<tbl_Purchase> lstPurchases = _db.tbl_Purchase.Where(o => o.DealerId == DealerId).ToList();
+            List<PurchaseVM> lstPrch = new List<PurchaseVM>();
+            if(lstPurchases != null && lstPurchases.Count() > 0)
+            {
+                List<tbl_PurchasePayment> lstPurchasePayment = _db.tbl_PurchasePayment.Where(o => o.DealerId == DealerId).ToList();
+                if(lstPurchasePayment != null && lstPurchasePayment.Count() > 0)
+                {
+                    TotalAmtPaidWithoutBill = lstPurchasePayment.Where(o => o.BillNumber == "").Select(x => x.Amount.Value).Sum();                    
+                }
+                foreach (var objPr in lstPurchases)
+                {
+                    decimal amtpaid = objPr.TotalAmtPayment.HasValue ? objPr.TotalAmtPayment.Value : 0;
+                    decimal amtBill = objPr.FinalBillAmount.Value;
+                    decimal AmtRemain = amtBill - amtpaid;
+                    if (AmtRemain > 0)
+                    {
+                        PurchaseVM objP = new PurchaseVM();
+                        objP.OutStandingAmt = AmtRemain;
+                        objP.BillNo = objPr.BillNo;
+                        objP.BillYear = objPr.BillYear;
+                        objP.PurchaseId = objPr.PurchaseId;
+                        objP.TotalAmtPaidWithoutBill = TotalAmtPaidWithoutBill;
+                        lstPrch.Add(objP);
+                    }
+                }
+            }
+           
+            return Json(lstPrch, JsonRequestBehavior.AllowGet);
+        }
+
+        public JsonResult GetAccNum(double DealerId)
+        {
+            List<string> accnum = new List<string>();
+            var objdl = _db.tbl_PurchaseDealers.Where(o => o.Pk_Dealer_Id == DealerId).FirstOrDefault();
+            if(objdl != null)
+            {
+                if(!string.IsNullOrEmpty(objdl.BankAcNumber))
+                {
+                    accnum.Add(objdl.BankAcNumber);
+                }
+                if (!string.IsNullOrEmpty(objdl.BankAcNumber2))
+                {
+                    accnum.Add(objdl.BankAcNumber2);
+                }
+            }
+            return Json(accnum, JsonRequestBehavior.AllowGet);
+        }
     }
 
 }
