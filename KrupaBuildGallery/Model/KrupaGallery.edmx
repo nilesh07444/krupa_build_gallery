@@ -1182,6 +1182,7 @@
           <Property Name="Remarks" Type="nvarchar" MaxLength="350" />
           <Property Name="ChequeBankName" Type="nvarchar" MaxLength="250" />
           <Property Name="IsDeleted" Type="bit" />
+          <Property Name="IsDebit" Type="bit" />
         </EntityType>
         <EntityType Name="tbl_ReferenceMaster">
           <Key>
@@ -2885,6 +2886,7 @@
           <Property Name="Remarks" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
           <Property Name="ChequeBankName" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Name="IsDeleted" Type="Boolean" />
+          <Property Name="IsDebit" Type="Boolean" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -4289,6 +4291,7 @@
           <EntitySetMapping Name="tbl_PurchasePayment">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_PurchasePayment">
               <MappingFragment StoreEntitySet="tbl_PurchasePayment">
+                <ScalarProperty Name="IsDebit" ColumnName="IsDebit" />
                 <ScalarProperty Name="IsDeleted" ColumnName="IsDeleted" />
                 <ScalarProperty Name="ChequeBankName" ColumnName="ChequeBankName" />
                 <ScalarProperty Name="Remarks" ColumnName="Remarks" />

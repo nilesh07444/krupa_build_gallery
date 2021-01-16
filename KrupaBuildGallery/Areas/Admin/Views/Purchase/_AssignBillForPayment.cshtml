@@ -1,0 +1,22 @@
+﻿@{
+    List<PurchaseVM> lstPrch = ViewData["lstPrch"] as List<PurchaseVM>;
+}
+
+<div class="form-group row">
+    <label class="col-xl-3 col-md-4" for="bills">Bills</label>
+    <select class="form-control col-md-8" data-val="true" id="bills" name="bills" style="">
+        <option value="0">Select</option>
+        @if (lstPrch != null && lstPrch.Count() > 0)
+        {
+            foreach (var objusr in lstPrch)
+            {
+                <option data-amt="@objusr.OutStandingAmt" value="@objusr.PurchaseId">@objusr.BillNo ( @objusr.BillYear )</option>
+            }
+        }
+    </select>
+</div>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/select2/3.2/select2.min.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/select2/3.2/select2.css">
+<script>
+    $("#bills").select2();
+</script>

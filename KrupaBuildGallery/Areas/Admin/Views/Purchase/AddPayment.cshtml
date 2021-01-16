@@ -212,8 +212,14 @@
     }
 
     function billchange() {
-        debugger;
-        $("#spnamtdue").html("₹"+ $("#purchasebills option:selected").attr("data-amt"));
+     
+        if ($("#purchasebills option:selected").val() == "") {
+            $("#spnamtdue").html("");   
+        }
+        else {
+            $("#spnamtdue").html("₹" + $("#purchasebills option:selected").attr("data-amt"));
+        }
+        
     }
 
     function checkdetails() {

@@ -1,4 +1,5 @@
 ﻿using KrupaBuildGallery.Model;
+using KrupaBuildGallery.ViewModel;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using System;
@@ -405,6 +406,24 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         }
                     }
                 }
+
+                tbl_PurchasePayment objPurcPay = new tbl_PurchasePayment();
+                objPurcPay.PurchaseId = objPurch.PurchaseId;
+                objPurcPay.BillNumber = objPurch.BillNo;
+                objPurcPay.PaymentDate = objPurch.PurchaseDate;
+                objPurcPay.PaymentBy = "";
+                objPurcPay.ChequeNo = "";
+                objPurcPay.DealerId = Convert.ToInt64(dealerid);
+                objPurcPay.ChequeBankName = "";              
+                objPurcPay.Amount = objPurch.TotalBillAmt;
+                decimal vatav = 0;
+                objPurcPay.Vatav = vatav;
+                objPurcPay.CreatedDate = DateTime.UtcNow;
+                objPurcPay.CreatedBy = clsAdminSession.UserID;
+                objPurcPay.IsDeleted = false;
+                objPurcPay.IsDebit = false;                
+                _db.tbl_PurchasePayment.Add(objPurcPay);
+                _db.SaveChanges();
                 return "Success";
             }
             catch (Exception e)
@@ -444,7 +463,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                              join d in _db.tbl_PurchaseDealers on i.DealerId.Value equals d.Pk_Dealer_Id
                              join s in _db.tbl_Purchase on i.PurchaseId equals s.PurchaseId into outerJoinPay
                                  from s in outerJoinPay.DefaultIfEmpty()
-                                 where i.IsDeleted == false                                  
+                                 where i.IsDeleted == false && i.IsDebit == true                                  
                                  select new PurchasePaymentVM
                                  {
                                      PurchasePaymentId = i.PurchasePaymentId,
@@ -496,7 +515,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 if (objPurchasetemp != null)
                 {
                     BillNumber = objPurchasetemp.BillNo;
-                    List<tbl_PurchasePayment> lstPym = _db.tbl_PurchasePayment.Where(o => o.PurchaseId == PurchaseId && o.IsDeleted == false).ToList();
+                    List<tbl_PurchasePayment> lstPym = _db.tbl_PurchasePayment.Where(o => o.PurchaseId == PurchaseId && o.IsDeleted == false && o.IsDebit == true).ToList();
                     if(lstPym != null && lstPym.Count() > 0)
                     {
                         Totlpaymentpaid = lstPym.Select(x => x.Amount.Value).Sum();
@@ -534,6 +553,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 objPurcPay.CreatedDate = DateTime.UtcNow;
                 objPurcPay.CreatedBy = clsAdminSession.UserID;
                 objPurcPay.IsDeleted = false;
+                objPurcPay.IsDebit = true;
                 objPurcPay.Remarks = frm["remarks"].ToString();              
                 _db.tbl_PurchasePayment.Add(objPurcPay);
                 _db.SaveChanges();
@@ -569,7 +589,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             List<PurchaseVM> lstPrch = new List<PurchaseVM>();
             if(lstPurchases != null && lstPurchases.Count() > 0)
             {
-                List<tbl_PurchasePayment> lstPurchasePayment = _db.tbl_PurchasePayment.Where(o => o.DealerId == DealerId).ToList();
+                List<tbl_PurchasePayment> lstPurchasePayment = _db.tbl_PurchasePayment.Where(o => o.DealerId == DealerId && o.IsDebit == true).ToList();
                 if(lstPurchasePayment != null && lstPurchasePayment.Count() > 0)
                 {
                     TotalAmtPaidWithoutBill = lstPurchasePayment.Where(o => o.BillNumber == "").Select(x => x.Amount.Value).Sum();                    
@@ -715,7 +735,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 objBil.DealerId = objDel.Pk_Dealer_Id;
                 objBil.SupplierCode = objDel.BussinessCode;
                 List<PurchaseVM> lstPurchases = new List<PurchaseVM>();
-                List<long> purchseids = _db.tbl_PurchasePayment.Where(o => ((PurchaseId == 0 && o.PurchaseId > 0) || (o.PurchaseId == PurchaseId && o.PurchaseId > 0)) && o.PaymentDate >= dtStart && o.PaymentDate <= dtEnd && o.DealerId == objDel.Pk_Dealer_Id && o.IsDeleted == false).Select(o => o.PurchaseId.Value).Distinct().ToList();
+                List<long> purchseids = _db.tbl_PurchasePayment.Where(o => ((PurchaseId == 0 && o.PurchaseId > 0) || (o.PurchaseId == PurchaseId && o.PurchaseId > 0)) && o.PaymentDate >= dtStart && o.PaymentDate <= dtEnd && o.DealerId == objDel.Pk_Dealer_Id && o.IsDeleted == false && o.IsDebit == true).Select(o => o.PurchaseId.Value).Distinct().ToList();
                 if (purchseids != null && purchseids.Count() > 0)
                 {
                     foreach (long pid in purchseids)
@@ -725,7 +745,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         objPur.PurchaseId = pid;
                         objPur.BillNo = objPurchse.BillNo;
                         objPur.BillYear = objPurchse.BillYear;
-                        objPur.lstPurchasePayments = _db.tbl_PurchasePayment.Where(o => o.PaymentDate >= dtStart && o.PurchaseId == pid && o.PaymentDate <= dtEnd && o.IsDeleted == false).OrderBy(x => x.PaymentDate.Value).ToList();
+                        objPur.lstPurchasePayments = _db.tbl_PurchasePayment.Where(o => o.PaymentDate >= dtStart && o.PurchaseId == pid && o.PaymentDate <= dtEnd && o.IsDeleted == false && o.IsDebit == true).OrderBy(x => x.PaymentDate.Value).ToList();
                         lstPurchases.Add(objPur);
                     }
                 }
@@ -898,7 +918,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 objBil.DealerId = objDel.Pk_Dealer_Id;
                 objBil.SupplierCode = objDel.BussinessCode;
                 List<PurchaseVM> lstPurchases = new List<PurchaseVM>();
-                List<long> purchseids = _db.tbl_PurchasePayment.Where(o => ((PurchaseId == 0 && o.PurchaseId > 0) || (o.PurchaseId == PurchaseId && o.PurchaseId > 0)) && o.PaymentDate >= dtStart && o.PaymentDate <= dtEnd && o.DealerId == objDel.Pk_Dealer_Id && o.IsDeleted == false).Select(o => o.PurchaseId.Value).Distinct().ToList();
+                List<long> purchseids = _db.tbl_PurchasePayment.Where(o => ((PurchaseId == 0 && o.PurchaseId > 0) || (o.PurchaseId == PurchaseId && o.PurchaseId > 0)) && o.PaymentDate >= dtStart && o.PaymentDate <= dtEnd && o.DealerId == objDel.Pk_Dealer_Id && o.IsDeleted == false && o.IsDebit == true).Select(o => o.PurchaseId.Value).Distinct().ToList();
                 if (purchseids != null && purchseids.Count() > 0)
                 {
                     foreach(long pid in purchseids)
@@ -908,7 +928,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         objPur.PurchaseId = pid;
                         objPur.BillNo = objPurchse.BillNo;
                         objPur.BillYear = objPurchse.BillYear;
-                        objPur.lstPurchasePayments = _db.tbl_PurchasePayment.Where(o => o.PaymentDate >= dtStart && o.PurchaseId == pid && o.PaymentDate <= dtEnd && o.IsDeleted == false).OrderBy(x => x.PaymentDate.Value).ToList();
+                        objPur.lstPurchasePayments = _db.tbl_PurchasePayment.Where(o => o.PaymentDate >= dtStart && o.PurchaseId == pid && o.PaymentDate <= dtEnd && o.IsDeleted == false && o.IsDebit == true).OrderBy(x => x.PaymentDate.Value).ToList();
                         lstPurchases.Add(objPur);
                     }
                 }
@@ -1265,6 +1285,181 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 Response.End();
             }
         }
+
+        public ActionResult GeneralPurchasePaymentReport()
+        {
+            var DealerParty = _db.tbl_PurchaseDealers.OrderBy(x => x.FirmName).ThenBy(x => x.BussinessCode).ToList();
+            ViewData["DealerParty"] = DealerParty;
+            return View("~/Areas/Admin/Views/Purchase/GeneralPurchasePaymentReport.cshtml");
+        }
+
+        public ActionResult GetGeneralPaymentReport(long DealerId,string StartDate, string EndDate)
+        {
+            DateTime dtStart = DateTime.ParseExact(StartDate, "dd/MM/yyyy", null);
+            DateTime dtEnd = DateTime.ParseExact(EndDate, "dd/MM/yyyy", null);
+            dtEnd = new DateTime(dtEnd.Year, dtEnd.Month, dtEnd.Day, 23, 59, 59);
+            List<ReportVM> lstReportVm = new List<ReportVM>();
+      
+            List<tbl_ClientUsers> lstClients = new List<tbl_ClientUsers>();
+            var lstordrss = _db.tbl_Orders.ToList();
+            string[] arrycolmns = new string[] { "Date", "Opening", "Credit", "Debit", "Closing", "PaymentMethod", "Remarks", "BillNo." };
+            if (DealerId != -1)
+            {
+                List<tbl_PurchasePayment> lstCrdt = _db.tbl_PurchasePayment.Where(o => o.DealerId == DealerId && o.PaymentDate < dtStart && o.IsDebit == false).ToList();
+                List<tbl_PurchasePayment> lstDebt = _db.tbl_PurchasePayment.Where(o => o.DealerId == DealerId && o.PaymentDate < dtStart && o.IsDebit == true).ToList();
+                decimal TotalCredit = 0;
+                decimal TotalDebit = 0;
+                TotalCredit = lstCrdt.Sum(x => x.Amount.HasValue ? x.Amount.Value : 0);
+                TotalDebit = lstDebt.Sum(x => x.Amount.HasValue ? x.Amount.Value : 0);
+                decimal TotalVatavCredit = lstCrdt.Sum(x => x.Vatav.HasValue ? x.Vatav.Value : 0);
+                decimal TotalVatavDebit = lstDebt.Sum(x => x.Vatav.HasValue ? x.Vatav.Value : 0);
+                TotalCredit = TotalCredit + TotalVatavCredit;
+                TotalDebit = TotalDebit + TotalVatavDebit;
+                decimal TotalOpening = TotalCredit - TotalDebit;
+                List<tbl_PurchasePayment> lstAllTransaction = _db.tbl_PurchasePayment.Where(o => o.DealerId == DealerId && o.PaymentDate >= dtStart && o.PaymentDate <= dtEnd).OrderBy(x => x.PaymentDate.Value).ToList();
+                int row1 = 1;
+                if (lstAllTransaction != null && lstAllTransaction.Count() > 0)
+                {
+                    foreach (var objTrn in lstAllTransaction)
+                    {
+                        //double RoundAmt = CommonMethod.GetRoundValue(Convert.ToDouble(objTrn.Amount));
+                        //objTrn.Amount = Convert.ToDecimal(Convert.ToDouble(objTrn.Amount));
+                        ReportVM objrp = new ReportVM();
+                        objrp.Date = objTrn.PaymentDate.Value.ToString("dd-MM-yyyy");
+                        objrp.Opening = TotalOpening.ToString();
+                        if (objTrn.IsDebit == false)
+                        {
+                            objrp.Credit = objTrn.Amount.Value.ToString();
+                            TotalOpening = TotalOpening + objTrn.Amount.Value;
+                        }
+                        else
+                        {
+                            objrp.Credit = "";
+                        }
+
+
+                        if (objTrn.IsDebit == true)
+                        {
+                            objrp.Debit = objTrn.Amount.Value + objTrn.Vatav.Value + "";
+                            TotalOpening = TotalOpening - Convert.ToDecimal(objrp.Debit);
+                        }
+                        else
+                        {
+                            objrp.Debit = "";
+                        }
+
+                        objrp.Closing = TotalOpening.ToString();
+                        objrp.PaymentMethod = objTrn.PaymentBy;
+                        objrp.Remarks = objTrn.Remarks;
+                        objrp.InvoiceNo = objTrn.BillNumber;
+                        lstReportVm.Add(objrp);
+                        row1 = row1 + 1;
+                    }
+                }
+            }
+            else
+            {
+
+                List<tbl_PurchasePayment> lstCrdt = _db.tbl_PurchasePayment.Where(o => o.PaymentDate < dtStart && o.IsDebit == false).ToList();
+                List<tbl_PurchasePayment> lstDebt = _db.tbl_PurchasePayment.Where(o => o.PaymentDate < dtStart && o.IsDebit == true).ToList();
+                decimal TotalCredit = 0;
+                decimal TotalDebit = 0;
+                TotalCredit = lstCrdt.Sum(x => x.Amount.HasValue ? x.Amount.Value : 0);
+                TotalDebit = lstDebt.Sum(x => x.Amount.HasValue ? x.Amount.Value : 0);
+                decimal TotalVatavCredit = lstCrdt.Sum(x => x.Vatav.HasValue ? x.Vatav.Value : 0);
+                decimal TotalVatavDebit = lstDebt.Sum(x => x.Vatav.HasValue ? x.Vatav.Value : 0);
+                TotalCredit = TotalCredit + TotalVatavCredit;
+                TotalDebit = TotalDebit + TotalVatavDebit;
+                decimal TotalOpening = TotalCredit - TotalDebit;
+                List<tbl_PurchasePayment> lstAllTransaction = _db.tbl_PurchasePayment.Where(o => o.PaymentDate >= dtStart && o.PaymentDate <= dtEnd).OrderBy(x => x.PaymentDate.Value).ToList();
+                int row1 = 1;
+                if (lstAllTransaction != null && lstAllTransaction.Count() > 0)
+                {
+                    foreach (var objTrn in lstAllTransaction)
+                    {
+                        //double RoundAmt = CommonMethod.GetRoundValue(Convert.ToDouble(objTrn.Amount));
+                        //objTrn.Amount = Convert.ToDecimal(Convert.ToDouble(objTrn.Amount));
+                        ReportVM objrp = new ReportVM();
+                        objrp.Date = objTrn.PaymentDate.Value.ToString("dd-MM-yyyy");
+                        objrp.Opening = TotalOpening.ToString();
+                        if (objTrn.IsDebit == false)
+                        {
+                            objrp.Credit = objTrn.Amount.Value.ToString();
+                            TotalOpening = TotalOpening + objTrn.Amount.Value;
+                        }
+                        else
+                        {
+                            objrp.Credit = "";
+                        }
+
+
+                        if (objTrn.IsDebit == true)
+                        {
+                            objrp.Debit = objTrn.Amount.Value + objTrn.Vatav.Value+"";
+                            TotalOpening = TotalOpening - Convert.ToDecimal(objrp.Debit);
+                        }
+                        else
+                        {
+                            objrp.Debit = "";
+                        }
+
+                        objrp.Closing = TotalOpening.ToString();
+                        objrp.PaymentMethod = objTrn.PaymentBy;
+                        objrp.Remarks = objTrn.Remarks;                      
+                        objrp.InvoiceNo = objTrn.BillNumber;
+                        lstReportVm.Add(objrp);
+                        row1 = row1 + 1;
+                    }
+                }
+            }
+            return PartialView("~/Areas/Admin/Views/Purchase/_GeneralPurchasePaymentReport.cshtml", lstReportVm);
+        }
+
+        public ActionResult GetAndAssignBillForPayment(long DealerId)
+        {        
+            decimal TotalAmtPaidWithoutBill = 0;
+            List<tbl_Purchase> lstPurchases = _db.tbl_Purchase.Where(o => o.DealerId == DealerId).ToList();
+            List<PurchaseVM> lstPrch = new List<PurchaseVM>();
+            if (lstPurchases != null && lstPurchases.Count() > 0)
+            {
+                List<tbl_PurchasePayment> lstPurchasePayment = _db.tbl_PurchasePayment.Where(o => o.DealerId == DealerId && o.IsDebit == true).ToList();
+                if (lstPurchasePayment != null && lstPurchasePayment.Count() > 0)
+                {
+                    TotalAmtPaidWithoutBill = lstPurchasePayment.Where(o => o.BillNumber == "").Select(x => x.Amount.Value).Sum();
+                }
+                foreach (var objPr in lstPurchases)
+                {
+                    decimal amtpaid = objPr.TotalAmtPayment.HasValue ? objPr.TotalAmtPayment.Value : 0;
+                    decimal amtBill = objPr.FinalBillAmount.Value;
+                    decimal AmtRemain = amtBill - amtpaid;
+                    if (AmtRemain > 0)
+                    {
+                        PurchaseVM objP = new PurchaseVM();
+                        objP.OutStandingAmt = AmtRemain;
+                        objP.BillNo = objPr.BillNo;
+                        objP.BillYear = objPr.BillYear;
+                        objP.PurchaseId = objPr.PurchaseId;
+                        objP.TotalAmtPaidWithoutBill = TotalAmtPaidWithoutBill;
+                        lstPrch.Add(objP);
+                    }
+                }
+            }
+            ViewData["lstPrch"] = lstPrch;
+            return PartialView("~/Areas/Admin/Views/Purchase/_AssignBillForPayment.cshtml");
+        }
+
+        [HttpPost]
+        public string AssignBillToPayment(long PaymentId,long PurchaseId)
+        {
+            clsCommon objCommon = new clsCommon();
+            var objPur = _db.tbl_Purchase.Where(o => o.PurchaseId == PurchaseId).FirstOrDefault();
+            tbl_PurchasePayment objPay = _db.tbl_PurchasePayment.Where(o => o.PurchasePaymentId == PaymentId).FirstOrDefault();
+            objPay.PurchaseId = PurchaseId;
+            objPay.BillNumber = objPur.BillNo;
+            _db.SaveChanges();
+            return "Success";
+        }
+
     }
 
 }

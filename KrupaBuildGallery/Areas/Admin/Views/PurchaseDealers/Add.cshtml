@@ -1,7 +1,7 @@
 ﻿@model PurchaseDealerVM
 
 @{
-    ViewBag.Title = "PurchaseDealer";
+    ViewBag.Title = "PurchaseSupplier";
 }
 
 <div class="page-body">
@@ -13,7 +13,7 @@
                 <div class="col">
                     <div class="page-header-left">
                         <h3>
-                            Add Purchase Dealer
+                            Add Purchase Supplier
                         </h3>
                     </div>
                 </div>
@@ -34,7 +34,7 @@
             <div class="col-sm-12">
                 <div class="card">
                     <div class="card-header">
-                        <h5>Add Purchase Dealer</h5>
+                        <h5>Add Purchase Supplier</h5>
                     </div>
                     <div class="card-body">
                         @using (Html.BeginForm("Add", "PurchaseDealers", FormMethod.Post, new { @id = "PurchaseDealersFormId", @class = "needs-validation", enctype = "multipart/form-data", role = "form" }))

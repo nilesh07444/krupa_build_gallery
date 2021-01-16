@@ -33,5 +33,6 @@ namespace KrupaBuildGallery.Model
         public string Remarks { get; set; }
         public string ChequeBankName { get; set; }
         public Nullable<bool> IsDeleted { get; set; }
+        public Nullable<bool> IsDebit { get; set; }
     }
 }

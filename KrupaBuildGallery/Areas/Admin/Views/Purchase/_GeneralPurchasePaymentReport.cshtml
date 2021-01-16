@@ -1,0 +1,72 @@
+﻿@model List<KrupaBuildGallery.ViewModel.ReportVM>
+@{
+    ViewBag.Title = "General Purchase Payment Report";
+
+}
+<style>
+    #tblpy {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+        #tblpy td, #customers th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #tblpy tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        #tblpy tr:hover {
+            background-color: #ddd;
+        }
+
+        #tblpy th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: center;
+            background-color: #4CAF50;
+            color: white;
+        }
+</style>
+
+<table style="width:100%;border-collapse:collapse;" id="tblpy">
+    <tr style="text-align:center;">
+        <th>Date</th>
+        <th>Opening</th>
+        <th>Credit</th>
+        <th>Debit</th>
+        <th>Closing</th>
+        <th>Payment Method</th>
+        <th>Remarks</th>
+        <th>BillNo.</th>
+    </tr>
+    @if (Model != null && Model.Count() > 0)
+    {
+        foreach (var obj in Model)
+        {
+            <tr>
+                <td>@obj.Date</td>
+                <td>@obj.Opening</td>
+                <td>@obj.Credit</td>
+                <td>@obj.Debit</td>
+                <td>@obj.Closing</td>
+                <td>@obj.PaymentMethod</td>
+                <td>@obj.Remarks</td>
+                <td>@obj.InvoiceNo</td>
+            </tr>
+        }
+    }
+    else
+    {
+        <tr>
+            <td colspan="8">
+                No Payment Data....
+            </td>
+        </tr>
+    }
+
+
+</table>
+

@@ -4350,6 +4350,9 @@
     <Content Include="Areas\Admin\Views\Purchase\PaymentReportBillwise.cshtml" />
     <Content Include="Areas\Admin\Views\Purchase\_PaymentReportBillwise.cshtml" />
     <Content Include="Areas\Admin\Views\Purchase\PurchaseReport.cshtml" />
+    <Content Include="Areas\Admin\Views\Purchase\GeneralPurchasePaymentReport.cshtml" />
+    <Content Include="Areas\Admin\Views\Purchase\_GeneralPurchasePaymentReport.cshtml" />
+    <Content Include="Areas\Admin\Views\Purchase\_AssignBillForPayment.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />
