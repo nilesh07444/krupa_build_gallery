@@ -1,0 +1,187 @@
+﻿@using KrupaBuildGallery.Model;
+@{
+    ViewBag.Title = "Payment Report By Bill";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    List<tbl_PurchaseDealers> lstDelers = ViewData["DealerParty"] as List<tbl_PurchaseDealers>;
+}
+
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="page-header-left">
+                        <h3>
+                            Bid Report Itemwise
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item active">Payment Report By Bill</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h5>Payment Report By Bill</h5>
+            </div>
+            <div class="card-body vendor-table">
+                <h3>Filter:</h3>
+                <div class="row" style="margin-top:25px;border-bottom: 2px solid #f8f8f9;padding-bottom: 25px;margin-bottom: 10px;">
+                    @*<div class="col-sm-3">
+            <label></label>
+            <select id="FinYear" class="form-control" onchange="BindBills();">
+                @{
+                    int startYear = DateTime.Now.Year - 5;
+                    int endYear = DateTime.Now.Year;
+                }
+                @for (int i = endYear; i >= startYear; i--)
+                {
+                    string stryear = i + "-" + (i + 1);
+                    <option value="@stryear">@stryear</option>
+                }
+            </select>
+        </div>*@
+                    <div class="col-sm-3">
+                        <label>Bill Display</label>
+                        <select id="billsdisplay" class="form-control" onchange="BindBills();">
+                            <option value="-1">All</option>
+                            <option value="0">Open</option>
+                            <option value="1">Closed</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row" style="margin-top:25px;border-bottom: 2px solid #f8f8f9;padding-bottom: 25px;margin-bottom: 10px;">
+                    <div class="col-sm-3">
+                        <label>Supplier</label>
+                        <select id="dealers" class="form-control" onchange="BindBills();">
+                            <option value="-1">All</option>
+                            @if (lstDelers != null && lstDelers.Count() > 0)
+                            {
+                                foreach (var objc in lstDelers)
+                                {
+                                    <option value="@objc.Pk_Dealer_Id">@objc.BussinessCode - @objc.FirmName</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <label>Bills</label>
+                        <select class="form-control" name="purchasebills" id="purchasebills" onchange="billchange();">
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <label>Start Date *</label>
+                        <input class="form-control col-md-8 clsDatePicker text-box single-line valid" id="StartDate" name="StartDate" placeholder="DD/MM/YYY" readonly="readonly" type="text" value="">
+                    </div>
+                    <div class="col-sm-3">
+                        <label>End Date *</label>
+                        <input class="form-control col-md-8 clsDatePicker text-box single-line valid" id="EndDate" name="EndDate" placeholder="DD/MM/YYY" readonly="readonly" type="text" value="">
+                    </div>
+                </div>
+                <div class="row" style="margin-top:25px;border-bottom: 2px solid #f8f8f9;padding-bottom: 25px;margin-bottom: 10px;">
+
+                    <div class="col-sm-2">
+                        <input type="button" value="View Report" class="btn btn-info" onclick="viewreport();" style="position: absolute; bottom: 0;" />
+                    </div>
+                    <div class="col-sm-2">
+                        <input type="button" value="Export To Excel" class="btn btn-info" onclick="exporttoexcel();" style="position: absolute; bottom: 0;" />
+                    </div>
+                </div>
+                <a href="" id="export" target="_blank" style="display:none;">export</a>
+
+                <div id="dvreport">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+</div>
+
+<script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/select2/3.2/select2.min.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/select2/3.2/select2.css">
+<script>
+    function BindBills() {
+        var delid = $("#dealers").val();
+        if (delid != "-1") {
+                var URL = '@Url.Action("GetPurchaseBillsForReport", "Purchase")';
+            $.ajax({
+                type: 'GET',
+                async: true,
+                url: URL + "?DealerId=" + delid + "&billtype=" + $('#billsdisplay').val(),
+                success: function (result) {
+                    var htmlData = "<option value='0'>-Select Bill-</option>";
+                    if (result && result.length > 0) {
+                        result.forEach(element => {
+                            htmlData += "<option value='" + element.PurchaseId + "' > " + element.BillNo + " (" + element.BillYear+") </option>";
+                        });
+                    }
+                    $("#purchasebills").html(htmlData);
+                    $("#purchasebills").select2();
+                },
+                error: function (error) {
+                }
+            });
+        }
+        else {
+            var htmlSubData = "<option value='0'>- Select Bill -</option>";
+            $("#purchasebills").html(htmlSubData);
+        }
+
+    }
+    function viewreport() {
+
+        if ($("#StartDate").val() == "") {
+            alert("Please select Start Date");
+            return false;
+        }
+
+        if ($("#EndDate").val() == "") {
+            alert("Please select End Date");
+            return false;
+        }
+        var pid = 0;
+        if ($("#purchasebills").val() != null) {
+            pid = $("#purchasebills").val();
+        }
+        StartLoading();
+        $("#dvreport").load("/admin/Purchase/GetPaymentReportBillmWise?DealerId=" + $("#dealers").val() + "&PurchaseId=" + pid + "&StartDate=" + $("#StartDate").val() + "&EndDate=" + $("#EndDate").val(), function () {
+            StopLoading();
+        });
+
+    }
+
+    function exporttoexcel() {
+
+
+        if ($("#StartDate").val() == "") {
+            alert("Please select Start Date");
+            return false;
+        }
+
+        if ($("#EndDate").val() == "") {
+            alert("Please select End Date");
+            return false;
+        }
+        var pid = 0;
+        if ($("#purchasebills").val() != null) {
+            pid = $("#purchasebills").val();
+        }
+        $("#export").attr("href", "/admin/Purchase/ExportPaymentReportBillWise?DealerId=" + $("#dealers").val() + "&PurchaseId=" + pid + "&StartDate=" + $("#StartDate").val() + "&EndDate=" + $("#EndDate").val());
+        $("#export")[0].click();
+    }
+</script>

@@ -1,0 +1,103 @@
+﻿@model List<KrupaBuildGallery.PaymentReportBillVM>
+@{
+    ViewBag.Title = "Payment Report Billwise";
+
+}
+<style>
+    #tblstk {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+        #tblstk td, #customers th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        #tblstk tr:nth-child(even) {
+            /*  background-color: #f2f2f2;*/
+        }
+
+        #tblstk tr:hover {
+            background-color: #ddd;
+        }
+
+        #tblstk th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #4CAF50;
+            color: white;
+        }
+</style>
+
+<table style="width:100%;border-collapse:collapse;overflow:auto" id="tblstk">
+    <tr>
+        <th>Supplier Code</th>
+        <th>Bill Number (Year)</th>
+        <th>Payment Date</th>
+        <th>Amount</th>
+        <th>Vatav</th>
+        <th>Payment By</th>
+        <th>Cheque Number</th>
+        <th>Cheque Date</th>
+        <th>Bank Name</th>
+        <th>Account Number</th>                
+    </tr>
+    @if (Model != null && Model.Count() > 0)
+    {
+        foreach (var obj in Model)
+        {
+            <tr style="font-weight:bold;background-color: #eeeef9;" data-tr="Itm">
+                <td>@obj.SupplierCode</td>
+            </tr>
+
+            if (obj.lstPurchases != null && obj.lstPurchases.Count() > 0)
+            {
+                foreach (var objBd in obj.lstPurchases)
+                {
+                    string BidNo = objBd.BillNo + " (" + objBd.BillYear+")" ;
+                    <tr style="font-weight:bold;background-color:#ddd;">
+                        <td></td>
+                        <td>@BidNo + </td>                        
+                        <td colspan="8"></td>
+                    </tr>
+                    foreach (var objDel in objBd.lstPurchasePayments)
+                    {
+                        <tr style="font-weight:bold;">
+                            <td></td>
+                            <td></td>                           
+                            <td>@objDel.PaymentDate.Value.ToString("dd/MM/yyyy")</td>
+                            <td>@objDel.Amount</td>
+                            <td>@objDel.Vatav</td>                           
+                            <td>@objDel.PaymentBy</td>
+                            <td>@objDel.ChequeNo</td>
+                            @if(objDel.PaymentBy == "Cheque")
+                            {
+                                <td>@objDel.ChequeDate.Value.ToString("dd/MM/yyyy")</td>
+                            }
+                            else
+                            {
+                                <td></td>
+                            }
+                            <td>@objDel.BankName</td>
+                            <td>@objDel.AccountNumber</td>
+                        </tr>
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        <tr>
+            <td colspan="10">
+                No Payment Data....
+            </td>
+        </tr>
+    }
+
+
+</table>
+
+

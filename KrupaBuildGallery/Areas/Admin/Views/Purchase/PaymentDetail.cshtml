@@ -1,0 +1,195 @@
+﻿@using KrupaBuildGallery.Model;
+@{
+
+    tbl_PurchasePayment objtbl_PurchasePayment = ViewData["objPurchasePayment"] as tbl_PurchasePayment;
+    tbl_PurchaseDealers objPDel = ViewData["objDealer"] as tbl_PurchaseDealers;
+}
+<link href="~/Content/lightbox.min.css" rel="stylesheet" />
+<style>
+    .label-wrapper {
+        display: table;
+        float: right;
+        min-height: 28px;
+    }
+
+    .form-horizontal .form-group {
+        margin-right: -15px;
+        margin-left: -15px;
+    }
+
+        .form-horizontal .form-group:before {
+            content: " ";
+            display: table
+        }
+
+        .form-horizontal .form-group:after {
+            clear: both !important
+        }
+
+    .form-horizontal .label-wrapper .control-label {
+        display: table-cell;
+        font-weight: bold;
+    }
+
+    .form-text-row {
+        /*padding-top: 6px;*/
+    }
+
+    .col-md-3 {
+        float: left;
+    }
+
+    @@media(max-width: 992px) {
+        .form-horizontal .label-wrapper {
+            float: none;
+            margin-bottom: 3px;
+            margin-top: 5px
+        }
+    }
+
+    #txtreason:focus {
+        outline-color: #151414 !important;
+    }
+</style>
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col">
+                    <div class="page-header-left">
+                        <h3>
+                            Purchase Payment Detail
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item"><a href="/admin/purchase/payments">Purchase Payments</a></li>
+                        <li class="breadcrumb-item active">Payment Detail</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5>Payment Detail</h5>
+                    </div>
+                    <div class="card-body form-horizontal">
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Bill Number:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                @if (string.IsNullOrEmpty(objtbl_PurchasePayment.BillNumber))
+                                {
+                                    <div class="form-text-row">N/A</div>
+                                }
+                                else
+                                {
+                                    <div class="form-text-row">@objtbl_PurchasePayment.BillNumber</div>
+                                }
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Dealer Code:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@objPDel.BussinessCode</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Payment Date:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@objtbl_PurchasePayment.PaymentDate.Value.ToString("dd/MM/yyyy")</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Payment Amount:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">₹ @objtbl_PurchasePayment.Amount</div>
+                            </div>
+                        </div>
+                        @if (objtbl_PurchasePayment.Vatav != 0)
+                        {
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <div class="label-wrapper"><label class="control-label">Vatav :</label></div>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="form-text-row">₹ @objtbl_PurchasePayment.Vatav</div>
+                                </div>
+                            </div>
+                        }
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Payment By :</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">@objtbl_PurchasePayment.PaymentBy</div>
+                            </div>
+                        </div>
+                        @if (objtbl_PurchasePayment.PaymentBy == "Cheque")
+                        {
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <div class="label-wrapper"><label class="control-label">Cheque Number :</label></div>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="form-text-row">@objtbl_PurchasePayment.ChequeNo</div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <div class="label-wrapper"><label class="control-label">Cheque Date :</label></div>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="form-text-row">@objtbl_PurchasePayment.ChequeDate.Value.ToString("dd/MM/yyyy")</div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-3">
+                                    <div class="label-wrapper"><label class="control-label">Cheque Bank Name :</label></div>
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="form-text-row">@objtbl_PurchasePayment.ChequeBankName</div>
+                                </div>
+                            </div>
+                        }                       
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Remarks :</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                @if (string.IsNullOrEmpty(objtbl_PurchasePayment.Remarks))
+                                {
+                                    <div class="form-text-row">N/A</div>
+                                }
+                                else
+                                {
+                                    <div class="form-text-row">@objtbl_PurchasePayment.Remarks</div>
+                                }
+
+                            </div>
+                        </div>
+                    </div>                 
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

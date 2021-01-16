@@ -1,4 +1,5 @@
-﻿using System;
+﻿using KrupaBuildGallery.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -29,6 +30,8 @@ namespace KrupaBuildGallery
         public string Remarks { get; set; }        
         public decimal OutStandingAmt { get; set; }
         public decimal TotalAmtPaidWithoutBill { get; set; }
-
+        public List<PurchaseItemVM> lstPurchaseItems { get; set; }
+        public List<PurchasePaymentVM> lstPayments { get; set; }
+        public List<tbl_PurchasePayment> lstPurchasePayments { get; set; }
     }
 }

@@ -607,6 +607,7 @@
     <Compile Include="ViewModel\OrderVM.cs" />
     <Compile Include="ViewModel\OtpVM.cs" />
     <Compile Include="ViewModel\PaymentHistoryVM.cs" />
+    <Compile Include="ViewModel\PaymentReportBillVM.cs" />
     <Compile Include="ViewModel\PlaceOrderVM.cs" />
     <Compile Include="ViewModel\PointVM.cs" />
     <Compile Include="ViewModel\ProductItemVM.cs" />
@@ -615,6 +616,7 @@
     <Compile Include="ViewModel\PurchaseDealerVM.cs" />
     <Compile Include="ViewModel\PurchaseItemVM.cs" />
     <Compile Include="ViewModel\PurchasePaymentVM.cs" />
+    <Compile Include="ViewModel\PurchaseReportVM.cs" />
     <Compile Include="ViewModel\PurchaseVM.cs" />
     <Compile Include="ViewModel\PwdVM.cs" />
     <Compile Include="ViewModel\RegisterVM.cs" />
@@ -4343,6 +4345,11 @@
     <Content Include="Areas\Admin\Views\Purchase\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Purchase\Detail.cshtml" />
     <Content Include="Areas\Admin\Views\Purchase\AddPayment.cshtml" />
+    <Content Include="Areas\Admin\Views\Purchase\Payments.cshtml" />
+    <Content Include="Areas\Admin\Views\Purchase\PaymentDetail.cshtml" />
+    <Content Include="Areas\Admin\Views\Purchase\PaymentReportBillwise.cshtml" />
+    <Content Include="Areas\Admin\Views\Purchase\_PaymentReportBillwise.cshtml" />
+    <Content Include="Areas\Admin\Views\Purchase\PurchaseReport.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />

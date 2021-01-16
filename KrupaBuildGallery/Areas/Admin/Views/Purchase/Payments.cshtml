@@ -1,0 +1,168 @@
+﻿@using KrupaBuildGallery.Helper;
+@using Newtonsoft.Json;
+@using KrupaBuildGallery.Model;
+
+@model List<KrupaBuildGallery.PurchasePaymentVM>
+@{
+    ViewBag.Title = "Purchase List";
+
+    int counter = 1;
+}
+
+@{
+    UserPermissionVM objPermission = new UserPermissionVM();
+
+    int RoleId = Int32.Parse(clsAdminSession.RoleID.ToString());
+
+    if (RoleId != 1)
+    {
+        string strPermission = clsAdminSession.UserPermission;
+        objPermission = JsonConvert.DeserializeObject<UserPermissionVM>(strPermission, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+    }
+    bool IsSA = (RoleId == 1 ? true : false);
+}
+
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="page-header-left">
+                        <h3>
+                            Purchase Payment List
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item">Purchases</li>
+                        <li class="breadcrumb-item active">Payment List</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h5>Payment List</h5>
+            </div>
+            <div class="card-body vendor-table">
+
+                @if (IsSA || objPermission.BidItem >= (int)ModulePermission.Add)
+                {
+                    <div class="btn-popup pull-right">
+                        <button type="button" class="btn btn-primary" id="btnAddPay">Add New Payment</button>
+                    </div>
+                }
+
+                <table class="display" id="basic-1">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Bill No.</th>
+                            <th>Dealer Code</th>
+                            <th>Payment Date</th>
+                            <th>Payment Amount</th>
+                            <th>Payment By</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Count > 0)
+                        {
+                            foreach (KrupaBuildGallery.PurchasePaymentVM objusr in Model)
+                            {
+                                <tr class="gradeX">
+                                    <td>@counter.</td>
+                                    <td>@objusr.BillNumber</td>
+                                    <td><a href="/admin/purchasedealers/detail/@objusr.DealerId" target="_blank">@objusr.DealerCode</a></td>
+                                    <td>@objusr.PaymentDate.ToString("dd/MM/yyyy")</td>
+                                    <td>@objusr.Amount</td>
+                                    <td>@objusr.PaymentBy</td>
+                                    <td>
+                                        <a href="/admin/purchase/paymentdetail/@objusr.PurchasePaymentId"><i class="fa fa-eye font-success"></i></a>
+                                        <a title="Delete" href="javascript:void(0);" onclick="fnDeletePayment('@objusr.PurchasePaymentId')"><i class="fa fa-trash font-danger"></i></a>
+                                    </td>
+                                </tr>
+                                counter++;
+                            }
+
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+</div>
+
+<!-- Delete Modal -->
+<div class="modal fade open" id="deletePaymentModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Delete Confirm</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete ?
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="hdnDeletePayment" />
+                <button data-dismiss="modal" class="btn btn-danger" type="button">Close</button>
+                <button id="btnDeletePayment" class="btn btn-primary" type="button">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Delete modal -->
+<script>
+    $(document).on("click", "#btnAddPay", function () {
+        window.location.href = "/admin/purchase/addpayment";
+    });
+    function fnDeletePayment(cat_id) {
+        jQuery("#hdnDeletePayment").val(cat_id);
+        $('#deletePaymentModal').modal('show');
+    }
+
+    jQuery(document).on("click", "#btnDeletePayment", function () {
+
+        var payid = jQuery("#hdnDeletePayment").val();
+        if (payid != "" && payid != null)
+                        {
+            $('#deletePaymentModal').modal('hide');
+
+                            StartLoading();
+
+                            var URL = '@Url.Action("DeletePayment", "Purchase")';
+                        $.ajax({
+                            type: 'POST',
+                            async: true,
+                            url: URL + "?PaymentId=" + payid,
+                            success: function(result) {
+                                    if (result == "success")
+                                    {
+                                        alert("Payment deleted successfully");
+                                        window.location.reload();
+                                    }                                   
+                                    else
+                                    {
+                                        alert("Something went wrong. Please try again");
+                                    }
+
+                                    StopLoading();
+                                },
+                            error: function(resultData) {
+                                    StopLoading();
+                                }
+                            });
+                        }
+                    });
+</script>
