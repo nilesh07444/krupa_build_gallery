@@ -20,8 +20,8 @@
                 <div class="col-lg-6">
                     <ol class="breadcrumb pull-right">
                         <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
-                        <li class="breadcrumb-item"><a href="/admin/PurchaseDealers">Purchase Dealer</a></li>
-                        <li class="breadcrumb-item active">Add Purchase Dealer</li>
+                        <li class="breadcrumb-item"><a href="/admin/PurchaseDealers">Purchase Supplier</a></li>
+                        <li class="breadcrumb-item active">Add Purchase Supplier</li>
                     </ol>
                 </div>
             </div>
@@ -44,8 +44,8 @@
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
                             <div class="form-group row">
-                                @Html.LabelFor(model => model.FirmName, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
-                                @Html.EditorFor(model => model.FirmName, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Firm Name", maxlength = "200" } })
+                                @Html.LabelFor(model => model.FirmName, htmlAttributes: new { @class = "col-xl-3 col-md-4 " })
+                                @Html.EditorFor(model => model.FirmName, new { htmlAttributes = new { @class = "form-control col-md-8 uppercase", @placeholder = "Enter Firm Name", maxlength = "200" } })
 
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.FirmName, "", new { @class = "text-danger" })
@@ -100,19 +100,34 @@
                             </div>
 
                             <div class="form-group row">
-                                @Html.LabelFor(model => model.FirmCity, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
-                                @Html.EditorFor(model => model.FirmCity, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Firm City", maxlength = "100" } })
-
-                                <lable class="col-xl-3 col-md-4"></lable>
-                                @Html.ValidationMessageFor(model => model.FirmCity, "", new { @class = "text-danger" })
-                            </div>
-
-                            <div class="form-group row">
                                 @Html.LabelFor(model => model.FirmAddress, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
                                 @Html.EditorFor(model => model.FirmAddress, new { htmlAttributes = new { @class = "form-control col-md-8", @placeholder = "Enter Firm Address", maxlength = "200" } })
 
                                 <lable class="col-xl-3 col-md-4"></lable>
                                 @Html.ValidationMessageFor(model => model.FirmAddress, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.FirmCity, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.EditorFor(model => model.FirmCity, new { htmlAttributes = new { @class = "form-control col-md-8 uppercase", @placeholder = "Enter Firm City", maxlength = "100" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.FirmCity, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.State, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.DropDownListFor(model => model.State, new SelectList(Model.StateList, "Value", "Text"), "- Select State -", new { @class = "form-control col-md-8", style = "" })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.State, "", new { @class = "text-danger" })
+                            </div>
+
+                            <div class="form-group row">
+                                @Html.LabelFor(model => model.Pincode, htmlAttributes: new { @class = "col-xl-3 col-md-4" })
+                                @Html.EditorFor(model => model.Pincode, new { htmlAttributes = new { @type = "number", @class = "form-control col-md-8", @placeholder = "Enter Pincode", maxlength = "6" } })
+
+                                <lable class="col-xl-3 col-md-4"></lable>
+                                @Html.ValidationMessageFor(model => model.Pincode, "", new { @class = "text-danger" })
                             </div>
 
                             <div class="form-group row">

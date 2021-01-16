@@ -82,8 +82,13 @@ namespace KrupaBuildGallery
         public HttpPostedFileBase VisitingCardPhotoFile { get; set; }
 
         public string VisitingCardPhoto2 { get; set; }
+
+        [Required]
+        [Display(Name = "Pincode *")]
         public string Pincode { get; set; }
 
         public List<SelectListItem> StateList { get; set; }
+
+        public string RegisterDate { get; set; }
     }
 }

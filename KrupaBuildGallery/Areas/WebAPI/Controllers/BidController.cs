@@ -79,10 +79,10 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             try
             {
                 tbl_PurchaseDealersRequest objRequest = new tbl_PurchaseDealersRequest();
-                objRequest.FirmName = objPurchaseDealerVM.FirmName;
+                objRequest.FirmName =  objPurchaseDealerVM.FirmName.ToUpper();
                 objRequest.FirmAddress = objPurchaseDealerVM.FirmAddress;
-                objRequest.FirmCity = objPurchaseDealerVM.FirmCity;
-                objRequest.FirmGSTNo = objPurchaseDealerVM.FirmGSTNo;
+                objRequest.FirmCity = objPurchaseDealerVM.FirmCity.ToUpper();
+                objRequest.FirmGSTNo = objPurchaseDealerVM.FirmGSTNo.ToUpper();
                 objRequest.Pincode = objPurchaseDealerVM.Pincode;
                 objRequest.VisitingCardPhoto = objPurchaseDealerVM.VisitingCardPhoto;
                 objRequest.VisitingCardPhoto2 = objPurchaseDealerVM.VisitingCardPhoto2;
@@ -91,10 +91,10 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 objRequest.Email = objPurchaseDealerVM.Email;
                 objRequest.BusinessDetails = objPurchaseDealerVM.BusinessDetails;
                 objRequest.BankAcNumber = objPurchaseDealerVM.BankAcNumber;
-                objRequest.IFSCCode = objPurchaseDealerVM.IFSCCode;
+                objRequest.IFSCCode = objPurchaseDealerVM.IFSCCode.ToUpper();
                 objRequest.BankBranch = objPurchaseDealerVM.BankBranch;
                 objRequest.BankAcNumber2 = objPurchaseDealerVM.BankAcNumber2;
-                objRequest.IFSCCode2 = objPurchaseDealerVM.IFSCCode2;
+                objRequest.IFSCCode2 = objPurchaseDealerVM.IFSCCode2.ToUpper();
                 objRequest.BankBranch2 = objPurchaseDealerVM.BankBranch2;
                 objRequest.OwnerName = objPurchaseDealerVM.OwnerName;
                 objRequest.OwnerContactNo = objPurchaseDealerVM.OwnerContactNo;
@@ -940,7 +940,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                     objBidder.BankBranch = data.BankBranch;
                     objBidder.IFSCCode = data.IFSCCode;
                     objBidder.FirmAddress = data.FirmAddress;
-
+                    objBidder.RegisterDate = data.CreatedDate.Value.ToString("dd/MM/yyyy");
                     response.Data = objBidder;
                 }
             }

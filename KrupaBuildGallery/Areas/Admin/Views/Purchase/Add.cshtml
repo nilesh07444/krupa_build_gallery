@@ -457,7 +457,7 @@
         cdamt = parseFloat(cdamt.toFixed(4));
 
         if ($("#EXPM2_" + id).val() != "") {
-            epm2 = parseFloat(parseFloat($("#EXPM2_" + id).val()).toFixed(2));
+            epm2 = parseFloat(parseFloat($("#EXPM2_" + id).val()).toFixed(4));
         }
         ba = parseFloat(((total - (tdamt + cdamt)) + (epm2)));
         ba = parseFloat(ba.toFixed(2));
@@ -497,7 +497,7 @@
         }
 
         famt = parseFloat(ba) + parseFloat(igstamt) + parseFloat(sgstamt) + parseFloat(cgstamt);
-        $("#Famt_" + id).val(famt.toFixed(2));
+        $("#Famt_" + id).val(famt.toFixed(4));
         finalcal();
     }
 

@@ -659,6 +659,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     objRequest.IsActive = true;
                     objRequest.IsDelete = false;
                     objRequest.State = objPurchaseDealerVM.State;
+                    objRequest.Pincode = objPurchaseDealerVM.Pincode;
                     objRequest.Status = 1;
                     objRequest.CreatedBy = clsAdminSession.UserID;
                     objRequest.CreatedDate = DateTime.Now;

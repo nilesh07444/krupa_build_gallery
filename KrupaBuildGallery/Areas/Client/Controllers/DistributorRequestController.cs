@@ -24,7 +24,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
         }
 
         [HttpPost]
-        public ActionResult NewDistributorRequest(FormCollection frm,HttpPostedFileBase aadhharphoto, HttpPostedFileBase gstphoto, HttpPostedFileBase pancardnophoto, HttpPostedFileBase photofile, HttpPostedFileBase shopphoto, HttpPostedFileBase cancellationchequephoto)
+        public ActionResult NewDistributorRequest(FormCollection frm,HttpPostedFileBase aadhharphoto, HttpPostedFileBase aadhharphoto2, HttpPostedFileBase gstphoto, HttpPostedFileBase pancardnophoto, HttpPostedFileBase photofile, HttpPostedFileBase shopphoto, HttpPostedFileBase shopphoto2, HttpPostedFileBase cancellationchequephoto)
         {
             try
             {
@@ -49,7 +49,10 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                 string addharphoto = string.Empty;
                 string shopphotoname = string.Empty;
                 string cancellationchequephotoname = string.Empty;
-                 
+
+                string addharphoto2 = string.Empty;
+                string shopphotoname2 = string.Empty;
+
                 tbl_DistributorRequestDetails objRequest = _db.tbl_DistributorRequestDetails.Where(o => (o.Email.ToLower() == email.ToLower() || o.MobileNo.ToLower() == mobileno.ToLower()) && o.IsDelete == false && o.Status == 0).FirstOrDefault();
                 if(objRequest != null)
                 {
@@ -99,6 +102,11 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                         addharphoto = Guid.NewGuid() + "-" + Path.GetFileName(aadhharphoto.FileName);
                         aadhharphoto.SaveAs(path + addharphoto);
                     }
+                    if (aadhharphoto2 != null)
+                    {
+                        addharphoto2 = Guid.NewGuid() + "-" + Path.GetFileName(aadhharphoto2.FileName);
+                        aadhharphoto2.SaveAs(path + addharphoto2);
+                    }
                     if (pancardnophoto != null)
                     {
                         pancardphotoname = Guid.NewGuid() + "-" + Path.GetFileName(pancardnophoto.FileName);
@@ -119,6 +127,13 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     {
                         shopphotoname = Guid.NewGuid() + "-" + Path.GetFileName(shopphoto.FileName);
                         shopphoto.SaveAs(path + shopphotoname);
+                    }
+
+
+                    if (shopphoto2 != null)
+                    {
+                        shopphotoname2 = Guid.NewGuid() + "-" + Path.GetFileName(shopphoto2.FileName);
+                        shopphoto2.SaveAs(path + shopphotoname2);
                     }
 
                     if (cancellationchequephoto != null)
@@ -147,6 +162,8 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     objRequest.ShopName = shopname;
                     objRequest.ShopPhoto = shopphotoname;
                     objRequest.AddharPhoto = addharphoto;
+                    objRequest.AddharPhoto2 = addharphoto2;
+                    objRequest.ShopPhoto2 = shopphotoname2;
                     objRequest.GSTPhoto = gstphotoname;
                     DateTime dt = DateTime.ParseExact(dob, "dd/MM/yyyy", null);
                     objRequest.Dob = dt;
