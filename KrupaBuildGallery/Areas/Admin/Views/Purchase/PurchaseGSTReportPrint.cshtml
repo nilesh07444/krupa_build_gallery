@@ -1,0 +1,91 @@
+﻿@{
+    ViewBag.Title = "Purchase GST Report";
+    Layout = null;
+    List<PurchaseGSTVM> lstReport = ViewData["lstReportGST"] as List<PurchaseGSTVM>;
+    List<DateTime> lstDates = ViewData["lstPurchasesDates"] as List<DateTime>;
+}
+<h2>Purchase GST Report</h2>
+@foreach (var objDt in lstDates)
+{
+    List<PurchaseGSTVM> lstRert = lstReport.Where(o => o.PurchaseDate == objDt).ToList();
+    if (lstRert != null && lstRert.Count() > 0)
+    {
+        <h3>@objDt.ToString("dd-MMM-yyyy")</h3>
+        <table border="1" cellpadding="6" style="border-collapse:collapse;width:100%;">
+            <tr>
+                <th>Bill No.</th>
+                <th>Supplier</th>
+                <th>GST Number</th>
+                <th>Total Amount</th>
+                <th>IGST Amount</th>
+                <th>SGST Amount</th>
+                <th>IGST Amount</th>
+            </tr>
+            @foreach (var obj in lstRert)
+            {
+                <tr style="font-weight:bold;background-color:#e7eaef;">
+                    <td>@obj.BillNumber</td>
+                    <td>@obj.DealerCode - @obj.FirmName</td>
+                    <td>@obj.GSTNumber</td>
+                    <td>@Math.Round(obj.TotalBillAmount,4)</td>
+                    <td>@Math.Round(obj.TotalIGST,4)</td>
+                    <td>@Math.Round(obj.TotalSGST,4)</td>
+                    <td>@Math.Round(obj.TotalCGST,4)</td>
+                </tr>
+                <tr>
+                    <td colspan="7">
+                        <table border="1" cellpadding="6" style="border-collapse:collapse;width:100%;">
+                            <tr>
+                                <td>
+                                </td>
+                                <td>
+                                    Amount
+                                </td>
+                                <td>
+                                    IGST Tax
+                                </td>
+                                <td>CGST Tax</td>
+                                <td>SGST Tax</td>
+                            </tr>
+                            <tr>
+                                <td>Tax Free</td>
+                                <td>@Math.Round(obj.FreeGST.Amount,4)</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>5% GST</td>
+                                <td>@Math.Round(obj.GST5.Amount,4)</td>
+                                <td>@Math.Round(obj.GST5.IGSTAmount,4)</td>
+                                <td>@Math.Round(obj.GST5.CGSTAmount,4)</td>
+                                <td>@Math.Round(obj.GST5.SGSTAmount,4)</td>
+                            </tr>
+                            <tr>
+                                <td>12% GST</td>
+                                <td>@Math.Round(obj.GST12.Amount, 4)</td>
+                                <td>@Math.Round(obj.GST12.IGSTAmount, 4)</td>
+                                <td>@Math.Round(obj.GST12.CGSTAmount, 4)</td>
+                                <td>@Math.Round(obj.GST12.SGSTAmount, 4)</td>
+                            </tr>
+                            <tr>
+                                <td>18% GST</td>
+                                <td>@Math.Round(obj.GST18.Amount, 4)</td>
+                                <td>@Math.Round(obj.GST18.IGSTAmount, 4)</td>
+                                <td>@Math.Round(obj.GST18.CGSTAmount, 4)</td>
+                                <td>@Math.Round(obj.GST18.SGSTAmount, 4)</td>
+                            </tr>
+                            <tr>
+                                <td>28% GST</td>
+                                <td>@Math.Round(obj.GST28.Amount, 4)</td>
+                                <td>@Math.Round(obj.GST28.IGSTAmount, 4)</td>
+                                <td>@Math.Round(obj.GST28.CGSTAmount, 4)</td>
+                                <td>@Math.Round(obj.GST28.SGSTAmount, 4)</td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            }
+        </table>
+    }
+}

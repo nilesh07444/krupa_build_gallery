@@ -1460,6 +1460,129 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             return "Success";
         }
 
+        public ActionResult PurchaseGSTReport()
+        {
+            var DealerParty = _db.tbl_PurchaseDealers.OrderBy(x => x.FirmName).ThenBy(x => x.BussinessCode).ToList();
+            ViewData["DealerParty"] = DealerParty;
+            return View();
+        }
+
+        public ActionResult ExportPurchaseGSTReport(long DealerId,string StartDate, string EndDate)
+        {
+            ExcelPackage excel = new ExcelPackage();
+            DateTime dtStart = DateTime.ParseExact(StartDate, "dd/MM/yyyy", null);
+            DateTime dtEnd = DateTime.ParseExact(EndDate, "dd/MM/yyyy", null);
+            dtEnd = new DateTime(dtEnd.Year, dtEnd.Month, dtEnd.Day, 23, 59, 59);
+
+            List<tbl_PurchaseDealers> lstDealers = new List<tbl_PurchaseDealers>();
+            List<PurchaseReportVM> lstReports = new List<PurchaseReportVM>();
+            if (DealerId == -1)
+            {
+                lstDealers = _db.tbl_PurchaseDealers.OrderBy(x => x.BussinessCode).ToList();
+            }
+            else
+            {
+                lstDealers = _db.tbl_PurchaseDealers.Where(o => o.Pk_Dealer_Id == DealerId).OrderBy(x => x.BussinessCode).ToList();
+            }
+
+            List<DateTime> lstPurchasesDates = _db.tbl_Purchase.Where(o => o.PurchaseDate >= dtStart && o.PurchaseDate <= dtEnd && o.IsDeleted == false).OrderBy(x => x.PurchaseDate.Value).Select(x => x.PurchaseDate.Value).Distinct().ToList();
+            List<PurchaseGSTVM> lstReportGST = new List<PurchaseGSTVM>();
+            foreach(DateTime dt in lstPurchasesDates)
+            {               
+               List<tbl_Purchase> lstPurchases =  _db.tbl_Purchase.Where(o => o.PurchaseDate == dt).ToList();
+               if(lstPurchases != null && lstPurchases.Count() > 0)
+                {
+                    foreach(var objP in lstPurchases)
+                    {
+                        PurchaseGSTVM objPG = new PurchaseGSTVM();
+                        var objPDel = _db.tbl_PurchaseDealers.Where(o => o.Pk_Dealer_Id == objP.DealerId).FirstOrDefault();
+                        if(objPDel != null)
+                        {
+                            decimal TotalAmt = 0;
+                            decimal ToalIGST = 0;
+                            decimal TotalCGST = 0;
+                            decimal TotalSGST = 0;
+                            objPG.DealerId = objP.DealerId.Value;
+                            objPG.DealerCode = objPDel.BussinessCode;
+                            objPG.FirmName = objPDel.FirmName;
+                            objPG.BillNumber = objP.BillNo;
+                            objPG.PurchaseDate = objP.PurchaseDate.Value;
+                            objPG.GSTNumber = objPDel.FirmGSTNo;
+                            decimal[] lstGSTPer = new decimal[] { 0.00m, 5.00m, 12.00m, 18.00m, 28.00m };
+                            List<tbl_PurchaseItems> lstPurItm = _db.tbl_PurchaseItems.Where(o => o.Fk_PurchaseId == objP.PurchaseId).ToList();
+                            foreach(decimal gst in lstGSTPer)
+                            {
+                                GSTVM objGST = new GSTVM();
+                                if (gst == 0.00m)
+                                {
+                                    decimal amts = lstPurItm.Where(o => o.CGST.Value == 0 && o.SGST.Value == 0 && o.IGST.Value == 0).Sum(x => x.BillAmount.Value);
+                                    objGST.Amount = amts;
+                                    objGST.IGSTAmount = 0;
+                                    objGST.SGSTAmount = 0;
+                                    objGST.CGSTAmount = 0;
+                                    objPG.FreeGST = objGST;
+                                    TotalAmt = TotalAmt + amts;
+                                }
+                                else
+                                {
+                                    decimal IGSTPer = gst;
+                                    decimal CGSTPer = gst / 2;
+                                    decimal SGSTPer = gst / 2;
+                                    decimal amtsIGST = lstPurItm.Where(o => o.IGST.Value == IGSTPer).Sum(x => x.BillAmount.Value);
+                                    decimal amtsCGSTSGST = lstPurItm.Where(o => o.CGST.Value == CGSTPer).Sum(x => x.BillAmount.Value);
+                                    objGST.Amount = amtsIGST + amtsCGSTSGST;
+                                    decimal IGST_Amt = 0;
+                                    decimal CGST_Amt = 0;
+                                    decimal SGST_Amt = 0;
+                                    if(amtsIGST > 0)
+                                    {
+                                        IGST_Amt = (amtsIGST * IGSTPer) / 100;
+                                    }
+                                    if(amtsCGSTSGST > 0)
+                                    {
+                                        CGST_Amt = (amtsCGSTSGST * CGSTPer) / 100;
+                                        SGST_Amt = (amtsCGSTSGST * SGSTPer) / 100;
+                                    }                                  
+
+                                    objGST.IGSTAmount = IGST_Amt;
+                                    objGST.SGSTAmount = SGST_Amt;
+                                    objGST.CGSTAmount = CGST_Amt;
+                                    TotalAmt = TotalAmt + objGST.Amount;
+                                    ToalIGST = ToalIGST + objGST.IGSTAmount;
+                                    TotalCGST = TotalCGST + objGST.CGSTAmount;
+                                    TotalSGST = TotalSGST + objGST.SGSTAmount;
+                                    if (gst == 5)
+                                    {
+                                        objPG.GST5 = objGST;
+                                    }
+                                    else if(gst == 12.00m)
+                                    {
+                                        objPG.GST12 = objGST;
+                                    }
+                                    else if (gst == 18.00m)
+                                    {
+                                        objPG.GST18 = objGST;
+                                    }
+                                    else if (gst == 28.00m)
+                                    {
+                                        objPG.GST28 = objGST;
+                                    }
+                                }
+                            }
+                            objPG.TotalBillAmount = TotalAmt;
+                            objPG.TotalIGST = ToalIGST;
+                            objPG.TotalCGST = TotalCGST;
+                            objPG.TotalSGST = TotalSGST;
+                            lstReportGST.Add(objPG);
+                        }
+                    }
+                }
+            }
+
+            ViewData["lstReportGST"] = lstReportGST;
+            ViewData["lstPurchasesDates"] = lstPurchasesDates;
+            return View("~/Areas/Admin/Views/Purchase/PurchaseGSTReportPrint.cshtml");
+        }
     }
 
 }

@@ -595,6 +595,7 @@
     <Compile Include="ViewModel\FreeOfferSubItems.cs" />
     <Compile Include="ViewModel\FreeOfferVM.cs" />
     <Compile Include="ViewModel\GeneralVM.cs" />
+    <Compile Include="ViewModel\GSTVM.cs" />
     <Compile Include="ViewModel\HomePageVM.cs" />
     <Compile Include="ViewModel\InvoiceItemVM.cs" />
     <Compile Include="ViewModel\ItemStockVM.cs" />
@@ -614,6 +615,7 @@
     <Compile Include="ViewModel\ProductVM.cs" />
     <Compile Include="ViewModel\CategoryInfo.cs" />
     <Compile Include="ViewModel\PurchaseDealerVM.cs" />
+    <Compile Include="ViewModel\PurchaseGSTVM.cs" />
     <Compile Include="ViewModel\PurchaseItemVM.cs" />
     <Compile Include="ViewModel\PurchasePaymentVM.cs" />
     <Compile Include="ViewModel\PurchaseReportVM.cs" />
@@ -4354,6 +4356,7 @@
     <Content Include="Areas\Admin\Views\Purchase\_GeneralPurchasePaymentReport.cshtml" />
     <Content Include="Areas\Admin\Views\Purchase\_AssignBillForPayment.cshtml" />
     <Content Include="Areas\Admin\Views\Purchase\PurchaseGSTReport.cshtml" />
+    <Content Include="Areas\Admin\Views\Purchase\PurchaseGSTReportPrint.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />
