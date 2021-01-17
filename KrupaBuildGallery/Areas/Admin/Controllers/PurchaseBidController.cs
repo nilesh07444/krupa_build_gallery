@@ -400,6 +400,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                                     PickupCity = cu.PickupCity,
                                                     PickupCityPincode = cu.PickupCityPincode,
                                                     Remarks = cu.Remarks,
+                                                    BidImage = cu.BidPhoto,
+                                                    BidImage3 = cu.BidPhoto3,
+                                                    BidImage2 = cu.BidPhoto2,
                                                     RejectReason = cu.RejectReason,
                                                     BidId = cu.Fk_BidId.Value
                                                 }).FirstOrDefault();
@@ -1054,6 +1057,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                         {
                                             BidId = cu.Pk_Bid_id,
                                             ItemId = cu.ItemId.Value,
+                                            BidNum = cu.BidNo.Value,
+                                            BidYear = cu.BidYear,
                                             ItemName = itm.ItemName,
                                             Qty = cu.Qty.Value,
                                             Unittype = unityp.UnitTypeName,

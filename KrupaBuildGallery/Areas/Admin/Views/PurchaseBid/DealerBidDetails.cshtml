@@ -206,7 +206,87 @@
 
                             </div>
                         </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Photo1:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">
+                                    @if (!string.IsNullOrEmpty(objDelBids.BidImage))
+                                    {
+                                        if (File.Exists(Server.MapPath("~/Images/UsersDocuments/" + (objDelBids.BidImage))))
+                                        {
+                                            <a class="example-image-link" href="~/Images/UsersDocuments/@objDelBids.BidImage" data-lightbox="ProfilePhoto">
+                                                <img src="~/Images/UsersDocuments/@objDelBids.BidImage" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                            </a>
 
+                                        }
+                                        else
+                                        {
+                                            <span>-</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span>-</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Photo2:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">
+                                    @if (!string.IsNullOrEmpty(objDelBids.BidImage2))
+                                    {
+                                        if (File.Exists(Server.MapPath("~/Images/UsersDocuments/" + (objDelBids.BidImage2))))
+                                        {
+                                            <a class="example-image-link" href="~/Images/UsersDocuments/@objDelBids.BidImage2" data-lightbox="ProfilePhoto2">
+                                                <img src="~/Images/UsersDocuments/@objDelBids.BidImage2" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                            </a>
+
+                                        }
+                                        else
+                                        {
+                                            <span>-</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span>-</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3">
+                                <div class="label-wrapper"><label class="control-label">Photo3:</label></div>
+                            </div>
+                            <div class="col-md-9">
+                                <div class="form-text-row">
+                                    @if (!string.IsNullOrEmpty(objDelBids.BidImage3))
+                                    {
+                                        if (File.Exists(Server.MapPath("~/Images/UsersDocuments/" + (objDelBids.BidImage3))))
+                                        {
+                                            <a class="example-image-link" href="~/Images/UsersDocuments/@objDelBids.BidImage3" data-lightbox="ProfilePhoto3">
+                                                <img src="~/Images/UsersDocuments/@objDelBids.BidImage3" alt="" class="img-fluid img-40 blur-up lazyloaded" style="width: 40px; height:40px;" />
+                                            </a>
+
+                                        }
+                                        else
+                                        {
+                                            <span>-</span>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <span>-</span>
+                                    }
+                                </div>
+                            </div>
+                        </div>
                         @if (objDelBids.BidStatus == 2)
                         {
                             <div class="form-group">
@@ -246,7 +326,7 @@
                                 <div class="label-wrapper"><label class="control-label">Reason:</label></div>
                             </div>
                             <div class="col-md-8">
-                                <input type="text" name="txtreason" id="txtreason" autocomplete="off" style="width:150px;height:30px;" class="form-control" />
+                                <input type="text" name="txtreason" id="txtreason" autocomplete="off" style="width:250px;height:30px;" class="form-control" />
                             </div>
                         </div>
                         <div class="row distributorinforeject" style="margin-top:5px;display:none;">

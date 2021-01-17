@@ -83,12 +83,13 @@
                                         <tr>
                                             <td>Photo:</td>
                                             <td>
+                                        
                                                 @if (!string.IsNullOrEmpty(Model.PicFile))
                                                 {
-                                                    if (File.Exists(Server.MapPath("~/Images/UserDocuments/" + Model.PicFile)))
+                                                    if (File.Exists(Server.MapPath("~/Images/UsersDocuments/" + Model.PicFile)))
                                                     {
-                                                        <a target="_blank" href="~/Images/AdminUserMedia/@Model.PicFile">
-                                                            <img src="~/Images/AdminUserMedia/@Model.PicFile" style="width: 50px; height: 50px;" />
+                                                        <a target="_blank" href="~/Images/UsersDocuments/@Model.PicFile">
+                                                            @Model.PicFile
                                                         </a>
                                                     }
                                                     else
