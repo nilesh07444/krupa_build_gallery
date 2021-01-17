@@ -4353,6 +4353,7 @@
     <Content Include="Areas\Admin\Views\Purchase\GeneralPurchasePaymentReport.cshtml" />
     <Content Include="Areas\Admin\Views\Purchase\_GeneralPurchasePaymentReport.cshtml" />
     <Content Include="Areas\Admin\Views\Purchase\_AssignBillForPayment.cshtml" />
+    <Content Include="Areas\Admin\Views\Purchase\PurchaseGSTReport.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\cart.js" />

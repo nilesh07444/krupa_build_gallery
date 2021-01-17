@@ -1,0 +1,125 @@
+﻿@using KrupaBuildGallery.Model;
+@{
+    ViewBag.Title = "Purchase GST Report";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    List<tbl_PurchaseDealers> lstDelers = ViewData["DealerParty"] as List<tbl_PurchaseDealers>;
+}
+
+<div class="page-body">
+
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="page-header">
+            <div class="row">
+                <div class="col-lg-6">
+                    <div class="page-header-left">
+                        <h3>
+                            Purchase GST Report
+                        </h3>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <ol class="breadcrumb pull-right">
+                        <li class="breadcrumb-item"><a href="/admin/dashboard"><i data-feather="home"></i></a></li>
+                        <li class="breadcrumb-item active">Purchase GST Report</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+    <!-- Container-fluid starts-->
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                <h5>Purchase GST Report</h5>
+            </div>
+            <div class="card-body vendor-table">
+                <h3>Filter:</h3>
+                <div class="row" style="margin-top:25px;border-bottom: 2px solid #f8f8f9;padding-bottom: 25px;margin-bottom: 10px;">
+                    <div class="col-sm-3">
+                        <label>Supplier</label>
+                        <select id="dealers" class="form-control">
+                            <option value="-1">All</option>
+                            @if (lstDelers != null && lstDelers.Count() > 0)
+                            {
+                                foreach (var objc in lstDelers)
+                                {
+                                    <option value="@objc.Pk_Dealer_Id">@objc.BussinessCode - @objc.FirmName</option>
+                                }
+                            }
+                        </select>
+                    </div>                 
+                    <div class="col-sm-3">
+                        <label>Start Date *</label>
+                        <input class="form-control col-md-8 clsDatePicker text-box single-line valid" id="StartDate" name="StartDate" placeholder="DD/MM/YYY" readonly="readonly" type="text" value="">
+                    </div>
+                    <div class="col-sm-3">
+                        <label>End Date *</label>
+                        <input class="form-control col-md-8 clsDatePicker text-box single-line valid" id="EndDate" name="EndDate" placeholder="DD/MM/YYY" readonly="readonly" type="text" value="">
+                    </div>
+                </div>
+                <div class="row" style="margin-top:25px;border-bottom: 2px solid #f8f8f9;padding-bottom: 25px;margin-bottom: 10px;">
+                    @*<div class="col-sm-2">
+                            <input type="button" value="View Report" class="btn btn-info" onclick="viewreport();" style="position: absolute; bottom: 0;" />
+                        </div>*@
+                    <div class="col-sm-2">
+                        <input type="button" value="Export To Excel" class="btn btn-info" onclick="exporttoexcel();" style="position: absolute; bottom: 0;" />
+                    </div>
+                </div>
+                <a href="" id="export" target="_blank" style="display:none;">export</a>
+
+                <div id="dvreport">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Container-fluid Ends-->
+
+</div>
+
+<script src="~/Content/assets/js/jquery-3.3.1.min.js"></script>
+<script src="~/Scripts/jquery.validate.min.js"></script>
+<script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/select2/3.2/select2.min.js"></script>
+<link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/select2/3.2/select2.css">
+<script>
+
+    function viewreport() {
+
+        if ($("#StartDate").val() == "") {
+            alert("Please select Start Date");
+            return false;
+        }
+
+        if ($("#EndDate").val() == "") {
+            alert("Please select End Date");
+            return false;
+        }
+        var pid = 0;
+        if ($("#purchasebills").val() != null) {
+            pid = $("#purchasebills").val();
+        }
+        StartLoading();
+        $("#dvreport").load("/admin/Purchase/GetPaymentReportBillmWise?DealerId=" + $("#dealers").val() + "&PurchaseId=" + pid + "&StartDate=" + $("#StartDate").val() + "&EndDate=" + $("#EndDate").val(), function () {
+            StopLoading();
+        });
+
+    }
+
+    function exporttoexcel() {
+
+        if ($("#StartDate").val() == "") {
+            alert("Please select Start Date");
+            return false;
+        }
+
+        if ($("#EndDate").val() == "") {
+            alert("Please select End Date");
+            return false;
+        }
+        $("#export").attr("href", "/admin/Purchase/ExportPurchaseGSTReport?DealerId=" + $("#dealers").val() + "&StartDate=" + $("#StartDate").val() + "&EndDate=" + $("#EndDate").val());
+        $("#export")[0].click();
+    }
+</script>
