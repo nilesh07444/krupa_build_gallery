@@ -105,6 +105,7 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                             OrderId = p.OrderId,
                             ClientUserName = c.FirstName + " " + c.LastName,
                             ClientUserId = p.ClientUserId,
+                            ClientRoleId = c.ClientRoleId,
                             OrderAmount = p.OrderAmount,
                             OrderShipCity = p.OrderShipCity,
                             OrderShipState = p.OrderShipState,
