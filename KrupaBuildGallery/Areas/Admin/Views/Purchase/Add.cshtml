@@ -4,6 +4,16 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
     List<tbl_PurchaseDealers> lstDealers = ViewData["DealerParty"] as List<tbl_PurchaseDealers>;
 }
+
+<style>
+    body {
+        padding-top: 60px;
+    }
+    .clsbold {
+        font-weight: bold;
+    }
+</style>
+
 <style>
     .select_input select {
         padding: 8px;
@@ -60,13 +70,13 @@
                             //      string birthstring = Model.BirthDate.ToString("dd/MM/yyyy");
                             <div class="form-row">
                                 <div class="col-md-4">
-                                    <label for="billnum">Bill Number</label>
+                                    <label for="billnum" class="clsbold">Bill Number</label>
                                     <input type="text" class="form-control" id="billnum" name="billnum" value="" placeholder="" onblur="checkbillexist();">
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="col-md-6 select_input">
-                                    <label for="prefix">Party Dealer *</label>
+                                    <label for="prefix" class="clsbold">Party Dealer *</label>
                                     <select class="form-control" name="partydealer" id="partydealer" required="">
                                         @if (lstDealers != null && lstDealers.Count() > 0)
                                         {
@@ -79,36 +89,36 @@
                                     </select>
                                 </div>
                                 <div class="col-md-6">
-                                    <label for="purchasedate">Purchase Date *</label>
+                                    <label for="purchasedate" class="clsbold">Purchase Date *</label>
                                     <input type="text" class="form-control" id="purchasedate" name="purchasedate" value="" placeholder="Purchase Date" required="" onblur="checkbillexist();">
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="col-md-4">
-                                    <label for="firmname">Firm Name</label>
-                                    <input type="text" class="form-control" id="firmname" name="firmname" value="" style="pointer-events:none;" placeholder="">
+                                    <label for="firmname" class="clsbold">Firm Name</label>
+                                    <input type="text" class="form-control" readonly id="firmname" name="firmname" value="" style="pointer-events:none;" placeholder="">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="ownername">Owner Name</label>
-                                    <input type="text" class="form-control" id="ownername" name="ownername" value="" style="pointer-events:none;" placeholder="">
+                                    <label for="ownername" class="clsbold">Owner Name</label>
+                                    <input type="text" class="form-control" readonly id="ownername" name="ownername" value="" style="pointer-events:none;" placeholder="">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="firmcontact">Firm Contact Number</label>
-                                    <input type="text" class="form-control" id="firmcontact" name="firmcontact" value="" style="pointer-events:none;" placeholder="">
+                                    <label for="firmcontact" class="clsbold">Firm Contact Number</label>
+                                    <input type="text" class="form-control" readonly id="firmcontact" name="firmcontact" value="" style="pointer-events:none;" placeholder="">
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="col-md-4">
-                                    <label for="gstnum">GST Number</label>
-                                    <input type="text" class="form-control" id="gstnum" name="gstnum" value="" style="pointer-events:none;" placeholder="">
+                                    <label for="gstnum" class="clsbold">GST Number</label>
+                                    <input type="text" class="form-control" readonly id="gstnum" name="gstnum" value="" style="pointer-events:none;" placeholder="">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="city">City</label>
-                                    <input type="text" class="form-control" id="city" name="city" value="" style="pointer-events:none;" placeholder="">
+                                    <label for="city" class="clsbold">City</label>
+                                    <input type="text" class="form-control" readonly id="city" name="city" value="" style="pointer-events:none;" placeholder="">
                                 </div>
                                 <div class="col-md-4">
-                                    <label for="state">State</label>
-                                    <input type="text" class="form-control" id="state" name="state" value="" style="pointer-events:none;" placeholder="">
+                                    <label for="state" class="clsbold">State</label>
+                                    <input type="text" class="form-control" readonly id="state" name="state" value="" style="pointer-events:none;" placeholder="">
                                 </div>
                             </div>
                             <div class="form-row">
@@ -120,10 +130,10 @@
                                             <th>Category</th>
                                             <th>Product</th>
                                             <th>SubProduct</th>
-                                            <th>Item</th>
-                                            <th>Variant</th>
-                                            <th>Qty</th>
-                                            <th>Price</th>
+                                            <th>Item*</th>
+                                            <th>Variant*</th>
+                                            <th>Qty*</th>
+                                            <th>Price*</th>
                                             <th>FP</th>
                                             <th>LC</th>
                                             <th>ExPM1</th>
@@ -145,7 +155,7 @@
                             </div>
                             <div class="form-row">
                                 <div class="col-md-6">
-                                    <label for="remarks" style="vertical-align:top">Remarks</label>
+                                    <label for="remarks" class="clsbold" style="vertical-align:top;">Remarks</label>
                                     <textarea id="remarks" name="remarks" style="width:280px;height:100px;"></textarea>
                                 </div>
                                 <div class="col-md-6">
@@ -627,7 +637,7 @@
                             data: $('#theFormId').serialize(),
                             success: function (msg) {
                                 if (msg == "Success") {
-                                    alert("saved successfully!");
+                                    alert("New Purchase Save Successfully!");
                                     StopLoading();
                                     location.reload();
                                 }

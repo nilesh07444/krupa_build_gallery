@@ -1,4 +1,5 @@
-﻿using KrupaBuildGallery.Model;
+﻿using ConstructionDiary.Models;
+using KrupaBuildGallery.Model;
 using Newtonsoft.Json;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
@@ -15,6 +16,7 @@ using System.Web.Mvc;
 
 namespace KrupaBuildGallery.Areas.Admin.Controllers
 {
+    [CustomAuthorize]
     public class PurchaseBidController : Controller
     {
         private readonly krupagallarydbEntities _db;

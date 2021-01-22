@@ -49,6 +49,10 @@
     #txtreason:focus {
         outline-color: #151414 !important;
     }
+
+    .dataTables_wrapper.no-footer .dataTables_scrollBody {
+        border-bottom: none !important;
+    }
 </style>
 <div class="page-body">
 
@@ -255,6 +259,7 @@
     $(document).ready(function () {
         $('#basic-190').DataTable({
             "pageLength": 100,
+            "scrollX": true,
             "columnDefs": [{
                 "targets": [0, 1],
                 "orderable": false

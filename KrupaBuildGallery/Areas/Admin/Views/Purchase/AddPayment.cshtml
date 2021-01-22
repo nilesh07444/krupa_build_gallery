@@ -4,6 +4,13 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
     List<tbl_PurchaseDealers> lstDealers = ViewData["DealerParty"] as List<tbl_PurchaseDealers>;
 }
+
+<style>
+    body {
+        padding-top: 60px;
+    }
+</style>
+
 <style>
     .select_input select {
         padding: 8px;
@@ -84,32 +91,32 @@
                             <div class="form-row">
                                 <div class="col-md-4">
                                     <label for="firmname">Firm Name</label>
-                                    <input type="text" class="form-control" id="firmname" name="firmname" value="" style="pointer-events:none;" placeholder="">
+                                    <input type="text" readonly class="form-control" id="firmname" name="firmname" value="" style="pointer-events:none;" placeholder="">
                                 </div>
                                 <div class="col-md-4">
                                     <label for="ownername">Owner Name</label>
-                                    <input type="text" class="form-control" id="ownername" name="ownername" value="" style="pointer-events:none;" placeholder="">
+                                    <input type="text" readonly class="form-control" id="ownername" name="ownername" value="" style="pointer-events:none;" placeholder="">
                                 </div>
                                 <div class="col-md-4">
                                     <label for="firmcontact">Firm Contact Number</label>
-                                    <input type="text" class="form-control" id="firmcontact" name="firmcontact" value="" style="pointer-events:none;" placeholder="">
+                                    <input type="text" readonly class="form-control" id="firmcontact" name="firmcontact" value="" style="pointer-events:none;" placeholder="">
                                 </div>
                             </div>
                             <div class="form-row">
                                 <div class="col-md-4">
                                     <label for="gstnum">GST Number</label>
-                                    <input type="text" class="form-control" id="gstnum" name="gstnum" value="" style="pointer-events:none;" placeholder="">
+                                    <input type="text" readonly class="form-control" id="gstnum" name="gstnum" value="" style="pointer-events:none;" placeholder="">
                                 </div>
                                 <div class="col-md-4">
                                     <label for="city">City</label>
-                                    <input type="text" class="form-control" id="city" name="city" value="" style="pointer-events:none;" placeholder="">
+                                    <input type="text" readonly class="form-control" id="city" name="city" value="" style="pointer-events:none;" placeholder="">
                                 </div>
                                 <div class="col-md-4">
                                     <label for="state">State</label>
-                                    <input type="text" class="form-control" id="state" name="state" value="" style="pointer-events:none;" placeholder="">
+                                    <input type="text" readonly class="form-control" id="state" name="state" value="" style="pointer-events:none;" placeholder="">
                                 </div>
                             </div>
-                            <hr/>
+                            <hr />
                             <span><b>Amount Due for Bill: </b></span><span id="spnamtdue" style="font-weight:bold;"></span>
                             <div class="form-row">
                                 <div class="col-md-4 select_input">
@@ -146,16 +153,15 @@
                             <div class="form-row dvbank" style="display:none;">
                                 <div class="col-md-4">
                                     <label for="accnum">Account Number*</label>
-                                    <select class="form-control" name="accnum" id="accnum" >
-
+                                    <select class="form-control" name="accnum" id="accnum">
                                     </select>
-                                </div>                                                  
+                                </div>
                             </div>
                             <div class="form-row">
                                 <div class="col-md-6">
                                     <label for="remarks" style="vertical-align:top">Remarks</label>
-                                    <textarea id="remarks" name="remarks" style="width:280px;height:100px;"></textarea>
-                                </div>                                
+                                    <textarea id="remarks" class="form-control" name="remarks" style="width:280px;height:100px;"></textarea>
+                                </div>
                             </div>
                             <div class="form-row">
                                 <div class="col-md-6">
@@ -195,7 +201,7 @@
 
     });
     $("#partydealer").select2();
-    
+
     function paymenttypechange() {
         $(".dvcheq").hide();
         $(".dvbank").hide();
@@ -212,14 +218,14 @@
     }
 
     function billchange() {
-     
+
         if ($("#purchasebills option:selected").val() == "") {
-            $("#spnamtdue").html("");   
+            $("#spnamtdue").html("");
         }
         else {
             $("#spnamtdue").html("₹" + $("#purchasebills option:selected").attr("data-amt"));
         }
-        
+
     }
 
     function checkdetails() {
@@ -274,7 +280,7 @@
                 error: function (error) {
                 }
             });
-            
+
         }
         else {
             var htmlSubData = "<option value=''>- Select Bill -</option>";
