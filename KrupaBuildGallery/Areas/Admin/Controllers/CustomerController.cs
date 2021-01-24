@@ -38,7 +38,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 }
 
                 DateTime dtEnd = DateTime.MaxValue;
-                if (!string.IsNullOrEmpty(StartDate))
+                if (!string.IsNullOrEmpty(EndDate))
                 {
                     dtEnd = DateTime.ParseExact(EndDate, "dd/MM/yyyy", null);
                 }

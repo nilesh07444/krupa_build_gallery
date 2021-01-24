@@ -24,14 +24,30 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             _db = new krupagallarydbEntities();
         }
         // GET: Admin/Purchase
-        public ActionResult Index()
+        public ActionResult Index(long SupplierId = -1,string StartDate = "",string EndDate = "")
         {
+            var DealerParty = _db.tbl_PurchaseDealers.OrderBy(x => x.FirmName).ThenBy(x => x.BussinessCode).ToList();
+            ViewData["DealerParty"] = DealerParty;
             List<PurchaseVM> lstPurchaseVM  = new List<PurchaseVM>();
             try
             {
+                DateTime dtStart = DateTime.Today;
+                if (!string.IsNullOrEmpty(StartDate))
+                {
+                    dtStart = DateTime.ParseExact(StartDate, "dd/MM/yyyy", null);
+                }
+                StartDate = dtStart.ToString("dd/MM/yyyy");
+
+                DateTime dtEnd = DateTime.Today;
+                if (!string.IsNullOrEmpty(EndDate))
+                {
+                    dtEnd = DateTime.ParseExact(EndDate, "dd/MM/yyyy", null);
+                    dtEnd = new DateTime(dtEnd.Year, dtEnd.Month, dtEnd.Day, 23, 59, 59);
+                }
+                EndDate = dtEnd.ToString("dd/MM/yyyy");
                 lstPurchaseVM =(from i in _db.tbl_Purchase                             
-                              where i.IsDeleted == false
-                              select new PurchaseVM
+                                where i.IsDeleted == false && i.PurchaseDate >= dtStart && i.PurchaseDate <= dtEnd && (SupplierId == -1 || i.DealerId.Value == SupplierId)
+                                select new PurchaseVM
                               {
                                   PurchaseId = i.PurchaseId,
                                   BillNo = i.BillNo,
@@ -40,6 +56,10 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                   PurchaseDate = i.PurchaseDate,
                                   FinalBillAmount = i.FinalBillAmount.Value                                  
                               }).OrderByDescending(x => x.PurchaseDate).ToList();
+
+                ViewBag.Dealer = SupplierId;
+                ViewBag.StartDate = StartDate;
+                ViewBag.EndDate = EndDate;
             }
             catch (Exception ex)
             {
@@ -456,16 +476,31 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
         }
 
 
-        public ActionResult Payments()
+        public ActionResult Payments(long SupplierId = -1, string StartDate = "", string EndDate = "")
         {
             List<PurchasePaymentVM> lstPayVM = new List<PurchasePaymentVM>();
+            var DealerParty = _db.tbl_PurchaseDealers.OrderBy(x => x.FirmName).ThenBy(x => x.BussinessCode).ToList();
+            ViewData["DealerParty"] = DealerParty;
             try
             {
+                DateTime dtStart = DateTime.Today;
+                if (!string.IsNullOrEmpty(StartDate))
+                {
+                    dtStart = DateTime.ParseExact(StartDate, "dd/MM/yyyy", null);
+                }
+                StartDate = dtStart.ToString("dd/MM/yyyy");
+                DateTime dtEnd = DateTime.Today;
+                if (!string.IsNullOrEmpty(EndDate))
+                {
+                    dtEnd = DateTime.ParseExact(EndDate, "dd/MM/yyyy", null);
+                    dtEnd = new DateTime(dtEnd.Year, dtEnd.Month, dtEnd.Day, 23, 59, 59);
+                }
+                EndDate = dtEnd.ToString("dd/MM/yyyy");
                 lstPayVM = (from i in _db.tbl_PurchasePayment
                              join d in _db.tbl_PurchaseDealers on i.DealerId.Value equals d.Pk_Dealer_Id
                              join s in _db.tbl_Purchase on i.PurchaseId equals s.PurchaseId into outerJoinPay
                                  from s in outerJoinPay.DefaultIfEmpty()
-                                 where i.IsDeleted == false && i.IsDebit == true                                  
+                                 where i.IsDeleted == false && i.IsDebit == true && i.PaymentDate.Value >= dtStart && i.PaymentDate.Value <= dtEnd && (SupplierId == -1 || i.DealerId.Value == SupplierId)                              
                                  select new PurchasePaymentVM
                                  {
                                      PurchasePaymentId = i.PurchasePaymentId,
@@ -477,6 +512,9 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                                      PaymentBy = i.PaymentBy,
                                      DealerCode = d.BussinessCode
                                  }).OrderByDescending(x => x.PaymentDate).ToList();
+                ViewBag.Dealer = SupplierId;
+                ViewBag.StartDate = StartDate;
+                ViewBag.EndDate = EndDate;
             }
             catch (Exception ex)
             {
@@ -1307,8 +1345,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             string[] arrycolmns = new string[] { "Date", "Opening", "Credit", "Debit", "Closing", "PaymentMethod", "Remarks", "BillNo." };
             if (DealerId != -1)
             {
-                List<tbl_PurchasePayment> lstCrdt = _db.tbl_PurchasePayment.Where(o => o.DealerId == DealerId && o.PaymentDate < dtStart && o.IsDebit == false).ToList();
-                List<tbl_PurchasePayment> lstDebt = _db.tbl_PurchasePayment.Where(o => o.DealerId == DealerId && o.PaymentDate < dtStart && o.IsDebit == true).ToList();
+                List<tbl_PurchasePayment> lstCrdt = _db.tbl_PurchasePayment.Where(o => o.DealerId == DealerId && o.PaymentDate < dtStart && o.IsDebit == false && o.IsDeleted == false).ToList();
+                List<tbl_PurchasePayment> lstDebt = _db.tbl_PurchasePayment.Where(o => o.DealerId == DealerId && o.PaymentDate < dtStart && o.IsDebit == true && o.IsDeleted == false).ToList();
                 decimal TotalCredit = 0;
                 decimal TotalDebit = 0;
                 TotalCredit = lstCrdt.Sum(x => x.Amount.HasValue ? x.Amount.Value : 0);
@@ -1318,7 +1356,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 TotalCredit = TotalCredit + TotalVatavCredit;
                 TotalDebit = TotalDebit + TotalVatavDebit;
                 decimal TotalOpening = TotalCredit - TotalDebit;
-                List<tbl_PurchasePayment> lstAllTransaction = _db.tbl_PurchasePayment.Where(o => o.DealerId == DealerId && o.PaymentDate >= dtStart && o.PaymentDate <= dtEnd).OrderBy(x => x.PaymentDate.Value).ToList();
+                List<tbl_PurchasePayment> lstAllTransaction = _db.tbl_PurchasePayment.Where(o => o.DealerId == DealerId && o.PaymentDate >= dtStart && o.PaymentDate <= dtEnd && o.IsDeleted == false).OrderBy(x => x.PaymentDate.Value).ToList();
                 int row1 = 1;
                 if (lstAllTransaction != null && lstAllTransaction.Count() > 0)
                 {
@@ -1362,8 +1400,8 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             else
             {
 
-                List<tbl_PurchasePayment> lstCrdt = _db.tbl_PurchasePayment.Where(o => o.PaymentDate < dtStart && o.IsDebit == false).ToList();
-                List<tbl_PurchasePayment> lstDebt = _db.tbl_PurchasePayment.Where(o => o.PaymentDate < dtStart && o.IsDebit == true).ToList();
+                List<tbl_PurchasePayment> lstCrdt = _db.tbl_PurchasePayment.Where(o => o.PaymentDate < dtStart && o.IsDebit == false && o.IsDeleted == false).ToList();
+                List<tbl_PurchasePayment> lstDebt = _db.tbl_PurchasePayment.Where(o => o.PaymentDate < dtStart && o.IsDebit == true && o.IsDeleted == false).ToList();
                 decimal TotalCredit = 0;
                 decimal TotalDebit = 0;
                 TotalCredit = lstCrdt.Sum(x => x.Amount.HasValue ? x.Amount.Value : 0);
@@ -1373,7 +1411,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                 TotalCredit = TotalCredit + TotalVatavCredit;
                 TotalDebit = TotalDebit + TotalVatavDebit;
                 decimal TotalOpening = TotalCredit - TotalDebit;
-                List<tbl_PurchasePayment> lstAllTransaction = _db.tbl_PurchasePayment.Where(o => o.PaymentDate >= dtStart && o.PaymentDate <= dtEnd).OrderBy(x => x.PaymentDate.Value).ToList();
+                List<tbl_PurchasePayment> lstAllTransaction = _db.tbl_PurchasePayment.Where(o => o.PaymentDate >= dtStart && o.PaymentDate <= dtEnd && o.IsDeleted == false).OrderBy(x => x.PaymentDate.Value).ToList();
                 int row1 = 1;
                 if (lstAllTransaction != null && lstAllTransaction.Count() > 0)
                 {
@@ -1459,6 +1497,26 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             objPay.PurchaseId = PurchaseId;
             objPay.BillNumber = objPur.BillNo;
             _db.SaveChanges();
+
+            var objPurchase = _db.tbl_Purchase.Where(o => o.PurchaseId == PurchaseId).FirstOrDefault();
+            if(objPurchase != null)
+            {
+                //objPurchase.TotalVatav = 
+                decimal Paypaid = 0;
+                decimal Vatv = 0;
+                if(objPurchase.PaymentPaid != null)
+                {
+                    Paypaid = objPurchase.PaymentPaid.Value;
+                }
+                if(objPurchase.TotalVatav != null)
+                {
+                    Vatv = objPurchase.TotalVatav.Value;
+                }
+                objPurchase.PaymentPaid = Paypaid + objPay.Amount;
+                objPurchase.TotalVatav = Vatv  + objPay.Vatav;
+                objPurchase.TotalAmtPayment = objPurchase.PaymentPaid + objPurchase.TotalVatav;
+                _db.SaveChanges();
+            }
             return "Success";
         }
 
@@ -1486,12 +1544,12 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
             {
                 lstDealers = _db.tbl_PurchaseDealers.Where(o => o.Pk_Dealer_Id == DealerId).OrderBy(x => x.BussinessCode).ToList();
             }
-
-            List<DateTime> lstPurchasesDates = _db.tbl_Purchase.Where(o => o.PurchaseDate >= dtStart && o.PurchaseDate <= dtEnd && o.IsDeleted == false).OrderBy(x => x.PurchaseDate.Value).Select(x => x.PurchaseDate.Value).Distinct().ToList();
+            List<long> lstIds = lstDealers.Select(x => x.Pk_Dealer_Id).ToList();
+            List<DateTime> lstPurchasesDates = _db.tbl_Purchase.Where(o => o.PurchaseDate >= dtStart && o.PurchaseDate <= dtEnd && o.IsDeleted == false && lstIds.Contains(o.DealerId.Value)).OrderBy(x => x.PurchaseDate.Value).Select(x => x.PurchaseDate.Value).Distinct().ToList();
             List<PurchaseGSTVM> lstReportGST = new List<PurchaseGSTVM>();
             foreach(DateTime dt in lstPurchasesDates)
             {               
-               List<tbl_Purchase> lstPurchases =  _db.tbl_Purchase.Where(o => o.PurchaseDate == dt).ToList();
+               List<tbl_Purchase> lstPurchases =  _db.tbl_Purchase.Where(o => o.PurchaseDate == dt && lstIds.Contains(o.DealerId.Value)).ToList();
                if(lstPurchases != null && lstPurchases.Count() > 0)
                 {
                     foreach(var objP in lstPurchases)

@@ -117,7 +117,7 @@
                                 </div>
                             </div>
                             <hr />
-                            <span><b>Amount Due for Bill: </b></span><span id="spnamtdue" style="font-weight:bold;"></span>
+                            <span><b>Amount Due for Bill: </b></span><span id="spnamtdue" style="font-weight:bold;" data-amts="0"></span>
                             <div class="form-row">
                                 <div class="col-md-4 select_input">
                                     <label for="paymentby">Payment By *</label>
@@ -131,7 +131,7 @@
                                     <label for="amount">Amount*</label>
                                     <input type="number" class="form-control" value="" id="amount" name="amount" />
                                 </div>
-                                <div class="col-md-4 select_input">
+                                <div class="col-md-4 select_input clsvtav">
                                     <label for="vatav">Vatav</label>
                                     <input type="number" class="form-control" value="" id="vatav" name="vatav" />
                                 </div>
@@ -221,9 +221,15 @@
 
         if ($("#purchasebills option:selected").val() == "") {
             $("#spnamtdue").html("");
+            $("#spnamtdue").attr("data-amts","0");
+            $(".clsvtav").hide();
+            $("#vatav").val("0");
         }
         else {
             $("#spnamtdue").html("₹" + $("#purchasebills option:selected").attr("data-amt"));
+            $("#spnamtdue").attr("data-amts", $("#purchasebills option:selected").attr("data-amt"));
+            $(".clsvtav").show();
+            $("#vatav").val("0");
         }
 
     }
@@ -313,13 +319,12 @@
             alert("Please Select Payment Date");
             StopLoading();
         }
-        else if ($("#amount").val() == "0" || $("#amount").val() == "")
-        {
+        else if ($("#amount").val() == "0" || $("#amount").val() == "") {
             isvalid = false;
             alert("Please Enter Amount of Payment");
             StopLoading();
         }
-        else if($("#paymentby").val() == "Cheque") {
+        else if ($("#paymentby").val() == "Cheque") {
             if ($("#cheqnum").val() == "") {
                 isvalid = false;
                 alert("Please Enter Cheque Number");
@@ -336,6 +341,30 @@
                 StopLoading();
             }
         }
+        else if ($("#amount").val() != "0" && $("#amount").val() != "" && $("#purchasebills option:selected").val() != "") {
+            var amts = parseFloat($("#amount").val());
+            var vatav = 0;
+            if ($("#vatav").val() != "" && $("#vatav").val() != "0") {
+                vatav = parseFloat($("#vatav").val());
+            }
+            var due = 0;
+            if ($("#spnamtdue").attr("data-amts") != "") {
+               due = parseFloat($("#spnamtdue").attr("data-amts"));
+            }
+            if (amts < 0) {
+                isvalid = false;
+                alert("Please Enter Amount greater than 0");
+                StopLoading();
+            }
+            else {
+                var totl = amts + vatav;
+                if (totl > due) {
+                    isvalid = false;
+                    alert("Due amount less than Entered Payment and Vatav Amount");
+                    StopLoading();
+                }
+            }
+        }
 
         if (isvalid == true) {
             $.ajax({
@@ -344,7 +373,7 @@
                 data: $('#theFormId').serialize(),
                 success: function (msg) {
                     if (msg == "Success") {
-                        alert("saved successfully!");
+                        alert("Payment Save Successfully!");
                         StopLoading();
                         location.reload();
                     }

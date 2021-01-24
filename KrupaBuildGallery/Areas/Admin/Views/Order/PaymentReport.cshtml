@@ -5,7 +5,11 @@
     List<SelectListItem> lstProdts = ViewData["ProductList"] as List<SelectListItem>;
     List<SelectListItem> lstSubProdts = ViewData["SubProductList"] as List<SelectListItem>;
 }
-
+    <style>
+        body {
+            padding-top: 60px;
+        }
+    </style>
 <div class="page-body">
 
     <!-- Container-fluid starts-->
@@ -40,7 +44,7 @@
                 <div class="row" style="margin-top:25px;padding-bottom: 25px;margin-bottom: 10px;">
                     <div class="col-sm-3">
                         <label>Mobile No.</label>
-                        <input class="form-control col-md-8 text-box single-line valid" id="MobileNo" name="MobileNo" maxlength="10" placeholder="Mobile No" type="text" value="">
+                        <input class="form-control col-md-12 text-box single-line valid" id="MobileNo" name="MobileNo" maxlength="10" placeholder="Mobile No" type="text" value="">
                     </div>
                     <div class="col-sm-3">
                         <label>Payment Method *</label>

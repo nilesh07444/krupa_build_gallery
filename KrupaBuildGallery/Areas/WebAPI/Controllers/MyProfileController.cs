@@ -25,40 +25,62 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             try
             {
                 string MobileNum = objOtpVM.MobileNo;
-                tbl_ClientUsers objClientUsr = _db.tbl_ClientUsers.Where(o => o.MobileNo.ToLower() == MobileNum.ToLower()).FirstOrDefault();
-
+                long clientroleid = 0;
+                if (!string.IsNullOrEmpty(objOtpVM.UserType))
+                {
+                    clientroleid = Convert.ToInt64(objOtpVM.UserType);
+                }
+                tbl_ClientUsers objClientUsr = _db.tbl_ClientUsers.Where(o => (clientroleid == 0 || o.ClientRoleId == clientroleid) && o.MobileNo.ToLower() == MobileNum.ToLower() && o.IsDelete == false && o.IsActive == true).FirstOrDefault();                
                 if (objClientUsr == null)
                 {
                     response.IsError = true;
-                    response.AddError("Account is not exist with this mobile number.Please go to Login or Contact to support");
+                    response.AddError("Account is not exist or active with this mobile number.Please go to Login or Contact to support");
                 }
                 else
                 {
-                    using (WebClient webClient = new WebClient())
+                    bool iserrr = false;
+                    if(clientroleid > 0 && !string.IsNullOrEmpty(objOtpVM.Password))
                     {
-                        WebClient client = new WebClient();
-                        Random random = new Random();
-                        int num = random.Next(310450, 789899);
-                        // string msg = "Your change password OTP code is " + num;
-                        int SmsId = (int)SMSType.ChangePwdOtp;
-                        clsCommon objcm = new clsCommon();
-                        string msg = objcm.GetSmsContent(SmsId);
-                        msg = msg.Replace("{{OTP}}", num + "");
-                        msg = HttpUtility.UrlEncode(msg);
-                        //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + MobileNum + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
-                        string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", MobileNum).Replace("--MSG--", msg);
-                        var json = webClient.DownloadString(url);
-                        if (json.Contains("invalidnumber"))
+                        string Password = objClientUsr.Password;
+                        string currpwd = objOtpVM.Password;
+                        string EncryptedCurrentPassword = clsCommon.EncryptString(currpwd);
+                        if (Password != EncryptedCurrentPassword)
                         {
                             response.IsError = true;
-                            response.AddError("Invalid Mobile Number");
-                        }
-                        else
-                        {
-                            objOtp.Otp = num.ToString();
-                        }
-                        response.Data = objOtp;
+                            response.AddError("Current Password not match");
+                            iserrr = true;
+                        }                       
                     }
+
+                    if(iserrr == false)
+                    {
+                        using (WebClient webClient = new WebClient())
+                        {
+                            WebClient client = new WebClient();
+                            Random random = new Random();
+                            int num = random.Next(310450, 789899);
+                            // string msg = "Your change password OTP code is " + num;
+                            int SmsId = (int)SMSType.ChangePwdOtp;
+                            clsCommon objcm = new clsCommon();
+                            string msg = objcm.GetSmsContent(SmsId);
+                            msg = msg.Replace("{{OTP}}", num + "");
+                            msg = HttpUtility.UrlEncode(msg);
+                            //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + MobileNum + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                            string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", MobileNum).Replace("--MSG--", msg);
+                            var json = webClient.DownloadString(url);
+                            if (json.Contains("invalidnumber"))
+                            {
+                                response.IsError = true;
+                                response.AddError("Invalid Mobile Number");
+                            }
+                            else
+                            {
+                                objOtp.Otp = num.ToString();
+                            }
+                            response.Data = objOtp;
+                        }
+                    }
+                   
                 }
              
             }

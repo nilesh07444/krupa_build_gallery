@@ -12,6 +12,17 @@
     .clsbold {
         font-weight: bold;
     }
+    .clstamt {
+        pointer-events: none;
+        font-size: 20px;
+        padding: 4px;
+        width: 180px;
+        margin-bottom: 5px;
+        font-weight: bold;
+    }
+    .clsreadonl {
+        background-color: #e9ecef;
+    }
 </style>
 
 <style>
@@ -121,7 +132,7 @@
                                     <input type="text" class="form-control" readonly id="state" name="state" value="" style="pointer-events:none;" placeholder="">
                                 </div>
                             </div>
-                            <div class="form-row">
+                            <div class="form-row" style="margin-top:35px;">
                                 <div style="width:99%;overflow: auto;">
                                     <table id="PurchaseItems">
                                         <tr>
@@ -138,13 +149,13 @@
                                             <th>LC</th>
                                             <th>ExPM1</th>
                                             <th>Total</th>
-                                            <th>TD</th>
-                                            <th>CD</th>
+                                            <th>TD(%)</th>
+                                            <th>CD(%) </th>
                                             <th>ExPM2</th>
                                             <th>BA</th>
-                                            <th>IGST</th>
-                                            <th>SGST</th>
-                                            <th>CGST</th>
+                                            <th>IGST(%)</th>
+                                            <th>SGST(%)</th>
+                                            <th>CGST(%)</th>
                                             <th>FAmt</th>
                                         </tr>
                                     </table>
@@ -156,55 +167,73 @@
                             <div class="form-row">
                                 <div class="col-md-6">
                                     <label for="remarks" class="clsbold" style="vertical-align:top;">Remarks</label>
-                                    <textarea id="remarks" name="remarks" style="width:280px;height:100px;"></textarea>
+                                    <textarea id="remarks" name="remarks" class="form-control" style="width:280px;height:100px;"></textarea>
                                 </div>
                                 <div class="col-md-6">
                                     <div class="row">
-                                        <div class="col-md-6">
-                                            <label>Total Amount</label>
+                                        <div class="col-md-2">
+
+                                        </div>
+                                        <div class="col-md-4" style="text-align:right;">
+                                            <label style="font-size:18px;">Total Amount</label>
                                         </div>
                                         <div class="col-md-6">
-                                            <input type="text" value="" id="txtTotalAmt" name="txtTotalAmt" style="pointer-events:none;" />
+                                            <input type="text" value="" id="txtTotalAmt" name="txtTotalAmt" class="clstamt clsreadonl" style="pointer-events:none;" />Rs
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-2">
+
+                                        </div>
+                                        <div class="col-md-4" style="text-align:right;">
                                             <label>Extra +/-</label>
                                         </div>
                                         <div class="col-md-6">
-                                            <input type="number" value="" id="txtExtra1" name="txtExtra1" onblur="finalcal();" />
+                                            <input type="number" value="" id="txtExtra1" name="txtExtra1" onblur="finalcal();" />Rs
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-2">
+
+                                        </div>
+                                        <div class="col-md-4" style="text-align:right;">
                                             <label>Insurance</label>
                                         </div>
                                         <div class="col-md-6">
-                                            <input type="number" value="" id="txtInsu" name="txtInsu" onblur="finalcal();" />
+                                            <input type="number" value="" id="txtInsu" name="txtInsu" onblur="finalcal();" /><span style="display:inline-block;">Rs</span>
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-2">
+
+                                        </div>
+                                        <div class="col-md-4" style="text-align:right;">
                                             <label>TDS</label>
                                         </div>
                                         <div class="col-md-6">
-                                            <input type="number" value="" id="txtTDS" name="txtTDS" onblur="finalcal();" />
+                                            <input type="number" value="" id="txtTDS" name="txtTDS" onblur="finalcal();" />%
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-2">
+
+                                        </div>
+                                        <div class="col-md-4" style="text-align:right;">
                                             <label>Extra +/-</label>
                                         </div>
                                         <div class="col-md-6">
-                                            <input type="number" value="" id="txtExtra2" name="txtExtra2" onblur="finalcal();" />
+                                            <input type="number" value="" id="txtExtra2" name="txtExtra2" onblur="finalcal();" />Rs
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="col-md-6">
-                                            <label>Final Bill Amount</label>
+                                        <div class="col-md-2">
+
+                                        </div>
+                                        <div class="col-md-4" style="text-align:right;">
+                                            <label style="font-size: 18px;">Final Bill Amount</label>
                                         </div>
                                         <div class="col-md-6">
-                                            <input type="text" value="" id="txtBillAmt" name="txtBillAmt" style="pointer-events:none;" />
+                                            <input type="text" value="" id="txtBillAmt" class="clstamt clsreadonl" name="txtBillAmt" style="pointer-events:none;" />Rs
                                         </div>
                                     </div>
                                 </div>

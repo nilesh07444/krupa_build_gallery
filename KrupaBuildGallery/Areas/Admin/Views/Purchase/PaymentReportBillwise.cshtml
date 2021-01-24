@@ -4,7 +4,11 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
     List<tbl_PurchaseDealers> lstDelers = ViewData["DealerParty"] as List<tbl_PurchaseDealers>;
 }
-
+<style>
+    body {
+        padding-top: 60px;
+    }
+</style>
 <div class="page-body">
 
     <!-- Container-fluid starts-->
@@ -52,7 +56,7 @@
             </select>
         </div>*@
                     <div class="col-sm-3">
-                        <label>Bill Display</label>
+                        <label>Bill Status</label>
                         <select id="billsdisplay" class="form-control" onchange="BindBills();">
                             <option value="-1">All</option>
                             <option value="0">Open</option>
@@ -75,7 +79,7 @@
                         </select>
                     </div>
                     <div class="col-sm-3">
-                        <label>Bills</label>
+                        <label>Bill Number</label>
                         <select class="form-control" name="purchasebills" id="purchasebills" onchange="billchange();">
                         </select>
                     </div>

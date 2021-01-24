@@ -180,48 +180,65 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             try
             {
                 string MobileNum = objOtpVM.MobileNo;
+                string pwd = "";
+                if(!string.IsNullOrEmpty(objOtpVM.Password))
+                {
+                    pwd = clsCommon.EncryptString(objOtpVM.Password);
+                }
                 tbl_ClientUsers objClientUsr = _db.tbl_ClientUsers.Where(o => (o.Email.ToLower() == MobileNum || o.MobileNo.ToLower() == MobileNum.ToLower()) && o.ClientRoleId == 2 && o.IsDelete == false && o.IsActive == true).FirstOrDefault();
                 if (objClientUsr == null)
                 {
+                    response.IsError = true;
                     response.AddError("Your Account is not exist.Please Contact to support");
                 }
                 else
                 {
-                    using (WebClient webClient = new WebClient())
+                    bool iserrr = false;
+                    if (!string.IsNullOrEmpty(pwd))
                     {
-                        Random random = new Random();
-                        int num = random.Next(555555, 999999);
-                        // string msg = "Your Otp code for Login is " + num;
-                        int SmsId = (int)SMSType.LoginOtp;
-                        clsCommon objcm = new clsCommon();
-                        string msg = objcm.GetSmsContent(SmsId);
-                        msg = msg.Replace("{{OTP}}", num + "");
-                        msg = HttpUtility.UrlEncode(msg);
-                        //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objClientUsr.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
-                        string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", objClientUsr.MobileNo).Replace("--MSG--", msg);
-                        var json = webClient.DownloadString(url);
-                        if (json.Contains("invalidnumber"))
+                        if(objClientUsr.Password != pwd)
                         {
-                            response.AddError("Invalid Mobile Number");
+                            response.IsError = true;
+                            response.AddError("Incorrect Password");
                         }
-                        else
-                        {
-                            tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
-                            string FromEmail = objGensetting.FromEmail;
-                            string msg1 = "Your Otp Code For Login Is " + num;
-                            try
-                            {
-                                clsCommon.SendEmail(objClientUsr.Email, FromEmail, "OTP Code for Login - Shopping & Saving", msg1);
-                            }
-                            catch (Exception e)
-                            {
-                                string ErrorMessage = e.Message.ToString();
-                            }
-                            objOtp.Otp = num.ToString();
-                            response.Data = objOtp;
-                        }
-
                     }
+                    if (iserrr == false)
+                    {
+                        using (WebClient webClient = new WebClient())
+                        {
+                            Random random = new Random();
+                            int num = random.Next(555555, 999999);
+                            // string msg = "Your Otp code for Login is " + num;
+                            int SmsId = (int)SMSType.LoginOtp;
+                            clsCommon objcm = new clsCommon();
+                            string msg = objcm.GetSmsContent(SmsId);
+                            msg = msg.Replace("{{OTP}}", num + "");
+                            msg = HttpUtility.UrlEncode(msg);
+                            //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + objClientUsr.MobileNo + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                            string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", objClientUsr.MobileNo).Replace("--MSG--", msg);
+                            var json = webClient.DownloadString(url);
+                            if (json.Contains("invalidnumber"))
+                            {
+                                response.AddError("Invalid Mobile Number");
+                            }
+                            else
+                            {
+                                tbl_GeneralSetting objGensetting = _db.tbl_GeneralSetting.FirstOrDefault();
+                                string FromEmail = objGensetting.FromEmail;
+                                string msg1 = "Your Otp Code For Login Is " + num;
+                                try
+                                {
+                                    clsCommon.SendEmail(objClientUsr.Email, FromEmail, "OTP Code for Login - Shopping & Saving", msg1);
+                                }
+                                catch (Exception e)
+                                {
+                                    string ErrorMessage = e.Message.ToString();
+                                }
+                                objOtp.Otp = num.ToString();
+                                response.Data = objOtp;
+                            }
+                        }
+                    }                   
                 }
 
             }

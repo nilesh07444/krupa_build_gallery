@@ -7,6 +7,7 @@
     ViewBag.Title = "Purchase List";
 
     int counter = 1;
+    List<tbl_PurchaseDealers> lstDelers = ViewData["DealerParty"] as List<tbl_PurchaseDealers>;
 }
 
 @{
@@ -52,7 +53,7 @@
             <div class="card-header">
                 <h5>Purchase List</h5>
             </div>
-            <div class="card-body vendor-table">         
+            <div class="card-body vendor-table">
 
                 @if (IsSA || objPermission.BidItem >= (int)ModulePermission.Add)
                 {
@@ -60,11 +61,37 @@
                         <button type="button" class="btn btn-primary" id="btnAddPurchase">Add New Purchase</button>
                     </div>
                 }
-
+                <div class="row" style="margin-top:25px;padding-bottom: 25px;margin-bottom: 10px;">
+                    <div class="col-sm-3">
+                        <label>Supplier</label>
+                        <select id="dealers" class="form-control">
+                            <option value="-1">All</option>
+                            @if (lstDelers != null && lstDelers.Count() > 0)
+                            {
+                                foreach (var objc in lstDelers)
+                                {
+                                    <option value="@objc.Pk_Dealer_Id">@objc.BussinessCode - @objc.FirmName</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="col-sm-3">
+                        <label>Start Date *</label>
+                        <input class="form-control col-md-12 clsDatePicker text-box single-line valid" id="StartDate" name="StartDate" placeholder="DD/MM/YYY" readonly="readonly" type="text" value="@ViewBag.StartDate">
+                    </div>
+                    <div class="col-sm-3">
+                        <label>End Date *</label>
+                        <input class="form-control col-md-12 clsDatePicker text-box single-line valid" id="EndDate" name="EndDate" placeholder="DD/MM/YYY" readonly="readonly" type="text" value="@ViewBag.EndDate">
+                    </div>
+                     <div class="col-sm-1" style="margin-right:25px;">
+                        <input type="button" value="View" class="btn btn-info" onclick="viewreport();" style="position: absolute; bottom: 0;" />
+                    </div>  
+                </div>
+              
                 <table class="display" id="basic-1">
                     <thead>
                         <tr>
-                            <th></th>                          
+                            <th></th>
                             <th>Bill No.</th>
                             <th>Dealer Code</th>
                             <th>Purchase Date</th>
@@ -82,7 +109,7 @@
                                     <td>@objusr.BillNo</td>
                                     <td><a href="/admin/purchasedealers/detail/@objusr.DealerId" target="_blank">@objusr.DealerPartyCode</a></td>
                                     <td>@objusr.PurchaseDate.Value.ToString("dd/MM/yyyy")</td>
-                                    <td>@objusr.FinalBillAmount</td>                                    
+                                    <td>@objusr.FinalBillAmount</td>
                                     <td>
                                         <a href="/admin/purchase/detail/@objusr.PurchaseId"><i class="fa fa-eye font-success"></i></a>
                                     </td>
@@ -100,7 +127,16 @@
 
 </div>
 <script>
+     $(document).ready(function () {
+         $("#dealers").val("@ViewBag.Dealer");
+    });
     $(document).on("click", "#btnAddPurchase", function () {
         window.location.href = "/admin/purchase/add";
     });
+    function viewreport() {
+
+        var dealersid = $("#dealers").val();
+        location.href = "/admin/purchase?SupplierId=" + dealersid + "&StartDate=" + $("#StartDate").val() + "&EndDate=" + $("#EndDate").val();
+    }
+
 </script>
