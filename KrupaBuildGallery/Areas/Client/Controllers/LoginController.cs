@@ -309,10 +309,15 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             return View();
         }
 
-        public string SendOTP(string MobileNumber)
+        public string SendOTP(string MobileNumber,string Password = "")
         {
             try
-            {                   
+            {
+                string strPwd = "";
+                if (!string.IsNullOrEmpty(Password))
+                {
+                    strPwd = clsCommon.EncryptString(Password);
+                }
                 tbl_ClientUsers objClientUsr = _db.tbl_ClientUsers.Where(o => (o.Email.ToLower() == MobileNumber || o.MobileNo.ToLower() == MobileNumber.ToLower()) && o.ClientRoleId == (int)ClientRoles.Distributor && !o.IsDelete).FirstOrDefault();
                 if (objClientUsr == null)
                 {
@@ -323,6 +328,14 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
                     return "InActiveAccount";
                 }
 
+                bool iserrr = false;
+                if (!string.IsNullOrEmpty(strPwd) && objClientUsr != null)
+                {
+                    if (objClientUsr.Password != strPwd)
+                    {
+                        return "IncorrectPassword";
+                    }
+                }
                 using (WebClient webClient = new WebClient())
                 {                   
                     Random random = new Random();

@@ -126,7 +126,12 @@
                     if (result == "InActiveAccount") {
                         alert("Your Account is Inactive. Please contact to support");
                         return false;
-                    }                    
+                    }
+                    else if (result == "IncorrectPassword")
+                    {
+                        alert("Incorrect Password.");
+                        return false;
+                    }
                     else {                      
                         alert("Otp Sent to your registerd mobile number and on email.");
                         $('#hdnotptxt').val(result);                 

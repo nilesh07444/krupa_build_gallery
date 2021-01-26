@@ -3739,6 +3739,7 @@
     <Content Include="Content\assets\js\wow.min.js" />
     <Content Include="Content\assets\js\zoom-gallery.js" />
     <Content Include="Content\assets\js\zoom-scripts.js" />
+    <Content Include="Content\assets\ssico.png" />
     <Content Include="Content\assets\video\video.gif" />
     <Content Include="Content\assets\video\video.JPEG" />
     <Content Include="Content\assets\video\video.jpg" />

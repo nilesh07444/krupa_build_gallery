@@ -64,10 +64,25 @@ namespace KrupaBuildGallery.Areas.Client.Controllers
             return View();
         }
 
-        public string SendOTP(string MobileNumber)
+        public string SendOTP(string MobileNumber,string Password = "")
         {
             try
             {
+                long ClientUserId = clsClientSession.UserID;
+                tbl_ClientUsers objClientUsr = _db.tbl_ClientUsers.Where(o => o.ClientUserId == ClientUserId && o.IsDelete == false && o.IsActive == true).FirstOrDefault();
+                if(objClientUsr != null)
+                {
+                    if(!string.IsNullOrEmpty(Password))
+                    {
+                        string Password1 = objClientUsr.Password;
+                        string currpwd = Password;
+                        string EncryptedCurrentPassword = clsCommon.EncryptString(currpwd);
+                        if (Password1 != EncryptedCurrentPassword)
+                        {
+                            return "Incorrect Password";
+                        }
+                    }
+                }
                 using (WebClient webClient = new WebClient())
                 {
                     WebClient client = new WebClient();

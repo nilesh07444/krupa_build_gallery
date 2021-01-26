@@ -962,7 +962,7 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
             try
             {
                 string BusinessCode = objOtpVM.BusinessCode;
-                tbl_PurchaseDealers purcdelr = _db.tbl_PurchaseDealers.Where(o => o.BussinessCode == BusinessCode).FirstOrDefault();
+                tbl_PurchaseDealers purcdelr = _db.tbl_PurchaseDealers.Where(o => o.BussinessCode == BusinessCode && o.IsActive == true).FirstOrDefault();
 
                 if (purcdelr == null)
                 {
@@ -971,32 +971,41 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                 }
                 else
                 {
-                    string MobileNum = purcdelr.OwnerContactNo;
-                    using (WebClient webClient = new WebClient())
+                    if(purcdelr.Password != objOtpVM.Password)
                     {
-                        WebClient client = new WebClient();
-                        Random random = new Random();
-                        int num = random.Next(310450, 789899);
-                        //string msg = "Your change password OTP code is " + num;
-                        int SmsId = (int)SMSType.ChangePwdOtp;
-                        clsCommon objcm = new clsCommon();
-                        string msg = objcm.GetSmsContent(SmsId);
-                        msg = msg.Replace("{{OTP}}", num + "");
-                        msg = HttpUtility.UrlEncode(msg);
-                        //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + MobileNum + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
-                        string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", MobileNum).Replace("--MSG--", msg);
-                        var json = webClient.DownloadString(url);
-                        if (json.Contains("invalidnumber"))
-                        {
-                            response.IsError = true;
-                            response.AddError("Invalid Mobile Number");
-                        }
-                        else
-                        {
-                            objOtp.Otp = num.ToString();
-                        }
-                        response.Data = objOtp;
+                        response.IsError = true;
+                        response.AddError("Incorrect Current Password");
                     }
+                    else
+                    {
+                        string MobileNum = purcdelr.OwnerContactNo;
+                        using (WebClient webClient = new WebClient())
+                        {
+                            WebClient client = new WebClient();
+                            Random random = new Random();
+                            int num = random.Next(310450, 789899);
+                            //string msg = "Your change password OTP code is " + num;
+                            int SmsId = (int)SMSType.ChangePwdOtp;
+                            clsCommon objcm = new clsCommon();
+                            string msg = objcm.GetSmsContent(SmsId);
+                            msg = msg.Replace("{{OTP}}", num + "");
+                            msg = HttpUtility.UrlEncode(msg);
+                            //string url = "http://sms.unitechcenter.com/sendSMS?username=krupab&message=" + msg + "&sendername=KRUPAB&smstype=TRANS&numbers=" + MobileNum + "&apikey=e8528131-b45b-4f49-94ef-d94adb1010c4";
+                            string url = CommonMethod.GetSMSUrl().Replace("--MOBILE--", MobileNum).Replace("--MSG--", msg);
+                            var json = webClient.DownloadString(url);
+                            if (json.Contains("invalidnumber"))
+                            {
+                                response.IsError = true;
+                                response.AddError("Invalid Mobile Number");
+                            }
+                            else
+                            {
+                                objOtp.Otp = num.ToString();
+                            }
+                            response.Data = objOtp;
+                        }
+                    }
+                   
                 }
 
             }

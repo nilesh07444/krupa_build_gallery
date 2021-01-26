@@ -85,7 +85,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     string imgurl = "https://shopping-saving.com/Content/assets/images/kbg/logo.png";//  "http://krupatest-001-site1.ftempurl.com/Content/assets/images/kbg/logo.png";
                     if (!string.IsNullOrEmpty(fileName))
                     {
-                        imgurl = "https://shopping-saving.com/Images/NotificationMedia/" + fileName;
+                        imgurl = "http://krupademo-001-site1.btempurl.com/Images/NotificationMedia/" + fileName;
                     }
                     WebRequest tRequest = WebRequest.Create("https://fcm.googleapis.com/fcm/send");
                     tRequest.Method = "post";
@@ -96,7 +96,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     tRequest.ContentType = "application/json";
                     var payload = new
                     {
-                        to = "/topics/ShoppingSaving",
+                        to = "/topics/ShoppingSavingIOS",
                         priority = "high",
                         content_available = true,
                         //notification = new
