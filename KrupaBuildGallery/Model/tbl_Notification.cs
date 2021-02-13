@@ -18,11 +18,11 @@ namespace KrupaBuildGallery.Model
         public string NotificationTitle { get; set; }
         public string NotificationDescription { get; set; }
         public string NotificationImage { get; set; }
+        public bool IsActive { get; set; }
+        public bool IsDelete { get; set; }
         public System.DateTime CreatedDate { get; set; }
         public long CreatedBy { get; set; }
         public Nullable<System.DateTime> ModifiedDate { get; set; }
         public Nullable<long> ModifiedBy { get; set; }
-        public bool IsActive { get; set; }
-        public bool IsDelete { get; set; }
     }
 }

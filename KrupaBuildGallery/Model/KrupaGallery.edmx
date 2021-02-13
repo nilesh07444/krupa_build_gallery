@@ -735,7 +735,7 @@
           <Property Name="NotificationId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="NotificationTitle" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="NotificationDescription" Type="nvarchar" MaxLength="1000" Nullable="false" />
-          <Property Name="NotificationImage" Type="nvarchar" MaxLength="50" />
+          <Property Name="NotificationImage" Type="nvarchar" MaxLength="450" />
           <Property Name="IsActive" Type="bit" Nullable="false" />
           <Property Name="IsDelete" Type="bit" Nullable="false" />
           <Property Name="CreatedDate" Type="datetime" Nullable="false" />
@@ -1927,7 +1927,6 @@
           <EntitySet Name="tbl_PromoCode" EntityType="krupagalleryModel.tbl_PromoCode" />
           <EntitySet Name="tbl_Feedbacks" EntityType="krupagalleryModel.tbl_Feedbacks" />
           <EntitySet Name="tbl_ShippingAddresses" EntityType="krupagalleryModel.tbl_ShippingAddresses" />
-          <EntitySet Name="tbl_Notification" EntityType="krupagalleryModel.tbl_Notification" />
           <EntitySet Name="tbl_NotificationUserRead" EntityType="krupagalleryModel.tbl_NotificationUserRead" />
           <EntitySet Name="tbl_ItemAvailablePincode" EntityType="krupagalleryModel.tbl_ItemAvailablePincode" />
           <EntitySet Name="tbl_SMSContent" EntityType="krupagalleryModel.tbl_SMSContent" />
@@ -1954,6 +1953,7 @@
           <EntitySet Name="tbl_Purchase" EntityType="krupagalleryModel.tbl_Purchase" />
           <EntitySet Name="tbl_PurchaseItems" EntityType="krupagalleryModel.tbl_PurchaseItems" />
           <EntitySet Name="tbl_PurchasePayment" EntityType="krupagalleryModel.tbl_PurchasePayment" />
+          <EntitySet Name="tbl_Notification" EntityType="krupagalleryModel.tbl_Notification" />
         </EntityContainer>
         <EntityType Name="tbl_AdminRoles">
           <Key>
@@ -2531,21 +2531,6 @@
           <Property Name="CreatedDate" Type="DateTime" Precision="3" />
           <Property Name="GSTNo" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
         </EntityType>
-        <EntityType Name="tbl_Notification">
-          <Key>
-            <PropertyRef Name="NotificationId" />
-          </Key>
-          <Property Name="NotificationId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="NotificationTitle" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="NotificationDescription" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
-          <Property Name="NotificationImage" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="CreatedBy" Type="Int64" Nullable="false" />
-          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
-          <Property Name="ModifiedBy" Type="Int64" />
-          <Property Name="IsActive" Type="Boolean" Nullable="false" />
-          <Property Name="IsDelete" Type="Boolean" Nullable="false" />
-        </EntityType>
         <EntityType Name="tbl_NotificationUserRead">
           <Key>
             <PropertyRef Name="NotificationUserReadId" />
@@ -2887,6 +2872,21 @@
           <Property Name="ChequeBankName" Type="String" MaxLength="250" FixedLength="false" Unicode="true" />
           <Property Name="IsDeleted" Type="Boolean" />
           <Property Name="IsDebit" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="tbl_Notification">
+          <Key>
+            <PropertyRef Name="NotificationId" />
+          </Key>
+          <Property Name="NotificationId" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NotificationTitle" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="NotificationDescription" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="NotificationImage" Type="String" MaxLength="450" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="IsDelete" Type="Boolean" Nullable="false" />
+          <Property Name="CreatedDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="CreatedBy" Type="Int64" Nullable="false" />
+          <Property Name="ModifiedDate" Type="DateTime" Precision="3" />
+          <Property Name="ModifiedBy" Type="Int64" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -3928,22 +3928,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="tbl_Notification">
-            <EntityTypeMapping TypeName="krupagalleryModel.tbl_Notification">
-              <MappingFragment StoreEntitySet="tbl_Notification">
-                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
-                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
-                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
-                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
-                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
-                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
-                <ScalarProperty Name="NotificationImage" ColumnName="NotificationImage" />
-                <ScalarProperty Name="NotificationDescription" ColumnName="NotificationDescription" />
-                <ScalarProperty Name="NotificationTitle" ColumnName="NotificationTitle" />
-                <ScalarProperty Name="NotificationId" ColumnName="NotificationId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="tbl_NotificationUserRead">
             <EntityTypeMapping TypeName="krupagalleryModel.tbl_NotificationUserRead">
               <MappingFragment StoreEntitySet="tbl_NotificationUserRead">
@@ -4311,6 +4295,22 @@
                 <ScalarProperty Name="DealerId" ColumnName="DealerId" />
                 <ScalarProperty Name="PurchaseId" ColumnName="PurchaseId" />
                 <ScalarProperty Name="PurchasePaymentId" ColumnName="PurchasePaymentId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tbl_Notification">
+            <EntityTypeMapping TypeName="krupagalleryModel.tbl_Notification">
+              <MappingFragment StoreEntitySet="tbl_Notification">
+                <ScalarProperty Name="ModifiedBy" ColumnName="ModifiedBy" />
+                <ScalarProperty Name="ModifiedDate" ColumnName="ModifiedDate" />
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
+                <ScalarProperty Name="IsDelete" ColumnName="IsDelete" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="NotificationImage" ColumnName="NotificationImage" />
+                <ScalarProperty Name="NotificationDescription" ColumnName="NotificationDescription" />
+                <ScalarProperty Name="NotificationTitle" ColumnName="NotificationTitle" />
+                <ScalarProperty Name="NotificationId" ColumnName="NotificationId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

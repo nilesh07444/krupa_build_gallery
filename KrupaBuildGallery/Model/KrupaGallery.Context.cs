@@ -84,7 +84,6 @@ namespace KrupaBuildGallery.Model
         public DbSet<tbl_PromoCode> tbl_PromoCode { get; set; }
         public DbSet<tbl_Feedbacks> tbl_Feedbacks { get; set; }
         public DbSet<tbl_ShippingAddresses> tbl_ShippingAddresses { get; set; }
-        public DbSet<tbl_Notification> tbl_Notification { get; set; }
         public DbSet<tbl_NotificationUserRead> tbl_NotificationUserRead { get; set; }
         public DbSet<tbl_ItemAvailablePincode> tbl_ItemAvailablePincode { get; set; }
         public DbSet<tbl_SMSContent> tbl_SMSContent { get; set; }
@@ -105,6 +104,7 @@ namespace KrupaBuildGallery.Model
         public DbSet<tbl_Purchase> tbl_Purchase { get; set; }
         public DbSet<tbl_PurchaseItems> tbl_PurchaseItems { get; set; }
         public DbSet<tbl_PurchasePayment> tbl_PurchasePayment { get; set; }
+        public DbSet<tbl_Notification> tbl_Notification { get; set; }
     
         public virtual ObjectResult<sp_GetNotificationList_Result> sp_GetNotificationList(Nullable<int> clientUserId)
         {

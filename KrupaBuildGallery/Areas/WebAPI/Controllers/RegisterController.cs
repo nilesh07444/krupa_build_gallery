@@ -54,8 +54,8 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
                             ReferenceReferralDiscountPoints = objGensetting.ReferenceReferralDiscountPoints != null ? objGensetting.ReferenceReferralDiscountPoints.Value : 0;
                         }
                     }
-                }
-                tbl_ClientUsers objClientUsr = _db.tbl_ClientUsers.Where(o => o.Email.ToLower() == email.ToLower() && o.ClientRoleId == 1).FirstOrDefault();
+                }              
+                tbl_ClientUsers objClientUsr = _db.tbl_ClientUsers.Where(o => (o.MobileNo.ToLower() == mobileno.ToLower() || (email != "" && o.Email.ToLower() == email.ToLower())) && o.ClientRoleId == 1).FirstOrDefault();
                 if (objClientUsr != null)
                 {
                     response.IsError = true;
