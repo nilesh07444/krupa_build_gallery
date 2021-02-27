@@ -152,6 +152,14 @@
                         });
                     }
                     $("#Product_@cnt").html(htmlData);
+
+                       var htmlSubData = "<option value='0'>- Select SubProduct -</option>";
+                      $("#SubProduct_@cnt").html(htmlSubData);
+                      var htmlSubData = "<option value='0'>- Select Product Item -</option>";
+                      $("#ProductItem_@cnt").html(htmlSubData);
+                       var htmlSubData = "<option value='0'>- Select Variants -</option>";
+                      $("#VarintItem_@cnt").html(htmlSubData);
+
                 },
                 error: function (error) {
                 }
@@ -160,6 +168,12 @@
        else {
              var htmlSubData = "<option value='0'>- Select Product -</option>";
             $("#Product_@cnt").html(htmlSubData);
+              var htmlSubData = "<option value='0'>- Select SubProduct -</option>";
+                      $("#SubProduct_@cnt").html(htmlSubData);
+                      var htmlSubData = "<option value='0'>- Select Product Item -</option>";
+                      $("#ProductItem_@cnt").html(htmlSubData);
+                       var htmlSubData = "<option value='0'>- Select Variants -</option>";
+                      $("#VarintItem_@cnt").html(htmlSubData);
         }
     });
 
@@ -214,6 +228,7 @@
                         });
                     }
                     $("#ProductItem_@cnt").html(htmlData);
+
                 },
                 error: function (error) {
                 }

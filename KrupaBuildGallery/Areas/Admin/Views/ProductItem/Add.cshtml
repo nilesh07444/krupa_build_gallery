@@ -375,7 +375,7 @@
         });
 
      jQuery(document).on("change", "#UnitType", function () {
-
+         $(".clsvarint").html("");
         var unittype = jQuery("#UnitType option:selected").val();
         /// clsvarint
          $(".clsvarint").load('@Url.Action("GetUnitsData","ProductItem")'+'?UnitTypeId='+unittype, function () {
@@ -383,77 +383,188 @@
          });
     });
 
-    function validateandsubmit() {        
-        if ($("#hdnUntType").length > 0) {
-            var flgtrue = true;
-            if ($("input[name^=chkvarian]:checked").length == 0) {
-                alert("Please Select atleast 1 checkbox of variant");
-                flgtrue = false;
-            }
-
-          $("input[name^=variantper]").each(function () {
-                if ($(this).val() == "" || parseInt($(this).val()) <= 0) {
-                    if ($(this).parents('tr').find('input[type=checkbox]:checked').length > 0) {
-                        if (parseInt($(this).val()) == 0) {
-                            if (flgtrue == true) {
-                                alert("Please Enter Price Percentage for variant");
-                                 flgtrue = false; 
-                            }
-                        }
-                    }
-                    else {
-                        if (parseInt($(this).val()) < 0) {
-                            if (flgtrue == true) {
-                                alert("Please Enter Price Percentage for variant");
-                                 flgtrue = false; 
-                            }
-                        }                    
-                    }
-                    
-                  
-                }
-
-          });
-
-            $("input[name^=variantmrpprice]").each(function () {
-                var idss = $(this).attr("data-itmmid");
-                if ($(this).parents('tr').find('input[type=checkbox]:checked').length > 0) {
-                    if ($(this).val() == "" || parseFloat($(this).val()) <= 0) {
-                        if (flgtrue == true) {
-                            alert("Please Enter MRP Price for variant");
-                            flgtrue = false;
-                        }
-                    }
-                    if ($("#variantcustprice_" + idss).val() == "" || parseFloat($("#variantcustprice_" + idss).val()) <= 0) {
-                        if (flgtrue == true) {
-                            alert("Please Enter Customer Price for variant");
-                            flgtrue = false;
-                        }
-                    }
-                    if ($("#variantdistriprice_" + idss).val() == "" || parseFloat($("#variantdistriprice_" + idss).val()) <= 0) {
-                        if (flgtrue == true) {
-                            alert("Please Enter Distributor Price for variant");
-                            flgtrue = false;
-                        }
-                    }
-                    if ($("#variantnm_" + idss).val() == "") {
-                        if (flgtrue == true) {
-                            alert("Please Enter Variant Name");
-                            flgtrue = false;
-                        }
-                    }
-                }               
-
-            });
-             
-            if (flgtrue == true) {
-                $("#ProductItemFormId").submit();
-            }            
+    function validateandsubmit() {     
+        var flgisvalid = true;
+        if ($("#CategoryId").val() == "" || $("#CategoryId").val() == "0") {
+            flgisvalid = false;
+            $('span[data-valmsg-for="CategoryId"]').html("The Category Name field is required.");
         }
         else {
-            $("#ProductItemFormId").submit();            
+            $('span[data-valmsg-for="CategoryId"]').html("");
         }
-        
+
+        if ($("#ProductId").val() == "" || $("#ProductId").val() == "0") {
+            flgisvalid = false;
+            $('span[data-valmsg-for="ProductId"]').html("The Product Name * field is required.");
+        }
+        else {
+            $('span[data-valmsg-for="ProductId"]').html("");
+        }
+
+      
+
+        if ($("#ItemName").val() == "") {
+            flgisvalid = false;
+            $('span[data-valmsg-for="ItemName"]').html("The Item Name * field is required.");
+        }
+        else {
+            $('span[data-valmsg-for="ItemName"]').html("");
+        }
+
+        if ($("#GodownId").val() == "" || $("#GodownId").val() == "0") {
+            flgisvalid = false;
+            $('span[data-valmsg-for="GodownId"]').html("The Godown * field is required.");
+        }
+        else {
+            $('span[data-valmsg-for="GodownId"]').html("");
+        }
+
+        if ($("#ItemDescription").val() == "" || $("#ItemDescription").val() == "0") {
+            flgisvalid = false;
+            $('span[data-valmsg-for="ItemDescription"]').html("The Item Description * field is required.");
+        }
+        else {
+            $('span[data-valmsg-for="ItemDescription"]').html("");
+        }
+
+        if ($("#MRPPrice").val() == "" || ($("#MRPPrice").val() != "" && parseFloat($("#MRPPrice").val()) <= 0)) {
+            flgisvalid = false;
+            $('span[data-valmsg-for="MRPPrice"]').html("MRP Price must be greater than 0");
+        }
+        else {
+            $('span[data-valmsg-for="MRPPrice"]').html("");
+        }
+
+        if ($("#CustomerPrice").val() == "" || ($("#CustomerPrice").val() != "" && parseFloat($("#CustomerPrice").val()) <= 0)) {
+            flgisvalid = false;
+            $('span[data-valmsg-for="CustomerPrice"]').html("Customer Price must be greater than 0");
+        }
+        else {
+            $('span[data-valmsg-for="CustomerPrice"]').html("");
+        }
+
+        if ($("#DistributorPrice").val() == "" || ($("#DistributorPrice").val() != "" && parseFloat($("#DistributorPrice").val()) <= 0)) {
+            flgisvalid = false;
+            $('span[data-valmsg-for="DistributorPrice"]').html("Distributor Price must be greater than 0");
+        }
+        else {
+            $('span[data-valmsg-for="DistributorPrice"]').html("");
+        }
+
+        if ($("#GST_Per").val() == "") {
+            flgisvalid = false;
+            $('span[data-valmsg-for="GST_Per"]').html("The GST Per * field is required.");
+        }
+        else {
+            $('span[data-valmsg-for="GST_Per"]').html("");
+        }
+
+        if ($("#InitialQty").val() == "" || $("#InitialQty").val() == "0") {
+            flgisvalid = false;
+            $('span[data-valmsg-for="InitialQty"]').html("Quantity must be greater than 0");
+        }
+        else {
+            $('span[data-valmsg-for="InitialQty"]').html("");
+        }
+
+        if ($("#MinimumQty").val() == "" || $("#MinimumQty").val() == "0") {
+            flgisvalid = false;
+            $('span[data-valmsg-for="MinimumQty"]').html("Minimum Quantity must be greater than 0");
+        }
+        else {
+            $('span[data-valmsg-for="MinimumQty"]').html("");
+        }
+
+        if ($("#Notification").val() == "" || $("#Notification").val() == "0") {
+            flgisvalid = false;
+            $('span[data-valmsg-for="Notification"]').html("The Notification Text * field is required.");
+        }
+        else {
+            $('span[data-valmsg-for="Notification"]').html("");
+        }
+
+
+        if ($("#UnitType").val() == "" || $("#UnitType").val() == "0") {
+            flgisvalid = false;
+            $('span[data-valmsg-for="UnitType"]').html("The Item Unit Type field is required.");
+        }
+        else {
+            $('span[data-valmsg-for="UnitType"]').html("");
+        }
+
+        if (flgisvalid) {
+            if ($("#hdnUntType").length > 0) {
+                var flgtrue = true;
+                if ($("input[name^=chkvarian]:checked").length == 0) {
+                    alert("Please Select atleast 1 checkbox of variant");
+                    flgtrue = false;
+                }
+
+                $("input[name^=variantper]").each(function () {
+                    if ($(this).val() == "" || parseFloat($(this).val()) <= 0) {
+                        if ($(this).parents('tr').find('input[type=checkbox]:checked').length > 0) {
+                            if (parseInt($(this).val()) == 0) {
+                                if (flgtrue == true) {
+                                    alert("Please Enter Price Percentage for variant");
+                                    flgtrue = false;
+                                }
+                            }
+                        }
+                        else {
+                            if (parseInt($(this).val()) < 0) {
+                                if (flgtrue == true) {
+                                    alert("Please Enter Price Percentage for variant");
+                                    flgtrue = false;
+                                }
+                            }
+                        }
+
+
+                    }
+
+                });
+
+                $("input[name^=variantmrpprice]").each(function () {
+                    var idss = $(this).attr("data-itmmid");
+                    if ($(this).parents('tr').find('input[type=checkbox]:checked').length > 0) {
+                        if ($(this).val() == "" || parseFloat($(this).val()) <= 0) {
+                            if (flgtrue == true) {
+                                alert("Please Enter MRP Price for variant");
+                                flgtrue = false;
+                            }
+                        }
+                        if ($("#variantcustprice_" + idss).val() == "" || parseFloat($("#variantcustprice_" + idss).val()) <= 0) {
+                            if (flgtrue == true) {
+                                alert("Please Enter Customer Price for variant");
+                                flgtrue = false;
+                            }
+                        }
+                        if ($("#variantdistriprice_" + idss).val() == "" || parseFloat($("#variantdistriprice_" + idss).val()) <= 0) {
+                            if (flgtrue == true) {
+                                alert("Please Enter Distributor Price for variant");
+                                flgtrue = false;
+                            }
+                        }
+                        if ($("#variantnm_" + idss).val() == "") {
+                            if (flgtrue == true) {
+                                alert("Please Enter Variant Name");
+                                flgtrue = false;
+                            }
+                        }
+                    }
+
+                });
+
+                if (flgtrue == true) {
+                    $("#ProductItemFormId").submit();
+                }
+            }
+            else {
+                $("#ProductItemFormId").submit();
+            }
+
+        }
+      
     }
 </script>
 
