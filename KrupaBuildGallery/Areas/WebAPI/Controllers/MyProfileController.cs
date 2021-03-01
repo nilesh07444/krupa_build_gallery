@@ -455,6 +455,40 @@ namespace KrupaBuildGallery.Areas.WebAPI.Controllers
 
         }
 
+        [Route("DeleteShippingAddress"), HttpPost]
+        public ResponseDataModel<string> DeleteShippingAddress(ShipAddressVM objShipAddress)
+        {
+            ResponseDataModel<string> response = new ResponseDataModel<string>();
+            GeneralVM objGenVm = new GeneralVM();
+            bool IsValid = true;
+            try
+            {
+                long ShippingAddressId = objShipAddress.ShippingAddressId;
+                tbl_ShippingAddresses objAddress = _db.tbl_ShippingAddresses.Where(x => x.ShippingAddressId == ShippingAddressId && x.IsDeleted == false).FirstOrDefault();
+
+                if (objAddress == null)
+                {
+                    response.AddError("Shipping Address Not Found");
+                    IsValid = false;
+                }
+                else
+                {                 
+
+                    _db.tbl_ShippingAddresses.Remove(objAddress);
+                    _db.SaveChanges();
+                    response.Data = "Success";
+                }
+
+            }
+            catch (Exception ex)
+            {
+                response.AddError(ex.Message.ToString());
+                return response;
+            }
+
+            return response;
+
+        }
 
     }
 }

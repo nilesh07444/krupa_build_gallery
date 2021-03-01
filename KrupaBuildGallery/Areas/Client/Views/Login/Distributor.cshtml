@@ -117,10 +117,10 @@
                $.ajax({
                 type: 'POST',
                 async: true,
-                url: URL + "?MobileNumber=" + $("#emailmobile").val(),
-                success: function (result) {
+                   url: URL + "?MobileNumber=" + $("#emailmobile").val() + "&Password=" + $("#password").val(),
+                   success: function (result) {
                     if (result == "NotExist") {
-                        alert("Username or Password is Invalid");
+                        alert("Distributor with this mobile number not exist");
                         return false;
                     }
                     if (result == "InActiveAccount") {
