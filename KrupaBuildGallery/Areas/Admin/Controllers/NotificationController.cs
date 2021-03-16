@@ -83,9 +83,10 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     _db.SaveChanges();
                     //string imgurl = "http://krupatest-001-site1.ftempurl.com/Images/NotificationMedia/" + fileName;
                     string imgurl = "https://shopping-saving.com/Content/assets/images/kbg/logo.png";//  "http://krupatest-001-site1.ftempurl.com/Content/assets/images/kbg/logo.png";
+                    //string imgurl = "http://krupashopping-001-site1.dtempurl.com/Images/NotificationMedia/915d7548-ec35-49bb-b85d-ab7590a70db6-4455523b-4d55-4507-95b9-b18d4e4bc7cf-1.jpg";//  "http://krupatest-001-site1.ftempurl.com/Content/assets/images/kbg/logo.png";
                     if (!string.IsNullOrEmpty(fileName))
                     {
-                        imgurl = "http://krupashopping-001-site1.dtempurl.com/Images/NotificationMedia/" + fileName;
+                        imgurl = "http://krupashopping-001-site1.dtempurl.com//Images//NotificationMedia//" + fileName;
                     }
                     WebRequest tRequest = WebRequest.Create("https://fcm.googleapis.com/fcm/send");
                     tRequest.Method = "post";
@@ -130,11 +131,15 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                         {
                             using (Stream dataStreamResponse = tResponse.GetResponseStream())
                             {
-                                if (dataStreamResponse != null) using (StreamReader tReader = new StreamReader(dataStreamResponse))
+                                if (dataStreamResponse != null)
+                                {
+                                    using (StreamReader tReader = new StreamReader(dataStreamResponse))
                                     {
                                         String sResponseFromServer = tReader.ReadToEnd();
                                         //result.Response = sResponseFromServer;
                                     }
+                                }
+                                   
                             }
                         }
                     }
