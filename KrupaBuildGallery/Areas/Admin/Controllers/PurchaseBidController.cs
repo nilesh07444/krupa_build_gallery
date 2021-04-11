@@ -139,7 +139,7 @@ namespace KrupaBuildGallery.Areas.Admin.Controllers
                     if (DateTime.UtcNow.Month <= 3)
                     {
                         year = year - 1;
-                        toyear = year;
+                        toyear = year + 1;
                     }
                     DateTime dtfincialyear = new DateTime(year, 4, 1);
                     DateTime dtendyear = new DateTime(toyear, 3, 31);
